@@ -2696,6 +2696,7 @@ const CONTENT = {
       "isSpecial": true,
       "materialPool": ["the_essence_of_life", "fire_essence"]
     },
+  ],
   "bosses": [
     {
       "id": "boss_ember_king",
