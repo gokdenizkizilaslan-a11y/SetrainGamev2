@@ -77,4 +77,22 @@ function craft(room, player, recipeId) {
   return { type: "temple", text: `You forge ${out ? out.name : recipe.output.item}.` };
 }
 
-module.exports = { evolve, restoreHeart, craft };
+function revive(room, player, targetId) {
+  requirePlaying(room, player);
+  if (!hasItem(player, "the_essence_of_life", 1)) {
+    throw new Error("You need The Essence of Life to revive.");
+  }
+  const target = room.players.find((p) => p.id === targetId);
+  if (!target) throw new Error("That adventurer is not here.");
+  if (target.lives > 0) throw new Error(`${target.name} is not fallen.`);
+  if (target.id === player.id) throw new Error("You cannot revive yourself.");
+  spendStamina(player, CONTENT.town.temple.stamina);
+  removeItem(player, "the_essence_of_life", 1);
+  target.lives = 1;
+  target.hp = target.maxHp;
+  target.mana = target.maxMana;
+  target.endedDay = false;
+  return { type: "temple", text: `${player.name} revives ${target.name} with The Essence of Life!` };
+}
+
+module.exports = { evolve, restoreHeart, craft, revive };

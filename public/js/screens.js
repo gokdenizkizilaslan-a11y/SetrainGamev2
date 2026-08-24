@@ -652,33 +652,40 @@ function renderProfileCard(room, selfId) {
   const traitHtml = trait
     ? `<span style="color:${trait.frameColor};font-weight:700">${escapeHtml(trait.name)}</span> — ${escapeHtml(trait.description)}`
     : `<span class="muted">No anomaly</span>`;
+  const maxLives = (CATALOG.starting && CATALOG.starting.lives) || 3;
+  const isDead = me.lives <= 0;
   el.innerHTML = `
     <div class="profile-avatar">
       <span class="portrait portrait--${me.character} profile-portrait" data-img="${imgFor(me.character, "class")}" data-variant="${me.character}"${frame}></span>
     </div>
-    <div class="profile-name">${escapeHtml(me.name)}${me.isHost ? ' <span class="badge badge--host">Host</span>' : ""}</div>
+    <div class="profile-name">${escapeHtml(me.name)}${me.isHost ? ' <span class="badge badge--host">Host</span>' : ""}${isDead ? ' <span class="badge badge--offline">Fallen</span>' : ""}</div>
     <div class="profile-class">${classLabel(me.character)} · Lv ${me.level}</div>
+    <div class="profile-lives ${isDead ? "profile-lives--dead" : ""}" title="Lives — when 0 you must be revived">
+      <span class="lives-icon">${icon("lives")}</span>
+      <span class="lives-count">${me.lives}/${maxLives}</span>
+      <span class="lives-label">Lives</span>
+    </div>
     <div class="profile-trait">${traitHtml}</div>
     <div class="profile-stats">
-      ${statRow("hp", "HP", `${me.maxHp}/${me.maxHp}`, "bar-hp", pct(me.maxHp, me.maxHp))}
+      ${statRow("hp", "HP", `${me.hp}/${me.maxHp}`, "bar-hp", pct(me.hp, me.maxHp))}
       ${statRow("stamina", "Stamina", `${me.stamina}/${me.maxStamina}`, "bar-stamina", pct(me.stamina, me.maxStamina))}
       ${statRow("xp", "XP", `${me.xp}/${me.xpToNext}`, "bar-xp", me.xpToNext ? pct(me.xp, me.xpToNext) : 100)}
-      ${statRow("gold", "Gold", me.gold)}
-      ${statRow("wood", "Wood", me.wood)}
+    </div>
+    <div class="profile-resources">
+      ${chip(icon("gold"), `Gold ${me.gold}`)}
+      ${chip(icon("wood"), `Wood ${me.wood}`)}
+      ${chip(icon("food"), `Food ${me.food}`)}
     </div>
     <div class="profile-chips">
-      ${chip(icon("lives"), `Lives ${me.lives}`)}
       ${chip(icon("level"), `Lv ${me.level}`)}
-      ${chip(icon("xp"), `${me.xp}/${me.xpToNext} XP`)}
       ${chip(icon("atk"), `Atk ${me.attack}`)}
-      ${chip(icon("mana"), `${me.maxMana}/${me.maxMana} Mana`)}
+      ${chip(icon("mana"), `${me.maxMana} Mana`)}
       ${chip(icon("mana"), `Regen ${me.manaRegen}`)}
       ${chip(icon("res"), `Res ${me.resistance}`)}
       ${chip(icon("magic"), `Mgc ${me.magicPower}`)}
       ${chip(icon("heal"), `Heal ${me.healPower}`)}
       ${chip(icon("crit"), `Crit ${me.critChance}%`)}
       ${chip(icon("crit"), `Crit Dmg +${me.critDamage}%`)}
-      ${chip(icon("food"), `${me.food} Food`)}
     </div>
     <button type="button" class="btn btn--bronze btn--inventory" id="btn-open-inventory">Inventory & Equipment</button>`;
   const invBtn = el.querySelector("#btn-open-inventory");
@@ -690,6 +697,41 @@ function renderProfileCard(room, selfId) {
     });
   }
   initImages(el);
+}
+
+function renderRightPlayers(room) {
+  const el = $("right-players");
+  if (!el) return;
+  if (!room || room.mode !== "multi" || room.status !== "playing") { el.classList.add("hidden"); return; }
+  // show in town only, not in dungeon/combat overlays
+  const inOverlay = state.dungeonOpen || state.tavernOpen || state.blacksmithOpen || state.merchantOpen || state.templeOpen || state.inventoryOpen;
+  if (inOverlay) { el.classList.add("hidden"); return; }
+  const others = room.players.filter((p) => p.id !== state.playerId);
+  if (!others.length) { el.classList.add("hidden"); return; }
+  el.classList.remove("hidden");
+  el.innerHTML = `<p class="subhead" style="margin:0 0 0.4rem">Others</p>` + others.map((p) => {
+    const dead = p.lives <= 0;
+    const frame = p.anomaly ? ` style="--frame:${p.anomaly.frameColor}"` : "";
+    return `<div class="right-player ${dead ? "right-player--dead" : ""}" data-player="${p.id}">
+      <span class="portrait portrait--${p.character} right-player-portrait" data-img="${imgFor(p.character, "class")}" data-variant="${p.character}"${frame}></span>
+      <span class="right-player-info">
+        <span class="right-player-name">${escapeHtml(p.name)}${dead ? " 💀" : ""}</span>
+        <span class="right-player-hp">${p.hp}/${p.maxHp} HP · ${p.mana}/${p.maxMana} Mana</span>
+        <span class="right-player-lives">♥ ${p.lives} · Lv ${p.level}</span>
+      </span>
+    </div>`;
+  }).join("");
+  initImages(el);
+  el.querySelectorAll("[data-player]").forEach((b) => {
+    b.addEventListener("click", () => {
+      const pid = b.getAttribute("data-player");
+      const p = room.players.find((x) => x.id === pid);
+      if (!p) return;
+      sfxPlay("clicksound");
+      const deadNote = p.lives <= 0 ? " [FALLEN - needs Essence of Life]" : "";
+      showNotice("party", p.name + deadNote, `${classLabel(p.character)} · Lv ${p.level} · ${p.hp}/${p.maxHp} HP · ${p.mana}/${p.maxMana} Mana · Atk ${p.attack} Res ${p.resistance} Mgc ${p.magicPower} Heal ${p.healPower} Spd ${p.speed} Crit ${p.critChance}% · Lives ${p.lives}`);
+    });
+  });
 }
 
 const ACTIONS = [
@@ -706,7 +748,8 @@ const ACTIONS = [
 function renderActionCards(room, selfId) {
   const el = $("action-cards");
   const me = room.players.find((p) => p.id === selfId);
-  const canAct = me && !me.endedDay;
+  const isDead = me && me.lives <= 0;
+  const canAct = me && !me.endedDay && !isDead;
   const searchCost = (CATALOG.town && CATALOG.town.search && CATALOG.town.search.stamina) || 2;
   const restAmt = (CATALOG.town && CATALOG.town.rest && CATALOG.town.rest.stamina) || 6;
   ACTIONS.forEach((a) => {
@@ -724,6 +767,10 @@ function renderActionCards(room, selfId) {
     </button>`).join("");
   el.querySelectorAll("[data-action]").forEach((b) => {
     b.addEventListener("click", () => {
+      if (isDead) {
+        showToast("You have fallen. Seek The Essence of Life at the Ancient Temple.");
+        return;
+      }
       if (!canAct) {
         showToast("You have already ended this day.");
         return;
@@ -821,6 +868,8 @@ function dungeonDrops(rank) {
 
 function renderDungeonBrowser(room, root) {
   ensureDungeonState();
+  const me = room.players.find((p) => p.id === state.playerId);
+  const isDead = me && me.lives <= 0;
   const selectedRank = state.selectedDungeonRank;
   // Parties for selected rank (only forming & open)
   const parties = (room.dungeons || []).filter((d) => d.status === "forming" && d.open && d.rank === selectedRank);
@@ -861,12 +910,13 @@ function renderDungeonBrowser(room, root) {
         <div class="drop-row"><span class="drop-label">Item rarity</span><span class="drop-chips">${oddsLine}</span></div>
       </div>` : "";
 
+    const deadBanner = isDead ? `<div class="log-line" style="color:#ff8a8a">💀 You have fallen. You cannot join or create parties until revived at the Ancient Temple.</div>` : "";
     const partyCards = parties.length
       ? parties.map((d) => {
           const leader = room.players.find((p)=>p.id===d.leaderId);
           const members = (d.memberIds||[]).map((id)=>room.players.find((p)=>p.id===id)).filter(Boolean);
           const sizeDef = CATALOG.sizes.find((s)=>s.id===d.size);
-          const canJoin = d.memberIds.length < room.maxPlayers && d.open;
+          const canJoin = !isDead && d.memberIds.length < room.maxPlayers && d.open;
           return `<div class="party-card">
             <div class="party-card-head">
               <span class="party-card-title">${escapeHtml(d.label || dgDef.label)} — ${escapeHtml(sizeLabel(d.size))}</span>
@@ -882,7 +932,7 @@ function renderDungeonBrowser(room, root) {
                 </span>`;
               }).join("")}
             </div>
-            <button type="button" class="btn btn--bronze btn--mini party-join-btn" data-join="${d.id}" ${canJoin ? "" : "disabled"}>${canJoin ? "Join Party" : "Full"}</button>
+            <button type="button" class="btn btn--bronze btn--mini party-join-btn" data-join="${d.id}" ${canJoin ? "" : "disabled"}>${isDead ? "Dead" : canJoin ? "Join Party" : "Full"}</button>
           </div>`;
         }).join("")
       : `<div class="muted">No parties yet for ${escapeHtml(dgDef.label)}. Create one below.</div>`;
@@ -896,6 +946,7 @@ function renderDungeonBrowser(room, root) {
     }).join("");
 
     rightHtml = `<div class="dungeon-browser-right">
+      ${deadBanner}
       <div class="dungeon-browser-right-head">
         <p class="subhead">${escapeHtml(dgDef.label)} — Parties</p>
         <span class="muted">${parties.length} party${parties.length===1?"":"s"} available</span>
@@ -905,8 +956,8 @@ function renderDungeonBrowser(room, root) {
       <div class="create-party-section">
         <p class="subhead">Create a Party</p>
         <div class="size-grid">${sizeOpts}</div>
-        <button type="button" class="btn btn--gold" id="btn-create-party">Create Party — ${escapeHtml(dgDef.label)} (${escapeHtml(sizeLabel(state.selectedPartySize))})</button>
-        <p class="hint">You will become the leader. Only the leader can start the delve.</p>
+        <button type="button" class="btn btn--gold" id="btn-create-party" ${isDead ? "disabled" : ""}>Create Party — ${escapeHtml(dgDef.label)} (${escapeHtml(sizeLabel(state.selectedPartySize))})</button>
+        <p class="hint">${isDead ? "You have fallen — cannot create parties." : "You will become the leader. Only the leader can start the delve."}</p>
       </div>
     </div>`;
   }
@@ -927,10 +978,12 @@ function renderDungeonBrowser(room, root) {
   });
   const createBtn = root.querySelector("#btn-create-party");
   if (createBtn) createBtn.addEventListener("click", ()=>{
+    if (isDead) { showToast("You have fallen. Seek The Essence of Life at the Ancient Temple."); return; }
     socket.emit("dungeon:create", { rank: state.selectedDungeonRank, size: state.selectedPartySize });
   });
   root.querySelectorAll("[data-join]").forEach((b)=>{
     b.addEventListener("click", ()=>{
+      if (isDead) { showToast("You have fallen. Seek The Essence of Life at the Ancient Temple."); return; }
       socket.emit("dungeon:joinById", { dungeonId: b.getAttribute("data-join") });
     });
   });
@@ -940,6 +993,8 @@ function renderPartyLobby(room, root, d) {
   const members = (d.memberIds || []).map((id) => room.players.find((p) => p.id === id)).filter(Boolean);
   const isLeader = d.leaderId === state.playerId;
   const sizeDef = CATALOG.sizes.find((s)=>s.id===d.size);
+  const me = room.players.find((p)=>p.id===state.playerId);
+  const isDead = me && me.lives <= 0;
   root.innerHTML = `
     <div class="party-lobby">
       <button type="button" class="btn btn--ghost" id="btn-party-back">← Back to Dungeon List</button>
@@ -963,9 +1018,10 @@ function renderPartyLobby(room, root, d) {
             </span>
           </li>`).join("")}
       </ul>
+      ${isDead ? `<div class="log-line" style="color:#ff8a8a">💀 You have fallen. You cannot start a delve until revived.</div>` : ""}
       <div class="btn-row">
         <button type="button" class="btn btn--ghost" id="btn-party-leave">Leave Party</button>
-        ${isLeader ? `<button type="button" class="btn btn--gold" id="btn-party-start">Start Delve (${d.stamina != null ? d.stamina : sizeDef ? sizeDef.stamina : "?"} stamina)</button>` : `<span class="muted" style="align-self:center">Waiting for leader to start…</span>`}
+        ${isDead ? `<span class="muted" style="align-self:center">You have fallen — cannot start.</span>` : isLeader ? `<button type="button" class="btn btn--gold" id="btn-party-start">Start Delve (${d.stamina != null ? d.stamina : sizeDef ? sizeDef.stamina : "?"} stamina)</button>` : `<span class="muted" style="align-self:center">Waiting for leader to start…</span>`}
       </div>
     </div>`;
   initImages(root);
@@ -1401,6 +1457,16 @@ function renderTempleView(room) {
     }).join("")}</div>
   </div>`;
 
+  const deadAllies = room.players.filter((p) => p.lives <= 0 && p.id !== me.id);
+  const essenceQty = itemOwnedQty(me, "the_essence_of_life");
+  const canRevive = staminaOk && essenceQty >= 1;
+  const reviveHtml = `<div class="temple-card temple-card--revive">
+    <p class="subhead">Revive Ally</p>
+    <p>Offer <strong>The Essence of Life</strong> (epic, from Phoenix Canary in Phoenix Sanctum) to revive a fallen ally.</p>
+    <p class="temple-req">Essence owned: ${essenceQty} · Stamina ${st} needed</p>
+    ${deadAllies.length ? deadAllies.map((p) => `<div class="craft-row"><span class="craft-out">${escapeHtml(p.name)} — Lives ${p.lives}</span><button type="button" class="btn btn--mini${canRevive ? "" : " btn--mini-disabled"}" data-revive="${p.id}">Revive</button></div>`).join("") : `<p class="muted">No fallen allies.</p>`}
+  </div>`;
+
   root.innerHTML = `
     <div class="shop-resources">
       ${chip(icon("gold"), `Gold ${me.gold}`)}
@@ -1409,7 +1475,7 @@ function renderTempleView(room) {
       ${chip(icon("stamina"), `Stamina ${me.stamina}`)}
     </div>
     <p class="subhead">The Ancient Temple remembers a purpose older than the kingdom.</p>
-    <div class="temple-grid">${evolveHtml}${restoreHtml}${craftHtml}</div>`;
+    <div class="temple-grid">${evolveHtml}${restoreHtml}${craftHtml}${reviveHtml}</div>`;
 
   const evBtn = root.querySelector("#btn-temple-evolve");
   if (evBtn) evBtn.addEventListener("click", () => socket.emit("temple:evolve"));
@@ -1417,6 +1483,9 @@ function renderTempleView(room) {
   if (rsBtn) rsBtn.addEventListener("click", () => socket.emit("temple:restore"));
   root.querySelectorAll("[data-craft]").forEach((b) =>
     b.addEventListener("click", () => socket.emit("temple:craft", { recipeId: b.getAttribute("data-craft") }))
+  );
+  root.querySelectorAll("[data-revive]").forEach((b) =>
+    b.addEventListener("click", () => socket.emit("temple:revive", { targetId: b.getAttribute("data-revive") }))
   );
 }
 

@@ -2070,6 +2070,15 @@ const CONTENT = {
         "mythic": 7,
         "ancient_relic": 0.6
       },
+      "special7": {
+        "common": 4,
+        "uncommon": 20,
+        "rare": 28,
+        "epic": 34,
+        "legendary": 20,
+        "mythic": 8,
+        "ancient_relic": 0.7
+      },
       "fast": {
         "common": 100,
         "uncommon": 30,
@@ -2641,6 +2650,23 @@ const CONTENT = {
       "sizeProfile": "fewerStronger",
       "isSpecial": true,
       "materialPool": ["golem_heart", "fire_essence", "arcane_essence"]
+    },
+    {
+      "rank": "special7",
+      "label": "Phoenix Sanctum",
+      "image": "/images/dungeons/phoenix_sanctum.png",
+      "stamina": 5,
+      "xpReward": 250,
+      "goldScale": 1.6,
+      "woodScale": 1.3,
+      "goldBase": 180,
+      "woodBase": 110,
+      "monsterPool": ["phoenix_canary", "molten_behemoth", "frost_titan"],
+      "monsterCount": 1,
+      "monsterPower": 4.5,
+      "sizeProfile": "fewerStronger",
+      "isSpecial": true,
+      "materialPool": ["the_essence_of_life", "fire_essence"]
     },
   ],
   "items": [
@@ -3823,7 +3849,19 @@ const CONTENT = {
       "stats": {"attack": 16, "magicPower": 14, "critDamage": 15},
       "image": "/images/items/void_ring.png",
       "description": "+16 attack, +14 magicPower, +15 critDamage"
+    },    {
+      "id": "the_essence_of_life",
+      "name": "The Essence of Life",
+      "slot": "material",
+      "rarity": "epic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "image": "/images/items/essence_of_life.png",
+      "description": "A rare essence that can revive a fallen ally at the Ancient Temple."
     },
+
     {
       "id": "mythic_chest",
       "name": "Mythic Chest",
@@ -4474,7 +4512,17 @@ const CONTENT = {
       "rarity": "epic",
       "element": "arcane",
       "image": "/images/monsters/storm_colossus.png"
+    },    {
+      "id": "phoenix_canary",
+      "name": "Phoenix Canary",
+      "hp": 460,
+      "attack": 42,
+      "speed": 12,
+      "rarity": "epic",
+      "element": "holy",
+      "image": "/images/monsters/phoenix_canary.png"
     },
+
 {
       "id": "world_eater",
       "name": "World Eater",

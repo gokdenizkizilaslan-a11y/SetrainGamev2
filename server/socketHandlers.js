@@ -17,6 +17,11 @@ const sessions = require("./sessions");
 const { onNewDay, equipItem, unequipSlot, setSkillLoadout } = require("./players");
 const { publicCatalog, getClass } = require("../content");
 
+function isDead(p) { return p && p.lives <= 0; }
+function requireAlive(player) {
+  if (isDead(player)) throw new Error("You have fallen. Seek The Essence of Life at the Ancient Temple to be revived.");
+}
+
 function sanitizeName(raw) {
   const name = String(raw || "").trim().replace(/\s+/g, " ");
   if (name.length < NAME_MIN || name.length > NAME_MAX) {
@@ -309,7 +314,17 @@ function registerSocketHandlers(io) {
     socket.on("town:search", () => {
       try {
         const { room, player } = gameContext(socket);
+        requireAlive(player);
         town.requirePlaying(room, player);
+        requireAlive(player);
+        const d = dungeon.dungeonFor(room, player);
+        if (d && dungeon.delveUnderway(d)) {
+          throw new Error("Finish or leave the delve first.");
+        }
+        if (d && d.status === "forming") {
+          // auto-leave forming party so you can act in town
+          try { dungeon.leaveDungeon(room, player); } catch (e) {}
+        }
         const res = town.search(player);
         room.log = {
           type: "search",
@@ -330,9 +345,15 @@ function registerSocketHandlers(io) {
     socket.on("town:endDay", () => {
       try {
         const { room, player } = gameContext(socket);
+        requireAlive(player);
         town.requirePlaying(room, player);
-        if (dungeon.dungeonFor(room, player)) {
+        requireAlive(player);
+        const d = dungeon.dungeonFor(room, player);
+        if (d && dungeon.delveUnderway(d)) {
           throw new Error("Finish or leave the delve first.");
+        }
+        if (d && d.status === "forming") {
+          try { dungeon.leaveDungeon(room, player); } catch (e) {}
         }
         const res = town.endDay(player);
         room.log = { type: "endDay", text: res.text, name: player.name, ts: Date.now() };
@@ -357,9 +378,15 @@ function registerSocketHandlers(io) {
     socket.on("town:rest", () => {
       try {
         const { room, player } = gameContext(socket);
+        requireAlive(player);
         town.requirePlaying(room, player);
-        if (dungeon.dungeonFor(room, player)) {
+        requireAlive(player);
+        const d = dungeon.dungeonFor(room, player);
+        if (d && dungeon.delveUnderway(d)) {
           throw new Error("Finish or leave the delve first.");
+        }
+        if (d && d.status === "forming") {
+          try { dungeon.leaveDungeon(room, player); } catch (e) {}
         }
         const res = town.rest(player);
         room.log = { type: "rest", text: res.text, name: player.name, ts: Date.now() };
@@ -374,6 +401,7 @@ function registerSocketHandlers(io) {
     socket.on("blacksmith:buy", (payload = {}) => {
       try {
         const { room, player } = gameContext(socket);
+        requireAlive(player);
         const res = shop.buy(room, player, payload.itemId);
         room.log = { ...res, name: player.name, ts: Date.now() };
         emitRoomState(io, room);
@@ -386,6 +414,7 @@ function registerSocketHandlers(io) {
     socket.on("merchant:buy", (payload = {}) => {
       try {
         const { room, player } = gameContext(socket);
+        requireAlive(player);
         const res = merchant.buy(room, player, payload.itemId);
         room.log = { ...res, name: player.name, ts: Date.now() };
         emitRoomState(io, room);
@@ -398,6 +427,7 @@ function registerSocketHandlers(io) {
     socket.on("chest:open", (payload = {}) => {
       try {
         const { room, player } = gameContext(socket);
+        requireAlive(player);
         const res = chest.openChest(room, player, payload.itemId);
         room.log = { type: "chest", text: `${player.name} cracks open a chest.`, name: player.name, ts: Date.now() };
         socket.emit("chest:loot", { itemId: payload.itemId, ...res });
@@ -412,6 +442,7 @@ function registerSocketHandlers(io) {
     socket.on("temple:evolve", () => {
       try {
         const { room, player } = gameContext(socket);
+        requireAlive(player);
         const res = temple.evolve(room, player);
         room.log = { ...res, name: player.name, ts: Date.now() };
         emitRoomState(io, room);
@@ -423,6 +454,7 @@ function registerSocketHandlers(io) {
     socket.on("temple:restore", () => {
       try {
         const { room, player } = gameContext(socket);
+        requireAlive(player);
         room.log = temple.restoreHeart(room, player);
         emitRoomState(io, room);
       } catch (err) {
@@ -433,7 +465,20 @@ function registerSocketHandlers(io) {
     socket.on("temple:craft", (payload = {}) => {
       try {
         const { room, player } = gameContext(socket);
+        requireAlive(player);
         room.log = temple.craft(room, player, payload.recipeId);
+        emitRoomState(io, room);
+      } catch (err) {
+        emitError(socket, err);
+      }
+    });
+    socket.on("temple:revive", (payload = {}) => {
+      try {
+        const { room, player } = gameContext(socket);
+        town.requirePlaying(room, player);
+        requireAlive(player);
+        const res = temple.revive(room, player, payload.targetId);
+        room.log = { ...res, name: player.name, ts: Date.now() };
         emitRoomState(io, room);
       } catch (err) {
         emitError(socket, err);
@@ -445,7 +490,9 @@ function registerSocketHandlers(io) {
     socket.on("inventory:equip", (payload = {}) => {
       try {
         const { room, player } = gameContext(socket);
+        requireAlive(player);
         town.requirePlaying(room, player);
+        requireAlive(player);
         equipItem(player, payload.itemId);
         room.log = { type: "inventory", text: `You equip ${payload.itemId}.` };
         emitRoomState(io, room);
@@ -457,7 +504,9 @@ function registerSocketHandlers(io) {
     socket.on("inventory:unequip", (payload = {}) => {
       try {
         const { room, player } = gameContext(socket);
+        requireAlive(player);
         town.requirePlaying(room, player);
+        requireAlive(player);
         const itemId = unequipSlot(player, payload.slot);
         const item = require("../content").getItem(itemId);
         room.log = { type: "inventory", text: `You unequip ${item ? item.name : itemId}.` };
@@ -470,7 +519,9 @@ function registerSocketHandlers(io) {
     socket.on("skill:setLoadout", (payload = {}) => {
       try {
         const { room, player } = gameContext(socket);
+        requireAlive(player);
         town.requirePlaying(room, player);
+        requireAlive(player);
         setSkillLoadout(player, payload.skillIds);
         room.log = { type: "inventory", text: "You rearrange your skills." };
         emitRoomState(io, room);
@@ -484,7 +535,9 @@ function registerSocketHandlers(io) {
     socket.on("tavern:start", (payload = {}) => {
       try {
         const { room, player } = gameContext(socket);
+        requireAlive(player);
         town.requirePlaying(room, player);
+        requireAlive(player);
         if (payload.game === "coinflip") {
           player.tavern = tavern.startCoinFlip(player, payload.bet);
         } else if (payload.game === "blackjack") {
@@ -502,7 +555,9 @@ function registerSocketHandlers(io) {
     socket.on("tavern:move", (payload = {}) => {
       try {
         const { room, player } = gameContext(socket);
+        requireAlive(player);
         town.requirePlaying(room, player);
+        requireAlive(player);
         tavern.blackjackMove(player, payload.move);
         room.log = { type: "tavern", text: player.tavern.message, name: player.name, won: player.tavern.won };
         emitRoomState(io, room);
@@ -514,7 +569,9 @@ function registerSocketHandlers(io) {
     socket.on("tavern:buyFood", () => {
       try {
         const { room, player } = gameContext(socket);
+        requireAlive(player);
         town.requirePlaying(room, player);
+        requireAlive(player);
         const res = tavern.buyProvisions(player);
         room.log = res;
         emitRoomState(io, room);
@@ -528,7 +585,9 @@ function registerSocketHandlers(io) {
     socket.on("dungeon:create", (payload = {}) => {
       try {
         const { room, player } = gameContext(socket);
+        requireAlive(player);
         town.requirePlaying(room, player);
+        requireAlive(player);
         const d = dungeon.createParty(room, player, payload.rank, payload.size);
         room.log = { type: "dungeon", text: `${player.name} created a ${d.label} party.` };
         emitRoomState(io, room);
@@ -540,7 +599,9 @@ function registerSocketHandlers(io) {
     socket.on("dungeon:joinById", (payload = {}) => {
       try {
         const { room, player } = gameContext(socket);
+        requireAlive(player);
         town.requirePlaying(room, player);
+        requireAlive(player);
         const d = dungeon.joinPartyById(room, player, payload.dungeonId);
         room.log = { type: "dungeon", text: `${player.name} joined ${d.label} party.` };
         emitRoomState(io, room);
@@ -552,7 +613,9 @@ function registerSocketHandlers(io) {
     socket.on("dungeon:join", (payload = {}) => {
       try {
         const { room, player } = gameContext(socket);
+        requireAlive(player);
         town.requirePlaying(room, player);
+        requireAlive(player);
         // Backward compatibility: legacy client uses rank+size auto-join
         if (payload.dungeonId) {
           dungeon.joinPartyById(room, player, payload.dungeonId);
@@ -569,7 +632,9 @@ function registerSocketHandlers(io) {
     socket.on("dungeon:leave", () => {
       try {
         const { room, player } = gameContext(socket);
+        requireAlive(player);
         town.requirePlaying(room, player);
+        requireAlive(player);
         dungeon.leaveDungeon(room, player);
         room.log = { type: "dungeon", text: `${player.name} left the delve party.` };
         emitRoomState(io, room);
@@ -581,7 +646,9 @@ function registerSocketHandlers(io) {
     socket.on("dungeon:start", () => {
       try {
         const { room, player } = gameContext(socket);
+        requireAlive(player);
         town.requirePlaying(room, player);
+        requireAlive(player);
         room.broadcast = () => {
           emitCombatFx(io, room);
           emitRoomState(io, room);
@@ -598,7 +665,9 @@ function registerSocketHandlers(io) {
     socket.on("dungeon:return", () => {
       try {
         const { room, player } = gameContext(socket);
+        requireAlive(player);
         town.requirePlaying(room, player);
+        requireAlive(player);
         dungeon.returnFromDungeon(room, player);
         room.log = { type: "town", text: "You return to the town square." };
         emitRoomState(io, room);
@@ -612,6 +681,7 @@ function registerSocketHandlers(io) {
     socket.on("combat:act", (payload = {}) => {
       try {
         const { room, player } = gameContext(socket);
+        requireAlive(player);
         combat.act(room, player, payload.skillId, payload.targetId);
         emitCombatFx(io, room);
         emitRoomState(io, room);
@@ -623,6 +693,7 @@ function registerSocketHandlers(io) {
     socket.on("combat:useItem", (payload = {}) => {
       try {
         const { room, player } = gameContext(socket);
+        requireAlive(player);
         combat.useItem(room, player, payload.itemId);
         emitCombatFx(io, room);
         emitRoomState(io, room);
@@ -634,6 +705,7 @@ function registerSocketHandlers(io) {
     socket.on("combat:endTurn", () => {
       try {
         const { room, player } = gameContext(socket);
+        requireAlive(player);
         const asyncMonster = combat.endTurn(room, player);
         if (!asyncMonster) {
           emitCombatFx(io, room);
@@ -647,7 +719,9 @@ function registerSocketHandlers(io) {
     socket.on("combat:flee", () => {
       try {
         const { room, player } = gameContext(socket);
+        requireAlive(player);
         town.requirePlaying(room, player);
+        requireAlive(player);
         room.broadcast = () => {
           emitCombatFx(io, room);
           emitRoomState(io, room);

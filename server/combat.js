@@ -28,7 +28,7 @@ function myDungeon(room, player) {
 function livingMembers(room, d) {
   return (d.memberIds || [])
     .map((id) => room.players.find((p) => p.id === id))
-    .filter((p) => p && p.hp > 0);
+    .filter((p) => p && p.hp > 0 && p.lives > 0);
 }
 
 function allMembers(room, d) {

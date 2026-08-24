@@ -116,6 +116,25 @@ function renderTown(room) {
     showNotice("day", `Day ${room.day}`, slept ? "You slept through the night. Stamina is restored." : "A new day dawns. Stamina is restored.");
   }
 
+  // Dead handling
+  if (me && me.lives <= 0) {
+    if (room.mode === "single") {
+      if (!state._deadShown) {
+        state._deadShown = true;
+        showNotice("lose", "You Died", "Your legend ends here. Returning to menu...");
+        setTimeout(() => leaveToMainMenu(), 1600);
+      }
+    } else {
+      if (!state._deadToast) {
+        state._deadToast = true;
+        showToast("💀 You have fallen. Seek The Essence of Life at the Ancient Temple.");
+        setTimeout(()=> state._deadToast=false, 4000);
+      }
+    }
+  } else {
+    state._deadShown = false;
+  }
+
   const inOverlay = state.dungeonOpen || state.tavernOpen || state.blacksmithOpen || state.merchantOpen || state.templeOpen || state.inventoryOpen;
   $("town-main").classList.toggle("hidden", inOverlay);
   $("dungeon-view").classList.toggle("hidden", !state.dungeonOpen);
@@ -124,6 +143,9 @@ function renderTown(room) {
   $("merchant-view").classList.toggle("hidden", !state.merchantOpen);
   $("temple-view").classList.toggle("hidden", !state.templeOpen);
   $("inventory-view").classList.toggle("hidden", !state.inventoryOpen);
+
+  // Right sidebar (multiplayer town only)
+  if (typeof renderRightPlayers === "function") renderRightPlayers(room);
 
   if (!inOverlay) {
     $("town-day").textContent = room.day;
