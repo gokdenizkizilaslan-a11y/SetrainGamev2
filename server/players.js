@@ -194,6 +194,7 @@ function publicPlayer(player) {
     ready: player.ready,
     isHost: player.isHost,
     dungeonId: player.dungeonId || null,
+    bossId: player.bossId || null,
     anomaly: player.anomaly
       ? {
           id: player.anomaly.id,

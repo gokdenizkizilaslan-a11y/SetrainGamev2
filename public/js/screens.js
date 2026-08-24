@@ -823,12 +823,25 @@ function renderTownLog(room) {
 
 // ---- Dungeon ----
 
-// The dungeon the local player belongs to (solo or a shared party).
+// The dungeon/boss the local player belongs to.
 function myDungeon(room) {
-  if (!room || !room.dungeons || !state.playerId) return null;
+  if (!room || !state.playerId) return null;
   const me = room.players.find((p) => p.id === state.playerId);
-  if (!me || !me.dungeonId) return null;
-  return room.dungeons.find((d) => d.id === me.dungeonId) || null;
+  if (!me) return null;
+  if (me.dungeonId) {
+    const d = (room.dungeons || []).find((x) => x.id === me.dungeonId);
+    if (d) return d;
+  }
+  if (me.bossId) {
+    const b = (room.bossParties || []).find((x) => x.id === me.bossId);
+    if (b) return b;
+  }
+  // Fallback by memberIds (covers cases where bossId/dungeonId not synced)
+  const byD = (room.dungeons || []).find((d) => d.memberIds && d.memberIds.includes(state.playerId));
+  if (byD) return byD;
+  const byB = (room.bossParties || []).find((b) => b.memberIds && b.memberIds.includes(state.playerId));
+  if (byB) return byB;
+  return null;
 }
 
 function ensureDungeonState() {
