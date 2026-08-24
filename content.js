@@ -5763,6 +5763,7 @@ function publicCatalog() {
       description: i.description || "",
     })),
     equipmentSlots: CONTENT.equipmentSlots,
+    bosses: (CONTENT.bosses || []).map((b) => ({ id: b.id, label: b.label, image: b.image, hp: b.hp, attack: b.attack, element: b.element, unlockAfter: b.unlockAfter || null })),
     monsters: CONTENT.monsters.map((m) => ({ id: m.id, name: m.name, image: m.image, rarity: m.rarity || "common" })),
     anomalyFrameColors: Object.fromEntries(
       CONTENT.anomalies.traits.map((t) => [t.id, t.frameColor])

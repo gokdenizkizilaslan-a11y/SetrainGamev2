@@ -2949,9 +2949,13 @@ input:focus {
   border: 1px solid var(--glass-line);
   border-radius: 12px;
   background:
+    radial-gradient(circle at 25% 25%, rgba(255,220,120,0.07) 0 1.5px, transparent 1.5px),
+    radial-gradient(circle at 75% 45%, rgba(120,200,255,0.05) 0 2px, transparent 2px),
+    radial-gradient(circle at 50% 80%, rgba(255,100,100,0.04) 0 1px, transparent 1px),
     radial-gradient(800px 400px at 30% 20%, rgba(120,80,30,0.15), transparent 60%),
     radial-gradient(600px 300px at 80% 80%, rgba(60,40,120,0.12), transparent 60%),
     linear-gradient(180deg, #2a1f14 0%, #1a120b 100%);
+  background-size: 120px 120px, 180px 180px, 200px 200px, auto, auto, auto;
   position: relative;
   cursor: grab;
 }

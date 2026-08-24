@@ -1786,12 +1786,18 @@ function renderMap(room) {
   const bosses = (CATALOG.bosses || []);
   const me = room.players.find((p)=>p.id===state.playerId);
   const kills = (me && me.bossKills) || [];
+  // Add subtle random texture dots via inline style (already in CSS, but add extra visual)
+  const inner = $("map-inner");
+  if (inner && !inner.dataset.textured) {
+    inner.dataset.textured = "1";
+    // random dots already via CSS, no extra JS needed
+  }
   pinsEl.innerHTML = bosses.map((b,i)=>{
     const x = 12 + i * 16; // 12%,28%,44%,60%,76%
     const y = 50 + Math.sin(i*0.9)*12;
     const locked = b.unlockAfter && !kills.includes(b.unlockAfter);
     const icon = b.element==="fire"?"🔥":b.element==="frost"?"❄️":b.element==="shadow"?"👁️":b.element==="arcane"?"⚡":"💀";
-    return `<div class="map-pin ${locked?"locked":""} map-pin--boss" data-boss="${b.id}" style="left:${x}%;top:${y}%" title="${escapeHtml(b.label)}">
+    return `<div class="map-pin ${locked?"locked":""} map-pin--boss" data-boss="${b.id}" style="left:${x}%;top:${y}%" title="${escapeHtml(b.label)} — Click to challenge${locked?" (locked)":""}">
       <span>${icon}</span>
       <span class="map-pin-label">${escapeHtml(b.label)}${locked?" 🔒":""}</span>
     </div>`;
@@ -1816,7 +1822,13 @@ function renderMap(room) {
 }
 function updateMapTransform() {
   const inner = $("map-inner");
-  if (!inner) return;
+  const vp = $("map-viewport");
+  if (!inner || !vp) return;
+  // clamp panning so you cannot go infinitely
+  const maxX = 120 * mapState.scale;
+  const maxY = 80 * mapState.scale;
+  mapState.x = Math.max(-maxX, Math.min(maxX, mapState.x));
+  mapState.y = Math.max(-maxY, Math.min(maxY, mapState.y));
   inner.style.transform = `translate(${mapState.x}px, ${mapState.y}px) scale(${mapState.scale})`;
 }
 function initMapInteractions() {
