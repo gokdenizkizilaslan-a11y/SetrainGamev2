@@ -319,6 +319,8 @@ function publicDungeon(d) {
     wave: (d.wave || []).map((m) => ({ id: m.id, kind: m.kind, name: m.name, image: m.image, hp: m.hp, maxHp: m.maxHp })),
     result: d.result,
     log: d.log,
+    floor: d.floor || 1,
+    totalFloors: d.totalFloors || 1,
   };
 }
 

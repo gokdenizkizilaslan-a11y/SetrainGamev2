@@ -1278,19 +1278,29 @@ input:focus {
 .enemy-wave {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.7rem;
+  gap: 0.6rem;
   justify-content: center;
-  padding: 0.7rem;
-  background: rgba(0, 0, 0, 0.2);
+  padding: 0.6rem;
+  background: rgba(0, 0, 0, 0.18);
   border: 1px solid var(--glass-line);
-  border-radius: 14px;
-  margin-bottom: 0.6rem;
-  max-height: 22vh;
-  overflow-y: auto;
-  scrollbar-width: thin;
+  border-radius: 12px;
+  margin-bottom: 0.5rem;
 }
-.enemy-wave::-webkit-scrollbar { width: 6px; }
-.enemy-wave::-webkit-scrollbar-thumb { background: rgba(232,183,108,0.25); border-radius: 3px; }
+.combat-wrap--many .enemy {
+  min-width: 118px;
+  width: 150px;
+}
+.combat-wrap--many .enemy .monster-portrait {
+  height: 5.5rem;
+}
+.combat-wrap--many .fighter {
+  min-width: 110px;
+  padding: 0.4rem;
+}
+.combat-wrap--many .fighter-portrait {
+  width: 2.8rem;
+  height: 2.8rem;
+}
 
 .enemy,
 .fighter {
@@ -1394,16 +1404,11 @@ input:focus {
 .party-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
+  gap: 0.5rem;
   justify-content: center;
-  margin-bottom: 0.6rem;
-  max-height: 18vh;
-  overflow-y: auto;
-  scrollbar-width: thin;
+  margin-bottom: 0.5rem;
   padding-right: 2px;
 }
-.party-row::-webkit-scrollbar { width: 6px; }
-.party-row::-webkit-scrollbar-thumb { background: rgba(232,183,108,0.25); border-radius: 3px; }
 
 .hpbar {
   position: relative;

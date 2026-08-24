@@ -237,19 +237,26 @@ function buildTurnOrder(room, d) {
   if (d.currentTurnId) resetUsedSkills(d, d.currentTurnId);
 }
 
-function spawnWave(room, d) {
-  const def = getDungeon(d.rank);
-  const size = getDungeonSize(d.size);
-  const fewer = def.sizeProfile === "fewerStronger";
-  const countScale = fewer ? size.fewerCount : size.count;
-  const count = Math.max(1, Math.round(def.monsterCount * countScale));
-  const power = def.monsterPower * size.power * (CONTENT.combat.monsterScale || 1);
-
+function floorCountFor(sizeId, total) {
+  if (sizeId === "small") return 1;
+  if (sizeId === "normal") return 3;
+  if (sizeId === "big") return 3;
+  if (sizeId === "huge") return 4;
+  // fallback based on total
+  return Math.min(4, Math.max(1, Math.ceil(total / 5)));
+}
+function buildWaveForFloor(def, size, power, floor, totalFloors, totalCount) {
+  // Distribute totalCount across floors, max 5 per floor
+  const base = Math.floor(totalCount / totalFloors);
+  const rem = totalCount % totalFloors;
+  let count = base + (floor <= rem ? 1 : 0);
+  count = Math.min(5, Math.max(1, count));
+  // For small dungeons total is small, so floor 1 gets all
   const wave = [];
   for (let i = 0; i < count; i++) {
     const m = getMonster(def.monsterPool[Math.floor(Math.random() * def.monsterPool.length)]);
     wave.push({
-      id: `${m.id}_${i}`,
+      id: `${m.id}_${floor}_${i}`,
       kind: m.id,
       name: m.name,
       image: m.image,
@@ -261,6 +268,25 @@ function spawnWave(room, d) {
       skills: monsterSkills(m),
     });
   }
+  return wave;
+}
+function spawnWave(room, d) {
+  const def = getDungeon(d.rank);
+  const size = getDungeonSize(d.size);
+  const fewer = def.sizeProfile === "fewerStronger";
+  const countScale = fewer ? size.fewerCount : size.count;
+  const totalCount = Math.max(1, Math.round(def.monsterCount * countScale));
+  const power = def.monsterPower * size.power * (CONTENT.combat.monsterScale || 1);
+  const totalFloors = floorCountFor(d.size, totalCount);
+
+  d.totalFloors = totalFloors;
+  d.floor = 1;
+  d.totalCount = totalCount;
+  d.power = power;
+  d._defLabel = def.label;
+  d._sizeLabel = size.label;
+
+  const wave = buildWaveForFloor(def, size, power, 1, totalFloors, totalCount);
 
   d.wave = wave;
   d.round = 1;
@@ -278,11 +304,35 @@ function spawnWave(room, d) {
     p.hp = p.maxHp;
     p.mana = p.maxMana;
   }
-  d.log = [`${def.label} ${size.label} — ${count} foe${count === 1 ? "" : "s"} bar the way.`];
+  d.log = [`${def.label} ${size.label} — Floor 1/${totalFloors} — ${wave.length} foe${wave.length === 1 ? "" : "s"} bar the way.`];
   buildTurnOrder(room, d);
   d.log.push(`Round 1 — ${currentPlayerName(room, d)} moves first.`);
   armTurnTimer(room, d);
   return d;
+}
+function spawnNextFloor(room, d) {
+  const def = getDungeon(d.rank);
+  const size = getDungeonSize(d.size);
+  d.floor += 1;
+  const wave = buildWaveForFloor(def, size, d.power, d.floor, d.totalFloors, d.totalCount);
+  d.wave = wave;
+  d.round = 1;
+  d.phase = "players";
+  d.buffs = [];
+  d.buffId = 0;
+  d.endedTurns = new Set();
+  d.usedSkills = {};
+  d.monsterQueue = [];
+  d.monsterTimer = null;
+  // Keep hp/mana as is (persist across floors), but give small regen
+  for (const p of allMembers(room, d)) {
+    p.mana = Math.min(p.maxMana, p.mana + 5);
+  }
+  d.log.push(`Floor ${d.floor}/${d.totalFloors} — ${wave.length} foe${wave.length === 1 ? "" : "s"} appear!`);
+  buildTurnOrder(room, d);
+  d.log.push(`Round 1 — ${currentPlayerName(room, d)} moves first.`);
+  armTurnTimer(room, d);
+  if (typeof room.broadcast === "function") room.broadcast();
 }
 
 function resolveSkill(player, skillId) {
@@ -599,6 +649,21 @@ function checkEnd(room, d) {
   if (d.status !== "fighting") return;
   const aliveMonsters = d.wave.filter((m) => m.hp > 0);
   if (aliveMonsters.length === 0) {
+    if (d.totalFloors && d.floor < d.totalFloors) {
+      // Next floor, not victory yet
+      // Small delay before next floor for FX
+      clearTurnTimer(d);
+      clearMonsterTimer(d);
+      d.log.push(`Floor ${d.floor} cleared!`);
+      addFx(d, { type: "floor", floor: d.floor, total: d.totalFloors });
+      // slight pause then spawn
+      setTimeout(() => {
+        if (d.status !== "fighting") return;
+        spawnNextFloor(room, d);
+      }, 900);
+      if (typeof room.broadcast === "function") room.broadcast();
+      return;
+    }
     victory(room, d);
   } else if (livingMembers(room, d).length === 0) {
     defeat(room, d);

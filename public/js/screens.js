@@ -1173,10 +1173,12 @@ function renderCombat(room, root) {
   const timerHtml = `<div class="turn-timer turn-timer--top${canAct ? "" : " turn-timer--idle"}"><div class="turn-timer-fill" id="turn-timer-fill"></div></div>`;
   const logHtml = `<div class="combat-log">${d.log.slice(-8).map((l) => `<div class="log-line">${escapeHtml(l)}</div>`).join("")}</div>`;
 
+  const isMany = (d.wave && d.wave.length > 3) || (d.totalFloors && d.totalFloors > 1);
+  const floorInfo = d.totalFloors ? ` · Floor ${d.floor || 1}/${d.totalFloors}` : "";
   root.innerHTML = `
-    <div class="combat-wrap">
+    <div class="combat-wrap ${isMany ? "combat-wrap--many" : ""}">
       <div class="combat-top">
-        <p class="subhead">${escapeHtml(d.label || "")} — ${sizeLabel(d.size)} · Round ${d.round}</p>
+        <p class="subhead">${escapeHtml(d.label || "")} — ${sizeLabel(d.size)}${floorInfo} · Round ${d.round}</p>
         ${timerHtml}
         <div class="combat-actions combat-actions--top">${endTurnBtn}${fleeBtnHtml}</div>
       </div>
