@@ -58,7 +58,7 @@ function openChest(room, player, itemId) {
   const dropChance = (CONTENT.loot && CONTENT.loot.dropChance) || {};
 
   const poolForRarity = (rarity) =>
-    CONTENT.items.filter((it) => it.rarity === rarity && it.slot !== "chest" && it.slot !== "material");
+    CONTENT.items.filter((it) => it.rarity === rarity && it.slot !== "chest" && it.slot !== "material" && !it.craftOnly);
   const pickOne = (rarity) => {
     const pool = poolForRarity(rarity);
     return pool.length ? pool[Math.floor(Math.random() * pool.length)] : null;

@@ -1505,6 +1505,35 @@ input:focus {
   margin: 0;
 }
 
+.combat-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.6rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--glass-line);
+  border-radius: 10px;
+  background: rgba(0,0,0,0.18);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  backdrop-filter: blur(6px);
+}
+.combat-top .subhead {
+  margin: 0;
+  flex: 1;
+}
+.combat-actions--top {
+  margin: 0;
+}
+.turn-timer--top {
+  flex: 1;
+  max-width: 220px;
+  height: 6px;
+  margin: 0;
+}
 .combat-actions {
   display: flex;
   gap: 0.6rem;
@@ -1653,7 +1682,14 @@ input:focus {
   grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
   gap: 0.75rem;
   margin-bottom: 1.2rem;
+  max-height: 52vh;
+  overflow-y: auto;
+  padding-right: 4px;
+ Scrollbar-width: thin;
 }
+.shop-grid::-webkit-scrollbar { width: 6px; }
+.shop-grid::-webkit-scrollbar-thumb { background: rgba(232,183,108,0.25); border-radius: 3px; }
+.shop-card--sold { opacity: 0.55; filter: grayscale(0.2); }
 
 .shop-card {
   display: flex;

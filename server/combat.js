@@ -638,24 +638,42 @@ function victory(room, d) {
   }
 
   const lootNotes = [];
-  for (const mon of d.wave) {
-    if (mon.hp > 0) continue;
-    const mdef = getMonster(mon.kind);
-    if (!mdef) continue;
-    const dropChance = (CONTENT.loot && CONTENT.loot.dropChance) || {};
-    if (Math.random() >= (dropChance[mdef.rarity] || 0)) continue;
-    const weights = ((CONTENT.loot || {}).gradeWeights || {})[d.rank] || CONTENT.loot.gradeWeights.f;
-    const rarity = weightedPick(weights);
-    if (!rarity) continue;
-    const pool = CONTENT.items.filter((i) => i.rarity === rarity && i.slot !== "consumable");
-    if (!pool.length) continue;
-    const item = pool[Math.floor(Math.random() * pool.length)];
-    const receivers = livingMembers(room, d).length ? livingMembers(room, d) : members;
-    const receiver = receivers[Math.floor(Math.random() * receivers.length)];
-    addItem(receiver, item.id, 1);
-    const rarityMeta = ((CONTENT.loot || {}).rarityMeta || {})[rarity];
-    const rarityLabel = (rarityMeta && rarityMeta.label) || rarity;
-    lootNotes.push(`${receiver.name} found a ${rarityLabel} ${item.name}.`);
+  // Special dungeons: drop crafting materials instead of random gear
+  if (def.isSpecial && Array.isArray(def.materialPool) && def.materialPool.length) {
+    for (const mon of d.wave) {
+      if (mon.hp > 0) continue;
+      const count = 1 + (Math.random() < 0.4 ? 1 : 0); // 1-2 materials per kill
+      for (let k = 0; k < count; k++) {
+        const matId = def.materialPool[Math.floor(Math.random() * def.materialPool.length)];
+        const mat = getItem(matId);
+        if (!mat) continue;
+        const receivers = livingMembers(room, d).length ? livingMembers(room, d) : members;
+        const receiver = receivers[Math.floor(Math.random() * receivers.length)];
+        addItem(receiver, mat.id, 1);
+        lootNotes.push(`${receiver.name} found ${mat.name}.`);
+      }
+    }
+  } else {
+    for (const mon of d.wave) {
+      if (mon.hp > 0) continue;
+      const mdef = getMonster(mon.kind);
+      if (!mdef) continue;
+      const dropChance = (CONTENT.loot && CONTENT.loot.dropChance) || {};
+      if (Math.random() >= (dropChance[mdef.rarity] || 0)) continue;
+      const weights = ((CONTENT.loot || {}).gradeWeights || {})[d.rank] || CONTENT.loot.gradeWeights.f;
+      const rarity = weightedPick(weights);
+      if (!rarity) continue;
+      // Exclude craft-only, chests and materials — craftables only via temple
+      const pool = CONTENT.items.filter((i) => i.rarity === rarity && i.slot !== "consumable" && i.slot !== "chest" && i.slot !== "material" && !i.craftOnly);
+      if (!pool.length) continue;
+      const item = pool[Math.floor(Math.random() * pool.length)];
+      const receivers = livingMembers(room, d).length ? livingMembers(room, d) : members;
+      const receiver = receivers[Math.floor(Math.random() * receivers.length)];
+      addItem(receiver, item.id, 1);
+      const rarityMeta = ((CONTENT.loot || {}).rarityMeta || {})[rarity];
+      const rarityLabel = (rarityMeta && rarityMeta.label) || rarity;
+      lootNotes.push(`${receiver.name} found a ${rarityLabel} ${item.name}.`);
+    }
   }
 
   const chestId = chest.chestForRank(d.rank);

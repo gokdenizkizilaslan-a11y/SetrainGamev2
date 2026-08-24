@@ -23,6 +23,7 @@ function buy(room, player, itemId) {
   } else {
     addItem(player, item.id, 1);
   }
+  stock.markSold(room, "blacksmith", item.id);
   return { type: "blacksmith", text: `You buy ${item.name}.`, item: item.id };
 }
 

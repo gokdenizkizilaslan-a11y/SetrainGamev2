@@ -1760,8 +1760,7 @@ const CONTENT = {
         "cost": {
           "gold": 25,
           "wood": 0
-        },
-        "description": "Forge a sword that still smoulders."
+        },      "description": "Forge a sword that still smoulders."
       },
       {
         "id": "molten_cleaver",
@@ -1783,8 +1782,7 @@ const CONTENT = {
         "cost": {
           "gold": 60,
           "wood": 10
-        },
-        "description": "Bond the heart of a fire spirit to the blade."
+        },      "description": "Bond the heart of a fire spirit to the blade."
       },
       {
         "id": "frost_gladius",
@@ -1806,8 +1804,7 @@ const CONTENT = {
         "cost": {
           "gold": 25,
           "wood": 0
-        },
-        "description": "Temper the blade in hoarfrost."
+        },      "description": "Temper the blade in hoarfrost."
       },
       {
         "id": "arcane_rod",
@@ -1829,8 +1826,7 @@ const CONTENT = {
         "cost": {
           "gold": 30,
           "wood": 0
-        },
-        "description": "Weave raw magic into the staff."
+        },      "description": "Weave raw magic into the staff."
       },
       {
         "id": "shadow_knife",
@@ -1852,8 +1848,7 @@ const CONTENT = {
         "cost": {
           "gold": 30,
           "wood": 0
-        },
-        "description": "Fold shadow itself into the edge."
+        },      "description": "Fold shadow itself into the edge."
       }
     ]
   },
@@ -2020,6 +2015,60 @@ const CONTENT = {
         "legendary": 22,
         "mythic": 8,
         "ancient_relic": 1
+      },
+      "special1": {
+        "common": 10,
+        "uncommon": 30,
+        "rare": 35,
+        "epic": 25,
+        "legendary": 12,
+        "mythic": 4,
+        "ancient_relic": 0.3
+      },
+      "special2": {
+        "common": 10,
+        "uncommon": 30,
+        "rare": 35,
+        "epic": 25,
+        "legendary": 12,
+        "mythic": 4,
+        "ancient_relic": 0.3
+      },
+      "special3": {
+        "common": 10,
+        "uncommon": 30,
+        "rare": 35,
+        "epic": 25,
+        "legendary": 12,
+        "mythic": 4,
+        "ancient_relic": 0.3
+      },
+      "special4": {
+        "common": 8,
+        "uncommon": 28,
+        "rare": 35,
+        "epic": 28,
+        "legendary": 14,
+        "mythic": 5,
+        "ancient_relic": 0.4
+      },
+      "special5": {
+        "common": 5,
+        "uncommon": 25,
+        "rare": 32,
+        "epic": 30,
+        "legendary": 16,
+        "mythic": 6,
+        "ancient_relic": 0.5
+      },
+      "special6": {
+        "common": 5,
+        "uncommon": 22,
+        "rare": 30,
+        "epic": 32,
+        "legendary": 18,
+        "mythic": 7,
+        "ancient_relic": 0.6
       },
       "fast": {
         "common": 100,
@@ -2224,11 +2273,11 @@ const CONTENT = {
         "giant_rat",
         "cave_bat",
         "wolf",
-        "goblin_archer",
         "kobold",
         "forest_mite",
-        "sludge",
-        "ember_slime"
+        "grove_sprite",
+        "ember_sprite",
+        "vine_lurker"
       ],
       "monsterCount": 2,
       "monsterPower": 1,
@@ -2251,16 +2300,16 @@ const CONTENT = {
       "goldBase": 45,
       "woodBase": 30,
       "monsterPool": [
-        "goblin",
-        "wolf",
-        "bandit",
-        "spider",
-        "wild_boar",
-        "scavenger",
-        "cave_crawler",
-        "thug",
-        "dusk_bat",
-        "rat_king"
+        "iron_goblin",
+        "bone_archer",
+        "frost_wolf",
+        "ash_spider",
+        "brigand_captain",
+        "marsh_crawler",
+        "ember_sprite",
+        "abyss_wraith",
+        "storm_harpy",
+        "flame_witch"
       ],
       "monsterCount": 2,
       "monsterPower": 1.3,
@@ -2286,13 +2335,13 @@ const CONTENT = {
         "goblin_warrior",
         "skeleton",
         "dire_wolf",
-        "harpy",
-        "grove_sprite",
-        "vine_lurker",
-        "ash_spider",
-        "bone_archer",
-        "frost_wolf",
-        "ember_sprite"
+        "crystal_golem",
+        "cursed_knight",
+        "iron_ogre",
+        "golem",
+        "wraith",
+        "manticore",
+        "harpy"
       ],
       "monsterCount": 3,
       "monsterPower": 1.6,
@@ -2315,16 +2364,16 @@ const CONTENT = {
       "goldBase": 100,
       "woodBase": 60,
       "monsterPool": [
-        "skeleton",
-        "dire_wolf",
-        "orc",
-        "swamp_troll",
-        "griffin",
-        "thorn_viper",
-        "iron_goblin",
-        "brigand_captain",
-        "marsh_crawler",
-        "grove_sprite"
+        "stone_warden",
+        "manticore",
+        "ogre",
+        "dark_knight",
+        "witch",
+        "iron_ogre",
+        "crystal_golem",
+        "wyvern",
+        "frost_wyvern",
+        "void_golem"
       ],
       "monsterCount": 3,
       "monsterPower": 2,
@@ -2347,16 +2396,16 @@ const CONTENT = {
       "goldBase": 150,
       "woodBase": 85,
       "monsterPool": [
-        "stone_warden",
-        "wraith",
-        "manticore",
-        "ogre",
-        "dark_knight",
         "crystal_golem",
         "cursed_knight",
         "stone_titan",
-        "dusk_manticore",
-        "iron_ogre"
+        "wyvern",
+        "ancient_golem",
+        "frost_wyvern",
+        "void_golem",
+        "storm_lich",
+        "nether_hydra",
+        "dusk_manticore"
       ],
       "monsterCount": 3,
       "monsterPower": 2.6,
@@ -2379,16 +2428,16 @@ const CONTENT = {
       "goldBase": 220,
       "woodBase": 110,
       "monsterPool": [
-        "wraith",
-        "manticore",
-        "ogre",
-        "witch",
         "wyvern",
-        "abyss_wraith",
-        "storm_harpy",
-        "flame_witch",
         "frost_wyvern",
-        "crystal_golem"
+        "void_golem",
+        "storm_lich",
+        "nether_hydra",
+        "ancient_golem",
+        "lich",
+        "doom_lord",
+        "abyss_wraith",
+        "flame_witch"
       ],
       "monsterCount": 4,
       "monsterPower": 3.3,
@@ -2411,16 +2460,16 @@ const CONTENT = {
       "goldBase": 320,
       "woodBase": 150,
       "monsterPool": [
-        "dark_knight",
-        "witch",
-        "wyvern",
         "ancient_golem",
-        "lich",
-        "void_golem",
+        "wyvern",
         "storm_lich",
+        "void_golem",
+        "lich",
+        "doom_lord",
+        "world_eater",
+        "hydra",
         "frost_wyvern",
-        "crystal_golem",
-        "stone_titan"
+        "nether_hydra"
       ],
       "monsterCount": 4,
       "monsterPower": 4.2,
@@ -2445,14 +2494,14 @@ const CONTENT = {
       "monsterPool": [
         "lich",
         "hydra",
-        "ancient_golem",
-        "wyvern",
-        "storm_lich",
-        "nether_hydra",
         "doom_lord",
         "world_eater",
         "void_golem",
-        "frost_wyvern"
+        "storm_lich",
+        "nether_hydra",
+        "ancient_golem",
+        "frost_wyvern",
+        "world_eater"
       ],
       "monsterCount": 5,
       "monsterPower": 5.5,
@@ -2490,7 +2539,109 @@ const CONTENT = {
         "mythic": 0.3,
         "remnant": 0.06
       }
-    }
+    },
+    {
+      "rank": "special1",
+      "label": "Ember Hollow",
+      "image": "/images/dungeons/ember_hollow.png",
+      "stamina": 4,
+      "xpReward": 180,
+      "goldScale": 1.2,
+      "woodScale": 1.0,
+      "goldBase": 120,
+      "woodBase": 70,
+      "monsterPool": ["molten_behemoth", "flame_witch", "ember_sprite"],
+      "monsterCount": 1,
+      "monsterPower": 3.5,
+      "sizeProfile": "fewerStronger",
+      "isSpecial": true,
+      "materialPool": ["fire_essence", "heart_of_fire"]
+    },
+    {
+      "rank": "special2",
+      "label": "Frost Crypt",
+      "image": "/images/dungeons/frost_crypt.png",
+      "stamina": 4,
+      "xpReward": 180,
+      "goldScale": 1.2,
+      "woodScale": 1.0,
+      "goldBase": 120,
+      "woodBase": 70,
+      "monsterPool": ["frost_titan", "frost_wolf", "stone_titan"],
+      "monsterCount": 1,
+      "monsterPower": 3.5,
+      "sizeProfile": "fewerStronger",
+      "isSpecial": true,
+      "materialPool": ["frost_essence"]
+    },
+    {
+      "rank": "special3",
+      "label": "Shadow Sanctum",
+      "image": "/images/dungeons/shadow_sanctum.png",
+      "stamina": 4,
+      "xpReward": 180,
+      "goldScale": 1.2,
+      "woodScale": 1.0,
+      "goldBase": 120,
+      "woodBase": 70,
+      "monsterPool": ["void_herald", "abyss_wraith", "cursed_knight"],
+      "monsterCount": 1,
+      "monsterPower": 3.5,
+      "sizeProfile": "fewerStronger",
+      "isSpecial": true,
+      "materialPool": ["shadow_essence"]
+    },
+    {
+      "rank": "special4",
+      "label": "Storm Bastion",
+      "image": "/images/dungeons/storm_bastion.png",
+      "stamina": 4,
+      "xpReward": 180,
+      "goldScale": 1.2,
+      "woodScale": 1.0,
+      "goldBase": 120,
+      "woodBase": 70,
+      "monsterPool": ["storm_colossus", "storm_harpy", "griffin"],
+      "monsterCount": 1,
+      "monsterPower": 3.5,
+      "sizeProfile": "fewerStronger",
+      "isSpecial": true,
+      "materialPool": ["arcane_essence"]
+    },
+    {
+      "rank": "special5",
+      "label": "Void Maw",
+      "image": "/images/dungeons/void_maw.png",
+      "stamina": 5,
+      "xpReward": 220,
+      "goldScale": 1.5,
+      "woodScale": 1.2,
+      "goldBase": 150,
+      "woodBase": 90,
+      "monsterPool": ["void_golem", "world_eater", "abyss_wraith"],
+      "monsterCount": 1,
+      "monsterPower": 4.0,
+      "sizeProfile": "fewerStronger",
+      "isSpecial": true,
+      "materialPool": ["shadow_essence", "arcane_essence"]
+    },
+    {
+      "rank": "special6",
+      "label": "Ancient Foundry",
+      "image": "/images/dungeons/ancient_foundry.png",
+      "stamina": 5,
+      "xpReward": 220,
+      "goldScale": 1.5,
+      "woodScale": 1.2,
+      "goldBase": 150,
+      "woodBase": 90,
+      "monsterPool": ["ancient_golem", "stone_titan", "crystal_golem"],
+      "monsterCount": 1,
+      "monsterPower": 4.0,
+      "sizeProfile": "fewerStronger",
+      "isSpecial": true,
+      "materialPool": ["golem_heart", "fire_essence", "arcane_essence"]
+    },
   ],
   "items": [
     {
@@ -2502,11 +2653,8 @@ const CONTENT = {
         "gold": 30,
         "wood": 5
       },
-      "stats": {
-        "attack": 4
-      },
-      "image": "/images/items/rusty_sword.png",
-      "description": "+4 Attack"
+      "stats": {"attack": 18, "speed": 3},
+      "image": "/images/items/rusty_sword.png",      "description": "+4 Attack"
     },
     {
       "id": "leather_helm",
@@ -3004,10 +3152,9 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "stats": {
-        "attack": 12
-      },
+      "stats": {"attack": 16},
       "image": "/images/items/fire_ash_sword.png",
+      "craftOnly": true,
       "description": "+12 Attack. Still warm to the touch."
     },
     {
@@ -3019,10 +3166,9 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "stats": {
-        "attack": 20
-      },
+      "stats": {"attack": 28},
       "image": "/images/items/molten_cleaver.png",
+      "craftOnly": true,
       "description": "+20 Attack. It hums with fire."
     },
     {
@@ -3034,11 +3180,9 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "stats": {
-        "attack": 12,
-        "resistance": 3
-      },
+      "stats": {"attack": 18, "resistance": 6},
       "image": "/images/items/frost_gladius.png",
+      "craftOnly": true,
       "description": "+12 Attack, +3 Resistance."
     },
     {
@@ -3050,11 +3194,9 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "stats": {
-        "magicPower": 14,
-        "mana": 10
-      },
+      "stats": {"magicPower": 20, "mana": 15},
       "image": "/images/items/arcane_rod.png",
+      "craftOnly": true,
       "description": "+14 Magic Power, +10 Mana."
     },
     {
@@ -3066,11 +3208,9 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "stats": {
-        "attack": 11,
-        "speed": 2
-      },
+      "stats": {"attack": 18, "speed": 3},
       "image": "/images/items/shadow_knife.png",
+      "craftOnly": true,
       "description": "+11 Attack, +2 Speed."
     },
     {
@@ -3183,6 +3323,506 @@ const CONTENT = {
       "chestTier": "a",
       "image": "",
       "description": "A black-glass chest. Fine odds of legendary loot."
+    },
+    {
+      "id": "iron_greatsword",
+      "name": "Iron Greatsword",
+      "slot": "weapon",
+      "rarity": "common",
+      "price": {"gold": 60, "wood": 10},
+      "stats": {"attack": 12},
+      "image": "/images/items/iron_greatsword.png",
+      "description": "+12 attack"
+    },
+    {
+      "id": "steel_blade",
+      "name": "Steel Blade",
+      "slot": "weapon",
+      "rarity": "common",
+      "price": {"gold": 60, "wood": 10},
+      "stats": {"attack": 14},
+      "image": "/images/items/steel_blade.png",
+      "description": "+14 attack"
+    },
+    {
+      "id": "ranger_bow",
+      "name": "Ranger Bow",
+      "slot": "weapon",
+      "rarity": "uncommon",
+      "price": {"gold": 120, "wood": 20},
+      "stats": {"attack": 16, "speed": 1},
+      "image": "/images/items/ranger_bow.png",
+      "description": "+16 attack, +1 speed"
+    },
+    {
+      "id": "arcane_scepter",
+      "name": "Arcane Scepter",
+      "slot": "weapon",
+      "rarity": "uncommon",
+      "price": {"gold": 120, "wood": 20},
+      "stats": {"magicPower": 16, "mana": 12},
+      "image": "/images/items/arcane_scepter.png",
+      "description": "+16 magicPower, +12 mana"
+    },
+    {
+      "id": "shadow_dagger",
+      "name": "Shadow Dagger",
+      "slot": "weapon",
+      "rarity": "rare",
+      "price": {"gold": 220, "wood": 35},
+      "stats": {"attack": 20, "speed": 2},
+      "image": "/images/items/shadow_dagger.png",
+      "description": "+20 attack, +2 speed"
+    },
+    {
+      "id": "dragon_spear",
+      "name": "Dragon Spear",
+      "slot": "weapon",
+      "rarity": "rare",
+      "price": {"gold": 220, "wood": 35},
+      "stats": {"attack": 22, "speed": 1},
+      "image": "/images/items/dragon_spear.png",
+      "description": "+22 attack, +1 speed"
+    },
+    {
+      "id": "titan_hammer",
+      "name": "Titan Hammer",
+      "slot": "weapon",
+      "rarity": "epic",
+      "price": {"gold": 400, "wood": 60},
+      "stats": {"attack": 26},
+      "image": "/images/items/titan_hammer.png",
+      "description": "+26 attack"
+    },
+    {
+      "id": "storm_bow",
+      "name": "Storm Bow",
+      "slot": "weapon",
+      "rarity": "epic",
+      "price": {"gold": 400, "wood": 60},
+      "stats": {"attack": 24, "speed": 2},
+      "image": "/images/items/storm_bow.png",
+      "description": "+24 attack, +2 speed"
+    },
+    {
+      "id": "void_blade",
+      "name": "Void Blade",
+      "slot": "weapon",
+      "rarity": "legendary",
+      "price": {"gold": 650, "wood": 90},
+      "stats": {"attack": 32, "speed": 1},
+      "image": "/images/items/void_blade.png",
+      "description": "+32 attack, +1 speed"
+    },
+    {
+      "id": "world_breaker",
+      "name": "World Breaker",
+      "slot": "weapon",
+      "rarity": "mythic",
+      "price": {"gold": 900, "wood": 120},
+      "stats": {"attack": 38},
+      "image": "/images/items/world_breaker.png",
+      "description": "+38 attack"
+    },
+    {
+      "id": "bronze_helm",
+      "name": "Bronze Helm",
+      "slot": "head",
+      "rarity": "common",
+      "price": {"gold": 40, "wood": 8},
+      "stats": {"maxHp": 35, "resistance": 5},
+      "image": "/images/items/bronze_helm.png",
+      "description": "+35 maxHp, +5 resistance"
+    },
+    {
+      "id": "iron_helm",
+      "name": "Iron Helm",
+      "slot": "head",
+      "rarity": "common",
+      "price": {"gold": 40, "wood": 8},
+      "stats": {"maxHp": 45, "resistance": 7},
+      "image": "/images/items/iron_helm.png",
+      "description": "+45 maxHp, +7 resistance"
+    },
+    {
+      "id": "ranger_hood",
+      "name": "Ranger Hood",
+      "slot": "head",
+      "rarity": "uncommon",
+      "price": {"gold": 90, "wood": 15},
+      "stats": {"maxHp": 40, "resistance": 6, "speed": 1},
+      "image": "/images/items/ranger_hood.png",
+      "description": "+40 maxHp, +6 resistance, +1 speed"
+    },
+    {
+      "id": "mage_cowl",
+      "name": "Mage Cowl",
+      "slot": "head",
+      "rarity": "uncommon",
+      "price": {"gold": 90, "wood": 15},
+      "stats": {"maxHp": 30, "magicPower": 8, "mana": 12},
+      "image": "/images/items/mage_cowl.png",
+      "description": "+30 maxHp, +8 magicPower, +12 mana"
+    },
+    {
+      "id": "knight_helm",
+      "name": "Knight Helm",
+      "slot": "head",
+      "rarity": "rare",
+      "price": {"gold": 180, "wood": 28},
+      "stats": {"maxHp": 70, "resistance": 12},
+      "image": "/images/items/knight_helm.png",
+      "description": "+70 maxHp, +12 resistance"
+    },
+    {
+      "id": "shadow_mask",
+      "name": "Shadow Mask",
+      "slot": "head",
+      "rarity": "rare",
+      "price": {"gold": 180, "wood": 28},
+      "stats": {"maxHp": 55, "resistance": 9, "speed": 1},
+      "image": "/images/items/shadow_mask.png",
+      "description": "+55 maxHp, +9 resistance, +1 speed"
+    },
+    {
+      "id": "dragon_helm",
+      "name": "Dragon Helm",
+      "slot": "head",
+      "rarity": "epic",
+      "price": {"gold": 350, "wood": 45},
+      "stats": {"maxHp": 100, "resistance": 18, "attack": 5},
+      "image": "/images/items/dragon_helm.png",
+      "description": "+100 maxHp, +18 resistance, +5 attack"
+    },
+    {
+      "id": "void_crown",
+      "name": "Void Crown",
+      "slot": "head",
+      "rarity": "legendary",
+      "price": {"gold": 600, "wood": 70},
+      "stats": {"maxHp": 130, "resistance": 22, "magicPower": 12},
+      "image": "/images/items/void_crown.png",
+      "description": "+130 maxHp, +22 resistance, +12 magicPower"
+    },
+    {
+      "id": "padded_armor",
+      "name": "Padded Armor",
+      "slot": "armor",
+      "rarity": "common",
+      "price": {"gold": 50, "wood": 12},
+      "stats": {"maxHp": 55, "resistance": 7},
+      "image": "/images/items/padded_armor.png",
+      "description": "+55 maxHp, +7 resistance"
+    },
+    {
+      "id": "chainmail",
+      "name": "Chainmail",
+      "slot": "armor",
+      "rarity": "common",
+      "price": {"gold": 50, "wood": 12},
+      "stats": {"maxHp": 65, "resistance": 9},
+      "image": "/images/items/chainmail.png",
+      "description": "+65 maxHp, +9 resistance"
+    },
+    {
+      "id": "ranger_vest",
+      "name": "Ranger Vest",
+      "slot": "armor",
+      "rarity": "uncommon",
+      "price": {"gold": 110, "wood": 22},
+      "stats": {"maxHp": 60, "resistance": 8, "speed": 1},
+      "image": "/images/items/ranger_vest.png",
+      "description": "+60 maxHp, +8 resistance, +1 speed"
+    },
+    {
+      "id": "silk_robe",
+      "name": "Silk Robe",
+      "slot": "armor",
+      "rarity": "uncommon",
+      "price": {"gold": 110, "wood": 22},
+      "stats": {"maxHp": 45, "resistance": 6, "magicPower": 10},
+      "image": "/images/items/silk_robe.png",
+      "description": "+45 maxHp, +6 resistance, +10 magicPower"
+    },
+    {
+      "id": "plate_armor",
+      "name": "Plate Armor",
+      "slot": "armor",
+      "rarity": "rare",
+      "price": {"gold": 210, "wood": 35},
+      "stats": {"maxHp": 110, "resistance": 18},
+      "image": "/images/items/plate_armor.png",
+      "description": "+110 maxHp, +18 resistance"
+    },
+    {
+      "id": "shadow_garb",
+      "name": "Shadow Garb",
+      "slot": "armor",
+      "rarity": "rare",
+      "price": {"gold": 210, "wood": 35},
+      "stats": {"maxHp": 85, "resistance": 14, "speed": 1},
+      "image": "/images/items/shadow_garb.png",
+      "description": "+85 maxHp, +14 resistance, +1 speed"
+    },
+    {
+      "id": "dragon_scale",
+      "name": "Dragon Scale",
+      "slot": "armor",
+      "rarity": "epic",
+      "price": {"gold": 420, "wood": 60},
+      "stats": {"maxHp": 150, "resistance": 26, "attack": 6},
+      "image": "/images/items/dragon_scale.png",
+      "description": "+150 maxHp, +26 resistance, +6 attack"
+    },
+    {
+      "id": "void_plate",
+      "name": "Void Plate",
+      "slot": "armor",
+      "rarity": "mythic",
+      "price": {"gold": 950, "wood": 130},
+      "stats": {"maxHp": 200, "resistance": 35, "magicPower": 10},
+      "image": "/images/items/void_plate.png",
+      "description": "+200 maxHp, +35 resistance, +10 magicPower"
+    },
+    {
+      "id": "leather_greaves",
+      "name": "Leather Greaves",
+      "slot": "legs",
+      "rarity": "common",
+      "price": {"gold": 45, "wood": 10},
+      "stats": {"maxHp": 40, "resistance": 6},
+      "image": "/images/items/leather_greaves.png",
+      "description": "+40 maxHp, +6 resistance"
+    },
+    {
+      "id": "iron_greaves",
+      "name": "Iron Greaves",
+      "slot": "legs",
+      "rarity": "common",
+      "price": {"gold": 45, "wood": 10},
+      "stats": {"maxHp": 50, "resistance": 8},
+      "image": "/images/items/iron_greaves.png",
+      "description": "+50 maxHp, +8 resistance"
+    },
+    {
+      "id": "swift_leggings",
+      "name": "Swift Leggings",
+      "slot": "legs",
+      "rarity": "uncommon",
+      "price": {"gold": 100, "wood": 18},
+      "stats": {"maxHp": 45, "resistance": 7, "speed": 1},
+      "image": "/images/items/swift_leggings.png",
+      "description": "+45 maxHp, +7 resistance, +1 speed"
+    },
+    {
+      "id": "sage_pants",
+      "name": "Sage Pants",
+      "slot": "legs",
+      "rarity": "uncommon",
+      "price": {"gold": 100, "wood": 18},
+      "stats": {"maxHp": 35, "magicPower": 9, "mana": 10},
+      "image": "/images/items/sage_pants.png",
+      "description": "+35 maxHp, +9 magicPower, +10 mana"
+    },
+    {
+      "id": "knight_leggings",
+      "name": "Knight Leggings",
+      "slot": "legs",
+      "rarity": "rare",
+      "price": {"gold": 190, "wood": 30},
+      "stats": {"maxHp": 80, "resistance": 14},
+      "image": "/images/items/knight_leggings.png",
+      "description": "+80 maxHp, +14 resistance"
+    },
+    {
+      "id": "shadow_leggings",
+      "name": "Shadow Leggings",
+      "slot": "legs",
+      "rarity": "rare",
+      "price": {"gold": 190, "wood": 30},
+      "stats": {"maxHp": 65, "resistance": 11, "speed": 1},
+      "image": "/images/items/shadow_leggings.png",
+      "description": "+65 maxHp, +11 resistance, +1 speed"
+    },
+    {
+      "id": "dragon_leggings",
+      "name": "Dragon Leggings",
+      "slot": "legs",
+      "rarity": "epic",
+      "price": {"gold": 380, "wood": 55},
+      "stats": {"maxHp": 120, "resistance": 22, "attack": 4},
+      "image": "/images/items/dragon_leggings.png",
+      "description": "+120 maxHp, +22 resistance, +4 attack"
+    },
+    {
+      "id": "void_leggings",
+      "name": "Void Leggings",
+      "slot": "legs",
+      "rarity": "legendary",
+      "price": {"gold": 600, "wood": 85},
+      "stats": {"maxHp": 160, "resistance": 28, "magicPower": 10},
+      "image": "/images/items/void_leggings.png",
+      "description": "+160 maxHp, +28 resistance, +10 magicPower"
+    },
+    {
+      "id": "worn_boots",
+      "name": "Worn Boots",
+      "slot": "boots",
+      "rarity": "common",
+      "price": {"gold": 30, "wood": 8},
+      "stats": {"speed": 1},
+      "image": "/images/items/worn_boots.png",
+      "description": "+1 speed"
+    },
+    {
+      "id": "iron_boots",
+      "name": "Iron Boots",
+      "slot": "boots",
+      "rarity": "common",
+      "price": {"gold": 30, "wood": 8},
+      "stats": {"maxHp": 20, "resistance": 4, "speed": 1},
+      "image": "/images/items/iron_boots.png",
+      "description": "+20 maxHp, +4 resistance, +1 speed"
+    },
+    {
+      "id": "ranger_boots",
+      "name": "Ranger Boots",
+      "slot": "boots",
+      "rarity": "uncommon",
+      "price": {"gold": 70, "wood": 12},
+      "stats": {"speed": 2},
+      "image": "/images/items/ranger_boots.png",
+      "description": "+2 speed"
+    },
+    {
+      "id": "sorcery_boots",
+      "name": "Sorcery Boots",
+      "slot": "boots",
+      "rarity": "uncommon",
+      "price": {"gold": 70, "wood": 12},
+      "stats": {"mana": 12, "magicPower": 6},
+      "image": "/images/items/sorcery_boots.png",
+      "description": "+12 mana, +6 magicPower"
+    },
+    {
+      "id": "knight_boots",
+      "name": "Knight Boots",
+      "slot": "boots",
+      "rarity": "rare",
+      "price": {"gold": 140, "wood": 22},
+      "stats": {"maxHp": 40, "resistance": 8, "speed": 1},
+      "image": "/images/items/knight_boots.png",
+      "description": "+40 maxHp, +8 resistance, +1 speed"
+    },
+    {
+      "id": "void_boots",
+      "name": "Void Boots",
+      "slot": "boots",
+      "rarity": "epic",
+      "price": {"gold": 300, "wood": 40},
+      "stats": {"maxHp": 60, "resistance": 12, "speed": 2},
+      "image": "/images/items/void_boots.png",
+      "description": "+60 maxHp, +12 resistance, +2 speed"
+    },
+    {
+      "id": "copper_amulet",
+      "name": "Copper Amulet",
+      "slot": "amulet",
+      "rarity": "common",
+      "price": {"gold": 45, "wood": 10},
+      "stats": {"mana": 8, "magicPower": 4},
+      "image": "/images/items/copper_amulet.png",
+      "description": "+8 mana, +4 magicPower"
+    },
+    {
+      "id": "silver_amulet",
+      "name": "Silver Amulet",
+      "slot": "amulet",
+      "rarity": "uncommon",
+      "price": {"gold": 100, "wood": 18},
+      "stats": {"mana": 14, "magicPower": 7},
+      "image": "/images/items/silver_amulet.png",
+      "description": "+14 mana, +7 magicPower"
+    },
+    {
+      "id": "ruby_amulet",
+      "name": "Ruby Amulet",
+      "slot": "amulet",
+      "rarity": "rare",
+      "price": {"gold": 200, "wood": 30},
+      "stats": {"mana": 20, "magicPower": 12, "healPower": 4},
+      "image": "/images/items/ruby_amulet.png",
+      "description": "+20 mana, +12 magicPower, +4 healPower"
+    },
+    {
+      "id": "sapphire_amulet",
+      "name": "Sapphire Amulet",
+      "slot": "amulet",
+      "rarity": "epic",
+      "price": {"gold": 380, "wood": 50},
+      "stats": {"mana": 30, "magicPower": 18, "manaRegen": 2},
+      "image": "/images/items/sapphire_amulet.png",
+      "description": "+30 mana, +18 magicPower, +2 manaRegen"
+    },
+    {
+      "id": "void_amulet",
+      "name": "Void Amulet",
+      "slot": "amulet",
+      "rarity": "legendary",
+      "price": {"gold": 600, "wood": 80},
+      "stats": {"mana": 40, "magicPower": 24, "healPower": 8},
+      "image": "/images/items/void_amulet.png",
+      "description": "+40 mana, +24 magicPower, +8 healPower"
+    },
+    {
+      "id": "copper_ring",
+      "name": "Copper Ring",
+      "slot": "ring",
+      "rarity": "common",
+      "price": {"gold": 40, "wood": 8},
+      "stats": {"attack": 3},
+      "image": "/images/items/copper_ring.png",
+      "description": "+3 attack"
+    },
+    {
+      "id": "silver_ring",
+      "name": "Silver Ring",
+      "slot": "ring",
+      "rarity": "uncommon",
+      "price": {"gold": 90, "wood": 15},
+      "stats": {"attack": 5, "mana": 8},
+      "image": "/images/items/silver_ring.png",
+      "description": "+5 attack, +8 mana"
+    },
+    {
+      "id": "ruby_ring",
+      "name": "Ruby Ring",
+      "slot": "ring",
+      "rarity": "rare",
+      "price": {"gold": 180, "wood": 25},
+      "stats": {"attack": 8, "critChance": 5},
+      "image": "/images/items/ruby_ring.png",
+      "description": "+8 attack, +5 critChance"
+    },
+    {
+      "id": "sapphire_ring",
+      "name": "Sapphire Ring",
+      "slot": "ring",
+      "rarity": "epic",
+      "price": {"gold": 350, "wood": 45},
+      "stats": {"attack": 12, "magicPower": 10, "critChance": 7},
+      "image": "/images/items/sapphire_ring.png",
+      "description": "+12 attack, +10 magicPower, +7 critChance"
+    },
+    {
+      "id": "void_ring",
+      "name": "Void Ring",
+      "slot": "ring",
+      "rarity": "legendary",
+      "price": {"gold": 580, "wood": 75},
+      "stats": {"attack": 16, "magicPower": 14, "critDamage": 15},
+      "image": "/images/items/void_ring.png",
+      "description": "+16 attack, +14 magicPower, +15 critDamage"
     },
     {
       "id": "mythic_chest",
@@ -3795,7 +4435,47 @@ const CONTENT = {
       "rarity": "legendary",
       "element": "shadow",
       "image": "/images/monsters/doom_lord.png"
-    },    {
+    },        {
+      "id": "molten_behemoth",
+      "name": "Molten Behemoth",
+      "hp": 520,
+      "attack": 44,
+      "speed": 4,
+      "rarity": "epic",
+      "element": "physical",
+      "image": "/images/monsters/molten_behemoth.png"
+    },
+    {
+      "id": "frost_titan",
+      "name": "Frost Titan",
+      "hp": 540,
+      "attack": 42,
+      "speed": 3,
+      "rarity": "epic",
+      "element": "physical",
+      "image": "/images/monsters/frost_titan.png"
+    },
+    {
+      "id": "void_herald",
+      "name": "Void Herald",
+      "hp": 480,
+      "attack": 46,
+      "speed": 8,
+      "rarity": "epic",
+      "element": "shadow",
+      "image": "/images/monsters/void_herald.png"
+    },
+    {
+      "id": "storm_colossus",
+      "name": "Storm Colossus",
+      "hp": 500,
+      "attack": 43,
+      "speed": 6,
+      "rarity": "epic",
+      "element": "arcane",
+      "image": "/images/monsters/storm_colossus.png"
+    },
+{
       "id": "world_eater",
       "name": "World Eater",
       "hp": 360,

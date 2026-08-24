@@ -1,7 +1,8 @@
 const { CONTENT, getItem } = require("../content");
 
 const WEEK_LENGTH = 7;
-const STOCK_SIZE = 6;
+const BLACKSMITH_SIZE = 8;
+const MERCHANT_SIZE = 7;
 const MERCHANT_SLOTS = ["chest", "consumable", "material"];
 
 function buyableRarities() {
@@ -13,15 +14,16 @@ function poolFor(kind) {
   return CONTENT.items.filter((i) => {
     if (!i.price || !i.price.gold) return false;
     if (!rarities.includes(i.rarity)) return false;
+    if (i.craftOnly) return false; // craftables not sold
     if (kind === "merchant") return MERCHANT_SLOTS.includes(i.slot);
     return i.slot !== "consumable" && i.slot !== "material" && i.slot !== "chest";
   });
 }
 
-function pick(count) {
+function pick(pool, n) {
   const chosen = [];
-  const list = [...count];
-  while (list.length && chosen.length < STOCK_SIZE) {
+  const list = [...pool];
+  while (list.length && chosen.length < n) {
     const item = list.splice(Math.floor(Math.random() * list.length), 1)[0];
     chosen.push(item.id);
   }
@@ -31,8 +33,9 @@ function pick(count) {
 function generateStock() {
   return {
     week: 1,
-    blacksmith: pick(poolFor("gear")),
-    merchant: pick(poolFor("merchant")),
+    blacksmith: pick(poolFor("gear"), BLACKSMITH_SIZE),
+    merchant: pick(poolFor("merchant"), MERCHANT_SIZE),
+    sold: { blacksmith: [], merchant: [] },
   };
 }
 
@@ -52,7 +55,16 @@ function maybeRotate(room) {
 function inStock(room, shop, itemId) {
   const stock = room && room.shopStock && room.shopStock[shop];
   if (!stock) return true; // no stock system yet -> allow (safe fallback)
+  const sold = room.shopStock.sold && room.shopStock.sold[shop];
+  if (sold && sold.includes(itemId)) return false;
   return stock.includes(itemId);
 }
 
-module.exports = { init, maybeRotate, inStock, generateStock };
+function markSold(room, shop, itemId) {
+  if (!room || !room.shopStock) return;
+  if (!room.shopStock.sold) room.shopStock.sold = { blacksmith: [], merchant: [] };
+  if (!room.shopStock.sold[shop]) room.shopStock.sold[shop] = [];
+  if (!room.shopStock.sold[shop].includes(itemId)) room.shopStock.sold[shop].push(itemId);
+}
+
+module.exports = { init, maybeRotate, inStock, generateStock, markSold };

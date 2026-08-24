@@ -1113,19 +1113,21 @@ function renderCombat(room, root) {
   const fleeLabel = hpPct < 0.2 ? "Too injured to flee!" : "Flee";
   const fleeBtnHtml = d.status === "fighting" ? `<button type="button" class="btn ${fleeDisabled ? "btn--ghost" : "btn--danger"}" id="btn-flee" ${fleeDisabled ? "disabled" : ""} title="${fleeDisabled && hpPct < 0.2 ? "You are too injured to flee!" : "Escape the delve"}">${escapeHtml(fleeLabel)}</button>` : "";
   const endTurnBtn = canAct ? `<button type="button" class="btn btn--gold" id="btn-end-turn">End Turn</button>` : "";
-  const timerHtml = `<div class="turn-timer${canAct ? "" : " turn-timer--idle"}"><div class="turn-timer-fill" id="turn-timer-fill"></div></div>`;
+  const timerHtml = `<div class="turn-timer turn-timer--top${canAct ? "" : " turn-timer--idle"}"><div class="turn-timer-fill" id="turn-timer-fill"></div></div>`;
   const logHtml = `<div class="combat-log">${d.log.slice(-8).map((l) => `<div class="log-line">${escapeHtml(l)}</div>`).join("")}</div>`;
 
   root.innerHTML = `
     <div class="combat-wrap">
-      <p class="subhead">${escapeHtml(d.label || "")} — ${sizeLabel(d.size)} · Round ${d.round}</p>
+      <div class="combat-top">
+        <p class="subhead">${escapeHtml(d.label || "")} — ${sizeLabel(d.size)} · Round ${d.round}</p>
+        ${timerHtml}
+        <div class="combat-actions combat-actions--top">${endTurnBtn}${fleeBtnHtml}</div>
+      </div>
       <div class="enemy-wave">${enemiesHtml || '<div class="muted">No foes remain.</div>'}</div>
       <div class="party-row">${partyHtml}</div>
       <div class="skill-bar">${skillsHtml}</div>
       <div class="item-bar">${itemsHtml}</div>
       <div class="combat-hint">${escapeHtml(hint)}</div>
-      <div class="combat-actions">${endTurnBtn}${fleeBtnHtml}</div>
-      ${timerHtml}
       ${logHtml}
     </div>
     ${d.result ? renderResultOverlay(d.result, firstChestId(me)) : ""}
@@ -1216,6 +1218,27 @@ function renderCombat(room, root) {
       stopCombatTimer();
       socket.emit("dungeon:return");
     });
+  }
+  // Auto-end turn when no usable skill or consumable remains
+  if (canAct && !state._autoEndScheduled) {
+    const hasUsableSkill = combatLoadout(me).some((s) => s && !usedIds.includes(s.id) && me.mana >= (s.mana || 0));
+    const hasUsableItem = (me.food > 0) || (me.inventory || []).some((inv) => {
+      const it = CATALOG.items.find((x) => x.id === inv.itemId);
+      return it && it.slot === "consumable" && inv.qty > 0;
+    });
+    if (!hasUsableSkill && !hasUsableItem) {
+      state._autoEndScheduled = true;
+      setTimeout(() => {
+        state._autoEndScheduled = false;
+        const curD = myDungeon(state.room);
+        if (curD && curD.status === "fighting" && curD.currentTurnId === state.playerId) {
+          state.timerDeadline = null;
+          socket.emit("combat:endTurn");
+        }
+      }, 900);
+    }
+  } else if (!canAct) {
+    state._autoEndScheduled = false;
   }
 }
 
@@ -1399,13 +1422,15 @@ function renderTempleView(room) {
 
 // ---- Shop & Inventory ----
 
-function shopCardHtml(me, staminaOk, item, buyEvent) {
+function shopCardHtml(me, staminaOk, item, buyEvent, isSold) {
   const afford = staminaOk && me.gold >= item.price.gold && me.wood >= item.price.wood;
   const owned = itemOwnedQty(me, item.id);
   const equipped = !!(me.equipment && Object.values(me.equipment).includes(item.id));
   const consumable = item.slot === "consumable" || item.slot === "material" || item.slot === "chest";
   let action;
-  if (consumable) {
+  if (isSold) {
+    action = `<button type="button" class="btn btn--mini btn--mini-disabled" disabled>Sold out</button>`;
+  } else if (consumable) {
     action = `<button type="button" class="btn btn--mini${afford ? "" : " btn--mini-disabled"}" data-buy="${item.id}">Buy</button>`;
   } else if (equipped) {
     action = `<button type="button" class="btn btn--mini btn--mini-disabled" disabled>Equipped ✓</button>`;
@@ -1414,12 +1439,13 @@ function shopCardHtml(me, staminaOk, item, buyEvent) {
   } else {
     action = `<button type="button" class="btn btn--mini${afford ? "" : " btn--mini-disabled"}" data-buy="${item.id}">Buy</button>`;
   }
+  const soldBadge = isSold ? `<span class="purchased-badge" style="background:rgba(220,60,60,0.18);border-color:rgba(220,60,60,0.4);color:#ff8a8a">Sold out</span>` : "";
   const ownedBadge = owned > 0
     ? `<span class="purchased-badge">${equipped ? "Equipped" : `Owned ×${owned}`}</span>`
     : "";
-  return `<div class="shop-card">
+  return `<div class="shop-card ${isSold ? "shop-card--sold" : ""}">
     <span class="shop-card-top">${itemIconEl(item)}<span class="shop-card-name">${escapeHtml(item.name)}</span></span>
-    <span class="shop-card-badges">${rarityBadge(item)}${ownedBadge}</span>
+    <span class="shop-card-badges">${rarityBadge(item)}${ownedBadge}${soldBadge}</span>
     <span class="shop-card-desc">${escapeHtml(item.description)}</span>
     <span class="shop-card-price">
       <span class="price-chip">${icon("gold")}<span>${item.price.gold}</span></span>
@@ -1450,16 +1476,17 @@ function renderBlacksmithView(room) {
   const staminaOk = me.stamina >= st;
   const buyable = (CATALOG.loot && CATALOG.loot.buyable) || ["common", "uncommon", "rare"];
   const stockArr = (room.shopStock && room.shopStock.blacksmith) || [];
+  const soldSet = (room.shopStock && room.shopStock.sold && room.shopStock.sold.blacksmith) || [];
   const gear = stockArr.length
     ? stockArr.map((id) => (CATALOG.items || []).find((x) => x.id === id)).filter(Boolean)
     : (CATALOG.items || []).filter(
-        (i) => i.slot !== "consumable" && i.slot !== "material" && i.slot !== "chest" && buyable.includes(i.rarity)
+        (i) => i.slot !== "consumable" && i.slot !== "material" && i.slot !== "chest" && buyable.includes(i.rarity) && !i.craftOnly
       );
 
   root.innerHTML = `
     ${shopResources(me)}
-    <p class="subhead">Armor & Weapons</p>
-    <div class="shop-grid">${gear.map((i) => shopCardHtml(me, staminaOk, i, "blacksmith:buy")).join("") || '<div class="muted">Nothing for sale today.</div>'}</div>
+    <p class="subhead">Armor & Weapons — Week ${room.shopStock ? room.shopStock.week : 1} · ${stockArr.length} items (7 days rotation)</p>
+    <div class="shop-grid">${gear.map((i) => shopCardHtml(me, staminaOk, i, "blacksmith:buy", soldSet.includes(i.id))).join("") || '<div class="muted">Nothing for sale today.</div>'}</div>
     <div class="btn-row">
       <button type="button" class="btn btn--bronze" id="btn-shop-inventory">Open Inventory</button>
     </div>`;
@@ -1493,16 +1520,17 @@ function renderMerchantView(room) {
   const staminaOk = me.stamina >= st;
   const buyable = (CATALOG.loot && CATALOG.loot.buyable) || ["common", "uncommon", "rare"];
   const stockArr = (room.shopStock && room.shopStock.merchant) || [];
+  const soldSetM = (room.shopStock && room.shopStock.sold && room.shopStock.sold.merchant) || [];
   const goods = stockArr.length
     ? stockArr.map((id) => (CATALOG.items || []).find((x) => x.id === id)).filter(Boolean)
     : (CATALOG.items || []).filter(
-        (i) => (i.slot === "consumable" || i.slot === "material" || i.slot === "chest") && buyable.includes(i.rarity)
+        (i) => (i.slot === "consumable" || i.slot === "material" || i.slot === "chest") && buyable.includes(i.rarity) && !i.craftOnly
       );
 
   root.innerHTML = `
     ${shopResources(me)}
-    <p class="subhead">Chests, Potions & Materials</p>
-    <div class="shop-grid">${goods.map((i) => shopCardHtml(me, staminaOk, i, "merchant:buy")).join("") || '<div class="muted">Nothing for sale today.</div>'}</div>
+    <p class="subhead">Chests, Potions & Materials — Week ${room.shopStock ? room.shopStock.week : 1} · ${stockArr.length} items (7 days rotation)</p>
+    <div class="shop-grid">${goods.map((i) => shopCardHtml(me, staminaOk, i, "merchant:buy", soldSetM.includes(i.id))).join("") || '<div class="muted">Nothing for sale today.</div>'}</div>
     <div class="btn-row">
       <button type="button" class="btn btn--bronze" id="btn-merchant-inventory">Open Inventory</button>
     </div>`;
