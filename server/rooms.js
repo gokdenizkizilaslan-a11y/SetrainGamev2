@@ -43,6 +43,7 @@ function publicRoomSummary(room) {
 }
 
 function publicRoomState(room) {
+  const boss = (() => { try{ const b=require("./boss"); return (room.bossParties||[]).map(b.publicBoss); } catch(e){ return []; }})();
   return {
     id: room.id,
     name: room.name,
@@ -55,6 +56,7 @@ function publicRoomState(room) {
     log: room.log,
     shopStock: room.shopStock || null,
     dungeons: (room.dungeons || []).map(publicDungeon),
+    bossParties: boss,
     players: room.players.map(publicPlayer),
   };
 }
@@ -108,6 +110,7 @@ function createRoom({ socketId, name, character, mode, roomName }) {
     day: 1,
     log: null,
     dungeons: [],
+    bossParties: [],
     chat: [],
     players: [host],
   };
@@ -181,6 +184,21 @@ function leaveRoom(socketId) {
       }
     }
   }
+  if (room.bossParties) {
+    for (const b of [...room.bossParties]) {
+      if (!b.memberIds.includes(socketId)) continue;
+      if (b.turnTimer) { try { clearTimeout(b.turnTimer); } catch(e){} b.turnTimer=null; }
+      if (b.monsterTimer) { try { clearTimeout(b.monsterTimer); } catch(e){} b.monsterTimer=null; }
+      b.memberIds = b.memberIds.filter(id=> id!==socketId);
+      if (b.buffs) b.buffs = b.buffs.filter(bb=> !(bb.targetType==="player" && String(bb.targetId)===String(socketId)));
+      if (b.usedSkills && b.usedSkills[socketId]) delete b.usedSkills[socketId];
+      if (b.endedTurns && b.endedTurns.has) b.endedTurns.delete(socketId);
+      if (b.turnOrder) b.turnOrder = b.turnOrder.filter(id=> id!==socketId);
+      if (b.leaderId===socketId) b.leaderId=b.memberIds[0]||null;
+      if (b.currentTurnId===socketId) b.currentTurnId=b.turnOrder[b.turnIndex]||b.turnOrder[0]||null;
+      if (b.memberIds.length===0) room.bossParties = room.bossParties.filter(x=> x!==b);
+    }
+  }
 
   room.players = room.players.filter((p) => p.id !== socketId);
   socketToRoom.delete(socketId);
@@ -235,12 +253,15 @@ function startGame(socketId) {
   room.status = "playing";
   room.day = 1;
   room.dungeons = [];
+  room.bossParties = [];
   stock.init(room);
   room.log = { type: "day", text: "Day 1 — the town stirs. Spend your stamina wisely." };
   for (const p of room.players) {
     rollStats(p);
     onNewDay(p);
     p.dungeonId = null;
+    p.bossId = null;
+    if (!p.bossKills) p.bossKills = [];
   }
   return room;
 }
@@ -259,6 +280,12 @@ function rebindSocket(oldSocketId, newSocketId) {
     d.memberIds = d.memberIds.map((id) => (id === oldSocketId ? newSocketId : id));
     d.turnOrder = (d.turnOrder || []).map((id) => (id === oldSocketId ? newSocketId : id));
     if (d.currentTurnId === oldSocketId) d.currentTurnId = newSocketId;
+  }
+  for (const b of room.bossParties || []) {
+    if (b.leaderId === oldSocketId) b.leaderId = newSocketId;
+    b.memberIds = b.memberIds.map((id) => (id === oldSocketId ? newSocketId : id));
+    b.turnOrder = (b.turnOrder || []).map((id) => (id === oldSocketId ? newSocketId : id));
+    if (b.currentTurnId === oldSocketId) b.currentTurnId = newSocketId;
   }
   return room;
 }

@@ -669,11 +669,58 @@ function registerSocketHandlers(io) {
         town.requirePlaying(room, player);
         requireAlive(player);
         dungeon.returnFromDungeon(room, player);
+        // also leave boss if any
+        try { const boss=require("./boss"); const b=boss.bossFor(room,player); if(b) boss.leaveBoss(room,player); } catch(e){}
         room.log = { type: "town", text: "You return to the town square." };
         emitRoomState(io, room);
       } catch (err) {
         emitError(socket, err);
       }
+    });
+
+    // ---- Boss ----
+    socket.on("boss:challenge", (payload={})=>{
+      try{
+        const {room,player}=gameContext(socket);
+        requireAlive(player);
+        town.requirePlaying(room,player);
+        const boss=require("./boss");
+        const b=boss.createBossParty(room,player,payload.bossId);
+        room.log={type:"dungeon", text:`${player.name} challenges ${b.label}!`, ts:Date.now()};
+        emitRoomState(io,room);
+      }catch(err){ emitError(socket,err); }
+    });
+    socket.on("boss:join", (payload={})=>{
+      try{
+        const {room,player}=gameContext(socket);
+        requireAlive(player);
+        town.requirePlaying(room,player);
+        const boss=require("./boss");
+        const b=boss.createBossParty(room,player,payload.bossId); // join via same create (will join waiting)
+        room.log={type:"dungeon", text:`${player.name} joins ${b.label} boss party.`, ts:Date.now()};
+        emitRoomState(io,room);
+      }catch(err){ emitError(socket,err); }
+    });
+    socket.on("boss:leave", ()=>{
+      try{
+        const {room,player}=gameContext(socket);
+        const boss=require("./boss");
+        boss.leaveBoss(room,player);
+        room.log={type:"dungeon", text:`${player.name} left boss party.`};
+        emitRoomState(io,room);
+      }catch(err){ emitError(socket,err); }
+    });
+    socket.on("boss:start", ()=>{
+      try{
+        const {room,player}=gameContext(socket);
+        requireAlive(player);
+        town.requirePlaying(room,player);
+        const boss=require("./boss");
+        room.broadcast=()=>{ emitCombatFx(io,room); emitRoomState(io,room); };
+        const b=boss.startBoss(room,player);
+        room.log={type:"dungeon", text:`${player.name} starts ${b.label} battle!`, ts:Date.now()};
+        emitRoomState(io,room);
+      }catch(err){ emitError(socket,err); }
     });
 
     // ---- Combat ----

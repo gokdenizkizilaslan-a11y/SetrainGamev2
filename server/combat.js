@@ -22,8 +22,10 @@ function defaultEffectFor(elem) {
 }
 
 function myDungeon(room, player) {
-  return (room.dungeons || []).find((d) => d.memberIds.includes(player.id)) || null;
+  // check normal dungeons first, then boss parties
+  return (room.dungeons || []).find((d) => d.memberIds.includes(player.id)) || (room.bossParties||[]).find((d)=> d.memberIds.includes(player.id)) || null;
 }
+function isBossParty(d) { return !!(d && d.bossId); }
 
 function livingMembers(room, d) {
   return (d.memberIds || [])
@@ -691,6 +693,44 @@ function randInt(min, max) {
 function victory(room, d) {
   clearTurnTimer(d);
   clearMonsterTimer(d);
+  // Boss party victory: handle separately
+  if (isBossParty(d)) {
+    const bossDef = (CONTENT.bosses||[]).find(b=>b.id===d.bossId);
+    const members = allMembers(room, d);
+    const gold = 150 + Math.floor(Math.random()*80);
+    const wood = 40 + Math.floor(Math.random()*20);
+    const xp = 400 + Math.floor(Math.random()*200);
+    for (const p of members) {
+      p.gold += gold; p.wood+=wood; addXp(p,xp);
+      if (!p.bossKills) p.bossKills=[];
+      if (!p.bossKills.includes(d.bossId)) p.bossKills.push(d.bossId);
+      p.hp = Math.max(1, p.hp);
+    }
+    // 50% weapon drop
+    const lootNotes=[];
+    if (Math.random() < 0.5 && bossDef && bossDef.weaponId) {
+      const w = getItem(bossDef.weaponId);
+      if (w) {
+        const recv = members[Math.floor(Math.random()*members.length)];
+        addItem(recv, w.id,1);
+        lootNotes.push(`${recv.name} found ${w.name}!`);
+      }
+    }
+    // Boss chest (good rates, rare+ guaranteed)
+    const chestId = bossDef ? bossDef.chestId : "boss_chest_ember";
+    const chestDef = getItem(chestId);
+    if (chestId) {
+      for (const p of members) addItem(p, chestId,1);
+    }
+    addFx(d,{type:"chest"});
+    d.status="done";
+    d.result={ outcome:"victory", text:`Victory over ${bossDef?bossDef.label:"Boss"}! Each gains ${gold} gold, ${wood} wood, ${xp} XP. ${chestDef?chestDef.name:"Chest"} awarded!` };
+    if (lootNotes.length){ d.result.text+=" "+lootNotes.join(" "); d.log.push(...lootNotes); addFx(d,{type:"loot"}); }
+    // Mark boss party as done but keep for return
+    addFx(d,{type:"result", outcome:"victory"});
+    d.log.push(d.result.text);
+    return;
+  }
   const def = getDungeon(d.rank);
   const size = getDungeonSize(d.size);
   const members = allMembers(room, d);
@@ -745,8 +785,8 @@ function victory(room, d) {
       const weights = ((CONTENT.loot || {}).gradeWeights || {})[d.rank] || CONTENT.loot.gradeWeights.f;
       const rarity = weightedPick(weights);
       if (!rarity) continue;
-      // Exclude craft-only, chests and materials — craftables only via temple
-      const pool = CONTENT.items.filter((i) => i.rarity === rarity && i.slot !== "consumable" && i.slot !== "chest" && i.slot !== "material" && !i.craftOnly);
+      // Exclude craft-only, chests, materials, bossWeapons — craftables/boss only via temple/boss
+      const pool = CONTENT.items.filter((i) => i.rarity === rarity && i.slot !== "consumable" && i.slot !== "chest" && i.slot !== "material" && !i.craftOnly && !i.bossWeapon);
       if (!pool.length) continue;
       const item = pool[Math.floor(Math.random() * pool.length)];
       const receivers = livingMembers(room, d).length ? livingMembers(room, d) : members;
@@ -893,4 +933,6 @@ module.exports = {
   useItem,
   endTurn,
   flee,
+  armTurnTimer,
+  clearTurnTimer,
 };

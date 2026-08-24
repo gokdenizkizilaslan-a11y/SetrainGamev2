@@ -179,8 +179,9 @@ function onRoomState(room) {
   if (room.status === "playing") {
     const myD = myDungeon(room);
     const inCombat = myD && (myD.status === "fighting" || myD.status === "done");
-    if (inCombat) state.dungeonOpen = true;
-    if (!inCombat) state.pendingFx = [];
+    const inBoss = myD && myD.bossId;
+    if (inCombat || inBoss) state.dungeonOpen = true;
+    if (!inCombat && !inBoss) state.pendingFx = [];
     renderTown(room);
   } else {
     renderLobby(room);

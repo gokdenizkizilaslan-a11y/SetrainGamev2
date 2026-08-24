@@ -839,9 +839,45 @@ function ensureDungeonState() {
 function renderDungeonView(room) {
   const d = myDungeon(room);
   const root = $("dungeon-content");
-  if (d && (d.status === "fighting" || d.status === "done")) return renderCombat(room, root);
-  if (d && d.status === "forming") return renderPartyLobby(room, root, d);
+  if (!d) return renderDungeonBrowser(room, root);
+  if (d.bossId) {
+    if (d.status === "fighting" || d.status === "done") return renderCombat(room, root);
+    if (d.status === "waiting") return renderBossLobby(room, root, d);
+    return renderDungeonBrowser(room, root);
+  }
+  if (d.status === "fighting" || d.status === "done") return renderCombat(room, root);
+  if (d.status === "forming" || d.status === "waiting") return renderPartyLobby(room, root, d);
   return renderDungeonBrowser(room, root);
+}
+function renderBossLobby(room, root, b) {
+  const members = (b.memberIds||[]).map(id=> room.players.find(p=>p.id===id)).filter(Boolean);
+  const isLeader = b.leaderId===state.playerId;
+  const isDead = room.players.find(p=>p.id===state.playerId)?.lives<=0;
+  root.innerHTML = `
+    <div class="party-lobby">
+      <button type="button" class="btn btn--ghost" id="btn-boss-back">← Back</button>
+      <div class="party-lobby-header">
+        <span class="portrait portrait--dungeon dungeon-tile large" data-img="${b.image||""}" data-variant="dungeon"></span>
+        <div>
+          <p class="subhead">Boss Lobby — ${escapeHtml(b.label)}</p>
+          <h3>${escapeHtml(b.label)}</h3>
+          <p class="muted">Boss HP ${b.maxHp||b.hp} · ${members.length}/${room.maxPlayers} members · Leader: ${escapeHtml((room.players.find(p=>p.id===b.leaderId)||{}).name||"Unknown")}</p>
+        </div>
+      </div>
+      <p class="lead">First to enter is leader. Only leader can start. Boss has 6 OP skills. Need to kill previous boss to unlock next.</p>
+      <ul class="party-list">
+        ${members.map(m=> `<li><span class="portrait portrait--${m.character} party-portrait" data-img="${imgFor(m.character,"class")}" data-variant="${m.character}"${m.anomaly?` style="--frame:${m.anomaly.frameColor}"`:""}></span><span class="party-list-main"><span class="party-list-name">${escapeHtml(m.name)}</span>${m.id===b.leaderId?' <span class="badge badge--host">Leader</span>':""}${m.id===state.playerId?' <span class="badge">You</span>':""}<span class="player-meta">${escapeHtml(classLabel(m.character))} · Lv ${m.level} · ${m.hp}/${m.maxHp} HP</span></span></li>`).join("")}
+      </ul>
+      ${isDead?`<div class="log-line" style="color:#ff8a8a">💀 You have fallen — cannot start.</div>`:""}
+      <div class="btn-row">
+        <button type="button" class="btn btn--ghost" id="btn-boss-leave">Leave</button>
+        ${isDead?`<span class="muted">Fallen</span>`: isLeader?`<button type="button" class="btn btn--gold" id="btn-boss-start">Start Boss</button>`:`<span class="muted">Waiting for leader…</span>`}
+      </div>
+    </div>`;
+  initImages(root);
+  root.querySelector("#btn-boss-back")?.addEventListener("click", ()=>{ state.dungeonOpen=false; renderTown(state.room); });
+  root.querySelector("#btn-boss-leave")?.addEventListener("click", ()=> socket.emit("boss:leave"));
+  root.querySelector("#btn-boss-start")?.addEventListener("click", ()=> socket.emit("boss:start"));
 }
 
 function rarityMetaOf(r) {
@@ -1731,6 +1767,125 @@ function renderInventory(room) {
     })
   );
 }
+
+// ---- Map ----
+let mapState = { scale: 1, x: 0, y: 0, dragging: false, lastX: 0, lastY: 0 };
+function openMap() {
+  const room = state.room;
+  if (!room) return;
+  $("map-overlay").classList.remove("hidden");
+  renderMap(room);
+  sfxPlay("clicksound");
+}
+function closeMap() {
+  $("map-overlay").classList.add("hidden");
+}
+function renderMap(room) {
+  const pinsEl = $("map-pins");
+  if (!pinsEl) return;
+  const bosses = (CATALOG.bosses || []);
+  const me = room.players.find((p)=>p.id===state.playerId);
+  const kills = (me && me.bossKills) || [];
+  pinsEl.innerHTML = bosses.map((b,i)=>{
+    const x = 12 + i * 16; // 12%,28%,44%,60%,76%
+    const y = 50 + Math.sin(i*0.9)*12;
+    const locked = b.unlockAfter && !kills.includes(b.unlockAfter);
+    const icon = b.element==="fire"?"🔥":b.element==="frost"?"❄️":b.element==="shadow"?"👁️":b.element==="arcane"?"⚡":"💀";
+    return `<div class="map-pin ${locked?"locked":""} map-pin--boss" data-boss="${b.id}" style="left:${x}%;top:${y}%" title="${escapeHtml(b.label)}">
+      <span>${icon}</span>
+      <span class="map-pin-label">${escapeHtml(b.label)}${locked?" 🔒":""}</span>
+    </div>`;
+  }).join("");
+  // Reset transform
+  mapState.scale = 1; mapState.x=0; mapState.y=0;
+  updateMapTransform();
+  pinsEl.querySelectorAll("[data-boss]").forEach((el)=>{
+    el.addEventListener("click", ()=>{
+      const bid = el.getAttribute("data-boss");
+      const b = (CATALOG.bosses||[]).find(x=>x.id===bid);
+      if (!b) return;
+      if (el.classList.contains("locked")) { showToast("Önceki boss öldürülmeli."); playSfx("block"); return; }
+      // Check if boss is currently in fight in this room
+      const existing = (room.bossParties||[]).find(x=>x.bossId===bid && x.status==="fighting");
+      if (existing) { showToast("Bu boss'ta başka bir savaş yapılıyor."); return; }
+      socket.emit("boss:challenge", {bossId: bid});
+      state.dungeonOpen = true;
+      closeMap();
+    });
+  });
+}
+function updateMapTransform() {
+  const inner = $("map-inner");
+  if (!inner) return;
+  inner.style.transform = `translate(${mapState.x}px, ${mapState.y}px) scale(${mapState.scale})`;
+}
+function initMapInteractions() {
+  const vp = $("map-viewport");
+  const inner = $("map-inner");
+  if (!vp || !inner) return;
+  // Zoom wheel
+  vp.addEventListener("wheel", (e)=>{
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.08 : 0.08;
+    mapState.scale = Math.min(1.8, Math.max(0.6, mapState.scale + delta));
+    updateMapTransform();
+  }, {passive:false});
+  // Middle mouse or left drag
+  let isDragging=false;
+  vp.addEventListener("mousedown", (e)=>{
+    if (e.button!==0 && e.button!==1) return;
+    isDragging=true; vp.style.cursor="grabbing";
+    mapState.lastX=e.clientX; mapState.lastY=e.clientY;
+  });
+  window.addEventListener("mouseup", ()=>{ isDragging=false; if(vp) vp.style.cursor="grab"; });
+  window.addEventListener("mousemove", (e)=>{
+    if (!isDragging) return;
+    const dx = e.clientX - mapState.lastX;
+    const dy = e.clientY - mapState.lastY;
+    mapState.x += dx; mapState.y += dy;
+    mapState.lastX=e.clientX; mapState.lastY=e.clientY;
+    updateMapTransform();
+  });
+  // Touch pinch
+  let lastDist=0;
+  vp.addEventListener("touchstart", (e)=>{
+    if (e.touches.length===2) {
+      const dx=e.touches[0].clientX-e.touches[1].clientX;
+      const dy=e.touches[0].clientY-e.touches[1].clientY;
+      lastDist=Math.hypot(dx,dy);
+    } else if (e.touches.length===1) {
+      isDragging=true;
+      mapState.lastX=e.touches[0].clientX;
+      mapState.lastY=e.touches[0].clientY;
+    }
+  }, {passive:false});
+  vp.addEventListener("touchmove", (e)=>{
+    e.preventDefault();
+    if (e.touches.length===2) {
+      const dx=e.touches[0].clientX-e.touches[1].clientX;
+      const dy=e.touches[0].clientY-e.touches[1].clientY;
+      const dist=Math.hypot(dx,dy);
+      if (lastDist) {
+        const delta=(dist-lastDist)*0.005;
+        mapState.scale=Math.min(1.8,Math.max(0.6,mapState.scale+delta));
+        updateMapTransform();
+      }
+      lastDist=dist;
+    } else if (e.touches.length===1 && isDragging) {
+      const dx=e.touches[0].clientX-mapState.lastX;
+      const dy=e.touches[0].clientY-mapState.lastY;
+      mapState.x+=dx; mapState.y+=dy;
+      mapState.lastX=e.touches[0].clientX; mapState.lastY=e.touches[0].clientY;
+      updateMapTransform();
+    }
+  }, {passive:false});
+  vp.addEventListener("touchend", ()=>{ isDragging=false; lastDist=0; });
+  $("map-close")?.addEventListener("click", closeMap);
+  $("map-zoom-in")?.addEventListener("click", ()=>{ mapState.scale=Math.min(1.8,mapState.scale+0.15); updateMapTransform(); });
+  $("map-zoom-out")?.addEventListener("click", ()=>{ mapState.scale=Math.max(0.6,mapState.scale-0.15); updateMapTransform(); });
+  $("btn-map")?.addEventListener("click", openMap);
+}
+setTimeout(initMapInteractions, 500);
 
 // ---- Chat ----
 

@@ -5,3 +5,5 @@ npm-debug.log*
 .env.*
 .DS_Store
 content.backup-*.js
+ai_editor_pack/
+for_ai/

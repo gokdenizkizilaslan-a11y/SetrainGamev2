@@ -15,6 +15,7 @@ function poolFor(kind) {
     if (!i.price || !i.price.gold) return false;
     if (!rarities.includes(i.rarity)) return false;
     if (i.craftOnly) return false; // craftables not sold
+    if (i.bossWeapon) return false;
     if (kind === "merchant") return MERCHANT_SLOTS.includes(i.slot);
     return i.slot !== "consumable" && i.slot !== "material" && i.slot !== "chest";
   });

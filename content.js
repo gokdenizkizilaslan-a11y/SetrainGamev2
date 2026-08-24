@@ -2696,6 +2696,72 @@ const CONTENT = {
       "isSpecial": true,
       "materialPool": ["the_essence_of_life", "fire_essence"]
     },
+  "bosses": [
+    {
+      "id": "boss_ember_king",
+      "label": "Ember King",
+      "image": "/images/bosses/ember_king.png",
+      "hp": 9000,
+      "attack": 38,
+      "speed": 6,
+      "element": "fire",
+      "rarity": "mythic",
+      "weaponId": "boss_weapon_ember",
+      "chestId": "boss_chest_ember",
+      "unlockAfter": null
+    },
+    {
+      "id": "boss_frost_titan",
+      "label": "Frost Titan",
+      "image": "/images/bosses/frost_titan.png",
+      "hp": 16000,
+      "attack": 45,
+      "speed": 5,
+      "element": "frost",
+      "rarity": "mythic",
+      "weaponId": "boss_weapon_frost",
+      "chestId": "boss_chest_frost",
+      "unlockAfter": "boss_ember_king"
+    },
+    {
+      "id": "boss_void_herald",
+      "label": "Void Herald",
+      "image": "/images/bosses/void_herald.png",
+      "hp": 26000,
+      "attack": 52,
+      "speed": 7,
+      "element": "shadow",
+      "rarity": "mythic",
+      "weaponId": "boss_weapon_void",
+      "chestId": "boss_chest_void",
+      "unlockAfter": "boss_frost_titan"
+    },
+    {
+      "id": "boss_storm_colossus",
+      "label": "Storm Colossus",
+      "image": "/images/bosses/storm_colossus.png",
+      "hp": 40000,
+      "attack": 60,
+      "speed": 6,
+      "element": "arcane",
+      "rarity": "mythic",
+      "weaponId": "boss_weapon_storm",
+      "chestId": "boss_chest_storm",
+      "unlockAfter": "boss_void_herald"
+    },
+    {
+      "id": "boss_world_eater",
+      "label": "World Eater",
+      "image": "/images/bosses/world_eater.png",
+      "hp": 55000,
+      "attack": 70,
+      "speed": 5,
+      "element": "physical",
+      "rarity": "mythic",
+      "weaponId": "boss_weapon_world",
+      "chestId": "boss_chest_world",
+      "unlockAfter": "boss_storm_colossus"
+    }
   ],
   "items": [
     {
@@ -4712,6 +4778,311 @@ const CONTENT = {
     }
   ],
   "skills": [
+    {
+      "id": "boss_ember_skill1",
+      "name": "Ember Strike",
+      "target": "enemy",
+      "mana": 6,
+      "power": 1.6,
+      "element": "physical",
+      "image": "/images/skills/boss_ember_skill1.png",
+      "description": "ember 1.6x strike"
+    },
+    {
+      "id": "boss_ember_skill2",
+      "name": "Ember Heavy",
+      "target": "enemy",
+      "mana": 10,
+      "power": 2.4,
+      "element": "physical",
+      "effect": "heavy",
+      "image": "/images/skills/boss_ember_skill2.png",
+      "description": "ember 2.4x heavy"
+    },
+    {
+      "id": "boss_ember_skill3",
+      "name": "Ember Weaken",
+      "target": "enemy",
+      "mana": 8,
+      "buffs": [{"kind": "weaken", "value": 0.3}],
+      "duration": 2,
+      "image": "/images/skills/boss_ember_skill3.png",
+      "description": "Weaken 30% 2 turns"
+    },
+    {
+      "id": "boss_ember_skill4",
+      "name": "Ember Fortify",
+      "target": "self",
+      "mana": 8,
+      "buffs": [{"kind": "defense", "value": 0.4}],
+      "duration": 2,
+      "image": "/images/skills/boss_ember_skill4.png",
+      "description": "Self 40% defense 2 turns"
+    },
+    {
+      "id": "boss_ember_skill5",
+      "name": "Ember Venom",
+      "target": "enemy",
+      "mana": 9,
+      "power": 0.8,
+      "buffs": [{"kind": "dot", "value": 0.06}],
+      "duration": 3,
+      "image": "/images/skills/boss_ember_skill5.png",
+      "description": "0.8x + 6% dot 3 turns"
+    },
+    {
+      "id": "boss_ember_skill6",
+      "name": "Ember Heal",
+      "target": "self",
+      "mana": 10,
+      "healSelfPct": 0.25,
+      "image": "/images/skills/boss_ember_skill6.png",
+      "description": "Heal 25% self"
+    },
+    {
+      "id": "boss_frost_skill1",
+      "name": "Frost Strike",
+      "target": "enemy",
+      "mana": 6,
+      "power": 1.6,
+      "element": "physical",
+      "image": "/images/skills/boss_frost_skill1.png",
+      "description": "frost 1.6x strike"
+    },
+    {
+      "id": "boss_frost_skill2",
+      "name": "Frost Heavy",
+      "target": "enemy",
+      "mana": 10,
+      "power": 2.4,
+      "element": "physical",
+      "effect": "heavy",
+      "image": "/images/skills/boss_frost_skill2.png",
+      "description": "frost 2.4x heavy"
+    },
+    {
+      "id": "boss_frost_skill3",
+      "name": "Frost Weaken",
+      "target": "enemy",
+      "mana": 8,
+      "buffs": [{"kind": "weaken", "value": 0.3}],
+      "duration": 2,
+      "image": "/images/skills/boss_frost_skill3.png",
+      "description": "Weaken 30% 2 turns"
+    },
+    {
+      "id": "boss_frost_skill4",
+      "name": "Frost Fortify",
+      "target": "self",
+      "mana": 8,
+      "buffs": [{"kind": "defense", "value": 0.4}],
+      "duration": 2,
+      "image": "/images/skills/boss_frost_skill4.png",
+      "description": "Self 40% defense 2 turns"
+    },
+    {
+      "id": "boss_frost_skill5",
+      "name": "Frost Venom",
+      "target": "enemy",
+      "mana": 9,
+      "power": 0.8,
+      "buffs": [{"kind": "dot", "value": 0.06}],
+      "duration": 3,
+      "image": "/images/skills/boss_frost_skill5.png",
+      "description": "0.8x + 6% dot 3 turns"
+    },
+    {
+      "id": "boss_frost_skill6",
+      "name": "Frost Heal",
+      "target": "self",
+      "mana": 10,
+      "healSelfPct": 0.25,
+      "image": "/images/skills/boss_frost_skill6.png",
+      "description": "Heal 25% self"
+    },
+    {
+      "id": "boss_void_skill1",
+      "name": "Void Strike",
+      "target": "enemy",
+      "mana": 6,
+      "power": 1.6,
+      "element": "physical",
+      "image": "/images/skills/boss_void_skill1.png",
+      "description": "void 1.6x strike"
+    },
+    {
+      "id": "boss_void_skill2",
+      "name": "Void Heavy",
+      "target": "enemy",
+      "mana": 10,
+      "power": 2.4,
+      "element": "physical",
+      "effect": "heavy",
+      "image": "/images/skills/boss_void_skill2.png",
+      "description": "void 2.4x heavy"
+    },
+    {
+      "id": "boss_void_skill3",
+      "name": "Void Weaken",
+      "target": "enemy",
+      "mana": 8,
+      "buffs": [{"kind": "weaken", "value": 0.3}],
+      "duration": 2,
+      "image": "/images/skills/boss_void_skill3.png",
+      "description": "Weaken 30% 2 turns"
+    },
+    {
+      "id": "boss_void_skill4",
+      "name": "Void Fortify",
+      "target": "self",
+      "mana": 8,
+      "buffs": [{"kind": "defense", "value": 0.4}],
+      "duration": 2,
+      "image": "/images/skills/boss_void_skill4.png",
+      "description": "Self 40% defense 2 turns"
+    },
+    {
+      "id": "boss_void_skill5",
+      "name": "Void Venom",
+      "target": "enemy",
+      "mana": 9,
+      "power": 0.8,
+      "buffs": [{"kind": "dot", "value": 0.06}],
+      "duration": 3,
+      "image": "/images/skills/boss_void_skill5.png",
+      "description": "0.8x + 6% dot 3 turns"
+    },
+    {
+      "id": "boss_void_skill6",
+      "name": "Void Heal",
+      "target": "self",
+      "mana": 10,
+      "healSelfPct": 0.25,
+      "image": "/images/skills/boss_void_skill6.png",
+      "description": "Heal 25% self"
+    },
+    {
+      "id": "boss_storm_skill1",
+      "name": "Storm Strike",
+      "target": "enemy",
+      "mana": 6,
+      "power": 1.6,
+      "element": "physical",
+      "image": "/images/skills/boss_storm_skill1.png",
+      "description": "storm 1.6x strike"
+    },
+    {
+      "id": "boss_storm_skill2",
+      "name": "Storm Heavy",
+      "target": "enemy",
+      "mana": 10,
+      "power": 2.4,
+      "element": "physical",
+      "effect": "heavy",
+      "image": "/images/skills/boss_storm_skill2.png",
+      "description": "storm 2.4x heavy"
+    },
+    {
+      "id": "boss_storm_skill3",
+      "name": "Storm Weaken",
+      "target": "enemy",
+      "mana": 8,
+      "buffs": [{"kind": "weaken", "value": 0.3}],
+      "duration": 2,
+      "image": "/images/skills/boss_storm_skill3.png",
+      "description": "Weaken 30% 2 turns"
+    },
+    {
+      "id": "boss_storm_skill4",
+      "name": "Storm Fortify",
+      "target": "self",
+      "mana": 8,
+      "buffs": [{"kind": "defense", "value": 0.4}],
+      "duration": 2,
+      "image": "/images/skills/boss_storm_skill4.png",
+      "description": "Self 40% defense 2 turns"
+    },
+    {
+      "id": "boss_storm_skill5",
+      "name": "Storm Venom",
+      "target": "enemy",
+      "mana": 9,
+      "power": 0.8,
+      "buffs": [{"kind": "dot", "value": 0.06}],
+      "duration": 3,
+      "image": "/images/skills/boss_storm_skill5.png",
+      "description": "0.8x + 6% dot 3 turns"
+    },
+    {
+      "id": "boss_storm_skill6",
+      "name": "Storm Heal",
+      "target": "self",
+      "mana": 10,
+      "healSelfPct": 0.25,
+      "image": "/images/skills/boss_storm_skill6.png",
+      "description": "Heal 25% self"
+    },
+    {
+      "id": "boss_world_skill1",
+      "name": "World Strike",
+      "target": "enemy",
+      "mana": 6,
+      "power": 1.6,
+      "element": "physical",
+      "image": "/images/skills/boss_world_skill1.png",
+      "description": "world 1.6x strike"
+    },
+    {
+      "id": "boss_world_skill2",
+      "name": "World Heavy",
+      "target": "enemy",
+      "mana": 10,
+      "power": 2.4,
+      "element": "physical",
+      "effect": "heavy",
+      "image": "/images/skills/boss_world_skill2.png",
+      "description": "world 2.4x heavy"
+    },
+    {
+      "id": "boss_world_skill3",
+      "name": "World Weaken",
+      "target": "enemy",
+      "mana": 8,
+      "buffs": [{"kind": "weaken", "value": 0.3}],
+      "duration": 2,
+      "image": "/images/skills/boss_world_skill3.png",
+      "description": "Weaken 30% 2 turns"
+    },
+    {
+      "id": "boss_world_skill4",
+      "name": "World Fortify",
+      "target": "self",
+      "mana": 8,
+      "buffs": [{"kind": "defense", "value": 0.4}],
+      "duration": 2,
+      "image": "/images/skills/boss_world_skill4.png",
+      "description": "Self 40% defense 2 turns"
+    },
+    {
+      "id": "boss_world_skill5",
+      "name": "World Venom",
+      "target": "enemy",
+      "mana": 9,
+      "power": 0.8,
+      "buffs": [{"kind": "dot", "value": 0.06}],
+      "duration": 3,
+      "image": "/images/skills/boss_world_skill5.png",
+      "description": "0.8x + 6% dot 3 turns"
+    },
+    {
+      "id": "boss_world_skill6",
+      "name": "World Heal",
+      "target": "self",
+      "mana": 10,
+      "healSelfPct": 0.25,
+      "image": "/images/skills/boss_world_skill6.png",
+      "description": "Heal 25% self"
+    },
     {
       "id": "heavy_strike",
       "name": "Heavy Strike",
