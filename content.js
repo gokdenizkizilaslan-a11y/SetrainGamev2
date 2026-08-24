@@ -1848,7 +1848,35 @@ const CONTENT = {
         "cost": {
           "gold": 30,
           "wood": 0
-        },      "description": "Fold shadow itself into the edge."
+        },
+        "description": "Fold shadow itself into the edge."
+      },
+      {
+        "id": "stone_blood",
+        "name": "Stone of Blood",
+        "inputs": [
+          {
+            "item": "heart_of_fire",
+            "qty": 1
+          },
+          {
+            "item": "shadow_essence",
+            "qty": 2
+          },
+          {
+            "item": "golem_heart",
+            "qty": 1
+          }
+        ],
+        "output": {
+          "item": "stone_blood",
+          "qty": 1
+        },
+        "cost": {
+          "gold": 120,
+          "wood": 30
+        },
+        "description": "Forge a stone that drinks blood — 10% omnivamp."
       }
     ]
   },
@@ -1908,33 +1936,6 @@ const CONTENT = {
       "common": {
         "label": "Common",
         "color": "#9aa7b5"
-      },
-      {
-        "id": "stone_blood",
-        "name": "Stone of Blood",
-        "inputs": [
-          {
-            "item": "heart_of_fire",
-            "qty": 1
-          },
-          {
-            "item": "shadow_essence",
-            "qty": 2
-          },
-          {
-            "item": "golem_heart",
-            "qty": 1
-          }
-        ],
-        "output": {
-          "item": "stone_blood",
-          "qty": 1
-        },
-        "cost": {
-          "gold": 120,
-          "wood": 30
-        },
-        "description": "Forge a stone that drinks blood — 10% omnivamp."
       },
       "uncommon": {
         "label": "Uncommon",
