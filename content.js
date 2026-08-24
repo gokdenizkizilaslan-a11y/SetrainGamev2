@@ -1909,6 +1909,33 @@ const CONTENT = {
         "label": "Common",
         "color": "#9aa7b5"
       },
+      {
+        "id": "stone_blood",
+        "name": "Stone of Blood",
+        "inputs": [
+          {
+            "item": "heart_of_fire",
+            "qty": 1
+          },
+          {
+            "item": "shadow_essence",
+            "qty": 2
+          },
+          {
+            "item": "golem_heart",
+            "qty": 1
+          }
+        ],
+        "output": {
+          "item": "stone_blood",
+          "qty": 1
+        },
+        "cost": {
+          "gold": 120,
+          "wood": 30
+        },
+        "description": "Forge a stone that drinks blood — 10% omnivamp."
+      },
       "uncommon": {
         "label": "Uncommon",
         "color": "#6fbf6a"
@@ -3861,6 +3888,147 @@ const CONTENT = {
       "image": "/images/items/essence_of_life.png",
       "description": "A rare essence that can revive a fallen ally at the Ancient Temple."
     },
+    {
+      "id": "tome_ember",
+      "name": "Tome of Ember",
+      "slot": "book",
+      "rarity": "uncommon",
+      "price": {"gold": 110, "wood": 18},
+      "stats": {"magicPower": 12, "healPower": 2},
+      "image": "/images/items/tome_ember.png",
+      "description": "+12 Magic Power, +2 Heal Power. For mages."
+    },
+    {
+      "id": "tome_frost",
+      "name": "Tome of Frost",
+      "slot": "book",
+      "rarity": "rare",
+      "price": {"gold": 180, "wood": 30},
+      "stats": {"magicPower": 14, "mana": 12},
+      "image": "/images/items/tome_frost.png",
+      "description": "+14 Magic Power, +12 Mana."
+    },
+    {
+      "id": "tome_shadow",
+      "name": "Tome of Shadows",
+      "slot": "book",
+      "rarity": "rare",
+      "price": {"gold": 190, "wood": 32},
+      "stats": {"magicPower": 10, "mana": 8, "omnivamp": 3},
+      "image": "/images/items/tome_shadow.png",
+      "description": "+10 Magic Power, +3% Omnivamp."
+    },
+    {
+      "id": "tome_light",
+      "name": "Tome of Light",
+      "slot": "book",
+      "rarity": "epic",
+      "price": {"gold": 320, "wood": 50},
+      "stats": {"magicPower": 16, "healPower": 6, "mana": 10},
+      "image": "/images/items/tome_light.png",
+      "description": "+16 Magic Power, +6 Heal, +10 Mana."
+    },
+    {
+      "id": "tome_void",
+      "name": "Tome of Void",
+      "slot": "book",
+      "rarity": "legendary",
+      "price": {"gold": 550, "wood": 80},
+      "stats": {"magicPower": 22, "manaRegen": 2},
+      "image": "/images/items/tome_void.png",
+      "description": "+22 Magic Power, +2 Mana Regen."
+    },
+    {
+      "id": "stone_blood",
+      "name": "The Stone of Blood",
+      "slot": "stone",
+      "rarity": "legendary",
+      "price": {"gold": 0, "wood": 0},
+      "stats": {"omnivamp": 10},
+      "image": "/images/items/stone_blood.png",
+      "craftOnly": true,
+      "description": "+10% Omnivamp. Heals 10% of all damage dealt. (Craftable)"
+    },
+    {
+      "id": "stone_frost",
+      "name": "Stone of Frost",
+      "slot": "stone",
+      "rarity": "mythic",
+      "price": {"gold": 0, "wood": 0},
+      "stats": {"omnivamp": 8, "resistance": 10},
+      "image": "/images/items/stone_frost.png",
+      "description": "+8% Omnivamp, +10 Resistance."
+    },
+    {
+      "id": "stone_shadow",
+      "name": "Stone of Shadows",
+      "slot": "stone",
+      "rarity": "mythic",
+      "price": {"gold": 0, "wood": 0},
+      "stats": {"omnivamp": 12},
+      "image": "/images/items/stone_shadow.png",
+      "description": "+12% Omnivamp."
+    },
+    {
+      "id": "stone_arcane",
+      "name": "Stone of Arcane",
+      "slot": "stone",
+      "rarity": "legendary",
+      "price": {"gold": 0, "wood": 0},
+      "stats": {"omnivamp": 6, "magicPower": 15},
+      "image": "/images/items/stone_arcane.png",
+      "description": "+6% Omnivamp, +15 Magic Power."
+    },
+    {
+      "id": "stone_earth",
+      "name": "Stone of Earth",
+      "slot": "stone",
+      "rarity": "legendary",
+      "price": {"gold": 0, "wood": 0},
+      "stats": {"omnivamp": 7, "maxHp": 50},
+      "image": "/images/items/stone_earth.png",
+      "description": "+7% Omnivamp, +50 Max HP."
+    },
+    {
+      "id": "vampiric_ring",
+      "name": "Vampiric Ring",
+      "slot": "ring",
+      "rarity": "rare",
+      "price": {"gold": 220, "wood": 30},
+      "stats": {"omnivamp": 5, "attack": 4},
+      "image": "/images/items/vampiric_ring.png",
+      "description": "+5% Omnivamp, +4 Attack."
+    },
+    {
+      "id": "crimson_blade",
+      "name": "Crimson Blade",
+      "slot": "weapon",
+      "rarity": "epic",
+      "price": {"gold": 420, "wood": 60},
+      "stats": {"attack": 24, "omnivamp": 4},
+      "image": "/images/items/crimson_blade.png",
+      "description": "+24 Attack, +4% Omnivamp."
+    },
+    {
+      "id": "glacial_helm",
+      "name": "Glacial Helm",
+      "slot": "head",
+      "rarity": "rare",
+      "price": {"gold": 160, "wood": 28},
+      "stats": {"maxHp": 60, "resistance": 10, "magicPower": 6},
+      "image": "/images/items/glacial_helm.png",
+      "description": "+60 HP, +10 Res, +6 Mgc."
+    },
+    {
+      "id": "ember_plate",
+      "name": "Ember Plate",
+      "slot": "armor",
+      "rarity": "epic",
+      "price": {"gold": 380, "wood": 55},
+      "stats": {"maxHp": 130, "resistance": 20, "attack": 5},
+      "image": "/images/items/ember_plate.png",
+      "description": "+130 HP, +20 Res, +5 Atk."
+    },
 
     {
       "id": "mythic_chest",
@@ -3878,10 +4046,6 @@ const CONTENT = {
   ],
   "equipmentSlots": [
     {
-      "id": "weapon",
-      "label": "Weapon"
-    },
-    {
       "id": "head",
       "label": "Helmet"
     },
@@ -3898,6 +4062,10 @@ const CONTENT = {
       "label": "Boots"
     },
     {
+      "id": "weapon",
+      "label": "Weapon"
+    },
+    {
       "id": "amulet",
       "label": "Amulet"
     },
@@ -3910,6 +4078,14 @@ const CONTENT = {
       "id": "ring2",
       "label": "Ring 2",
       "ring": true
+    },
+    {
+      "id": "book",
+      "label": "Book"
+    },
+    {
+      "id": "stone",
+      "label": "Stone"
     }
   ],
   "monsters": [

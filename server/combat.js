@@ -353,12 +353,29 @@ function act(room, player, skillId, targetId) {
       dealDamage(mon, dmg);
       addFx(d, { type: "damage", actor: player.id, target: "enemy", targetId: Number(targetId), amount: dmg, skill: skill.id, elem: skill.element || "physical", effect: skill.effect || defaultEffectFor(skill.element), crit });
       if (skill.lifesteal) {
-        const healed = heal(player, Math.max(1, Math.round(dmg * skill.lifesteal)));
-        addFx(d, { type: "heal", actor: player.id, target: player.id, amount: healed, source: "lifesteal", skill: skill.id, effect: "heal" });
+        const before = player.hp;
+        const amt = Math.max(1, Math.round(dmg * skill.lifesteal));
+        heal(player, amt);
+        const healed = player.hp - before;
+        if (healed > 0) addFx(d, { type: "heal", actor: player.id, target: player.id, amount: healed, source: "lifesteal", skill: skill.id, effect: "heal" });
       }
       if (skill.healSelfPct) {
-        const healed = heal(player, Math.max(1, Math.round(player.maxHp * skill.healSelfPct)));
-        addFx(d, { type: "heal", actor: player.id, target: player.id, amount: healed, source: "skill", skill: skill.id, effect: "heal" });
+        const before = player.hp;
+        const amt = Math.max(1, Math.round(player.maxHp * skill.healSelfPct));
+        heal(player, amt);
+        const healed = player.hp - before;
+        if (healed > 0) addFx(d, { type: "heal", actor: player.id, target: player.id, amount: healed, source: "skill", skill: skill.id, effect: "heal" });
+      }
+      // Omnivamp: heals % of all damage dealt, stacks (e.g., 5% ring +10% stone =15%)
+      if (player.omnivamp && dmg > 0) {
+        const pct = (player.omnivamp || 0) / 100;
+        if (pct > 0) {
+          const before = player.hp;
+          const omniAmt = Math.max(1, Math.round(dmg * pct));
+          heal(player, omniAmt);
+          const healedOmni = player.hp - before;
+          if (healedOmni > 0) addFx(d, { type: "heal", actor: player.id, target: player.id, amount: healedOmni, source: "omnivamp", skill: skill.id, effect: "heal" });
+        }
       }
     }
     applyBuffs(room, d, player, player.name, skill, "monster", [Number(targetId)], true);

@@ -611,6 +611,7 @@ function statLabel(key) {
     maxMana: "Mana",
     magicPower: "Mgc",
     healPower: "Heal",
+    omnivamp: "Omni",
     speed: "Spd",
     manaRegen: "Regen",
     critChance: "Crit",
@@ -1386,6 +1387,22 @@ function rarityBadge(item) {
   const m = meta[r];
   return `<span class="rarity-badge" style="--rarity:${m ? m.color : "#9aa7b5"}">${escapeHtml(m ? m.label : r)}</span>`;
 }
+function chestRatesHtml(item) {
+  if (!item || item.slot !== "chest" || !item.chestTier) return "";
+  const tier = item.chestTier;
+  const weights = (CATALOG.loot && CATALOG.loot.gradeWeights && CATALOG.loot.gradeWeights[tier]) || {};
+  const drop = (CATALOG.loot && CATALOG.loot.dropChance) || {};
+  const order = (CATALOG.loot && CATALOG.loot.rarityOrder) || [];
+  const total = order.reduce((s,r)=> s + (weights[r]||0), 0) || 1;
+  const lines = order.map((r)=>{
+    const w = weights[r]||0;
+    const pct = total ? Math.round((w/total)*1000)/10 : 0;
+    const chance = drop[r] ? Math.round(drop[r]*100) : 0;
+    if (!pct && !chance) return "";
+    return `${(CATALOG.loot.rarityMeta[r]||{}).label||r}: ${pct}% (drop ${chance}%)`;
+  }).filter(Boolean).join(" · ");
+  return lines ? `<span class="chest-rates" title="${escapeHtml(lines)}">📊 ${escapeHtml(lines)}</span>` : "";
+}
 
 function itemOwnedQty(me, itemId) {
   const e = (me.inventory || []).find((i) => i.itemId === itemId);
@@ -1512,10 +1529,12 @@ function shopCardHtml(me, staminaOk, item, buyEvent, isSold) {
   const ownedBadge = owned > 0
     ? `<span class="purchased-badge">${equipped ? "Equipped" : `Owned ×${owned}`}</span>`
     : "";
+  const chestRates = item.slot === "chest" ? chestRatesHtml(item) : "";
   return `<div class="shop-card ${isSold ? "shop-card--sold" : ""}">
     <span class="shop-card-top">${itemIconEl(item)}<span class="shop-card-name">${escapeHtml(item.name)}</span></span>
     <span class="shop-card-badges">${rarityBadge(item)}${ownedBadge}${soldBadge}</span>
     <span class="shop-card-desc">${escapeHtml(item.description)}</span>
+    ${chestRates ? `<span class="shop-card-desc" style="font-size:0.68rem;color:var(--muted)">${chestRates}</span>` : ""}
     <span class="shop-card-price">
       <span class="price-chip">${icon("gold")}<span>${item.price.gold}</span></span>
       ${item.price.wood ? `<span class="price-chip price-chip--wood">${icon("wood")}<span>${item.price.wood}</span></span>` : ""}
@@ -1630,24 +1649,33 @@ function renderInventory(room) {
     return;
   }
 
-  const slotGlyphs = { weapon: "weapon", head: "helmet", armor: "armor", legs: "legs", boots: "boots", amulet: "amulet", ring1: "ring", ring2: "ring" };
-  const slots = (CATALOG.equipmentSlots || [])
-    .map((slot) => {
-      const itemId = me.equipment[slot.id];
-      const item = itemId ? CATALOG.items.find((x) => x.id === itemId) : null;
-      const stats = item && item.stats
-        ? Object.entries(item.stats).map(([k, v]) => `${statLabel(k)} ${v}`).join(" · ")
-        : "";
-      return `<div class="equip-slot${item ? " equip-slot--filled" : " equip-slot--empty"}">
+  const slotGlyphs = { weapon: "weapon", head: "helmet", armor: "armor", legs: "legs", boots: "boots", amulet: "amulet", ring1: "ring", ring2: "ring", book: "book", stone: "ring" };
+  const slotOrder = {
+    left: ["ring1","ring2","amulet","book","stone"],
+    center: ["head","armor","legs","boots"],
+    right: ["weapon"]
+  };
+  function renderSlot(id) {
+    const slot = (CATALOG.equipmentSlots || []).find((s)=>s.id===id);
+    if (!slot) return "";
+    const itemId = me.equipment[id];
+    const item = itemId ? CATALOG.items.find((x)=>x.id===itemId) : null;
+    const stats = item && item.stats ? Object.entries(item.stats).map(([k,v])=> `${statLabel(k)} ${v}${k==="omnivamp"?"%":""}`).join(" · ") : "";
+    const isStone = id==="stone";
+    const stoneTip = isStone && item ? ` Omnivamp ${item.stats.omnivamp||0}% stacks` : "";
+    return `<div class="equip-slot${item ? " equip-slot--filled" : " equip-slot--empty"}">
         <span class="equip-slot-label">${escapeHtml(slot.label)}</span>
-        <span class="equip-slot-icon">${item ? itemIconEl(item) : `<span class="equip-slot-placeholder">${icon(slotGlyphs[slot.id] || "weapon")}</span>`}</span>
+        <span class="equip-slot-icon">${item ? itemIconEl(item) : `<span class="equip-slot-placeholder">${icon(slotGlyphs[id] || "weapon")}</span>`}</span>
         <span class="equip-slot-item">${item ? escapeHtml(item.name) : '<span class="muted">Empty</span>'}</span>
         <span class="equip-slot-badges">${item ? rarityBadge(item) : ""}</span>
-        <span class="equip-slot-stats">${stats}</span>
-        ${item ? `<button type="button" class="btn btn--mini" data-unequip="${slot.id}">Unequip</button>` : ""}
+        <span class="equip-slot-stats">${stats}${stoneTip}</span>
+        ${item ? `<button type="button" class="btn btn--mini" data-unequip="${id}">Unequip</button>` : ""}
       </div>`;
-    })
-    .join("");
+  }
+  const leftCol = slotOrder.left.map(renderSlot).join("");
+  const centerCol = slotOrder.center.map(renderSlot).join("");
+  const rightCol = slotOrder.right.map(renderSlot).join("");
+  const slots = `<div class="equip-column equip-column--left">${leftCol}</div><div class="equip-column equip-column--center">${centerCol}</div><div class="equip-column equip-column--right">${rightCol}</div>`;
 
   const bag = (me.inventory || [])
     .map((inv) => {
@@ -1660,10 +1688,11 @@ function renderInventory(room) {
         : equipable
         ? `<button type="button" class="btn btn--mini" data-equip="${inv.itemId}">Equip</button>`
         : "";
+      const chestRates = item.slot === "chest" ? chestRatesHtml(item) : "";
       return `<div class="bag-row">
         <span class="bag-icon">${itemIconEl(item)}</span>
         <span class="bag-name">${escapeHtml(item.name)} <span class="bag-qty">×${inv.qty}</span> ${rarityBadge(item)}</span>
-        <span class="bag-desc">${escapeHtml(item.description)}</span>
+        <span class="bag-desc">${escapeHtml(item.description)}${chestRates ? `<br><span style="font-size:0.68rem;color:var(--muted)">${chestRates}</span>` : ""}</span>
         ${action}
       </div>`;
     })

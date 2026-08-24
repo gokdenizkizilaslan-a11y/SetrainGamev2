@@ -124,6 +124,8 @@ function createPlayer({ id, name, character, isHost = false }) {
       amulet: null,
       ring1: null,
       ring2: null,
+      book: null,
+      stone: null,
     },
     unlockedSkills: starting,
     skillLoadout: starting.slice(),
@@ -135,6 +137,7 @@ function createPlayer({ id, name, character, isHost = false }) {
     resistance: 0,
     magicPower: 0,
     healPower: 0,
+    omnivamp: 0,
     speed: 0,
     critChance: 0,
     critDamage: 0,
@@ -175,6 +178,7 @@ function publicPlayer(player) {
     resistance: player.resistance,
     magicPower: player.magicPower,
     healPower: player.healPower || 0,
+    omnivamp: player.omnivamp || 0,
     speed: player.speed,
     critChance: player.critChance || 0,
     critDamage: player.critDamage || 0,
@@ -286,6 +290,8 @@ function applyStatDelta(player, stats, sign) {
       player.magicPower += sign * n;
     } else if (key === "healPower") {
       player.healPower += sign * n;
+    } else if (key === "omnivamp") {
+      player.omnivamp = (player.omnivamp || 0) + sign * n;
     } else if (key === "speed") {
       player.speed += sign * n;
     } else if (key === "critChance") {
