@@ -1651,9 +1651,9 @@ function renderInventory(room) {
 
   const slotGlyphs = { weapon: "weapon", head: "helmet", armor: "armor", legs: "legs", boots: "boots", amulet: "amulet", ring1: "ring", ring2: "ring", book: "book", stone: "ring" };
   const slotOrder = {
-    left: ["ring1","ring2","amulet","book","stone"],
+    left: ["ring1","ring2","amulet"],
     center: ["head","armor","legs","boots"],
-    right: ["weapon"]
+    right: ["weapon","book","stone"]
   };
   function renderSlot(id) {
     const slot = (CATALOG.equipmentSlots || []).find((s)=>s.id===id);
