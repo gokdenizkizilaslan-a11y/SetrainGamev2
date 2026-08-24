@@ -667,6 +667,10 @@ input:focus {
   background: linear-gradient(180deg, #e8b45c, #b98330);
 }
 
+.bar-xp .stat-bar-fill {
+  background: linear-gradient(180deg, #7aa8ff, #4d6bff);
+}
+
 .profile-chips {
   display: flex;
   flex-wrap: wrap;

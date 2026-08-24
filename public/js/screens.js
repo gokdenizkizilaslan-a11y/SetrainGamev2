@@ -662,6 +662,7 @@ function renderProfileCard(room, selfId) {
     <div class="profile-stats">
       ${statRow("hp", "HP", `${me.maxHp}/${me.maxHp}`, "bar-hp", pct(me.maxHp, me.maxHp))}
       ${statRow("stamina", "Stamina", `${me.stamina}/${me.maxStamina}`, "bar-stamina", pct(me.stamina, me.maxStamina))}
+      ${statRow("xp", "XP", `${me.xp}/${me.xpToNext}`, "bar-xp", me.xpToNext ? pct(me.xp, me.xpToNext) : 100)}
       ${statRow("gold", "Gold", me.gold)}
       ${statRow("wood", "Wood", me.wood)}
     </div>

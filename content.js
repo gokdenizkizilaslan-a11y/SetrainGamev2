@@ -1876,7 +1876,13 @@ const CONTENT = {
     "war_banner",
     "cleave",
     "shield_wall",
-    "spirit_surge"
+    "spirit_surge",
+    "battle_fury",
+    "iron_wall",
+    "group_guard",
+    "cripple",
+    "venom_strike",
+    "rejuvenate"
   ],
   "combat": {
     "damageVariance": 0.2,
@@ -2218,7 +2224,11 @@ const CONTENT = {
         "giant_rat",
         "cave_bat",
         "wolf",
-        "golem"
+        "goblin_archer",
+        "kobold",
+        "forest_mite",
+        "sludge",
+        "ember_slime"
       ],
       "monsterCount": 2,
       "monsterPower": 1,
@@ -2246,7 +2256,11 @@ const CONTENT = {
         "bandit",
         "spider",
         "wild_boar",
-        "golem"
+        "scavenger",
+        "cave_crawler",
+        "thug",
+        "dusk_bat",
+        "rat_king"
       ],
       "monsterCount": 2,
       "monsterPower": 1.3,
@@ -2273,8 +2287,12 @@ const CONTENT = {
         "skeleton",
         "dire_wolf",
         "harpy",
-        "thorn_viper",
-        "grove_sprite"
+        "grove_sprite",
+        "vine_lurker",
+        "ash_spider",
+        "bone_archer",
+        "frost_wolf",
+        "ember_sprite"
       ],
       "monsterCount": 3,
       "monsterPower": 1.6,
@@ -2302,6 +2320,10 @@ const CONTENT = {
         "orc",
         "swamp_troll",
         "griffin",
+        "thorn_viper",
+        "iron_goblin",
+        "brigand_captain",
+        "marsh_crawler",
         "grove_sprite"
       ],
       "monsterCount": 3,
@@ -2329,7 +2351,12 @@ const CONTENT = {
         "wraith",
         "manticore",
         "ogre",
-        "dark_knight"
+        "dark_knight",
+        "crystal_golem",
+        "cursed_knight",
+        "stone_titan",
+        "dusk_manticore",
+        "iron_ogre"
       ],
       "monsterCount": 3,
       "monsterPower": 2.6,
@@ -2356,7 +2383,12 @@ const CONTENT = {
         "manticore",
         "ogre",
         "witch",
-        "wyvern"
+        "wyvern",
+        "abyss_wraith",
+        "storm_harpy",
+        "flame_witch",
+        "frost_wyvern",
+        "crystal_golem"
       ],
       "monsterCount": 4,
       "monsterPower": 3.3,
@@ -2383,7 +2415,12 @@ const CONTENT = {
         "witch",
         "wyvern",
         "ancient_golem",
-        "lich"
+        "lich",
+        "void_golem",
+        "storm_lich",
+        "frost_wyvern",
+        "crystal_golem",
+        "stone_titan"
       ],
       "monsterCount": 4,
       "monsterPower": 4.2,
@@ -2409,7 +2446,13 @@ const CONTENT = {
         "lich",
         "hydra",
         "ancient_golem",
-        "wyvern"
+        "wyvern",
+        "storm_lich",
+        "nether_hydra",
+        "doom_lord",
+        "world_eater",
+        "void_golem",
+        "frost_wyvern"
       ],
       "monsterCount": 5,
       "monsterPower": 5.5,
@@ -2434,7 +2477,9 @@ const CONTENT = {
       "monsterPool": [
         "slime",
         "goblin",
-        "goblin_archer"
+        "goblin_archer",
+        "kobold",
+        "forest_mite"
       ],
       "monsterCount": 1,
       "monsterPower": 1,
@@ -3489,6 +3534,276 @@ const CONTENT = {
       "rarity": "mythic",
       "element": "physical",
       "image": "/images/monsters/hydra.png"
+    },    {
+      "id": "kobold",
+      "name": "Kobold",
+      "hp": 50,
+      "attack": 13,
+      "speed": 10,
+      "rarity": "common",
+      "element": "physical",
+      "image": "/images/monsters/kobold.png"
+    },    {
+      "id": "scavenger",
+      "name": "Scavenger",
+      "hp": 55,
+      "attack": 12,
+      "speed": 9,
+      "rarity": "common",
+      "element": "physical",
+      "image": "/images/monsters/scavenger.png"
+    },    {
+      "id": "cave_crawler",
+      "name": "Cave Crawler",
+      "hp": 48,
+      "attack": 11,
+      "speed": 8,
+      "rarity": "common",
+      "element": "physical",
+      "image": "/images/monsters/cave_crawler.png"
+    },    {
+      "id": "forest_mite",
+      "name": "Forest Mite",
+      "hp": 38,
+      "attack": 10,
+      "speed": 13,
+      "rarity": "common",
+      "element": "physical",
+      "image": "/images/monsters/forest_mite.png"
+    },    {
+      "id": "sludge",
+      "name": "Sludge",
+      "hp": 60,
+      "attack": 11,
+      "speed": 4,
+      "rarity": "common",
+      "element": "physical",
+      "image": "/images/monsters/sludge.png"
+    },    {
+      "id": "thug",
+      "name": "Thug",
+      "hp": 62,
+      "attack": 15,
+      "speed": 7,
+      "rarity": "common",
+      "element": "physical",
+      "image": "/images/monsters/thug.png"
+    },    {
+      "id": "dusk_bat",
+      "name": "Dusk Bat",
+      "hp": 36,
+      "attack": 12,
+      "speed": 14,
+      "rarity": "common",
+      "element": "physical",
+      "image": "/images/monsters/dusk_bat.png"
+    },    {
+      "id": "ember_slime",
+      "name": "Ember Slime",
+      "hp": 42,
+      "attack": 12,
+      "speed": 5,
+      "rarity": "common",
+      "element": "physical",
+      "image": "/images/monsters/ember_slime.png"
+    },    {
+      "id": "iron_goblin",
+      "name": "Iron Goblin",
+      "hp": 105,
+      "attack": 20,
+      "speed": 8,
+      "rarity": "uncommon",
+      "element": "physical",
+      "image": "/images/monsters/iron_goblin.png"
+    },    {
+      "id": "bone_archer",
+      "name": "Bone Archer",
+      "hp": 88,
+      "attack": 22,
+      "speed": 11,
+      "rarity": "uncommon",
+      "element": "physical",
+      "image": "/images/monsters/bone_archer.png"
+    },    {
+      "id": "frost_wolf",
+      "name": "Frost Wolf",
+      "hp": 115,
+      "attack": 23,
+      "speed": 13,
+      "rarity": "uncommon",
+      "element": "physical",
+      "image": "/images/monsters/frost_wolf.png"
+    },    {
+      "id": "vine_lurker",
+      "name": "Vine Lurker",
+      "hp": 95,
+      "attack": 18,
+      "speed": 9,
+      "rarity": "uncommon",
+      "element": "arcane",
+      "image": "/images/monsters/vine_lurker.png"
+    },    {
+      "id": "ash_spider",
+      "name": "Ash Spider",
+      "hp": 78,
+      "attack": 19,
+      "speed": 12,
+      "rarity": "uncommon",
+      "element": "shadow",
+      "image": "/images/monsters/ash_spider.png"
+    },    {
+      "id": "brigand_captain",
+      "name": "Brigand Captain",
+      "hp": 125,
+      "attack": 21,
+      "speed": 9,
+      "rarity": "uncommon",
+      "element": "physical",
+      "image": "/images/monsters/brigand_captain.png"
+    },    {
+      "id": "marsh_crawler",
+      "name": "Marsh Crawler",
+      "hp": 135,
+      "attack": 20,
+      "speed": 6,
+      "rarity": "uncommon",
+      "element": "physical",
+      "image": "/images/monsters/marsh_crawler.png"
+    },    {
+      "id": "ember_sprite",
+      "name": "Ember Sprite",
+      "hp": 82,
+      "attack": 18,
+      "speed": 12,
+      "rarity": "uncommon",
+      "element": "arcane",
+      "image": "/images/monsters/ember_sprite.png"
+    },    {
+      "id": "crystal_golem",
+      "name": "Crystal Golem",
+      "hp": 260,
+      "attack": 28,
+      "speed": 3,
+      "rarity": "rare",
+      "element": "physical",
+      "image": "/images/monsters/crystal_golem.png"
+    },    {
+      "id": "abyss_wraith",
+      "name": "Abyss Wraith",
+      "hp": 135,
+      "attack": 27,
+      "speed": 11,
+      "rarity": "rare",
+      "element": "shadow",
+      "image": "/images/monsters/abyss_wraith.png"
+    },    {
+      "id": "storm_harpy",
+      "name": "Storm Harpy",
+      "hp": 105,
+      "attack": 24,
+      "speed": 15,
+      "rarity": "rare",
+      "element": "physical",
+      "image": "/images/monsters/storm_harpy.png"
+    },    {
+      "id": "iron_ogre",
+      "name": "Iron Ogre",
+      "hp": 240,
+      "attack": 30,
+      "speed": 5,
+      "rarity": "rare",
+      "element": "physical",
+      "image": "/images/monsters/iron_ogre.png"
+    },    {
+      "id": "cursed_knight",
+      "name": "Cursed Knight",
+      "hp": 190,
+      "attack": 29,
+      "speed": 9,
+      "rarity": "rare",
+      "element": "shadow",
+      "image": "/images/monsters/cursed_knight.png"
+    },    {
+      "id": "flame_witch",
+      "name": "Flame Witch",
+      "hp": 145,
+      "attack": 28,
+      "speed": 8,
+      "rarity": "rare",
+      "element": "arcane",
+      "image": "/images/monsters/flame_witch.png"
+    },    {
+      "id": "stone_titan",
+      "name": "Stone Titan",
+      "hp": 270,
+      "attack": 29,
+      "speed": 3,
+      "rarity": "rare",
+      "element": "physical",
+      "image": "/images/monsters/stone_titan.png"
+    },    {
+      "id": "dusk_manticore",
+      "name": "Dusk Manticore",
+      "hp": 175,
+      "attack": 27,
+      "speed": 10,
+      "rarity": "rare",
+      "element": "physical",
+      "image": "/images/monsters/dusk_manticore.png"
+    },    {
+      "id": "frost_wyvern",
+      "name": "Frost Wyvern",
+      "hp": 270,
+      "attack": 35,
+      "speed": 11,
+      "rarity": "epic",
+      "element": "arcane",
+      "image": "/images/monsters/frost_wyvern.png"
+    },    {
+      "id": "void_golem",
+      "name": "Void Golem",
+      "hp": 380,
+      "attack": 34,
+      "speed": 3,
+      "rarity": "epic",
+      "element": "physical",
+      "image": "/images/monsters/void_golem.png"
+    },    {
+      "id": "storm_lich",
+      "name": "Storm Lich",
+      "hp": 250,
+      "attack": 37,
+      "speed": 9,
+      "rarity": "epic",
+      "element": "shadow",
+      "image": "/images/monsters/storm_lich.png"
+    },    {
+      "id": "nether_hydra",
+      "name": "Nether Hydra",
+      "hp": 330,
+      "attack": 33,
+      "speed": 6,
+      "rarity": "epic",
+      "element": "physical",
+      "image": "/images/monsters/nether_hydra.png"
+    },    {
+      "id": "doom_lord",
+      "name": "Doom Lord",
+      "hp": 300,
+      "attack": 40,
+      "speed": 7,
+      "rarity": "legendary",
+      "element": "shadow",
+      "image": "/images/monsters/doom_lord.png"
+    },    {
+      "id": "world_eater",
+      "name": "World Eater",
+      "hp": 360,
+      "attack": 38,
+      "speed": 5,
+      "rarity": "mythic",
+      "element": "physical",
+      "image": "/images/monsters/world_eater.png"
     }
   ],
   "skills": [

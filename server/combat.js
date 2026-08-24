@@ -456,13 +456,33 @@ function endTurn(room, player) {
 
 function advanceTurn(room, d) {
   clearTurnTimer(d);
-  d.endedTurns.add(d.currentTurnId);
+  // mark current as done
+  if (d.currentTurnId) d.endedTurns.add(d.currentTurnId);
+  // find next player in order who hasn't ended turn yet
+  // use index-based progression but also handle fled players
   d.turnIndex += 1;
+  // skip any ids that are no longer in turnOrder (fled) or already ended
+  while (d.turnIndex < d.turnOrder.length && d.endedTurns.has(d.turnOrder[d.turnIndex])) {
+    d.turnIndex += 1;
+  }
   if (d.turnIndex < d.turnOrder.length) {
     d.currentTurnId = d.turnOrder[d.turnIndex];
     resetUsedSkills(d, d.currentTurnId);
     armTurnTimer(room, d);
     return false;
+  }
+  // all players acted -> monsters
+  // safety: ensure everyone in turnOrder is counted as ended
+  if (d.endedTurns.size < d.turnOrder.length) {
+    // still someone left (race), find them
+    const remaining = d.turnOrder.find((id) => !d.endedTurns.has(id));
+    if (remaining) {
+      d.currentTurnId = remaining;
+      d.turnIndex = d.turnOrder.indexOf(remaining);
+      resetUsedSkills(d, remaining);
+      armTurnTimer(room, d);
+      return false;
+    }
   }
   startMonsterPhase(room, d);
   return true;
@@ -568,6 +588,24 @@ function checkEnd(room, d) {
   }
 }
 
+function xpRangeForRank(rank) {
+  const map = {
+    f: [80, 120],
+    d: [110, 160],
+    c: [150, 210],
+    b: [200, 280],
+    a: [280, 380],
+    s: [380, 520],
+    ss: [500, 700],
+    ssplus: [650, 900],
+    fast: [60, 90],
+  };
+  return map[rank] || [80, 120];
+}
+function randInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 function victory(room, d) {
   clearTurnTimer(d);
   clearMonsterTimer(d);
@@ -577,7 +615,15 @@ function victory(room, d) {
 
   const gold = Math.round(def.goldBase * size.goldScale);
   const wood = Math.round(def.woodBase * size.woodScale);
-  const xp = Math.round(def.xpReward * size.xpScale);
+  // XP now per killed monster: F 80-120, scaling with size and rank
+  const killed = d.wave.filter((m) => m.hp <= 0).length || d.wave.length;
+  const [xpMin, xpMax] = xpRangeForRank(d.rank);
+  let xp = 0;
+  for (let i = 0; i < killed; i++) {
+    xp += Math.round(randInt(xpMin, xpMax) * (size.xpScale || 1));
+  }
+  // fallback if somehow killed 0
+  if (xp <= 0) xp = Math.round(randInt(xpMin, xpMax) * (size.xpScale || 1));
 
   for (const p of members) {
     p.gold += gold;
