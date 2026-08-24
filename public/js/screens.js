@@ -362,6 +362,10 @@ function drainCombatFx(root) {
       applyTargetFx(el, "buff");
       spawnParticles(el, "ring", meta.color);
       sfxPlay(ELEMENT_SOUNDS.defend || r.sound);
+    } else if (ev.type === "flee") {
+      const fleeEl = root.querySelector('.fighter[data-fighter="' + ev.actor + '"]') || root;
+      spawnPopup(fleeEl, "Fled!", "heal", "#ffd23e");
+      sfxPlay("block");
     }
   }
   const last = fx[fx.length - 1];
@@ -778,20 +782,23 @@ function myDungeon(room) {
   return room.dungeons.find((d) => d.id === me.dungeonId) || null;
 }
 
+function ensureDungeonState() {
+  if (state.selectedDungeonRank == null) state.selectedDungeonRank = (CATALOG.dungeons[0] && CATALOG.dungeons[0].rank) || null;
+  if (state.selectedPartySize == null) state.selectedPartySize = (CATALOG.sizes[0] && CATALOG.sizes[0].id) || "normal";
+}
+
 function renderDungeonView(room) {
   const d = myDungeon(room);
   const root = $("dungeon-content");
-  if (!d || d.status === "idle") return renderDungeonMenu(room, root);
-  if (d.status === "forming") return renderDungeonParty(room, root);
-  if (d.status === "fighting" || d.status === "done") return renderCombat(room, root);
+  if (d && (d.status === "fighting" || d.status === "done")) return renderCombat(room, root);
+  if (d && d.status === "forming") return renderPartyLobby(room, root, d);
+  return renderDungeonBrowser(room, root);
 }
 
 function rarityMetaOf(r) {
   return (CATALOG.loot && CATALOG.loot.rarityMeta && CATALOG.loot.rarityMeta[r]) || {};
 }
 
-// What a dungeon of `rank` can drop, computed from the same data the server
-// rolls with (combat.js victory): per-monster dropChance + gradeWeights[rank].
 function dungeonDrops(rank) {
   const dg = CATALOG.dungeons.find((x) => x.rank === rank) || {};
   const pool = (dg.monsterPool || [])
@@ -811,97 +818,165 @@ function dungeonDrops(rank) {
   return { pool, perKill, odds };
 }
 
-function renderDungeonMenu(room, root) {
-  root.innerHTML =
-    `<p class="lead">Choose a dungeon, then a size. Pick the same dungeon as a friend to join their party — otherwise it's your own solo delve.</p>` +
-    `<div class="dungeon-grid">` +
-    CATALOG.dungeons
-      .map((dg) => {
-        const top = [...dungeonDrops(dg.rank).odds].sort((a, b) => b.pct - a.pct).slice(0, 3);
-        const hint = top
-          .map((o) => `${escapeHtml(rarityMetaOf(o.rarity).label || o.rarity)} ${o.pct}%`)
-          .join(" · ");
-        return `
-      <button type="button" class="dungeon-card" data-rank="${dg.rank}">
-        <span class="portrait portrait--dungeon dungeon-tile" data-img="${dg.image}" data-variant="dungeon"></span>
-        <span class="dungeon-card-label">${escapeHtml(dg.label)}</span>
-        <span class="dungeon-card-drops">${hint}</span>
-      </button>`;
-      })
-      .join("") +
-    `</div>`;
-  root.querySelectorAll("[data-rank]").forEach((b) =>
-    b.addEventListener("click", () => renderSizeGrid(room, root, b.getAttribute("data-rank")))
-  );
-  initImages(root);
-}
+function renderDungeonBrowser(room, root) {
+  ensureDungeonState();
+  const selectedRank = state.selectedDungeonRank;
+  // Parties for selected rank (only forming & open)
+  const parties = (room.dungeons || []).filter((d) => d.status === "forming" && d.open && d.rank === selectedRank);
+  const dgDef = CATALOG.dungeons.find((x) => x.rank === selectedRank) || null;
 
-function renderSizeGrid(room, root, rank) {
-  const dg = CATALOG.dungeons.find((x) => x.rank === rank);
-  const drops = dungeonDrops(rank);
-  const chip = (o, text) =>
-    `<span class="drop-chip" style="--drop:${rarityMetaOf(o.rarity).color || "#9aa7b5"}">${escapeHtml(text)}</span>`;
-  const monsterChips = drops.pool
-    .map((m) => chip({ rarity: m.rarity }, m.name))
-    .join("");
-  const perKillLine = drops.perKill
-    .map((p) => chip(p, `${rarityMetaOf(p.rarity).label || p.rarity} ${Math.round(p.chance * 100)}%`))
-    .join("");
-  const oddsLine = drops.odds
-    .map((o) => chip(o, `${rarityMetaOf(o.rarity).label || o.rarity} ${o.pct}%`))
-    .join("");
-  const panel = drops.pool.length
-    ? `<div class="drop-panel">
-        <div class="drop-panel-title">Possible Drops</div>
+  const leftHtml = `<div class="dungeon-browser-left">
+    <p class="subhead">Dungeons</p>
+    <div class="dungeon-list-col">
+      ${CATALOG.dungeons.map((dg) => {
+        const top = [...dungeonDrops(dg.rank).odds].sort((a,b)=>b.pct-a.pct).slice(0,2);
+        const hint = top.map(o=>`${escapeHtml(rarityMetaOf(o.rarity).label||o.rarity)} ${o.pct}%`).join(" · ");
+        const sel = dg.rank === selectedRank ? " is-selected" : "";
+        return `<button type="button" class="dungeon-list-item${sel}" data-rank="${dg.rank}">
+          <span class="portrait portrait--dungeon dungeon-list-tile" data-img="${dg.image}" data-variant="dungeon"></span>
+          <span class="dungeon-list-meta">
+            <span class="dungeon-list-label">${escapeHtml(dg.label)}</span>
+            <span class="dungeon-list-hint">${hint}</span>
+          </span>
+        </button>`;
+      }).join("")}
+    </div>
+  </div>`;
+
+  // Right side
+  let rightHtml = "";
+  if (!dgDef) {
+    rightHtml = `<div class="dungeon-browser-right"><p class="muted">Select a dungeon on the left.</p></div>`;
+  } else {
+    const drops = dungeonDrops(selectedRank);
+    const chip = (o, text) => `<span class="drop-chip" style="--drop:${rarityMetaOf(o.rarity).color || "#9aa7b5"}">${escapeHtml(text)}</span>`;
+    const monsterChips = drops.pool.map((m) => chip({ rarity: m.rarity }, m.name)).join("");
+    const perKillLine = drops.perKill.map((p) => chip(p, `${rarityMetaOf(p.rarity).label || p.rarity} ${Math.round(p.chance * 100)}%`)).join("");
+    const oddsLine = drops.odds.map((o) => chip(o, `${rarityMetaOf(o.rarity).label || o.rarity} ${o.pct}%`)).join("");
+    const dropPanel = drops.pool.length ? `<div class="drop-panel">
+        <div class="drop-panel-title">Possible Drops — ${escapeHtml(dgDef.label)}</div>
         <div class="drop-row"><span class="drop-label">Monsters</span><span class="drop-chips">${monsterChips}</span></div>
         <div class="drop-row"><span class="drop-label">Per kill</span><span class="drop-chips">${perKillLine}</span></div>
         <div class="drop-row"><span class="drop-label">Item rarity</span><span class="drop-chips">${oddsLine}</span></div>
-      </div>`
-    : "";
-  root.innerHTML =
-    `<button type="button" class="btn btn--ghost" id="btn-back-ranks">← All Dungeons</button>` +
-    `<p class="subhead">${escapeHtml(dg.label)} — choose a size</p>` +
-    `<div class="size-grid">` +
-    CATALOG.sizes
-      .map(
-        (s) => `
-      <button type="button" class="size-card" data-size="${s.id}">
+      </div>` : "";
+
+    const partyCards = parties.length
+      ? parties.map((d) => {
+          const leader = room.players.find((p)=>p.id===d.leaderId);
+          const members = (d.memberIds||[]).map((id)=>room.players.find((p)=>p.id===id)).filter(Boolean);
+          const sizeDef = CATALOG.sizes.find((s)=>s.id===d.size);
+          const canJoin = d.memberIds.length < room.maxPlayers && d.open;
+          return `<div class="party-card">
+            <div class="party-card-head">
+              <span class="party-card-title">${escapeHtml(d.label || dgDef.label)} — ${escapeHtml(sizeLabel(d.size))}</span>
+              <span class="muted">Stamina ${d.stamina != null ? d.stamina : sizeDef ? sizeDef.stamina : "?"}</span>
+            </div>
+            <div class="party-card-leader">Leader: ${leader ? escapeHtml(leader.name) : "Unknown"} · ${members.length}/${room.maxPlayers}</div>
+            <div class="party-card-members">
+              ${members.map((m)=>{
+                const frame = m.anomaly ? ` style="--frame:${m.anomaly.frameColor}"` : "";
+                return `<span class="party-chip${m.id===d.leaderId?" party-chip--leader":""}" title="${escapeHtml(m.name)}">
+                  <span class="portrait portrait--${m.character} party-portrait-mini" data-img="${imgFor(m.character,"class")}" data-variant="${m.character}"${frame}></span>
+                  <span>${escapeHtml(m.name)}</span>
+                </span>`;
+              }).join("")}
+            </div>
+            <button type="button" class="btn btn--bronze btn--mini party-join-btn" data-join="${d.id}" ${canJoin ? "" : "disabled"}>${canJoin ? "Join Party" : "Full"}</button>
+          </div>`;
+        }).join("")
+      : `<div class="muted">No parties yet for ${escapeHtml(dgDef.label)}. Create one below.</div>`;
+
+    const sizeOpts = CATALOG.sizes.map((s)=>{
+      const sel = s.id === state.selectedPartySize ? " is-selected" : "";
+      return `<button type="button" class="size-card${sel}" data-size-pick="${s.id}">
         <span class="size-card-label">${escapeHtml(s.label)}</span>
         <span class="muted">Stamina ${s.stamina}</span>
-      </button>`
-      )
-      .join("") +
-    `</div>` +
-    panel;
-  root.querySelectorAll("[data-size]").forEach((b) =>
-    b.addEventListener("click", () => socket.emit("dungeon:join", { rank, size: b.getAttribute("data-size") }))
-  );
-  root.querySelector("#btn-back-ranks").addEventListener("click", () => renderDungeonMenu(room, root));
+      </button>`;
+    }).join("");
+
+    rightHtml = `<div class="dungeon-browser-right">
+      <div class="dungeon-browser-right-head">
+        <p class="subhead">${escapeHtml(dgDef.label)} — Parties</p>
+        <span class="muted">${parties.length} party${parties.length===1?"":"s"} available</span>
+      </div>
+      <div class="party-grid">${partyCards}</div>
+      ${dropPanel}
+      <div class="create-party-section">
+        <p class="subhead">Create a Party</p>
+        <div class="size-grid">${sizeOpts}</div>
+        <button type="button" class="btn btn--gold" id="btn-create-party">Create Party — ${escapeHtml(dgDef.label)} (${escapeHtml(sizeLabel(state.selectedPartySize))})</button>
+        <p class="hint">You will become the leader. Only the leader can start the delve.</p>
+      </div>
+    </div>`;
+  }
+
+  root.innerHTML = `<div class="dungeon-browser">${leftHtml}${rightHtml}</div>`;
+  initImages(root);
+  root.querySelectorAll("[data-rank]").forEach((b)=>{
+    b.addEventListener("click", ()=>{
+      state.selectedDungeonRank = b.getAttribute("data-rank");
+      renderDungeonBrowser(room, root);
+    });
+  });
+  root.querySelectorAll("[data-size-pick]").forEach((b)=>{
+    b.addEventListener("click", ()=>{
+      state.selectedPartySize = b.getAttribute("data-size-pick");
+      renderDungeonBrowser(room, root);
+    });
+  });
+  const createBtn = root.querySelector("#btn-create-party");
+  if (createBtn) createBtn.addEventListener("click", ()=>{
+    socket.emit("dungeon:create", { rank: state.selectedDungeonRank, size: state.selectedPartySize });
+  });
+  root.querySelectorAll("[data-join]").forEach((b)=>{
+    b.addEventListener("click", ()=>{
+      socket.emit("dungeon:joinById", { dungeonId: b.getAttribute("data-join") });
+    });
+  });
 }
 
-function renderDungeonParty(room, root) {
-  const d = myDungeon(room);
+function renderPartyLobby(room, root, d) {
   const members = (d.memberIds || []).map((id) => room.players.find((p) => p.id === id)).filter(Boolean);
   const isLeader = d.leaderId === state.playerId;
+  const sizeDef = CATALOG.sizes.find((s)=>s.id===d.size);
   root.innerHTML = `
-    <p class="subhead">${escapeHtml(d.label || "")} — ${sizeLabel(d.size)}</p>
-    <p class="lead">The first to join leads. The leader starts the delve; allies need only be here. Others can join by choosing the same dungeon + size.</p>
-    <ul class="party-list">
-      ${members
-        .map(
-          (m) => `<li>
-            <span class="party-list-name">${escapeHtml(m.name)}</span>
-            ${m.id === d.leaderId ? ' <span class="badge badge--host">Leader</span>' : ""}
-            ${m.id === state.playerId ? ' <span class="badge">You</span>' : ""}
-            <span class="player-meta">${classLabel(m.character)} · ${m.hp}/${m.maxHp} HP</span>
-          </li>`
-        )
-        .join("")}
-    </ul>
-    <div class="btn-row">
-      <button type="button" class="btn btn--ghost" id="btn-party-leave">Leave Party</button>
-      ${isLeader ? `<button type="button" class="btn btn--gold" id="btn-party-start">Start Delve (${d.stamina} stamina)</button>` : ""}
+    <div class="party-lobby">
+      <button type="button" class="btn btn--ghost" id="btn-party-back">← Back to Dungeon List</button>
+      <div class="party-lobby-header">
+        <span class="portrait portrait--dungeon dungeon-tile large" data-img="${d.image || ""}" data-variant="dungeon"></span>
+        <div>
+          <p class="subhead">Party Lobby</p>
+          <h3>${escapeHtml(d.label || "")} — ${escapeHtml(sizeLabel(d.size))}</h3>
+          <p class="muted">Stamina ${d.stamina != null ? d.stamina : sizeDef ? sizeDef.stamina : "?"} · ${members.length}/${room.maxPlayers} members · Leader: ${escapeHtml((room.players.find((p)=>p.id===d.leaderId)||{}).name || "Unknown")}</p>
+        </div>
+      </div>
+      <p class="lead">You are in a party. The leader starts the delve — no ready check needed. New members can join from the dungeon list while you wait.</p>
+      <ul class="party-list">
+        ${members.map((m) => `<li>
+            <span class="portrait portrait--${m.character} party-portrait" data-img="${imgFor(m.character,"class")}" data-variant="${m.character}"${m.anomaly ? ` style="--frame:${m.anomaly.frameColor}"` : ""}></span>
+            <span class="party-list-main">
+              <span class="party-list-name">${escapeHtml(m.name)}</span>
+              ${m.id === d.leaderId ? ' <span class="badge badge--host">Leader</span>' : ""}
+              ${m.id === state.playerId ? ' <span class="badge">You</span>' : ""}
+              <span class="player-meta">${escapeHtml(classLabel(m.character))} · Lv ${m.level} · ${m.hp}/${m.maxHp} HP · ${m.stamina} Stamina</span>
+            </span>
+          </li>`).join("")}
+      </ul>
+      <div class="btn-row">
+        <button type="button" class="btn btn--ghost" id="btn-party-leave">Leave Party</button>
+        ${isLeader ? `<button type="button" class="btn btn--gold" id="btn-party-start">Start Delve (${d.stamina != null ? d.stamina : sizeDef ? sizeDef.stamina : "?"} stamina)</button>` : `<span class="muted" style="align-self:center">Waiting for leader to start…</span>`}
+      </div>
     </div>`;
+  initImages(root);
+  const back = root.querySelector("#btn-party-back");
+  if (back) back.addEventListener("click", ()=>{
+    // leave lobby view but stay in party? Spec says once party created, open new interface. Back should maybe not leave party, just show browser? But if in party, we still show lobby. So back button leaves party? For UX, keep lobby; back just does nothing if still in party. We'll make it leave party? Actually better: back without leaving party is confusing. We'll keep lobby – back button will show browser but player still in party? Instead implement as "Leave party and back to list" – but we already have leave button. So change back to just render browser temporarily? For simplicity, back will NOT leave party but will allow viewing other parties? But spec says once party created, it should open new interface – implies lobby is modal. So back should return to browser without leaving party? That would contradict renderDungeonView logic which shows lobby whenever in party. To allow browsing while in party, we need extra state: party lobby vs browser. Simpler: back button leaves party.
+    // For now, back does NOT leave – it just stays in lobby; to avoid confusion we make it a no-op that shows toast. But we implement leave-on-back for clarity.
+    // We'll treat back as “leave party and return”
+    // Actually we keep original: back leaves lobby view by not leaving party – but renderDungeonView will immediately re-show lobby, so back does nothing. So we implement back that does nothing except maybe deselect? To avoid confusion, back will NOT exist – but spec says party opens new interface – so back should be “Leave party”
+    // We keep button but it will just re-render lobby (no navigation). Keep for accessibility.
+    showToast("You are in a party — leave to browse other parties.");
+  });
   root.querySelector("#btn-party-leave").addEventListener("click", () => socket.emit("dungeon:leave"));
   const start = root.querySelector("#btn-party-start");
   if (start) start.addEventListener("click", () => socket.emit("dungeon:start"));
@@ -1031,6 +1106,11 @@ function renderCombat(room, root) {
     hint = "All skills used — end your turn when ready.";
   else hint = "Your turn — choose an action.";
 
+  const hpPct = me && me.maxHp ? me.hp / me.maxHp : 0;
+  const canFlee = canAct && hpPct >= 0.2;
+  const fleeDisabled = !canAct || hpPct < 0.2;
+  const fleeLabel = hpPct < 0.2 ? "Too injured to flee!" : "Flee";
+  const fleeBtnHtml = d.status === "fighting" ? `<button type="button" class="btn ${fleeDisabled ? "btn--ghost" : "btn--danger"}" id="btn-flee" ${fleeDisabled ? "disabled" : ""} title="${fleeDisabled && hpPct < 0.2 ? "You are too injured to flee!" : "Escape the delve"}">${escapeHtml(fleeLabel)}</button>` : "";
   const endTurnBtn = canAct ? `<button type="button" class="btn btn--gold" id="btn-end-turn">End Turn</button>` : "";
   const timerHtml = `<div class="turn-timer${canAct ? "" : " turn-timer--idle"}"><div class="turn-timer-fill" id="turn-timer-fill"></div></div>`;
   const logHtml = `<div class="combat-log">${d.log.slice(-8).map((l) => `<div class="log-line">${escapeHtml(l)}</div>`).join("")}</div>`;
@@ -1043,7 +1123,7 @@ function renderCombat(room, root) {
       <div class="skill-bar">${skillsHtml}</div>
       <div class="item-bar">${itemsHtml}</div>
       <div class="combat-hint">${escapeHtml(hint)}</div>
-      <div class="combat-actions">${endTurnBtn}</div>
+      <div class="combat-actions">${endTurnBtn}${fleeBtnHtml}</div>
       ${timerHtml}
       ${logHtml}
     </div>
@@ -1099,6 +1179,24 @@ function renderCombat(room, root) {
     endBtn.addEventListener("click", () => {
       state.timerDeadline = null;
       socket.emit("combat:endTurn");
+    });
+  }
+  const fleeBtn = root.querySelector("#btn-flee");
+  if (fleeBtn) {
+    fleeBtn.addEventListener("click", () => {
+      const hpPct2 = me && me.maxHp ? me.hp / me.maxHp : 0;
+      if (hpPct2 < 0.2) {
+        showToast("You are too injured to flee!");
+        playSfx("block");
+        return;
+      }
+      if (!canAct) {
+        showToast("It is not your turn.");
+        return;
+      }
+      state.timerDeadline = null;
+      state.selectedSkill = null;
+      socket.emit("combat:flee");
     });
   }
   const openChestBtn = root.querySelector("#btn-result-open-chest");

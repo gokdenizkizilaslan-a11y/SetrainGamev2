@@ -648,9 +648,103 @@ function defeat(room, d) {
   d.log.push(d.result.text);
 }
 
+function flee(room, player) {
+  const d = myDungeon(room, player);
+  if (!d || d.status !== "fighting") {
+    throw new Error("No combat in progress.");
+  }
+  if (player.hp <= 0) {
+    throw new Error("You are down.");
+  }
+  // HP threshold 20%
+  const pct = player.maxHp > 0 ? player.hp / player.maxHp : 0;
+  if (pct < 0.2) {
+    throw new Error("You are too injured to flee!");
+  }
+  if (d.phase !== "players") {
+    throw new Error("You cannot flee while monsters are acting.");
+  }
+  if (d.currentTurnId !== player.id) {
+    throw new Error("It is not your turn.");
+  }
+  clearTurnTimer(d);
+  // Remove fleeing player from dungeon
+  d.memberIds = (d.memberIds || []).filter((id) => id !== player.id);
+  player.dungeonId = null;
+  // restore health/mana to full (no penalty for fleeing)
+  player.hp = player.maxHp;
+  player.mana = player.maxMana;
+  // clean buffs targeting this player
+  if (d.buffs) d.buffs = d.buffs.filter((b) => !(b.targetType === "player" && String(b.targetId) === String(player.id)));
+  if (d.usedSkills && d.usedSkills[player.id]) delete d.usedSkills[player.id];
+  if (d.endedTurns && d.endedTurns.delete) d.endedTurns.delete(player.id);
+  // fix turn order
+  const oldIndex = (d.turnOrder || []).indexOf(player.id);
+  d.turnOrder = (d.turnOrder || []).filter((id) => id !== player.id);
+  d.fx = d.fx || [];
+  addFx(d, { type: "flee", actor: player.id });
+  d.log.push(`${player.name} flees from combat!`);
+
+  if (d.memberIds.length === 0) {
+    clearMonsterTimer(d);
+    // no one left – remove dungeon entirely
+    if (room.dungeons) {
+      room.dungeons = room.dungeons.filter((x) => x !== d);
+    }
+    return null;
+  }
+  if (d.leaderId === player.id) {
+    d.leaderId = d.memberIds[0];
+  }
+  // If there are no living members left, end as defeat
+  if (livingMembers(room, d).length === 0) {
+    defeat(room, d);
+    return d;
+  }
+  // Advance turn logic after flee
+  if (oldIndex !== -1) {
+    if (oldIndex < d.turnIndex) {
+      d.turnIndex = Math.max(0, d.turnIndex - 1);
+    } else if (oldIndex === d.turnIndex) {
+      // fleeing player was current – move to next
+      if (d.turnIndex >= d.turnOrder.length) {
+        // end of round – monsters turn
+        startMonsterPhase(room, d);
+        return d;
+      } else {
+        d.currentTurnId = d.turnOrder[d.turnIndex] || null;
+        if (d.currentTurnId) {
+          if (!d.usedSkills) d.usedSkills = {};
+          if (!d.usedSkills[d.currentTurnId]) d.usedSkills[d.currentTurnId] = new Set();
+          armTurnTimer(room, d);
+        }
+        return d;
+      }
+    }
+  }
+  // if fleeing player was not current, keep current turn
+  if (d.currentTurnId && !d.turnOrder.includes(d.currentTurnId)) {
+    // current player was removed (should not happen except oldIndex case above)
+    if (d.turnOrder.length) {
+      d.currentTurnId = d.turnOrder[d.turnIndex] || d.turnOrder[0];
+      armTurnTimer(room, d);
+    } else {
+      startMonsterPhase(room, d);
+    }
+  } else if (d.currentTurnId) {
+    armTurnTimer(room, d);
+  }
+  // check if all remaining players have ended turn -> monster phase
+  if (d.turnOrder.length && d.endedTurns && d.endedTurns.size >= d.turnOrder.length) {
+    startMonsterPhase(room, d);
+  }
+  return d;
+}
+
 module.exports = {
   spawnWave,
   act,
   useItem,
   endTurn,
+  flee,
 };

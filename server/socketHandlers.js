@@ -525,11 +525,40 @@ function registerSocketHandlers(io) {
 
     // ---- Dungeon ----
 
+    socket.on("dungeon:create", (payload = {}) => {
+      try {
+        const { room, player } = gameContext(socket);
+        town.requirePlaying(room, player);
+        const d = dungeon.createParty(room, player, payload.rank, payload.size);
+        room.log = { type: "dungeon", text: `${player.name} created a ${d.label} party.` };
+        emitRoomState(io, room);
+      } catch (err) {
+        emitError(socket, err);
+      }
+    });
+
+    socket.on("dungeon:joinById", (payload = {}) => {
+      try {
+        const { room, player } = gameContext(socket);
+        town.requirePlaying(room, player);
+        const d = dungeon.joinPartyById(room, player, payload.dungeonId);
+        room.log = { type: "dungeon", text: `${player.name} joined ${d.label} party.` };
+        emitRoomState(io, room);
+      } catch (err) {
+        emitError(socket, err);
+      }
+    });
+
     socket.on("dungeon:join", (payload = {}) => {
       try {
         const { room, player } = gameContext(socket);
         town.requirePlaying(room, player);
-        dungeon.joinDungeon(room, player, payload.rank, payload.size);
+        // Backward compatibility: legacy client uses rank+size auto-join
+        if (payload.dungeonId) {
+          dungeon.joinPartyById(room, player, payload.dungeonId);
+        } else {
+          dungeon.joinDungeon(room, player, payload.rank, payload.size);
+        }
         room.log = { type: "dungeon", text: `${player.name} joined the delve party.` };
         emitRoomState(io, room);
       } catch (err) {
@@ -609,6 +638,29 @@ function registerSocketHandlers(io) {
         if (!asyncMonster) {
           emitCombatFx(io, room);
           emitRoomState(io, room);
+        }
+      } catch (err) {
+        emitError(socket, err);
+      }
+    });
+
+    socket.on("combat:flee", () => {
+      try {
+        const { room, player } = gameContext(socket);
+        town.requirePlaying(room, player);
+        room.broadcast = () => {
+          emitCombatFx(io, room);
+          emitRoomState(io, room);
+        };
+        const result = combat.flee(room, player);
+        // flee may have removed the dungeon; ensure fx broadcast even if dungeon gone
+        emitCombatFx(io, room);
+        room.log = { type: "dungeon", text: `${player.name} fled the delve.` };
+        emitRoomState(io, room);
+        // if flee needed to trigger monster phase, broadcast already handled via room.broadcast in combat
+        // ensure timers are re-armed for remaining players
+        if (result && result.status === "fighting" && result.phase === "monsters") {
+          // monster phase will auto-broadcast via timeout
         }
       } catch (err) {
         emitError(socket, err);

@@ -27,6 +27,8 @@ const state = {
   leavingToMenu: false,
   prevStatus: null,
   introShownForRoom: null,
+  selectedDungeonRank: null,
+  selectedPartySize: null,
 };
 
 const SESSION_KEY = "setra-session";

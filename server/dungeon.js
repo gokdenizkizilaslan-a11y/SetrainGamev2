@@ -61,6 +61,64 @@ function removeDungeonFromRoom(room, d) {
   room.dungeons = (room.dungeons || []).filter((x) => x !== d);
 }
 
+function createParty(room, player, rank, size) {
+  const dungeonDef = getDungeon(rank);
+  const sizeDef = getDungeonSize(size);
+  if (!dungeonDef || !sizeDef) {
+    throw new Error("Unknown dungeon or size.");
+  }
+  if (player.endedDay) {
+    throw new Error("You have already ended this day.");
+  }
+  const existing = dungeonFor(room, player);
+  if (existing) {
+    throw new Error("You are already in a party. Leave first.");
+  }
+  const d = {
+    ...idleDungeon(),
+    id: generateDungeonId(),
+    rank: dungeonDef.rank,
+    size: sizeDef.id,
+    leaderId: player.id,
+    memberIds: [player.id],
+    status: "forming",
+    open: true,
+  };
+  if (!room.dungeons) room.dungeons = [];
+  room.dungeons.push(d);
+  player.dungeonId = d.id;
+  return d;
+}
+
+function joinPartyById(room, player, dungeonId) {
+  if (player.endedDay) {
+    throw new Error("You have already ended this day.");
+  }
+  const existing = dungeonFor(room, player);
+  if (existing) {
+    throw new Error("You are already in a party. Leave first.");
+  }
+  const d = (room.dungeons || []).find((x) => x.id === dungeonId);
+  if (!d) {
+    throw new Error("That party no longer exists.");
+  }
+  if (d.status !== "forming" || !d.open) {
+    throw new Error("That party is no longer joinable.");
+  }
+  if (d.memberIds.includes(player.id)) {
+    throw new Error("You are already in that party.");
+  }
+  if (d.memberIds.length >= room.maxPlayers) {
+    throw new Error("That party is full.");
+  }
+  if (delveUnderway(d)) {
+    throw new Error("That delve has already started.");
+  }
+  d.memberIds.push(player.id);
+  player.dungeonId = d.id;
+  return d;
+}
+
 function joinDungeon(room, player, rank, size) {
   const dungeonDef = getDungeon(rank);
   const sizeDef = getDungeonSize(size);
@@ -87,20 +145,7 @@ function joinDungeon(room, player, rank, size) {
     player.dungeonId = party.id;
     return party;
   }
-  const d = {
-    ...idleDungeon(),
-    id: generateDungeonId(),
-    rank: dungeonDef.rank,
-    size: sizeDef.id,
-    leaderId: player.id,
-    memberIds: [player.id],
-    status: "forming",
-    open: true,
-  };
-  if (!room.dungeons) room.dungeons = [];
-  room.dungeons.push(d);
-  player.dungeonId = d.id;
-  return d;
+  return createParty(room, player, rank, size);
 }
 
 function leaveDungeon(room, player) {
@@ -155,14 +200,86 @@ function startDungeon(room, player) {
 function returnFromDungeon(room, player) {
   const d = dungeonFor(room, player);
   if (!d) return null;
+  if (d.status === "fighting" && d.phase === "players" && d.currentTurnId === player.id) {
+    // leaving mid-turn: clear timer and advance cleanly
+    if (d.turnTimer) {
+      clearTimeout(d.turnTimer);
+      d.turnTimer = null;
+    }
+  }
   d.memberIds = d.memberIds.filter((id) => id !== player.id);
   player.dungeonId = null;
   player.hp = player.maxHp;
   player.mana = player.maxMana;
   if (d.memberIds.length === 0) {
     removeDungeonFromRoom(room, d);
+    return null;
   }
-  return null;
+  if (d.leaderId === player.id) {
+    d.leaderId = d.memberIds[0];
+  }
+  // Fix combat turnOrder if fighting
+  if (d.status === "fighting") {
+    d.turnOrder = (d.turnOrder || []).filter((id) => id !== player.id);
+    if (d.endedTurns && d.endedTurns.has) d.endedTurns.delete(player.id);
+    if (d.usedSkills && d.usedSkills[player.id]) delete d.usedSkills[player.id];
+    // adjust turnIndex if needed
+    if (d.phase === "players") {
+      if (d.currentTurnId === player.id) {
+        // player fled on their turn – advance
+        if (d.turnIndex < d.turnOrder.length) {
+          d.currentTurnId = d.turnOrder[d.turnIndex] || null;
+          if (d.currentTurnId) {
+            d.usedSkills[d.currentTurnId] = d.usedSkills[d.currentTurnId] || new Set();
+            // re-arm timer for next player if broadcast will be called
+          }
+        } else {
+          // turn order exhausted – go to monster phase
+          d.currentTurnId = null;
+          // monster phase will be triggered by caller if needed; for flee we just end turn progression
+        }
+      } else {
+        // adjust index if removed player was before current index
+        const removedIdx = d.turnOrder.indexOf(player.id);
+        // turnOrder already filtered, handle index shift
+        if (removedIdx !== -1 && removedIdx < d.turnIndex) {
+          d.turnIndex = Math.max(0, d.turnIndex - 1);
+        }
+      }
+    }
+    d.buffs = (d.buffs || []).filter((b) => !(b.targetType === "player" && b.targetId === player.id));
+  }
+  return d;
+}
+
+function cleanupPlayerFromDungeons(room, playerId) {
+  for (const d of [...(room.dungeons || [])]) {
+    if (!d.memberIds.includes(playerId)) continue;
+    if (d.status === "fighting" || d.status === "done") {
+      // treat as flee/return – remove without requiring finish
+      d.memberIds = d.memberIds.filter((id) => id !== playerId);
+      if (d.memberIds.length === 0) {
+        removeDungeonFromRoom(room, d);
+      } else {
+        if (d.leaderId === playerId) d.leaderId = d.memberIds[0];
+        d.turnOrder = (d.turnOrder || []).filter((id) => id !== playerId);
+        if (d.endedTurns && d.endedTurns.delete) d.endedTurns.delete(playerId);
+        if (d.usedSkills && d.usedSkills[playerId]) delete d.usedSkills[playerId];
+        d.buffs = (d.buffs || []).filter((b) => !(b.targetType === "player" && b.targetId === playerId));
+        if (d.currentTurnId === playerId) {
+          clearDungeonTimers(d);
+          d.currentTurnId = d.turnOrder[d.turnIndex] || null;
+        }
+      }
+    } else {
+      d.memberIds = d.memberIds.filter((id) => id !== playerId);
+      if (d.memberIds.length === 0) {
+        removeDungeonFromRoom(room, d);
+      } else if (d.leaderId === playerId) {
+        d.leaderId = d.memberIds[0];
+      }
+    }
+  }
 }
 
 function resetRoomDungeons(room) {
@@ -187,8 +304,9 @@ function publicDungeon(d) {
     image: def ? def.image : null,
     stamina: sizeDef ? sizeDef.stamina : null,
     leaderId: d.leaderId,
-    memberIds: d.memberIds,
+    memberIds: [...(d.memberIds || [])],
     status: d.status,
+    open: d.open !== false,
     round: d.round,
     phase: d.phase,
     turnOrder: d.turnOrder || [],
@@ -206,6 +324,8 @@ function publicDungeon(d) {
 
 module.exports = {
   idleDungeon,
+  createParty,
+  joinPartyById,
   joinDungeon,
   leaveDungeon,
   startDungeon,
@@ -213,4 +333,6 @@ module.exports = {
   publicDungeon,
   dungeonFor,
   resetRoomDungeons,
+  cleanupPlayerFromDungeons,
+  delveUnderway,
 };

@@ -161,6 +161,27 @@ function leaveRoom(socketId) {
     return null;
   }
 
+  // Clean up any dungeon membership (fixes ghost parties when a player leaves the hall)
+  if (room.dungeons) {
+    for (const d of [...room.dungeons]) {
+      if (!d.memberIds.includes(socketId)) continue;
+      if (d.turnTimer) { try { clearTimeout(d.turnTimer); } catch (e) {} d.turnTimer = null; }
+      if (d.monsterTimer) { try { clearTimeout(d.monsterTimer); } catch (e) {} d.monsterTimer = null; }
+      d.memberIds = d.memberIds.filter((id) => id !== socketId);
+      if (d.buffs) d.buffs = d.buffs.filter((b) => !(b.targetType === "player" && String(b.targetId) === String(socketId)));
+      if (d.usedSkills && d.usedSkills[socketId]) delete d.usedSkills[socketId];
+      if (d.endedTurns && d.endedTurns.has) d.endedTurns.delete(socketId);
+      if (d.turnOrder) d.turnOrder = d.turnOrder.filter((id) => id !== socketId);
+      if (d.leaderId === socketId) d.leaderId = d.memberIds[0] || null;
+      if (d.currentTurnId === socketId) d.currentTurnId = d.turnOrder[d.turnIndex] || d.turnOrder[0] || null;
+      if (d.memberIds.length === 0) {
+        room.dungeons = room.dungeons.filter((x) => x !== d);
+      } else if (d.status === "fighting" && d.phase === "players" && d.turnOrder.length === 0) {
+        // no players left to act – monsters would win, but dungeon will be removed on empty
+      }
+    }
+  }
+
   room.players = room.players.filter((p) => p.id !== socketId);
   socketToRoom.delete(socketId);
 

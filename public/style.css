@@ -1014,6 +1014,175 @@ input:focus {
   font-family: "Cinzel", serif;
 }
 
+/* ---- Dungeon browser overhaul (left dungeons / right parties) ---- */
+
+.dungeon-browser {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+.dungeon-browser-left {
+  position: sticky;
+  top: 0.5rem;
+}
+.dungeon-list-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.dungeon-list-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  text-align: left;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--glass-line);
+  border-radius: 12px;
+  background: var(--glass-2);
+  color: var(--ink);
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.12s;
+}
+.dungeon-list-item:hover {
+  border-color: rgba(232,183,108,0.45);
+  transform: translateY(-1px);
+}
+.dungeon-list-item.is-selected {
+  border-color: var(--gold-bright);
+  background: linear-gradient(135deg, rgba(232,180,92,0.14), var(--glass-2));
+  box-shadow: 0 0 0 2px rgba(232,183,108,0.18);
+}
+.dungeon-list-tile {
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+.dungeon-list-meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.dungeon-list-label {
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+.dungeon-list-hint {
+  font-size: 0.68rem;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+.dungeon-browser-right {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  min-width: 0;
+}
+.dungeon-browser-right-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.party-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.party-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--glass-line);
+  border-radius: 12px;
+  background: var(--glass-2);
+}
+.party-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.party-card-title {
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+.party-card-leader {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.party-card-members {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.party-portrait-mini {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-width: 1px;
+}
+.party-chip--leader {
+  border-color: var(--gold-bright) !important;
+}
+.party-join-btn {
+  align-self: flex-start;
+}
+.create-party-section {
+  padding: 0.8rem;
+  border: 1px solid var(--glass-line);
+  border-radius: 12px;
+  background: rgba(0,0,0,0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.create-party-section .size-grid {
+  gap: 0.5rem;
+}
+.create-party-section .size-card.is-selected {
+  border-color: var(--gold-bright);
+  background: var(--gold-soft);
+}
+.party-lobby {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+.party-lobby-header {
+  display: flex;
+  gap: 0.9rem;
+  align-items: center;
+  padding: 0.8rem;
+  border: 1px solid var(--glass-line);
+  border-radius: 14px;
+  background: var(--glass-2);
+}
+.party-lobby-header .dungeon-tile.large {
+  width: 3.6rem;
+  height: 3.6rem;
+}
+.party-list-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+@media (max-width: 860px) {
+  .dungeon-browser {
+    grid-template-columns: 1fr;
+  }
+  .dungeon-browser-left {
+    position: static;
+  }
+}
+
 /* ---- Combat ---- */
 
 .combat-wrap {
