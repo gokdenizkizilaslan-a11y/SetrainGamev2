@@ -1468,6 +1468,10 @@ input:focus {
 .skill-slot--disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  pointer-events: none;
+}
+.skill-slot--used {
+  pointer-events: none;
 }
 
 .skill-slot--picked {
