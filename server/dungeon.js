@@ -67,6 +67,15 @@ function createParty(room, player, rank, size) {
   if (!dungeonDef || !sizeDef) {
     throw new Error("Unknown dungeon or size.");
   }
+  if (dungeonDef.isBoss && dungeonDef.unlockAfter) {
+    const kills = player.bossKills || [];
+    if (!kills.includes(dungeonDef.unlockAfter)) throw new Error("Önceki boss öldürülmeli.");
+  }
+  // Single party per boss: if boss dungeon already has a party (waiting or fighting), block
+  if (dungeonDef.isBoss) {
+    const existingBossParty = (room.dungeons||[]).find(d=> d.rank===dungeonDef.rank && (d.status==="forming"||d.status==="waiting"||d.status==="fighting"));
+    if (existingBossParty) throw new Error("Bu boss'ta başka bir savaş yapılıyor.");
+  }
   if (player.endedDay) {
     throw new Error("You have already ended this day.");
   }

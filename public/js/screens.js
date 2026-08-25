@@ -1847,10 +1847,16 @@ function renderMap(room) {
       const b = (CATALOG.bosses||[]).find(x=>x.id===bid);
       if (!b) return;
       if (el.classList.contains("locked")) { showToast("Önceki boss öldürülmeli."); playSfx("block"); return; }
-      // Check if boss is currently in fight in this room
-      const existing = (room.bossParties||[]).find(x=>x.bossId===bid && x.status==="fighting");
-      if (existing) { showToast("Bu boss'ta başka bir savaş yapılıyor."); return; }
-      socket.emit("boss:challenge", {bossId: bid});
+      // Check if boss dungeon already has a fighting party (single party per boss)
+      const bossRank = bid; // boss id same as dungeon rank for new boss dungeons
+      const existingBossDungeon = (room.dungeons||[]).find(x=>x.rank===bossRank && x.status==="fighting");
+      if (existingBossDungeon) { showToast("Bu boss'ta başka bir savaş yapılıyor."); return; }
+      const existingWaiting = (room.dungeons||[]).find(x=>x.rank===bossRank && x.status==="forming");
+      if (existingWaiting) {
+        socket.emit("dungeon:joinById", {dungeonId: existingWaiting.id});
+      } else {
+        socket.emit("dungeon:create", {rank: bossRank, size: "normal"});
+      }
       state.dungeonOpen = true;
       closeMap();
     });

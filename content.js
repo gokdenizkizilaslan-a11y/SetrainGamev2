@@ -2107,6 +2107,51 @@ const CONTENT = {
         "mythic": 8,
         "ancient_relic": 0.7
       },
+      "boss_ember_king": {
+        "common": 0,
+        "uncommon": 5,
+        "rare": 20,
+        "epic": 35,
+        "legendary": 30,
+        "mythic": 10,
+        "ancient_relic": 0.5
+      },
+      "boss_frost_titan": {
+        "common": 0,
+        "uncommon": 3,
+        "rare": 15,
+        "epic": 32,
+        "legendary": 35,
+        "mythic": 15,
+        "ancient_relic": 0.7
+      },
+      "boss_void_herald": {
+        "common": 0,
+        "uncommon": 2,
+        "rare": 10,
+        "epic": 28,
+        "legendary": 40,
+        "mythic": 20,
+        "ancient_relic": 0.9
+      },
+      "boss_storm_colossus": {
+        "common": 0,
+        "uncommon": 1,
+        "rare": 8,
+        "epic": 25,
+        "legendary": 42,
+        "mythic": 24,
+        "ancient_relic": 1.0
+      },
+      "boss_world_eater": {
+        "common": 0,
+        "uncommon": 0,
+        "rare": 5,
+        "epic": 20,
+        "legendary": 45,
+        "mythic": 30,
+        "ancient_relic": 1.2
+      },
       "fast": {
         "common": 100,
         "uncommon": 30,
@@ -2695,6 +2740,101 @@ const CONTENT = {
       "sizeProfile": "fewerStronger",
       "isSpecial": true,
       "materialPool": ["the_essence_of_life", "fire_essence"]
+    },
+    {
+      "rank": "boss_ember_king",
+      "label": "Ember King",
+      "image": "/images/dungeons/boss_ember_king.png",
+      "stamina": 4,
+      "xpReward": 300,
+      "goldScale": 1.4,
+      "woodScale": 1.1,
+      "goldBase": 150,
+      "woodBase": 90,
+      "monsterPool": ["boss_ember_king"],
+      "monsterCount": 1,
+      "monsterPower": 0.22,
+      "sizeProfile": "fewerStronger",
+      "unlockAfter": null,
+      "isBoss": true,
+      "isSpecial": true,
+      "materialPool": ["the_essence_of_life"]
+    },
+    {
+      "rank": "boss_frost_titan",
+      "label": "Frost Titan",
+      "image": "/images/dungeons/boss_frost_titan.png",
+      "stamina": 5,
+      "xpReward": 400,
+      "goldScale": 1.5,
+      "woodScale": 1.2,
+      "goldBase": 180,
+      "woodBase": 110,
+      "monsterPool": ["boss_frost_titan"],
+      "monsterCount": 1,
+      "monsterPower": 0.22,
+      "sizeProfile": "fewerStronger",
+      "unlockAfter": "boss_ember_king",
+      "isBoss": true,
+      "isSpecial": true,
+      "materialPool": ["the_essence_of_life"]
+    },
+    {
+      "rank": "boss_void_herald",
+      "label": "Void Herald",
+      "image": "/images/dungeons/boss_void_herald.png",
+      "stamina": 5,
+      "xpReward": 500,
+      "goldScale": 1.6,
+      "woodScale": 1.3,
+      "goldBase": 220,
+      "woodBase": 130,
+      "monsterPool": ["boss_void_herald"],
+      "monsterCount": 1,
+      "monsterPower": 0.22,
+      "sizeProfile": "fewerStronger",
+      "unlockAfter": "boss_frost_titan",
+      "isBoss": true,
+      "isSpecial": true,
+      "materialPool": ["the_essence_of_life"]
+    },
+    {
+      "rank": "boss_storm_colossus",
+      "label": "Storm Colossus",
+      "image": "/images/dungeons/boss_storm_colossus.png",
+      "stamina": 6,
+      "xpReward": 600,
+      "goldScale": 1.7,
+      "woodScale": 1.4,
+      "goldBase": 260,
+      "woodBase": 150,
+      "monsterPool": ["boss_storm_colossus"],
+      "monsterCount": 1,
+      "monsterPower": 0.22,
+      "sizeProfile": "fewerStronger",
+      "unlockAfter": "boss_void_herald",
+      "isBoss": true,
+      "isSpecial": true,
+      "materialPool": ["the_essence_of_life"]
+    },
+    {
+      "rank": "boss_world_eater",
+      "label": "World Eater",
+      "image": "/images/dungeons/boss_world_eater.png",
+      "stamina": 6,
+      "xpReward": 800,
+      "goldScale": 1.8,
+      "woodScale": 1.5,
+      "goldBase": 320,
+      "woodBase": 180,
+      "monsterPool": ["boss_world_eater"],
+      "monsterCount": 1,
+      "monsterPower": 0.22,
+      "sizeProfile": "fewerStronger",
+      "unlockAfter": "boss_storm_colossus",
+      "isBoss": true,
+      "isSpecial": true,
+      "materialPool": ["the_essence_of_life"]
     },
   ],
   "bosses": [
@@ -4895,6 +5035,56 @@ const CONTENT = {
       "image": "/images/skills/boss_ember_skill1.png",
       "description": "Ember 1.6x fire strike"
     },
+    {
+      "id": "boss_ember_king",
+      "name": "Ember King",
+      "hp": 9000,
+      "attack": 42,
+      "speed": 6,
+      "rarity": "mythic",
+      "element": "fire",
+      "image": "/images/bosses/ember_king.png"
+    },
+    {
+      "id": "boss_frost_titan",
+      "name": "Frost Titan",
+      "hp": 16000,
+      "attack": 52,
+      "speed": 5,
+      "rarity": "mythic",
+      "element": "frost",
+      "image": "/images/bosses/frost_titan.png"
+    },
+    {
+      "id": "boss_void_herald",
+      "name": "Void Herald",
+      "hp": 26000,
+      "attack": 62,
+      "speed": 7,
+      "rarity": "mythic",
+      "element": "shadow",
+      "image": "/images/bosses/void_herald.png"
+    },
+    {
+      "id": "boss_storm_colossus",
+      "name": "Storm Colossus",
+      "hp": 40000,
+      "attack": 72,
+      "speed": 6,
+      "rarity": "mythic",
+      "element": "arcane",
+      "image": "/images/bosses/storm_colossus.png"
+    },
+    {
+      "id": "boss_world_eater",
+      "name": "World Eater",
+      "hp": 55000,
+      "attack": 85,
+      "speed": 5,
+      "rarity": "mythic",
+      "element": "physical",
+      "image": "/images/bosses/world_eater.png"
+    },
         {
       "id": "boss_ember_skill2",
       "name": "Ember Heavy",
@@ -5935,7 +6125,7 @@ function getClassBasicAttack(slug) {
 }
 
 function getMonster(id) {
-  return CONTENT.monsters.find((m) => m.id === id) || null;
+  return CONTENT.monsters.find((m) => m.id === id) || (CONTENT.bosses||[]).find((m) => m.id === id) || null;
 }
 
 function getDungeonSize(id) {
