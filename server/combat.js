@@ -854,9 +854,11 @@ function flee(room, player) {
     throw new Error("It is not your turn.");
   }
   clearTurnTimer(d);
-  // Remove fleeing player from dungeon
+  const wasBoss = isBossParty(d);
+  // Remove fleeing player from dungeon/boss
   d.memberIds = (d.memberIds || []).filter((id) => id !== player.id);
-  player.dungeonId = null;
+  if (wasBoss) player.bossId = null;
+  else player.dungeonId = null;
   // restore health/mana to full (no penalty for fleeing)
   player.hp = player.maxHp;
   player.mana = player.maxMana;
@@ -873,9 +875,11 @@ function flee(room, player) {
 
   if (d.memberIds.length === 0) {
     clearMonsterTimer(d);
-    // no one left – remove dungeon entirely
-    if (room.dungeons) {
-      room.dungeons = room.dungeons.filter((x) => x !== d);
+    // no one left – remove dungeon/boss entirely
+    if (wasBoss) {
+      if (room.bossParties) room.bossParties = room.bossParties.filter((x) => x !== d);
+    } else {
+      if (room.dungeons) room.dungeons = room.dungeons.filter((x) => x !== d);
     }
     return null;
   }
