@@ -4808,6 +4808,8 @@ const CONTENT = {
       "mana": 8,
       "buffs": [{"kind": "weaken", "value": 0.35}],
       "duration": 2,
+      "element": "fire",
+      "effect": "fire",
       "image": "/images/skills/boss_ember_skill3.png",
       "description": "Ember weaken 35% 2t"
     },
@@ -4818,6 +4820,8 @@ const CONTENT = {
       "mana": 8,
       "buffs": [{"kind": "defense", "value": 0.45}],
       "duration": 2,
+      "element": "fire",
+      "effect": "fire",
       "image": "/images/skills/boss_ember_skill4.png",
       "description": "Ember fortify 45% 2t"
     },
@@ -4873,6 +4877,8 @@ const CONTENT = {
       "mana": 8,
       "buffs": [{"kind": "weaken", "value": 0.35}],
       "duration": 2,
+      "element": "frost",
+      "effect": "frost",
       "image": "/images/skills/boss_frost_skill3.png",
       "description": "Frost weaken 35% 2t"
     },
@@ -4883,6 +4889,8 @@ const CONTENT = {
       "mana": 8,
       "buffs": [{"kind": "defense", "value": 0.45}],
       "duration": 2,
+      "element": "frost",
+      "effect": "frost",
       "image": "/images/skills/boss_frost_skill4.png",
       "description": "Frost fortify 45% 2t"
     },
@@ -4938,6 +4946,8 @@ const CONTENT = {
       "mana": 8,
       "buffs": [{"kind": "expose", "value": 0.3}],
       "duration": 2,
+      "element": "shadow",
+      "effect": "shadow",
       "image": "/images/skills/boss_void_skill3.png",
       "description": "Void expose 30% 2t"
     },
@@ -4948,6 +4958,8 @@ const CONTENT = {
       "mana": 8,
       "buffs": [{"kind": "defense", "value": 0.5}],
       "duration": 2,
+      "element": "shadow",
+      "effect": "shadow",
       "image": "/images/skills/boss_void_skill4.png",
       "description": "Void fortify 50% 2t"
     },
@@ -5003,6 +5015,8 @@ const CONTENT = {
       "mana": 8,
       "buffs": [{"kind": "weaken", "value": 0.3}, {"kind": "expose", "value": 0.2}],
       "duration": 2,
+      "element": "arcane",
+      "effect": "arcane",
       "image": "/images/skills/boss_storm_skill3.png",
       "description": "Storm weaken+expose 2t"
     },
@@ -5013,6 +5027,8 @@ const CONTENT = {
       "mana": 8,
       "buffs": [{"kind": "defense", "value": 0.4}],
       "duration": 2,
+      "element": "arcane",
+      "effect": "arcane",
       "image": "/images/skills/boss_storm_skill4.png",
       "description": "Storm fortify 40% 2t"
     },
@@ -5068,6 +5084,8 @@ const CONTENT = {
       "mana": 8,
       "buffs": [{"kind": "weaken", "value": 0.4}],
       "duration": 2,
+      "element": "physical",
+      "effect": "heavy",
       "image": "/images/skills/boss_world_skill3.png",
       "description": "World weaken 40% 2t"
     },
@@ -5078,6 +5096,8 @@ const CONTENT = {
       "mana": 8,
       "buffs": [{"kind": "attack", "value": 0.4}],
       "duration": 2,
+      "element": "physical",
+      "effect": "heavy",
       "image": "/images/skills/boss_world_skill4.png",
       "description": "World frenzy 40% 2t"
     },
