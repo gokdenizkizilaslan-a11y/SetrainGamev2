@@ -1133,7 +1133,9 @@ function renderCombat(room, root) {
   if (d.currentTurnId && d.currentTurnId !== state.lastTurnId) {
     if (d.currentTurnId === state.playerId && me && me.hp > 0) playSfx("turn");
     state.lastTurnId = d.currentTurnId;
+    if (state.pendingUsedSkills) state.pendingUsedSkills.clear();
   }
+  if (d.status === "done" && state.pendingUsedSkills) state.pendingUsedSkills.clear();
 
   const enemiesHtml = d.wave
     .map((m, i) => {
@@ -1168,7 +1170,12 @@ function renderCombat(room, root) {
     })
     .join("");
 
-  const usedIds = (d.usedSkills && d.usedSkills[me.id]) || [];
+  const usedIdsRaw = (d.usedSkills && d.usedSkills[me.id]) || [];
+  // merge pending (optimistic) to prevent double click before server echo
+  const pending = state.pendingUsedSkills || new Set();
+  // clear pending that are now confirmed
+  for (const pid of [...pending]) { if (usedIdsRaw.includes(pid)) pending.delete(pid); }
+  const usedIds = [...usedIdsRaw, ...pending];
   const skillsHtml = combatLoadout(me)
     .map((s) => {
       if (!s) {
@@ -1250,9 +1257,13 @@ function renderCombat(room, root) {
       const chosen = basic && basic.id === id ? { ...basic, target: "enemy", mana: 0 } : CATALOG.skills.find((s) => s.id === id);
       if (!chosen || !canAct || me.mana < (chosen.mana || 0) || usedIds.includes(id)) return;
       if (chosen.target === "self" || chosen.target === "party") {
+        if (!state.pendingUsedSkills) state.pendingUsedSkills = new Set();
+        state.pendingUsedSkills.add(chosen.id);
         socket.emit("combat:act", { skillId: chosen.id, targetId: me.id });
         state.selectedSkill = null;
         state.timerReset = true;
+        // optimistic re-render to disable
+        renderCombat(room, root);
       } else {
         state.selectedSkill = chosen;
         renderCombat(room, root);
@@ -1262,9 +1273,12 @@ function renderCombat(room, root) {
   root.querySelectorAll("[data-enemy]").forEach((b) => {
     b.addEventListener("click", () => {
       if (!canAct || !state.selectedSkill || state.selectedSkill.target !== "enemy") return;
+      if (!state.pendingUsedSkills) state.pendingUsedSkills = new Set();
+      state.pendingUsedSkills.add(state.selectedSkill.id);
       socket.emit("combat:act", { skillId: state.selectedSkill.id, targetId: b.getAttribute("data-enemy") });
       state.selectedSkill = null;
       state.timerReset = true;
+      renderCombat(room, root);
     });
   });
   root.querySelectorAll("[data-fighter]").forEach((b) => {
