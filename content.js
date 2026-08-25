@@ -4097,6 +4097,111 @@ const CONTENT = {
       "image": "/images/items/ember_plate.png",
       "description": "+130 HP, +20 Res, +5 Atk."
     },
+    {
+      "id": "boss_weapon_ember",
+      "name": "Ember King's Blade",
+      "slot": "weapon",
+      "rarity": "epic",
+      "price": {"gold": 0, "wood": 0},
+      "stats": {"attack": 32, "critChance": 5},
+      "image": "/images/items/boss_weapon_ember.png",
+      "bossWeapon": true,
+      "description": "Ember King's blade — only drops from Ember King (50%)."
+    },
+    {
+      "id": "boss_weapon_frost",
+      "name": "Frost Titan's Axe",
+      "slot": "weapon",
+      "rarity": "epic",
+      "price": {"gold": 0, "wood": 0},
+      "stats": {"attack": 36, "resistance": 8},
+      "image": "/images/items/boss_weapon_frost.png",
+      "bossWeapon": true,
+      "description": "Frost Titan's axe — only drops from Frost Titan (50%)."
+    },
+    {
+      "id": "boss_weapon_void",
+      "name": "Void Herald's Scythe",
+      "slot": "weapon",
+      "rarity": "legendary",
+      "price": {"gold": 0, "wood": 0},
+      "stats": {"attack": 40, "omnivamp": 4},
+      "image": "/images/items/boss_weapon_void.png",
+      "bossWeapon": true,
+      "description": "Void Herald's scythe — only drops from Void Herald (50%)."
+    },
+    {
+      "id": "boss_weapon_storm",
+      "name": "Storm Colossus Hammer",
+      "slot": "weapon",
+      "rarity": "legendary",
+      "price": {"gold": 0, "wood": 0},
+      "stats": {"attack": 44, "speed": 1},
+      "image": "/images/items/boss_weapon_storm.png",
+      "bossWeapon": true,
+      "description": "Storm Colossus hammer — only drops from Storm Colossus (50%)."
+    },
+    {
+      "id": "boss_weapon_world",
+      "name": "World Eater Fang",
+      "slot": "weapon",
+      "rarity": "mythic",
+      "price": {"gold": 0, "wood": 0},
+      "stats": {"attack": 48, "critDamage": 15},
+      "image": "/images/items/boss_weapon_world.png",
+      "bossWeapon": true,
+      "description": "World Eater's fang — only drops from World Eater (50%)."
+    },
+    {
+      "id": "boss_chest_ember",
+      "name": "Ember Chest",
+      "slot": "chest",
+      "rarity": "epic",
+      "price": {"gold": 0, "wood": 0},
+      "image": "/images/items/boss_chest_ember.png",
+      "chestTier": "a",
+      "description": "Ember King's chest — rare+ guaranteed."
+    },
+    {
+      "id": "boss_chest_frost",
+      "name": "Frost Chest",
+      "slot": "chest",
+      "rarity": "epic",
+      "price": {"gold": 0, "wood": 0},
+      "image": "/images/items/boss_chest_frost.png",
+      "chestTier": "s",
+      "description": "Frost Titan's chest — rare+ guaranteed."
+    },
+    {
+      "id": "boss_chest_void",
+      "name": "Void Chest",
+      "slot": "chest",
+      "rarity": "legendary",
+      "price": {"gold": 0, "wood": 0},
+      "image": "/images/items/boss_chest_void.png",
+      "chestTier": "s",
+      "description": "Void Herald's chest — epic+ guaranteed."
+    },
+    {
+      "id": "boss_chest_storm",
+      "name": "Storm Chest",
+      "slot": "chest",
+      "rarity": "legendary",
+      "price": {"gold": 0, "wood": 0},
+      "image": "/images/items/boss_chest_storm.png",
+      "chestTier": "ss",
+      "description": "Storm Colossus chest — epic+ guaranteed."
+    },
+    {
+      "id": "boss_chest_world",
+      "name": "World Chest",
+      "slot": "chest",
+      "rarity": "mythic",
+      "price": {"gold": 0, "wood": 0},
+      "image": "/images/items/boss_chest_world.png",
+      "chestTier": "ss",
+      "description": "World Eater's chest — legendary+ guaranteed."
+    },
 
     {
       "id": "mythic_chest",
