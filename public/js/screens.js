@@ -1130,11 +1130,20 @@ function renderCombat(room, root) {
   }
   startCombatTimer();
 
+  const isNewRound = d.round !== state.lastRound;
   if (d.currentTurnId && d.currentTurnId !== state.lastTurnId) {
     if (d.currentTurnId === state.playerId && me && me.hp > 0) playSfx("turn");
     state.lastTurnId = d.currentTurnId;
     if (state.pendingUsedSkills) state.pendingUsedSkills.clear();
   }
+  if (isNewRound) {
+    if (state.pendingUsedSkills) state.pendingUsedSkills.clear();
+    state.lastRound = d.round;
+  }
+  if (d.phase === "players" && state.lastPhase === "monsters" && state.pendingUsedSkills) {
+    state.pendingUsedSkills.clear();
+  }
+  state.lastPhase = d.phase;
   if (d.status === "done" && state.pendingUsedSkills) state.pendingUsedSkills.clear();
 
   const enemiesHtml = d.wave

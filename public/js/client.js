@@ -30,6 +30,8 @@ const state = {
   selectedDungeonRank: null,
   selectedPartySize: null,
   pendingUsedSkills: new Set(),
+  lastRound: null,
+  lastPhase: null,
 };
 
 const SESSION_KEY = "setra-session";
