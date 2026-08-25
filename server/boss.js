@@ -146,16 +146,15 @@ function startBoss(room, player) {
   b.fx=[];
   b.monsterQueue=[];
   b.monsterTimer=null;
-  b.log=[`${bossDef.label} appears!`];
-  // Build turn order
-  const living = members.filter(p=>p.lives>0);
+  b.log=[`${bossDef.label} appears! Floor 1/1`];
+  // Build turn order - same as dungeon
+  const living = members.filter(p=>p.lives>0 && p.hp>0);
   b.turnOrder = living.sort((a,b)=>b.speed-a.speed).map(p=>p.id);
   b.turnIndex=0;
   b.currentTurnId=b.turnOrder[0]||null;
+  b.endedTurns = new Set();
   if (b.currentTurnId) b.usedSkills[b.currentTurnId]=new Set();
   // arm timer
-  const { armTurnTimer } = require("./combat"); // need to export? We'll handle via timeout in boss.js itself
-  // For now, use combat's armTurnTimer by requiring combat
   try { const combat = require("./combat"); if (combat.armTurnTimer) combat.armTurnTimer(room,b); } catch(e){}
   return b;
 }
