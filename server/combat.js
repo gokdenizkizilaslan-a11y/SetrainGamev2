@@ -606,8 +606,9 @@ function runNextMonster(room, d) {
         );
         dmg -= Math.round(target.resistance * combat.resistanceMitigation);
         dmg = Math.max(1, dmg);
+        const eff = skill.effect || defaultEffectFor(skill.element || mon.element);
         dealDamage(target, dmg);
-        addFx(d, { type: "damage", actor: target.id, target: "player", targetId: target.id, amount: dmg, source: "monster", monster: mon.kind, elem: skill.element || mon.element || "physical", effect: "monster", crit });
+        addFx(d, { type: "damage", actor: target.id, target: "player", targetId: target.id, amount: dmg, source: "monster", monster: mon.kind, elem: skill.element || mon.element || "physical", effect: eff, crit });
       }
     }
     if (typeof room.broadcast === "function") room.broadcast();
