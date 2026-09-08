@@ -138,6 +138,69 @@ Add a new skill by pushing a row onto `skills` (give it a `description`), then a
 
 Add a new skill by pushing a row onto `skills` (give it a `description`), then adding its `id` to a class's `startingSkills`.
 
+## The Skill Tree
+
+The Skill Tree (`content.js` → `skillTree`) is how players spend the skill points they earn (they start with `startingPoints`, and every level up grants `pointsPerLevel` more). The panel in town shows a **Global** tab (skills any class may learn) and a tab for the player's own **class lineage** (their base class plus every evolved form in the chain). The tree is a zoomable, pannable map; nodes auto-layout by prereq tier, so you never have to position them.
+
+The tree data:
+
+```js
+skillTree: {
+  pointsPerLevel: 3,
+  startingPoints: 3,
+  maxLoadout: 5,
+  global: [ /* 30 shared nodes */ ],
+  lineages: {
+    warrior:   [ /* base + warlord + war_emperor nodes */ ],
+    ranger:    [ /* ... */ ],
+    ...        // one key per base class (warrior, ranger, mage, rogue, paladin, assassin, support, tank, tamer)
+  },
+}
+```
+
+A skill node looks like:
+
+```js
+{
+  skill: "heavy_strike",          // id from the `skills` array
+  prereq: "cleave",               // skill id you must already own to learn this (omit for no requirement)
+  minLevel: 12,                   // optional level gate (use 20/40 to gate evolution skills)
+  cost: 1,                        // skill points to spend (default 1 if omitted)
+  owned: true,                    // optional: true = granted automatically at creation (base-class skills)
+}
+```
+
+Rules:
+
+- **Prereqs:** a node can't be learned until you own `prereq`. The layout builds chains from this — no positions needed.
+- **Availability:** nodes with `ownerClass` are restricted to that class (evolution signature skills are gated like this). Global nodes ignore the field.
+- **Gates:** if a node has `minLevel`, you must be that level. Use `minLevel: 20` / `minLevel: 40` for evolution skills so players unlock them as they evolve.
+- **Learned skills** appear in combat slots automatically (like the old starting skills). You can pick up to `maxLoadout` of them to actually carry into battle via the loadout strip at the bottom of the tree panel.
+- **Adding skills:** add the skill to the `skills` array first (so the tooltip, effects, and combat know it), then push a node onto `global` or the matching lineage with its `prereq`/`minLevel`. Restart and it appears on the map.
+
+### Combos (element interplay)
+
+`combos` in `content.js` is a table of **effect pairs** that make matching skills hit harder. When a target already carries one status/effect and is then hit by a skill that reacts to it, the damage is multiplied:
+
+```js
+combos: [
+  { target: "wet",       skill: "lightning", mult: 1.5 },  // lightning vs wet → 150%
+  { target: "wet",       skill: "frost",     mult: 1.4 },  // frost vs wet → deep freeze
+  { target: "frozen",    skill: "physical",  mult: 1.6 },  // frozen + physical → shatter
+  { target: "burning",   skill: "fire",      mult: 1.6 },  // burning + fire → bigger burn
+  { target: "expose",    skill: "physical",  mult: 1.35 }, // broken guard
+  { target: "weaken",    skill: "physical",  mult: 1.2 },  // overwhelmed
+  // add your own pairs here...
+]
+```
+
+- `target` — the status the enemy must already have (from a skill's `effect`), e.g. `wet`, `frozen`, `burning`, `expose`, `weaken`.
+- `skill` — the element (or effect tag) of the incoming hit that reacts, e.g. `lightning`, `frost`, `fire`, `physical`.
+- `mult` — damage multiplier when both conditions are true.
+- Skill definitions optionally carry `bonusTags: ["wet"]` so a single effect can trigger combos even if its `effect` name differs. The client shows the currently-relevant combo hints ("lightning strikes harder vs wet") as pills in the Skill Tree panel — they stay in sync with `combos` automatically.
+
+Example: put a `wet`-applying effect on a skill (e.g. `effect: "wet"`), and every lightning/lightning-affected skill hitting that enemy uses ×1.5. Remove a combo row to disable it — combat and the hints follow automatically, no JS changes.
+
 ## Monsters
 
 The roster is **30 monsters**, each with an `id`, `name`, `hp`, `attack`, `speed`, `image`, and a `rarity` (`common` → `mythic`). Optional `element` sets the damage type of its attacks (see Skills section) — otherwise it defaults to `physical`. Dungeon waves pull monster ids from each dungeon's `monsterPool`; bigger dungeons scale a monster's HP and attack up (see below).
@@ -258,7 +321,7 @@ To make a monster drop more: raise its `rarity` (in the `monsters` array) or rai
 
 A town location (action card + overlay) offering three rites, each costing `town.temple.stamina` (default 2):
 
-- **Evolve** — requires level 20+ (or 40+ for the second evolution) and an **Ancient Relic** (`ancient_relic`, loot-only, `slot: "material"`). Consumes the relic, changes your class to the evolved form, grants its new skill, applies its `evolveBonus` stats, and fully heals you.
+- **Evolve** — requires level 20+ (or 40+ for the second evolution) and an **Ancient Relic** (`ancient_relic`, loot-only, `slot: "material"`). Consumes the relic, changes your class to the evolved form, applies its `evolveBonus` stats, and fully heals you. The evolved class's signature skill is **not** granted for free anymore — it is learned on the **Skill Tree** (see the Skill Tree section).
 - **Mend a Heart** — requires a **Heart of Golem** (`golem_heart`, a rare drop — the golem monster appears even in F-rank). Restores one of your `starting.lives` hearts.
 - **Craft** — combines materials into gear. Each `temple.recipes` entry lists `inputs` (item + qty), a `cost` (gold/wood), and an `output`. Example: `stone_ash_sword + fire_essence → fire_ash_sword`.
 
@@ -289,13 +352,15 @@ and the evolved class carries its own:
 }
 ```
 
-Chain: **base @20 → mid → mid @40 → apex**. The apex class has `baseClass` but **no** `evolution` (it's the strongest form). Evolved classes never appear on the character-creation screen, but the temple shows the current class's next form with its level requirement, the skill you'll gain, and the stat bonus.
+Chain: **base @20 → mid → mid @40 → apex**. The apex class has `baseClass` but **no** `evolution` (it's the strongest form). Evolved classes never appear on the character-creation screen, but the temple shows the current class's next form with its level requirement, the signature skill you can then learn on the Skill Tree, and the stat bonus.
 
 When you evolve:
 - The **Ancient Relic is consumed** and the temple stamina is spent.
-- Your `character` becomes the evolved class; the **evolution skill** is added to your skill loadout.
+- Your `character` becomes the evolved class (with its new `growth` / `manaRegen`).
 - `evolveBonus` stats are applied **once**, and `manaRegen` adjusts by the class's `manaRegen` difference.
 - You're healed to full HP and mana.
+
+The evolution **skill is no longer auto-added** — class skills (including the evolution signature skills) are acquired through the **Skill Tree** after you meet the level requirement.
 
 Stat notes: evolved classes still list `hp`/`attack`/… ranges, but those are **reference only** — stats are accumulative (rolled once at creation, then `growth` each level), so evolution just adds `evolveBonus` and switches future `growth` to the new class.
 

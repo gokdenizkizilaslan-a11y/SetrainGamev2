@@ -90,6 +90,9 @@ function buffSum(d, targetType, targetId, kind){
   for(const b of d.buffs) if(b.targetType===targetType && String(b.targetId)===String(targetId) && b.kind===kind) s+=b.value;
   return s;
 }
+function hasStatus(d, targetType, targetId, kind){
+  return buffSum(d, targetType, targetId, kind) > 0;
+}
 function act(room, player, skillId){
   const d=getPvpFor(room,player);
   if(!d||d.status!=="fighting") throw new Error("No PvP in progress.");
@@ -123,6 +126,16 @@ function act(room, player, skillId){
     dmg=Math.max(1,dmg);
     // shield vs hp
     if(skill.element==="dark" && CONTENT.darkTrait) dmg=Math.round(dmg* (CONTENT.darkTrait.deal||1.3));
+    // combos: data-driven element matchups (e.g. lightning vs wet)
+    if (Array.isArray(CONTENT.combos)) {
+      for (const c of CONTENT.combos) {
+        if (!c || !c.when || !c.mult) continue;
+        if (c.ifElement && c.ifElement !== skill.element) continue;
+        if (hasStatus(d, "player", oppId, c.when)) {
+          dmg = Math.round(dmg * c.mult);
+        }
+      }
+    }
     dealDamage(opponent,dmg);
     addFx(d,{type:"damage", actor:player.id, target:"player", targetId:oppId, amount:dmg, elem:skill.element||"physical", effect:skill.effect||skill.element||"slash", crit});
     if(skill.lifesteal){

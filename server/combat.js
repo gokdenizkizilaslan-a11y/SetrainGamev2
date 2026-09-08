@@ -456,10 +456,16 @@ function act(room, player, skillId, targetId) {
       // dark trait: dark deals 30% more, dark takes 50% more
       if (skill.element === "dark" && CONTENT.darkTrait) dmg = Math.round(dmg * (CONTENT.darkTrait.deal || 1.3));
       if (defenderElem === "dark" && CONTENT.darkTrait) dmg = Math.round(dmg * (CONTENT.darkTrait.taken || 1.5));
-      // wet combo: lightning does 50% more vs wet
-      if (skill.element === "lightning" && hasStatus(d, "monster", Number(targetId), "wet")) {
-        const comboMult = (CONTENT.combos && CONTENT.combos.wet && CONTENT.combos.wet.mult) || 1.5;
-        dmg = Math.round(dmg * comboMult);
+      // combos: data-driven element-matchup bonuses (see CONTENT.combos),
+      // e.g. lightning vs wet ("Overcharge"), physical vs frozen ("Shatter")
+      if (Array.isArray(CONTENT.combos)) {
+        for (const c of CONTENT.combos) {
+          if (!c || !c.when || !c.mult) continue;
+          if (c.ifElement && c.ifElement !== skill.element) continue;
+          if (hasStatus(d, "monster", Number(targetId), c.when)) {
+            dmg = Math.round(dmg * c.mult);
+          }
+        }
       }
       // bonus vs frozen etc (generic)
       if (skill.bonusVsStatus && hasStatus(d, "monster", Number(targetId), skill.bonusVsStatus.status)) {

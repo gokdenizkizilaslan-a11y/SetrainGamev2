@@ -16,7 +16,7 @@ const temple = require("./temple");
 const sessions = require("./sessions");
 const pvp = require("./pvp");
 const pets = require("./pets");
-const { onNewDay, equipItem, unequipSlot, setSkillLoadout } = require("./players");
+const { onNewDay, equipItem, unequipSlot, setSkillLoadout, learnTreeNode } = require("./players");
 const { publicCatalog, getClass } = require("../content");
 
 function isDead(p) { return p && p.lives <= 0; }
@@ -528,6 +528,20 @@ function registerSocketHandlers(io) {
         requireAlive(player);
         setSkillLoadout(player, payload.skillIds);
         room.log = { type: "inventory", text: "You rearrange your skills." };
+        emitRoomState(io, room);
+      } catch (err) {
+        emitError(socket, err);
+      }
+    });
+
+    socket.on("skillTree:learn", (payload = {}) => {
+      try {
+        const { room, player } = gameContext(socket);
+        requireAlive(player);
+        town.requirePlaying(room, player);
+        requireAlive(player);
+        const res = learnTreeNode(player, payload.nodeId);
+        room.log = { type: "inventory", text: `You learn ${res.name} for ${res.cost} skill point${res.cost === 1 ? "" : "s"}.` };
         emitRoomState(io, room);
       } catch (err) {
         emitError(socket, err);

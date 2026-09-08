@@ -868,6 +868,388 @@ input:focus {
   height: 100%;
 }
 
+/* Compact town action strip + skill tree panel */
+
+.town-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 0.9rem;
+  margin-bottom: 0.55rem;
+}
+.town-strip .action-title {
+  margin: 0;
+  font-size: 0.74rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.action-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+@media (max-width: 900px) {
+  .action-cards { gap: 0.4rem; }
+}
+.action-card {
+  flex-direction: row;
+  align-items: center;
+  width: auto;
+  gap: 0.45rem;
+  padding: 0.32rem 0.7rem;
+  border-radius: 999px;
+  text-align: left;
+  background: var(--glass-2);
+  border: 1px solid rgba(232, 183, 108, 0.16);
+  color: var(--ink);
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+}
+.action-card:hover:not(.action-card--locked) {
+  transform: translateY(-1px);
+  border-color: rgba(232, 183, 108, 0.55);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(232, 183, 108, 0.12);
+}
+.action-card--hero {
+  background: linear-gradient(135deg, rgba(216, 156, 74, 0.26), rgba(216, 156, 74, 0.08));
+  border-color: rgba(232, 183, 108, 0.42);
+}
+.action-card--locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.action-icon {
+  flex-shrink: 0;
+  width: 1.45rem;
+  height: 1.45rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(216, 156, 74, 0.28), rgba(216, 156, 74, 0.1));
+  border: 1px solid rgba(232, 183, 108, 0.24);
+  color: var(--gold-bright);
+}
+.action-icon svg {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+.action-body {
+  flex: none;
+  min-width: 0;
+}
+.action-title-text {
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  font-size: 0.88rem;
+  display: block;
+  line-height: 1.15;
+}
+.action-sub,
+.action-arrow {
+  display: none;
+}
+
+.town-split {
+  display: grid;
+  grid-template-columns: minmax(190px, 270px) minmax(0, 1fr);
+  gap: 0.9rem;
+  margin-top: 0.3rem;
+  align-items: start;
+}
+@media (max-width: 1180px) {
+  .town-split { grid-template-columns: minmax(170px, 230px) minmax(0, 1fr); }
+}
+@media (max-width: 900px) {
+  .town-split { grid-template-columns: 1fr; }
+}
+
+.town-log {
+  align-self: start;
+  max-height: 430px;
+  overflow-y: auto;
+  border-top: none;
+  padding-top: 0.7rem;
+  padding: 0.75rem;
+  background: var(--glass-2);
+  border: 1px solid var(--glass-line);
+  border-radius: 12px;
+  min-height: 3.4rem;
+}
+.log-line {
+  padding: 0.15rem 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+/* ---- Skill Tree panel ---- */
+
+.skilltree {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  min-height: 420px;
+  max-height: 68vh;
+  background: var(--glass-2);
+  border: 1px solid var(--glass-line);
+  border-radius: 16px;
+  padding: 0.8rem 0.85rem 0.7rem;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.18);
+}
+
+.skilltree-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.skilltree-tabs {
+  display: flex;
+  gap: 0.3rem;
+}
+.st-tab {
+  font-family: "Cinzel", serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--glass-line);
+  border-radius: 999px;
+  padding: 0.3rem 0.85rem;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+.st-tab:hover { color: var(--gold-bright); border-color: rgba(232, 183, 108, 0.5); }
+.st-tab--active {
+  color: var(--ink);
+  background: linear-gradient(135deg, rgba(216, 156, 74, 0.35), rgba(216, 156, 74, 0.16));
+  border-color: rgba(232, 183, 108, 0.65);
+}
+
+.skilltree-pts {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(232, 183, 108, 0.3);
+  color: var(--gold-bright);
+}
+.st-point-ico { font-size: 0.9rem; }
+.st-point-num { font-family: "Cinzel", serif; font-weight: 700; font-size: 1.1rem; color: var(--ink); }
+.st-point-lbl { font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+
+.skilltree-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.st-tree-name {
+  font-family: "Cinzel", serif;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-right: 0.2rem;
+}
+
+.skilltree-combos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+}
+.st-combo {
+  font-size: 0.72rem;
+  color: var(--gold-bright);
+  background: rgba(216, 156, 74, 0.12);
+  border: 1px solid rgba(232, 183, 108, 0.28);
+  border-radius: 999px;
+  padding: 0.18rem 0.55rem;
+  cursor: help;
+}
+.st-combo--hint {
+  color: var(--muted);
+  background: transparent;
+  border-style: dashed;
+  cursor: help;
+}
+
+.skilltree-map-viewport {
+  position: relative;
+  flex: 1;
+  min-height: 300px;
+  max-height: 470px;
+  overflow: hidden;
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(232, 183, 108, 0.08), transparent 60%),
+    rgba(0, 0, 0, 0.28);
+  border: 1px solid var(--glass-line);
+  touch-action: none;
+  cursor: grab;
+}
+.skilltree-map-viewport:active { cursor: grabbing; }
+
+.skilltree-map {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+}
+.skilltree-lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+.st-line {
+  fill: none;
+  stroke: rgba(232, 183, 108, 0.4);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.skilltree-nodes {
+  position: absolute;
+  inset: 0;
+}
+
+.st-node {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 12px;
+  background: var(--glass-2);
+  border: 1px solid rgba(232, 183, 108, 0.2);
+  color: var(--ink);
+  font-family: inherit;
+  text-align: left;
+  cursor: help;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+}
+.st-node-ico {
+  width: 2.6rem;
+  height: 2.6rem;
+  flex-shrink: 0;
+  border-width: 1px;
+}
+.st-node-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.st-node-name {
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  line-height: 1.1;
+}
+.st-node-cost {
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+.st-node-lock {
+  position: absolute;
+  top: 0.3rem;
+  right: 0.35rem;
+  font-size: 0.8rem;
+}
+
+/* element tints for the node icon placeholder (fallback until image loads) */
+.st-node-ico--fire { background: linear-gradient(135deg, #b03a2e, #7a2418); }
+.st-node-ico--frost { background: linear-gradient(135deg, #3a7ab0, #1e4a78); }
+.st-node-ico--water { background: linear-gradient(135deg, #2e7ab0, #164a78); }
+.st-node-ico--lightning { background: linear-gradient(135deg, #a8932e, #6e5c1e); }
+.st-node-ico--dark { background: linear-gradient(135deg, #4a3a6e, #2a2045); }
+.st-node-ico--physical { background: linear-gradient(135deg, #8f8b86, #57534e); }
+.st-node-ico--holy { background: linear-gradient(135deg, #d9b34a, #a8792e); }
+
+.st-node--learned {
+  border-color: rgba(132, 204, 140, 0.65);
+  box-shadow: 0 0 14px rgba(92, 172, 100, 0.25);
+  cursor: default;
+}
+.st-node--learned .st-node-name { color: #8fd49a; }
+.st-node--open {
+  cursor: pointer;
+  border-color: rgba(232, 183, 108, 0.65);
+}
+.st-node--open:hover {
+  transform: translateY(-3px);
+  border-color: var(--gold-bright);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.4), 0 0 30px rgba(216, 156, 74, 0.35);
+}
+.st-node--noPts {
+  opacity: 0.6;
+  border-style: dashed;
+}
+.st-node--locked {
+  opacity: 0.45;
+}
+
+/* Loadout strip */
+
+.skilltree-loadout {
+  border-top: 1px dashed rgba(232, 183, 108, 0.22);
+  padding-top: 0.55rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.st-loadout-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+.st-loadout-title {
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--gold-bright);
+}
+.st-loadout-hint {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+.st-loadout-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.st-loadout-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.55rem 0.3rem 0.3rem;
+  border-radius: 999px;
+  background: var(--glass-2);
+  border: 1px solid var(--glass-line);
+  color: var(--ink);
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.st-loadout-chip:hover { border-color: rgba(232, 183, 108, 0.55); }
+.st-loadout-chip--on {
+  background: linear-gradient(135deg, rgba(216, 156, 74, 0.3), rgba(216, 156, 74, 0.12));
+  border-color: rgba(232, 183, 108, 0.6);
+}
+.st-loadout-ico {
+  width: 1.7rem;
+  height: 1.7rem;
+  border-width: 1px;
+}
+.st-loadout-chip-name {
+  font-size: 0.8rem;
+}
+
 /* Town party + log */
 
 .town-party {

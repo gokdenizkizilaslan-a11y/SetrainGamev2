@@ -896,6 +896,406 @@ function renderTownLog(room) {
     : `<div class="log-line muted">The town is quiet. Spend stamina, then end the day.</div>`;
 }
 
+// ---- Skill Tree ----
+
+let skillTreeZoom = 1;
+let skillTreePanX = 0;
+let skillTreePanY = 0;
+let skillTreeDragMoved = false;
+
+const ST_STATUS = { wet: "Wet", frozen: "Frozen", dot: "Poisoned", expose: "Exposed", weaken: "Weakened" };
+
+function classLineageFor(slug) {
+  const list = CATALOG.classes || [];
+  const chain = [slug];
+  let c = list.find((x) => x.slug === slug);
+  const seen = new Set();
+  while (c && c.evolution && !seen.has(c.slug)) {
+    seen.add(c.slug);
+    chain.push(c.evolution.to);
+    c = list.find((x) => x.slug === c.evolution.to);
+  }
+  c = list.find((x) => x.slug === slug);
+  while (c && c.baseClass) {
+    c = list.find((x) => x.slug === c.baseClass);
+    if (!c || chain.includes(c.slug)) break;
+    chain.unshift(c.slug);
+  }
+  return chain;
+}
+
+function skillById(id) {
+  return (CATALOG.skills || []).find((s) => s.id === id) || null;
+}
+
+function skillTreeInfo(player) {
+  const st = CATALOG.skillTree || { global: [], lineages: {} };
+  const lineage = classLineageFor(player.character);
+  return {
+    st,
+    global: st.global || [],
+    lineages: st.lineages || {},
+    lineage,
+    spec: st.lineages ? st.lineages[lineage[0]] || null : null,
+    learned: new Set(player.learnedTreeNodes || []),
+    points: player.skillPoints || 0,
+  };
+}
+
+function treeById(id, ts) {
+  let n = (ts.global || []).find((x) => x.id === id);
+  if (!n && ts.spec) n = (ts.spec.nodes || []).find((x) => x.id === id);
+  return n || null;
+}
+
+function treeNodeIsLearned(node, ts) {
+  return ts.learned.has(node.id) || !!node.owned;
+}
+
+function treeNodeState(node, ts, player) {
+  if (treeNodeIsLearned(node, ts)) return { s: "learned", reason: "" };
+  let unlocked = true;
+  let reason = "";
+  for (const p of node.prereqs || []) {
+    const pn = treeById(p, ts);
+    if (!pn || !treeNodeIsLearned(pn, ts)) {
+      unlocked = false;
+      const preSkill = skillById(pn && pn.skillId);
+      reason = "Requires: " + ((preSkill && preSkill.name) || (pn && pn.id) || p);
+    }
+  }
+  if (unlocked && node.minLevel && player.level < node.minLevel) {
+    unlocked = false;
+    reason = "Requires level " + node.minLevel;
+  }
+  if (!unlocked) return { s: "locked", reason };
+  const cost = node.cost || 1;
+  if (player.skillPoints < cost) return { s: "noPts", reason: "Not enough skill points (" + cost + " needed)" };
+  return { s: "open", reason: "" };
+}
+
+function comboHintsFor(skill) {
+  const hints = [];
+  if (!skill) return hints;
+  const combos = CATALOG.combos || [];
+  if (skill.element) {
+    for (const c of combos) {
+      if (c.ifElement === skill.element && c.mult > 1) {
+        hints.push(c.name + ": +" + Math.round((c.mult - 1) * 100) + "% vs " + (ST_STATUS[c.when] || c.when));
+      }
+    }
+  }
+  for (const b of skill.buffs || []) {
+    if (ST_STATUS[b.kind]) hints.push("Applies: " + ST_STATUS[b.kind]);
+  }
+  return hints;
+}
+
+function treeLayout(nodes) {
+  const tier = {};
+  const depth = (id, seen) => {
+    if (tier[id] !== undefined) return tier[id];
+    if (seen.has(id)) return 0;
+    seen.add(id);
+    const n = nodes.find((x) => x.id === id);
+    let t = 0;
+    for (const p of (n && n.prereqs) || []) {
+      const pn = nodes.find((x) => x.id === p);
+      if (pn) t = Math.max(t, depth(p.id, seen) + 1);
+    }
+    tier[id] = t;
+    return t;
+  };
+  nodes.forEach((n) => depth(n.id, new Set()));
+  const byTier = {};
+  for (const n of nodes) {
+    const t = tier[n.id] !== undefined ? tier[n.id] : 0;
+    tier[n.id] = t;
+    (byTier[t] = byTier[t] || []).push(n.id);
+  }
+  let maxDepth = 0;
+  for (const t of Object.keys(byTier)) maxDepth = Math.max(maxDepth, Number(t));
+  let maxRows = 1;
+  for (const k of Object.keys(byTier)) maxRows = Math.max(maxRows, byTier[k].length);
+  return { tier, byTier, maxDepth, maxRows };
+}
+
+function renderTreeMap(vp, tech, nodes, ts, me) {
+  const stage = tech.stage;
+  const linesSvg = tech.lines;
+  const nodesBox = tech.nodesBox;
+  const COL_W = 190;
+  const ROW_H = 116;
+  const ELEM_W = 154;
+  const ELEM_H = 84;
+  const layout = treeLayout(nodes);
+  const stageW = Math.max(340, (layout.maxDepth + 1) * COL_W + 40);
+  const stageH = Math.max(220, layout.maxRows * ROW_H + 30);
+  stage.style.width = stageW + "px";
+  stage.style.height = stageH + "px";
+  linesSvg.setAttribute("width", stageW);
+  linesSvg.setAttribute("height", stageH);
+  linesSvg.setAttribute("viewBox", `0 0 ${stageW} ${stageH}`);
+  const pos = {};
+  for (const n of nodes) {
+    const t = layout.tier[n.id];
+    const list = layout.byTier[t];
+    const idx = list.indexOf(n.id);
+    const area = stageH - ELEM_H;
+    const y = list.length === 1 ? area / 2 : (idx / (list.length - 1)) * area;
+    pos[n.id] = { x: t * COL_W + 24, y: Math.round(y) };
+  }
+  let lines = "";
+  for (const n of nodes) {
+    for (const p of n.prereqs || []) {
+      if (!pos[p]) continue;
+      const a = pos[p];
+      const b = pos[n.id];
+      lines += `<path d="M ${a.x + ELEM_W - 4} ${a.y + ELEM_H / 2} C ${a.x + ELEM_W + 44} ${a.y + ELEM_H / 2}, ${b.x - 44 - 8} ${b.y + ELEM_H / 2}, ${b.x + 8} ${b.y + ELEM_H / 2}"></path>`;
+    }
+  }
+  linesSvg.innerHTML = lines;
+  nodesBox.innerHTML = nodes
+    .map((n) => {
+      const sk = skillById(n.skillId);
+      const stt = treeNodeState(n, ts, me);
+      const titleParts = [((sk && sk.name) || n.skillId)];
+      if (sk && sk.description) titleParts.push(sk.description);
+      if (n.desc) titleParts.push(n.desc);
+      titleParts.push("Cost: " + (n.cost || 1) + " skill point" + (n.cost === 1 ? "" : "s"));
+      if (n.minLevel) titleParts.push("Level " + n.minLevel + "+");
+      if (stt.s === "locked" || stt.s === "noPts") titleParts.push(stt.reason);
+      const hints = comboHintsFor(sk);
+      if (hints.length) titleParts.push("Combo: " + hints.join(" · "));
+      const p = pos[n.id];
+      const cost = n.cost || 1;
+      return `<button type="button" class="st-node st-node--${stt.s}" data-node="${n.id}" data-state="${stt.s}" data-reason="${escapeHtml(stt.reason)}" style="left:${p.x}px;top:${p.y}px;width:${ELEM_W}px;height:${ELEM_H}px" title="${escapeHtml(titleParts.join(" — "))}">
+        <span class="portrait st-node-ico st-node-ico--${escapeHtml(((sk && sk.element) || "physical"))}" data-img="${escapeHtml((sk && sk.image) || "")}" data-variant="${escapeHtml((sk && sk.element) || "physical")}"></span>
+        <span class="st-node-body">
+          <span class="st-node-name">${escapeHtml((sk && sk.name) || n.skillId)}</span>
+          <span class="st-node-cost">${n.owned ? "✓ owned" : "✦ " + cost + " pt"}</span>
+        </span>
+        ${stt.s === "locked" ? '<span class="st-node-lock">🔒</span>' : ""}${stt.s === "noPts" ? '<span class="st-node-lock">✦</span>' : ""}
+      </button>`;
+    })
+    .join("");
+  initImages(nodesBox);
+  nodesBox.querySelectorAll(".st-node[data-state='open']").forEach((b) => {
+    b.addEventListener("click", () => {
+      sfxPlay("clicksound");
+      socket.emit("skillTree:learn", { nodeId: b.getAttribute("data-node") });
+    });
+  });
+  nodesBox.querySelectorAll(".st-node[data-state!='open']").forEach((b) => {
+    b.addEventListener("click", () => {
+      const reason = b.getAttribute("data-reason");
+      showToast(reason || "Locked — satisfy the prerequisites first.");
+    });
+  });
+}
+
+function applyMapTransform(stage) {
+  if (!stage) return;
+  stage.style.transform = `translate(${skillTreePanX}px, ${skillTreePanY}px) scale(${skillTreeZoom})`;
+}
+
+function fitTreeMap(vp, stage) {
+  if (!vp || !stage) return;
+  const vw = vp.clientWidth;
+  const vh = vp.clientHeight;
+  const sw = stage.scrollWidth || stage.offsetWidth;
+  const sh = stage.scrollHeight || stage.offsetHeight;
+  const z = Math.max(0.35, Math.min(1, Math.min(vw / sw, vh / sh)));
+  skillTreeZoom = z;
+  skillTreePanX = (vw - sw * z) / 2;
+  skillTreePanY = (vh - sh * z) / 2;
+  applyMapTransform(stage);
+}
+
+function bindTreeMapViewport(vp, stage) {
+  vp.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    const rect = vp.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    const factor = e.deltaY < 0 ? 1.12 : 1 / 1.12;
+    const nz = Math.max(0.35, Math.min(1.8, skillTreeZoom * factor));
+    if (nz === skillTreeZoom) return;
+    skillTreePanX = mx - ((mx - skillTreePanX) / skillTreeZoom) * nz;
+    skillTreePanY = my - ((my - skillTreePanY) / skillTreeZoom) * nz;
+    skillTreeZoom = nz;
+    applyMapTransform(stage);
+  });
+  let drag = null;
+  vp.addEventListener("pointerdown", (e) => {
+    drag = { x: e.clientX, y: e.clientY, px: skillTreePanX, py: skillTreePanY };
+    skillTreeDragMoved = false;
+    vp.setPointerCapture(e.pointerId);
+  });
+  vp.addEventListener("pointermove", (e) => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x;
+    const dy = e.clientY - drag.y;
+    if (Math.abs(dx) + Math.abs(dy) > 4) skillTreeDragMoved = true;
+    if (skillTreeDragMoved) {
+      skillTreePanX = drag.px + dx;
+      skillTreePanY = drag.py + dy;
+      applyMapTransform(stage);
+    }
+  });
+  vp.addEventListener("pointerup", () => {
+    drag = null;
+  });
+}
+
+function renderTreeLoadout(me, max) {
+  const el = $("skilltree-loadout");
+  if (!el) return;
+  const loadout = me.skillLoadout || [];
+  const unlocked = me.unlockedSkills || [];
+  el.innerHTML = `
+    <div class="st-loadout-head">
+      <span class="st-loadout-title">⚔ Loadout</span>
+      <span class="st-loadout-hint">${loadout.length}/${max} equipped · click a skill to equip or unequip</span>
+    </div>
+    <div class="st-loadout-chips" id="st-loadout-chips"></div>`;
+  const chips = $("st-loadout-chips");
+  if (!chips) return;
+  if (!unlocked.length) {
+    chips.innerHTML = `<span class="muted">Learn skills from the tree above to equip them.</span>`;
+    return;
+  }
+  chips.innerHTML = unlocked
+    .map((sid) => {
+      const sk = skillById(sid);
+      const on = loadout.includes(sid);
+      return `<button type="button" class="st-loadout-chip${on ? " st-loadout-chip--on" : ""}" data-skill="${sid}" title="${escapeHtml((sk && sk.description) || "")}">
+        <span class="portrait st-loadout-ico st-node-ico--${escapeHtml(((sk && sk.element) || "physical"))}" data-img="${escapeHtml((sk && sk.image) || "")}" data-variant="${escapeHtml((sk && sk.element) || "physical")}"></span>
+        <span class="st-loadout-chip-name">${escapeHtml((sk && sk.name) || sid)}</span>
+      </button>`;
+    })
+    .join("");
+  initImages(chips);
+  chips.querySelectorAll("[data-skill]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const sid = btn.getAttribute("data-skill");
+      let next = loadout.slice();
+      if (next.includes(sid)) next = next.filter((x) => x !== sid);
+      else {
+        if (next.length >= max) {
+          showToast(`You can only equip ${max} skills at once.`);
+          return;
+        }
+        next.push(sid);
+      }
+      sfxPlay("clicksound");
+      socket.emit("skill:setLoadout", { skillIds: next });
+    });
+  });
+}
+
+function renderSkillTreeView(room) {
+  const el = $("skilltree-view");
+  const me = room.players.find((p) => p.id === state.playerId);
+  if (!el || !me) return;
+  const ts = skillTreeInfo(me);
+  const st = ts.st;
+  const showClass = state.skillTreeTab === "class";
+  const nodes = showClass && ts.spec ? ts.spec.nodes : ts.global;
+  const classLabelText = ts.lineage.map((s) => (CATALOG.classes.find((c) => c.slug === s) || {}).label || s).join(" → ");
+  el.innerHTML = `
+    <div class="skilltree">
+      <div class="skilltree-head">
+        <div class="skilltree-tabs">
+          <button type="button" class="st-tab${!showClass ? " st-tab--active" : ""}" data-tab="global">Global</button>
+          <button type="button" class="st-tab${showClass ? " st-tab--active" : ""}" data-tab="class" title="${escapeHtml(classLabelText)}">Class</button>
+        </div>
+        <div class="skilltree-pts" title="Gain ${st.pointsPerLevel} skill point${st.pointsPerLevel === 1 ? "" : "s"} per level">
+          <span class="st-point-ico">✦</span>
+          <span class="st-point-num">${me.skillPoints || 0}</span>
+          <span class="st-point-lbl">pts</span>
+        </div>
+        <div class="skilltree-controls">
+          <span class="st-tree-name">${showClass && ts.spec ? escapeHtml(ts.spec.label) : "Global Skills"}</span>
+          <button type="button" class="btn btn--mini" id="st-zoom-in" title="Zoom in">+</button>
+          <button type="button" class="btn btn--mini" id="st-zoom-out" title="Zoom out">−</button>
+          <button type="button" class="btn btn--mini" id="st-zoom-reset" title="Reset view">⤢</button>
+        </div>
+      </div>
+      <div class="skilltree-combos" id="skilltree-combos"></div>
+      <div class="skilltree-map-viewport" id="skilltree-map-viewport">
+        <div class="skilltree-map" id="skilltree-map">
+          <svg class="skilltree-lines" id="skilltree-lines"></svg>
+          <div class="skilltree-nodes" id="skilltree-nodes"></div>
+        </div>
+      </div>
+      <div class="skilltree-loadout" id="skilltree-loadout"></div>
+    </div>`;
+
+  el.querySelectorAll("[data-tab]").forEach((b) => {
+    b.addEventListener("click", () => {
+      state.skillTreeTab = b.getAttribute("data-tab");
+      renderSkillTreeView(room);
+    });
+  });
+
+  const visibleElements = new Set();
+  for (const n of nodes) {
+    const sk = skillById(n.skillId);
+    if (!sk) continue;
+    if (sk.element) visibleElements.add(sk.element);
+  }
+  const relevant = (CATALOG.combos || []).filter(
+    (c) => (!c.ifElement || visibleElements.has(c.ifElement))
+  );
+  const combosEl = $("skilltree-combos");
+  if (combosEl) {
+    combosEl.innerHTML =
+      (relevant.length
+        ? relevant
+            .map((c) => `<span class="st-combo" title="${escapeHtml(c.desc || "")}">⚡ ${escapeHtml(c.name || c.id)}</span>`)
+            .join("")
+        : `<span class="st-combo muted">No combos on this branch — mix elements for big hits.</span>`) +
+      `<span class="st-combo st-combo--hint" title="Combos trigger when a status (wet/frozen/poisoned/exposed/weakened) meets a matching element.">💡 hover a node for details</span>`;
+  }
+
+  const vp = $("skilltree-map-viewport");
+  const stage = $("skilltree-map");
+  const lines = $("skilltree-lines");
+  const nodesBox = $("skilltree-nodes");
+  if (vp && stage && lines && nodesBox) {
+    renderTreeMap(vp, { stage, lines, nodesBox }, nodes, ts, me);
+    if (!el.dataset.centered) {
+      el.dataset.centered = "1";
+      fitTreeMap(vp, stage);
+    } else {
+      applyMapTransform(stage);
+    }
+    bindTreeMapViewport(vp, stage);
+    const zin = $("st-zoom-in");
+    const zout = $("st-zoom-out");
+    const zreset = $("st-zoom-reset");
+    if (zin) zin.addEventListener("click", () => stepTreeZoom(vp, stage, 1.2));
+    if (zout) zout.addEventListener("click", () => stepTreeZoom(vp, stage, 1 / 1.2));
+    if (zreset) zreset.addEventListener("click", () => fitTreeMap(vp, stage));
+  }
+
+  renderTreeLoadout(me, st.maxLoadout || 5);
+}
+
+function stepTreeZoom(vp, stage, factor) {
+  if (!vp || !stage) return;
+  const rect = vp.getBoundingClientRect();
+  const mx = rect.width / 2;
+  const my = rect.height / 2;
+  const nz = Math.max(0.35, Math.min(1.8, skillTreeZoom * factor));
+  if (nz === skillTreeZoom) return;
+  skillTreePanX = mx - ((mx - skillTreePanX) / skillTreeZoom) * nz;
+  skillTreePanY = my - ((my - skillTreePanY) / skillTreeZoom) * nz;
+  skillTreeZoom = nz;
+  applyMapTransform(stage);
+}
+
 // ---- Dungeon ----
 
 // The dungeon/boss the local player belongs to.

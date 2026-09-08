@@ -15,6 +15,7 @@ const state = {
   inventoryOpen: false,
   pvpOpen: false,
   petsOpen: false,
+  skillTreeTab: "global",
   timerDeadline: null,
   timerReset: false,
   timerFired: false,
@@ -162,6 +163,7 @@ function renderTown(room) {
     renderActionCards(room, state.playerId);
     renderTownParty(room);
     renderTownLog(room);
+    renderSkillTreeView(room);
   } else if (state.dungeonOpen) {
     renderDungeonView(room);
   } else if (state.tavernOpen) {

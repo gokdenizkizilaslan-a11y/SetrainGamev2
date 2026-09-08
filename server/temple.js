@@ -25,15 +25,8 @@ function evolve(room, player) {
   player.hp = player.maxHp;
   player.mana = player.maxMana;
   player.character = evolvedCls.slug;
-  for (const id of evolvedCls.startingSkills || []) {
-    if (!player.unlockedSkills.includes(id)) {
-      player.unlockedSkills.push(id);
-    }
-    if (!player.skillLoadout.includes(id)) {
-      if (player.skillLoadout.length >= 5) player.skillLoadout.pop();
-      player.skillLoadout.push(id);
-    }
-  }
+  // Evolving no longer grants the ascended skill directly —
+  // the Skill Tree is now the path to learning it (after ascending).
   return { type: "temple", text: `You ascend into ${evolvedCls.label}!` };
 }
 

@@ -23,6 +23,136 @@ const CONTENT = {
     "xpBase": 500,
     "xpExponent": 1.45
   },
+  "combos": [
+    { "id": "overcharge", "name": "Overcharge", "when": "wet", "ifElement": "lightning", "mult": 1.5, "desc": "Lightning surges through soaked foes, dealing +50% damage to wet targets." },
+    { "id": "deep_freeze", "name": "Deep Freeze", "when": "wet", "ifElement": "frost", "mult": 1.4, "desc": "Frost latches onto moisture, dealing +40% damage to wet targets." },
+    { "id": "shatter", "name": "Shatter", "when": "frozen", "ifElement": "physical", "mult": 1.6, "desc": "Physical blows shatter frozen enemies, dealing +60% damage." },
+    { "id": "burning", "name": "Burning Blaze", "when": "dot", "ifElement": "fire", "mult": 1.6, "desc": "Fire erupts on burning foes, dealing +60% damage to poisoned targets." },
+    { "id": "break_guard", "name": "Break Guard", "when": "expose", "ifElement": "physical", "mult": 1.35, "desc": "Exposed enemies take +35% physical damage." },
+    { "id": "overwhelm", "name": "Overwhelm", "when": "weaken", "ifElement": "physical", "mult": 1.2, "desc": "Weakened enemies crumble, taking +20% physical damage." }
+  ],
+  "skillTree": {
+    "pointsPerLevel": 3,
+    "startingPoints": 3,
+    "maxLoadout": 5,
+    "global": [
+      { "id": "g_def_divine_guard", "skillId": "divine_guard", "prereqs": [], "cost": 1, "group": "defense", "desc": "A holy ward turns aside a heavy blow." },
+      { "id": "g_def_fortify", "skillId": "fortify", "prereqs": ["g_def_divine_guard"], "cost": 1, "group": "defense", "desc": "Steady yourself against damage." },
+      { "id": "g_def_war_banner", "skillId": "war_banner", "prereqs": ["g_def_fortify"], "cost": 1, "group": "combat", "desc": "Raise morale; allies strike true." },
+      { "id": "g_def_dark_veil", "skillId": "dark_veil", "prereqs": ["g_def_war_banner"], "cost": 2, "group": "defense", "desc": "Wraiths of shadow guard you and sap the foe." },
+      { "id": "g_def_aegis", "skillId": "aegis", "prereqs": ["g_def_fortify"], "cost": 1, "group": "defense", "desc": "A mighty ward shields body and spirit." },
+      { "id": "g_def_barrier", "skillId": "barrier", "prereqs": ["g_def_aegis"], "cost": 1, "group": "defense", "desc": "A resilient bulwark of pure will." },
+      { "id": "g_def_stone_skin", "skillId": "stone_skin", "prereqs": ["g_def_barrier"], "cost": 1, "group": "defense", "desc": "Your hide hardens into living stone." },
+      { "id": "g_def_iron_wall", "skillId": "iron_wall", "prereqs": ["g_def_stone_skin"], "cost": 2, "group": "defense", "desc": "Become an unyielding wall of iron." },
+      { "id": "g_def_group_guard", "skillId": "group_guard", "prereqs": ["g_def_iron_wall"], "cost": 2, "group": "defense", "desc": "Guard the whole party with armored grace." },
+      { "id": "g_def_holy_ward", "skillId": "holy_ward", "prereqs": ["g_def_iron_wall"], "cost": 2, "group": "defense", "desc": "A radiant barrier blessed against harm." },
+      { "id": "g_def_rejuvenate", "skillId": "rejuvenate", "prereqs": ["g_def_divine_guard"], "cost": 1, "group": "heal", "desc": "Renew vitality, round after round." },
+      { "id": "g_def_magic_mend", "skillId": "magic_mend", "prereqs": ["g_def_rejuvenate"], "cost": 2, "group": "heal", "desc": "Mend wounds with pure channeled magic." },
+      { "id": "g_elem_water_splash", "skillId": "water_splash", "prereqs": [], "cost": 1, "group": "frost", "desc": "Soak the foe — wet makes lightning and frost bite harder." },
+      { "id": "g_elem_lightning_bolt", "skillId": "lightning_bolt", "prereqs": ["g_elem_water_splash"], "cost": 1, "group": "lightning", "desc": "Overcharge: +50% vs wet." },
+      { "id": "g_elem_static_overload", "skillId": "static_overload", "prereqs": ["g_elem_lightning_bolt"], "cost": 2, "group": "lightning", "desc": "Mighty lightning; still +50% vs wet." },
+      { "id": "g_elem_volt_conduit", "skillId": "volt_conduit", "prereqs": ["g_elem_water_splash"], "cost": 1, "group": "lightning", "desc": "Electrify the foe while wet." },
+      { "id": "g_elem_frost_bolt", "skillId": "frost_bolt", "prereqs": [], "cost": 1, "group": "frost", "desc": "A chill that lingers." },
+      { "id": "g_elem_cold_snap", "skillId": "cold_snap", "prereqs": ["g_elem_frost_bolt"], "cost": 1, "group": "frost", "desc": "Freeze the foe solid." },
+      { "id": "g_elem_frost_nova", "skillId": "frost_nova", "prereqs": ["g_elem_cold_snap"], "cost": 2, "group": "frost", "desc": "A burst of frost; freezes, then Shatter for +60%." },
+      { "id": "g_elem_glacial_shatter", "skillId": "glacial_shatter", "prereqs": ["g_elem_frost_nova"], "cost": 2, "group": "frost", "desc": "Shatter the ice for huge frost damage." },
+      { "id": "g_elem_scorch_mark", "skillId": "scorch_mark", "prereqs": [], "cost": 1, "group": "fire", "desc": "Set the foe alight." },
+      { "id": "g_elem_ember_storm", "skillId": "ember_storm", "prereqs": ["g_elem_scorch_mark"], "cost": 1, "group": "fire", "desc": "Whirling cinders that keep burning." },
+      { "id": "g_elem_blaze_rupture", "skillId": "blaze_rupture", "prereqs": ["g_elem_ember_storm"], "cost": 2, "group": "fire", "desc": "Burning Blaze: +60% vs poisoned foes." },
+      { "id": "g_brk_venom_strike", "skillId": "venom_strike", "prereqs": [], "cost": 1, "group": "poison", "desc": "Lace your weapon with venom." },
+      { "id": "g_brk_toxin_drench", "skillId": "toxin_drench", "prereqs": ["g_brk_venom_strike"], "cost": 1, "group": "poison", "desc": "Heavy poison for 6% max HP / round." },
+      { "id": "g_brk_venom_burst", "skillId": "venom_burst", "prereqs": ["g_brk_toxin_drench"], "cost": 2, "group": "poison", "desc": "Poisoned targets take +50%." },
+      { "id": "g_brk_cripple", "skillId": "cripple", "prereqs": [], "cost": 1, "group": "break", "desc": "Weaken and expose the foe in one blow." },
+      { "id": "g_brk_broken_guard", "skillId": "broken_guard", "prereqs": ["g_brk_cripple"], "cost": 1, "group": "break", "desc": "Shatter guard: expose + weaken." },
+      { "id": "g_brk_shatter_point", "skillId": "shatter_point", "prereqs": ["g_brk_broken_guard"], "cost": 2, "group": "break", "desc": "Break Guard: +80% vs exposed." },
+      { "id": "g_brk_devastate", "skillId": "devastate", "prereqs": ["g_brk_broken_guard"], "cost": 2, "group": "break", "desc": "Overwhelm: +35% vs weakened." }
+    ],
+    "lineages": {
+      "warrior": {
+        "label": "Warrior Path",
+        "nodes": [
+          { "id": "w_heavy_strike", "skillId": "heavy_strike", "owned": true, "prereqs": [], "cost": 0 },
+          { "id": "w_defend", "skillId": "defend", "owned": true, "prereqs": [], "cost": 0 },
+          { "id": "w_battle_fury", "skillId": "battle_fury", "owned": true, "prereqs": [], "cost": 0 },
+          { "id": "w_war_cry", "skillId": "war_cry", "ownerClass": "warlord", "prereqs": ["w_battle_fury"], "cost": 2, "minLevel": 20 },
+          { "id": "w_cataclysm", "skillId": "cataclysm", "ownerClass": "war_emperor", "prereqs": ["w_war_cry"], "cost": 3, "minLevel": 40 }
+        ]
+      },
+      "ranger": {
+        "label": "Ranger Path",
+        "nodes": [
+          { "id": "r_aimed_shot", "skillId": "aimed_shot", "owned": true, "prereqs": [], "cost": 0 },
+          { "id": "r_piercing_shot", "skillId": "piercing_shot", "owned": true, "prereqs": [], "cost": 0 },
+          { "id": "r_volley", "skillId": "volley", "ownerClass": "warden", "prereqs": ["r_piercing_shot"], "cost": 2, "minLevel": 20 },
+          { "id": "r_storm_barrage", "skillId": "storm_barrage", "ownerClass": "storm_warden", "prereqs": ["r_volley"], "cost": 3, "minLevel": 40 }
+        ]
+      },
+      "mage": {
+        "label": "Mage Path",
+        "nodes": [
+          { "id": "m_arcane_barrage", "skillId": "arcane_barrage", "owned": true, "prereqs": [], "cost": 0 },
+          { "id": "m_mana_shield", "skillId": "mana_shield", "owned": true, "prereqs": [], "cost": 0 },
+          { "id": "m_meteor", "skillId": "meteor", "ownerClass": "archmage", "prereqs": ["m_arcane_barrage"], "cost": 2, "minLevel": 20 },
+          { "id": "m_comet", "skillId": "comet", "ownerClass": "archon", "prereqs": ["m_meteor"], "cost": 3, "minLevel": 40 }
+        ]
+      },
+      "rogue": {
+        "label": "Rogue Path",
+        "nodes": [
+          { "id": "rg_vampiric_strike", "skillId": "vampiric_strike", "owned": true, "prereqs": [], "cost": 0 },
+          { "id": "rg_shadow_meld", "skillId": "shadow_meld", "owned": true, "prereqs": [], "cost": 0 },
+          { "id": "rg_shadow_veil", "skillId": "shadow_veil", "ownerClass": "nightblade", "prereqs": ["rg_vampiric_strike"], "cost": 2, "minLevel": 20 },
+          { "id": "rg_soul_thief", "skillId": "soul_thief", "ownerClass": "shade_king", "prereqs": ["rg_shadow_veil"], "cost": 3, "minLevel": 40 }
+        ]
+      },
+      "paladin": {
+        "label": "Paladin Path",
+        "nodes": [
+          { "id": "p_holy_strike", "skillId": "holy_strike", "owned": true, "prereqs": [], "cost": 0 },
+          { "id": "p_mend", "skillId": "mend", "owned": true, "prereqs": [], "cost": 0 },
+          { "id": "p_holy_judgement", "skillId": "holy_judgement", "ownerClass": "crusader", "prereqs": ["p_holy_strike"], "cost": 2, "minLevel": 20 },
+          { "id": "p_radiance", "skillId": "radiance", "ownerClass": "lightbringer", "prereqs": ["p_holy_judgement"], "cost": 3, "minLevel": 40 }
+        ]
+      },
+      "assassin": {
+        "label": "Assassin Path",
+        "nodes": [
+          { "id": "a_execute", "skillId": "execute", "owned": true, "prereqs": [], "cost": 0 },
+          { "id": "a_shadow_step", "skillId": "shadow_step", "owned": true, "prereqs": [], "cost": 0 },
+          { "id": "a_death_mark", "skillId": "death_mark", "ownerClass": "reaper", "prereqs": ["a_execute"], "cost": 2, "minLevel": 20 },
+          { "id": "a_soul_reap", "skillId": "soul_reap", "ownerClass": "death_lord", "prereqs": ["a_death_mark"], "cost": 3, "minLevel": 40 }
+        ]
+      },
+      "support": {
+        "label": "Support Path",
+        "nodes": [
+          { "id": "s_mend", "skillId": "mend", "owned": true, "prereqs": [], "cost": 0 },
+          { "id": "s_greater_mend", "skillId": "greater_mend", "owned": true, "prereqs": [], "cost": 0 },
+          { "id": "s_spirit_surge", "skillId": "spirit_surge", "owned": true, "prereqs": [], "cost": 0 },
+          { "id": "s_divine_blessing", "skillId": "divine_blessing", "ownerClass": "high_priest", "prereqs": ["s_spirit_surge"], "cost": 2, "minLevel": 20 },
+          { "id": "s_resurgence", "skillId": "resurgence", "ownerClass": "divine_saint", "prereqs": ["s_divine_blessing"], "cost": 3, "minLevel": 40 }
+        ]
+      },
+      "tank": {
+        "label": "Tank Path",
+        "nodes": [
+          { "id": "t_cleave", "skillId": "cleave", "owned": true, "prereqs": [], "cost": 0 },
+          { "id": "t_shield_wall", "skillId": "shield_wall", "owned": true, "prereqs": [], "cost": 0 },
+          { "id": "t_bastion", "skillId": "bastion", "ownerClass": "juggernaut", "prereqs": ["t_shield_wall"], "cost": 2, "minLevel": 20 },
+          { "id": "t_immovable", "skillId": "immovable", "ownerClass": "colossus", "prereqs": ["t_bastion"], "cost": 3, "minLevel": 40 }
+        ]
+      },
+      "tamer": {
+        "label": "Tamer Path",
+        "nodes": [
+          { "id": "tm_war_heal", "skillId": "war_heal", "owned": true, "prereqs": [], "cost": 0 },
+          { "id": "tm_defend", "skillId": "defend", "owned": true, "prereqs": [], "cost": 0 },
+          { "id": "tm_battle_fury", "skillId": "battle_fury", "ownerClass": "beastmaster", "prereqs": ["tm_war_heal"], "cost": 2, "minLevel": 20 },
+          { "id": "tm_war_cry", "skillId": "war_cry", "ownerClass": "alpha_tamer", "prereqs": ["tm_battle_fury"], "cost": 3, "minLevel": 40 }
+        ]
+      }
+    }
+  },
   "story": {
     "title": "The Setra Game",
     "paragraphs": [
@@ -6946,12 +7076,8 @@ const CONTENT = {
       "mana": 9,
       "power": 1.8,
       "element": "lightning",
-      "bonusVsStatus": {
-        "status": "wet",
-        "mult": 0.5
-      },
       "image": "/images/skills/lightning_bolt.png",
-      "description": "Deals 1.8× magicPower lightning damage, +50% vs wet."
+      "description": "Deals 1.8× magicPower lightning damage, +50% vs wet (Overcharge)."
     },
     {
       "id": "war_heal",
@@ -6976,6 +7102,163 @@ const CONTENT = {
       },
       "image": "/images/skills/magic_mend.png",
       "description": "Heals 2× magicPower. Scales with healPower."
+    },
+    {
+      "id": "scorch_mark",
+      "name": "Scorch Mark",
+      "target": "enemy",
+      "mana": 6,
+      "power": 1.1,
+      "element": "fire",
+      "buffs": [
+        { "kind": "dot", "value": 0.04 }
+      ],
+      "duration": 3,
+      "effect": "fire_slash_arc",
+      "image": "/images/skills/scorch_mark.png",
+      "description": "Sear the foe for 1.1× magicPower and set it burning (4% max HP / round for 3 rounds)."
+    },
+    {
+      "id": "ember_storm",
+      "name": "Ember Storm",
+      "target": "enemy",
+      "mana": 10,
+      "power": 1.6,
+      "element": "fire",
+      "buffs": [
+        { "kind": "dot", "value": 0.03 }
+      ],
+      "duration": 3,
+      "effect": "ember_whirlwind",
+      "image": "/images/skills/ember_storm.png",
+      "description": "A whirl of cinders deals 1.6× magicPower and leaves the foe burning."
+    },
+    {
+      "id": "blaze_rupture",
+      "name": "Blaze Rupture",
+      "target": "enemy",
+      "mana": 12,
+      "power": 2.3,
+      "element": "fire",
+      "effect": "magma_eruption_burst",
+      "image": "/images/skills/blaze_rupture.png",
+      "description": "Detonate magma for 2.3× magicPower; burning targets take +60%."
+    },
+    {
+      "id": "cold_snap",
+      "name": "Cold Snap",
+      "target": "enemy",
+      "mana": 7,
+      "power": 1.3,
+      "element": "frost",
+      "buffs": [
+        { "kind": "frozen", "value": 0 }
+      ],
+      "duration": 2,
+      "effect": "frost_crystal_spear",
+      "image": "/images/skills/cold_snap.png",
+      "description": "Hurl a frost spear for 1.3× magicPower and freeze the target for 2 rounds."
+    },
+    {
+      "id": "glacial_shatter",
+      "name": "Glacial Shatter",
+      "target": "enemy",
+      "mana": 11,
+      "power": 2.4,
+      "element": "frost",
+      "effect": "ice_spikes_ground",
+      "image": "/images/skills/glacial_shatter.png",
+      "description": "Implode the ice for 2.4× magicPower; frozen targets take +65%."
+    },
+    {
+      "id": "volt_conduit",
+      "name": "Volt Conduit",
+      "target": "enemy",
+      "mana": 8,
+      "power": 1.2,
+      "element": "lightning",
+      "buffs": [
+        { "kind": "dot", "value": 0.03 }
+      ],
+      "duration": 3,
+      "effect": "electric_sparks_shower",
+      "image": "/images/skills/volt_conduit.png",
+      "description": "Channel crackling current for 1.2× magicPower and electrify the target."
+    },
+    {
+      "id": "static_overload",
+      "name": "Static Overload",
+      "target": "enemy",
+      "mana": 11,
+      "power": 2.2,
+      "element": "lightning",
+      "effect": "lightning_strike_heavy",
+      "image": "/images/skills/static_overload.png",
+      "description": "Call down 2.2× magicPower lightning; wet targets take +50%."
+    },
+    {
+      "id": "toxin_drench",
+      "name": "Toxin Drench",
+      "target": "enemy",
+      "mana": 6,
+      "power": 0.9,
+      "element": "physical",
+      "buffs": [
+        { "kind": "dot", "value": 0.06 }
+      ],
+      "duration": 3,
+      "effect": "mud_splash_entangle",
+      "image": "/images/skills/toxin_drench.png",
+      "description": "Soak the foe in venom for 0.9× attack; poison deals 6% max HP / round."
+    },
+    {
+      "id": "venom_burst",
+      "name": "Venom Burst",
+      "target": "enemy",
+      "mana": 11,
+      "power": 2.2,
+      "element": "physical",
+      "effect": "earth_fissure_rupture",
+      "image": "/images/skills/venom_burst.png",
+      "description": "Burst the blisters for 2.2× attack; poisoned targets take +50%."
+    },
+    {
+      "id": "broken_guard",
+      "name": "Broken Guard",
+      "target": "enemy",
+      "mana": 7,
+      "power": 1.0,
+      "element": "physical",
+      "buffs": [
+        { "kind": "expose", "value": 0.25 },
+        { "kind": "weaken", "value": 0.2 }
+      ],
+      "duration": 2,
+      "effect": "shield_bash_shock",
+      "image": "/images/skills/broken_guard.png",
+      "description": "Shatter defenses for 1× attack: the foe takes 25% more and deals 20% less for 2 rounds."
+    },
+    {
+      "id": "shatter_point",
+      "name": "Shatter Point",
+      "target": "enemy",
+      "mana": 8,
+      "power": 1.6,
+      "element": "physical",
+      "effect": "piercing_rapier_thrust",
+      "image": "/images/skills/shatter_point.png",
+      "description": "Strike the weak point for 1.6× attack; exposed targets take +80%."
+    },
+    {
+      "id": "devastate",
+      "name": "Devastate",
+      "target": "enemy",
+      "mana": 12,
+      "power": 2.6,
+      "element": "physical",
+      "effect": "heavy_hammer_slam",
+      "image": "/images/skills/devastate.png",
+      "description": "A crushing blow for 2.6× attack; weakened targets take +35%."
     }
   ]
 };
@@ -7015,6 +7298,7 @@ function publicCatalog() {
       label: c.label,
       image: c.image,
       baseClass: c.baseClass || null,
+      evolution: c.evolution ? { to: c.evolution.to, level: c.evolution.level } : null,
       basicAttack: c.basicAttack,
       skills: c.startingSkills || [],
       manaRegen: c.manaRegen || 0,
@@ -7040,8 +7324,15 @@ function publicCatalog() {
     },
     effects: CONTENT.effects,
     affinity: CONTENT.affinity || {},
-    combos: CONTENT.combos || {},
+    combos: CONTENT.combos || [],
     darkTrait: CONTENT.darkTrait || { deal: 1.3, taken: 1.5 },
+    skillTree: {
+      pointsPerLevel: (CONTENT.skillTree && CONTENT.skillTree.pointsPerLevel) || 3,
+      startingPoints: (CONTENT.skillTree && CONTENT.skillTree.startingPoints) || 3,
+      maxLoadout: (CONTENT.skillTree && CONTENT.skillTree.maxLoadout) || 5,
+      global: (CONTENT.skillTree && CONTENT.skillTree.global) || [],
+      lineages: (CONTENT.skillTree && CONTENT.skillTree.lineages) || {},
+    },
     pets: (CONTENT.pets || []).map((p) => ({ id: p.id, name: p.name, image: p.image, element: p.element, description: p.description || "" })),
     food: CONTENT.food,
     loot: {
@@ -7078,6 +7369,7 @@ function publicCatalog() {
       kind: s.kind || null,
       monster: s.monster || false,
       bonusVsStatus: s.bonusVsStatus || null,
+      effect: s.effect || null,
     })),
     items: CONTENT.items.map((i) => ({
       id: i.id,

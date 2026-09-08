@@ -1,4 +1,4 @@
-const { CONTENT, getClass, getItem } = require("../content");
+const { CONTENT, getClass, getSkill } = require("../content");
 
 function randomInt(min, max) {
   const lo = Math.ceil(min);
@@ -96,10 +96,91 @@ function addXp(player, amount) {
     player.xp -= need;
     player.level += 1;
     applyClassGrowth(player);
+    player.skillPoints = (player.skillPoints || 0) + ((CONTENT.skillTree && CONTENT.skillTree.pointsPerLevel) || 3);
   }
   if (player.level >= maxLevel) {
     player.xp = 0;
   }
+}
+
+// ---- Skill Tree ----
+
+function lineageFor(slug) {
+  const chain = [];
+  const seen = new Set();
+  let c = getClass(slug);
+  while (c && !seen.has(c.slug)) {
+    seen.add(c.slug);
+    chain.push(c.slug);
+    c = c.evolution && c.evolution.to ? getClass(c.evolution.to) : null;
+  }
+  c = getClass(slug);
+  while (c && c.baseClass) {
+    c = getClass(c.baseClass);
+    if (!c || chain.includes(c.slug)) break;
+    chain.unshift(c.slug);
+  }
+  return chain;
+}
+
+function lineageSkillTree(slug) {
+  const st = CONTENT.skillTree;
+  if (!st || !st.lineages) return null;
+  const chain = lineageFor(slug);
+  return st.lineages[chain[0]] || null;
+}
+
+function seedOwnedTreeNodes(player) {
+  const spec = lineageSkillTree(player.character);
+  player.learnedTreeNodes = player.learnedTreeNodes || [];
+  if (!spec) return;
+  for (const node of spec.nodes) {
+    if (!node.owned) continue;
+    if (!player.learnedTreeNodes.includes(node.id)) player.learnedTreeNodes.push(node.id);
+    const skill = node.skillId;
+    if (skill && !player.unlockedSkills.includes(skill)) player.unlockedSkills.push(skill);
+  }
+}
+
+function learnTreeNode(player, nodeId) {
+  const st = CONTENT.skillTree;
+  if (!st) throw new Error("The skill tree is hidden.");
+  let node = (st.global || []).find((n) => n.id === nodeId) || null;
+  const spec = lineageSkillTree(player.character);
+  if (!node && spec) node = spec.nodes.find((n) => n.id === nodeId) || null;
+  if (!node) throw new Error("That skill cannot be found on the tree.");
+  if ((player.learnedTreeNodes || []).includes(nodeId)) throw new Error("You already learned that skill.");
+  for (const p of node.prereqs || []) {
+    if (!(player.learnedTreeNodes || []).includes(p)) {
+      const pre = ((st.global || []).find((n) => n.id === p) || (spec ? spec.nodes.find((n) => n.id === p) : null));
+      const name = pre && pre.skillId ? (getSkill(pre.skillId) || {}).name || pre.skillId : p;
+      throw new Error("Requires: " + name + ".");
+    }
+  }
+  if (node.ownerClass) {
+    const chain = lineageFor(player.character);
+    if (!chain.includes(node.ownerClass)) throw new Error("That skill is not part of your class path.");
+  }
+  if (node.minLevel && player.level < node.minLevel) {
+    throw new Error("Requires level " + node.minLevel + ".");
+  }
+  const cost = node.cost || 1;
+  if ((player.skillPoints || 0) < cost) throw new Error("Not enough skill points (" + cost + " needed).");
+  const skill = getSkill(node.skillId);
+  player.skillPoints -= cost;
+  player.learnedTreeNodes.push(nodeId);
+  if (node.skillId && !player.unlockedSkills.includes(node.skillId)) {
+    player.unlockedSkills.push(node.skillId);
+    if (player.skillLoadout.length < ((st.maxLoadout) || 5)) {
+      player.skillLoadout.push(node.skillId);
+    }
+  }
+  return {
+    nodeId,
+    skillId: node.skillId,
+    name: (skill && skill.name) || node.skillId,
+    cost,
+  };
 }
 function petXpToNext(level){
   if(level >= 20) return 0;
@@ -157,6 +238,8 @@ function createPlayer({ id, name, character, isHost = false }) {
     },
     unlockedSkills: starting,
     skillLoadout: starting.slice(),
+    skillPoints: (CONTENT.skillTree && CONTENT.skillTree.startingPoints) || 3,
+    learnedTreeNodes: [],
     hp: 0,
     maxHp: 0,
     attack: 0,
@@ -191,6 +274,7 @@ function createPlayer({ id, name, character, isHost = false }) {
   if (character === "tamer") {
     player.inventory.push({ itemId: "egg_red", qty: 1 }, { itemId: "egg_green", qty: 1 });
   }
+  seedOwnedTreeNodes(player);
   return player;
 }
 
@@ -207,6 +291,8 @@ function publicPlayer(player) {
     equipment: { ...player.equipment },
     unlockedSkills: (player.unlockedSkills || []).slice(),
     skillLoadout: (player.skillLoadout || []).slice(),
+    skillPoints: player.skillPoints || 0,
+    learnedTreeNodes: (player.learnedTreeNodes || []).slice(),
     bossKills: (player.bossKills || []).slice(),
     connected: player.connected !== false,
     hp: player.hp,
@@ -448,4 +534,5 @@ module.exports = {
   healForFood,
   eatFood,
   setSkillLoadout,
+  learnTreeNode,
 };
