@@ -988,43 +988,184 @@ function comboHintsFor(skill) {
   return hints;
 }
 
-function renderTreeNodeCard(n, ts, me) {
-  const sk = skillById(n.skillId);
-  const stt = treeNodeState(n, ts, me);
-  const titleParts = [((sk && sk.name) || n.skillId)];
-  if (sk && sk.description) titleParts.push(sk.description);
-  if (n.desc) titleParts.push(n.desc);
-  titleParts.push("Cost: " + (n.cost || 1) + " skill point" + ((n.cost || 1) === 1 ? "" : "s"));
-  if (n.minLevel) titleParts.push("Level " + n.minLevel + "+");
-  if (stt.s === "locked" || stt.s === "noPts") titleParts.push(stt.reason);
-  const hints = comboHintsFor(sk);
-  if (hints.length) titleParts.push("Combo: " + hints.join(" · "));
-  const cost = n.cost || 1;
-  return `<button type="button" class="st-node st-node--${stt.s}" data-node="${n.id}" data-state="${stt.s}" data-reason="${escapeHtml(stt.reason)}" title="${escapeHtml(titleParts.join(" — "))}">
-    <span class="portrait st-node-ico st-node-ico--${escapeHtml(((sk && sk.element) || "physical"))}" data-img="${escapeHtml((sk && sk.image) || "")}" data-variant="${escapeHtml((sk && sk.element) || "physical")}"></span>
-    <span class="st-node-body">
-      <span class="st-node-name">${escapeHtml((sk && sk.name) || n.skillId)}</span>
-      <span class="st-node-cost">${n.owned ? "✓ owned" : "✦ " + cost + " pt"}</span>
-    </span>
-    ${stt.s === "locked" ? '<span class="st-node-lock">🔒</span>' : ""}${stt.s === "noPts" ? '<span class="st-node-lock">✦</span>' : ""}
-  </button>`;
+function skillTreeTierOf(n) {
+  const c = n.cost || 1;
+  if (c <= 3) return 1;
+  if (c <= 4) return 2;
+  if (c <= 6) return 3;
+  return 4;
 }
 
-function renderTreeGrid(gridEl, nodes, ts, me) {
-  gridEl.innerHTML = nodes.map((n) => renderTreeNodeCard(n, ts, me)).join("");
-  initImages(gridEl);
-  gridEl.querySelectorAll(".st-node[data-state='open']").forEach((b) => {
+const SKILL_TIER_LABELS = {
+  1: "✦ Starter — 2-3 pts",
+  2: "✦ Strong — 4 pts",
+  3: "✦ Advanced — 5-6 pts",
+  4: "✦ Mastery — 7-10 pts"
+};
+
+function skillTreeLayout(nodes) {
+  const byTier = {};
+  for (const n of nodes) {
+    const t = skillTreeTierOf(n);
+    (byTier[t] = byTier[t] || []).push(n);
+  }
+  const tiers = [1, 2, 3, 4].filter((t) => byTier[t]);
+  const NODE_W = 128;
+  const NODE_H = 84;
+  const GAP_X = 44;
+  const ROW_H = 142;
+  const PAD = 56;
+  let maxW = 0;
+  for (const t of tiers) {
+    const cols = byTier[t].length;
+    maxW = Math.max(maxW, cols * NODE_W + (cols - 1) * GAP_X);
+  }
+  const W = Math.max(620, maxW + PAD * 2);
+  const H = PAD * 2 + tiers.length * ROW_H;
+  const pos = {};
+  const tierIndex = {};
+  tiers.forEach((t, idx) => { tierIndex[t] = idx; });
+  for (const t of tiers) {
+    const list = byTier[t];
+    const y = PAD + tierIndex[t] * ROW_H;
+    const rowW = list.length * NODE_W + (list.length - 1) * GAP_X;
+    const startX = (W - rowW) / 2;
+    list.forEach((n, i) => {
+      pos[n.id] = { x: startX + i * (NODE_W + GAP_X), y };
+    });
+  }
+  return { tiers, byTier, tierIndex, pos, W, H, NODE_W, NODE_H, GAP_X, ROW_H, PAD };
+}
+
+function renderTreeMap(nodes, ts, me) {
+  const mapEl = $("skilltree-map");
+  const nodesEl = $("skilltree-nodes");
+  const labelsEl = $("skilltree-tiers");
+  if (!mapEl || !nodesEl) return;
+  const L = skillTreeLayout(nodes);
+  mapEl.style.width = L.W + "px";
+  mapEl.style.height = L.H + "px";
+  mapEl.style.transformOrigin = "0 0";
+  nodesEl.innerHTML = nodes
+    .map((n) => {
+      const p = L.pos[n.id];
+      const sk = skillById(n.skillId);
+      const stt = treeNodeState(n, ts, me);
+      const titleParts = [((sk && sk.name) || n.skillId)];
+      if (sk && sk.description) titleParts.push(sk.description);
+      if (n.desc) titleParts.push(n.desc);
+      titleParts.push("Cost: " + (n.cost || 1) + " skill point" + ((n.cost || 1) === 1 ? "" : "s"));
+      if (n.minLevel) titleParts.push("Level " + n.minLevel + "+");
+      if (stt.s === "locked" || stt.s === "noPts") titleParts.push(stt.reason);
+      const hints = comboHintsFor(sk);
+      if (hints.length) titleParts.push("Combo: " + hints.join(" · "));
+      const cost = n.cost || 1;
+      return `<button type="button" class="st-node st-node--${stt.s}" data-node="${n.id}" data-state="${stt.s}" data-reason="${escapeHtml(stt.reason)}" style="left:${p.x}px;top:${p.y}px;width:${L.NODE_W}px;height:${L.NODE_H}px" title="${escapeHtml(titleParts.join(" — "))}">
+        <span class="portrait st-node-ico st-node-ico--${escapeHtml(((sk && sk.element) || "physical"))}" data-img="${escapeHtml((sk && sk.image) || "")}" data-variant="${escapeHtml((sk && sk.element) || "physical")}"></span>
+        <span class="st-node-body">
+          <span class="st-node-name">${escapeHtml((sk && sk.name) || n.skillId)}</span>
+          <span class="st-node-cost">${n.owned ? "✓ owned" : "✦ " + cost + " pt"}</span>
+        </span>
+        ${stt.s === "locked" ? '<span class="st-node-lock">🔒</span>' : ""}${stt.s === "noPts" ? '<span class="st-node-lock">✦</span>' : ""}
+      </button>`;
+    })
+    .join("");
+  initImages(nodesEl);
+  nodesEl.querySelectorAll(".st-node[data-state='open']").forEach((b) => {
     b.addEventListener("click", () => {
       sfxPlay("clicksound");
       socket.emit("skillTree:learn", { nodeId: b.getAttribute("data-node") });
     });
   });
-  gridEl.querySelectorAll(".st-node:not([data-state='open'])").forEach((b) => {
+  nodesEl.querySelectorAll(".st-node:not([data-state='open'])").forEach((b) => {
     b.addEventListener("click", () => {
       const reason = b.getAttribute("data-reason");
       showToast(reason || "Locked — gain skill points to unlock.");
     });
   });
+  if (labelsEl) {
+    labelsEl.innerHTML = L.tiers
+      .map((t) => {
+        const y = L.PAD + L.tierIndex[t] * L.ROW_H;
+        return `<span class="st-tier-label" style="left:0;top:${y - 30}px;width:${L.W}px">${SKILL_TIER_LABELS[t]}</span>`;
+      })
+      .join("");
+  }
+  return L;
+}
+
+const stMap = { scale: 1, x: 0, y: 0, dragging: false, lastX: 0, lastY: 0 };
+
+function updateStMapTransform() {
+  const inner = $("skilltree-map");
+  if (!inner) return;
+  inner.style.transform = `translate(${stMap.x}px, ${stMap.y}px) scale(${stMap.scale})`;
+}
+
+function fitSkillTreeMap() {
+  const vp = $("skilltree-map-viewport");
+  const inner = $("skilltree-map");
+  if (!vp || !inner) return;
+  const vw = vp.clientWidth;
+  const vh = vp.clientHeight;
+  const sw = inner.offsetWidth || 600;
+  const sh = inner.offsetHeight || 400;
+  stMap.scale = Math.max(0.55, Math.min(1, Math.min(vw / sw, vh / sh) * 0.94));
+  stMap.x = (vw - sw * stMap.scale) / 2;
+  stMap.y = (vh - sh * stMap.scale) / 2;
+  updateStMapTransform();
+}
+
+function initSkillTreeMapInteractions() {
+  const vp = $("skilltree-map-viewport");
+  if (!vp || vp.dataset.bound) return;
+  vp.dataset.bound = "1";
+  vp.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.08 : 0.08;
+    stMap.scale = Math.min(1.8, Math.max(0.55, stMap.scale + delta));
+    updateStMapTransform();
+  }, { passive: false });
+  vp.addEventListener("mousedown", (e) => {
+    if (e.button !== 0 && e.button !== 1) return;
+    stMap.dragging = true;
+    vp.style.cursor = "grabbing";
+    stMap.lastX = e.clientX;
+    stMap.lastY = e.clientY;
+  });
+  window.addEventListener("mouseup", () => {
+    stMap.dragging = false;
+    if (vp) vp.style.cursor = "grab";
+  });
+  window.addEventListener("mousemove", (e) => {
+    if (!stMap.dragging) return;
+    const dx = e.clientX - stMap.lastX;
+    const dy = e.clientY - stMap.lastY;
+    stMap.x += dx;
+    stMap.y += dy;
+    stMap.lastX = e.clientX;
+    stMap.lastY = e.clientY;
+    updateStMapTransform();
+  });
+  let lastDist = 0;
+  vp.addEventListener("touchstart", (e) => {
+    if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      lastDist = Math.hypot(dx, dy);
+    }
+  });
+  vp.addEventListener("touchmove", (e) => {
+    if (e.touches.length !== 2) return;
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    const dist = Math.hypot(dx, dy);
+    if (lastDist) {
+      stMap.scale = Math.min(1.8, Math.max(0.55, stMap.scale * (dist / lastDist)));
+      updateStMapTransform();
+    }
+    lastDist = dist;
+  }, { passive: true });
 }
 
 function renderTreeLoadout(me, max) {
@@ -1096,13 +1237,21 @@ function renderSkillTreeView(room) {
         </div>
         <div class="skilltree-controls">
           <span class="st-tree-name">${showClass && ts.spec ? escapeHtml(ts.spec.label) : "Global Skills"}</span>
+          <button type="button" class="btn btn--mini" id="st-zoom-in" title="Zoom in">+</button>
+          <button type="button" class="btn btn--mini" id="st-zoom-out" title="Zoom out">−</button>
+          <button type="button" class="btn btn--mini" id="st-zoom-reset" title="Reset view">⤢</button>
         </div>
       </div>
       <div class="skilltree-combos" id="skilltree-combos">
         <button type="button" class="btn btn--ghost" id="st-combo-legend-toggle" title="Combos & Synergies">💡 Combos & Synergies</button>
         <div id="st-combo-legend-panel" class="st-combo-legend hidden"></div>
       </div>
-      <div class="skilltree-grid${showClass ? " skilltree-grid--class" : ""}" id="skilltree-grid"></div>
+      <div class="skilltree-map-viewport" id="skilltree-map-viewport">
+        <div class="skilltree-map" id="skilltree-map">
+          <div class="skilltree-tiers" id="skilltree-tiers"></div>
+          <div class="skilltree-nodes" id="skilltree-nodes"></div>
+        </div>
+      </div>
       <div class="skilltree-loadout" id="skilltree-loadout"></div>
     </div>`;
 
@@ -1130,8 +1279,18 @@ function renderSkillTreeView(room) {
     legendBtn.addEventListener("click", () => legendPanel.classList.toggle("hidden"));
   }
 
-  const gridEl = $("skilltree-grid");
-  if (gridEl) renderTreeGrid(gridEl, nodes, ts, me);
+  const gridEl = $("skilltree-map-viewport");
+  if (gridEl) {
+    renderTreeMap(nodes, ts, me);
+    initSkillTreeMapInteractions();
+    fitSkillTreeMap();
+    const zin = $("st-zoom-in");
+    const zout = $("st-zoom-out");
+    const zreset = $("st-zoom-reset");
+    if (zin) zin.addEventListener("click", () => { stMap.scale = Math.min(1.8, stMap.scale * 1.2); updateStMapTransform(); });
+    if (zout) zout.addEventListener("click", () => { stMap.scale = Math.max(0.55, stMap.scale / 1.2); updateStMapTransform(); });
+    if (zreset) zreset.addEventListener("click", () => fitSkillTreeMap());
+  }
 
   renderTreeLoadout(me, st.maxLoadout || 5);
 }
