@@ -1,0 +1,280 @@
+[
+  {
+    "id": "egg_red",
+    "label": "Red Egg",
+    "rarity": "common",
+    "dropRate": 0.1,
+    "dungeons": [
+      "f",
+      "fast"
+    ],
+    "pets": [
+      "pet_direwolf",
+      "pet_ember_pup",
+      "pet_cinder_cub",
+      "pet_slime",
+      "pet_sprout",
+      "pet_flame_sprite"
+    ],
+    "theme": {
+      "primaryColor": "#c82424",
+      "secondaryColor": "#660c0c",
+      "accentColor": "#ff7a3c",
+      "glowColor": "rgba(235, 60, 40, 0.65)",
+      "crackGlow": "#ffaa33",
+      "patternType": "flame",
+      "symbol": "🔥",
+      "description": "Warm to the touch. Tiny embers leak from between the crimson shell scales."
+    }
+  },
+  {
+    "id": "egg_green",
+    "label": "Green Egg",
+    "rarity": "common",
+    "dropRate": 0.05,
+    "dungeons": [
+      "f",
+      "d"
+    ],
+    "pets": [
+      "pet_mossling",
+      "pet_vine_pup",
+      "pet_thorn_whelp",
+      "pet_grove_sprite",
+      "pet_slime_king",
+      "pet_forest_cub"
+    ],
+    "theme": {
+      "primaryColor": "#2b8738",
+      "secondaryColor": "#103d17",
+      "accentColor": "#8fe08a",
+      "glowColor": "rgba(70, 200, 90, 0.65)",
+      "crackGlow": "#7df5a2",
+      "patternType": "leaf",
+      "symbol": "🌿",
+      "description": "Entangled in living vines. Smells like damp moss, ancient loam, and forest spring."
+    }
+  },
+  {
+    "id": "egg_blue",
+    "label": "Blue Egg",
+    "rarity": "uncommon",
+    "dropRate": 0.03,
+    "dungeons": [
+      "d",
+      "c"
+    ],
+    "pets": [
+      "pet_frost_pup",
+      "pet_ice_whelp",
+      "pet_snow_cub",
+      "pet_glacierling",
+      "pet_chill_sprite",
+      "pet_frost_drake"
+    ],
+    "theme": {
+      "primaryColor": "#1d6eb5",
+      "secondaryColor": "#0b2c4d",
+      "accentColor": "#7dcaff",
+      "glowColor": "rgba(60, 160, 255, 0.7)",
+      "crackGlow": "#b3e5fc",
+      "patternType": "frost",
+      "symbol": "❄️",
+      "description": "Freezing mist rises from its crystalline shell. Ice needles crystallize along its rim."
+    }
+  },
+  {
+    "id": "egg_brown",
+    "label": "Brown Egg",
+    "rarity": "uncommon",
+    "dropRate": 0.02,
+    "dungeons": [
+      "c",
+      "b"
+    ],
+    "pets": [
+      "pet_stone_pup",
+      "pet_rockling",
+      "pet_boulder_cub",
+      "pet_crystal_sprite",
+      "pet_golem_whelp",
+      "pet_granite_pup"
+    ],
+    "theme": {
+      "primaryColor": "#825028",
+      "secondaryColor": "#3c220f",
+      "accentColor": "#d29758",
+      "glowColor": "rgba(180, 120, 60, 0.65)",
+      "crackGlow": "#f5caa0",
+      "patternType": "crag",
+      "symbol": "⛰️",
+      "description": "Dense as solid granite. Deep rumbling pulses echo from its heavy stone crust."
+    }
+  },
+  {
+    "id": "egg_yellow",
+    "label": "Yellow Egg",
+    "rarity": "rare",
+    "dropRate": 0.015,
+    "dungeons": [
+      "b",
+      "a"
+    ],
+    "pets": [
+      "pet_storm_pup",
+      "pet_thunder_cub",
+      "pet_lightning_drake",
+      "pet_wind_sprite",
+      "pet_gale_whelp",
+      "pet_storm_hatchling"
+    ],
+    "theme": {
+      "primaryColor": "#c99a12",
+      "secondaryColor": "#594103",
+      "accentColor": "#ffea6c",
+      "glowColor": "rgba(255, 220, 40, 0.75)",
+      "crackGlow": "#fff2a8",
+      "patternType": "lightning",
+      "symbol": "⚡",
+      "description": "Vibrating with static tension. Electric sparks dance across its amber surface."
+    }
+  },
+  {
+    "id": "egg_purple",
+    "label": "Purple Egg",
+    "rarity": "rare",
+    "dropRate": 0.01,
+    "dungeons": [
+      "a",
+      "s"
+    ],
+    "pets": [
+      "pet_shadow_pup",
+      "pet_voidling",
+      "pet_dusk_whelp",
+      "pet_night_cub",
+      "pet_shade_sprite",
+      "pet_umbra_drake"
+    ],
+    "theme": {
+      "primaryColor": "#772db5",
+      "secondaryColor": "#341054",
+      "accentColor": "#c885ff",
+      "glowColor": "rgba(180, 80, 255, 0.7)",
+      "crackGlow": "#e4baff",
+      "patternType": "void",
+      "symbol": "🔮",
+      "description": "Bathed in twilight essence. Dark tendrils swirl within its amethyst shell."
+    }
+  },
+  {
+    "id": "egg_cyan",
+    "label": "Cyan Egg",
+    "rarity": "epic",
+    "dropRate": 0.008,
+    "dungeons": [
+      "s",
+      "ss"
+    ],
+    "pets": [
+      "pet_crystal_drake",
+      "pet_arcane_pup",
+      "pet_mana_sprite",
+      "pet_spell_whelp",
+      "pet_runeling",
+      "pet_crystal_hound"
+    ],
+    "theme": {
+      "primaryColor": "#109cb0",
+      "secondaryColor": "#053c44",
+      "accentColor": "#61efff",
+      "glowColor": "rgba(30, 230, 255, 0.8)",
+      "crackGlow": "#affaff",
+      "patternType": "runic",
+      "symbol": "✨",
+      "description": "Inscribed with ancient arcane runes that pulse with pure concentrated mana."
+    }
+  },
+  {
+    "id": "egg_dark",
+    "label": "Dark Egg",
+    "rarity": "epic",
+    "dropRate": 0.006,
+    "dungeons": [
+      "ss",
+      "ssplus"
+    ],
+    "pets": [
+      "pet_void_pup",
+      "pet_abyssling",
+      "pet_nether_cub",
+      "pet_shadow_drake",
+      "pet_dark_hound",
+      "pet_void_sprite"
+    ],
+    "theme": {
+      "primaryColor": "#291938",
+      "secondaryColor": "#0c0612",
+      "accentColor": "#9c57d9",
+      "glowColor": "rgba(130, 40, 200, 0.85)",
+      "crackGlow": "#d08fff",
+      "patternType": "abyss",
+      "symbol": "👁️",
+      "description": "Brimming with forbidden nether energy. Light bends around its obsidian surface."
+    }
+  },
+  {
+    "id": "egg_orange",
+    "label": "Orange Egg",
+    "rarity": "legendary",
+    "dropRate": 0.004,
+    "dungeons": [
+      "special7"
+    ],
+    "pets": [
+      "pet_phoenix_hatchling",
+      "pet_ember_drake",
+      "pet_flame_hound",
+      "pet_inferno_pup",
+      "pet_blaze_drake",
+      "pet_phoenix_chick"
+    ],
+    "theme": {
+      "primaryColor": "#d65311",
+      "secondaryColor": "#691f03",
+      "accentColor": "#ff9c42",
+      "glowColor": "rgba(255, 120, 20, 0.85)",
+      "crackGlow": "#ffe082",
+      "patternType": "feather",
+      "symbol": "🦅",
+      "description": "Blessed by the undying Phoenix. Radiates searing warmth and sacred rebirth aura."
+    }
+  },
+  {
+    "id": "egg_gold",
+    "label": "Gold Egg",
+    "rarity": "mythic",
+    "dropRate": 0.002,
+    "dungeons": [
+      "ssplus"
+    ],
+    "pets": [
+      "pet_mythic_drake",
+      "pet_gold_pup",
+      "pet_radiant_cub",
+      "pet_divine_whelp",
+      "pet_light_sprite",
+      "pet_mythic_hound"
+    ],
+    "theme": {
+      "primaryColor": "#d4a024",
+      "secondaryColor": "#614405",
+      "accentColor": "#fff18f",
+      "glowColor": "rgba(255, 215, 60, 0.9)",
+      "crackGlow": "#ffffff",
+      "patternType": "gold-filigree",
+      "symbol": "👑",
+      "description": "A legendary treasure of royalty. Crafted from sacred celestial gold and stardust."
+    }
+  }
+]

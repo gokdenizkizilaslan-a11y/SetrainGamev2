@@ -1,0 +1,207 @@
+/* THE SETRA GAME - EGG HATCH ANIMATION STYLES */
+
+.egg-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: radial-gradient(ellipse at center, rgba(30, 20, 14, 0.94) 0%, rgba(8, 5, 3, 0.98) 100%);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cinzel', serif, system-ui, sans-serif;
+  color: #f3e7d2;
+  user-select: none;
+  overflow: hidden;
+}
+
+.egg-overlay.hidden {
+  display: none !important;
+}
+
+.egg-canvas-physics {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100000;
+}
+
+/* Full screen white flash */
+.egg-screen-flash {
+  position: fixed;
+  inset: 0;
+  background: #ffffff;
+  z-index: 100005;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.65s cubic-bezier(0.1, 0.9, 0.2, 1);
+}
+
+.egg-screen-flash.flash-active {
+  opacity: 1;
+}
+
+.egg-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 520px;
+  width: 90%;
+  text-align: center;
+  position: relative;
+  z-index: 100001;
+}
+
+.egg-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 16px;
+  border-radius: 999px;
+  background: rgba(25, 18, 12, 0.85);
+  border: 1px solid rgba(232, 180, 92, 0.45);
+  color: #e8b45c;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.egg-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff4e0;
+  margin: 0 0 8px 0;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+}
+
+.egg-subtext {
+  font-size: 13px;
+  color: #a58d68;
+  margin-bottom: 20px;
+  max-width: 380px;
+  line-height: 1.4;
+  font-family: sans-serif;
+}
+
+/* 3D Visual & Shaking */
+.egg-visual-wrap {
+  position: relative;
+  width: 220px;
+  height: 290px;
+  cursor: pointer;
+  margin: 10px 0 25px 0;
+  transition: transform 0.2s ease;
+}
+
+.egg-visual-wrap:hover:not(.shaking) {
+  transform: scale(1.04);
+}
+
+.egg-visual-wrap.shaking {
+  animation: eggWobbleShake 0.4s infinite ease-in-out;
+}
+
+@keyframes eggWobbleShake {
+  0% { transform: translate(0, 0) rotate(0deg) scale(1.05); }
+  20% { transform: translate(-8px, -4px) rotate(-6deg) scale(1.07); }
+  40% { transform: translate(8px, 4px) rotate(6deg) scale(1.08); }
+  60% { transform: translate(-10px, 3px) rotate(-7deg) scale(1.1); }
+  80% { transform: translate(10px, -3px) rotate(7deg) scale(1.1); }
+  100% { transform: translate(0, 0) rotate(0deg) scale(1.05); }
+}
+
+/* Revealed Pet Card */
+.pet-card-pop {
+  animation: petCardPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  background: rgba(30, 20, 14, 0.95);
+  border: 2px solid rgba(232, 180, 92, 0.65);
+  border-radius: 20px;
+  padding: 28px 24px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 35px rgba(232, 180, 92, 0.3);
+  max-width: 440px;
+  width: 100%;
+}
+
+@keyframes petCardPop {
+  0% { opacity: 0; transform: scale(0.6) translateY(50px); filter: blur(6px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0px); }
+}
+
+.pet-avatar-frame {
+  width: 120px;
+  height: 120px;
+  border-radius: 18px;
+  border: 2px solid #e8b45c;
+  background: radial-gradient(circle, rgba(232,180,92,0.2) 0%, rgba(20,12,8,0.8) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 16px auto;
+  box-shadow: 0 0 25px rgba(232,180,92,0.4);
+  position: relative;
+}
+
+.pet-avatar-img {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+}
+
+.pet-element-tag {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  border: 1px solid rgba(232, 180, 92, 0.4);
+  background: rgba(0,0,0,0.4);
+  margin-top: 6px;
+}
+
+.pet-name-text {
+  font-size: 26px;
+  font-weight: 700;
+  color: #fff2d6;
+  margin: 8px 0 6px 0;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+}
+
+.pet-desc-text {
+  font-size: 13px;
+  color: #d8c8ab;
+  line-height: 1.45;
+  font-family: sans-serif;
+  margin-bottom: 18px;
+}
+
+/* Action Confirm Button (English) */
+.btn-egg-confirm {
+  width: 100%;
+  padding: 14px 24px;
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-radius: 12px;
+  cursor: pointer;
+  color: #2a1a08;
+  background: linear-gradient(180deg, #f0c26c, #c9933f);
+  border: 1px solid rgba(255, 235, 190, 0.4);
+  box-shadow: 0 4px 20px rgba(201, 147, 63, 0.4);
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.btn-egg-confirm:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(232, 180, 92, 0.5);
+}
+
+.btn-egg-confirm:active {
+  transform: scale(0.97);
+}

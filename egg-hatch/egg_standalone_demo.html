@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Setra Game - Egg Hatch System Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="egg_animation.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #120b06 radial-gradient(circle at 50% -10%, #2a1a0f, #0d0805);
+      color: #f3e7d2;
+      font-family: 'Cinzel', serif;
+      min-height: 100vh;
+      padding: 30px 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    header { text-align: center; margin-bottom: 30px; }
+    h1 { font-size: 28px; color: #fff4e0; letter-spacing: 2px; text-shadow: 0 0 15px rgba(232, 180, 92, 0.4); }
+    p.sub { font-family: sans-serif; font-size: 13px; color: #a58d68; margin-top: 6px; }
+    .egg-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      max-width: 1050px;
+      width: 100%;
+    }
+    .egg-btn {
+      background: rgba(35, 23, 15, 0.85);
+      border: 1px solid rgba(232, 180, 92, 0.3);
+      border-radius: 14px;
+      padding: 20px 14px;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s ease;
+      font-family: 'Cinzel', serif;
+    }
+    .egg-btn:hover {
+      border-color: #e8b45c;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+      background: rgba(45, 30, 20, 0.95);
+    }
+    .egg-icon { font-size: 32px; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5)); }
+    .egg-name { font-size: 14px; font-weight: bold; }
+    .egg-rarity {
+      font-family: sans-serif;
+      font-size: 10px;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>THE SETRA GAME - EGG HATCH SYSTEM</h1>
+    <p class="sub">Click any elemental egg to launch shell cracking, physics explosion, full white flash & pet reveal</p>
+  </header>
+
+  <main class="egg-grid" id="grid"></main>
+
+  <script src="egg_animation.js"></script>
+  <script>
+    const EGGS = [
+      { id: "egg_red", name: "Red Egg", rarity: "Common", icon: "🔥", pet: "pet_direwolf", petName: "Direwolf", element: "Fire" },
+      { id: "egg_green", name: "Green Egg", rarity: "Common", icon: "🌿", pet: "pet_mossling", petName: "Mossling", element: "Earth" },
+      { id: "egg_blue", name: "Blue Egg", rarity: "Uncommon", icon: "❄️", pet: "pet_frost_pup", petName: "Frost Pup", element: "Ice" },
+      { id: "egg_brown", name: "Brown Egg", rarity: "Uncommon", icon: "⛰️", pet: "pet_stone_pup", petName: "Stone Golem", element: "Earth" },
+      { id: "egg_yellow", name: "Yellow Egg", rarity: "Rare", icon: "⚡", pet: "pet_storm_pup", petName: "Storm Drake", element: "Lightning" },
+      { id: "egg_purple", name: "Purple Egg", rarity: "Rare", icon: "🔮", pet: "pet_shadow_pup", petName: "Void Stalker", element: "Void" },
+      { id: "egg_cyan", name: "Cyan Egg", rarity: "Epic", icon: "✨", pet: "pet_crystal_drake", petName: "Crystal Drake", element: "Arcane" },
+      { id: "egg_dark", name: "Dark Egg", rarity: "Epic", icon: "👁️", pet: "pet_void_pup", petName: "Abyss Fiend", element: "Dark" },
+      { id: "egg_orange", name: "Orange Egg", rarity: "Legendary", icon: "🦅", pet: "pet_phoenix_hatchling", petName: "Phoenix Hatchling", element: "Holy Fire" },
+      { id: "egg_gold", name: "Gold Egg", rarity: "Mythic", icon: "👑", pet: "pet_celestial_dragon", petName: "Celestial Dragon", element: "Divine" }
+    ];
+
+    const grid = document.getElementById("grid");
+    EGGS.forEach(e => {
+      const btn = document.createElement("button");
+      btn.className = "egg-btn";
+      btn.innerHTML = `
+        <span class="egg-icon">${e.icon}</span>
+        <span class="egg-name">${e.name}</span>
+        <span class="egg-rarity">${e.rarity}</span>
+      `;
+      btn.onclick = async () => {
+        await window.playEggAnimation(e.id, e.pet, e.petName);
+        console.log("Pet claimed:", e.petName);
+      };
+      grid.appendChild(btn);
+    });
+  </script>
+</body>
+</html>

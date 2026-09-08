@@ -372,7 +372,9 @@ function drainCombatFx(root) {
     else if (ev.target === "player") { el = root.querySelector('.fighter[data-fighter="' + ev.targetId + '"]'); fromEl = root.querySelector('.enemy[data-enemy="0"]') || root.querySelector('.fighter[data-fighter="' + ev.actor + '"]') || el; }
     // map old effect to new 80
     const vfxMap = { slash:"rising_katana_slash", heavy:"heavy_hammer_slam", axe:"axe_cleave_horizontal", crush:"heavy_hammer_slam", arcane:"frost_crystal_spear", fire:"fire_meteor_crash", frost:"frost_crystal_spear", water:"tidal_wave_water", earth:"earth_fissure_rupture", lightning:"lightning_strike_heavy", blood:"blood_scythe", dark:"shadow_scythe_reap", holy:"holy_pillar_smite", shadow:"shadow_scythe_reap", heal:"heal_aura_fountain", defend:"radiant_halo_shield", monster:"rising_katana_slash", crit:"heavy_hammer_slam", buff:"radiant_halo_shield", dot:"blood_needles", shield:"radiant_halo_shield", wet:"tidal_wave_water", frozen:"frost_prison_dome" };
-    const vfxId = ev.vfxId || vfxMap[ev.effect] || vfxMap[ev.elem] || "rising_katana_slash";
+    const _registryIds = (typeof window !== "undefined" && Array.isArray(window.SETRA_EFFECTS_REGISTRY)) ? window.SETRA_EFFECTS_REGISTRY : [];
+    const _isRealId = (v) => typeof v === "string" && v.length > 0 && _registryIds.some((e) => e && e.id === v);
+    const vfxId = (_isRealId(ev.vfxId) && ev.vfxId) || (_isRealId(ev.effect) && ev.effect) || vfxMap[ev.effect] || vfxMap[ev.elem] || "rising_katana_slash";
     if (vfx && el) {
       const fromRect = fromEl ? fromEl.getBoundingClientRect() : el.getBoundingClientRect();
       const toRect = el.getBoundingClientRect();

@@ -1,0 +1,782 @@
+{
+  "pet_direwolf": {
+    "id": "pet_direwolf",
+    "name": "Direwolf",
+    "image": "/images/pets/pet_direwolf.png",
+    "element": "fire",
+    "stats": {
+      "attack": 4,
+      "magicPower": 7
+    },
+    "description": "A fierce crimson wolf born from fiery embers. Howls with burning courage.",
+    "egg": "egg_red",
+    "iconSymbol": "🐺"
+  },
+  "pet_ember_pup": {
+    "id": "pet_ember_pup",
+    "name": "Ember Pup",
+    "image": "/images/pets/pet_ember_pup.png",
+    "element": "fire",
+    "stats": {
+      "attack": 7,
+      "magicPower": 5
+    },
+    "description": "A playful fire hound that leaves smouldering footprints wherever it leaps.",
+    "egg": "egg_red",
+    "iconSymbol": "🐕"
+  },
+  "pet_cinder_cub": {
+    "id": "pet_cinder_cub",
+    "name": "Cinder Cub",
+    "image": "/images/pets/pet_cinder_cub.png",
+    "element": "fire",
+    "stats": {
+      "attack": 6,
+      "magicPower": 5
+    },
+    "description": "Its warm fur crackles with sparks. Guards its master with fiery resolve.",
+    "egg": "egg_red",
+    "iconSymbol": "🦁"
+  },
+  "pet_slime": {
+    "id": "pet_slime",
+    "name": "Molten Slime",
+    "image": "/images/pets/pet_slime.png",
+    "element": "fire",
+    "stats": {
+      "attack": 3,
+      "magicPower": 7
+    },
+    "description": "A bouncy glob of liquid magma that absorbs enemy blows.",
+    "egg": "egg_red",
+    "iconSymbol": "🫧"
+  },
+  "pet_sprout": {
+    "id": "pet_sprout",
+    "name": "Flame Sprout",
+    "image": "/images/pets/pet_sprout.png",
+    "element": "fire",
+    "stats": {
+      "attack": 3,
+      "magicPower": 7
+    },
+    "description": "A botanical marvel with petals forged of crimson embers.",
+    "egg": "egg_red",
+    "iconSymbol": "🌱"
+  },
+  "pet_flame_sprite": {
+    "id": "pet_flame_sprite",
+    "name": "Flame Sprite",
+    "image": "/images/pets/pet_flame_sprite.png",
+    "element": "fire",
+    "stats": {
+      "attack": 3,
+      "magicPower": 4
+    },
+    "description": "Flutters like a living flame, dancing across battlefields.",
+    "egg": "egg_red",
+    "iconSymbol": "🧚"
+  },
+  "pet_mossling": {
+    "id": "pet_mossling",
+    "name": "Mossling",
+    "image": "/images/pets/pet_mossling.png",
+    "element": "earth",
+    "stats": {
+      "attack": 4,
+      "magicPower": 6
+    },
+    "description": "A gentle woodland dweller wrapped in velvet moss and morning dew.",
+    "egg": "egg_green",
+    "iconSymbol": "🦔"
+  },
+  "pet_vine_pup": {
+    "id": "pet_vine_pup",
+    "name": "Vine Pup",
+    "image": "/images/pets/pet_vine_pup.png",
+    "element": "earth",
+    "stats": {
+      "attack": 5,
+      "magicPower": 5
+    },
+    "description": "Tangles around your leg in joy. Shoots constricting vines at foes.",
+    "egg": "egg_green",
+    "iconSymbol": "🌿"
+  },
+  "pet_thorn_whelp": {
+    "id": "pet_thorn_whelp",
+    "name": "Thorn Whelp",
+    "image": "/images/pets/pet_thorn_whelp.png",
+    "element": "earth",
+    "stats": {
+      "attack": 4,
+      "magicPower": 3
+    },
+    "description": "A spiky dragonling whose thorny scales pierce aggressive enemies.",
+    "egg": "egg_green",
+    "iconSymbol": "🐲"
+  },
+  "pet_grove_sprite": {
+    "id": "pet_grove_sprite",
+    "name": "Grove Sprite",
+    "image": "/images/pets/pet_grove_sprite.png",
+    "element": "earth",
+    "stats": {
+      "attack": 4,
+      "magicPower": 3
+    },
+    "description": "Harnesses natural restorative pollen to heal allies in dark ruins.",
+    "egg": "egg_green",
+    "iconSymbol": "🍃"
+  },
+  "pet_slime_king": {
+    "id": "pet_slime_king",
+    "name": "Verdant Slime King",
+    "image": "/images/pets/pet_slime_king.png",
+    "element": "earth",
+    "stats": {
+      "attack": 6,
+      "magicPower": 6
+    },
+    "description": "Wears a small crown of acorns. Bounces with regal authority.",
+    "egg": "egg_green",
+    "iconSymbol": "👑"
+  },
+  "pet_forest_cub": {
+    "id": "pet_forest_cub",
+    "name": "Forest Cub",
+    "image": "/images/pets/pet_forest_cub.png",
+    "element": "earth",
+    "stats": {
+      "attack": 5,
+      "magicPower": 3
+    },
+    "description": "Strong paws and a loyal heart rooted in the elder woods.",
+    "egg": "egg_green",
+    "iconSymbol": "🐻"
+  },
+  "pet_frost_pup": {
+    "id": "pet_frost_pup",
+    "name": "Frost Pup",
+    "image": "/images/pets/pet_frost_pup.png",
+    "element": "water",
+    "stats": {
+      "attack": 7,
+      "magicPower": 3
+    },
+    "description": "Fur of powdered snow and eyes like frozen sapphires.",
+    "egg": "egg_blue",
+    "iconSymbol": "🐕"
+  },
+  "pet_ice_whelp": {
+    "id": "pet_ice_whelp",
+    "name": "Ice Whelp",
+    "image": "/images/pets/pet_ice_whelp.png",
+    "element": "water",
+    "stats": {
+      "attack": 3,
+      "magicPower": 3
+    },
+    "description": "Breaths a fine mist of frost that slows charging predators.",
+    "egg": "egg_blue",
+    "iconSymbol": "🧊"
+  },
+  "pet_snow_cub": {
+    "id": "pet_snow_cub",
+    "name": "Snow Cub",
+    "image": "/images/pets/pet_snow_cub.png",
+    "element": "water",
+    "stats": {
+      "attack": 5,
+      "magicPower": 7
+    },
+    "description": "Born upon glacial peaks, impervious to winter chill.",
+    "egg": "egg_blue",
+    "iconSymbol": "🐾"
+  },
+  "pet_glacierling": {
+    "id": "pet_glacierling",
+    "name": "Glacierling",
+    "image": "/images/pets/pet_glacierling.png",
+    "element": "water",
+    "stats": {
+      "attack": 5,
+      "magicPower": 6
+    },
+    "description": "A living chunk of ancient ice carved with runic markings.",
+    "egg": "egg_blue",
+    "iconSymbol": "💎"
+  },
+  "pet_chill_sprite": {
+    "id": "pet_chill_sprite",
+    "name": "Chill Sprite",
+    "image": "/images/pets/pet_chill_sprite.png",
+    "element": "water",
+    "stats": {
+      "attack": 3,
+      "magicPower": 7
+    },
+    "description": "Conjures cooling water bubbles that shield companions.",
+    "egg": "egg_blue",
+    "iconSymbol": "💧"
+  },
+  "pet_frost_drake": {
+    "id": "pet_frost_drake",
+    "name": "Frost Drake",
+    "image": "/images/pets/pet_frost_drake.png",
+    "element": "water",
+    "stats": {
+      "attack": 5,
+      "magicPower": 7
+    },
+    "description": "Wings like sheets of glass. Swirls sub-zero winds in combat.",
+    "egg": "egg_blue",
+    "iconSymbol": "🐉"
+  },
+  "pet_stone_pup": {
+    "id": "pet_stone_pup",
+    "name": "Stone Pup",
+    "image": "/images/pets/pet_stone_pup.png",
+    "element": "earth",
+    "stats": {
+      "attack": 5,
+      "magicPower": 7
+    },
+    "description": "A sturdy companion whose rocky tail thumps against the earth.",
+    "egg": "egg_brown",
+    "iconSymbol": "🪨"
+  },
+  "pet_rockling": {
+    "id": "pet_rockling",
+    "name": "Rockling",
+    "image": "/images/pets/pet_rockling.png",
+    "element": "earth",
+    "stats": {
+      "attack": 4,
+      "magicPower": 6
+    },
+    "description": "A pebble-sized golem that hardens in the face of danger.",
+    "egg": "egg_brown",
+    "iconSymbol": "🗿"
+  },
+  "pet_boulder_cub": {
+    "id": "pet_boulder_cub",
+    "name": "Boulder Cub",
+    "image": "/images/pets/pet_boulder_cub.png",
+    "element": "earth",
+    "stats": {
+      "attack": 7,
+      "magicPower": 6
+    },
+    "description": "Heavier than it appears; crushes armor under heavy paws.",
+    "egg": "egg_brown",
+    "iconSymbol": "🐻"
+  },
+  "pet_crystal_sprite": {
+    "id": "pet_crystal_sprite",
+    "name": "Crystal Sprite",
+    "image": "/images/pets/pet_crystal_sprite.png",
+    "element": "earth",
+    "stats": {
+      "attack": 5,
+      "magicPower": 4
+    },
+    "description": "Reflects cavern torchlight in dazzling geometric patterns.",
+    "egg": "egg_brown",
+    "iconSymbol": "🔮"
+  },
+  "pet_golem_whelp": {
+    "id": "pet_golem_whelp",
+    "name": "Golem Whelp",
+    "image": "/images/pets/pet_golem_whelp.png",
+    "element": "earth",
+    "stats": {
+      "attack": 6,
+      "magicPower": 6
+    },
+    "description": "An ancient construct infused with life by forgotten runes.",
+    "egg": "egg_brown",
+    "iconSymbol": "🛡️"
+  },
+  "pet_granite_pup": {
+    "id": "pet_granite_pup",
+    "name": "Granite Pup",
+    "image": "/images/pets/pet_granite_pup.png",
+    "element": "earth",
+    "stats": {
+      "attack": 7,
+      "magicPower": 3
+    },
+    "description": "Tough as a fortress bastion. Always ready to defend.",
+    "egg": "egg_brown",
+    "iconSymbol": "🐕"
+  },
+  "pet_storm_pup": {
+    "id": "pet_storm_pup",
+    "name": "Storm Pup",
+    "image": "/images/pets/pet_storm_pup.png",
+    "element": "lightning",
+    "stats": {
+      "attack": 3,
+      "magicPower": 4
+    },
+    "description": "Crackles with yellow static. Barks sound like tiny thunderclaps.",
+    "egg": "egg_yellow",
+    "iconSymbol": "⚡"
+  },
+  "pet_thunder_cub": {
+    "id": "pet_thunder_cub",
+    "name": "Thunder Cub",
+    "image": "/images/pets/pet_thunder_cub.png",
+    "element": "lightning",
+    "stats": {
+      "attack": 7,
+      "magicPower": 4
+    },
+    "description": "Moves with the swiftness of summer gale storms.",
+    "egg": "egg_yellow",
+    "iconSymbol": "🌩️"
+  },
+  "pet_lightning_drake": {
+    "id": "pet_lightning_drake",
+    "name": "Lightning Drake",
+    "image": "/images/pets/pet_lightning_drake.png",
+    "element": "lightning",
+    "stats": {
+      "attack": 5,
+      "magicPower": 4
+    },
+    "description": "Arcs of current surge through its golden wings as it glides.",
+    "egg": "egg_yellow",
+    "iconSymbol": "🐉"
+  },
+  "pet_wind_sprite": {
+    "id": "pet_wind_sprite",
+    "name": "Wind Sprite",
+    "image": "/images/pets/pet_wind_sprite.png",
+    "element": "lightning",
+    "stats": {
+      "attack": 3,
+      "magicPower": 3
+    },
+    "description": "Whirls like a miniature cyclone, deflecting ranged missiles.",
+    "egg": "egg_yellow",
+    "iconSymbol": "🌪️"
+  },
+  "pet_gale_whelp": {
+    "id": "pet_gale_whelp",
+    "name": "Gale Whelp",
+    "image": "/images/pets/pet_gale_whelp.png",
+    "element": "lightning",
+    "stats": {
+      "attack": 7,
+      "magicPower": 6
+    },
+    "description": "Swift as a thunderstorm gale. Unmatched agility.",
+    "egg": "egg_yellow",
+    "iconSymbol": "🦅"
+  },
+  "pet_storm_hatchling": {
+    "id": "pet_storm_hatchling",
+    "name": "Storm Hatchling",
+    "image": "/images/pets/pet_storm_hatchling.png",
+    "element": "lightning",
+    "stats": {
+      "attack": 6,
+      "magicPower": 5
+    },
+    "description": "Spits crackling bolts of electricity at unwary adversaries.",
+    "egg": "egg_yellow",
+    "iconSymbol": "⚡"
+  },
+  "pet_shadow_pup": {
+    "id": "pet_shadow_pup",
+    "name": "Shadow Pup",
+    "image": "/images/pets/pet_shadow_pup.png",
+    "element": "dark",
+    "stats": {
+      "attack": 4,
+      "magicPower": 3
+    },
+    "description": "Hides seamlessly within midnight shadows, watching loyally.",
+    "egg": "egg_purple",
+    "iconSymbol": "🐺"
+  },
+  "pet_voidling": {
+    "id": "pet_voidling",
+    "name": "Voidling",
+    "image": "/images/pets/pet_voidling.png",
+    "element": "dark",
+    "stats": {
+      "attack": 6,
+      "magicPower": 3
+    },
+    "description": "An entity from beyond the veil. Glides without sound.",
+    "egg": "egg_purple",
+    "iconSymbol": "👁️"
+  },
+  "pet_dusk_whelp": {
+    "id": "pet_dusk_whelp",
+    "name": "Dusk Whelp",
+    "image": "/images/pets/pet_dusk_whelp.png",
+    "element": "dark",
+    "stats": {
+      "attack": 7,
+      "magicPower": 5
+    },
+    "description": "Twilight scales shimmer between deep indigo and violet.",
+    "egg": "egg_purple",
+    "iconSymbol": "🐉"
+  },
+  "pet_night_cub": {
+    "id": "pet_night_cub",
+    "name": "Night Cub",
+    "image": "/images/pets/pet_night_cub.png",
+    "element": "dark",
+    "stats": {
+      "attack": 6,
+      "magicPower": 7
+    },
+    "description": "A nocturnal stalker with gleaming amethyst eyes.",
+    "egg": "egg_purple",
+    "iconSymbol": "🐈‍⬛"
+  },
+  "pet_shade_sprite": {
+    "id": "pet_shade_sprite",
+    "name": "Shade Sprite",
+    "image": "/images/pets/pet_shade_sprite.png",
+    "element": "dark",
+    "stats": {
+      "attack": 4,
+      "magicPower": 4
+    },
+    "description": "Drains the light around it, granting stealth to its bearer.",
+    "egg": "egg_purple",
+    "iconSymbol": "🌌"
+  },
+  "pet_umbra_drake": {
+    "id": "pet_umbra_drake",
+    "name": "Umbra Drake",
+    "image": "/images/pets/pet_umbra_drake.png",
+    "element": "dark",
+    "stats": {
+      "attack": 7,
+      "magicPower": 3
+    },
+    "description": "Breathes smoky darkness that disorients dungeon beasts.",
+    "egg": "egg_purple",
+    "iconSymbol": "🦇"
+  },
+  "pet_crystal_drake": {
+    "id": "pet_crystal_drake",
+    "name": "Crystal Drake",
+    "image": "/images/pets/pet_crystal_drake.png",
+    "element": "water",
+    "stats": {
+      "attack": 5,
+      "magicPower": 4
+    },
+    "description": "Its iridescent scales glow with pure refined arcana.",
+    "egg": "egg_cyan",
+    "iconSymbol": "✨"
+  },
+  "pet_arcane_pup": {
+    "id": "pet_arcane_pup",
+    "name": "Arcane Pup",
+    "image": "/images/pets/pet_arcane_pup.png",
+    "element": "water",
+    "stats": {
+      "attack": 5,
+      "magicPower": 6
+    },
+    "description": "Channels mana pulses through its glowing cyan markings.",
+    "egg": "egg_cyan",
+    "iconSymbol": "💠"
+  },
+  "pet_mana_sprite": {
+    "id": "pet_mana_sprite",
+    "name": "Mana Sprite",
+    "image": "/images/pets/pet_mana_sprite.png",
+    "element": "water",
+    "stats": {
+      "attack": 5,
+      "magicPower": 7
+    },
+    "description": "A floating celestial orb of living arcane knowledge.",
+    "egg": "egg_cyan",
+    "iconSymbol": "🔮"
+  },
+  "pet_spell_whelp": {
+    "id": "pet_spell_whelp",
+    "name": "Spell Whelp",
+    "image": "/images/pets/pet_spell_whelp.png",
+    "element": "water",
+    "stats": {
+      "attack": 6,
+      "magicPower": 7
+    },
+    "description": "Chants miniature incantations that empower magical spells.",
+    "egg": "egg_cyan",
+    "iconSymbol": "📜"
+  },
+  "pet_runeling": {
+    "id": "pet_runeling",
+    "name": "Runeling",
+    "image": "/images/pets/pet_runeling.png",
+    "element": "water",
+    "stats": {
+      "attack": 4,
+      "magicPower": 4
+    },
+    "description": "Ancient glyphs circle its miniature stone body in constant motion.",
+    "egg": "egg_cyan",
+    "iconSymbol": "🧿"
+  },
+  "pet_crystal_hound": {
+    "id": "pet_crystal_hound",
+    "name": "Crystal Hound",
+    "image": "/images/pets/pet_crystal_hound.png",
+    "element": "water",
+    "stats": {
+      "attack": 4,
+      "magicPower": 6
+    },
+    "description": "Hunts residual magical energy like a bloodhound of the arcane.",
+    "egg": "egg_cyan",
+    "iconSymbol": "🐕"
+  },
+  "pet_void_pup": {
+    "id": "pet_void_pup",
+    "name": "Nether Pup",
+    "image": "/images/pets/pet_void_pup.png",
+    "element": "dark",
+    "stats": {
+      "attack": 5,
+      "magicPower": 7
+    },
+    "description": "Birthed from the darkest abyssal rifts. Feeds on enemy fear.",
+    "egg": "egg_dark",
+    "iconSymbol": "🐾"
+  },
+  "pet_abyssling": {
+    "id": "pet_abyssling",
+    "name": "Abyssling",
+    "image": "/images/pets/pet_abyssling.png",
+    "element": "dark",
+    "stats": {
+      "attack": 6,
+      "magicPower": 3
+    },
+    "description": "A writhing shadow of pure nether essence.",
+    "egg": "egg_dark",
+    "iconSymbol": "🐙"
+  },
+  "pet_nether_cub": {
+    "id": "pet_nether_cub",
+    "name": "Nether Cub",
+    "image": "/images/pets/pet_nether_cub.png",
+    "element": "dark",
+    "stats": {
+      "attack": 4,
+      "magicPower": 4
+    },
+    "description": "Black fur absorbing all ambient torchlight.",
+    "egg": "egg_dark",
+    "iconSymbol": "🐈"
+  },
+  "pet_shadow_drake": {
+    "id": "pet_shadow_drake",
+    "name": "Shadow Drake",
+    "image": "/images/pets/pet_shadow_drake.png",
+    "element": "dark",
+    "stats": {
+      "attack": 4,
+      "magicPower": 4
+    },
+    "description": "Flies between dimensions, striking enemies from the blind spot.",
+    "egg": "egg_dark",
+    "iconSymbol": "🐲"
+  },
+  "pet_dark_hound": {
+    "id": "pet_dark_hound",
+    "name": "Dark Hound",
+    "image": "/images/pets/pet_dark_hound.png",
+    "element": "dark",
+    "stats": {
+      "attack": 4,
+      "magicPower": 6
+    },
+    "description": "A terrifying guardian from the lower underworld.",
+    "egg": "egg_dark",
+    "iconSymbol": "🐕‍🦺"
+  },
+  "pet_void_sprite": {
+    "id": "pet_void_sprite",
+    "name": "Void Sprite",
+    "image": "/images/pets/pet_void_sprite.png",
+    "element": "dark",
+    "stats": {
+      "attack": 6,
+      "magicPower": 5
+    },
+    "description": "Punctures small tears in the fabric of space to confuse foes.",
+    "egg": "egg_dark",
+    "iconSymbol": "🌀"
+  },
+  "pet_phoenix_hatchling": {
+    "id": "pet_phoenix_hatchling",
+    "name": "Phoenix Hatchling",
+    "image": "/images/pets/pet_phoenix_hatchling.png",
+    "element": "fire",
+    "stats": {
+      "attack": 5,
+      "magicPower": 7
+    },
+    "description": "The golden crest of eternal life. Rising from ashes in blinding brilliance.",
+    "egg": "egg_orange",
+    "iconSymbol": "🔥"
+  },
+  "pet_ember_drake": {
+    "id": "pet_ember_drake",
+    "name": "Ember Drake",
+    "image": "/images/pets/pet_ember_drake.png",
+    "element": "fire",
+    "stats": {
+      "attack": 4,
+      "magicPower": 4
+    },
+    "description": "Scales of molten brass that radiate intense solar warmth.",
+    "egg": "egg_orange",
+    "iconSymbol": "🐉"
+  },
+  "pet_flame_hound": {
+    "id": "pet_flame_hound",
+    "name": "Flame Hound",
+    "image": "/images/pets/pet_flame_hound.png",
+    "element": "fire",
+    "stats": {
+      "attack": 4,
+      "magicPower": 7
+    },
+    "description": "Breathes roaring bursts of fire upon wicked adversaries.",
+    "egg": "egg_orange",
+    "iconSymbol": "🐕"
+  },
+  "pet_inferno_pup": {
+    "id": "pet_inferno_pup",
+    "name": "Inferno Pup",
+    "image": "/images/pets/pet_inferno_pup.png",
+    "element": "fire",
+    "stats": {
+      "attack": 5,
+      "magicPower": 3
+    },
+    "description": "Full of boundless fiery enthusiasm, leaving trails of golden sparks.",
+    "egg": "egg_orange",
+    "iconSymbol": "🦁"
+  },
+  "pet_blaze_drake": {
+    "id": "pet_blaze_drake",
+    "name": "Blaze Drake",
+    "image": "/images/pets/pet_blaze_drake.png",
+    "element": "fire",
+    "stats": {
+      "attack": 4,
+      "magicPower": 3
+    },
+    "description": "Crown of radiant firehorns. A true scion of the Phoenix.",
+    "egg": "egg_orange",
+    "iconSymbol": "🦅"
+  },
+  "pet_phoenix_chick": {
+    "id": "pet_phoenix_chick",
+    "name": "Phoenix Chick",
+    "image": "/images/pets/pet_phoenix_chick.png",
+    "element": "fire",
+    "stats": {
+      "attack": 3,
+      "magicPower": 5
+    },
+    "description": "Small golden feathers burning with the gentle warmth of rebirth.",
+    "egg": "egg_orange",
+    "iconSymbol": "🐥"
+  },
+  "pet_mythic_drake": {
+    "id": "pet_mythic_drake",
+    "name": "Mythic Drake",
+    "image": "/images/pets/pet_mythic_drake.png",
+    "element": "physical",
+    "stats": {
+      "attack": 7,
+      "magicPower": 7
+    },
+    "description": "Forged in the heart of celestial stars. Supreme sovereign of dragons.",
+    "egg": "egg_gold",
+    "iconSymbol": "👑"
+  },
+  "pet_gold_pup": {
+    "id": "pet_gold_pup",
+    "name": "Gold Pup",
+    "image": "/images/pets/pet_gold_pup.png",
+    "element": "physical",
+    "stats": {
+      "attack": 7,
+      "magicPower": 7
+    },
+    "description": "Its coat gleams like pure polished bullion. Brings fortune to its master.",
+    "egg": "egg_gold",
+    "iconSymbol": "🐕"
+  },
+  "pet_radiant_cub": {
+    "id": "pet_radiant_cub",
+    "name": "Radiant Cub",
+    "image": "/images/pets/pet_radiant_cub.png",
+    "element": "physical",
+    "stats": {
+      "attack": 3,
+      "magicPower": 6
+    },
+    "description": "Bathed in celestial dawn light, casting away all creeping shadows.",
+    "egg": "egg_gold",
+    "iconSymbol": "🌟"
+  },
+  "pet_divine_whelp": {
+    "id": "pet_divine_whelp",
+    "name": "Divine Whelp",
+    "image": "/images/pets/pet_divine_whelp.png",
+    "element": "physical",
+    "stats": {
+      "attack": 3,
+      "magicPower": 5
+    },
+    "description": "Possesses an aura of absolute majesty. Foes hesitate in its presence.",
+    "egg": "egg_gold",
+    "iconSymbol": "🕊️"
+  },
+  "pet_light_sprite": {
+    "id": "pet_light_sprite",
+    "name": "Light Sprite",
+    "image": "/images/pets/pet_light_sprite.png",
+    "element": "physical",
+    "stats": {
+      "attack": 4,
+      "magicPower": 7
+    },
+    "description": "An undying spark of creation itself. Elevates companions' spirits.",
+    "egg": "egg_gold",
+    "iconSymbol": "✨"
+  },
+  "pet_mythic_hound": {
+    "id": "pet_mythic_hound",
+    "name": "Mythic Hound",
+    "image": "/images/pets/pet_mythic_hound.png",
+    "element": "physical",
+    "stats": {
+      "attack": 6,
+      "magicPower": 5
+    },
+    "description": "A celestial hound clad in golden plate armor. Unshakable vanguard.",
+    "egg": "egg_gold",
+    "iconSymbol": "🛡️"
+  }
+}
