@@ -18,6 +18,7 @@ function $(id) {
 function showScreen(id) {
   document.querySelectorAll(".screen").forEach((el) => el.classList.add("hidden"));
   $(id).classList.remove("hidden");
+  if (document.body) document.body.dataset.screen = id;
   const edge = $("edge-buttons");
   if (edge) edge.classList.toggle("hidden", id === "screen-mode" || id === "screen-setup");
 }
@@ -853,6 +854,7 @@ function renderActionCards(room, selfId) {
       }
       const a = ACTIONS.find((x) => x.id === b.getAttribute("data-action"));
       if (a.kind === "open") {
+        state.skillTreeOpen = false;
         state.dungeonOpen = a.id === "dungeon";
         state.tavernOpen = a.id === "tavern";
         state.blacksmithOpen = a.id === "blacksmith";
@@ -1119,21 +1121,28 @@ function bindTreeMapViewport(vp, stage) {
     const mx = e.clientX - rect.left;
     const my = e.clientY - rect.top;
     const factor = e.deltaY < 0 ? 1.12 : 1 / 1.12;
-    const nz = Math.max(0.35, Math.min(1.8, skillTreeZoom * factor));
-    if (nz === skillTreeZoom) return;
-    skillTreePanX = mx - ((mx - skillTreePanX) / skillTreeZoom) * nz;
-    skillTreePanY = my - ((my - skillTreePanY) / skillTreeZoom) * nz;
-    skillTreeZoom = nz;
-    applyMapTransform(stage);
+    stepZoomAt(vp, stage, mx, my, factor);
+  }, { passive: false });
+  vp.addEventListener("auxclick", (e) => {
+    if (e.button !== 1) return;
+    e.preventDefault();
+    const rect = vp.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    stepZoomAt(vp, stage, mx, my, e.shiftKey ? 1 / 1.5 : 1.5);
+  });
+  vp.addEventListener("contextmenu", (e) => {
+    if (e.button === 2 && e.shiftKey) e.preventDefault();
   });
   let drag = null;
   vp.addEventListener("pointerdown", (e) => {
-    drag = { x: e.clientX, y: e.clientY, px: skillTreePanX, py: skillTreePanY };
+    if (drag) return;
+    drag = { id: e.pointerId, x: e.clientX, y: e.clientY, px: skillTreePanX, py: skillTreePanY };
     skillTreeDragMoved = false;
     vp.setPointerCapture(e.pointerId);
   });
   vp.addEventListener("pointermove", (e) => {
-    if (!drag) return;
+    if (!drag || drag.id !== e.pointerId) return;
     const dx = e.clientX - drag.x;
     const dy = e.clientY - drag.y;
     if (Math.abs(dx) + Math.abs(dy) > 4) skillTreeDragMoved = true;
@@ -1143,9 +1152,21 @@ function bindTreeMapViewport(vp, stage) {
       applyMapTransform(stage);
     }
   });
-  vp.addEventListener("pointerup", () => {
+  const endDrag = (id) => {
+    if (!drag || drag.id !== id) return;
     drag = null;
-  });
+  };
+  vp.addEventListener("pointerup", (e) => endDrag(e.pointerId));
+  vp.addEventListener("pointercancel", (e) => endDrag(e.pointerId));
+}
+
+function stepZoomAt(vp, stage, mx, my, factor) {
+  const nz = Math.max(0.35, Math.min(1.8, skillTreeZoom * factor));
+  if (nz === skillTreeZoom) return;
+  skillTreePanX = mx - ((mx - skillTreePanX) / skillTreeZoom) * nz;
+  skillTreePanY = my - ((my - skillTreePanY) / skillTreeZoom) * nz;
+  skillTreeZoom = nz;
+  applyMapTransform(stage);
 }
 
 function renderTreeLoadout(me, max) {
@@ -1195,15 +1216,15 @@ function renderTreeLoadout(me, max) {
 }
 
 function renderSkillTreeView(room) {
-  const el = $("skilltree-view");
+  const content = $("skilltree-content");
   const me = room.players.find((p) => p.id === state.playerId);
-  if (!el || !me) return;
+  if (!content || !me) return;
   const ts = skillTreeInfo(me);
   const st = ts.st;
   const showClass = state.skillTreeTab === "class";
   const nodes = showClass && ts.spec ? ts.spec.nodes : ts.global;
   const classLabelText = ts.lineage.map((s) => (CATALOG.classes.find((c) => c.slug === s) || {}).label || s).join(" → ");
-  el.innerHTML = `
+  content.innerHTML = `
     <div class="skilltree">
       <div class="skilltree-head">
         <div class="skilltree-tabs">
@@ -1232,7 +1253,7 @@ function renderSkillTreeView(room) {
       <div class="skilltree-loadout" id="skilltree-loadout"></div>
     </div>`;
 
-  el.querySelectorAll("[data-tab]").forEach((b) => {
+  content.querySelectorAll("[data-tab]").forEach((b) => {
     b.addEventListener("click", () => {
       state.skillTreeTab = b.getAttribute("data-tab");
       renderSkillTreeView(room);
@@ -1265,8 +1286,8 @@ function renderSkillTreeView(room) {
   const nodesBox = $("skilltree-nodes");
   if (vp && stage && lines && nodesBox) {
     renderTreeMap(vp, { stage, lines, nodesBox }, nodes, ts, me);
-    if (!el.dataset.centered) {
-      el.dataset.centered = "1";
+    if (!content.dataset.centered) {
+      content.dataset.centered = "1";
       fitTreeMap(vp, stage);
     } else {
       applyMapTransform(stage);
