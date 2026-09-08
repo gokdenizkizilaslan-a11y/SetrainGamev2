@@ -15,11 +15,7 @@ function hatchEgg(room, player, eggId) {
   if (!player.pets) player.pets = [];
   player.pets.push({ petId, hatched: true, level: 1, xp: 0 });
   if (!player.activePetIds) player.activePetIds = player.activePetId ? [player.activePetId] : [];
-  const maxPets = player.character === "tamer" ? 3 : 2;
-  if (player.activePetIds.length < maxPets && !player.activePetIds.includes(petId)) {
-    player.activePetIds.push(petId);
-    player.activePetId = player.activePetIds[0];
-  }
+  // hatch does NOT auto-equip — player must equip manually in Pets UI
   return { petId, petDef };
 }
 
