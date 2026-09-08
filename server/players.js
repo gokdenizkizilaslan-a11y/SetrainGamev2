@@ -154,6 +154,11 @@ function createPlayer({ id, name, character, isHost = false }) {
     anomaly,
     tavern: null,
     dungeonId: null,
+    pvpId: null,
+    shield: 0,
+    maxShield: 0,
+    pets: [],
+    activePetId: null,
   };
 }
 
@@ -195,6 +200,11 @@ function publicPlayer(player) {
     isHost: player.isHost,
     dungeonId: player.dungeonId || null,
     bossId: player.bossId || null,
+    pvpId: player.pvpId || null,
+    shield: player.shield || 0,
+    maxShield: player.maxShield || 0,
+    pets: (player.pets || []).map((p) => ({ petId: p.petId, hatched: p.hatched })),
+    activePetId: player.activePetId || null,
     anomaly: player.anomaly
       ? {
           id: player.anomaly.id,
@@ -236,9 +246,22 @@ function onNewDay(player) {
 }
 
 function dealDamage(entity, amount) {
-  const n = Math.max(0, Math.round(amount));
-  entity.hp = Math.max(0, entity.hp - n);
+  let n = Math.max(0, Math.round(amount));
+  // shield absorbs first (separate from defense %)
+  if (entity.shield && entity.shield > 0) {
+    const absorbed = Math.min(entity.shield, n);
+    entity.shield -= absorbed;
+    n -= absorbed;
+    if (entity.maxShield && entity.shield <= 0) entity.maxShield = 0;
+  }
+  if (n > 0) entity.hp = Math.max(0, entity.hp - n);
   return entity.hp;
+}
+function addShield(entity, amount) {
+  const n = Math.max(0, Math.round(amount));
+  entity.shield = (entity.shield || 0) + n;
+  entity.maxShield = Math.max(entity.maxShield || 0, entity.shield);
+  return entity.shield;
 }
 
 function heal(entity, amount) {
@@ -378,6 +401,7 @@ module.exports = {
   onNewDay,
   randomInt,
   dealDamage,
+  addShield,
   heal,
   loseLife,
   addItem,

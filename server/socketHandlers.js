@@ -14,6 +14,8 @@ const chest = require("./chest");
 const stock = require("./stock");
 const temple = require("./temple");
 const sessions = require("./sessions");
+const pvp = require("./pvp");
+const pets = require("./pets");
 const { onNewDay, equipItem, unequipSlot, setSkillLoadout } = require("./players");
 const { publicCatalog, getClass } = require("../content");
 
@@ -85,7 +87,7 @@ function emitRoomState(io, room) {
 
 function emitCombatFx(io, room) {
   if (!room) return;
-  const all = [...(room.dungeons || []), ...(room.bossParties || [])];
+  const all = [...(room.dungeons || []), ...(room.bossParties || []), ...(room.pvpDuels || [])];
   for (const d of all) {
     if (!d.fx || !d.fx.length) continue;
     const fx = d.fx;
@@ -93,6 +95,7 @@ function emitCombatFx(io, room) {
     io.to(room.id).emit("combat:fx", { fx, dungeonId: d.id });
   }
 }
+function emitPvpFx(io, room){ emitCombatFx(io,room); }
 
 function registerSocketHandlers(io) {
   io.on("connection", (socket) => {
@@ -720,6 +723,62 @@ function registerSocketHandlers(io) {
         room.broadcast=()=>{ emitCombatFx(io,room); emitRoomState(io,room); };
         const b=boss.startBoss(room,player);
         room.log={type:"dungeon", text:`${player.name} starts ${b.label} battle!`, ts:Date.now()};
+        emitRoomState(io,room);
+      }catch(err){ emitError(socket,err); }
+    });
+
+    // ---- Pets ----
+    socket.on("pet:hatch", (payload={})=>{
+      try{
+        const {room,player}=gameContext(socket);
+        const res=pets.hatchEgg(room,player,payload.eggId);
+        room.log={type:"inventory", text:`${player.name} hatched ${res.petDef.name}!`, ts:Date.now()};
+        emitRoomState(io,room);
+      }catch(err){ emitError(socket,err); }
+    });
+    socket.on("pet:setActive", (payload={})=>{
+      try{
+        const {room,player}=gameContext(socket);
+        const pet=pets.setActivePet(room,player,payload.petId);
+        room.log={type:"inventory", text: pet? `${player.name} set active pet ${pet.name}` : `${player.name} unequipped pet`, ts:Date.now()};
+        emitRoomState(io,room);
+      }catch(err){ emitError(socket,err); }
+    });
+    // ---- PvP ----
+    socket.on("pvp:challenge", (payload={})=>{
+      try{
+        const {room,player}=gameContext(socket);
+        requireAlive(player);
+        const targetId = payload.targetId;
+        room.broadcast=()=>{ emitPvpFx(io,room); emitRoomState(io,room); };
+        const duel=pvp.createPvp(room,player,targetId);
+        room.log={type:"pvp", text:`${player.name} challenges ${room.players.find(p=>p.id===targetId)?.name} to PvP!`, ts:Date.now()};
+        emitRoomState(io,room);
+      }catch(err){ emitError(socket,err); }
+    });
+    socket.on("pvp:act", (payload={})=>{
+      try{
+        const {room,player}=gameContext(socket);
+        requireAlive(player);
+        pvp.act(room,player,payload.skillId);
+        emitPvpFx(io,room);
+        emitRoomState(io,room);
+      }catch(err){ emitError(socket,err); }
+    });
+    socket.on("pvp:endTurn", ()=>{
+      try{
+        const {room,player}=gameContext(socket);
+        requireAlive(player);
+        pvp.endTurn(room,player);
+        emitPvpFx(io,room);
+        emitRoomState(io,room);
+      }catch(err){ emitError(socket,err); }
+    });
+    socket.on("pvp:leave", ()=>{
+      try{
+        const {room,player}=gameContext(socket);
+        pvp.leavePvp(room,player);
+        room.log={type:"pvp", text:`${player.name} left PvP.`};
         emitRoomState(io,room);
       }catch(err){ emitError(socket,err); }
     });

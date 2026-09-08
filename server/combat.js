@@ -7,7 +7,7 @@ const {
   getMonster,
   getClassBasicAttack,
 } = require("../content");
-const { dealDamage, heal, loseLife, addXp, removeItem, healForFood, addItem } = require("./players");
+const { dealDamage, addShield, heal, loseLife, addXp, removeItem, healForFood, addItem } = require("./players");
 const chest = require("./chest");
 
 function randVariance(variance) {
@@ -98,18 +98,35 @@ function buffSum(d, targetType, targetId, kind) {
   return sum;
 }
 
+function hasStatus(d, targetType, targetId, kind) {
+  if (!d.buffs) return false;
+  return d.buffs.some((b) => b.targetType === targetType && String(b.targetId) === String(targetId) && b.kind === kind);
+}
+
 function applyBuffs(room, d, actor, actorName, skill, targetType, targetIds, actorIsPlayer) {
   const entries = buffEntries(skill);
   if (!entries || !entries.length) return;
   // Players may only debuff enemies — never buff them.
   const allowed = targetType === "monster" && actorIsPlayer
-    ? new Set(["weaken", "expose", "dot"])
-    : new Set(["attack", "defense", "regen", "weaken", "expose", "dot"]);
+    ? new Set(["weaken", "expose", "dot", "wet", "frozen"])
+    : new Set(["attack", "defense", "regen", "weaken", "expose", "dot", "wet", "frozen"]);
   const turns = Math.max(1, Math.round(skill.duration || 1));
   let applied = false;
   for (const tid of targetIds) {
     for (const e of entries) {
       if (!allowed.has(e.kind)) continue;
+      // physical never leaves wet/frozen
+      if (actorIsPlayer && skill.element === "physical" && (e.kind === "wet" || e.kind === "frozen")) continue;
+      // shield is flat HP, apply immediately
+      if (e.kind === "shield") {
+        if (targetType === "player") {
+          const target = room.players.find((p) => p.id === tid);
+          if (target) addShield(target, e.value);
+        } else {
+          const mon = d.wave[tid];
+          if (mon) { mon.shield = (mon.shield || 0) + e.value; mon.maxShield = Math.max(mon.maxShield || 0, mon.shield); }
+        }
+      }
       d.buffId = (d.buffId || 0) + 1;
       d.buffs.push({
         uid: d.buffId,
@@ -403,10 +420,29 @@ function act(room, player, skillId, targetId) {
       const pAtk = buffSum(d, "player", player.id, "attack") - buffSum(d, "player", player.id, "weaken");
       const mDef = buffSum(d, "monster", Number(targetId), "defense");
       const mExp = buffSum(d, "monster", Number(targetId), "expose");
-      const dmg = Math.max(
+      const isPhysical = !skill.element || skill.element === "physical";
+      const baseStat = isPhysical ? player.attack : player.magicPower;
+      let dmg = Math.max(
         1,
-        Math.round(player.attack * skill.power * randVariance(CONTENT.combat.damageVariance) * critMult * (1 + pAtk) * (1 - mDef + mExp))
+        Math.round(baseStat * skill.power * randVariance(CONTENT.combat.damageVariance) * critMult * (1 + pAtk) * (1 - mDef + mExp))
       );
+      // affinity: defender element vs attacker element
+      const monDefForAff = getMonster(mon.kind);
+      const defenderElem = (monDefForAff && monDefForAff.element) || mon.element || "physical";
+      const affinity = CONTENT.affinity && CONTENT.affinity[defenderElem] && CONTENT.affinity[defenderElem][skill.element];
+      if (affinity) dmg = Math.round(dmg * affinity);
+      // dark trait: dark deals 30% more, dark takes 50% more
+      if (skill.element === "dark" && CONTENT.darkTrait) dmg = Math.round(dmg * (CONTENT.darkTrait.deal || 1.3));
+      if (defenderElem === "dark" && CONTENT.darkTrait) dmg = Math.round(dmg * (CONTENT.darkTrait.taken || 1.5));
+      // wet combo: lightning does 50% more vs wet
+      if (skill.element === "lightning" && hasStatus(d, "monster", Number(targetId), "wet")) {
+        const comboMult = (CONTENT.combos && CONTENT.combos.wet && CONTENT.combos.wet.mult) || 1.5;
+        dmg = Math.round(dmg * comboMult);
+      }
+      // bonus vs frozen etc (generic)
+      if (skill.bonusVsStatus && hasStatus(d, "monster", Number(targetId), skill.bonusVsStatus.status)) {
+        dmg = Math.round(dmg * (1 + (skill.bonusVsStatus.mult || 0)));
+      }
       dealDamage(mon, dmg);
       addFx(d, { type: "damage", actor: player.id, target: "enemy", targetId: Number(targetId), amount: dmg, skill: skill.id, elem: skill.element || "physical", effect: skill.effect || defaultEffectFor(skill.element), crit });
       if (skill.lifesteal) {
@@ -441,18 +477,36 @@ function act(room, player, skillId, targetId) {
   } else if (skill.target === "ally") {
     const target = room.players.find((p) => p.id === targetId);
     if (target) {
-      if (target.hp > 0) {
-        const mult = 1 + (player.healPower || 0) / 40;
-        const healed = heal(target, Math.max(1, Math.round(target.maxHp * skill.heal * mult)));
+      if (target.hp > 0 && skill.heal != null) {
+        const healMult = 1 + (player.healPower || 0) / 50;
+        let baseHeal;
+        if (typeof skill.heal === "object") {
+          const stat = skill.heal.stat || "maxHp";
+          const m = skill.heal.mult || 1;
+          const baseVal = stat === "maxHp" ? target.maxHp : player[stat] || 0;
+          baseHeal = baseVal * m;
+        } else {
+          baseHeal = target.maxHp * skill.heal;
+        }
+        const healed = heal(target, Math.max(1, Math.round(baseHeal * healMult)));
         addFx(d, { type: "heal", actor: player.id, target: target.id, amount: healed, source: "skill", skill: skill.id, effect: "heal" });
       }
       applyBuffs(room, d, player, player.name, skill, "player", [target.id], true);
     }
   } else if (skill.target === "party") {
     for (const p of livingMembers(room, d)) {
-      if (skill.heal) {
-        const mult = 1 + (player.healPower || 0) / 40;
-        const healed = heal(p, Math.max(1, Math.round(p.maxHp * skill.heal * mult)));
+      if (skill.heal != null) {
+        const healMult = 1 + (player.healPower || 0) / 50;
+        let baseHeal;
+        if (typeof skill.heal === "object") {
+          const stat = skill.heal.stat || "maxHp";
+          const m = skill.heal.mult || 1;
+          const baseVal = stat === "maxHp" ? p.maxHp : player[stat] || 0;
+          baseHeal = baseVal * m;
+        } else {
+          baseHeal = p.maxHp * skill.heal;
+        }
+        const healed = heal(p, Math.max(1, Math.round(baseHeal * healMult)));
         addFx(d, { type: "heal", actor: player.id, target: p.id, amount: healed, source: "skill", skill: skill.id, effect: "heal" });
       }
     }
@@ -683,6 +737,13 @@ function finishMonsterPhase(room, d) {
   armTurnTimer(room, d);
   if (typeof room.broadcast === "function") room.broadcast();
   else if (room._emitCombat) room._emitCombat();
+  // pet acts every 3 rounds, 2s after round start, no turn
+  if (d.round % 3 === 0) {
+    setTimeout(() => {
+      if (d.status !== "fighting" || d.phase !== "players") return;
+      petAct(room, d);
+    }, 2000);
+  }
 }
 
 function checkEnd(room, d) {
@@ -837,6 +898,20 @@ function victory(room, d) {
     }
   }
 
+  // Egg drops (victory, dungeon-specific, low chance)
+  for (const egg of CONTENT.eggs || []) {
+    if (!egg.dungeons || !egg.dungeons.includes(d.rank)) continue;
+    if (Math.random() >= (egg.dropRate || 0.01)) continue;
+    const eggItem = getItem(egg.id);
+    if (!eggItem) continue;
+    const receivers = livingMembers(room, d).length ? livingMembers(room, d) : members;
+    const receiver = receivers[Math.floor(Math.random() * receivers.length)];
+    addItem(receiver, egg.id, 1);
+    const note = `${receiver.name} found a ${egg.label}!`;
+    lootNotes.push(note);
+    addFx(d, { type: "egg", eggId: egg.id });
+  }
+
   const chestId = chest.chestForRank(d.rank);
   const chestDef = getItem(chestId);
   chest.awardToMembers(room, d, chestId);
@@ -970,6 +1045,69 @@ function flee(room, player) {
   return d;
 }
 
+function petAct(room, d) {
+  if (!d || d.status !== "fighting" || d.phase !== "players") return;
+  // every 3 rounds pet acts, 2s after round start (called via timeout)
+  if (d.round % 3 !== 0) return;
+  for (const pid of d.memberIds) {
+    const player = room.players.find((p) => p.id === pid);
+    if (!player || !player.activePetId || player.hp <= 0) continue;
+    const petDef = (CONTENT.pets || []).find((p) => p.id === player.activePetId);
+    if (!petDef) continue;
+    const roll = Math.random();
+    const targetAlly = player;
+    if (roll < 0.35) {
+      // heal 3-turn pet heal
+      const before = targetAlly.hp;
+      const amt = Math.max(1, Math.round(targetAlly.maxHp * 0.12 * (1 + (player.healPower || 0) / 50)));
+      heal(targetAlly, amt);
+      const healed = targetAlly.hp - before;
+      if (healed > 0) {
+        addFx(d, { type: "heal", actor: pid, target: pid, amount: healed, source: "pet", petId: petDef.id, effect: "heal" });
+        d.log.push(`${petDef.name} heals ${player.name} for ${healed} HP!`);
+      }
+    } else if (roll < 0.6) {
+      // shield
+      const amt = 30 + Math.floor(Math.random() * 20);
+      addShield(targetAlly, amt);
+      addFx(d, { type: "shield", actor: pid, target: pid, amount: amt, petId: petDef.id });
+      d.log.push(`${petDef.name} shields ${player.name} for ${amt}!`);
+    } else if (roll < 0.85) {
+      // random enemy weaken or wet/frozen if ice pet
+      const alive = d.wave.map((m, i) => ({ m, i })).filter((x) => x.m.hp > 0);
+      if (!alive.length) continue;
+      const pick = alive[Math.floor(Math.random() * alive.length)];
+      // ice pet can freeze
+      if (petDef.element === "frost" && Math.random() < 0.5) {
+        d.buffs.push({ uid: (d.buffId = (d.buffId || 0) + 1), targetType: "monster", targetId: pick.i, kind: "frozen", value: 0, turns: 1, name: petDef.name });
+        addFx(d, { type: "buff", actor: pid, target: "enemy", targetId: pick.i, kind: "frozen", value: 0, turns: 1 });
+        d.log.push(`${petDef.name} freezes ${pick.m.name}!`);
+      } else {
+        d.buffs.push({ uid: (d.buffId = (d.buffId || 0) + 1), targetType: "monster", targetId: pick.i, kind: "weaken", value: 0.15, turns: 2, name: petDef.name });
+        addFx(d, { type: "buff", actor: pid, target: "enemy", targetId: pick.i, kind: "weaken", value: 0.15, turns: 2 });
+        d.log.push(`${petDef.name} weakens ${pick.m.name}!`);
+      }
+    } else {
+      // attack random enemy
+      const alive = d.wave.map((m, i) => ({ m, i })).filter((x) => x.m.hp > 0);
+      if (!alive.length) continue;
+      const pick = alive[Math.floor(Math.random() * alive.length)];
+      const base = player.magicPower > player.attack ? player.magicPower : player.attack;
+      const dmg = Math.max(1, Math.round(base * 0.6 * randVariance(CONTENT.combat.damageVariance)));
+      dealDamage(pick.m, dmg);
+      addFx(d, { type: "damage", actor: pid, target: "enemy", targetId: pick.i, amount: dmg, source: "pet", petId: petDef.id, elem: petDef.element || "physical", effect: petDef.element || "slash" });
+      d.log.push(`${petDef.name} hits ${pick.m.name} for ${dmg}!`);
+      if (pick.m.hp <= 0) {
+        d.buffs = (d.buffs || []).filter((b) => !(b.targetType === "monster" && Number(b.targetId) === Number(pick.i)));
+        checkEnd(room, d);
+        if (d.status !== "fighting") break;
+      }
+    }
+  }
+  if (typeof room.broadcast === "function") room.broadcast();
+  else if (room._emitCombat) room._emitCombat();
+}
+
 module.exports = {
   spawnWave,
   act,
@@ -978,4 +1116,5 @@ module.exports = {
   flee,
   armTurnTimer,
   clearTurnTimer,
+  petAct,
 };

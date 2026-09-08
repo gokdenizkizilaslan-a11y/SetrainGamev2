@@ -13,6 +13,7 @@ const state = {
   merchantOpen: false,
   templeOpen: false,
   inventoryOpen: false,
+  pvpOpen: false,
   timerDeadline: null,
   timerReset: false,
   timerFired: false,
@@ -138,7 +139,7 @@ function renderTown(room) {
     state._deadShown = false;
   }
 
-  const inOverlay = state.dungeonOpen || state.tavernOpen || state.blacksmithOpen || state.merchantOpen || state.templeOpen || state.inventoryOpen;
+  const inOverlay = state.dungeonOpen || state.tavernOpen || state.blacksmithOpen || state.merchantOpen || state.templeOpen || state.inventoryOpen || state.pvpOpen;
   $("town-main").classList.toggle("hidden", inOverlay);
   $("dungeon-view").classList.toggle("hidden", !state.dungeonOpen);
   $("tavern-view").classList.toggle("hidden", !state.tavernOpen);
@@ -146,6 +147,8 @@ function renderTown(room) {
   $("merchant-view").classList.toggle("hidden", !state.merchantOpen);
   $("temple-view").classList.toggle("hidden", !state.templeOpen);
   $("inventory-view").classList.toggle("hidden", !state.inventoryOpen);
+  const pvpEl = $("pvp-view");
+  if (pvpEl) pvpEl.classList.toggle("hidden", !state.pvpOpen);
 
   // Right sidebar (multiplayer town only)
   if (typeof renderRightPlayers === "function") renderRightPlayers(room);
@@ -168,6 +171,8 @@ function renderTown(room) {
     renderTempleView(room);
   } else if (state.inventoryOpen) {
     renderInventory(room);
+  } else if (state.pvpOpen) {
+    if (typeof renderPvpView === "function") renderPvpView(room);
   }
 }
 
@@ -184,7 +189,9 @@ function onRoomState(room) {
     const inCombat = myD && (myD.status === "fighting" || myD.status === "done");
     const inBoss = myD && myD.bossId;
     if (inCombat || inBoss) state.dungeonOpen = true;
-    if (!inCombat && !inBoss) state.pendingFx = [];
+    const myPvp = (room.pvpDuels||[]).find(d=> d.memberIds.includes(state.playerId));
+    if (myPvp && myPvp.status==="fighting") state.pvpOpen = true;
+    if (!inCombat && !inBoss && !myPvp) state.pendingFx = [];
     renderTown(room);
   } else {
     renderLobby(room);
@@ -288,6 +295,11 @@ $("btn-temple-close").addEventListener("click", () => {
 
 $("btn-inventory-close").addEventListener("click", () => {
   state.inventoryOpen = false;
+  renderTown(state.room);
+});
+const pvpCloseBtn = $("btn-pvp-close");
+if (pvpCloseBtn) pvpCloseBtn.addEventListener("click", () => {
+  state.pvpOpen = false;
   renderTown(state.room);
 });
 

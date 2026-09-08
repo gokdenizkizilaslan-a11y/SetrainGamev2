@@ -160,7 +160,7 @@ let soundMap = new Map();
 const audioCache = {};
 const SYNTH_FALLBACK = {
   slash: "hit", heavy: "hit", axe: "hit", crush: "crit", arcane: "arcane",
-  fire: "arcane", frost: "arcane", holy: "holy", shadow: "shadow",
+  fire: "arcane", frost: "arcane", water: "arcane", earth: "hit", lightning: "arcane", blood: "shadow", dark: "shadow", holy: "holy", shadow: "shadow",
   heal: "heal", defend: "block", monster: "hit", crit: "crit",
 };
 
@@ -228,6 +228,11 @@ const ELEMENT_SOUNDS = {
   physical: ["slash1", "slash2", "slash3", "slash4"],
   fire: "firemagic",
   frost: "frostmagic",
+  water: "frostmagic",
+  earth: "battleaxe",
+  lightning: "normalmagic",
+  blood: ["bloodmagic1", "bloodmagic2"],
+  dark: "bloodmagic2",
   heal: "healingmagic",
   shadow: ["bloodmagic1", "bloodmagic2"],
   arcane: "normalmagic",
@@ -259,6 +264,8 @@ const BUFF_META = {
   weaken: { label: "Weaken", color: "#ff9d7a" },
   expose: { label: "Vuln", color: "#ffb84d" },
   dot: { label: "Bleed", color: "#ff6b6b" },
+  wet: { label: "💧Wet", color: "#7fb4ff" },
+  frozen: { label: "❄ Frozen", color: "#9fd4ff" },
 };
 
 function buffBadges(d, targetType, targetId) {
@@ -354,6 +361,14 @@ function drainCombatFx(root) {
       applyTargetFx(el, "defend");
       spawnParticles(el, "ring", r.color);
       sfxPlay(ELEMENT_SOUNDS.defend || r.sound);
+    } else if (ev.type === "shield") {
+      spawnPopup(el, "🛡️ +" + ev.amount, "heal", "#7fb4ff");
+      applyTargetFx(el, "heal");
+      spawnParticles(el, "ring", "#7fb4ff");
+      sfxPlay("shield");
+    } else if (ev.type === "egg") {
+      sfxPlay("lootsound");
+      spawnPopup(root, "🥚 Egg!", "heal", "#ffe14d");
     } else if (ev.type === "buff") {
       const r = fxRecipe("buff");
       const meta = BUFF_META[ev.kind] || { label: ev.kind || "Buff", color: r.color };
@@ -705,24 +720,34 @@ function renderRightPlayers(room) {
   if (!el) return;
   if (!room || room.mode !== "multi" || room.status !== "playing") { el.classList.add("hidden"); return; }
   // show in town only, not in dungeon/combat overlays
-  const inOverlay = state.dungeonOpen || state.tavernOpen || state.blacksmithOpen || state.merchantOpen || state.templeOpen || state.inventoryOpen;
+  const inOverlay = state.dungeonOpen || state.tavernOpen || state.blacksmithOpen || state.merchantOpen || state.templeOpen || state.inventoryOpen || state.pvpOpen;
   if (inOverlay) { el.classList.add("hidden"); return; }
   const others = room.players.filter((p) => p.id !== state.playerId);
   if (!others.length) { el.classList.add("hidden"); return; }
   el.classList.remove("hidden");
-  el.innerHTML = `<p class="subhead" style="margin:0 0 0.4rem">Others</p>` + others.map((p) => {
+  el.innerHTML = `<p class="subhead" style="margin:0 0 0.4rem">Others — click to challenge to PvP</p>` + others.map((p) => {
     const dead = p.lives <= 0;
     const frame = p.anomaly ? ` style="--frame:${p.anomaly.frameColor}"` : "";
+    const inPvp = (room.pvpDuels||[]).some(d=> d.memberIds.includes(p.id));
     return `<div class="right-player ${dead ? "right-player--dead" : ""}" data-player="${p.id}">
       <span class="portrait portrait--${p.character} right-player-portrait" data-img="${imgFor(p.character, "class")}" data-variant="${p.character}"${frame}></span>
       <span class="right-player-info">
-        <span class="right-player-name">${escapeHtml(p.name)}${dead ? " 💀" : ""}</span>
+        <span class="right-player-name">${escapeHtml(p.name)}${dead ? " 💀" : ""}${inPvp?' ⚔️':''}</span>
         <span class="right-player-hp">${p.hp}/${p.maxHp} HP · ${p.mana}/${p.maxMana} Mana</span>
         <span class="right-player-lives">♥ ${p.lives} · Lv ${p.level}</span>
       </span>
+      <button type="button" class="btn btn--mini" data-pvp-challenge="${p.id}" ${dead||inPvp?'disabled':''}>Duel</button>
     </div>`;
   }).join("");
   initImages(el);
+  el.querySelectorAll("[data-pvp-challenge]").forEach((b)=>{
+    b.addEventListener("click",(e)=>{
+      e.stopPropagation();
+      const pid=b.getAttribute("data-pvp-challenge");
+      sfxPlay("clicksound");
+      socket.emit("pvp:challenge",{targetId:pid});
+    });
+  });
   el.querySelectorAll("[data-player]").forEach((b) => {
     b.addEventListener("click", () => {
       const pid = b.getAttribute("data-player");
@@ -844,6 +869,10 @@ function myDungeon(room) {
   return null;
 }
 
+function myPvp(room){
+  if(!room||!state.playerId) return null;
+  return (room.pvpDuels||[]).find(d=> d.memberIds.includes(state.playerId))||null;
+}
 function ensureDungeonState() {
   if (state.selectedDungeonRank == null) state.selectedDungeonRank = (CATALOG.dungeons[0] && CATALOG.dungeons[0].rank) || null;
   if (state.selectedPartySize == null) state.selectedPartySize = (CATALOG.sizes[0] && CATALOG.sizes[0].id) || "normal";
@@ -1172,6 +1201,7 @@ function renderCombat(room, root) {
         <span class="fighter-name">${escapeHtml(p.name)}${p.id === d.leaderId ? " ★" : ""}${isCurrent ? ' <span class="turn-tag">turn</span>' : ""}</span>
         <span class="hpbar"><span class="hpbar-fill hpbar-fill--party" style="width:${Math.round((p.hp / p.maxHp) * 100)}%"></span></span>
         <span class="hpnum">${p.hp}/${p.maxHp}</span>
+        ${p.shield>0 ? `<span class="hpbar shieldbar"><span class="hpbar-fill shieldbar-fill" style="width:${Math.round((p.shield/(p.maxShield||p.shield))*100)}%"></span></span><span class="hpnum shieldnum">🛡️ ${p.shield}/${p.maxShield}</span>` : ``}
         <span class="fighter-stats">Atk ${p.attack} · Res ${p.resistance} · Mgc ${p.magicPower} · Heal ${p.healPower} · Spd ${p.speed} · Crit ${p.critChance}%</span>
         <span class="fighter-mana">Mana ${p.mana}/${p.maxMana}</span>
         ${buffBadges(d, "player", p.id)}
@@ -1390,6 +1420,67 @@ function renderResultOverlay(result, chestId) {
       <button type="button" class="btn btn--gold" id="btn-result-return">Return to Town</button>
     </div>
   </div>`;
+}
+function renderPvpView(room){
+  const d=myPvp(room);
+  const root=$("pvp-content");
+  if(!d){ root.innerHTML='<div class="muted">No duel. Challenge someone from town!</div>'; return; }
+  const me=room.players.find(p=>p.id===state.playerId);
+  const oppId=d.memberIds.find(id=>id!==state.playerId);
+  const opp=room.players.find(p=>p.id===oppId);
+  const isMyTurn=d.status==="fighting" && d.currentTurnId===state.playerId;
+  const canAct=isMyTurn && me && me.hp>0;
+  const usedIds = (d.usedSkills && d.usedSkills[me.id])||[];
+  const skillsHtml = combatLoadout(me).map(s=>{
+    if(!s) return `<div class="skill-slot skill-slot--empty"></div>`;
+    const affordable=me.mana>=(s.mana||0);
+    const usedNow=usedIds.includes(s.id);
+    const disabled=!canAct||!affordable||usedNow;
+    return `<button type="button" class="skill-slot${disabled?" skill-slot--disabled":""}${usedNow?" skill-slot--used":""}" data-pskill="${s.id}">${skillTipEl(s)}${skillIconEl(s)}<span class="skill-name">${escapeHtml(s.name)}</span><span class="skill-mana">${s.mana||0} mana</span></button>`;
+  }).join("");
+  const oppFrame=opp && opp.anomaly?` style="--frame:${opp.anomaly.frameColor}"`:"";
+  const meFrame=me && me.anomaly?` style="--frame:${me.anomaly.frameColor}"`:"";
+  const oppHtml = opp? `<div class="fighter ${opp.hp<=0?"fighter--down":""} ${d.currentTurnId===opp.id?"fighter--turn":""}" style="margin:0 auto;">
+    <span class="portrait portrait--${opp.character} fighter-portrait" data-img="${imgFor(opp.character,"class")}" data-variant="${opp.character}"${oppFrame}></span>
+    <span class="fighter-name">${escapeHtml(opp.name)} ${d.currentTurnId===opp.id?'<span class="turn-tag">turn</span>':''}</span>
+    <span class="hpbar"><span class="hpbar-fill" style="width:${Math.round(opp.hp/opp.maxHp*100)}%"></span></span><span class="hpnum">${opp.hp}/${opp.maxHp}</span>
+    ${opp.shield>0?`<span class="hpbar shieldbar"><span class="hpbar-fill shieldbar-fill" style="width:${Math.round(opp.shield/(opp.maxShield||opp.shield)*100)}%"></span></span><span class="hpnum shieldnum">🛡️ ${opp.shield}</span>`:``}
+    <span class="fighter-mana">Mana ${opp.mana}/${opp.maxMana}</span>
+    ${buffBadges(d,"player",opp.id)}
+  </div>` : '<div class="muted">Waiting for opponent...</div>';
+  const meHtml = `<div class="fighter ${me.hp<=0?"fighter--down":""} ${d.currentTurnId===me.id?"fighter--turn":""}" style="margin:0 auto;">
+    <span class="portrait portrait--${me.character} fighter-portrait" data-img="${imgFor(me.character,"class")}" data-variant="${me.character}"${meFrame}></span>
+    <span class="fighter-name">${escapeHtml(me.name)} ${d.currentTurnId===me.id?'<span class="turn-tag">turn</span>':''}</span>
+    <span class="hpbar"><span class="hpbar-fill hpbar-fill--party" style="width:${Math.round(me.hp/me.maxHp*100)}%"></span></span><span class="hpnum">${me.hp}/${me.maxHp}</span>
+    ${me.shield>0?`<span class="hpbar shieldbar"><span class="hpbar-fill shieldbar-fill" style="width:${Math.round(me.shield/(me.maxShield||me.shield)*100)}%"></span></span><span class="hpnum shieldnum">🛡️ ${me.shield}</span>`:``}
+    <span class="fighter-mana">Mana ${me.mana}/${me.maxMana}</span>
+    ${buffBadges(d,"player",me.id)}
+  </div>`;
+  const hint = d.status==="done"? (d.result?d.result.text:"") : isMyTurn? "Your turn — pick a skill." : `Waiting for ${opp?opp.name:"opponent"}...`;
+  root.innerHTML=`<div class="combat-wrap">
+    <div class="combat-top"><p class="subhead">Duel — Round ${d.round}</p><div class="combat-actions"><button type="button" class="btn btn--ghost" id="btn-pvp-leave">Leave Duel</button>${canAct?'<button type="button" class="btn btn--gold" id="btn-pvp-end">End Turn</button>':''}</div></div>
+    <div class="enemy-wave" style="flex-direction:column;gap:0.5rem;">${oppHtml}</div>
+    <div class="party-row" style="margin-top:0.5rem;">${meHtml}</div>
+    <div class="skill-bar">${skillsHtml}</div>
+    <div class="combat-hint">${escapeHtml(hint)}</div>
+    <div class="combat-log">${d.log.slice(-6).map(l=>`<div class="log-line">${escapeHtml(l)}</div>`).join("")}</div>
+    ${d.result? renderResultOverlay(d.result, null).replace('btn-result-return','btn-pvp-return') : '' }
+  </div>`;
+  initImages(root);
+  drainCombatFx(root);
+  root.querySelectorAll("[data-pskill]").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const sid=b.getAttribute("data-pskill");
+      if(!canAct) return;
+      socket.emit("pvp:act",{skillId:sid});
+    });
+  });
+  const endBtn=root.querySelector("#btn-pvp-end");
+  if(endBtn) endBtn.addEventListener("click",()=> socket.emit("pvp:endTurn"));
+  const leaveBtn=root.querySelector("#btn-pvp-leave");
+  if(leaveBtn) leaveBtn.addEventListener("click",()=>{ socket.emit("pvp:leave"); state.pvpOpen=false; renderTown(state.room); });
+  const ret=root.querySelector("#btn-pvp-return");
+  if(ret) ret.addEventListener("click",()=>{ socket.emit("pvp:leave"); state.pvpOpen=false; renderTown(state.room); });
 }
 
 // ---- Tavern ----
@@ -1760,10 +1851,13 @@ function renderInventory(room) {
     .map((inv) => {
       const item = CATALOG.items.find((x) => x.id === inv.itemId);
       if (!item) return "";
-      const equipable = item.slot !== "consumable" && item.slot !== "material" && item.slot !== "chest";
+      const equipable = item.slot !== "consumable" && item.slot !== "material" && item.slot !== "chest" && item.slot !== "egg";
       const isChest = item.slot === "chest";
+      const isEgg = item.slot === "egg";
       const action = isChest
         ? `<button type="button" class="btn btn--mini" data-open-chest="${inv.itemId}">Open</button>`
+        : isEgg
+        ? `<button type="button" class="btn btn--mini" data-hatch="${inv.itemId}">Hatch</button>`
         : equipable
         ? `<button type="button" class="btn btn--mini" data-equip="${inv.itemId}">Equip</button>`
         : "";
@@ -1777,6 +1871,16 @@ function renderInventory(room) {
     })
     .join("");
 
+  const pets = (me.pets || []).map((pp)=>{
+    const pd = (CATALOG.pets||[]).find(x=>x.id===pp.petId);
+    const isActive = me.activePetId===pp.petId;
+    return `<div class="bag-row">
+      <span class="bag-icon">${pd? `<span class="item-icon" data-img="${escapeHtml(pd.image||"")}" data-variant="${escapeHtml(pd.id)}"></span>` : icon("crit")}</span>
+      <span class="bag-name">${pd? escapeHtml(pd.name): escapeHtml(pp.petId)} ${isActive? '<span class="badge badge--ready">Active</span>':''}</span>
+      <span class="bag-desc">${pd? escapeHtml(pd.description):''}</span>
+      <button type="button" class="btn btn--mini" data-pet-active="${pp.petId}">${isActive? 'Unequip':'Set Active'}</button>
+    </div>`;
+  }).join("");
   root.innerHTML = `
     <div class="shop-resources">
       ${chip(icon("food"), `Food ${me.food}`)}
@@ -1786,7 +1890,9 @@ function renderInventory(room) {
     <p class="subhead">Equipment</p>
     <div class="equip-grid">${slots}</div>
     <p class="subhead">Pack</p>
-    <div class="bag-list">${bag || '<div class="muted">Your pack is empty.</div>'}</div>`;
+    <div class="bag-list">${bag || '<div class="muted">Your pack is empty.</div>'}</div>
+    <p class="subhead">Pets ${me.activePetId? `— Active: ${escapeHtml((CATALOG.pets||[]).find(x=>x.id===me.activePetId)?.name||me.activePetId)}` : ''}</p>
+    <div class="bag-list">${pets || '<div class="muted">No pets hatched yet. Find eggs in dungeons (victory drops)!</div>'}</div>`;
   initImages(root);
 
   root.querySelectorAll("[data-unequip]").forEach((b) =>
@@ -1805,6 +1911,20 @@ function renderInventory(room) {
     b.addEventListener("click", () => {
       sfxPlay("lootsound");
       socket.emit("chest:open", { itemId: b.getAttribute("data-open-chest") });
+    })
+  );
+  root.querySelectorAll("[data-hatch]").forEach((b)=>
+    b.addEventListener("click", ()=>{
+      sfxPlay("lootsound");
+      socket.emit("pet:hatch", { eggId: b.getAttribute("data-hatch") });
+    })
+  );
+  root.querySelectorAll("[data-pet-active]").forEach((b)=>
+    b.addEventListener("click", ()=>{
+      sfxPlay("clicksound");
+      const pid=b.getAttribute("data-pet-active");
+      const isActive = me.activePetId===pid;
+      socket.emit("pet:setActive", { petId: isActive? null : pid });
     })
   );
 }

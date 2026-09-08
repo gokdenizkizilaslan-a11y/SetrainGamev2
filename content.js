@@ -2290,7 +2290,87 @@ const CONTENT = {
       "sound": [
         "bloodmagic1"
       ]
+    },
+    "water": {
+      "animation": "hit-arcane",
+      "color": "#7fb4ff",
+      "particles": "orb",
+      "sound": [
+        "frostmagic"
+      ]
+    },
+    "earth": {
+      "animation": "hit",
+      "color": "#8a6a3a",
+      "particles": "shatter",
+      "sound": [
+        "battleaxe"
+      ]
+    },
+    "lightning": {
+      "animation": "hit-arcane",
+      "color": "#ffe14d",
+      "particles": "burst",
+      "sound": [
+        "normalmagic"
+      ]
+    },
+    "blood": {
+      "animation": "hit",
+      "color": "#c45c6a",
+      "particles": "pulse",
+      "sound": [
+        "bloodmagic1",
+        "bloodmagic2"
+      ]
+    },
+    "dark": {
+      "animation": "hit-shadow",
+      "color": "#6a3fb5",
+      "particles": "pulse",
+      "sound": [
+        "bloodmagic2"
+      ]
     }
+  },
+  "affinity": {
+    "frost": {
+      "fire": 1.2,
+      "frost": 0.8
+    },
+    "fire": {
+      "water": 0.8,
+      "frost": 1.2
+    },
+    "water": {
+      "fire": 0.8,
+      "water": 0.8
+    },
+    "earth": {
+      "water": 1.2,
+      "lightning": 0.8
+    },
+    "lightning": {
+      "earth": 0.8
+    },
+    "blood": {
+      "holy": 0.8
+    },
+    "dark": {
+      "holy": 1.2,
+      "dark": 0.8
+    }
+  },
+  "combos": {
+    "wet": {
+      "trigger": "lightning",
+      "mult": 1.5,
+      "turns": 2
+    }
+  },
+  "darkTrait": {
+    "deal": 1.3,
+    "taken": 1.5
   },
   "dungeonSizes": [
     {
@@ -2904,7 +2984,111 @@ const CONTENT = {
       "unlockAfter": "boss_storm_colossus"
     }
   ],
+  "pets": [
+    {
+      "id": "fire_wolf",
+      "name": "Fire Wolf",
+      "image": "/images/pets/fire_wolf.png",
+      "element": "fire",
+      "stats": {
+        "attack": 5
+      },
+      "description": "A loyal ember pup. +5 Attack."
+    },
+    {
+      "id": "water_sprite",
+      "name": "Water Sprite",
+      "image": "/images/pets/water_sprite.png",
+      "element": "water",
+      "stats": {
+        "magicPower": 6
+      },
+      "description": "A bubbling companion. +6 Magic Power."
+    },
+    {"id":"pet_slime_1","name":"pet slime 1","image":"/images/pets/pet_slime_1.png","element":"water","stats":{"attack":3,"magicPower":7},"description":"Pet pet_slime_1","egg":"egg_common_slime"},
+    {"id":"pet_slime_2","name":"pet slime 2","image":"/images/pets/pet_slime_2.png","element":"water","stats":{"attack":3,"magicPower":3},"description":"Pet pet_slime_2","egg":"egg_common_slime"},
+    {"id":"pet_slime_3","name":"pet slime 3","image":"/images/pets/pet_slime_3.png","element":"water","stats":{"attack":3,"magicPower":5},"description":"Pet pet_slime_3","egg":"egg_common_slime"},
+    {"id":"pet_slime_4","name":"pet slime 4","image":"/images/pets/pet_slime_4.png","element":"water","stats":{"attack":3,"magicPower":6},"description":"Pet pet_slime_4","egg":"egg_common_slime"},
+    {"id":"pet_slime_5","name":"pet slime 5","image":"/images/pets/pet_slime_5.png","element":"water","stats":{"attack":3,"magicPower":4},"description":"Pet pet_slime_5","egg":"egg_common_slime"},
+    {"id":"pet_slime_6","name":"pet slime 6","image":"/images/pets/pet_slime_6.png","element":"water","stats":{"attack":4,"magicPower":7},"description":"Pet pet_slime_6","egg":"egg_common_slime"},
+    {"id":"pet_goblin_1","name":"pet goblin 1","image":"/images/pets/pet_goblin_1.png","element":"earth","stats":{"attack":6,"magicPower":7},"description":"Pet pet_goblin_1","egg":"egg_common_goblin"},
+    {"id":"pet_goblin_2","name":"pet goblin 2","image":"/images/pets/pet_goblin_2.png","element":"earth","stats":{"attack":3,"magicPower":3},"description":"Pet pet_goblin_2","egg":"egg_common_goblin"},
+    {"id":"pet_goblin_3","name":"pet goblin 3","image":"/images/pets/pet_goblin_3.png","element":"earth","stats":{"attack":6,"magicPower":6},"description":"Pet pet_goblin_3","egg":"egg_common_goblin"},
+    {"id":"pet_goblin_4","name":"pet goblin 4","image":"/images/pets/pet_goblin_4.png","element":"earth","stats":{"attack":5,"magicPower":3},"description":"Pet pet_goblin_4","egg":"egg_common_goblin"},
+    {"id":"pet_goblin_5","name":"pet goblin 5","image":"/images/pets/pet_goblin_5.png","element":"earth","stats":{"attack":4,"magicPower":4},"description":"Pet pet_goblin_5","egg":"egg_common_goblin"},
+    {"id":"pet_goblin_6","name":"pet goblin 6","image":"/images/pets/pet_goblin_6.png","element":"earth","stats":{"attack":3,"magicPower":6},"description":"Pet pet_goblin_6","egg":"egg_common_goblin"},
+    {"id":"pet_wolf_1","name":"pet wolf 1","image":"/images/pets/pet_wolf_1.png","element":"physical","stats":{"attack":7,"magicPower":5},"description":"Pet pet_wolf_1","egg":"egg_uncommon_wolf"},
+    {"id":"pet_wolf_2","name":"pet wolf 2","image":"/images/pets/pet_wolf_2.png","element":"physical","stats":{"attack":7,"magicPower":4},"description":"Pet pet_wolf_2","egg":"egg_uncommon_wolf"},
+    {"id":"pet_wolf_3","name":"pet wolf 3","image":"/images/pets/pet_wolf_3.png","element":"physical","stats":{"attack":4,"magicPower":4},"description":"Pet pet_wolf_3","egg":"egg_uncommon_wolf"},
+    {"id":"pet_wolf_4","name":"pet wolf 4","image":"/images/pets/pet_wolf_4.png","element":"physical","stats":{"attack":3,"magicPower":6},"description":"Pet pet_wolf_4","egg":"egg_uncommon_wolf"},
+    {"id":"pet_wolf_5","name":"pet wolf 5","image":"/images/pets/pet_wolf_5.png","element":"physical","stats":{"attack":6,"magicPower":6},"description":"Pet pet_wolf_5","egg":"egg_uncommon_wolf"},
+    {"id":"pet_wolf_6","name":"pet wolf 6","image":"/images/pets/pet_wolf_6.png","element":"physical","stats":{"attack":7,"magicPower":7},"description":"Pet pet_wolf_6","egg":"egg_uncommon_wolf"},
+    {"id":"pet_spider_1","name":"pet spider 1","image":"/images/pets/pet_spider_1.png","element":"shadow","stats":{"attack":5,"magicPower":6},"description":"Pet pet_spider_1","egg":"egg_uncommon_spider"},
+    {"id":"pet_spider_2","name":"pet spider 2","image":"/images/pets/pet_spider_2.png","element":"shadow","stats":{"attack":4,"magicPower":5},"description":"Pet pet_spider_2","egg":"egg_uncommon_spider"},
+    {"id":"pet_spider_3","name":"pet spider 3","image":"/images/pets/pet_spider_3.png","element":"shadow","stats":{"attack":7,"magicPower":5},"description":"Pet pet_spider_3","egg":"egg_uncommon_spider"},
+    {"id":"pet_spider_4","name":"pet spider 4","image":"/images/pets/pet_spider_4.png","element":"shadow","stats":{"attack":4,"magicPower":5},"description":"Pet pet_spider_4","egg":"egg_uncommon_spider"},
+    {"id":"pet_spider_5","name":"pet spider 5","image":"/images/pets/pet_spider_5.png","element":"shadow","stats":{"attack":3,"magicPower":5},"description":"Pet pet_spider_5","egg":"egg_uncommon_spider"},
+    {"id":"pet_spider_6","name":"pet spider 6","image":"/images/pets/pet_spider_6.png","element":"shadow","stats":{"attack":3,"magicPower":3},"description":"Pet pet_spider_6","egg":"egg_uncommon_spider"},
+    {"id":"pet_golem_1","name":"pet golem 1","image":"/images/pets/pet_golem_1.png","element":"earth","stats":{"attack":3,"magicPower":5},"description":"Pet pet_golem_1","egg":"egg_rare_golem"},
+    {"id":"pet_golem_2","name":"pet golem 2","image":"/images/pets/pet_golem_2.png","element":"earth","stats":{"attack":3,"magicPower":6},"description":"Pet pet_golem_2","egg":"egg_rare_golem"},
+    {"id":"pet_golem_3","name":"pet golem 3","image":"/images/pets/pet_golem_3.png","element":"earth","stats":{"attack":3,"magicPower":5},"description":"Pet pet_golem_3","egg":"egg_rare_golem"},
+    {"id":"pet_golem_4","name":"pet golem 4","image":"/images/pets/pet_golem_4.png","element":"earth","stats":{"attack":5,"magicPower":6},"description":"Pet pet_golem_4","egg":"egg_rare_golem"},
+    {"id":"pet_golem_5","name":"pet golem 5","image":"/images/pets/pet_golem_5.png","element":"earth","stats":{"attack":6,"magicPower":5},"description":"Pet pet_golem_5","egg":"egg_rare_golem"},
+    {"id":"pet_golem_6","name":"pet golem 6","image":"/images/pets/pet_golem_6.png","element":"earth","stats":{"attack":3,"magicPower":5},"description":"Pet pet_golem_6","egg":"egg_rare_golem"},
+    {"id":"pet_wyvern_1","name":"pet wyvern 1","image":"/images/pets/pet_wyvern_1.png","element":"fire","stats":{"attack":7,"magicPower":7},"description":"Pet pet_wyvern_1","egg":"egg_rare_wyvern"},
+    {"id":"pet_wyvern_2","name":"pet wyvern 2","image":"/images/pets/pet_wyvern_2.png","element":"fire","stats":{"attack":6,"magicPower":6},"description":"Pet pet_wyvern_2","egg":"egg_rare_wyvern"},
+    {"id":"pet_wyvern_3","name":"pet wyvern 3","image":"/images/pets/pet_wyvern_3.png","element":"fire","stats":{"attack":3,"magicPower":3},"description":"Pet pet_wyvern_3","egg":"egg_rare_wyvern"},
+    {"id":"pet_wyvern_4","name":"pet wyvern 4","image":"/images/pets/pet_wyvern_4.png","element":"fire","stats":{"attack":3,"magicPower":7},"description":"Pet pet_wyvern_4","egg":"egg_rare_wyvern"},
+    {"id":"pet_wyvern_5","name":"pet wyvern 5","image":"/images/pets/pet_wyvern_5.png","element":"fire","stats":{"attack":4,"magicPower":5},"description":"Pet pet_wyvern_5","egg":"egg_rare_wyvern"},
+    {"id":"pet_wyvern_6","name":"pet wyvern 6","image":"/images/pets/pet_wyvern_6.png","element":"fire","stats":{"attack":3,"magicPower":7},"description":"Pet pet_wyvern_6","egg":"egg_rare_wyvern"},
+    {"id":"pet_lich_1","name":"pet lich 1","image":"/images/pets/pet_lich_1.png","element":"dark","stats":{"attack":3,"magicPower":7},"description":"Pet pet_lich_1","egg":"egg_epic_lich"},
+    {"id":"pet_lich_2","name":"pet lich 2","image":"/images/pets/pet_lich_2.png","element":"dark","stats":{"attack":6,"magicPower":6},"description":"Pet pet_lich_2","egg":"egg_epic_lich"},
+    {"id":"pet_lich_3","name":"pet lich 3","image":"/images/pets/pet_lich_3.png","element":"dark","stats":{"attack":3,"magicPower":3},"description":"Pet pet_lich_3","egg":"egg_epic_lich"},
+    {"id":"pet_lich_4","name":"pet lich 4","image":"/images/pets/pet_lich_4.png","element":"dark","stats":{"attack":5,"magicPower":7},"description":"Pet pet_lich_4","egg":"egg_epic_lich"},
+    {"id":"pet_lich_5","name":"pet lich 5","image":"/images/pets/pet_lich_5.png","element":"dark","stats":{"attack":4,"magicPower":5},"description":"Pet pet_lich_5","egg":"egg_epic_lich"},
+    {"id":"pet_lich_6","name":"pet lich 6","image":"/images/pets/pet_lich_6.png","element":"dark","stats":{"attack":3,"magicPower":3},"description":"Pet pet_lich_6","egg":"egg_epic_lich"},
+    {"id":"pet_hydra_1","name":"pet hydra 1","image":"/images/pets/pet_hydra_1.png","element":"water","stats":{"attack":4,"magicPower":4},"description":"Pet pet_hydra_1","egg":"egg_epic_hydra"},
+    {"id":"pet_hydra_2","name":"pet hydra 2","image":"/images/pets/pet_hydra_2.png","element":"water","stats":{"attack":5,"magicPower":7},"description":"Pet pet_hydra_2","egg":"egg_epic_hydra"},
+    {"id":"pet_hydra_3","name":"pet hydra 3","image":"/images/pets/pet_hydra_3.png","element":"water","stats":{"attack":4,"magicPower":5},"description":"Pet pet_hydra_3","egg":"egg_epic_hydra"},
+    {"id":"pet_hydra_4","name":"pet hydra 4","image":"/images/pets/pet_hydra_4.png","element":"water","stats":{"attack":7,"magicPower":4},"description":"Pet pet_hydra_4","egg":"egg_epic_hydra"},
+    {"id":"pet_hydra_5","name":"pet hydra 5","image":"/images/pets/pet_hydra_5.png","element":"water","stats":{"attack":4,"magicPower":7},"description":"Pet pet_hydra_5","egg":"egg_epic_hydra"},
+    {"id":"pet_hydra_6","name":"pet hydra 6","image":"/images/pets/pet_hydra_6.png","element":"water","stats":{"attack":6,"magicPower":5},"description":"Pet pet_hydra_6","egg":"egg_epic_hydra"},
+    {"id":"pet_phoenix_1","name":"pet phoenix 1","image":"/images/pets/pet_phoenix_1.png","element":"fire","stats":{"attack":7,"magicPower":7},"description":"Pet pet_phoenix_1","egg":"egg_legendary_phoenix"},
+    {"id":"pet_phoenix_2","name":"pet phoenix 2","image":"/images/pets/pet_phoenix_2.png","element":"fire","stats":{"attack":3,"magicPower":7},"description":"Pet pet_phoenix_2","egg":"egg_legendary_phoenix"},
+    {"id":"pet_phoenix_3","name":"pet phoenix 3","image":"/images/pets/pet_phoenix_3.png","element":"fire","stats":{"attack":6,"magicPower":5},"description":"Pet pet_phoenix_3","egg":"egg_legendary_phoenix"},
+    {"id":"pet_phoenix_4","name":"pet phoenix 4","image":"/images/pets/pet_phoenix_4.png","element":"fire","stats":{"attack":6,"magicPower":3},"description":"Pet pet_phoenix_4","egg":"egg_legendary_phoenix"},
+    {"id":"pet_phoenix_5","name":"pet phoenix 5","image":"/images/pets/pet_phoenix_5.png","element":"fire","stats":{"attack":5,"magicPower":7},"description":"Pet pet_phoenix_5","egg":"egg_legendary_phoenix"},
+    {"id":"pet_phoenix_6","name":"pet phoenix 6","image":"/images/pets/pet_phoenix_6.png","element":"fire","stats":{"attack":5,"magicPower":4},"description":"Pet pet_phoenix_6","egg":"egg_legendary_phoenix"},
+    {"id":"pet_void_1","name":"pet void 1","image":"/images/pets/pet_void_1.png","element":"dark","stats":{"attack":4,"magicPower":3},"description":"Pet pet_void_1","egg":"egg_mythic_void"},
+    {"id":"pet_void_2","name":"pet void 2","image":"/images/pets/pet_void_2.png","element":"dark","stats":{"attack":3,"magicPower":7},"description":"Pet pet_void_2","egg":"egg_mythic_void"},
+    {"id":"pet_void_3","name":"pet void 3","image":"/images/pets/pet_void_3.png","element":"dark","stats":{"attack":4,"magicPower":7},"description":"Pet pet_void_3","egg":"egg_mythic_void"},
+    {"id":"pet_void_4","name":"pet void 4","image":"/images/pets/pet_void_4.png","element":"dark","stats":{"attack":7,"magicPower":7},"description":"Pet pet_void_4","egg":"egg_mythic_void"},
+    {"id":"pet_void_5","name":"pet void 5","image":"/images/pets/pet_void_5.png","element":"dark","stats":{"attack":7,"magicPower":7},"description":"Pet pet_void_5","egg":"egg_mythic_void"},
+    {"id":"pet_void_6","name":"pet void 6","image":"/images/pets/pet_void_6.png","element":"dark","stats":{"attack":4,"magicPower":6},"description":"Pet pet_void_6","egg":"egg_mythic_void"}
+  ],
+  "eggs": [
+    { "id": "egg_common_slime", "label": "Slime Egg", "rarity": "common", "dropRate": 0.1, "dungeons": ["f", "fast"], "pets": ["pet_slime_1","pet_slime_2","pet_slime_3","pet_slime_4","pet_slime_5","pet_slime_6"] },
+    { "id": "egg_common_goblin", "label": "Goblin Egg", "rarity": "common", "dropRate": 0.05, "dungeons": ["f", "d"], "pets": ["pet_goblin_1","pet_goblin_2","pet_goblin_3","pet_goblin_4","pet_goblin_5","pet_goblin_6"] },
+    { "id": "egg_uncommon_wolf", "label": "Wolf Egg", "rarity": "uncommon", "dropRate": 0.03, "dungeons": ["d", "c"], "pets": ["pet_wolf_1","pet_wolf_2","pet_wolf_3","pet_wolf_4","pet_wolf_5","pet_wolf_6"] },
+    { "id": "egg_uncommon_spider", "label": "Spider Egg", "rarity": "uncommon", "dropRate": 0.02, "dungeons": ["c", "b"], "pets": ["pet_spider_1","pet_spider_2","pet_spider_3","pet_spider_4","pet_spider_5","pet_spider_6"] },
+    { "id": "egg_rare_golem", "label": "Golem Egg", "rarity": "rare", "dropRate": 0.015, "dungeons": ["b", "a"], "pets": ["pet_golem_1","pet_golem_2","pet_golem_3","pet_golem_4","pet_golem_5","pet_golem_6"] },
+    { "id": "egg_rare_wyvern", "label": "Wyvern Egg", "rarity": "rare", "dropRate": 0.01, "dungeons": ["a", "s"], "pets": ["pet_wyvern_1","pet_wyvern_2","pet_wyvern_3","pet_wyvern_4","pet_wyvern_5","pet_wyvern_6"] },
+    { "id": "egg_epic_lich", "label": "Lich Egg", "rarity": "epic", "dropRate": 0.008, "dungeons": ["s", "ss"], "pets": ["pet_lich_1","pet_lich_2","pet_lich_3","pet_lich_4","pet_lich_5","pet_lich_6"] },
+    { "id": "egg_epic_hydra", "label": "Hydra Egg", "rarity": "epic", "dropRate": 0.006, "dungeons": ["ss", "ssplus"], "pets": ["pet_hydra_1","pet_hydra_2","pet_hydra_3","pet_hydra_4","pet_hydra_5","pet_hydra_6"] },
+    { "id": "egg_legendary_phoenix", "label": "Phoenix Egg", "rarity": "legendary", "dropRate": 0.004, "dungeons": ["special7"], "pets": ["pet_phoenix_1","pet_phoenix_2","pet_phoenix_3","pet_phoenix_4","pet_phoenix_5","pet_phoenix_6"] },
+    { "id": "egg_mythic_void", "label": "Void Egg", "rarity": "mythic", "dropRate": 0.002, "dungeons": ["ssplus"], "pets": ["pet_void_1","pet_void_2","pet_void_3","pet_void_4","pet_void_5","pet_void_6"] }
+  ],
   "items": [
+    {"id":"egg_common_slime","name":"Slime Egg","slot":"egg","rarity":"common","price":{"gold":0,"wood":0},"image":"/images/items/egg_common_slime.png","description":"Hatch to get a random pet. Drops in specific dungeons."},
+    {"id":"egg_common_goblin","name":"Goblin Egg","slot":"egg","rarity":"common","price":{"gold":0,"wood":0},"image":"/images/items/egg_common_goblin.png","description":"Hatch to get a random pet. Drops in specific dungeons."},
+    {"id":"egg_uncommon_wolf","name":"Wolf Egg","slot":"egg","rarity":"uncommon","price":{"gold":0,"wood":0},"image":"/images/items/egg_uncommon_wolf.png","description":"Hatch to get a random pet. Drops in specific dungeons."},
+    {"id":"egg_uncommon_spider","name":"Spider Egg","slot":"egg","rarity":"uncommon","price":{"gold":0,"wood":0},"image":"/images/items/egg_uncommon_spider.png","description":"Hatch to get a random pet. Drops in specific dungeons."},
+    {"id":"egg_rare_golem","name":"Golem Egg","slot":"egg","rarity":"rare","price":{"gold":0,"wood":0},"image":"/images/items/egg_rare_golem.png","description":"Hatch to get a random pet. Drops in specific dungeons."},
+    {"id":"egg_rare_wyvern","name":"Wyvern Egg","slot":"egg","rarity":"rare","price":{"gold":0,"wood":0},"image":"/images/items/egg_rare_wyvern.png","description":"Hatch to get a random pet. Drops in specific dungeons."},
+    {"id":"egg_epic_lich","name":"Lich Egg","slot":"egg","rarity":"epic","price":{"gold":0,"wood":0},"image":"/images/items/egg_epic_lich.png","description":"Hatch to get a random pet. Drops in specific dungeons."},
+    {"id":"egg_epic_hydra","name":"Hydra Egg","slot":"egg","rarity":"epic","price":{"gold":0,"wood":0},"image":"/images/items/egg_epic_hydra.png","description":"Hatch to get a random pet. Drops in specific dungeons."},
+    {"id":"egg_legendary_phoenix","name":"Phoenix Egg","slot":"egg","rarity":"legendary","price":{"gold":0,"wood":0},"image":"/images/items/egg_legendary_phoenix.png","description":"Hatch to get a random pet. Drops in specific dungeons."},
+    {"id":"egg_mythic_void","name":"Void Egg","slot":"egg","rarity":"mythic","price":{"gold":0,"wood":0},"image":"/images/items/egg_mythic_void.png","description":"Hatch to get a random pet. Drops in specific dungeons."},
     {
       "id": "rusty_sword",
       "name": "Rusty Sword",
@@ -5980,6 +6164,89 @@ const CONTENT = {
       "description": "A hero takes damage each round for 3 rounds."
     },
     {
+      "id": "aegis",
+      "name": "Aegis",
+      "target": "self",
+      "mana": 6,
+      "buffs": [
+        {
+          "kind": "shield",
+          "value": 60
+        }
+      ],
+      "duration": 2,
+      "image": "/images/skills/aegis.png",
+      "description": "Gain 60 shield for 2 rounds."
+    },
+    {
+      "id": "barrier",
+      "name": "Barrier",
+      "target": "party",
+      "mana": 10,
+      "buffs": [
+        {
+          "kind": "shield",
+          "value": 35
+        }
+      ],
+      "duration": 2,
+      "image": "/images/skills/barrier.png",
+      "description": "All allies gain 35 shield for 2 rounds."
+    },
+    {
+      "id": "stone_skin",
+      "name": "Stone Skin",
+      "target": "self",
+      "mana": 7,
+      "buffs": [
+        {
+          "kind": "shield",
+          "value": 80
+        },
+        {
+          "kind": "defense",
+          "value": 0.15
+        }
+      ],
+      "duration": 2,
+      "image": "/images/skills/stone_skin.png",
+      "description": "Gain 80 shield and 15% damage reduction."
+    },
+    {
+      "id": "holy_ward",
+      "name": "Holy Ward",
+      "target": "ally",
+      "mana": 8,
+      "buffs": [
+        {
+          "kind": "shield",
+          "value": 50
+        }
+      ],
+      "duration": 2,
+      "image": "/images/skills/holy_ward.png",
+      "description": "Give an ally 50 shield for 2 rounds."
+    },
+    {
+      "id": "dark_veil",
+      "name": "Dark Veil",
+      "target": "self",
+      "mana": 8,
+      "buffs": [
+        {
+          "kind": "shield",
+          "value": 45
+        },
+        {
+          "kind": "weaken",
+          "value": 0.15
+        }
+      ],
+      "duration": 2,
+      "image": "/images/skills/dark_veil.png",
+      "description": "Gain 45 shield and weaken attacker 15%."
+    },
+    {
       "id": "monster_heal",
       "name": "Graft",
       "target": "self",
@@ -5987,6 +6254,88 @@ const CONTENT = {
       "amount": 0.15,
       "monster": true,
       "description": "The monster restores 15% of max HP."
+    },
+    {
+      "id": "frost_bolt",
+      "name": "Frost Bolt",
+      "target": "enemy",
+      "mana": 8,
+      "power": 2,
+      "element": "frost",
+      "image": "/images/skills/frost_bolt.png",
+      "description": "Deals 2× magicPower frost damage. May freeze the target."
+    },
+    {
+      "id": "frost_nova",
+      "name": "Frost Nova",
+      "target": "enemy",
+      "mana": 10,
+      "power": 1.8,
+      "element": "frost",
+      "buffs": [
+        {
+          "kind": "frozen",
+          "value": 0
+        }
+      ],
+      "duration": 1,
+      "image": "/images/skills/frost_nova.png",
+      "description": "Deals 1.8× magicPower frost damage and freezes the target for 1 turn."
+    },
+    {
+      "id": "water_splash",
+      "name": "Water Splash",
+      "target": "enemy",
+      "mana": 6,
+      "power": 1.5,
+      "element": "water",
+      "buffs": [
+        {
+          "kind": "wet",
+          "value": 0
+        }
+      ],
+      "duration": 2,
+      "image": "/images/skills/water_splash.png",
+      "description": "Deals 1.5× magicPower water damage and soaks the target for 2 turns (wet)."
+    },
+    {
+      "id": "lightning_bolt",
+      "name": "Lightning Bolt",
+      "target": "enemy",
+      "mana": 9,
+      "power": 1.8,
+      "element": "lightning",
+      "bonusVsStatus": {
+        "status": "wet",
+        "mult": 0.5
+      },
+      "image": "/images/skills/lightning_bolt.png",
+      "description": "Deals 1.8× magicPower lightning damage, +50% vs wet."
+    },
+    {
+      "id": "war_heal",
+      "name": "War Heal",
+      "target": "ally",
+      "mana": 10,
+      "heal": {
+        "stat": "attack",
+        "mult": 1.3
+      },
+      "image": "/images/skills/war_heal.png",
+      "description": "Heals 1.3× attack power. Scales with healPower."
+    },
+    {
+      "id": "magic_mend",
+      "name": "Magic Mend",
+      "target": "ally",
+      "mana": 10,
+      "heal": {
+        "stat": "magicPower",
+        "mult": 2
+      },
+      "image": "/images/skills/magic_mend.png",
+      "description": "Heals 2× magicPower. Scales with healPower."
     }
   ]
 };
@@ -6050,6 +6399,10 @@ function publicCatalog() {
       maxLives: CONTENT.starting.lives,
     },
     effects: CONTENT.effects,
+    affinity: CONTENT.affinity || {},
+    combos: CONTENT.combos || {},
+    darkTrait: CONTENT.darkTrait || { deal: 1.3, taken: 1.5 },
+    pets: (CONTENT.pets || []).map((p) => ({ id: p.id, name: p.name, image: p.image, element: p.element, description: p.description || "" })),
     food: CONTENT.food,
     loot: {
       rarityOrder: CONTENT.loot.rarityOrder,
@@ -6084,6 +6437,7 @@ function publicCatalog() {
       duration: s.duration || null,
       kind: s.kind || null,
       monster: s.monster || false,
+      bonusVsStatus: s.bonusVsStatus || null,
     })),
     items: CONTENT.items.map((i) => ({
       id: i.id,
@@ -6099,7 +6453,7 @@ function publicCatalog() {
     })),
     equipmentSlots: CONTENT.equipmentSlots,
     bosses: (CONTENT.bosses || []).map((b) => ({ id: b.id, label: b.label, image: b.image, hp: b.hp, attack: b.attack, element: b.element, unlockAfter: b.unlockAfter || null })),
-    monsters: CONTENT.monsters.map((m) => ({ id: m.id, name: m.name, image: m.image, rarity: m.rarity || "common" })),
+    monsters: CONTENT.monsters.map((m) => ({ id: m.id, name: m.name, image: m.image, rarity: m.rarity || "common", element: m.element || "physical" })),
     anomalyFrameColors: Object.fromEntries(
       CONTENT.anomalies.traits.map((t) => [t.id, t.frameColor])
     ),

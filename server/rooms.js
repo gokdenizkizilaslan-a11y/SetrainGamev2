@@ -44,6 +44,7 @@ function publicRoomSummary(room) {
 
 function publicRoomState(room) {
   const boss = (() => { try{ const b=require("./boss"); return (room.bossParties||[]).map(b.publicBoss); } catch(e){ return []; }})();
+  const pvp = (() => { try{ const p=require("./pvp"); return (room.pvpDuels||[]).map(d=> p.publicPvp(d, room)); } catch(e){ return []; }})();
   return {
     id: room.id,
     name: room.name,
@@ -57,6 +58,7 @@ function publicRoomState(room) {
     shopStock: room.shopStock || null,
     dungeons: (room.dungeons || []).map(publicDungeon),
     bossParties: boss,
+    pvpDuels: pvp,
     players: room.players.map(publicPlayer),
   };
 }
@@ -111,6 +113,7 @@ function createRoom({ socketId, name, character, mode, roomName }) {
     log: null,
     dungeons: [],
     bossParties: [],
+    pvpDuels: [],
     chat: [],
     players: [host],
   };
@@ -199,6 +202,17 @@ function leaveRoom(socketId) {
       if (b.memberIds.length===0) room.bossParties = room.bossParties.filter(x=> x!==b);
     }
   }
+  if (room.pvpDuels) {
+    for (const pvp of [...room.pvpDuels]) {
+      if (!pvp.memberIds.includes(socketId)) continue;
+      if (pvp.turnTimer) { try{ clearTimeout(pvp.turnTimer);}catch(e){} pvp.turnTimer=null; }
+      room.pvpDuels = room.pvpDuels.filter(x=> x!==pvp);
+      for(const pid of pvp.memberIds){
+        const pl=room.players.find(x=>x.id===pid);
+        if(pl) pl.pvpId=null;
+      }
+    }
+  }
 
   room.players = room.players.filter((p) => p.id !== socketId);
   socketToRoom.delete(socketId);
@@ -254,6 +268,7 @@ function startGame(socketId) {
   room.day = 1;
   room.dungeons = [];
   room.bossParties = [];
+  room.pvpDuels = [];
   stock.init(room);
   room.log = { type: "day", text: "Day 1 — the town stirs. Spend your stamina wisely." };
   for (const p of room.players) {
@@ -261,6 +276,8 @@ function startGame(socketId) {
     onNewDay(p);
     p.dungeonId = null;
     p.bossId = null;
+    p.pvpId = null;
+    p.shield = 0; p.maxShield = 0;
     if (!p.bossKills) p.bossKills = [];
   }
   return room;
@@ -286,6 +303,11 @@ function rebindSocket(oldSocketId, newSocketId) {
     b.memberIds = b.memberIds.map((id) => (id === oldSocketId ? newSocketId : id));
     b.turnOrder = (b.turnOrder || []).map((id) => (id === oldSocketId ? newSocketId : id));
     if (b.currentTurnId === oldSocketId) b.currentTurnId = newSocketId;
+  }
+  for (const pvp of room.pvpDuels || []) {
+    pvp.memberIds = pvp.memberIds.map((id) => (id === oldSocketId ? newSocketId : id));
+    pvp.turnOrder = (pvp.turnOrder || []).map((id) => (id === oldSocketId ? newSocketId : id));
+    if (pvp.currentTurnId === oldSocketId) pvp.currentTurnId = newSocketId;
   }
   return room;
 }

@@ -1436,6 +1436,9 @@ input:focus {
   font-size: 0.78rem;
   color: var(--ink-soft);
 }
+.shieldbar { height: 6px; margin-top:2px; border-color: rgba(127,180,255,0.3); }
+.shieldbar-fill { background: linear-gradient(180deg, #7fb4ff, #4a6fa5); }
+.shieldnum { font-size:0.68rem; color:#7fb4ff; }
 
 .skill-bar {
   display: grid;

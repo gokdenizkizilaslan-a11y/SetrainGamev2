@@ -26,7 +26,7 @@ const statLabels = {
   speed: "Speed",
 };
 
-const ELEMENTS = ["physical", "arcane", "shadow", "holy"];
+const ELEMENTS = ["physical", "arcane", "shadow", "holy", "frost", "fire", "water", "earth", "lightning", "blood", "dark"];
 const SLOTS = ["weapon", "head", "armor", "legs", "boots", "amulet", "ring", "consumable", "material"];
 
 const rarityOptions = (data) =>
@@ -104,6 +104,23 @@ const collections = [
   },
 
   {
+    id: "pets",
+    label: "Pets",
+    kind: "collection",
+    path: "pets",
+    idField: "id",
+    idLabel: "id",
+    nameField: "name",
+    itemLabelTemplate: "{name} ({element})",
+    fields: [
+      { key: "name", label: "Name", type: "string" },
+      { key: "element", label: "Element", type: "choice", options: ELEMENTS },
+      { key: "image", label: "Image path", type: "string" },
+      { key: "description", label: "Description", type: "string" },
+    ],
+  },
+
+  {
     id: "items",
     label: "Items & Shop",
     kind: "collection",
@@ -144,14 +161,15 @@ const collections = [
       { key: "name", label: "Name", type: "string" },
       { key: "target", label: "Target", type: "choice", options: ["enemy", "ally", "self", "party"] },
       { key: "mana", label: "Mana cost", type: "number" },
-      { key: "power", label: "Damage (1.6 = 1.6×)", type: "number" },
+      { key: "power", label: "Damage (1.6 = 1.6× magic/attack)", type: "number" },
       { key: "element", label: "Element", type: "choice", options: ELEMENTS },
-      { key: "heal", label: "Heal % of target's max HP", type: "percent" },
+      { key: "heal", label: "Heal (number= maxHp% or {stat,mult} e.g. {stat:'attack',mult:1.3})", type: "string" },
       { key: "healSelfPct", label: "Heal % of own max HP", type: "percent" },
       { key: "defense", label: "Damage blocked %", type: "percent" },
       { key: "lifesteal", label: "Lifesteal % of damage dealt", type: "percent" },
       { key: "manaRestorePct", label: "Restore % of max mana", type: "percent" },
       { key: "manaRestore", label: "Flat mana restored", type: "number" },
+      { key: "bonusVsStatus", label: "Bonus vs status (e.g. {status:'wet',mult:0.5})", type: "string" },
       { key: "description", label: "Description", type: "string" },
       { key: "image", label: "Image path", type: "string" },
     ],
