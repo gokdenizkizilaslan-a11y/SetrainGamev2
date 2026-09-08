@@ -7,3 +7,4 @@ npm-debug.log*
 content.backup-*.js
 ai_editor_pack/
 for_ai/
+.aider*
