@@ -381,48 +381,32 @@ function drainCombatFx(root) {
     }
     if (ev.type === "damage") {
       const r = fxRecipe(ev.effect);
-      // keep popup but also vfx above
       if (ev.crit) {
         spawnPopup(el, "CRIT " + ev.amount, "crit", r.color);
-        applyTargetFx(el, "hit-crit");
-        spawnParticles(el, "burst", r.color);
         sfxPlay(["skull_crush"]);
         shakeCombat(root);
       } else {
         spawnPopup(el, "-" + ev.amount, "damage", r.color);
-        applyTargetFx(el, r.animation);
-        spawnParticles(el, r.particles, r.color);
         const monsterDefault = ev.source === "monster" && (!ev.elem || ev.elem === "physical");
         sfxPlay(monsterDefault ? ELEMENT_SOUNDS.monster : ELEMENT_SOUNDS[ev.elem] || r.sound);
       }
     } else if (ev.type === "heal") {
-      const r = fxRecipe("heal");
-      spawnPopup(el, "+" + ev.amount, "heal", r.color);
-      applyTargetFx(el, "heal");
-      spawnParticles(el, "glow", r.color);
-      sfxPlay(ELEMENT_SOUNDS.heal || r.sound);
+      spawnPopup(el, "+" + ev.amount, "heal", "#4ade80");
+      sfxPlay(ELEMENT_SOUNDS.heal || "heal_aura_fountain");
     } else if (ev.type === "defend") {
-      const r = fxRecipe("defend");
-      spawnPopup(el, "Defended", "defend", r.color);
-      applyTargetFx(el, "defend");
-      spawnParticles(el, "ring", r.color);
-      sfxPlay(ELEMENT_SOUNDS.defend || r.sound);
+      spawnPopup(el, "Defended", "defend", "#8fc9ff");
+      sfxPlay(ELEMENT_SOUNDS.defend || "radiant_halo_shield");
     } else if (ev.type === "shield") {
       spawnPopup(el, "🛡️ +" + ev.amount, "heal", "#7fb4ff");
-      applyTargetFx(el, "heal");
-      spawnParticles(el, "ring", "#7fb4ff");
       sfxPlay("shield");
     } else if (ev.type === "egg") {
       sfxPlay("lootsound");
       spawnPopup(root, "🥚 Egg!", "heal", "#ffe14d");
     } else if (ev.type === "buff") {
-      const r = fxRecipe("buff");
-      const meta = BUFF_META[ev.kind] || { label: ev.kind || "Buff", color: r.color };
+      const meta = BUFF_META[ev.kind] || { label: ev.kind || "Buff", color: "#8fe08a" };
       const txt = meta.label + (ev.turns && ev.turns > 1 ? " ×" + ev.turns : "");
       spawnPopup(el, txt, "buff", meta.color);
-      applyTargetFx(el, "buff");
-      spawnParticles(el, "ring", meta.color);
-      sfxPlay(ELEMENT_SOUNDS.defend || r.sound);
+      sfxPlay(ELEMENT_SOUNDS.defend || "radiant_halo_shield");
     } else if (ev.type === "flee") {
       const fleeEl = root.querySelector('.fighter[data-fighter="' + ev.actor + '"]') || root;
       spawnPopup(fleeEl, "Fled!", "heal", "#ffd23e");

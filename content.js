@@ -576,7 +576,7 @@ const CONTENT = {
         "name": "Shield Bash",
         "power": 0.85,
         "element": "physical",
-        "effect": "crush",
+        "effect": "heavy_hammer_slam",
         "image": "/images/skills/shield_bash.png",
         "description": "Deals 0.85× attack damage."
       },
@@ -1277,7 +1277,7 @@ const CONTENT = {
         "name": "Adamant Bash",
         "power": 0.95,
         "element": "physical",
-        "effect": "crush",
+        "effect": "heavy_hammer_slam",
         "image": "/images/skills/adamant_bash.png",
         "description": "Deals 0.95× attack damage."
       },
@@ -1754,7 +1754,7 @@ const CONTENT = {
         "name": "Titan Slam",
         "power": 1.05,
         "element": "physical",
-        "effect": "crush",
+        "effect": "heavy_hammer_slam",
         "image": "/images/skills/titan_slam.png",
         "description": "Deals 1.05× attack damage."
       },
@@ -2349,7 +2349,7 @@ const CONTENT = {
       }
     }
   },
-    "effects": {
+      "effects": {
     "blood_scythe": {
       "animation": "hit",
       "color": "#dc2626",
@@ -2988,166 +2988,6 @@ const CONTENT = {
       "particles": "slash",
       "sound": [
         "guillotine_fall"
-      ]
-    },
-    "slash": {
-      "animation": "hit",
-      "color": "#ffffff",
-      "particles": "slash",
-      "sound": [
-        "slash1"
-      ]
-    },
-    "heavy": {
-      "animation": "hit-crit",
-      "color": "#fb923c",
-      "particles": "slash",
-      "sound": [
-        "heavy_hammer_slam"
-      ]
-    },
-    "axe": {
-      "animation": "hit",
-      "color": "#ea580c",
-      "particles": "slash",
-      "sound": [
-        "axe_cleave_horizontal"
-      ]
-    },
-    "crush": {
-      "animation": "hit-crit",
-      "color": "#f59e0b",
-      "particles": "burst",
-      "sound": [
-        "heavy_hammer_slam"
-      ]
-    },
-    "arcane": {
-      "animation": "hit-arcane",
-      "color": "#c9a0ff",
-      "particles": "orb",
-      "sound": [
-        "frost_crystal_spear"
-      ]
-    },
-    "fire": {
-      "animation": "hit",
-      "color": "#ff7a3c",
-      "particles": "burst",
-      "sound": [
-        "fire_meteor_crash"
-      ]
-    },
-    "frost": {
-      "animation": "hit-arcane",
-      "color": "#38bdf8",
-      "particles": "burst",
-      "sound": [
-        "frost_crystal_spear"
-      ]
-    },
-    "water": {
-      "animation": "hit",
-      "color": "#7fb4ff",
-      "particles": "burst",
-      "sound": [
-        "tidal_wave_water"
-      ]
-    },
-    "earth": {
-      "animation": "hit",
-      "color": "#8a6a3a",
-      "particles": "burst",
-      "sound": [
-        "earth_fissure_rupture"
-      ]
-    },
-    "lightning": {
-      "animation": "hit-arcane",
-      "color": "#ffe14d",
-      "particles": "burst",
-      "sound": [
-        "lightning_strike_heavy"
-      ]
-    },
-    "blood": {
-      "animation": "hit",
-      "color": "#c45c6a",
-      "particles": "slash",
-      "sound": [
-        "blood_scythe"
-      ]
-    },
-    "dark": {
-      "animation": "hit-shadow",
-      "color": "#6a3fb5",
-      "particles": "pulse",
-      "sound": [
-        "shadow_scythe_reap"
-      ]
-    },
-    "holy": {
-      "animation": "hit-holy",
-      "color": "#ffe9a8",
-      "particles": "rays",
-      "sound": [
-        "holy_pillar_smite"
-      ]
-    },
-    "shadow": {
-      "animation": "hit-shadow",
-      "color": "#b98cff",
-      "particles": "pulse",
-      "sound": [
-        "shadow_scythe_reap"
-      ]
-    },
-    "heal": {
-      "animation": "heal",
-      "color": "#4ade80",
-      "particles": "glow",
-      "sound": [
-        "heal_aura_fountain"
-      ]
-    },
-    "defend": {
-      "animation": "defend",
-      "color": "#8fc9ff",
-      "particles": "ring",
-      "sound": [
-        "radiant_halo_shield"
-      ]
-    },
-    "monster": {
-      "animation": "hit",
-      "color": "#ff7a5c",
-      "particles": "slash",
-      "sound": [
-        "monstersound"
-      ]
-    },
-    "crit": {
-      "animation": "hit-crit",
-      "color": "#ffd23e",
-      "particles": "burst",
-      "sound": [
-        "heavy_hammer_slam"
-      ]
-    },
-    "buff": {
-      "animation": "defend",
-      "color": "#8fe08a",
-      "particles": "glow",
-      "sound": [
-        "radiant_halo_shield"
-      ]
-    },
-    "dot": {
-      "animation": "hit",
-      "color": "#b98cff",
-      "particles": "pulse",
-      "sound": [
-        "blood_needles"
       ]
     }
   },
@@ -6015,7 +5855,7 @@ const CONTENT = {
       "mana": 6,
       "power": 1.6,
       "element": "fire",
-      "effect": "fire",
+      "effect": "fire_meteor_crash",
       "image": "/images/skills/boss_ember_skill1.png",
       "description": "Ember 1.6x fire strike"
     },
@@ -6076,7 +5916,7 @@ const CONTENT = {
       "mana": 10,
       "power": 2.4,
       "element": "fire",
-      "effect": "heavy",
+      "effect": "heavy_hammer_slam",
       "image": "/images/skills/boss_ember_skill2.png",
       "description": "Ember 2.4x heavy flame"
     },
@@ -6088,7 +5928,7 @@ const CONTENT = {
       "buffs": [{"kind": "weaken", "value": 0.35}],
       "duration": 2,
       "element": "fire",
-      "effect": "fire",
+      "effect": "fire_meteor_crash",
       "image": "/images/skills/boss_ember_skill3.png",
       "description": "Ember weaken 35% 2t"
     },
@@ -6100,7 +5940,7 @@ const CONTENT = {
       "buffs": [{"kind": "defense", "value": 0.45}],
       "duration": 2,
       "element": "fire",
-      "effect": "fire",
+      "effect": "fire_meteor_crash",
       "image": "/images/skills/boss_ember_skill4.png",
       "description": "Ember fortify 45% 2t"
     },
@@ -6111,7 +5951,7 @@ const CONTENT = {
       "mana": 9,
       "power": 0.9,
       "element": "fire",
-      "effect": "fire",
+      "effect": "fire_meteor_crash",
       "buffs": [{"kind": "dot", "value": 0.07}],
       "duration": 3,
       "image": "/images/skills/boss_ember_skill5.png",
@@ -6122,7 +5962,7 @@ const CONTENT = {
       "name": "Ember Heal",
       "target": "self",
       "mana": 10,
-      "effect": "heal",
+      "effect": "heal_aura_fountain",
       "healSelfPct": 0.25,
       "image": "/images/skills/boss_ember_skill6.png",
       "description": "Ember heal 25%"
@@ -6134,7 +5974,7 @@ const CONTENT = {
       "mana": 6,
       "power": 1.6,
       "element": "frost",
-      "effect": "frost",
+      "effect": "frost_crystal_spear",
       "image": "/images/skills/boss_frost_skill1.png",
       "description": "Frost 1.6x ice strike"
     },
@@ -6145,7 +5985,7 @@ const CONTENT = {
       "mana": 10,
       "power": 2.4,
       "element": "frost",
-      "effect": "heavy",
+      "effect": "heavy_hammer_slam",
       "image": "/images/skills/boss_frost_skill2.png",
       "description": "Frost 2.4x shatter"
     },
@@ -6157,7 +5997,7 @@ const CONTENT = {
       "buffs": [{"kind": "weaken", "value": 0.35}],
       "duration": 2,
       "element": "frost",
-      "effect": "frost",
+      "effect": "frost_crystal_spear",
       "image": "/images/skills/boss_frost_skill3.png",
       "description": "Frost weaken 35% 2t"
     },
@@ -6169,7 +6009,7 @@ const CONTENT = {
       "buffs": [{"kind": "defense", "value": 0.45}],
       "duration": 2,
       "element": "frost",
-      "effect": "frost",
+      "effect": "frost_crystal_spear",
       "image": "/images/skills/boss_frost_skill4.png",
       "description": "Frost fortify 45% 2t"
     },
@@ -6180,7 +6020,7 @@ const CONTENT = {
       "mana": 9,
       "power": 0.9,
       "element": "frost",
-      "effect": "frost",
+      "effect": "frost_crystal_spear",
       "buffs": [{"kind": "dot", "value": 0.06}],
       "duration": 3,
       "image": "/images/skills/boss_frost_skill5.png",
@@ -6191,7 +6031,7 @@ const CONTENT = {
       "name": "Frost Heal",
       "target": "self",
       "mana": 10,
-      "effect": "heal",
+      "effect": "heal_aura_fountain",
       "healSelfPct": 0.25,
       "image": "/images/skills/boss_frost_skill6.png",
       "description": "Frost heal 25%"
@@ -6203,7 +6043,7 @@ const CONTENT = {
       "mana": 6,
       "power": 1.7,
       "element": "shadow",
-      "effect": "shadow",
+      "effect": "shadow_scythe_reap",
       "image": "/images/skills/boss_void_skill1.png",
       "description": "Void 1.7x shadow strike"
     },
@@ -6214,7 +6054,7 @@ const CONTENT = {
       "mana": 10,
       "power": 2.5,
       "element": "shadow",
-      "effect": "crush",
+      "effect": "heavy_hammer_slam",
       "image": "/images/skills/boss_void_skill2.png",
       "description": "Void 2.5x crush"
     },
@@ -6226,7 +6066,7 @@ const CONTENT = {
       "buffs": [{"kind": "expose", "value": 0.3}],
       "duration": 2,
       "element": "shadow",
-      "effect": "shadow",
+      "effect": "shadow_scythe_reap",
       "image": "/images/skills/boss_void_skill3.png",
       "description": "Void expose 30% 2t"
     },
@@ -6238,7 +6078,7 @@ const CONTENT = {
       "buffs": [{"kind": "defense", "value": 0.5}],
       "duration": 2,
       "element": "shadow",
-      "effect": "shadow",
+      "effect": "shadow_scythe_reap",
       "image": "/images/skills/boss_void_skill4.png",
       "description": "Void fortify 50% 2t"
     },
@@ -6249,7 +6089,7 @@ const CONTENT = {
       "mana": 9,
       "power": 0.85,
       "element": "shadow",
-      "effect": "shadow",
+      "effect": "shadow_scythe_reap",
       "buffs": [{"kind": "dot", "value": 0.08}],
       "duration": 3,
       "image": "/images/skills/boss_void_skill5.png",
@@ -6260,7 +6100,7 @@ const CONTENT = {
       "name": "Void Heal",
       "target": "self",
       "mana": 10,
-      "effect": "heal",
+      "effect": "heal_aura_fountain",
       "healSelfPct": 0.3,
       "image": "/images/skills/boss_void_skill6.png",
       "description": "Void heal 30%"
@@ -6272,7 +6112,7 @@ const CONTENT = {
       "mana": 6,
       "power": 1.7,
       "element": "arcane",
-      "effect": "arcane",
+      "effect": "frost_crystal_spear",
       "image": "/images/skills/boss_storm_skill1.png",
       "description": "Storm 1.7x arcane"
     },
@@ -6283,7 +6123,7 @@ const CONTENT = {
       "mana": 10,
       "power": 2.5,
       "element": "arcane",
-      "effect": "heavy",
+      "effect": "heavy_hammer_slam",
       "image": "/images/skills/boss_storm_skill2.png",
       "description": "Storm 2.5x storm hammer"
     },
@@ -6295,7 +6135,7 @@ const CONTENT = {
       "buffs": [{"kind": "weaken", "value": 0.3}, {"kind": "expose", "value": 0.2}],
       "duration": 2,
       "element": "arcane",
-      "effect": "arcane",
+      "effect": "frost_crystal_spear",
       "image": "/images/skills/boss_storm_skill3.png",
       "description": "Storm weaken+expose 2t"
     },
@@ -6307,7 +6147,7 @@ const CONTENT = {
       "buffs": [{"kind": "defense", "value": 0.4}],
       "duration": 2,
       "element": "arcane",
-      "effect": "arcane",
+      "effect": "frost_crystal_spear",
       "image": "/images/skills/boss_storm_skill4.png",
       "description": "Storm fortify 40% 2t"
     },
@@ -6318,7 +6158,7 @@ const CONTENT = {
       "mana": 9,
       "power": 0.9,
       "element": "arcane",
-      "effect": "arcane",
+      "effect": "frost_crystal_spear",
       "buffs": [{"kind": "dot", "value": 0.07}],
       "duration": 3,
       "image": "/images/skills/boss_storm_skill5.png",
@@ -6329,7 +6169,7 @@ const CONTENT = {
       "name": "Storm Heal",
       "target": "self",
       "mana": 10,
-      "effect": "heal",
+      "effect": "heal_aura_fountain",
       "healSelfPct": 0.25,
       "image": "/images/skills/boss_storm_skill6.png",
       "description": "Storm heal 25%"
@@ -6341,7 +6181,7 @@ const CONTENT = {
       "mana": 6,
       "power": 1.8,
       "element": "physical",
-      "effect": "crush",
+      "effect": "heavy_hammer_slam",
       "image": "/images/skills/boss_world_skill1.png",
       "description": "World 1.8x crush"
     },
@@ -6352,7 +6192,7 @@ const CONTENT = {
       "mana": 10,
       "power": 2.6,
       "element": "physical",
-      "effect": "heavy",
+      "effect": "heavy_hammer_slam",
       "image": "/images/skills/boss_world_skill2.png",
       "description": "World 2.6x world break"
     },
@@ -6364,7 +6204,7 @@ const CONTENT = {
       "buffs": [{"kind": "weaken", "value": 0.4}],
       "duration": 2,
       "element": "physical",
-      "effect": "heavy",
+      "effect": "heavy_hammer_slam",
       "image": "/images/skills/boss_world_skill3.png",
       "description": "World weaken 40% 2t"
     },
@@ -6376,7 +6216,7 @@ const CONTENT = {
       "buffs": [{"kind": "attack", "value": 0.4}],
       "duration": 2,
       "element": "physical",
-      "effect": "heavy",
+      "effect": "heavy_hammer_slam",
       "image": "/images/skills/boss_world_skill4.png",
       "description": "World frenzy 40% 2t"
     },
@@ -6387,7 +6227,7 @@ const CONTENT = {
       "mana": 9,
       "power": 1.0,
       "element": "physical",
-      "effect": "slash",
+      "effect": "rising_katana_slash",
       "buffs": [{"kind": "dot", "value": 0.09}],
       "duration": 3,
       "image": "/images/skills/boss_world_skill5.png",
@@ -6398,7 +6238,7 @@ const CONTENT = {
       "name": "World Heal",
       "target": "self",
       "mana": 10,
-      "effect": "heal",
+      "effect": "heal_aura_fountain",
       "healSelfPct": 0.35,
       "image": "/images/skills/boss_world_skill6.png",
       "description": "World heal 35%"
@@ -6410,7 +6250,7 @@ const CONTENT = {
       "mana": 6,
       "power": 1.6,
       "element": "physical",
-      "effect": "heavy",
+      "effect": "heavy_hammer_slam",
       "image": "/images/skills/heavy_strike.png",
       "description": "Deals 1.6× attack damage."
     },
@@ -6470,7 +6310,7 @@ const CONTENT = {
       "power": 2,
       "lifesteal": 0.5,
       "element": "shadow",
-      "effect": "shadow",
+      "effect": "shadow_scythe_reap",
       "image": "/images/skills/vampiric_strike.png",
       "description": "Deals 2× attack damage and heals for half the damage dealt."
     },
@@ -6509,7 +6349,7 @@ const CONTENT = {
       "mana": 12,
       "power": 2.5,
       "element": "shadow",
-      "effect": "shadow",
+      "effect": "shadow_scythe_reap",
       "image": "/images/skills/execute.png",
       "description": "Deals 2.5× attack damage."
     },
@@ -6565,7 +6405,7 @@ const CONTENT = {
       "mana": 7,
       "power": 1.5,
       "element": "physical",
-      "effect": "axe",
+      "effect": "axe_cleave_horizontal",
       "image": "/images/skills/cleave.png",
       "description": "Deals 1.5× attack damage."
     },
@@ -6594,7 +6434,7 @@ const CONTENT = {
       "mana": 10,
       "power": 2.6,
       "element": "physical",
-      "effect": "heavy",
+      "effect": "heavy_hammer_slam",
       "image": "/images/skills/war_cry.png",
       "description": "Deals 2.6× attack damage."
     },
@@ -6615,7 +6455,7 @@ const CONTENT = {
       "mana": 14,
       "power": 2.8,
       "element": "arcane",
-      "effect": "heavy",
+      "effect": "heavy_hammer_slam",
       "image": "/images/skills/meteor.png",
       "description": "Deals 2.8× magic damage."
     },
@@ -6627,7 +6467,7 @@ const CONTENT = {
       "power": 2.6,
       "lifesteal": 0.4,
       "element": "shadow",
-      "effect": "shadow",
+      "effect": "shadow_scythe_reap",
       "image": "/images/skills/shadow_veil.png",
       "description": "Deals 2.6× attack damage and heals for 40% of the damage dealt."
     },
@@ -6649,7 +6489,7 @@ const CONTENT = {
       "mana": 14,
       "power": 3,
       "element": "shadow",
-      "effect": "shadow",
+      "effect": "shadow_scythe_reap",
       "image": "/images/skills/death_mark.png",
       "description": "Deals 3× attack damage."
     },
@@ -6678,7 +6518,7 @@ const CONTENT = {
       "mana": 16,
       "power": 3,
       "element": "physical",
-      "effect": "heavy",
+      "effect": "heavy_hammer_slam",
       "image": "/images/skills/cataclysm.png",
       "description": "Deals 3× attack damage."
     },
@@ -6699,7 +6539,7 @@ const CONTENT = {
       "mana": 18,
       "power": 3.2,
       "element": "arcane",
-      "effect": "heavy",
+      "effect": "heavy_hammer_slam",
       "image": "/images/skills/comet.png",
       "description": "Deals 3.2× magic damage."
     },
@@ -6711,7 +6551,7 @@ const CONTENT = {
       "power": 3,
       "lifesteal": 0.5,
       "element": "shadow",
-      "effect": "shadow",
+      "effect": "shadow_scythe_reap",
       "image": "/images/skills/soul_thief.png",
       "description": "Deals 3× attack damage and heals for half the damage dealt."
     },
@@ -6733,7 +6573,7 @@ const CONTENT = {
       "mana": 18,
       "power": 3.4,
       "element": "shadow",
-      "effect": "shadow",
+      "effect": "shadow_scythe_reap",
       "image": "/images/skills/soul_reap.png",
       "description": "Deals 3.4× attack damage."
     },
