@@ -85,7 +85,8 @@ function emitRoomState(io, room) {
 
 function emitCombatFx(io, room) {
   if (!room) return;
-  for (const d of room.dungeons || []) {
+  const all = [...(room.dungeons || []), ...(room.bossParties || [])];
+  for (const d of all) {
     if (!d.fx || !d.fx.length) continue;
     const fx = d.fx;
     d.fx = [];

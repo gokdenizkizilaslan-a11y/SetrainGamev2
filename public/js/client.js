@@ -444,6 +444,8 @@ socket.on("room:left", () => {
 socket.on("server:error", (payload) => {
   playSfx("block");
   showToast(payload.message || "The hall refuses that action.");
+  // reset auto-end lock so client can retry endTurn
+  if (typeof state !== "undefined") state._autoEndScheduled = false;
 });
 
 socket.on("shop:buyResult", (payload) => {

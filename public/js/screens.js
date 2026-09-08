@@ -1362,9 +1362,14 @@ function renderCombat(room, root) {
       setTimeout(() => {
         state._autoEndScheduled = false;
         const curD = myDungeon(state.room);
-        if (curD && curD.status === "fighting" && curD.currentTurnId === state.playerId) {
-          state.timerDeadline = null;
-          socket.emit("combat:endTurn");
+        // re-check still my turn and still no usable action
+        if (curD && curD.status === "fighting" && curD.phase === "players" && curD.currentTurnId === state.playerId) {
+          const curMe = state.room && state.room.players.find((p) => p.id === state.playerId);
+          const stillNoSkill = curMe ? !combatLoadout(curMe).some((s) => s && !((curD.usedSkills && curD.usedSkills[curMe.id]) || []).includes(s.id) && curMe.mana >= (s.mana || 0)) : true;
+          if (stillNoSkill) {
+            state.timerDeadline = null;
+            socket.emit("combat:endTurn");
+          }
         }
       }, 900);
     }

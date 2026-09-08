@@ -182,6 +182,10 @@ function tickBuffs(room, d) {
           const dmg = Math.max(1, Math.round(mon.maxHp * b.value));
           mon.hp = Math.max(0, mon.hp - dmg);
           addFx(d, { type: "damage", target: "enemy", targetId: b.targetId, amount: dmg, source: "dot", effect: "dot" });
+          if (mon.hp <= 0) {
+            // clean buffs targeting dead monster to prevent stale debuffs
+            d.buffs = d.buffs.filter((x) => !(x.targetType === "monster" && Number(x.targetId) === Number(b.targetId)));
+          }
         }
       } else {
         const p = room.players.find((q) => q.id === b.targetId);
@@ -316,6 +320,7 @@ function spawnNextFloor(room, d) {
   const def = getDungeon(d.rank);
   const size = getDungeonSize(d.size);
   d.floor += 1;
+  d._floorTransition = false;
   const wave = buildWaveForFloor(def, size, d.power, d.floor, d.totalFloors, d.totalCount);
   d.wave = wave;
   d.round = 1;
@@ -466,8 +471,19 @@ function act(room, player, skillId, targetId) {
     }
   }
 
-  armTurnTimer(room, d);
+  // if monster died, clear stale buffs targeting it
+  if (skill.target === "enemy") {
+    const mon = d.wave[Number(targetId)];
+    if (mon && mon.hp <= 0) {
+      d.buffs = (d.buffs || []).filter((b) => !(b.targetType === "monster" && Number(b.targetId) === Number(targetId)));
+    }
+  }
+
   checkEnd(room, d);
+  // only arm timer if still in player phase (checkEnd may have started floor transition)
+  if (d.status === "fighting" && d.phase === "players" && !d._floorTransition) {
+    armTurnTimer(room, d);
+  }
   return d;
 }
 
@@ -501,8 +517,10 @@ function useItem(room, player, itemId) {
     const healed = heal(player, item.heal || 0);
     addFx(d, { type: "heal", actor: player.id, target: player.id, amount: healed, source: "item", item: item.id, effect: "heal" });
   }
-  armTurnTimer(room, d);
   checkEnd(room, d);
+  if (d.status === "fighting" && d.phase === "players" && !d._floorTransition) {
+    armTurnTimer(room, d);
+  }
   return d;
 }
 
@@ -525,12 +543,16 @@ function endTurn(room, player) {
 
 function advanceTurn(room, d) {
   clearTurnTimer(d);
+  // guard: if already in monsters phase or no order, go to monsters
+  if (d.phase === "monsters") return true;
+  if (!d.turnOrder || d.turnOrder.length === 0) {
+    startMonsterPhase(room, d);
+    return true;
+  }
   // mark current as done
   if (d.currentTurnId) d.endedTurns.add(d.currentTurnId);
   // find next player in order who hasn't ended turn yet
-  // use index-based progression but also handle fled players
   d.turnIndex += 1;
-  // skip any ids that are no longer in turnOrder (fled) or already ended
   while (d.turnIndex < d.turnOrder.length && d.endedTurns.has(d.turnOrder[d.turnIndex])) {
     d.turnIndex += 1;
   }
@@ -540,10 +562,8 @@ function advanceTurn(room, d) {
     armTurnTimer(room, d);
     return false;
   }
-  // all players acted -> monsters
-  // safety: ensure everyone in turnOrder is counted as ended
+  // safety: check if anyone still hasn't acted (handles fled/race)
   if (d.endedTurns.size < d.turnOrder.length) {
-    // still someone left (race), find them
     const remaining = d.turnOrder.find((id) => !d.endedTurns.has(id));
     if (remaining) {
       d.currentTurnId = remaining;
@@ -572,7 +592,9 @@ function startMonsterPhase(room, d) {
 function runNextMonster(room, d) {
   if (d.status !== "fighting" || d.phase !== "monsters") return;
   d.monsterTimer = null;
-  if (livingMembers(room, d).length === 0 || (d.monsterQueue || []).length === 0) {
+  // filter dead monsters that may have died from DoT or prior kill
+  d.monsterQueue = (d.monsterQueue || []).filter((x) => x.mon && x.mon.hp > 0);
+  if (livingMembers(room, d).length === 0 || d.monsterQueue.length === 0) {
     finishMonsterPhase(room, d);
     return;
   }
@@ -611,15 +633,27 @@ function runNextMonster(room, d) {
         addFx(d, { type: "damage", actor: target.id, target: "player", targetId: target.id, amount: dmg, source: "monster", monster: mon.kind, elem: skill.element || mon.element || "physical", effect: eff, crit });
       }
     }
+    // ensure fx/broadcast even if room.broadcast not set (fallback)
     if (typeof room.broadcast === "function") room.broadcast();
+    else if (room._emitCombat) room._emitCombat();
     if (livingMembers(room, d).length === 0) {
       clearMonsterTimer(d);
       defeat(room, d);
       if (typeof room.broadcast === "function") room.broadcast();
+      else if (room._emitCombat) room._emitCombat();
       return;
     }
+  } else {
+    // dead monster was queued but died before its turn — skip silently
+    if (typeof room.broadcast === "function") room.broadcast();
   }
   if (d.status !== "fighting" || d.phase !== "monsters") return;
+  // filter again before scheduling next
+  d.monsterQueue = (d.monsterQueue || []).filter((x) => x.mon && x.mon.hp > 0);
+  if (d.monsterQueue.length === 0) {
+    finishMonsterPhase(room, d);
+    return;
+  }
   clearMonsterTimer(d);
   d.monsterTimer = setTimeout(() => runNextMonster(room, d), CONTENT.combat.monsterAttackDelayMs || 900);
 }
@@ -628,14 +662,16 @@ function finishMonsterPhase(room, d) {
   clearMonsterTimer(d);
   d.monsterQueue = [];
   if (d.status !== "fighting") return;
+  if (d._floorTransition) return;
   if (livingMembers(room, d).length === 0) {
     defeat(room, d);
     if (typeof room.broadcast === "function") room.broadcast();
+    else if (room._emitCombat) room._emitCombat();
     return;
   }
   tickBuffs(room, d);
   checkEnd(room, d); // a DoT tick may have finished the last monster
-  if (d.status !== "fighting") return;
+  if (d.status !== "fighting" || d._floorTransition) return;
   d.round += 1;
   d.phase = "players";
   buildTurnOrder(room, d);
@@ -646,25 +682,27 @@ function finishMonsterPhase(room, d) {
   d.log.push(`Round ${d.round} — ${currentPlayerName(room, d)} moves first.`);
   armTurnTimer(room, d);
   if (typeof room.broadcast === "function") room.broadcast();
+  else if (room._emitCombat) room._emitCombat();
 }
 
 function checkEnd(room, d) {
   if (d.status !== "fighting") return;
+  if (d._floorTransition) return;
   const aliveMonsters = d.wave.filter((m) => m.hp > 0);
   if (aliveMonsters.length === 0) {
     if (d.totalFloors && d.floor < d.totalFloors) {
       // Next floor, not victory yet
-      // Small delay before next floor for FX
       clearTurnTimer(d);
       clearMonsterTimer(d);
+      d._floorTransition = true;
       d.log.push(`Floor ${d.floor} cleared!`);
       addFx(d, { type: "floor", floor: d.floor, total: d.totalFloors });
-      // slight pause then spawn
       setTimeout(() => {
         if (d.status !== "fighting") return;
         spawnNextFloor(room, d);
       }, 900);
       if (typeof room.broadcast === "function") room.broadcast();
+      else if (room._emitCombat) room._emitCombat();
       return;
     }
     victory(room, d);
