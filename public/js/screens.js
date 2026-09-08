@@ -2034,7 +2034,6 @@ function renderPetsView(room){
   root.querySelectorAll("[data-hatch]").forEach(b=> b.addEventListener("click", ()=>{
     const eggId=b.getAttribute("data-hatch");
     sfxPlay("clicksound");
-    // hatch first to get petId, then play 3-click animation
     socket.emit("pet:hatch", {eggId}, (res)=>{
       if(!res || !res.ok){ showToast(res && res.error || "Hatch failed"); return; }
       const petId=res.petId;
@@ -2049,6 +2048,8 @@ function renderPetsView(room){
       }
     });
   }));
+}
+ 
 
 // ---- Map ----
 let mapState = { scale: 1, x: 0, y: 0, dragging: false, lastX: 0, lastY: 0 };
@@ -2218,3 +2219,4 @@ function addChatMessage(msg) {
   }
   body.scrollTop = body.scrollHeight;
 }
+
