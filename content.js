@@ -36,119 +36,119 @@ const CONTENT = {
     "startingPoints": 3,
     "maxLoadout": 5,
     "global": [
-      { "id": "g_def_divine_guard", "skillId": "divine_guard", "prereqs": [], "cost": 1, "group": "defense", "desc": "A holy ward turns aside a heavy blow." },
-      { "id": "g_def_fortify", "skillId": "fortify", "prereqs": ["g_def_divine_guard"], "cost": 1, "group": "defense", "desc": "Steady yourself against damage." },
-      { "id": "g_def_war_banner", "skillId": "war_banner", "prereqs": ["g_def_fortify"], "cost": 1, "group": "combat", "desc": "Raise morale; allies strike true." },
-      { "id": "g_def_dark_veil", "skillId": "dark_veil", "prereqs": ["g_def_war_banner"], "cost": 2, "group": "defense", "desc": "Wraiths of shadow guard you and sap the foe." },
-      { "id": "g_def_aegis", "skillId": "aegis", "prereqs": ["g_def_fortify"], "cost": 1, "group": "defense", "desc": "A mighty ward shields body and spirit." },
-      { "id": "g_def_barrier", "skillId": "barrier", "prereqs": ["g_def_aegis"], "cost": 1, "group": "defense", "desc": "A resilient bulwark of pure will." },
-      { "id": "g_def_stone_skin", "skillId": "stone_skin", "prereqs": ["g_def_barrier"], "cost": 1, "group": "defense", "desc": "Your hide hardens into living stone." },
-      { "id": "g_def_iron_wall", "skillId": "iron_wall", "prereqs": ["g_def_stone_skin"], "cost": 2, "group": "defense", "desc": "Become an unyielding wall of iron." },
-      { "id": "g_def_group_guard", "skillId": "group_guard", "prereqs": ["g_def_iron_wall"], "cost": 2, "group": "defense", "desc": "Guard the whole party with armored grace." },
-      { "id": "g_def_holy_ward", "skillId": "holy_ward", "prereqs": ["g_def_iron_wall"], "cost": 2, "group": "defense", "desc": "A radiant barrier blessed against harm." },
-      { "id": "g_def_rejuvenate", "skillId": "rejuvenate", "prereqs": ["g_def_divine_guard"], "cost": 1, "group": "heal", "desc": "Renew vitality, round after round." },
-      { "id": "g_def_magic_mend", "skillId": "magic_mend", "prereqs": ["g_def_rejuvenate"], "cost": 2, "group": "heal", "desc": "Mend wounds with pure channeled magic." },
-      { "id": "g_elem_water_splash", "skillId": "water_splash", "prereqs": [], "cost": 1, "group": "frost", "desc": "Soak the foe — wet makes lightning and frost bite harder." },
-      { "id": "g_elem_lightning_bolt", "skillId": "lightning_bolt", "prereqs": ["g_elem_water_splash"], "cost": 1, "group": "lightning", "desc": "Overcharge: +50% vs wet." },
-      { "id": "g_elem_static_overload", "skillId": "static_overload", "prereqs": ["g_elem_lightning_bolt"], "cost": 2, "group": "lightning", "desc": "Mighty lightning; still +50% vs wet." },
-      { "id": "g_elem_volt_conduit", "skillId": "volt_conduit", "prereqs": ["g_elem_water_splash"], "cost": 1, "group": "lightning", "desc": "Electrify the foe while wet." },
-      { "id": "g_elem_frost_bolt", "skillId": "frost_bolt", "prereqs": [], "cost": 1, "group": "frost", "desc": "A chill that lingers." },
-      { "id": "g_elem_cold_snap", "skillId": "cold_snap", "prereqs": ["g_elem_frost_bolt"], "cost": 1, "group": "frost", "desc": "Freeze the foe solid." },
-      { "id": "g_elem_frost_nova", "skillId": "frost_nova", "prereqs": ["g_elem_cold_snap"], "cost": 2, "group": "frost", "desc": "A burst of frost; freezes, then Shatter for +60%." },
-      { "id": "g_elem_glacial_shatter", "skillId": "glacial_shatter", "prereqs": ["g_elem_frost_nova"], "cost": 2, "group": "frost", "desc": "Shatter the ice for huge frost damage." },
-      { "id": "g_elem_scorch_mark", "skillId": "scorch_mark", "prereqs": [], "cost": 1, "group": "fire", "desc": "Set the foe alight." },
-      { "id": "g_elem_ember_storm", "skillId": "ember_storm", "prereqs": ["g_elem_scorch_mark"], "cost": 1, "group": "fire", "desc": "Whirling cinders that keep burning." },
-      { "id": "g_elem_blaze_rupture", "skillId": "blaze_rupture", "prereqs": ["g_elem_ember_storm"], "cost": 2, "group": "fire", "desc": "Burning Blaze: +60% vs poisoned foes." },
-      { "id": "g_brk_venom_strike", "skillId": "venom_strike", "prereqs": [], "cost": 1, "group": "poison", "desc": "Lace your weapon with venom." },
-      { "id": "g_brk_toxin_drench", "skillId": "toxin_drench", "prereqs": ["g_brk_venom_strike"], "cost": 1, "group": "poison", "desc": "Heavy poison for 6% max HP / round." },
-      { "id": "g_brk_venom_burst", "skillId": "venom_burst", "prereqs": ["g_brk_toxin_drench"], "cost": 2, "group": "poison", "desc": "Poisoned targets take +50%." },
-      { "id": "g_brk_cripple", "skillId": "cripple", "prereqs": [], "cost": 1, "group": "break", "desc": "Weaken and expose the foe in one blow." },
-      { "id": "g_brk_broken_guard", "skillId": "broken_guard", "prereqs": ["g_brk_cripple"], "cost": 1, "group": "break", "desc": "Shatter guard: expose + weaken." },
-      { "id": "g_brk_shatter_point", "skillId": "shatter_point", "prereqs": ["g_brk_broken_guard"], "cost": 2, "group": "break", "desc": "Break Guard: +80% vs exposed." },
-      { "id": "g_brk_devastate", "skillId": "devastate", "prereqs": ["g_brk_broken_guard"], "cost": 2, "group": "break", "desc": "Overwhelm: +35% vs weakened." }
+      { "id": "g_def_divine_guard", "skillId": "divine_guard", "cost": 2, "group": "defense", "desc": "A holy ward turns aside a heavy blow." },
+      { "id": "g_def_fortify", "skillId": "fortify", "cost": 3, "group": "defense", "desc": "Steady yourself against damage." },
+      { "id": "g_def_war_banner", "skillId": "war_banner", "cost": 4, "group": "combat", "desc": "Raise morale; allies strike true." },
+      { "id": "g_def_dark_veil", "skillId": "dark_veil", "cost": 6, "group": "defense", "desc": "Wraiths of shadow guard you and sap the foe." },
+      { "id": "g_def_aegis", "skillId": "aegis", "cost": 3, "group": "defense", "desc": "A mighty ward shields body and spirit." },
+      { "id": "g_def_barrier", "skillId": "barrier", "cost": 4, "group": "defense", "desc": "A resilient bulwark of pure will." },
+      { "id": "g_def_stone_skin", "skillId": "stone_skin", "cost": 4, "group": "defense", "desc": "Your hide hardens into living stone." },
+      { "id": "g_def_iron_wall", "skillId": "iron_wall", "cost": 6, "group": "defense", "desc": "Become an unyielding wall of iron." },
+      { "id": "g_def_group_guard", "skillId": "group_guard", "cost": 7, "group": "defense", "desc": "Guard the whole party with armored grace." },
+      { "id": "g_def_holy_ward", "skillId": "holy_ward", "cost": 6, "group": "defense", "desc": "A radiant barrier blessed against harm." },
+      { "id": "g_def_rejuvenate", "skillId": "rejuvenate", "cost": 3, "group": "heal", "desc": "Renew vitality, round after round." },
+      { "id": "g_def_magic_mend", "skillId": "magic_mend", "cost": 5, "group": "heal", "desc": "Mend wounds with pure channeled magic." },
+      { "id": "g_elem_water_splash", "skillId": "water_splash", "cost": 2, "group": "frost", "desc": "Soak the foe — wet makes lightning and frost bite harder." },
+      { "id": "g_elem_lightning_bolt", "skillId": "lightning_bolt", "cost": 4, "group": "lightning", "desc": "Overcharge: +50% vs wet." },
+      { "id": "g_elem_static_overload", "skillId": "static_overload", "cost": 10, "group": "lightning", "desc": "Mighty lightning; still +50% vs wet." },
+      { "id": "g_elem_volt_conduit", "skillId": "volt_conduit", "cost": 4, "group": "lightning", "desc": "Electrify the foe while wet." },
+      { "id": "g_elem_frost_bolt", "skillId": "frost_bolt", "cost": 2, "group": "frost", "desc": "A chill that lingers." },
+      { "id": "g_elem_cold_snap", "skillId": "cold_snap", "cost": 4, "group": "frost", "desc": "Freeze the foe solid." },
+      { "id": "g_elem_frost_nova", "skillId": "frost_nova", "cost": 5, "group": "frost", "desc": "A burst of frost; freezes, then Shatter for +60%." },
+      { "id": "g_elem_glacial_shatter", "skillId": "glacial_shatter", "cost": 10, "group": "frost", "desc": "Shatter the ice for huge frost damage." },
+      { "id": "g_elem_scorch_mark", "skillId": "scorch_mark", "cost": 2, "group": "fire", "desc": "Set the foe alight." },
+      { "id": "g_elem_ember_storm", "skillId": "ember_storm", "cost": 4, "group": "fire", "desc": "Whirling cinders that keep burning." },
+      { "id": "g_elem_blaze_rupture", "skillId": "blaze_rupture", "cost": 7, "group": "fire", "desc": "Burning Blaze: +60% vs poisoned foes." },
+      { "id": "g_brk_venom_strike", "skillId": "venom_strike", "cost": 2, "group": "poison", "desc": "Lace your weapon with venom." },
+      { "id": "g_brk_toxin_drench", "skillId": "toxin_drench", "cost": 4, "group": "poison", "desc": "Heavy poison for 6% max HP / round." },
+      { "id": "g_brk_venom_burst", "skillId": "venom_burst", "cost": 6, "group": "poison", "desc": "Poisoned targets take +50%." },
+      { "id": "g_brk_cripple", "skillId": "cripple", "cost": 2, "group": "break", "desc": "Weaken and expose the foe in one blow." },
+      { "id": "g_brk_broken_guard", "skillId": "broken_guard", "cost": 4, "group": "break", "desc": "Shatter guard: expose + weaken." },
+      { "id": "g_brk_shatter_point", "skillId": "shatter_point", "cost": 7, "group": "break", "desc": "Break Guard: +80% vs exposed." },
+      { "id": "g_brk_devastate", "skillId": "devastate", "cost": 10, "group": "break", "desc": "Overwhelm: +35% vs weakened." }
     ],
     "lineages": {
       "warrior": {
         "label": "Warrior Path",
         "nodes": [
-          { "id": "w_heavy_strike", "skillId": "heavy_strike", "owned": true, "prereqs": [], "cost": 0 },
-          { "id": "w_defend", "skillId": "defend", "owned": true, "prereqs": [], "cost": 0 },
-          { "id": "w_battle_fury", "skillId": "battle_fury", "owned": true, "prereqs": [], "cost": 0 },
-          { "id": "w_war_cry", "skillId": "war_cry", "ownerClass": "warlord", "prereqs": ["w_battle_fury"], "cost": 2, "minLevel": 20 },
-          { "id": "w_cataclysm", "skillId": "cataclysm", "ownerClass": "war_emperor", "prereqs": ["w_war_cry"], "cost": 3, "minLevel": 40 }
+          { "id": "w_heavy_strike", "skillId": "heavy_strike", "owned": true, "cost": 0 },
+          { "id": "w_defend", "skillId": "defend", "owned": true, "cost": 0 },
+          { "id": "w_battle_fury", "skillId": "battle_fury", "owned": true, "cost": 0 },
+          { "id": "w_war_cry", "skillId": "war_cry", "ownerClass": "warlord", "cost": 4, "minLevel": 20 },
+          { "id": "w_cataclysm", "skillId": "cataclysm", "ownerClass": "war_emperor", "cost": 8, "minLevel": 40 }
         ]
       },
       "ranger": {
         "label": "Ranger Path",
         "nodes": [
-          { "id": "r_aimed_shot", "skillId": "aimed_shot", "owned": true, "prereqs": [], "cost": 0 },
-          { "id": "r_piercing_shot", "skillId": "piercing_shot", "owned": true, "prereqs": [], "cost": 0 },
-          { "id": "r_volley", "skillId": "volley", "ownerClass": "warden", "prereqs": ["r_piercing_shot"], "cost": 2, "minLevel": 20 },
-          { "id": "r_storm_barrage", "skillId": "storm_barrage", "ownerClass": "storm_warden", "prereqs": ["r_volley"], "cost": 3, "minLevel": 40 }
+          { "id": "r_aimed_shot", "skillId": "aimed_shot", "owned": true, "cost": 0 },
+          { "id": "r_piercing_shot", "skillId": "piercing_shot", "owned": true, "cost": 0 },
+          { "id": "r_volley", "skillId": "volley", "ownerClass": "warden", "cost": 4, "minLevel": 20 },
+          { "id": "r_storm_barrage", "skillId": "storm_barrage", "ownerClass": "storm_warden", "cost": 8, "minLevel": 40 }
         ]
       },
       "mage": {
         "label": "Mage Path",
         "nodes": [
-          { "id": "m_arcane_barrage", "skillId": "arcane_barrage", "owned": true, "prereqs": [], "cost": 0 },
-          { "id": "m_mana_shield", "skillId": "mana_shield", "owned": true, "prereqs": [], "cost": 0 },
-          { "id": "m_meteor", "skillId": "meteor", "ownerClass": "archmage", "prereqs": ["m_arcane_barrage"], "cost": 2, "minLevel": 20 },
-          { "id": "m_comet", "skillId": "comet", "ownerClass": "archon", "prereqs": ["m_meteor"], "cost": 3, "minLevel": 40 }
+          { "id": "m_arcane_barrage", "skillId": "arcane_barrage", "owned": true, "cost": 0 },
+          { "id": "m_mana_shield", "skillId": "mana_shield", "owned": true, "cost": 0 },
+          { "id": "m_meteor", "skillId": "meteor", "ownerClass": "archmage", "cost": 4, "minLevel": 20 },
+          { "id": "m_comet", "skillId": "comet", "ownerClass": "archon", "cost": 8, "minLevel": 40 }
         ]
       },
       "rogue": {
         "label": "Rogue Path",
         "nodes": [
-          { "id": "rg_vampiric_strike", "skillId": "vampiric_strike", "owned": true, "prereqs": [], "cost": 0 },
-          { "id": "rg_shadow_meld", "skillId": "shadow_meld", "owned": true, "prereqs": [], "cost": 0 },
-          { "id": "rg_shadow_veil", "skillId": "shadow_veil", "ownerClass": "nightblade", "prereqs": ["rg_vampiric_strike"], "cost": 2, "minLevel": 20 },
-          { "id": "rg_soul_thief", "skillId": "soul_thief", "ownerClass": "shade_king", "prereqs": ["rg_shadow_veil"], "cost": 3, "minLevel": 40 }
+          { "id": "rg_vampiric_strike", "skillId": "vampiric_strike", "owned": true, "cost": 0 },
+          { "id": "rg_shadow_meld", "skillId": "shadow_meld", "owned": true, "cost": 0 },
+          { "id": "rg_shadow_veil", "skillId": "shadow_veil", "ownerClass": "nightblade", "cost": 4, "minLevel": 20 },
+          { "id": "rg_soul_thief", "skillId": "soul_thief", "ownerClass": "shade_king", "cost": 8, "minLevel": 40 }
         ]
       },
       "paladin": {
         "label": "Paladin Path",
         "nodes": [
-          { "id": "p_holy_strike", "skillId": "holy_strike", "owned": true, "prereqs": [], "cost": 0 },
-          { "id": "p_mend", "skillId": "mend", "owned": true, "prereqs": [], "cost": 0 },
-          { "id": "p_holy_judgement", "skillId": "holy_judgement", "ownerClass": "crusader", "prereqs": ["p_holy_strike"], "cost": 2, "minLevel": 20 },
-          { "id": "p_radiance", "skillId": "radiance", "ownerClass": "lightbringer", "prereqs": ["p_holy_judgement"], "cost": 3, "minLevel": 40 }
+          { "id": "p_holy_strike", "skillId": "holy_strike", "owned": true, "cost": 0 },
+          { "id": "p_mend", "skillId": "mend", "owned": true, "cost": 0 },
+          { "id": "p_holy_judgement", "skillId": "holy_judgement", "ownerClass": "crusader", "cost": 4, "minLevel": 20 },
+          { "id": "p_radiance", "skillId": "radiance", "ownerClass": "lightbringer", "cost": 8, "minLevel": 40 }
         ]
       },
       "assassin": {
         "label": "Assassin Path",
         "nodes": [
-          { "id": "a_execute", "skillId": "execute", "owned": true, "prereqs": [], "cost": 0 },
-          { "id": "a_shadow_step", "skillId": "shadow_step", "owned": true, "prereqs": [], "cost": 0 },
-          { "id": "a_death_mark", "skillId": "death_mark", "ownerClass": "reaper", "prereqs": ["a_execute"], "cost": 2, "minLevel": 20 },
-          { "id": "a_soul_reap", "skillId": "soul_reap", "ownerClass": "death_lord", "prereqs": ["a_death_mark"], "cost": 3, "minLevel": 40 }
+          { "id": "a_execute", "skillId": "execute", "owned": true, "cost": 0 },
+          { "id": "a_shadow_step", "skillId": "shadow_step", "owned": true, "cost": 0 },
+          { "id": "a_death_mark", "skillId": "death_mark", "ownerClass": "reaper", "cost": 4, "minLevel": 20 },
+          { "id": "a_soul_reap", "skillId": "soul_reap", "ownerClass": "death_lord", "cost": 8, "minLevel": 40 }
         ]
       },
       "support": {
         "label": "Support Path",
         "nodes": [
-          { "id": "s_mend", "skillId": "mend", "owned": true, "prereqs": [], "cost": 0 },
-          { "id": "s_greater_mend", "skillId": "greater_mend", "owned": true, "prereqs": [], "cost": 0 },
-          { "id": "s_spirit_surge", "skillId": "spirit_surge", "owned": true, "prereqs": [], "cost": 0 },
-          { "id": "s_divine_blessing", "skillId": "divine_blessing", "ownerClass": "high_priest", "prereqs": ["s_spirit_surge"], "cost": 2, "minLevel": 20 },
-          { "id": "s_resurgence", "skillId": "resurgence", "ownerClass": "divine_saint", "prereqs": ["s_divine_blessing"], "cost": 3, "minLevel": 40 }
+          { "id": "s_mend", "skillId": "mend", "owned": true, "cost": 0 },
+          { "id": "s_greater_mend", "skillId": "greater_mend", "owned": true, "cost": 0 },
+          { "id": "s_spirit_surge", "skillId": "spirit_surge", "owned": true, "cost": 0 },
+          { "id": "s_divine_blessing", "skillId": "divine_blessing", "ownerClass": "high_priest", "cost": 4, "minLevel": 20 },
+          { "id": "s_resurgence", "skillId": "resurgence", "ownerClass": "divine_saint", "cost": 8, "minLevel": 40 }
         ]
       },
       "tank": {
         "label": "Tank Path",
         "nodes": [
-          { "id": "t_cleave", "skillId": "cleave", "owned": true, "prereqs": [], "cost": 0 },
-          { "id": "t_shield_wall", "skillId": "shield_wall", "owned": true, "prereqs": [], "cost": 0 },
-          { "id": "t_bastion", "skillId": "bastion", "ownerClass": "juggernaut", "prereqs": ["t_shield_wall"], "cost": 2, "minLevel": 20 },
-          { "id": "t_immovable", "skillId": "immovable", "ownerClass": "colossus", "prereqs": ["t_bastion"], "cost": 3, "minLevel": 40 }
+          { "id": "t_cleave", "skillId": "cleave", "owned": true, "cost": 0 },
+          { "id": "t_shield_wall", "skillId": "shield_wall", "owned": true, "cost": 0 },
+          { "id": "t_bastion", "skillId": "bastion", "ownerClass": "juggernaut", "cost": 4, "minLevel": 20 },
+          { "id": "t_immovable", "skillId": "immovable", "ownerClass": "colossus", "cost": 8, "minLevel": 40 }
         ]
       },
       "tamer": {
         "label": "Tamer Path",
         "nodes": [
-          { "id": "tm_war_heal", "skillId": "war_heal", "owned": true, "prereqs": [], "cost": 0 },
-          { "id": "tm_defend", "skillId": "defend", "owned": true, "prereqs": [], "cost": 0 },
-          { "id": "tm_battle_fury", "skillId": "battle_fury", "ownerClass": "beastmaster", "prereqs": ["tm_war_heal"], "cost": 2, "minLevel": 20 },
-          { "id": "tm_war_cry", "skillId": "war_cry", "ownerClass": "alpha_tamer", "prereqs": ["tm_battle_fury"], "cost": 3, "minLevel": 40 }
+          { "id": "tm_war_heal", "skillId": "war_heal", "owned": true, "cost": 0 },
+          { "id": "tm_defend", "skillId": "defend", "owned": true, "cost": 0 },
+          { "id": "tm_battle_fury", "skillId": "battle_fury", "ownerClass": "beastmaster", "cost": 4, "minLevel": 20 },
+          { "id": "tm_war_cry", "skillId": "war_cry", "ownerClass": "alpha_tamer", "cost": 8, "minLevel": 40 }
         ]
       }
     }

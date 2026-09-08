@@ -1243,7 +1243,10 @@ function renderSkillTreeView(room) {
           <button type="button" class="btn btn--mini" id="st-zoom-reset" title="Reset view">⤢</button>
         </div>
       </div>
-      <div class="skilltree-combos" id="skilltree-combos"></div>
+      <div class="skilltree-combos" id="skilltree-combos">
+          <button type="button" class="btn btn--ghost" id="st-combo-legend-toggle" title="Combos & Synergies">💡 Combos & Synergies</button>
+          <div id="st-combo-legend-panel" class="st-combo-legend hidden"></div>
+        </div>
       <div class="skilltree-map-viewport" id="skilltree-map-viewport">
         <div class="skilltree-map" id="skilltree-map">
           <svg class="skilltree-lines" id="skilltree-lines"></svg>
@@ -1269,15 +1272,21 @@ function renderSkillTreeView(room) {
   const relevant = (CATALOG.combos || []).filter(
     (c) => (!c.ifElement || visibleElements.has(c.ifElement))
   );
-  const combosEl = $("skilltree-combos");
-  if (combosEl) {
-    combosEl.innerHTML =
-      (relevant.length
-        ? relevant
-            .map((c) => `<span class="st-combo" title="${escapeHtml(c.desc || "")}">⚡ ${escapeHtml(c.name || c.id)}</span>`)
-            .join("")
-        : `<span class="st-combo muted">No combos on this branch — mix elements for big hits.</span>`) +
-      `<span class="st-combo st-combo--hint" title="Combos trigger when a status (wet/frozen/poisoned/exposed/weakened) meets a matching element.">💡 hover a node for details</span>`;
+  const combos = CATALOG.combos || [];
+  const legendPanel = $("st-combo-legend-panel");
+  const legendBtn = $("st-combo-legend-toggle");
+  if (legendPanel && combos.length) {
+    legendPanel.innerHTML = combos.map((c) => {
+      const statusLabel = ST_STATUS[c.when] || c.when;
+      return `<div class="st-combo-legend-card">
+        <span class="st-combo-legend-icon">⚡</span>
+        <span class="st-combo-legend-name">${escapeHtml(c.name || c.id)}</span>
+        <span class="st-combo-legend-desc">${escapeHtml(c.desc || "")}</span>
+      </div>`;
+    }).join("");
+  }
+  if (legendBtn && legendPanel) {
+    legendBtn.addEventListener("click", () => legendPanel.classList.toggle("hidden"));
   }
 
   const vp = $("skilltree-map-viewport");
