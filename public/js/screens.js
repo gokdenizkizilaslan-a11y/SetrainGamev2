@@ -900,11 +900,6 @@ function renderTownLog(room) {
 
 // ---- Skill Tree ----
 
-let skillTreeZoom = 1;
-let skillTreePanX = 0;
-let skillTreePanY = 0;
-let skillTreeDragMoved = false;
-
 const ST_STATUS = { wet: "Wet", frozen: "Frozen", dot: "Poisoned", expose: "Exposed", weaken: "Weakened" };
 
 function classLineageFor(slug) {
@@ -993,180 +988,43 @@ function comboHintsFor(skill) {
   return hints;
 }
 
-function treeLayout(nodes) {
-  const tier = {};
-  const depth = (id, seen) => {
-    if (tier[id] !== undefined) return tier[id];
-    if (seen.has(id)) return 0;
-    seen.add(id);
-    const n = nodes.find((x) => x.id === id);
-    let t = 0;
-    for (const p of (n && n.prereqs) || []) {
-      const pn = nodes.find((x) => x.id === p);
-      if (pn) t = Math.max(t, depth(p.id, seen) + 1);
-    }
-    tier[id] = t;
-    return t;
-  };
-  nodes.forEach((n) => depth(n.id, new Set()));
-  const byTier = {};
-  for (const n of nodes) {
-    const t = tier[n.id] !== undefined ? tier[n.id] : 0;
-    tier[n.id] = t;
-    (byTier[t] = byTier[t] || []).push(n.id);
-  }
-  let maxDepth = 0;
-  for (const t of Object.keys(byTier)) maxDepth = Math.max(maxDepth, Number(t));
-  let maxRows = 1;
-  for (const k of Object.keys(byTier)) maxRows = Math.max(maxRows, byTier[k].length);
-  return { tier, byTier, maxDepth, maxRows };
+function renderTreeNodeCard(n, ts, me) {
+  const sk = skillById(n.skillId);
+  const stt = treeNodeState(n, ts, me);
+  const titleParts = [((sk && sk.name) || n.skillId)];
+  if (sk && sk.description) titleParts.push(sk.description);
+  if (n.desc) titleParts.push(n.desc);
+  titleParts.push("Cost: " + (n.cost || 1) + " skill point" + ((n.cost || 1) === 1 ? "" : "s"));
+  if (n.minLevel) titleParts.push("Level " + n.minLevel + "+");
+  if (stt.s === "locked" || stt.s === "noPts") titleParts.push(stt.reason);
+  const hints = comboHintsFor(sk);
+  if (hints.length) titleParts.push("Combo: " + hints.join(" · "));
+  const cost = n.cost || 1;
+  return `<button type="button" class="st-node st-node--${stt.s}" data-node="${n.id}" data-state="${stt.s}" data-reason="${escapeHtml(stt.reason)}" title="${escapeHtml(titleParts.join(" — "))}">
+    <span class="portrait st-node-ico st-node-ico--${escapeHtml(((sk && sk.element) || "physical"))}" data-img="${escapeHtml((sk && sk.image) || "")}" data-variant="${escapeHtml((sk && sk.element) || "physical")}"></span>
+    <span class="st-node-body">
+      <span class="st-node-name">${escapeHtml((sk && sk.name) || n.skillId)}</span>
+      <span class="st-node-cost">${n.owned ? "✓ owned" : "✦ " + cost + " pt"}</span>
+    </span>
+    ${stt.s === "locked" ? '<span class="st-node-lock">🔒</span>' : ""}${stt.s === "noPts" ? '<span class="st-node-lock">✦</span>' : ""}
+  </button>`;
 }
 
-function renderTreeMap(vp, tech, nodes, ts, me) {
-  const stage = tech.stage;
-  const linesSvg = tech.lines;
-  const nodesBox = tech.nodesBox;
-  const COL_W = 190;
-  const ROW_H = 116;
-  const ELEM_W = 154;
-  const ELEM_H = 84;
-  const layout = treeLayout(nodes);
-  const stageW = Math.max(340, (layout.maxDepth + 1) * COL_W + 40);
-  const stageH = Math.max(220, layout.maxRows * ROW_H + 30);
-  stage.style.width = stageW + "px";
-  stage.style.height = stageH + "px";
-  linesSvg.setAttribute("width", stageW);
-  linesSvg.setAttribute("height", stageH);
-  linesSvg.setAttribute("viewBox", `0 0 ${stageW} ${stageH}`);
-  const pos = {};
-  for (const n of nodes) {
-    const t = layout.tier[n.id];
-    const list = layout.byTier[t];
-    const idx = list.indexOf(n.id);
-    const area = stageH - ELEM_H;
-    const y = list.length === 1 ? area / 2 : (idx / (list.length - 1)) * area;
-    pos[n.id] = { x: t * COL_W + 24, y: Math.round(y) };
-  }
-  let lines = "";
-  for (const n of nodes) {
-    for (const p of n.prereqs || []) {
-      if (!pos[p]) continue;
-      const a = pos[p];
-      const b = pos[n.id];
-      lines += `<path d="M ${a.x + ELEM_W - 4} ${a.y + ELEM_H / 2} C ${a.x + ELEM_W + 44} ${a.y + ELEM_H / 2}, ${b.x - 44 - 8} ${b.y + ELEM_H / 2}, ${b.x + 8} ${b.y + ELEM_H / 2}"></path>`;
-    }
-  }
-  linesSvg.innerHTML = lines;
-  nodesBox.innerHTML = nodes
-    .map((n) => {
-      const sk = skillById(n.skillId);
-      const stt = treeNodeState(n, ts, me);
-      const titleParts = [((sk && sk.name) || n.skillId)];
-      if (sk && sk.description) titleParts.push(sk.description);
-      if (n.desc) titleParts.push(n.desc);
-      titleParts.push("Cost: " + (n.cost || 1) + " skill point" + (n.cost === 1 ? "" : "s"));
-      if (n.minLevel) titleParts.push("Level " + n.minLevel + "+");
-      if (stt.s === "locked" || stt.s === "noPts") titleParts.push(stt.reason);
-      const hints = comboHintsFor(sk);
-      if (hints.length) titleParts.push("Combo: " + hints.join(" · "));
-      const p = pos[n.id];
-      const cost = n.cost || 1;
-      return `<button type="button" class="st-node st-node--${stt.s}" data-node="${n.id}" data-state="${stt.s}" data-reason="${escapeHtml(stt.reason)}" style="left:${p.x}px;top:${p.y}px;width:${ELEM_W}px;height:${ELEM_H}px" title="${escapeHtml(titleParts.join(" — "))}">
-        <span class="portrait st-node-ico st-node-ico--${escapeHtml(((sk && sk.element) || "physical"))}" data-img="${escapeHtml((sk && sk.image) || "")}" data-variant="${escapeHtml((sk && sk.element) || "physical")}"></span>
-        <span class="st-node-body">
-          <span class="st-node-name">${escapeHtml((sk && sk.name) || n.skillId)}</span>
-          <span class="st-node-cost">${n.owned ? "✓ owned" : "✦ " + cost + " pt"}</span>
-        </span>
-        ${stt.s === "locked" ? '<span class="st-node-lock">🔒</span>' : ""}${stt.s === "noPts" ? '<span class="st-node-lock">✦</span>' : ""}
-      </button>`;
-    })
-    .join("");
-  initImages(nodesBox);
-  nodesBox.querySelectorAll(".st-node[data-state='open']").forEach((b) => {
+function renderTreeGrid(gridEl, nodes, ts, me) {
+  gridEl.innerHTML = nodes.map((n) => renderTreeNodeCard(n, ts, me)).join("");
+  initImages(gridEl);
+  gridEl.querySelectorAll(".st-node[data-state='open']").forEach((b) => {
     b.addEventListener("click", () => {
       sfxPlay("clicksound");
       socket.emit("skillTree:learn", { nodeId: b.getAttribute("data-node") });
     });
   });
-  nodesBox.querySelectorAll(".st-node[data-state!='open']").forEach((b) => {
+  gridEl.querySelectorAll(".st-node:not([data-state='open'])").forEach((b) => {
     b.addEventListener("click", () => {
       const reason = b.getAttribute("data-reason");
-      showToast(reason || "Locked — satisfy the prerequisites first.");
+      showToast(reason || "Locked — gain skill points to unlock.");
     });
   });
-}
-
-function applyMapTransform(stage) {
-  if (!stage) return;
-  stage.style.transform = `translate(${skillTreePanX}px, ${skillTreePanY}px) scale(${skillTreeZoom})`;
-}
-
-function fitTreeMap(vp, stage) {
-  if (!vp || !stage) return;
-  const vw = vp.clientWidth;
-  const vh = vp.clientHeight;
-  const sw = stage.scrollWidth || stage.offsetWidth;
-  const sh = stage.scrollHeight || stage.offsetHeight;
-  const z = Math.max(0.35, Math.min(1, Math.min(vw / sw, vh / sh)));
-  skillTreeZoom = z;
-  skillTreePanX = (vw - sw * z) / 2;
-  skillTreePanY = (vh - sh * z) / 2;
-  applyMapTransform(stage);
-}
-
-function bindTreeMapViewport(vp, stage) {
-  vp.addEventListener("wheel", (e) => {
-    e.preventDefault();
-    const rect = vp.getBoundingClientRect();
-    const mx = e.clientX - rect.left;
-    const my = e.clientY - rect.top;
-    const factor = e.deltaY < 0 ? 1.12 : 1 / 1.12;
-    stepZoomAt(vp, stage, mx, my, factor);
-  }, { passive: false });
-  vp.addEventListener("auxclick", (e) => {
-    if (e.button !== 1) return;
-    e.preventDefault();
-    const rect = vp.getBoundingClientRect();
-    const mx = e.clientX - rect.left;
-    const my = e.clientY - rect.top;
-    stepZoomAt(vp, stage, mx, my, e.shiftKey ? 1 / 1.5 : 1.5);
-  });
-  vp.addEventListener("contextmenu", (e) => {
-    if (e.button === 2 && e.shiftKey) e.preventDefault();
-  });
-  let drag = null;
-  vp.addEventListener("pointerdown", (e) => {
-    if (drag) return;
-    drag = { id: e.pointerId, x: e.clientX, y: e.clientY, px: skillTreePanX, py: skillTreePanY };
-    skillTreeDragMoved = false;
-    vp.setPointerCapture(e.pointerId);
-  });
-  vp.addEventListener("pointermove", (e) => {
-    if (!drag || drag.id !== e.pointerId) return;
-    const dx = e.clientX - drag.x;
-    const dy = e.clientY - drag.y;
-    if (Math.abs(dx) + Math.abs(dy) > 4) skillTreeDragMoved = true;
-    if (skillTreeDragMoved) {
-      skillTreePanX = drag.px + dx;
-      skillTreePanY = drag.py + dy;
-      applyMapTransform(stage);
-    }
-  });
-  const endDrag = (id) => {
-    if (!drag || drag.id !== id) return;
-    drag = null;
-  };
-  vp.addEventListener("pointerup", (e) => endDrag(e.pointerId));
-  vp.addEventListener("pointercancel", (e) => endDrag(e.pointerId));
-}
-
-function stepZoomAt(vp, stage, mx, my, factor) {
-  const nz = Math.max(0.35, Math.min(1.8, skillTreeZoom * factor));
-  if (nz === skillTreeZoom) return;
-  skillTreePanX = mx - ((mx - skillTreePanX) / skillTreeZoom) * nz;
-  skillTreePanY = my - ((my - skillTreePanY) / skillTreeZoom) * nz;
-  skillTreeZoom = nz;
-  applyMapTransform(stage);
 }
 
 function renderTreeLoadout(me, max) {
@@ -1238,21 +1096,13 @@ function renderSkillTreeView(room) {
         </div>
         <div class="skilltree-controls">
           <span class="st-tree-name">${showClass && ts.spec ? escapeHtml(ts.spec.label) : "Global Skills"}</span>
-          <button type="button" class="btn btn--mini" id="st-zoom-in" title="Zoom in">+</button>
-          <button type="button" class="btn btn--mini" id="st-zoom-out" title="Zoom out">−</button>
-          <button type="button" class="btn btn--mini" id="st-zoom-reset" title="Reset view">⤢</button>
         </div>
       </div>
       <div class="skilltree-combos" id="skilltree-combos">
-          <button type="button" class="btn btn--ghost" id="st-combo-legend-toggle" title="Combos & Synergies">💡 Combos & Synergies</button>
-          <div id="st-combo-legend-panel" class="st-combo-legend hidden"></div>
-        </div>
-      <div class="skilltree-map-viewport" id="skilltree-map-viewport">
-        <div class="skilltree-map" id="skilltree-map">
-          <svg class="skilltree-lines" id="skilltree-lines"></svg>
-          <div class="skilltree-nodes" id="skilltree-nodes"></div>
-        </div>
+        <button type="button" class="btn btn--ghost" id="st-combo-legend-toggle" title="Combos & Synergies">💡 Combos & Synergies</button>
+        <div id="st-combo-legend-panel" class="st-combo-legend hidden"></div>
       </div>
+      <div class="skilltree-grid${showClass ? " skilltree-grid--class" : ""}" id="skilltree-grid"></div>
       <div class="skilltree-loadout" id="skilltree-loadout"></div>
     </div>`;
 
@@ -1263,15 +1113,6 @@ function renderSkillTreeView(room) {
     });
   });
 
-  const visibleElements = new Set();
-  for (const n of nodes) {
-    const sk = skillById(n.skillId);
-    if (!sk) continue;
-    if (sk.element) visibleElements.add(sk.element);
-  }
-  const relevant = (CATALOG.combos || []).filter(
-    (c) => (!c.ifElement || visibleElements.has(c.ifElement))
-  );
   const combos = CATALOG.combos || [];
   const legendPanel = $("st-combo-legend-panel");
   const legendBtn = $("st-combo-legend-toggle");
@@ -1281,7 +1122,7 @@ function renderSkillTreeView(room) {
       return `<div class="st-combo-legend-card">
         <span class="st-combo-legend-icon">⚡</span>
         <span class="st-combo-legend-name">${escapeHtml(c.name || c.id)}</span>
-        <span class="st-combo-legend-desc">${escapeHtml(c.desc || "")}</span>
+        <span class="st-combo-legend-desc">${escapeHtml(c.desc || "")}${c.when ? " — triggers when the foe is ${statusLabel}." : ""}</span>
       </div>`;
     }).join("");
   }
@@ -1289,41 +1130,10 @@ function renderSkillTreeView(room) {
     legendBtn.addEventListener("click", () => legendPanel.classList.toggle("hidden"));
   }
 
-  const vp = $("skilltree-map-viewport");
-  const stage = $("skilltree-map");
-  const lines = $("skilltree-lines");
-  const nodesBox = $("skilltree-nodes");
-  if (vp && stage && lines && nodesBox) {
-    renderTreeMap(vp, { stage, lines, nodesBox }, nodes, ts, me);
-    if (!content.dataset.centered) {
-      content.dataset.centered = "1";
-      fitTreeMap(vp, stage);
-    } else {
-      applyMapTransform(stage);
-    }
-    bindTreeMapViewport(vp, stage);
-    const zin = $("st-zoom-in");
-    const zout = $("st-zoom-out");
-    const zreset = $("st-zoom-reset");
-    if (zin) zin.addEventListener("click", () => stepTreeZoom(vp, stage, 1.2));
-    if (zout) zout.addEventListener("click", () => stepTreeZoom(vp, stage, 1 / 1.2));
-    if (zreset) zreset.addEventListener("click", () => fitTreeMap(vp, stage));
-  }
+  const gridEl = $("skilltree-grid");
+  if (gridEl) renderTreeGrid(gridEl, nodes, ts, me);
 
   renderTreeLoadout(me, st.maxLoadout || 5);
-}
-
-function stepTreeZoom(vp, stage, factor) {
-  if (!vp || !stage) return;
-  const rect = vp.getBoundingClientRect();
-  const mx = rect.width / 2;
-  const my = rect.height / 2;
-  const nz = Math.max(0.35, Math.min(1.8, skillTreeZoom * factor));
-  if (nz === skillTreeZoom) return;
-  skillTreePanX = mx - ((mx - skillTreePanX) / skillTreeZoom) * nz;
-  skillTreePanY = my - ((my - skillTreePanY) / skillTreeZoom) * nz;
-  skillTreeZoom = nz;
-  applyMapTransform(stage);
 }
 
 // ---- Dungeon ----
