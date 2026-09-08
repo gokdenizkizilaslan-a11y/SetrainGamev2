@@ -2033,19 +2033,28 @@ function renderPetsView(room){
   root.querySelectorAll("[data-pet-active]").forEach(b=> b.addEventListener("click", ()=>{ sfxPlay("clicksound"); socket.emit("pet:setActive", {petId: b.getAttribute("data-pet-active")}); }));
   root.querySelectorAll("[data-hatch]").forEach(b=> b.addEventListener("click", ()=>{
     const eggId=b.getAttribute("data-hatch");
+    console.log("[hatch] clicked", eggId, "playEggAnimation", typeof window.playEggAnimation);
     sfxPlay("clicksound");
     socket.emit("pet:hatch", {eggId}, (res)=>{
-      if(!res || !res.ok){ showToast(res && res.error || "Hatch failed"); return; }
+      console.log("[hatch] cb", res);
+      if(!res || !res.ok){ showToast(res && res.error || "Hatch failed"); console.error(res); return; }
       const petId=res.petId;
       const petDef=(CATALOG.pets||[]).find(x=>x.id===petId);
       const petName=petDef? petDisplayName(petDef,1): petId;
       const petImg=petDef? petImageForLevel(petDef,1): "";
-      if(window.playEggAnimation){
-        window.playEggAnimation(eggId, petId, petName, petImg).then(()=>{ sfxPlay("lootsound"); });
-      } else {
-        sfxPlay("lootsound");
-        showNotice("hatch","Hatched!", petName+" hatched from "+eggId+"!");
-      }
+      console.log("[hatch] pet", petId, petName);
+      try{
+        if(window.playEggAnimation){
+          console.log("[hatch] playing anim");
+          const p=window.playEggAnimation(eggId, petId, petName, petImg);
+          if(p && p.then) p.then(()=>{ console.log("[hatch] anim done"); sfxPlay("lootsound"); });
+          else console.log("[hatch] no promise");
+        } else {
+          console.warn("playEggAnimation missing");
+          sfxPlay("lootsound");
+          showNotice("hatch","Hatched!", petName+" hatched from "+eggId+"!");
+        }
+      }catch(e){ console.error("anim error", e); showNotice("hatch","Hatched!", petName+" hatched!"); }
     });
   }));
 }
