@@ -187,6 +187,9 @@ function onRoomState(room) {
   if (state.prevStatus === "lobby" && room.status === "playing" && state.introShownForRoom !== room.id) {
     state.introShownForRoom = room.id;
     showStoryIntro();
+    state.petsOpen = false;
+    state.pvpOpen = false;
+    state.dungeonOpen = false;
   }
   state.prevStatus = room.status;
   if (room.status === "playing") {
@@ -196,7 +199,17 @@ function onRoomState(room) {
     if (inCombat || inBoss) state.dungeonOpen = true;
     const myPvp = (room.pvpDuels||[]).find(d=> d.memberIds.includes(state.playerId));
     if (myPvp && myPvp.status==="fighting") state.pvpOpen = true;
-    if (!inCombat && !inBoss && !myPvp) state.pendingFx = [];
+    // ensure pets/dungeon not auto-open on fresh game start
+    if (!inCombat && !inBoss && !myPvp && state.petsOpen && !state.inventoryOpen) {
+      // keep petsOpen as is only if user explicitly opened it; don't auto-open
+    }
+    if (!inCombat && !inBoss && !myPvp) {
+      // don't auto-open pets, keep as user set, but ensure not stuck
+      if (state.petsOpen && !document.getElementById("pets-view")?.classList.contains("hidden") === false) {
+        // leave as is
+      }
+      state.pendingFx = [];
+    }
     renderTown(room);
   } else {
     renderLobby(room);

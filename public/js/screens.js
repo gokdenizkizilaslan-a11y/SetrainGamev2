@@ -2035,7 +2035,16 @@ function renderPetsView(room){
     const eggId=b.getAttribute("data-hatch");
     console.log("[hatch] clicked", eggId, "playEggAnimation", typeof window.playEggAnimation);
     sfxPlay("clicksound");
+    let cbFired=false;
+    const timeout = setTimeout(()=>{
+      if(cbFired) return;
+      console.warn("[hatch] cb timeout, playing anim without pet");
+      if(window.playEggAnimation){
+        window.playEggAnimation(eggId, null, "Mystery Pet", "").then(()=>{ sfxPlay("lootsound"); });
+      }
+    }, 1500);
     socket.emit("pet:hatch", {eggId}, (res)=>{
+      cbFired=true; clearTimeout(timeout);
       console.log("[hatch] cb", res);
       if(!res || !res.ok){ showToast(res && res.error || "Hatch failed"); console.error(res); return; }
       const petId=res.petId;

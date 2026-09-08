@@ -728,13 +728,21 @@ function registerSocketHandlers(io) {
     });
 
     // ---- Pets ----
-    socket.on("pet:hatch", (payload={})=>{
+    socket.on("pet:hatch", (payload={}, cb)=>{
+      console.log("[pet:hatch] recv", payload, "from", socket.id);
       try{
         const {room,player}=gameContext(socket);
+        console.log("[pet:hatch] player", player.name, "inventory", player.inventory.map(i=>i.itemId));
         const res=pets.hatchEgg(room,player,payload.eggId);
+        console.log("[pet:hatch] success", res.petId);
         room.log={type:"inventory", text:`${player.name} hatched ${res.petDef.name}!`, ts:Date.now()};
         emitRoomState(io,room);
-      }catch(err){ emitError(socket,err); }
+        if(typeof cb==="function") { console.log("[pet:hatch] cb ok"); cb({ok:true, petId:res.petId, petName:res.petDef.name, petImage:res.petDef.image}); }
+      }catch(err){
+        console.log("[pet:hatch] error", err.message);
+        if(typeof cb==="function") cb({ok:false, error: err.message});
+        emitError(socket,err);
+      }
     });
     socket.on("pet:setActive", (payload={})=>{
       try{
