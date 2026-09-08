@@ -1888,16 +1888,17 @@ function renderInventory(room) {
   const slots = `<div class="equip-column equip-column--left">${leftCol}</div><div class="equip-column equip-column--center">${centerCol}</div><div class="equip-column equip-column--right">${rightCol}</div>`;
 
   const bag = (me.inventory || [])
+    .filter((inv) => {
+      const it = CATALOG.items.find((x) => x.id === inv.itemId);
+      return it && it.slot !== "egg";
+    })
     .map((inv) => {
       const item = CATALOG.items.find((x) => x.id === inv.itemId);
       if (!item) return "";
-      const equipable = item.slot !== "consumable" && item.slot !== "material" && item.slot !== "chest" && item.slot !== "egg";
+      const equipable = item.slot !== "consumable" && item.slot !== "material" && item.slot !== "chest";
       const isChest = item.slot === "chest";
-      const isEgg = item.slot === "egg";
       const action = isChest
         ? `<button type="button" class="btn btn--mini" data-open-chest="${inv.itemId}">Open</button>`
-        : isEgg
-        ? `<button type="button" class="btn btn--mini" data-hatch="${inv.itemId}">Hatch</button>`
         : equipable
         ? `<button type="button" class="btn btn--mini" data-equip="${inv.itemId}">Equip</button>`
         : "";
@@ -2002,19 +2003,52 @@ function renderPetsView(room){
       <button type="button" class="btn btn--mini" data-pet-active="${pp.petId}">${isActive?'Unequip':'Equip'}</button>
     </div>`;
   }).join("");
+  const eggs = (me.inventory||[]).filter(inv=>{
+    const it=(CATALOG.items||[]).find(x=>x.id===inv.itemId);
+    return it && it.slot==="egg";
+  });
+  const eggsList = eggs.map(inv=>{
+    const it=(CATALOG.items||[]).find(x=>x.id===inv.itemId);
+    const eggDef=(CATALOG.eggs||[]).find(x=>x.id===inv.itemId);
+    return `<div class="bag-row">
+      <span class="bag-icon">${itemIconEl(it)}</span>
+      <span class="bag-name">${escapeHtml(it.name)} <span class="bag-qty">×${inv.qty}</span> ${rarityBadge(it)}</span>
+      <span class="bag-desc">${it?escapeHtml(it.description):''} ${eggDef?`<br><span class="muted">${escapeHtml(eggDef.label)} — ${eggDef.pets.length} pets • Click Hatch (3 clicks)</span>`:''}</span>
+      <button type="button" class="btn btn--mini" data-hatch="${inv.itemId}">Hatch</button>
+    </div>`;
+  }).join("");
   root.innerHTML = `
     <div class="pets-top">
       <p class="subhead">Equipped Pets (${activeIds.length}/${maxPets}) ${me.character==="tamer"?"— Tamer 2× bonus!":""}</p>
       <div class="pet-slots ${maxPets===3?"pet-slots--3":""}">${slots.join("")}</div>
     </div>
+    <p class="subhead">Eggs — ${eggs.length} to hatch (3 clicks)</p>
+    <div class="bag-list">${eggsList || '<div class="muted">No eggs. Win dungeons to find Red–Gold eggs!</div>'}</div>
     <p class="subhead">Collection — ${pets.length} pets</p>
-    <div class="bag-list">${petsList || '<div class="muted">No pets yet. Hatch eggs from inventory (Equipments)!</div>'}</div>
+    <div class="bag-list">${petsList || '<div class="muted">No pets yet. Hatch eggs above!</div>'}</div>
     <p class="hint">All pets start as Baby (Lv 1-7), Young at 8, Adult at 15. Images change with stage. Tamer can equip 3, others 2.</p>
   `;
   initImages(root);
   root.querySelectorAll("[data-pet-unequip]").forEach(b=> b.addEventListener("click", ()=>{ sfxPlay("clicksound"); socket.emit("pet:setActive", {petId: b.getAttribute("data-pet-unequip")}); }));
   root.querySelectorAll("[data-pet-active]").forEach(b=> b.addEventListener("click", ()=>{ sfxPlay("clicksound"); socket.emit("pet:setActive", {petId: b.getAttribute("data-pet-active")}); }));
-}
+  root.querySelectorAll("[data-hatch]").forEach(b=> b.addEventListener("click", ()=>{
+    const eggId=b.getAttribute("data-hatch");
+    sfxPlay("clicksound");
+    // hatch first to get petId, then play 3-click animation
+    socket.emit("pet:hatch", {eggId}, (res)=>{
+      if(!res || !res.ok){ showToast(res && res.error || "Hatch failed"); return; }
+      const petId=res.petId;
+      const petDef=(CATALOG.pets||[]).find(x=>x.id===petId);
+      const petName=petDef? petDisplayName(petDef,1): petId;
+      const petImg=petDef? petImageForLevel(petDef,1): "";
+      if(window.playEggAnimation){
+        window.playEggAnimation(eggId, petId, petName, petImg).then(()=>{ sfxPlay("lootsound"); });
+      } else {
+        sfxPlay("lootsound");
+        showNotice("hatch","Hatched!", petName+" hatched from "+eggId+"!");
+      }
+    });
+  }));
 
 // ---- Map ----
 let mapState = { scale: 1, x: 0, y: 0, dragging: false, lastX: 0, lastY: 0 };
