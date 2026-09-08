@@ -250,12 +250,74 @@ function armTurnTimer(room, d) {
   }, CONTENT.combat.turnTimeoutMs);
 }
 
+function petActForPlayer(room, d, player){
+  if(!player || player.hp<=0) return;
+  const activeIds = (player.activePetIds && player.activePetIds.length ? player.activePetIds : (player.activePetId ? [player.activePetId] : []));
+  const maxPets = player.character === "tamer" ? 3 : 2;
+  for(const activePetId of activeIds.slice(0, maxPets)){
+    const petDef = (CONTENT.pets || []).find(p=>p.id===activePetId);
+    if(!petDef) continue;
+    const petInst = (player.pets||[]).find(p=>p.petId===activePetId);
+    const petLevel = petInst ? (petInst.level||1) : 1;
+    const isTamer = player.character === "tamer";
+    const mult = isTamer ? 2 : 1;
+    const lvlScale = 1 + petLevel * 0.04;
+    if(petDef.buffKind && ["attack","magicBoost","defense"].includes(petDef.buffKind)){
+      const petKind = petDef.buffKind === "attack" ? "pet_attack" : petDef.buffKind === "magicBoost" ? "pet_magic" : "pet_defense";
+      const buffVal = 0.15 * mult;
+      d.buffId=(d.buffId||0)+1;
+      d.buffs.push({uid:d.buffId, targetType:"player", targetId: player.id, kind: petKind, value: buffVal, turns: 2, name: petDef.name});
+      addFx(d, {type:"buff", actor: player.id, target:"player", targetId: player.id, kind: petKind, value: buffVal, turns:2, petId: petDef.id});
+      d.log.push(`${petDef.name} buffs ${player.name} ${petKind} +${Math.round(buffVal*100)}%!`);
+      continue;
+    }
+    const roll = Math.random();
+    if(roll < 0.35){
+      const amt = Math.max(1, Math.round(player.maxHp * 0.12 * (1 + (player.healPower||0)/50) * lvlScale * mult));
+      const before = player.hp;
+      heal(player, amt);
+      const healed = player.hp - before;
+      if(healed>0){ addFx(d,{type:"heal", actor:player.id, target:player.id, amount:healed, source:"pet", petId:petDef.id, effect:"heal"}); d.log.push(`${petDef.name} heals ${player.name} for ${healed} HP!`); }
+    } else if(roll < 0.6){
+      const amt = Math.round((30 + Math.floor(Math.random()*20)) * lvlScale * mult);
+      addShield(player, amt);
+      addFx(d,{type:"shield", actor:player.id, target:player.id, amount:amt, petId:petDef.id});
+      d.log.push(`${petDef.name} shields ${player.name} for ${amt}!`);
+    } else if(roll < 0.85){
+      const alive = d.wave.map((m,i)=>({m,i})).filter(x=>x.m.hp>0);
+      if(!alive.length) continue;
+      const pick = alive[Math.floor(Math.random()*alive.length)];
+      if(petDef.element==="frost" && Math.random()<0.5){
+        d.buffId=(d.buffId||0)+1; d.buffs.push({uid:d.buffId, targetType:"monster", targetId:pick.i, kind:"frozen", value:0, turns:1, name:petDef.name});
+        addFx(d,{type:"buff", actor:player.id, target:"enemy", targetId:pick.i, kind:"frozen", value:0, turns:1});
+        d.log.push(`${petDef.name} freezes ${pick.m.name}!`);
+      } else {
+        const v=0.15*mult;
+        d.buffId=(d.buffId||0)+1; d.buffs.push({uid:d.buffId, targetType:"monster", targetId:pick.i, kind:"pet_weaken", value:v, turns:2, name:petDef.name});
+        addFx(d,{type:"buff", actor:player.id, target:"enemy", targetId:pick.i, kind:"pet_weaken", value:v, turns:2});
+        d.log.push(`${petDef.name} weakens ${pick.m.name}!`);
+      }
+    } else {
+      const alive = d.wave.map((m,i)=>({m,i})).filter(x=>x.m.hp>0);
+      if(!alive.length) continue;
+      const pick = alive[Math.floor(Math.random()*alive.length)];
+      const base = player.magicPower > player.attack ? player.magicPower : player.attack;
+      const dmg = Math.max(1, Math.round(base *0.6 * lvlScale * mult * randVariance(CONTENT.combat.damageVariance)));
+      dealDamage(pick.m, dmg);
+      addFx(d,{type:"damage", actor:player.id, target:"enemy", targetId:pick.i, amount:dmg, source:"pet", petId:petDef.id, elem:petDef.element||"physical", effect:petDef.element||"slash"});
+      d.log.push(`${petDef.name} hits ${pick.m.name} for ${dmg}!`);
+      if(pick.m.hp<=0){ d.buffs=(d.buffs||[]).filter(b=> !(b.targetType==="monster" && Number(b.targetId)===Number(pick.i))); checkEnd(room,d); }
+    }
+  }
+  if(typeof room.broadcast==="function") room.broadcast();
+  else if(room._emitCombat) room._emitCombat();
+}
 function schedulePetAct(room, d, playerId){
   const player = room.players.find(p=>p.id===playerId);
   if(!player || !d || d.status!=="fighting" || d.phase!=="players") return;
   if(!player.petTurn) player.petTurn=0;
   player.petTurn += 1;
-  if(player.petTurn % 2 !== 0) return; // every 2nd turn
+  if(player.petTurn % 2 !== 0) return;
   setTimeout(()=>{
     if(d.status!=="fighting" || d.phase!=="players" || d.currentTurnId!==playerId) return;
     petActForPlayer(room,d,player);
