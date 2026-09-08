@@ -1051,9 +1051,12 @@ function petAct(room, d) {
   if (d.round % 3 !== 0) return;
   for (const pid of d.memberIds) {
     const player = room.players.find((p) => p.id === pid);
-    if (!player || !player.activePetId || player.hp <= 0) continue;
-    const petDef = (CONTENT.pets || []).find((p) => p.id === player.activePetId);
-    if (!petDef) continue;
+    if (!player || player.hp <= 0) continue;
+    const activeIds = (player.activePetIds && player.activePetIds.length ? player.activePetIds : (player.activePetId ? [player.activePetId] : []));
+    if (!activeIds.length) continue;
+    for (const activePetId of activeIds.slice(0,2)) {
+      const petDef = (CONTENT.pets || []).find((p) => p.id === activePetId);
+      if (!petDef) continue;
     const roll = Math.random();
     const targetAlly = player;
     if (roll < 0.35) {
@@ -1101,6 +1104,7 @@ function petAct(room, d) {
         d.buffs = (d.buffs || []).filter((b) => !(b.targetType === "monster" && Number(b.targetId) === Number(pick.i)));
         checkEnd(room, d);
         if (d.status !== "fighting") break;
+      }
       }
     }
   }

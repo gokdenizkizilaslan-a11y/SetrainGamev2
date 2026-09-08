@@ -106,7 +106,7 @@ function createPlayer({ id, name, character, isHost = false }) {
   const anomaly = pickAnomaly();
   const cls = getClass(character);
   const starting = cls && Array.isArray(cls.startingSkills) ? cls.startingSkills.slice() : [];
-  return {
+  const player = {
     id,
     name,
     character,
@@ -159,7 +159,12 @@ function createPlayer({ id, name, character, isHost = false }) {
     maxShield: 0,
     pets: [],
     activePetId: null,
+    activePetIds: [],
   };
+  if (character === "tamer") {
+    player.inventory.push({ itemId: "egg_common_slime", qty: 1 }, { itemId: "egg_uncommon_wolf", qty: 1 });
+  }
+  return player;
 }
 
 function publicPlayer(player) {
@@ -204,7 +209,8 @@ function publicPlayer(player) {
     shield: player.shield || 0,
     maxShield: player.maxShield || 0,
     pets: (player.pets || []).map((p) => ({ petId: p.petId, hatched: p.hatched })),
-    activePetId: player.activePetId || null,
+    activePetId: player.activePetId || (player.activePetIds && player.activePetIds[0]) || null,
+    activePetIds: (player.activePetIds && player.activePetIds.length ? player.activePetIds : (player.activePetId ? [player.activePetId] : [])).slice(0,2),
     anomaly: player.anomaly
       ? {
           id: player.anomaly.id,

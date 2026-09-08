@@ -703,12 +703,25 @@ function renderProfileCard(room, selfId) {
       ${chip(icon("crit"), `Crit ${me.critChance}%`)}
       ${chip(icon("crit"), `Crit Dmg +${me.critDamage}%`)}
     </div>
-    <button type="button" class="btn btn--bronze btn--inventory" id="btn-open-inventory">Inventory & Equipment</button>`;
+    <div style="display:flex;gap:0.4rem;width:100%;margin-top:0.4rem">
+      <button type="button" class="btn btn--bronze btn--mini" style="flex:1" id="btn-open-inventory">Equipments</button>
+      <button type="button" class="btn btn--ghost btn--mini" style="flex:1" id="btn-open-pets">Pets</button>
+    </div>`;
   const invBtn = el.querySelector("#btn-open-inventory");
   if (invBtn) {
     invBtn.addEventListener("click", () => {
       sfxPlay("inventorysound");
       state.inventoryOpen = true;
+      state.petsTab = false;
+      renderTown(state.room);
+    });
+  }
+  const petsBtn = el.querySelector("#btn-open-pets");
+  if (petsBtn) {
+    petsBtn.addEventListener("click", () => {
+      sfxPlay("inventorysound");
+      state.inventoryOpen = true;
+      state.petsTab = true;
       renderTown(state.room);
     });
   }
@@ -1204,6 +1217,7 @@ function renderCombat(room, root) {
         ${p.shield>0 ? `<span class="hpbar shieldbar"><span class="hpbar-fill shieldbar-fill" style="width:${Math.round((p.shield/(p.maxShield||p.shield))*100)}%"></span></span><span class="hpnum shieldnum">🛡️ ${p.shield}/${p.maxShield}</span>` : ``}
         <span class="fighter-stats">Atk ${p.attack} · Res ${p.resistance} · Mgc ${p.magicPower} · Heal ${p.healPower} · Spd ${p.speed} · Crit ${p.critChance}%</span>
         <span class="fighter-mana">Mana ${p.mana}/${p.maxMana}</span>
+        <span class="fighter-pets">${(p.activePetIds|| (p.activePetId?[p.activePetId]:[])).map(pid=>{ const pd=(CATALOG.pets||[]).find(x=>x.id===pid); return `<span class="pet-icon" data-img="${pd?pd.image:''}" title="${pd?pd.name:pid}" style="width:1.4rem;height:1.4rem;display:inline-block;border:1px solid var(--glass-line);border-radius:50%;background:var(--glass-2);background-size:cover;background-position:center;vertical-align:middle;margin:0 2px;"></span>`; }).join("")}</span>
         ${buffBadges(d, "player", p.id)}
       </button>`;
     })
@@ -1446,6 +1460,7 @@ function renderPvpView(room){
     <span class="hpbar"><span class="hpbar-fill" style="width:${Math.round(opp.hp/opp.maxHp*100)}%"></span></span><span class="hpnum">${opp.hp}/${opp.maxHp}</span>
     ${opp.shield>0?`<span class="hpbar shieldbar"><span class="hpbar-fill shieldbar-fill" style="width:${Math.round(opp.shield/(opp.maxShield||opp.shield)*100)}%"></span></span><span class="hpnum shieldnum">🛡️ ${opp.shield}</span>`:``}
     <span class="fighter-mana">Mana ${opp.mana}/${opp.maxMana}</span>
+    <span class="fighter-pets">${(opp.activePetIds|| (opp.activePetId?[opp.activePetId]:[])).map(pid=>{ const pd=(CATALOG.pets||[]).find(x=>x.id===pid); return `<span class="pet-icon" data-img="${pd?pd.image:''}" title="${pd?pd.name:pid}" style="width:1.4rem;height:1.4rem;display:inline-block;border:1px solid var(--glass-line);border-radius:50%;background:var(--glass-2);background-size:cover;background-position:center;vertical-align:middle;margin:0 2px;"></span>`; }).join("")}</span>
     ${buffBadges(d,"player",opp.id)}
   </div>` : '<div class="muted">Waiting for opponent...</div>';
   const meHtml = `<div class="fighter ${me.hp<=0?"fighter--down":""} ${d.currentTurnId===me.id?"fighter--turn":""}" style="margin:0 auto;">
@@ -1454,6 +1469,7 @@ function renderPvpView(room){
     <span class="hpbar"><span class="hpbar-fill hpbar-fill--party" style="width:${Math.round(me.hp/me.maxHp*100)}%"></span></span><span class="hpnum">${me.hp}/${me.maxHp}</span>
     ${me.shield>0?`<span class="hpbar shieldbar"><span class="hpbar-fill shieldbar-fill" style="width:${Math.round(me.shield/(me.maxShield||me.shield)*100)}%"></span></span><span class="hpnum shieldnum">🛡️ ${me.shield}</span>`:``}
     <span class="fighter-mana">Mana ${me.mana}/${me.maxMana}</span>
+    <span class="fighter-pets">${(me.activePetIds|| (me.activePetId?[me.activePetId]:[])).map(pid=>{ const pd=(CATALOG.pets||[]).find(x=>x.id===pid); return `<span class="pet-icon" data-img="${pd?pd.image:''}" title="${pd?pd.name:pid}" style="width:1.4rem;height:1.4rem;display:inline-block;border:1px solid var(--glass-line);border-radius:50%;background:var(--glass-2);background-size:cover;background-position:center;vertical-align:middle;margin:0 2px;"></span>`; }).join("")}</span>
     ${buffBadges(d,"player",me.id)}
   </div>`;
   const hint = d.status==="done"? (d.result?d.result.text:"") : isMyTurn? "Your turn — pick a skill." : `Waiting for ${opp?opp.name:"opponent"}...`;
@@ -1871,16 +1887,18 @@ function renderInventory(room) {
     })
     .join("");
 
+  const activeIds = me.activePetIds || (me.activePetId ? [me.activePetId] : []);
   const pets = (me.pets || []).map((pp)=>{
     const pd = (CATALOG.pets||[]).find(x=>x.id===pp.petId);
-    const isActive = me.activePetId===pp.petId;
+    const isActive = activeIds.includes(pp.petId);
     return `<div class="bag-row">
       <span class="bag-icon">${pd? `<span class="item-icon" data-img="${escapeHtml(pd.image||"")}" data-variant="${escapeHtml(pd.id)}"></span>` : icon("crit")}</span>
-      <span class="bag-name">${pd? escapeHtml(pd.name): escapeHtml(pp.petId)} ${isActive? '<span class="badge badge--ready">Active</span>':''}</span>
+      <span class="bag-name">${pd? escapeHtml(pd.name): escapeHtml(pp.petId)} ${isActive? '<span class="badge badge--ready">Active</span>':''} ${activeIds.length>=2 && !isActive? '<span class="muted">(max 2)</span>':''}</span>
       <span class="bag-desc">${pd? escapeHtml(pd.description):''}</span>
       <button type="button" class="btn btn--mini" data-pet-active="${pp.petId}">${isActive? 'Unequip':'Set Active'}</button>
     </div>`;
   }).join("");
+  const activeNames = activeIds.map(id=> (CATALOG.pets||[]).find(x=>x.id===id)?.name || id).join(", ");
   root.innerHTML = `
     <div class="shop-resources">
       ${chip(icon("food"), `Food ${me.food}`)}
@@ -1891,7 +1909,7 @@ function renderInventory(room) {
     <div class="equip-grid">${slots}</div>
     <p class="subhead">Pack</p>
     <div class="bag-list">${bag || '<div class="muted">Your pack is empty.</div>'}</div>
-    <p class="subhead">Pets ${me.activePetId? `— Active: ${escapeHtml((CATALOG.pets||[]).find(x=>x.id===me.activePetId)?.name||me.activePetId)}` : ''}</p>
+    <p class="subhead">Pets ${activeIds.length? `— Active (${activeIds.length}/2): ${escapeHtml(activeNames)}` : '— No active pet (max 2)'} </p>
     <div class="bag-list">${pets || '<div class="muted">No pets hatched yet. Find eggs in dungeons (victory drops)!</div>'}</div>`;
   initImages(root);
 

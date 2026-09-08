@@ -208,17 +208,23 @@ function advanceTurn(room,d){
   }
   d.log.push(`Round ${d.round} — ${room.players.find(p=>p.id===d.currentTurnId)?.name} starts.`);
   armTimer(room,d);
-  // pet act every 3 rounds 2s delay (reuse combat petAct logic simple)
+  // pet act every 3 rounds 2s delay (supports 2 pets)
   if(d.round%3===0){
     setTimeout(()=>{
       if(d.status!=="fighting") return;
-      // simple pet heal
       for(const pid of d.memberIds){
         const pl=room.players.find(x=>x.id===pid);
-        if(!pl||!pl.activePetId) continue;
-        if(Math.random()<0.5){
-          const before=pl.hp; heal(pl, Math.round(pl.maxHp*0.12*(1+(pl.healPower||0)/50)));
-          const h=pl.hp-before; if(h>0){ addFx(d,{type:"heal", actor:pid, target:pid, amount:h, source:"pet"}); }
+        if(!pl) continue;
+        const activeIds = (pl.activePetIds && pl.activePetIds.length ? pl.activePetIds : (pl.activePetId?[pl.activePetId]:[]));
+        for(const petId of activeIds.slice(0,2)){
+          if(Math.random()<0.5){
+            const before=pl.hp; heal(pl, Math.round(pl.maxHp*0.12*(1+(pl.healPower||0)/50)));
+            const h=pl.hp-before; if(h>0){ addFx(d,{type:"heal", actor:pid, target:pid, amount:h, source:"pet", petId}); }
+          } else {
+            const amt=30+Math.floor(Math.random()*20);
+            addShield(pl, amt);
+            addFx(d,{type:"shield", actor:pid, target:pid, amount:amt, petId});
+          }
         }
       }
       if(typeof room.broadcast==="function") room.broadcast();

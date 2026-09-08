@@ -14,19 +14,34 @@ function hatchEgg(room, player, eggId) {
   removeItem(player, eggId, 1);
   if (!player.pets) player.pets = [];
   player.pets.push({ petId, hatched: true });
-  // auto set active if none
-  if (!player.activePetId) player.activePetId = petId;
+  if (!player.activePetIds) player.activePetIds = player.activePetId ? [player.activePetId] : [];
+  // auto set active if less than 2
+  if (player.activePetIds.length < 2 && !player.activePetIds.includes(petId)) {
+    player.activePetIds.push(petId);
+    player.activePetId = player.activePetIds[0];
+  }
   return { petId, petDef };
 }
 
 function setActivePet(room, player, petId) {
+  if (!player.activePetIds) player.activePetIds = player.activePetId ? [player.activePetId] : [];
   if (!petId) {
+    // unequip all if null sent from old client
+    player.activePetIds = [];
     player.activePetId = null;
     return null;
   }
   const owned = (player.pets || []).find((p) => p.petId === petId);
   if (!owned) throw new Error("You don't own that pet.");
-  player.activePetId = petId;
+  const idx = player.activePetIds.indexOf(petId);
+  if (idx !== -1) {
+    // toggle off
+    player.activePetIds.splice(idx, 1);
+  } else {
+    if (player.activePetIds.length >= 2) throw new Error("You can equip max 2 pets. Unequip one first.");
+    player.activePetIds.push(petId);
+  }
+  player.activePetId = player.activePetIds[0] || null;
   const petDef = (CONTENT.pets || []).find((p) => p.id === petId);
   return petDef;
 }

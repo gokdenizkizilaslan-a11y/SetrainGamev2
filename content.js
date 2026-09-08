@@ -633,6 +633,192 @@ const CONTENT = {
       }
     },
     {
+      "slug": "tamer",
+      "label": "Tamer",
+      "image": "/images/characters/tamer.png",
+      "basicAttack": {
+        "id": "tame_hit",
+        "name": "Tame Hit",
+        "power": 1,
+        "element": "physical",
+        "image": "/images/skills/tame_hit.png",
+        "description": "Deals 1× attack damage."
+      },
+      "startingSkills": [
+        "war_heal",
+        "defend"
+      ],
+      "evolution": {
+        "level": 20,
+        "to": "beastmaster"
+      },
+      "speed": 10,
+      "hp": {
+        "min": 450,
+        "max": 520
+      },
+      "attack": {
+        "min": 36,
+        "max": 46
+      },
+      "mana": {
+        "min": 30,
+        "max": 45
+      },
+      "resistance": {
+        "min": 20,
+        "max": 30
+      },
+      "magicPower": {
+        "min": 18,
+        "max": 28
+      },
+      "healPower": {
+        "min": 4,
+        "max": 8
+      },
+      "growth": {
+        "hp": 14,
+        "attack": 3,
+        "mana": 3,
+        "resistance": 2,
+        "magicPower": 3,
+        "healPower": 1,
+        "critChance": 1,
+        "critDamage": 2
+      },
+      "critChance": {
+        "min": 8,
+        "max": 14
+      },
+      "critDamage": {
+        "min": 40,
+        "max": 80
+      }
+    },
+    {
+      "slug": "beastmaster",
+      "label": "Beastmaster",
+      "baseClass": "tamer",
+      "evolution": {
+        "level": 40,
+        "to": "alpha_tamer"
+      },
+      "image": "/images/characters/beastmaster.png",
+      "basicAttack": {
+        "id": "beast_strike",
+        "name": "Beast Strike",
+        "power": 1.15,
+        "element": "physical",
+        "image": "/images/skills/beast_strike.png",
+        "description": "Deals 1.15× attack damage."
+      },
+      "startingSkills": [
+        "battle_fury"
+      ],
+      "speed": 11,
+      "hp": {
+        "min": 480,
+        "max": 560
+      },
+      "attack": {
+        "min": 38,
+        "max": 50
+      },
+      "mana": {
+        "min": 32,
+        "max": 48
+      },
+      "resistance": {
+        "min": 22,
+        "max": 32
+      },
+      "magicPower": {
+        "min": 20,
+        "max": 30
+      },
+      "healPower": {
+        "min": 5,
+        "max": 9
+      },
+      "growth": {
+        "hp": 16,
+        "attack": 4,
+        "mana": 3,
+        "resistance": 3,
+        "magicPower": 3,
+        "healPower": 1,
+        "critChance": 1,
+        "critDamage": 2
+      },
+      "evolveBonus": {
+        "hp": 40,
+        "attack": 6,
+        "mana": 8,
+        "resistance": 4,
+        "magicPower": 4
+      }
+    },
+    {
+      "slug": "alpha_tamer",
+      "label": "Alpha Tamer",
+      "baseClass": "beastmaster",
+      "image": "/images/characters/alpha_tamer.png",
+      "basicAttack": {
+        "id": "alpha_strike",
+        "name": "Alpha Strike",
+        "power": 1.25,
+        "element": "physical",
+        "image": "/images/skills/alpha_strike.png",
+        "description": "Deals 1.25× attack damage."
+      },
+      "startingSkills": [
+        "war_cry"
+      ],
+      "speed": 12,
+      "hp": {
+        "min": 500,
+        "max": 580
+      },
+      "attack": {
+        "min": 42,
+        "max": 54
+      },
+      "mana": {
+        "min": 35,
+        "max": 50
+      },
+      "resistance": {
+        "min": 24,
+        "max": 34
+      },
+      "magicPower": {
+        "min": 22,
+        "max": 32
+      },
+      "healPower": {
+        "min": 6,
+        "max": 10
+      },
+      "growth": {
+        "hp": 18,
+        "attack": 5,
+        "mana": 4,
+        "resistance": 3,
+        "magicPower": 4,
+        "healPower": 1,
+        "critChance": 1,
+        "critDamage": 2
+      },
+      "evolveBonus": {
+        "hp": 50,
+        "attack": 8,
+        "mana": 10,
+        "resistance": 5,
+        "magicPower": 5
+      }
+    },
+    {
       "slug": "warlord",
       "label": "War Lord",
       "baseClass": "warrior",
