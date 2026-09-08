@@ -250,6 +250,17 @@ function armTurnTimer(room, d) {
   }, CONTENT.combat.turnTimeoutMs);
 }
 
+function schedulePetAct(room, d, playerId){
+  const player = room.players.find(p=>p.id===playerId);
+  if(!player || !d || d.status!=="fighting" || d.phase!=="players") return;
+  if(!player.petTurn) player.petTurn=0;
+  player.petTurn += 1;
+  if(player.petTurn % 2 !== 0) return; // every 2nd turn
+  setTimeout(()=>{
+    if(d.status!=="fighting" || d.phase!=="players" || d.currentTurnId!==playerId) return;
+    petActForPlayer(room,d,player);
+  }, 1000);
+}
 function buildTurnOrder(room, d) {
   d.turnOrder = livingMembers(room, d)
     .sort((a, b) => b.speed - a.speed)
@@ -257,7 +268,10 @@ function buildTurnOrder(room, d) {
   d.turnIndex = 0;
   d.currentTurnId = d.turnOrder[0] || null;
   d.endedTurns = new Set();
-  if (d.currentTurnId) resetUsedSkills(d, d.currentTurnId);
+  if (d.currentTurnId) {
+    resetUsedSkills(d, d.currentTurnId);
+    schedulePetAct(room, d, d.currentTurnId);
+  }
 }
 
 function floorCountFor(sizeId, total) {
@@ -417,10 +431,10 @@ function act(room, player, skillId, targetId) {
       const critBonus = player.critDamage != null ? player.critDamage : Math.round(((CONTENT.combat.critMult || 1.5) - 1) * 100);
       const crit = Math.random() < critChance;
       const critMult = crit ? 1 + critBonus / 100 : 1;
-      const pAtk = buffSum(d, "player", player.id, "attack") - buffSum(d, "player", player.id, "weaken");
-      const pMagic = buffSum(d, "player", player.id, "magicBoost") - buffSum(d, "player", player.id, "weaken");
-      const mDef = buffSum(d, "monster", Number(targetId), "defense");
-      const mExp = buffSum(d, "monster", Number(targetId), "expose");
+      const pAtk = buffSum(d, "player", player.id, "attack") + buffSum(d, "player", player.id, "pet_attack") - buffSum(d, "player", player.id, "weaken") - buffSum(d, "player", player.id, "pet_weaken");
+      const pMagic = buffSum(d, "player", player.id, "magicBoost") + buffSum(d, "player", player.id, "pet_magic") - buffSum(d, "player", player.id, "weaken") - buffSum(d, "player", player.id, "pet_weaken");
+      const mDef = buffSum(d, "monster", Number(targetId), "defense") + buffSum(d, "monster", Number(targetId), "pet_defense");
+      const mExp = buffSum(d, "monster", Number(targetId), "expose") + buffSum(d, "monster", Number(targetId), "pet_expose");
       const isPhysical = !skill.element || skill.element === "physical";
       const baseStat = isPhysical ? player.attack : player.magicPower;
       const pBoost = isPhysical ? pAtk : pMagic;
@@ -616,9 +630,9 @@ function advanceTurn(room, d) {
     d.currentTurnId = d.turnOrder[d.turnIndex];
     resetUsedSkills(d, d.currentTurnId);
     armTurnTimer(room, d);
+    schedulePetAct(room, d, d.currentTurnId);
     return false;
   }
-  // safety: check if anyone still hasn't acted (handles fled/race)
   if (d.endedTurns.size < d.turnOrder.length) {
     const remaining = d.turnOrder.find((id) => !d.endedTurns.has(id));
     if (remaining) {
@@ -626,6 +640,7 @@ function advanceTurn(room, d) {
       d.turnIndex = d.turnOrder.indexOf(remaining);
       resetUsedSkills(d, remaining);
       armTurnTimer(room, d);
+      schedulePetAct(room, d, remaining);
       return false;
     }
   }
@@ -739,13 +754,6 @@ function finishMonsterPhase(room, d) {
   armTurnTimer(room, d);
   if (typeof room.broadcast === "function") room.broadcast();
   else if (room._emitCombat) room._emitCombat();
-  // pet acts every 3 rounds, 2s after round start, no turn
-  if (d.round % 3 === 0) {
-    setTimeout(() => {
-      if (d.status !== "fighting" || d.phase !== "players") return;
-      petAct(room, d);
-    }, 2000);
-  }
 }
 
 function checkEnd(room, d) {
@@ -1068,14 +1076,14 @@ function petAct(room, d) {
       const petLevel = petInst ? (petInst.level||1) : 1;
       const isTamer = player.character === "tamer";
       const mult = isTamer ? 2 : 1;
-      // if pet has specific buffKind, use it
       if (petDef.buffKind && ["attack","magicBoost","defense"].includes(petDef.buffKind)) {
+        const petKind = petDef.buffKind === "attack" ? "pet_attack" : petDef.buffKind === "magicBoost" ? "pet_magic" : "pet_defense";
         const buffVal = 0.15 * mult;
         const targetId = pid;
         d.buffId=(d.buffId||0)+1;
-        d.buffs.push({uid:d.buffId, targetType:"player", targetId, kind: petDef.buffKind, value: buffVal, turns: 2, name: petDef.name});
-        addFx(d, {type:"buff", actor: pid, target:"player", targetId, kind: petDef.buffKind, value: buffVal, turns:2, petId: petDef.id});
-        d.log.push(`${petDef.name} buffs ${player.name} ${petDef.buffKind} +${Math.round(buffVal*100)}%!`);
+        d.buffs.push({uid:d.buffId, targetType:"player", targetId, kind: petKind, value: buffVal, turns: 2, name: petDef.name});
+        addFx(d, {type:"buff", actor: pid, target:"player", targetId, kind: petKind, value: buffVal, turns:2, petId: petDef.id});
+        d.log.push(`${petDef.name} buffs ${player.name} ${petKind} +${Math.round(buffVal*100)}%!`);
         continue;
       }
       const roll = Math.random();
@@ -1105,8 +1113,8 @@ function petAct(room, d) {
           d.log.push(`${petDef.name} freezes ${pick.m.name}!`);
         } else {
           const weakenVal = 0.15 * mult;
-          d.buffs.push({ uid: (d.buffId = (d.buffId || 0) + 1), targetType: "monster", targetId: pick.i, kind: "weaken", value: weakenVal, turns: 2, name: petDef.name });
-          addFx(d, { type: "buff", actor: pid, target: "enemy", targetId: pick.i, kind: "weaken", value: weakenVal, turns: 2 });
+          d.buffs.push({ uid: (d.buffId = (d.buffId || 0) + 1), targetType: "monster", targetId: pick.i, kind: "pet_weaken", value: weakenVal, turns: 2, name: petDef.name });
+          addFx(d, { type: "buff", actor: pid, target: "enemy", targetId: pick.i, kind: "pet_weaken", value: weakenVal, turns: 2 });
           d.log.push(`${petDef.name} weakens ${pick.m.name}!`);
         }
       } else {

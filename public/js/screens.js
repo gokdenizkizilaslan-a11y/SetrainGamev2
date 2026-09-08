@@ -268,6 +268,10 @@ const BUFF_META = {
   frozen: { label: "❄ Frozen", color: "#9fd4ff" },
   shield: { label: "🛡️ Shield", color: "#7fb4ff" },
   magicBoost: { label: "Mgc+", color: "#c9a0ff" },
+  pet_attack: { label: "Pet Atk+", color: "#ff9b4a" },
+  pet_magic: { label: "Pet Mgc+", color: "#ff9b4a" },
+  pet_defense: { label: "Pet Def+", color: "#7fb4ff" },
+  pet_weaken: { label: "Pet Weak", color: "#ff9d7a" },
 };
 function petStage(level){
   const lv = level||1;
