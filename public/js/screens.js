@@ -1888,13 +1888,14 @@ function renderInventory(room) {
     .join("");
 
   const activeIds = me.activePetIds || (me.activePetId ? [me.activePetId] : []);
+  const maxPets = me.character === "tamer" ? 3 : 2;
   const pets = (me.pets || []).map((pp)=>{
     const pd = (CATALOG.pets||[]).find(x=>x.id===pp.petId);
     const isActive = activeIds.includes(pp.petId);
     return `<div class="bag-row">
       <span class="bag-icon">${pd? `<span class="item-icon" data-img="${escapeHtml(pd.image||"")}" data-variant="${escapeHtml(pd.id)}"></span>` : icon("crit")}</span>
-      <span class="bag-name">${pd? escapeHtml(pd.name): escapeHtml(pp.petId)} ${isActive? '<span class="badge badge--ready">Active</span>':''} ${activeIds.length>=2 && !isActive? '<span class="muted">(max 2)</span>':''}</span>
-      <span class="bag-desc">${pd? escapeHtml(pd.description):''}</span>
+      <span class="bag-name">${pd? escapeHtml(pd.name): escapeHtml(pp.petId)} ${isActive? '<span class="badge badge--ready">Active</span>':''} ${activeIds.length>=maxPets && !isActive? `<span class="muted">(max ${maxPets})</span>`:''} <span class="muted">Lv ${pp.level||1}</span></span>
+      <span class="bag-desc">${pd? escapeHtml(pd.description):''} ${pp.level? `· Lv ${pp.level} XP ${pp.xp||0}/${pp.xpToNext||0}`:''}</span>
       <button type="button" class="btn btn--mini" data-pet-active="${pp.petId}">${isActive? 'Unequip':'Set Active'}</button>
     </div>`;
   }).join("");
@@ -1909,7 +1910,7 @@ function renderInventory(room) {
     <div class="equip-grid">${slots}</div>
     <p class="subhead">Pack</p>
     <div class="bag-list">${bag || '<div class="muted">Your pack is empty.</div>'}</div>
-    <p class="subhead">Pets ${activeIds.length? `— Active (${activeIds.length}/2): ${escapeHtml(activeNames)}` : '— No active pet (max 2)'} </p>
+    <p class="subhead">Pets ${activeIds.length? `— Active (${activeIds.length}/${maxPets}): ${escapeHtml(activeNames)}` : `— No active pet (max ${maxPets})${me.character==="tamer"?" — Tamer 2× bonus!":""}`} </p>
     <div class="bag-list">${pets || '<div class="muted">No pets hatched yet. Find eggs in dungeons (victory drops)!</div>'}</div>`;
   initImages(root);
 

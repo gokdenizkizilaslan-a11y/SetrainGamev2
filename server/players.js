@@ -101,6 +101,33 @@ function addXp(player, amount) {
     player.xp = 0;
   }
 }
+function petXpToNext(level){
+  if(level >= 20) return 0;
+  // faster than character: 120 base, 1.35 exp
+  return Math.round(120 * Math.pow(level, 1.35));
+}
+function addPetXp(player, petId, amount){
+  if(!player.pets) return;
+  const pet = player.pets.find(p=>p.petId===petId);
+  if(!pet) return;
+  if(pet.level >= 20) return;
+  if(pet.level == null) pet.level=1;
+  if(pet.xp == null) pet.xp=0;
+  pet.xp += amount;
+  while(pet.level < 20){
+    const need = petXpToNext(pet.level);
+    if(pet.xp < need) break;
+    pet.xp -= need;
+    pet.level += 1;
+    // stat growth: +1 to primary stat
+    const def = (CONTENT.pets||[]).find(x=>x.id===petId);
+    const elem = def?def.element:"physical";
+    if(elem==="fire"||elem==="physical"||elem==="earth") pet.bonusAttack = (pet.bonusAttack||0)+1;
+    else if(elem==="water"||elem==="frost"||elem==="lightning") pet.bonusMagic = (pet.bonusMagic||0)+1;
+    else pet.bonusResist = (pet.bonusResist||0)+1;
+  }
+  if(pet.level >=20) pet.xp=0;
+}
 
 function createPlayer({ id, name, character, isHost = false }) {
   const anomaly = pickAnomaly();
@@ -162,7 +189,7 @@ function createPlayer({ id, name, character, isHost = false }) {
     activePetIds: [],
   };
   if (character === "tamer") {
-    player.inventory.push({ itemId: "egg_common_slime", qty: 1 }, { itemId: "egg_uncommon_wolf", qty: 1 });
+    player.inventory.push({ itemId: "egg_red", qty: 1 }, { itemId: "egg_green", qty: 1 });
   }
   return player;
 }
@@ -208,9 +235,9 @@ function publicPlayer(player) {
     pvpId: player.pvpId || null,
     shield: player.shield || 0,
     maxShield: player.maxShield || 0,
-    pets: (player.pets || []).map((p) => ({ petId: p.petId, hatched: p.hatched })),
+    pets: (player.pets || []).map((p) => ({ petId: p.petId, hatched: p.hatched, level: p.level||1, xp: p.xp||0, xpToNext: petXpToNext(p.level||1), bonusAttack: p.bonusAttack||0, bonusMagic: p.bonusMagic||0, bonusResist: p.bonusResist||0 })),
     activePetId: player.activePetId || (player.activePetIds && player.activePetIds[0]) || null,
-    activePetIds: (player.activePetIds && player.activePetIds.length ? player.activePetIds : (player.activePetId ? [player.activePetId] : [])).slice(0,2),
+    activePetIds: (player.activePetIds && player.activePetIds.length ? player.activePetIds : (player.activePetId ? [player.activePetId] : [])).slice(0, player.character==="tamer" ? 3 : 2),
     anomaly: player.anomaly
       ? {
           id: player.anomaly.id,
@@ -404,6 +431,8 @@ module.exports = {
   publicPlayer,
   addXp,
   xpToNext,
+  petXpToNext,
+  addPetXp,
   onNewDay,
   randomInt,
   dealDamage,

@@ -107,7 +107,6 @@ function act(room, player, skillId){
   player.mana -= (skill.mana||0);
   used.add(skillId); d.usedSkills[player.id]=used;
   if(skill.mana) addFx(d,{type:"mana", actor:player.id, amount:skill.mana, skill:skill.id});
-  // damage
   if(skill.power){
     const isPhysical = !skill.element || skill.element==="physical";
     const base = isPhysical? player.attack : player.magicPower;
@@ -115,9 +114,11 @@ function act(room, player, skillId){
     const crit = Math.random()<critChance;
     const critMult = crit? 1+ (player.critDamage||40)/100 :1;
     const pAtk = buffSum(d,"player",player.id,"attack") - buffSum(d,"player",player.id,"weaken");
+    const pMagic = buffSum(d,"player",player.id,"magicBoost") - buffSum(d,"player",player.id,"weaken");
+    const pBoost = isPhysical ? pAtk : pMagic;
     const pDef = buffSum(d,"player",oppId,"defense");
     const pExp = buffSum(d,"player",oppId,"expose");
-    let dmg = Math.max(1, Math.round(base*skill.power*(1+Math.random()*0.4-0.2)*critMult*(1+pAtk)*(1-pDef+pExp)));
+    let dmg = Math.max(1, Math.round(base*skill.power*(1+Math.random()*0.4-0.2)*critMult*(1+pBoost)*(1-pDef+pExp)));
     dmg -= Math.round(opponent.resistance* (CONTENT.combat.resistanceMitigation||0.25));
     dmg=Math.max(1,dmg);
     // shield vs hp
@@ -208,7 +209,6 @@ function advanceTurn(room,d){
   }
   d.log.push(`Round ${d.round} — ${room.players.find(p=>p.id===d.currentTurnId)?.name} starts.`);
   armTimer(room,d);
-  // pet act every 3 rounds 2s delay (supports 2 pets)
   if(d.round%3===0){
     setTimeout(()=>{
       if(d.status!=="fighting") return;
@@ -216,14 +216,23 @@ function advanceTurn(room,d){
         const pl=room.players.find(x=>x.id===pid);
         if(!pl) continue;
         const activeIds = (pl.activePetIds && pl.activePetIds.length ? pl.activePetIds : (pl.activePetId?[pl.activePetId]:[]));
-        for(const petId of activeIds.slice(0,2)){
-          if(Math.random()<0.5){
-            const before=pl.hp; heal(pl, Math.round(pl.maxHp*0.12*(1+(pl.healPower||0)/50)));
-            const h=pl.hp-before; if(h>0){ addFx(d,{type:"heal", actor:pid, target:pid, amount:h, source:"pet", petId}); }
+        const maxPets = pl.character==="tamer"?3:2;
+        for(const petId of activeIds.slice(0,maxPets)){
+          const petDef=(CONTENT.pets||[]).find(x=>x.id===petId);
+          const petInst=(pl.pets||[]).find(x=>x.petId===petId);
+          const petLevel=petInst?(petInst.level||1):1;
+          const isTamer=pl.character==="tamer";
+          const mult=isTamer?2:1;
+          const lvlScale=1+petLevel*0.04;
+          if(petDef && petDef.buffKind && ["attack","magicBoost","defense"].includes(petDef.buffKind)){
+            const bv=0.15*mult;
+            d.buffId=(d.buffId||0)+1;
+            d.buffs.push({uid:d.buffId, targetType:"player", targetId:pid, kind:petDef.buffKind, value:bv, turns:2, name:petDef.name});
+            addFx(d,{type:"buff", actor:pid, target:"player", targetId:pid, kind:petDef.buffKind, value:bv, turns:2, petId});
+          } else if(Math.random()<0.5){
+            const before=pl.hp; const amt=Math.round(pl.maxHp*0.12*(1+(pl.healPower||0)/50)*lvlScale*mult); heal(pl, amt); const h=pl.hp-before; if(h>0) addFx(d,{type:"heal", actor:pid, target:pid, amount:h, source:"pet", petId});
           } else {
-            const amt=30+Math.floor(Math.random()*20);
-            addShield(pl, amt);
-            addFx(d,{type:"shield", actor:pid, target:pid, amount:amt, petId});
+            const amt=Math.round((30+Math.floor(Math.random()*20))*lvlScale*mult); addShield(pl, amt); addFx(d,{type:"shield", actor:pid, target:pid, amount:amt, petId});
           }
         }
       }

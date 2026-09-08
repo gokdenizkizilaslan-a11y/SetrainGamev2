@@ -13,10 +13,10 @@ function hatchEgg(room, player, eggId) {
   if (!petDef) throw new Error("Unknown pet.");
   removeItem(player, eggId, 1);
   if (!player.pets) player.pets = [];
-  player.pets.push({ petId, hatched: true });
+  player.pets.push({ petId, hatched: true, level: 1, xp: 0 });
   if (!player.activePetIds) player.activePetIds = player.activePetId ? [player.activePetId] : [];
-  // auto set active if less than 2
-  if (player.activePetIds.length < 2 && !player.activePetIds.includes(petId)) {
+  const maxPets = player.character === "tamer" ? 3 : 2;
+  if (player.activePetIds.length < maxPets && !player.activePetIds.includes(petId)) {
     player.activePetIds.push(petId);
     player.activePetId = player.activePetIds[0];
   }
@@ -33,12 +33,12 @@ function setActivePet(room, player, petId) {
   }
   const owned = (player.pets || []).find((p) => p.petId === petId);
   if (!owned) throw new Error("You don't own that pet.");
+  const maxPets = player.character === "tamer" ? 3 : 2;
   const idx = player.activePetIds.indexOf(petId);
   if (idx !== -1) {
-    // toggle off
     player.activePetIds.splice(idx, 1);
   } else {
-    if (player.activePetIds.length >= 2) throw new Error("You can equip max 2 pets. Unequip one first.");
+    if (player.activePetIds.length >= maxPets) throw new Error(`You can equip max ${maxPets} pets. Unequip one first.`);
     player.activePetIds.push(petId);
   }
   player.activePetId = player.activePetIds[0] || null;
