@@ -109,6 +109,8 @@
           <h3 id="pet-name-el" class="pet-name-text">Pet Name</h3>
           <span id="pet-element-el" class="pet-element-tag">Fire</span>
           <p id="pet-desc-el" class="pet-desc-text">A faithful companion to aid you in your journey.</p>
+          <div id="pet-stats-el" class="pet-stats" style="display:flex;gap:0.4rem;flex-wrap:wrap;justify-content:center;margin:8px 0;font-size:0.75rem;color:#d8c8ab;"></div>
+          <div id="pet-skills-el" class="pet-skills" style="font-size:0.72rem;color:#a58d68;margin-bottom:10px;"></div>
           <button type="button" id="btn-egg-confirm" class="btn-egg-confirm">Claim Companion</button>
         </div>
       </div>
@@ -358,6 +360,35 @@
               // Setup revealed pet
               petImg.src = petImage || `/images/pets/${petId}.png`;
               petNameEl.innerText = petName || (petId ? petId.replace('pet_', '').toUpperCase() : 'Mystic Beast');
+              // show element
+              const petEl = document.getElementById('pet-element-el');
+              if(petEl){
+                const pd = (window.CATALOG && window.CATALOG.pets || []).find(x=>x.id===petId);
+                petEl.innerText = pd ? pd.element : 'pet';
+                petEl.style.background = pd ? `rgba(0,0,0,0.4)` : '';
+              }
+              const statsEl = document.getElementById('pet-stats-el');
+              const skillsEl = document.getElementById('pet-skills-el');
+              if(statsEl){
+                const pd = (window.CATALOG && window.CATALOG.pets || []).find(x=>x.id===petId);
+                if(pd && pd.stats){
+                  statsEl.innerHTML = Object.entries(pd.stats).map(([k,v])=> `<span style="background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:999px;border:1px solid rgba(232,180,92,0.2);">${k} ${v}</span>`).join('');
+                } else statsEl.innerHTML = '';
+              }
+              if(skillsEl){
+                const pd = (window.CATALOG && window.CATALOG.pets || []).find(x=>x.id===petId);
+                if(pd && pd.buffKind){
+                  const map={attack:'Atk +15% 2t', magicBoost:'Mgc +15% 2t', defense:'Def +15% 2t', shield:'Shield', wet:'Wet', frozen:'Frozen'};
+                  skillsEl.innerHTML = `Skill: ${map[pd.buffKind]||pd.buffKind} ${pd.element?`(${pd.element})`:''} — every 3 rounds`;
+                } else {
+                  skillsEl.innerHTML = `Pet helps every 3 rounds — heal/shield/weaken/attack`;
+                }
+              }
+              const descEl = document.getElementById('pet-desc-el');
+              if(descEl){
+                const pd = (window.CATALOG && window.CATALOG.pets || []).find(x=>x.id===petId);
+                if(pd) descEl.innerText = pd.description;
+              }
 
               stageRevealed.classList.remove('hidden');
               flashEl.classList.remove('flash-active');

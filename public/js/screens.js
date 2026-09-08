@@ -1996,10 +1996,13 @@ function renderPetsView(room){
     const stage = petStage(lvl);
     const displayName = pd ? petDisplayName(pd, lvl) : pp.petId;
     const img = pd ? petImageForLevel(pd, lvl) : "";
-    return `<div class="bag-row">
+    const stats = pd && pd.stats ? Object.entries(pd.stats).map(([k,v])=> `${k} ${v}`).join(" · ") : "";
+    const buffMap={attack:'Atk +15%', magicBoost:'Mgc +15%', defense:'Def +15%', shield:'Shield', wet:'Wet', frozen:'Frozen'};
+    const skillDesc = pd && pd.buffKind ? `Skill: ${buffMap[pd.buffKind]||pd.buffKind} (${pd.element})` : `Skill: heal/shield/weaken/attack every 3 rounds`;
+    return `<div class="bag-row" style="flex-wrap:wrap;">
       <span class="bag-icon"><span class="item-icon" data-img="${escapeHtml(img)}" data-variant="${escapeHtml(pp.petId)}"></span></span>
       <span class="bag-name">${escapeHtml(displayName)} ${isActive?'<span class="badge badge--ready">Active</span>':''} <span class="muted">Lv ${lvl} ${stage}</span></span>
-      <span class="bag-desc">${pd?escapeHtml(pd.description):''} ${pd?`· ${pd.element} · XP ${pp.xp||0}/${pp.xpToNext||0}`:''}</span>
+      <span class="bag-desc" style="flex-basis:100%;">${pd?escapeHtml(pd.description):''}<br><span class="muted">${escapeHtml(stats)} · ${pd?pd.element:''} · XP ${pp.xp||0}/${pp.xpToNext||0}</span><br><span style="color:#e8b45c;font-size:0.7rem;">${skillDesc}</span></span>
       <button type="button" class="btn btn--mini" data-pet-active="${pp.petId}">${isActive?'Unequip':'Equip'}</button>
     </div>`;
   }).join("");
