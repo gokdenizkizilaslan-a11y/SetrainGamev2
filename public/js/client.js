@@ -14,6 +14,7 @@ const state = {
   templeOpen: false,
   inventoryOpen: false,
   pvpOpen: false,
+  petsOpen: false,
   timerDeadline: null,
   timerReset: false,
   timerFired: false,
@@ -139,7 +140,7 @@ function renderTown(room) {
     state._deadShown = false;
   }
 
-  const inOverlay = state.dungeonOpen || state.tavernOpen || state.blacksmithOpen || state.merchantOpen || state.templeOpen || state.inventoryOpen || state.pvpOpen;
+  const inOverlay = state.dungeonOpen || state.tavernOpen || state.blacksmithOpen || state.merchantOpen || state.templeOpen || state.inventoryOpen || state.pvpOpen || state.petsOpen;
   $("town-main").classList.toggle("hidden", inOverlay);
   $("dungeon-view").classList.toggle("hidden", !state.dungeonOpen);
   $("tavern-view").classList.toggle("hidden", !state.tavernOpen);
@@ -149,6 +150,8 @@ function renderTown(room) {
   $("inventory-view").classList.toggle("hidden", !state.inventoryOpen);
   const pvpEl = $("pvp-view");
   if (pvpEl) pvpEl.classList.toggle("hidden", !state.pvpOpen);
+  const petsEl = $("pets-view");
+  if (petsEl) petsEl.classList.toggle("hidden", !state.petsOpen);
 
   // Right sidebar (multiplayer town only)
   if (typeof renderRightPlayers === "function") renderRightPlayers(room);
@@ -173,6 +176,8 @@ function renderTown(room) {
     renderInventory(room);
   } else if (state.pvpOpen) {
     if (typeof renderPvpView === "function") renderPvpView(room);
+  } else if (state.petsOpen) {
+    if (typeof renderPetsView === "function") renderPetsView(room);
   }
 }
 
@@ -300,6 +305,11 @@ $("btn-inventory-close").addEventListener("click", () => {
 const pvpCloseBtn = $("btn-pvp-close");
 if (pvpCloseBtn) pvpCloseBtn.addEventListener("click", () => {
   state.pvpOpen = false;
+  renderTown(state.room);
+});
+const petsCloseBtn = $("btn-pets-close");
+if (petsCloseBtn) petsCloseBtn.addEventListener("click", () => {
+  state.petsOpen = false;
   renderTown(state.room);
 });
 

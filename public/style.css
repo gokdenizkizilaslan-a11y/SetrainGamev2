@@ -1439,6 +1439,19 @@ input:focus {
 .shieldbar { height: 6px; margin-top:2px; border-color: rgba(127,180,255,0.3); }
 .shieldbar-fill { background: linear-gradient(180deg, #7fb4ff, #4a6fa5); }
 .shieldnum { font-size:0.68rem; color:#7fb4ff; }
+.fighter-pets { display:flex; gap:0.2rem; justify-content:center; margin-top:0.2rem; min-height:1.4rem; }
+.pet-icon { box-shadow: inset 0 0 0 1px rgba(0,0,0,0.2); }
+.pets-top { display:flex; flex-direction:column; align-items:center; gap:0.6rem; margin-bottom:1rem; }
+.pet-slots { display:flex; gap:0.6rem; justify-content:center; width:100%; max-width:520px; }
+.pet-slots--3 { gap:0.4rem; }
+.pet-slot { flex:1; max-width:170px; display:flex; flex-direction:column; align-items:center; gap:0.3rem; padding:0.7rem 0.5rem; border:1px solid var(--glass-line); border-radius:12px; background:var(--glass-2); text-align:center; }
+.pet-slot--middle { transform: translateY(6px); border-color: var(--gold-bright); background: var(--gold-soft); }
+.pet-slot--empty { opacity:0.6; border-style:dashed; }
+.pet-slot-label { font-family:Cinzel; font-size:0.65rem; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; }
+.pet-slot-icon { width:3rem; height:3rem; border-radius:50%; background-size:cover; background-position:center; border:1px solid var(--glass-line); }
+.pet-slot-name { font-family:Cinzel; font-size:0.85rem; }
+.pet-slot-level { font-size:0.7rem; color:var(--muted); }
+@media (max-width: 560px) { .pet-slots { flex-direction:column; align-items:center; } .pet-slot--middle { transform:none; } }
 
 .skill-bar {
   display: grid;

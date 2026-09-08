@@ -205,6 +205,14 @@
           </div>
           <div id="pvp-content"></div>
         </div>
+
+        <div id="pets-view" class="overlay-view hidden">
+          <div class="overlay-head">
+            <p class="eyebrow">Pets</p>
+            <button type="button" class="btn btn--ghost" id="btn-pets-close">Back to Town</button>
+          </div>
+          <div id="pets-content"></div>
+        </div>
       </div>
       <div id="map-overlay" class="overlay-dark hidden" style="z-index:90">
         <div class="map-modal">
@@ -302,7 +310,9 @@
       </div>
     </div>
 
+    <link rel="stylesheet" href="/egg_animation.css" />
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/egg_animation.js"></script>
     <script src="/js/screens.js"></script>
     <script src="/js/client.js"></script>
 

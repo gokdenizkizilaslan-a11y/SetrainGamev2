@@ -266,7 +266,31 @@ const BUFF_META = {
   dot: { label: "Bleed", color: "#ff6b6b" },
   wet: { label: "💧Wet", color: "#7fb4ff" },
   frozen: { label: "❄ Frozen", color: "#9fd4ff" },
+  shield: { label: "🛡️ Shield", color: "#7fb4ff" },
+  magicBoost: { label: "Mgc+", color: "#c9a0ff" },
 };
+function petStage(level){
+  const lv = level||1;
+  if(lv >= 15) return "adult";
+  if(lv >= 8) return "young";
+  return "baby";
+}
+function petDisplayName(petDef, level){
+  const base = petDef ? petDef.name : "Pet";
+  const stage = petStage(level);
+  const prefix = stage==="baby" ? "Baby " : stage==="young" ? "Young " : "Adult ";
+  // if name already contains Baby/Young etc, don't double
+  if(base.toLowerCase().includes("baby") || base.toLowerCase().includes("young") || base.toLowerCase().includes("adult")) return base;
+  return prefix + base;
+}
+function petImageForLevel(petDef, level){
+  if(!petDef || !petDef.image) return "";
+  const stage = petStage(level);
+  if(stage==="baby") return petDef.image;
+  const base = petDef.image.replace(/\.png$/,'');
+  const suffix = stage==="young" ? "_young.png" : "_adult.png";
+  return base + suffix;
+}
 
 function buffBadges(d, targetType, targetId) {
   const list = (d && d.buffs || []).filter(
@@ -720,8 +744,8 @@ function renderProfileCard(room, selfId) {
   if (petsBtn) {
     petsBtn.addEventListener("click", () => {
       sfxPlay("inventorysound");
-      state.inventoryOpen = true;
-      state.petsTab = true;
+      state.petsOpen = true;
+      state.inventoryOpen = false;
       renderTown(state.room);
     });
   }
@@ -1217,7 +1241,7 @@ function renderCombat(room, root) {
         ${p.shield>0 ? `<span class="hpbar shieldbar"><span class="hpbar-fill shieldbar-fill" style="width:${Math.round((p.shield/(p.maxShield||p.shield))*100)}%"></span></span><span class="hpnum shieldnum">🛡️ ${p.shield}/${p.maxShield}</span>` : ``}
         <span class="fighter-stats">Atk ${p.attack} · Res ${p.resistance} · Mgc ${p.magicPower} · Heal ${p.healPower} · Spd ${p.speed} · Crit ${p.critChance}%</span>
         <span class="fighter-mana">Mana ${p.mana}/${p.maxMana}</span>
-        <span class="fighter-pets">${(p.activePetIds|| (p.activePetId?[p.activePetId]:[])).map(pid=>{ const pd=(CATALOG.pets||[]).find(x=>x.id===pid); return `<span class="pet-icon" data-img="${pd?pd.image:''}" title="${pd?pd.name:pid}" style="width:1.4rem;height:1.4rem;display:inline-block;border:1px solid var(--glass-line);border-radius:50%;background:var(--glass-2);background-size:cover;background-position:center;vertical-align:middle;margin:0 2px;"></span>`; }).join("")}</span>
+        <span class="fighter-pets">${(p.activePetIds|| (p.activePetId?[p.activePetId]:[])).map(pid=>{ const pd=(CATALOG.pets||[]).find(x=>x.id===pid); const pp=(p.pets||[]).find(x=>x.petId===pid); const lvl=pp? (pp.level||1):1; const img=pd?petImageForLevel(pd,lvl):''; const name=pd?petDisplayName(pd,lvl):pid; return `<span class="pet-icon" data-img="${escapeHtml(img)}" title="${escapeHtml(name)} Lv ${lvl}" style="width:1.4rem;height:1.4rem;display:inline-block;border:1px solid var(--glass-line);border-radius:50%;background:var(--glass-2);background-size:cover;background-position:center;vertical-align:middle;margin:0 2px;"></span>`; }).join("")}</span>
         ${buffBadges(d, "player", p.id)}
       </button>`;
     })
@@ -1460,7 +1484,7 @@ function renderPvpView(room){
     <span class="hpbar"><span class="hpbar-fill" style="width:${Math.round(opp.hp/opp.maxHp*100)}%"></span></span><span class="hpnum">${opp.hp}/${opp.maxHp}</span>
     ${opp.shield>0?`<span class="hpbar shieldbar"><span class="hpbar-fill shieldbar-fill" style="width:${Math.round(opp.shield/(opp.maxShield||opp.shield)*100)}%"></span></span><span class="hpnum shieldnum">🛡️ ${opp.shield}</span>`:``}
     <span class="fighter-mana">Mana ${opp.mana}/${opp.maxMana}</span>
-    <span class="fighter-pets">${(opp.activePetIds|| (opp.activePetId?[opp.activePetId]:[])).map(pid=>{ const pd=(CATALOG.pets||[]).find(x=>x.id===pid); return `<span class="pet-icon" data-img="${pd?pd.image:''}" title="${pd?pd.name:pid}" style="width:1.4rem;height:1.4rem;display:inline-block;border:1px solid var(--glass-line);border-radius:50%;background:var(--glass-2);background-size:cover;background-position:center;vertical-align:middle;margin:0 2px;"></span>`; }).join("")}</span>
+    <span class="fighter-pets">${(opp.activePetIds|| (opp.activePetId?[opp.activePetId]:[])).map(pid=>{ const pd=(CATALOG.pets||[]).find(x=>x.id===pid); const pp=(opp.pets||[]).find(x=>x.petId===pid); const lvl=pp?(pp.level||1):1; const img=pd?petImageForLevel(pd,lvl):''; const name=pd?petDisplayName(pd,lvl):pid; return `<span class="pet-icon" data-img="${escapeHtml(img)}" title="${escapeHtml(name)} Lv ${lvl}" style="width:1.4rem;height:1.4rem;display:inline-block;border:1px solid var(--glass-line);border-radius:50%;background:var(--glass-2);background-size:cover;background-position:center;vertical-align:middle;margin:0 2px;"></span>`; }).join("")}</span>
     ${buffBadges(d,"player",opp.id)}
   </div>` : '<div class="muted">Waiting for opponent...</div>';
   const meHtml = `<div class="fighter ${me.hp<=0?"fighter--down":""} ${d.currentTurnId===me.id?"fighter--turn":""}" style="margin:0 auto;">
@@ -1469,7 +1493,7 @@ function renderPvpView(room){
     <span class="hpbar"><span class="hpbar-fill hpbar-fill--party" style="width:${Math.round(me.hp/me.maxHp*100)}%"></span></span><span class="hpnum">${me.hp}/${me.maxHp}</span>
     ${me.shield>0?`<span class="hpbar shieldbar"><span class="hpbar-fill shieldbar-fill" style="width:${Math.round(me.shield/(me.maxShield||me.shield)*100)}%"></span></span><span class="hpnum shieldnum">🛡️ ${me.shield}</span>`:``}
     <span class="fighter-mana">Mana ${me.mana}/${me.maxMana}</span>
-    <span class="fighter-pets">${(me.activePetIds|| (me.activePetId?[me.activePetId]:[])).map(pid=>{ const pd=(CATALOG.pets||[]).find(x=>x.id===pid); return `<span class="pet-icon" data-img="${pd?pd.image:''}" title="${pd?pd.name:pid}" style="width:1.4rem;height:1.4rem;display:inline-block;border:1px solid var(--glass-line);border-radius:50%;background:var(--glass-2);background-size:cover;background-position:center;vertical-align:middle;margin:0 2px;"></span>`; }).join("")}</span>
+    <span class="fighter-pets">${(me.activePetIds|| (me.activePetId?[me.activePetId]:[])).map(pid=>{ const pd=(CATALOG.pets||[]).find(x=>x.id===pid); const pp=(me.pets||[]).find(x=>x.petId===pid); const lvl=pp?(pp.level||1):1; const img=pd?petImageForLevel(pd,lvl):''; const name=pd?petDisplayName(pd,lvl):pid; return `<span class="pet-icon" data-img="${escapeHtml(img)}" title="${escapeHtml(name)} Lv ${lvl}" style="width:1.4rem;height:1.4rem;display:inline-block;border:1px solid var(--glass-line);border-radius:50%;background:var(--glass-2);background-size:cover;background-position:center;vertical-align:middle;margin:0 2px;"></span>`; }).join("")}</span>
     ${buffBadges(d,"player",me.id)}
   </div>`;
   const hint = d.status==="done"? (d.result?d.result.text:"") : isMyTurn? "Your turn — pick a skill." : `Waiting for ${opp?opp.name:"opponent"}...`;
@@ -1887,19 +1911,6 @@ function renderInventory(room) {
     })
     .join("");
 
-  const activeIds = me.activePetIds || (me.activePetId ? [me.activePetId] : []);
-  const maxPets = me.character === "tamer" ? 3 : 2;
-  const pets = (me.pets || []).map((pp)=>{
-    const pd = (CATALOG.pets||[]).find(x=>x.id===pp.petId);
-    const isActive = activeIds.includes(pp.petId);
-    return `<div class="bag-row">
-      <span class="bag-icon">${pd? `<span class="item-icon" data-img="${escapeHtml(pd.image||"")}" data-variant="${escapeHtml(pd.id)}"></span>` : icon("crit")}</span>
-      <span class="bag-name">${pd? escapeHtml(pd.name): escapeHtml(pp.petId)} ${isActive? '<span class="badge badge--ready">Active</span>':''} ${activeIds.length>=maxPets && !isActive? `<span class="muted">(max ${maxPets})</span>`:''} <span class="muted">Lv ${pp.level||1}</span></span>
-      <span class="bag-desc">${pd? escapeHtml(pd.description):''} ${pp.level? `· Lv ${pp.level} XP ${pp.xp||0}/${pp.xpToNext||0}`:''}</span>
-      <button type="button" class="btn btn--mini" data-pet-active="${pp.petId}">${isActive? 'Unequip':'Set Active'}</button>
-    </div>`;
-  }).join("");
-  const activeNames = activeIds.map(id=> (CATALOG.pets||[]).find(x=>x.id===id)?.name || id).join(", ");
   root.innerHTML = `
     <div class="shop-resources">
       ${chip(icon("food"), `Food ${me.food}`)}
@@ -1909,9 +1920,7 @@ function renderInventory(room) {
     <p class="subhead">Equipment</p>
     <div class="equip-grid">${slots}</div>
     <p class="subhead">Pack</p>
-    <div class="bag-list">${bag || '<div class="muted">Your pack is empty.</div>'}</div>
-    <p class="subhead">Pets ${activeIds.length? `— Active (${activeIds.length}/${maxPets}): ${escapeHtml(activeNames)}` : `— No active pet (max ${maxPets})${me.character==="tamer"?" — Tamer 2× bonus!":""}`} </p>
-    <div class="bag-list">${pets || '<div class="muted">No pets hatched yet. Find eggs in dungeons (victory drops)!</div>'}</div>`;
+    <div class="bag-list">${bag || '<div class="muted">Your pack is empty.</div>'}</div>`;
   initImages(root);
 
   root.querySelectorAll("[data-unequip]").forEach((b) =>
@@ -1934,18 +1943,77 @@ function renderInventory(room) {
   );
   root.querySelectorAll("[data-hatch]").forEach((b)=>
     b.addEventListener("click", ()=>{
-      sfxPlay("lootsound");
-      socket.emit("pet:hatch", { eggId: b.getAttribute("data-hatch") });
-    })
-  );
-  root.querySelectorAll("[data-pet-active]").forEach((b)=>
-    b.addEventListener("click", ()=>{
+      const eggId=b.getAttribute("data-hatch");
+      const eggDef=(CATALOG.items||[]).find(x=>x.id===eggId);
       sfxPlay("clicksound");
-      const pid=b.getAttribute("data-pet-active");
-      const isActive = me.activePetId===pid;
-      socket.emit("pet:setActive", { petId: isActive? null : pid });
+      socket.emit("pet:hatch", { eggId }, (res)=>{
+        if(!res || !res.ok){
+          showToast(res && res.error || "Hatch failed");
+          return;
+        }
+        const petId=res.petId;
+        const petDef=(CATALOG.pets||[]).find(x=>x.id===petId);
+        const petName=petDef? petDisplayName(petDef, 1) : petId;
+        const petImg=petDef? petImageForLevel(petDef, 1) : "";
+        if(window.playEggAnimation){
+          window.playEggAnimation(eggId, petId, petName, petImg).then(()=>{ sfxPlay("lootsound"); });
+        } else {
+          sfxPlay("lootsound");
+          showNotice("hatch", "Hatched!", petName+" hatched from "+(eggDef?eggDef.name:eggId)+"!");
+        }
+      });
     })
   );
+}
+function renderPetsView(room){
+  const me=room.players.find(p=>p.id===state.playerId);
+  const root=$("pets-content");
+  if(!me){ root.innerHTML=""; return; }
+  const activeIds = me.activePetIds || (me.activePetId ? [me.activePetId] : []);
+  const maxPets = me.character==="tamer" ? 3 : 2;
+  const pets = me.pets || [];
+  // top slots
+  const slots = [];
+  for(let i=0;i<maxPets;i++){
+    const isMiddle = maxPets===3 && i===1;
+    const pid = activeIds[i];
+    const pd = pid ? (CATALOG.pets||[]).find(x=>x.id===pid) : null;
+    const pp = pid ? pets.find(x=>x.petId===pid) : null;
+    const lvl = pp? (pp.level||1) : 1;
+    const displayName = pd ? petDisplayName(pd, lvl) : "Empty";
+    const img = pd ? petImageForLevel(pd, lvl) : "";
+    const stage = petStage(lvl);
+    slots.push(`<div class="pet-slot ${pid?"pet-slot--filled":"pet-slot--empty"} ${isMiddle?"pet-slot--middle":""}" data-pet-slot="${i}">
+      <span class="pet-slot-label">${isMiddle && maxPets===3 ? "Middle" : "Slot "+(i+1)}</span>
+      ${pid ? `<span class="pet-slot-icon" data-img="${escapeHtml(img)}" data-variant="${escapeHtml(pid)}" style="width:3rem;height:3rem;"></span><span class="pet-slot-name">${escapeHtml(displayName)}</span><span class="pet-slot-level">Lv ${lvl} ${stage}</span><button type="button" class="btn btn--mini" data-pet-unequip="${pid}">Unequip</button>` : `<span class="pet-slot-empty">Empty</span><span class="muted">Drag pet here</span>`}
+    </div>`);
+  }
+  const petsList = pets.map(pp=>{
+    const pd=(CATALOG.pets||[]).find(x=>x.id===pp.petId);
+    const isActive = activeIds.includes(pp.petId);
+    const lvl = pp.level||1;
+    const stage = petStage(lvl);
+    const displayName = pd ? petDisplayName(pd, lvl) : pp.petId;
+    const img = pd ? petImageForLevel(pd, lvl) : "";
+    return `<div class="bag-row">
+      <span class="bag-icon"><span class="item-icon" data-img="${escapeHtml(img)}" data-variant="${escapeHtml(pp.petId)}"></span></span>
+      <span class="bag-name">${escapeHtml(displayName)} ${isActive?'<span class="badge badge--ready">Active</span>':''} <span class="muted">Lv ${lvl} ${stage}</span></span>
+      <span class="bag-desc">${pd?escapeHtml(pd.description):''} ${pd?`· ${pd.element} · XP ${pp.xp||0}/${pp.xpToNext||0}`:''}</span>
+      <button type="button" class="btn btn--mini" data-pet-active="${pp.petId}">${isActive?'Unequip':'Equip'}</button>
+    </div>`;
+  }).join("");
+  root.innerHTML = `
+    <div class="pets-top">
+      <p class="subhead">Equipped Pets (${activeIds.length}/${maxPets}) ${me.character==="tamer"?"— Tamer 2× bonus!":""}</p>
+      <div class="pet-slots ${maxPets===3?"pet-slots--3":""}">${slots.join("")}</div>
+    </div>
+    <p class="subhead">Collection — ${pets.length} pets</p>
+    <div class="bag-list">${petsList || '<div class="muted">No pets yet. Hatch eggs from inventory (Equipments)!</div>'}</div>
+    <p class="hint">All pets start as Baby (Lv 1-7), Young at 8, Adult at 15. Images change with stage. Tamer can equip 3, others 2.</p>
+  `;
+  initImages(root);
+  root.querySelectorAll("[data-pet-unequip]").forEach(b=> b.addEventListener("click", ()=>{ sfxPlay("clicksound"); socket.emit("pet:setActive", {petId: b.getAttribute("data-pet-unequip")}); }));
+  root.querySelectorAll("[data-pet-active]").forEach(b=> b.addEventListener("click", ()=>{ sfxPlay("clicksound"); socket.emit("pet:setActive", {petId: b.getAttribute("data-pet-active")}); }));
 }
 
 // ---- Map ----
