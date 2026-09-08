@@ -175,7 +175,12 @@ async function loadSounds() {
 }
 loadSounds();
 let vfx = null;
-try{ if(window.SetraEffects) vfx = new SetraEffects('gameVfxCanvas'); }catch(e){ console.warn("vfx init failed", e); }
+function initVfx(){
+  try{ if(window.SetraEffects && document.getElementById('gameVfxCanvas')) vfx = new SetraEffects('gameVfxCanvas'); }catch(e){ console.warn("vfx init failed", e); }
+}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initVfx);
+else initVfx();
+window.addEventListener('load', ()=>{ if(!vfx) initVfx(); });
 
 function sfxPlay(names, vol) {
   if (!sfxEnabled) return;
