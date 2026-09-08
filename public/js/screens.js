@@ -174,6 +174,8 @@ async function loadSounds() {
   }
 }
 loadSounds();
+let vfx = null;
+try{ if(window.SetraEffects) vfx = new SetraEffects('gameVfxCanvas'); }catch(e){ console.warn("vfx init failed", e); }
 
 function sfxPlay(names, vol) {
   if (!sfxEnabled) return;
@@ -360,10 +362,26 @@ function drainCombatFx(root) {
       continue;
     }
     let el = null;
-    if (ev.target === "enemy") el = root.querySelector('.enemy[data-enemy="' + ev.targetId + '"]');
-    else if (ev.target === "player") el = root.querySelector('.fighter[data-fighter="' + ev.targetId + '"]');
+    let fromEl = null;
+    if (ev.target === "enemy") { el = root.querySelector('.enemy[data-enemy="' + ev.targetId + '"]'); fromEl = root.querySelector('.fighter[data-fighter="' + ev.actor + '"]') || el; }
+    else if (ev.target === "player") { el = root.querySelector('.fighter[data-fighter="' + ev.targetId + '"]'); fromEl = root.querySelector('.enemy[data-enemy="0"]') || root.querySelector('.fighter[data-fighter="' + ev.actor + '"]') || el; }
+    // map old effect to new 80
+    const vfxMap = { slash:"rising_katana_slash", heavy:"heavy_hammer_slam", axe:"axe_cleave_horizontal", crush:"heavy_hammer_slam", arcane:"frost_crystal_spear", fire:"fire_meteor_crash", frost:"frost_crystal_spear", water:"tidal_wave_water", earth:"earth_fissure_rupture", lightning:"lightning_strike_heavy", blood:"blood_scythe", dark:"shadow_scythe_reap", holy:"holy_pillar_smite", shadow:"shadow_scythe_reap", heal:"heal_aura_fountain", defend:"radiant_halo_shield", monster:"rising_katana_slash", crit:"heavy_hammer_slam", buff:"radiant_halo_shield", dot:"blood_needles", shield:"radiant_halo_shield", wet:"tidal_wave_water", frozen:"frost_prison_dome" };
+    const vfxId = ev.vfxId || vfxMap[ev.effect] || vfxMap[ev.elem] || "rising_katana_slash";
+    if (vfx && el) {
+      const fromRect = fromEl ? fromEl.getBoundingClientRect() : el.getBoundingClientRect();
+      const toRect = el.getBoundingClientRect();
+      const fromX = fromRect.left + fromRect.width/2;
+      const fromY = fromRect.top + fromRect.height/2;
+      const toX = toRect.left + toRect.width/2;
+      const toY = toRect.top + toRect.height/2;
+      // 400ms delay for pet-like smoothness, player skills also 0-400ms
+      const delay = ev.source==="pet" ? 400 : 0;
+      setTimeout(()=>{ try{ vfx.play(vfxId, {fromX, fromY, toX, toY}); }catch(e){} }, delay);
+    }
     if (ev.type === "damage") {
       const r = fxRecipe(ev.effect);
+      // keep popup but also vfx above
       if (ev.crit) {
         spawnPopup(el, "CRIT " + ev.amount, "crit", r.color);
         applyTargetFx(el, "hit-crit");
@@ -2000,13 +2018,12 @@ function renderPetsView(room){
     const stage = petStage(lvl);
     const displayName = pd ? petDisplayName(pd, lvl) : pp.petId;
     const img = pd ? petImageForLevel(pd, lvl) : "";
-    const stats = pd && pd.stats ? Object.entries(pd.stats).map(([k,v])=> `${k} ${v}`).join(" · ") : "";
-    const buffMap={attack:'Atk +15%', magicBoost:'Mgc +15%', defense:'Def +15%', shield:'Shield', wet:'Wet', frozen:'Frozen'};
-    const skillDesc = pd && pd.buffKind ? `Skill: ${buffMap[pd.buffKind]||pd.buffKind} (${pd.element})` : `Skill: heal/shield/weaken/attack every 3 rounds`;
+    const stats = pd && pd.stats ? Object.entries(pd.stats).map(([k,v])=> `${k} ${v + (pp.bonusAttack||0) + (pp.bonusMagic||0)}`).join(" · ") : "";
+    const petSkills = pd && pd.petSkills ? pd.petSkills.map(s=> `${s.kind} ${s.value}${s.kind==="attack"||s.kind==="heal"||s.kind==="shield"?"":"%"} /${s.interval}t`).join(" · ") : (pd && pd.buffKind ? `${pd.buffKind} (${pd.element})` : "auto");
     return `<div class="bag-row" style="flex-wrap:wrap;">
       <span class="bag-icon"><span class="item-icon" data-img="${escapeHtml(img)}" data-variant="${escapeHtml(pp.petId)}"></span></span>
       <span class="bag-name">${escapeHtml(displayName)} ${isActive?'<span class="badge badge--ready">Active</span>':''} <span class="muted">Lv ${lvl} ${stage}</span></span>
-      <span class="bag-desc" style="flex-basis:100%;">${pd?escapeHtml(pd.description):''}<br><span class="muted">${escapeHtml(stats)} · ${pd?pd.element:''} · XP ${pp.xp||0}/${pp.xpToNext||0}</span><br><span style="color:#e8b45c;font-size:0.7rem;">${skillDesc}</span></span>
+      <span class="bag-desc" style="flex-basis:100%;">${pd?escapeHtml(pd.description):''}<br><span class="muted">${escapeHtml(stats)} · ${pd?pd.element:''} · XP ${pp.xp||0}/${pp.xpToNext||0}</span><br><span style="color:#e8b45c;font-size:0.7rem;">Skills: ${escapeHtml(petSkills)}</span></span>
       <button type="button" class="btn btn--mini" data-pet-active="${pp.petId}">${isActive?'Unequip':'Equip'}</button>
     </div>`;
   }).join("");

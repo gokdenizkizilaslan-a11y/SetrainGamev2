@@ -2349,41 +2349,677 @@ const CONTENT = {
       }
     }
   },
-  "effects": {
-    "slash": {
+    "effects": {
+    "blood_scythe": {
       "animation": "hit",
-      "color": "#ff7a5c",
+      "color": "#dc2626",
       "particles": "slash",
       "sound": [
-        "slash1",
-        "slash2",
-        "slash3",
-        "slash4"
+        "blood_scythe"
+      ]
+    },
+    "blood_splatter": {
+      "animation": "hit",
+      "color": "#b91c1c",
+      "particles": "burst",
+      "sound": [
+        "blood_splatter"
+      ]
+    },
+    "blood_eruption": {
+      "animation": "hit",
+      "color": "#e11d48",
+      "particles": "burst",
+      "sound": [
+        "blood_eruption"
+      ]
+    },
+    "blood_vortex": {
+      "animation": "hit-shadow",
+      "color": "#ef4444",
+      "particles": "vortex",
+      "sound": [
+        "blood_vortex"
+      ]
+    },
+    "blood_needles": {
+      "animation": "hit",
+      "color": "#f43f5e",
+      "particles": "slash",
+      "sound": [
+        "blood_needles"
+      ]
+    },
+    "blood_drain": {
+      "animation": "hit-shadow",
+      "color": "#be123c",
+      "particles": "slash",
+      "sound": [
+        "blood_drain"
+      ]
+    },
+    "blood_scythe_cross": {
+      "animation": "hit-crit",
+      "color": "#991b1b",
+      "particles": "slash",
+      "sound": [
+        "blood_scythe_cross"
+      ]
+    },
+    "blood_curse_mist": {
+      "animation": "hit",
+      "color": "#881337",
+      "particles": "burst",
+      "sound": [
+        "blood_curse_mist"
+      ]
+    },
+    "blood_cleave": {
+      "animation": "hit",
+      "color": "#b91c1c",
+      "particles": "slash",
+      "sound": [
+        "blood_cleave"
+      ]
+    },
+    "blood_nova": {
+      "animation": "hit-crit",
+      "color": "#dc2626",
+      "particles": "burst",
+      "sound": [
+        "blood_nova"
+      ]
+    },
+    "shadow_scythe_reap": {
+      "animation": "hit-shadow",
+      "color": "#9333ea",
+      "particles": "slash",
+      "sound": [
+        "shadow_scythe_reap"
+      ]
+    },
+    "void_rift_tear": {
+      "animation": "hit-shadow",
+      "color": "#7e22ce",
+      "particles": "burst",
+      "sound": [
+        "void_rift_tear"
+      ]
+    },
+    "shadow_spikes_rise": {
+      "animation": "hit",
+      "color": "#581c87",
+      "particles": "burst",
+      "sound": [
+        "shadow_spikes_rise"
+      ]
+    },
+    "dark_matter_orb": {
+      "animation": "hit-arcane",
+      "color": "#a855f7",
+      "particles": "orb",
+      "sound": [
+        "dark_matter_orb"
+      ]
+    },
+    "soul_harvest_wisps": {
+      "animation": "hit",
+      "color": "#c084fc",
+      "particles": "burst",
+      "sound": [
+        "soul_harvest_wisps"
+      ]
+    },
+    "dark_cross_execution": {
+      "animation": "hit-crit",
+      "color": "#6b21a8",
+      "particles": "slash",
+      "sound": [
+        "dark_cross_execution"
+      ]
+    },
+    "eclipse_wave": {
+      "animation": "hit-shadow",
+      "color": "#4c1d95",
+      "particles": "burst",
+      "sound": [
+        "eclipse_wave"
+      ]
+    },
+    "shadow_tendrils": {
+      "animation": "hit-shadow",
+      "color": "#3b0764",
+      "particles": "vortex",
+      "sound": [
+        "shadow_tendrils"
+      ]
+    },
+    "phantom_dagger_barrage": {
+      "animation": "hit",
+      "color": "#7c3aed",
+      "particles": "slash",
+      "sound": [
+        "phantom_dagger_barrage"
+      ]
+    },
+    "black_hole_implosion": {
+      "animation": "hit",
+      "color": "#2e1065",
+      "particles": "burst",
+      "sound": [
+        "black_hole_implosion"
+      ]
+    },
+    "fire_meteor_crash": {
+      "animation": "hit-crit",
+      "color": "#ea580c",
+      "particles": "burst",
+      "sound": [
+        "fire_meteor_crash"
+      ]
+    },
+    "flame_pillar_inferno": {
+      "animation": "hit",
+      "color": "#f97316",
+      "particles": "burst",
+      "sound": [
+        "flame_pillar_inferno"
+      ]
+    },
+    "fire_slash_arc": {
+      "animation": "hit",
+      "color": "#ff5722",
+      "particles": "slash",
+      "sound": [
+        "fire_slash_arc"
+      ]
+    },
+    "dragon_breath_cone": {
+      "animation": "hit",
+      "color": "#dc2626",
+      "particles": "burst",
+      "sound": [
+        "dragon_breath_cone"
+      ]
+    },
+    "magma_eruption_burst": {
+      "animation": "hit",
+      "color": "#c2410c",
+      "particles": "burst",
+      "sound": [
+        "magma_eruption_burst"
+      ]
+    },
+    "phoenix_wings_sweep": {
+      "animation": "hit",
+      "color": "#f97316",
+      "particles": "burst",
+      "sound": [
+        "phoenix_wings_sweep"
+      ]
+    },
+    "ember_whirlwind": {
+      "animation": "hit-shadow",
+      "color": "#fb923c",
+      "particles": "vortex",
+      "sound": [
+        "ember_whirlwind"
+      ]
+    },
+    "scorch_wave_ring": {
+      "animation": "hit",
+      "color": "#ef4444",
+      "particles": "burst",
+      "sound": [
+        "scorch_wave_ring"
+      ]
+    },
+    "fireball_streak": {
+      "animation": "hit-arcane",
+      "color": "#ea580c",
+      "particles": "slash",
+      "sound": [
+        "fireball_streak"
+      ]
+    },
+    "supernova_blast": {
+      "animation": "hit-crit",
+      "color": "#f59e0b",
+      "particles": "burst",
+      "sound": [
+        "supernova_blast"
+      ]
+    },
+    "earth_fissure_rupture": {
+      "animation": "hit",
+      "color": "#854d0e",
+      "particles": "burst",
+      "sound": [
+        "earth_fissure_rupture"
+      ]
+    },
+    "boulder_crush_drop": {
+      "animation": "hit",
+      "color": "#713f12",
+      "particles": "burst",
+      "sound": [
+        "boulder_crush_drop"
+      ]
+    },
+    "seismic_shockwave_ring": {
+      "animation": "hit",
+      "color": "#a16207",
+      "particles": "burst",
+      "sound": [
+        "seismic_shockwave_ring"
+      ]
+    },
+    "sandstorm_vortex_spin": {
+      "animation": "hit-shadow",
+      "color": "#d97706",
+      "particles": "vortex",
+      "sound": [
+        "sandstorm_vortex_spin"
+      ]
+    },
+    "stone_spikes_impale": {
+      "animation": "hit",
+      "color": "#65a30d",
+      "particles": "burst",
+      "sound": [
+        "stone_spikes_impale"
+      ]
+    },
+    "rock_avalanche_barrage": {
+      "animation": "hit",
+      "color": "#78716c",
+      "particles": "slash",
+      "sound": [
+        "rock_avalanche_barrage"
+      ]
+    },
+    "earth_hammer_quake": {
+      "animation": "hit-crit",
+      "color": "#b45309",
+      "particles": "slash",
+      "sound": [
+        "earth_hammer_quake"
+      ]
+    },
+    "crystal_earth_shards": {
+      "animation": "hit",
+      "color": "#65a30d",
+      "particles": "burst",
+      "sound": [
+        "crystal_earth_shards"
+      ]
+    },
+    "mud_splash_entangle": {
+      "animation": "hit",
+      "color": "#451a03",
+      "particles": "burst",
+      "sound": [
+        "mud_splash_entangle"
+      ]
+    },
+    "granite_armor_shatter": {
+      "animation": "hit",
+      "color": "#57534e",
+      "particles": "burst",
+      "sound": [
+        "granite_armor_shatter"
+      ]
+    },
+    "frost_crystal_spear": {
+      "animation": "hit-arcane",
+      "color": "#38bdf8",
+      "particles": "slash",
+      "sound": [
+        "frost_crystal_spear"
+      ]
+    },
+    "frost_nova_freeze": {
+      "animation": "hit",
+      "color": "#0284c7",
+      "particles": "burst",
+      "sound": [
+        "frost_nova_freeze"
+      ]
+    },
+    "ice_sword_uppercut": {
+      "animation": "hit",
+      "color": "#7dd3fc",
+      "particles": "slash",
+      "sound": [
+        "ice_sword_uppercut"
+      ]
+    },
+    "blizzard_cyclone_vortex": {
+      "animation": "hit-shadow",
+      "color": "#0ea5e9",
+      "particles": "vortex",
+      "sound": [
+        "blizzard_cyclone_vortex"
+      ]
+    },
+    "ice_spikes_ground": {
+      "animation": "hit",
+      "color": "#38bdf8",
+      "particles": "burst",
+      "sound": [
+        "ice_spikes_ground"
+      ]
+    },
+    "tidal_wave_water": {
+      "animation": "hit",
+      "color": "#2563eb",
+      "particles": "burst",
+      "sound": [
+        "tidal_wave_water"
+      ]
+    },
+    "frozen_orb_shatter": {
+      "animation": "hit-arcane",
+      "color": "#06b6d4",
+      "particles": "burst",
+      "sound": [
+        "frozen_orb_shatter"
+      ]
+    },
+    "icicle_rain_barrage": {
+      "animation": "hit",
+      "color": "#0284c7",
+      "particles": "burst",
+      "sound": [
+        "icicle_rain_barrage"
+      ]
+    },
+    "water_whip_lash": {
+      "animation": "hit",
+      "color": "#3b82f6",
+      "particles": "slash",
+      "sound": [
+        "water_whip_lash"
+      ]
+    },
+    "frost_prison_dome": {
+      "animation": "hit",
+      "color": "#0369a1",
+      "particles": "burst",
+      "sound": [
+        "frost_prison_dome"
+      ]
+    },
+    "lightning_strike_heavy": {
+      "animation": "hit-arcane",
+      "color": "#facc15",
+      "particles": "slash",
+      "sound": [
+        "lightning_strike_heavy"
+      ]
+    },
+    "chain_lightning_arc": {
+      "animation": "hit-arcane",
+      "color": "#eab308",
+      "particles": "slash",
+      "sound": [
+        "chain_lightning_arc"
+      ]
+    },
+    "ball_lightning_plasma": {
+      "animation": "hit-arcane",
+      "color": "#ca8a04",
+      "particles": "burst",
+      "sound": [
+        "ball_lightning_plasma"
+      ]
+    },
+    "lightning_slash_blade": {
+      "animation": "hit",
+      "color": "#fde047",
+      "particles": "slash",
+      "sound": [
+        "lightning_slash_blade"
+      ]
+    },
+    "electric_field_discharge": {
+      "animation": "hit",
+      "color": "#eab308",
+      "particles": "burst",
+      "sound": [
+        "electric_field_discharge"
+      ]
+    },
+    "storm_tornado_vortex": {
+      "animation": "hit-shadow",
+      "color": "#fbbf24",
+      "particles": "vortex",
+      "sound": [
+        "storm_tornado_vortex"
+      ]
+    },
+    "emp_shockwave_ring": {
+      "animation": "hit",
+      "color": "#facc15",
+      "particles": "burst",
+      "sound": [
+        "emp_shockwave_ring"
+      ]
+    },
+    "triple_thunder_judgement": {
+      "animation": "hit-arcane",
+      "color": "#fef08a",
+      "particles": "burst",
+      "sound": [
+        "triple_thunder_judgement"
+      ]
+    },
+    "electric_sparks_shower": {
+      "animation": "hit",
+      "color": "#fde047",
+      "particles": "burst",
+      "sound": [
+        "electric_sparks_shower"
+      ]
+    },
+    "storm_spear_throw": {
+      "animation": "hit-arcane",
+      "color": "#eab308",
+      "particles": "slash",
+      "sound": [
+        "storm_spear_throw"
+      ]
+    },
+    "holy_pillar_smite": {
+      "animation": "hit",
+      "color": "#facc15",
+      "particles": "burst",
+      "sound": [
+        "holy_pillar_smite"
+      ]
+    },
+    "radiance_sword_slash": {
+      "animation": "hit",
+      "color": "#fef08a",
+      "particles": "slash",
+      "sound": [
+        "radiance_sword_slash"
+      ]
+    },
+    "holy_cross_burst": {
+      "animation": "hit",
+      "color": "#fde047",
+      "particles": "burst",
+      "sound": [
+        "holy_cross_burst"
+      ]
+    },
+    "heal_aura_fountain": {
+      "animation": "heal",
+      "color": "#4ade80",
+      "particles": "glow",
+      "sound": [
+        "heal_aura_fountain"
+      ]
+    },
+    "radiant_halo_shield": {
+      "animation": "defend",
+      "color": "#f59e0b",
+      "particles": "ring",
+      "sound": [
+        "radiant_halo_shield"
+      ]
+    },
+    "angel_feathers_scatter": {
+      "animation": "hit",
+      "color": "#ffffff",
+      "particles": "burst",
+      "sound": [
+        "angel_feathers_scatter"
+      ]
+    },
+    "judgement_solar_flare": {
+      "animation": "hit",
+      "color": "#facc15",
+      "particles": "burst",
+      "sound": [
+        "judgement_solar_flare"
+      ]
+    },
+    "holy_lance_projectile": {
+      "animation": "hit-arcane",
+      "color": "#fef08a",
+      "particles": "slash",
+      "sound": [
+        "holy_lance_projectile"
+      ]
+    },
+    "divine_retribution_ring": {
+      "animation": "hit",
+      "color": "#eab308",
+      "particles": "burst",
+      "sound": [
+        "divine_retribution_ring"
+      ]
+    },
+    "dawn_star_explosion": {
+      "animation": "hit",
+      "color": "#ffffff",
+      "particles": "burst",
+      "sound": [
+        "dawn_star_explosion"
+      ]
+    },
+    "rising_katana_slash": {
+      "animation": "hit",
+      "color": "#ffffff",
+      "particles": "slash",
+      "sound": [
+        "slash1"
+      ]
+    },
+    "cross_cut_x_slash": {
+      "animation": "hit-crit",
+      "color": "#f87171",
+      "particles": "slash",
+      "sound": [
+        "slash2"
+      ]
+    },
+    "heavy_hammer_slam": {
+      "animation": "hit-crit",
+      "color": "#fb923c",
+      "particles": "slash",
+      "sound": [
+        "heavy_hammer_slam"
+      ]
+    },
+    "whirlwind_blade_spin": {
+      "animation": "hit-shadow",
+      "color": "#cbd5e1",
+      "particles": "vortex",
+      "sound": [
+        "whirlwind_blade_spin"
+      ]
+    },
+    "piercing_rapier_thrust": {
+      "animation": "hit",
+      "color": "#ffffff",
+      "particles": "slash",
+      "sound": [
+        "piercing_rapier_thrust"
+      ]
+    },
+    "axe_cleave_horizontal": {
+      "animation": "hit",
+      "color": "#ea580c",
+      "particles": "slash",
+      "sound": [
+        "axe_cleave_horizontal"
+      ]
+    },
+    "sonic_air_blade": {
+      "animation": "hit-arcane",
+      "color": "#94a3b8",
+      "particles": "slash",
+      "sound": [
+        "sonic_air_blade"
+      ]
+    },
+    "shield_bash_shock": {
+      "animation": "hit",
+      "color": "#64748b",
+      "particles": "burst",
+      "sound": [
+        "shield_bash_shock"
+      ]
+    },
+    "triple_dagger_slash": {
+      "animation": "hit",
+      "color": "#e2e8f0",
+      "particles": "slash",
+      "sound": [
+        "triple_dagger_slash"
+      ]
+    },
+    "guillotine_fall": {
+      "animation": "hit-crit",
+      "color": "#dc2626",
+      "particles": "slash",
+      "sound": [
+        "guillotine_fall"
+      ]
+    },
+    "slash": {
+      "animation": "hit",
+      "color": "#ffffff",
+      "particles": "slash",
+      "sound": [
+        "slash1"
       ]
     },
     "heavy": {
       "animation": "hit-crit",
-      "color": "#ffb347",
-      "particles": "shatter",
+      "color": "#fb923c",
+      "particles": "slash",
       "sound": [
-        "strongattack1",
-        "strongattack2"
+        "heavy_hammer_slam"
       ]
     },
     "axe": {
       "animation": "hit",
-      "color": "#ff9b4a",
-      "particles": "shatter",
+      "color": "#ea580c",
+      "particles": "slash",
       "sound": [
-        "battleaxe"
+        "axe_cleave_horizontal"
       ]
     },
     "crush": {
       "animation": "hit-crit",
-      "color": "#ffd23e",
+      "color": "#f59e0b",
       "particles": "burst",
       "sound": [
-        "skull_crush"
+        "heavy_hammer_slam"
       ]
     },
     "arcane": {
@@ -2391,25 +3027,63 @@ const CONTENT = {
       "color": "#c9a0ff",
       "particles": "orb",
       "sound": [
-        "normalmagic",
-        "bloodmagic1",
-        "bloodmagic2"
+        "frost_crystal_spear"
       ]
     },
     "fire": {
-      "animation": "hit-arcane",
+      "animation": "hit",
       "color": "#ff7a3c",
-      "particles": "fire",
+      "particles": "burst",
       "sound": [
-        "firemagic"
+        "fire_meteor_crash"
       ]
     },
     "frost": {
       "animation": "hit-arcane",
-      "color": "#9fd4ff",
-      "particles": "frost",
+      "color": "#38bdf8",
+      "particles": "burst",
       "sound": [
-        "frostmagic"
+        "frost_crystal_spear"
+      ]
+    },
+    "water": {
+      "animation": "hit",
+      "color": "#7fb4ff",
+      "particles": "burst",
+      "sound": [
+        "tidal_wave_water"
+      ]
+    },
+    "earth": {
+      "animation": "hit",
+      "color": "#8a6a3a",
+      "particles": "burst",
+      "sound": [
+        "earth_fissure_rupture"
+      ]
+    },
+    "lightning": {
+      "animation": "hit-arcane",
+      "color": "#ffe14d",
+      "particles": "burst",
+      "sound": [
+        "lightning_strike_heavy"
+      ]
+    },
+    "blood": {
+      "animation": "hit",
+      "color": "#c45c6a",
+      "particles": "slash",
+      "sound": [
+        "blood_scythe"
+      ]
+    },
+    "dark": {
+      "animation": "hit-shadow",
+      "color": "#6a3fb5",
+      "particles": "pulse",
+      "sound": [
+        "shadow_scythe_reap"
       ]
     },
     "holy": {
@@ -2417,7 +3091,7 @@ const CONTENT = {
       "color": "#ffe9a8",
       "particles": "rays",
       "sound": [
-        "healingmagic"
+        "holy_pillar_smite"
       ]
     },
     "shadow": {
@@ -2425,16 +3099,15 @@ const CONTENT = {
       "color": "#b98cff",
       "particles": "pulse",
       "sound": [
-        "bloodmagic1",
-        "bloodmagic2"
+        "shadow_scythe_reap"
       ]
     },
     "heal": {
       "animation": "heal",
-      "color": "#8fe08a",
+      "color": "#4ade80",
       "particles": "glow",
       "sound": [
-        "healingmagic"
+        "heal_aura_fountain"
       ]
     },
     "defend": {
@@ -2442,7 +3115,7 @@ const CONTENT = {
       "color": "#8fc9ff",
       "particles": "ring",
       "sound": [
-        "shield"
+        "radiant_halo_shield"
       ]
     },
     "monster": {
@@ -2458,7 +3131,7 @@ const CONTENT = {
       "color": "#ffd23e",
       "particles": "burst",
       "sound": [
-        "skull_crush"
+        "heavy_hammer_slam"
       ]
     },
     "buff": {
@@ -2466,7 +3139,7 @@ const CONTENT = {
       "color": "#8fe08a",
       "particles": "glow",
       "sound": [
-        "shield"
+        "radiant_halo_shield"
       ]
     },
     "dot": {
@@ -2474,89 +3147,9 @@ const CONTENT = {
       "color": "#b98cff",
       "particles": "pulse",
       "sound": [
-        "bloodmagic1"
-      ]
-    },
-    "water": {
-      "animation": "hit-arcane",
-      "color": "#7fb4ff",
-      "particles": "orb",
-      "sound": [
-        "frostmagic"
-      ]
-    },
-    "earth": {
-      "animation": "hit",
-      "color": "#8a6a3a",
-      "particles": "shatter",
-      "sound": [
-        "battleaxe"
-      ]
-    },
-    "lightning": {
-      "animation": "hit-arcane",
-      "color": "#ffe14d",
-      "particles": "burst",
-      "sound": [
-        "normalmagic"
-      ]
-    },
-    "blood": {
-      "animation": "hit",
-      "color": "#c45c6a",
-      "particles": "pulse",
-      "sound": [
-        "bloodmagic1",
-        "bloodmagic2"
-      ]
-    },
-    "dark": {
-      "animation": "hit-shadow",
-      "color": "#6a3fb5",
-      "particles": "pulse",
-      "sound": [
-        "bloodmagic2"
+        "blood_needles"
       ]
     }
-  },
-  "affinity": {
-    "frost": {
-      "fire": 1.2,
-      "frost": 0.8
-    },
-    "fire": {
-      "water": 0.8,
-      "frost": 1.2
-    },
-    "water": {
-      "fire": 0.8,
-      "water": 0.8
-    },
-    "earth": {
-      "water": 1.2,
-      "lightning": 0.8
-    },
-    "lightning": {
-      "earth": 0.8
-    },
-    "blood": {
-      "holy": 0.8
-    },
-    "dark": {
-      "holy": 1.2,
-      "dark": 0.8
-    }
-  },
-  "combos": {
-    "wet": {
-      "trigger": "lightning",
-      "mult": 1.5,
-      "turns": 2
-    }
-  },
-  "darkTrait": {
-    "deal": 1.3,
-    "taken": 1.5
   },
   "dungeonSizes": [
     {
