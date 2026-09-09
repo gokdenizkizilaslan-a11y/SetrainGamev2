@@ -910,6 +910,10 @@ input:focus {
   cursor: pointer;
   font-family: inherit;
   transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+  /* Auto-shrinking text: the card is an inline-size container, so titles and
+     subs can use container-query units (cqi) to scale down instead of wrapping. */
+  container-type: inline-size;
+  overflow: hidden;
 }
 
 .action-card:hover:not(.action-card--locked) {
@@ -952,7 +956,12 @@ input:focus {
 .action-body {
   flex: 1;
   min-width: 0;
-  overflow-wrap: anywhere;
+  overflow: hidden;
+  /* Never break words mid-word: keep everything on one line and let the font
+     shrink (cqi below) + ellipsis handle the overflow instead. */
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 .action-title-text {
@@ -960,6 +969,11 @@ input:focus {
   font-weight: 700;
   font-size: 1.05rem;
   display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+  font-size: clamp(0.75rem, 6.4cqi, 1.05rem);
 }
 
 .action-sub {
@@ -967,6 +981,10 @@ input:focus {
   font-size: 0.8rem;
   color: var(--muted);
   margin-top: 0.15rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: clamp(0.62rem, 5cqi, 0.8rem);
 }
 
 .action-arrow {
@@ -1002,6 +1020,10 @@ input:focus {
 .action-card .action-body {
   flex: 1;
   min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 /* ---- Skill Tree overlay ---- */
