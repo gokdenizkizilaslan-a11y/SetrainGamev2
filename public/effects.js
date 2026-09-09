@@ -171,6 +171,7 @@
       this.spikes = [];
       this.domes = [];
       this.geysers = [];
+      this.beams = []; // caster -> hedef arasi cizilen lazer/isinsal efektler (capraz dahil)
       this.registry = EFFECTS_REGISTRY;
 
       this.resize();
@@ -199,6 +200,13 @@
       const cat = def.cat;
       const color = def.color || "#ffffff";
       const type = def.type || "burst";
+
+      // LAZER/BEAM MODU: efekt hedefte degil, caster'dan hedefe cizilir.
+      // screens.js bu modu travel:'beam' ile ister (bolt/ray/laser skilleri).
+      if (opts.travel === 'beam') {
+        this._beamFx(cat, color, fromX, fromY, toX, toY, onHit);
+        return;
+      }
 
       switch (type) {
         case "slash": this._slashFx(effectId, cat, color, toX, toY, onHit); break;
@@ -380,7 +388,7 @@
             x: fx, y: fy, lastX: fx, lastY: fy,
             startX: fx, startY: fy, targetX: endX, targetY: endY,
             progress: 0, speed: rand(0.04, 0.06), color, size: rand(4, 8),
-            delay: i * 2, trail: true, cat, final: false
+            delay: i * 2, trail: true, cat, final: false, fx: id
           });
         }
         this.projectiles[this.projectiles.length - 1].onHit = () => {
@@ -395,7 +403,7 @@
         this.projectiles.push({
           x: fx, y: fy, lastX: fx, lastY: fy,
           startX: fx, startY: fy, targetX: tx, targetY: ty,
-          progress: 0, speed: 0.035, color: '#ea580c', size: 17, trail: true, cat: 'fire', meteor: true,
+          progress: 0, speed: 0.035, color: '#ea580c', size: 17, trail: true, cat: 'fire', meteor: true, fx: id,
           onHit: () => {
             this.flashes.push({ x: tx, y: ty, radius: 170, alpha: 1, color: '#f97316', speed: 0.05 });
             this.rings.push({ x: tx, y: ty, progress: 0, speed: 0.08, color: '#ef4444', cat: 'fire', maxR: 110, lineWidth: 8 });
@@ -415,12 +423,23 @@
         progress: 0, speed: id === 'piercing_rapier_thrust' || id === 'sonic_air_blade' ? 0.09 : 0.045,
         color, size: id === 'piercing_rapier_thrust' ? 4 : 8,
         trail: isFire || isPlasma || id === 'frost_crystal_spear' || id === 'frozen_orb_shatter',
-        cat,
+        cat, fx: id,
         onHit: () => {
           this._themeBurst(cat, color, tx, ty, 30, 1.1, CAT_GRAVITY[cat] || 0.12);
           this._sparkBurst(cat, color, tx, ty);
           if (onHit) onHit();
         }
+      });
+    }
+
+    // ---------------- BEAM (lazer/isinsal: caster -> hedef) ----------------
+    // Duz cizgi caster'dan hedefe uzar; capraz konumlarda aci otomatik hesaplanir.
+    // Vurus aninda hedefte patlama + halka + flas olusur. Oyun mantigini degistirmez.
+    _beamFx(cat, color, fx, fy, tx, ty, onHit) {
+      this.beams.push({
+        x1: fx, y1: fy, x2: tx, y2: ty,
+        progress: 0, speed: 0.14, color, cat,
+        hitDone: false, onHit
       });
     }
 
@@ -604,6 +623,20 @@
         const l = this.lightnings[i];
         l.alpha -= 0.09;
         if (l.alpha <= 0) this.lightnings.splice(i, 1);
+      }
+
+      // Beams (lazer: bas hizla hedefe ilerler, varinca hedefte patlar)
+      for (let i = this.beams.length - 1; i >= 0; i--) {
+        const b = this.beams[i];
+        b.progress += b.speed;
+        if (b.progress >= 1 && !b.hitDone) {
+          b.hitDone = true;
+          this.flashes.push({ x: b.x2, y: b.y2, radius: 95, alpha: 0.85, color: b.color, speed: 0.07 });
+          this.rings.push({ x: b.x2, y: b.y2, progress: 0, speed: 0.1, color: b.color, cat: b.cat, maxR: 65, lineWidth: 4 });
+          this._themeBurst(b.cat, b.color, b.x2, b.y2, 22, 1, 0.05);
+          if (b.onHit) b.onHit();
+        }
+        if (b.progress >= 1.35) this.beams.splice(i, 1);
       }
 
       // Flashes
@@ -926,9 +959,85 @@
         ctx.restore();
       }
 
+      // Beams (lazer/isinsal: caster -> hedef cizgisi, capraz aci otomatik)
+      for (const b of this.beams) {
+        const t = clamp(b.progress, 0, 1);
+        const e = easeOutCubic(t);
+        const hx = lerp(b.x1, b.x2, Math.min(1, e * 1.12));
+        const hy = lerp(b.y1, b.y2, Math.min(1, e * 1.12));
+        const tx = lerp(b.x1, b.x2, Math.max(0, e - 0.38));
+        const ty = lerp(b.y1, b.y2, Math.max(0, e - 0.38));
+        const fade = b.progress > 1 ? Math.max(0, 1 - (b.progress - 1) / 0.35) : 1;
+        ctx.save();
+        ctx.globalAlpha = clamp(fade, 0, 1);
+        ctx.lineCap = 'round';
+        // dis parlama (kalin, yari seffaf)
+        ctx.strokeStyle = b.color;
+        ctx.shadowColor = b.color;
+        ctx.shadowBlur = 18;
+        ctx.lineWidth = 7;
+        ctx.beginPath();
+        ctx.moveTo(tx, ty);
+        ctx.lineTo(hx, hy);
+        ctx.stroke();
+        // beyaz cekirdek (ince, parlak)
+        ctx.shadowBlur = 8;
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(tx, ty);
+        ctx.lineTo(hx, hy);
+        ctx.stroke();
+        // bas parcacigi (hedefe carpan uc)
+        ctx.fillStyle = '#ffffff';
+        ctx.shadowColor = b.color;
+        ctx.shadowBlur = 20;
+        ctx.beginPath();
+        ctx.arc(hx, hy, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // Yone duyarli cirit ucu: mizrak/kargi/nester hiz vektorune doner
+      const SPEAR_FX = {
+        frost_crystal_spear: 1, storm_spear_throw: 1, holy_lance_projectile: 1,
+        piercing_rapier_thrust: 1, sonic_air_blade: 1
+      };
+
       // Projectiles
       for (const p of this.projectiles) {
         ctx.save();
+        if (p.fx && SPEAR_FX[p.fx] && p.lastX !== undefined) {
+          // Firlatilan cirit: gidis yonune donmus mizrak + isigi
+          const ang = Math.atan2(p.y - p.lastY, p.x - p.lastX);
+          const len = 26;
+          ctx.translate(p.x, p.y);
+          ctx.rotate(ang);
+          ctx.globalAlpha = 0.55;
+          ctx.strokeStyle = p.color;
+          ctx.shadowColor = p.color;
+          ctx.shadowBlur = 14;
+          ctx.lineWidth = 4;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(-len, 0);
+          ctx.lineTo(0, 0);
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.moveTo(10, 0);
+          ctx.lineTo(-4, -6);
+          ctx.lineTo(-4, 6);
+          ctx.closePath();
+          ctx.fill();
+          ctx.fillStyle = '#fff';
+          ctx.beginPath();
+          ctx.arc(2, 0, 2.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+          continue;
+        }
         if (p.meteor) {
           const radius = p.size * (1 - p.progress * 0.4);
           const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, radius);

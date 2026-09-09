@@ -375,7 +375,28 @@ function drainCombatFx(root) {
     const vfxMap = { slash:"rising_katana_slash", heavy:"heavy_hammer_slam", axe:"axe_cleave_horizontal", crush:"heavy_hammer_slam", arcane:"frost_crystal_spear", fire:"fire_meteor_crash", frost:"frost_crystal_spear", water:"tidal_wave_water", earth:"earth_fissure_rupture", lightning:"lightning_strike_heavy", blood:"blood_scythe", dark:"shadow_scythe_reap", holy:"holy_pillar_smite", shadow:"shadow_scythe_reap", heal:"heal_aura_fountain", defend:"radiant_halo_shield", monster:"rising_katana_slash", crit:"heavy_hammer_slam", buff:"radiant_halo_shield", dot:"blood_needles", shield:"radiant_halo_shield", wet:"tidal_wave_water", frozen:"frost_prison_dome" };
     const _registryIds = (typeof window !== "undefined" && Array.isArray(window.SETRA_EFFECTS_REGISTRY)) ? window.SETRA_EFFECTS_REGISTRY : [];
     const _isRealId = (v) => typeof v === "string" && v.length > 0 && _registryIds.some((e) => e && e.id === v);
-    const vfxId = (_isRealId(ev.vfxId) && ev.vfxId) || (_isRealId(ev.effect) && ev.effect) || vfxMap[ev.effect] || vfxMap[ev.elem] || "rising_katana_slash";
+    let vfxId = (_isRealId(ev.vfxId) && ev.vfxId) || (_isRealId(ev.effect) && ev.effect) || vfxMap[ev.effect] || vfxMap[ev.elem] || "rising_katana_slash";
+    // --- GEZGIN SKILL DUZELTMESI (sadece gorsel, oyun mantigi degismez) ---
+    // bolt/beam/ray/laser/spear/javelin/lance gibi skiller hedefte belirmemeli;
+    // caster kartindan baslayip hedef karta gitmeli (capraz konumda capraz gider).
+    // Acik 'effect' tanimli skillere dokunulmaz (ornegin static_overload bilerek
+    // gokten yildirim indirir, scorch_mark bilerek yakin dovus kesigi yapar).
+    let _travel = null; // 'beam' (lazer isin) | 'projectile' (firlatilan cisim) | null
+    try {
+      const _sk = (ev.skill && typeof skillById === "function") ? skillById(ev.skill) : null;
+      const _hasExplicitFx = !!(_sk && _sk.effect);
+      const _elem = ev.elem || (_sk && _sk.element) || null;
+      if (!_hasExplicitFx && _elem && (ev.target === "enemy" || ev.target === "player")) {
+        const _sid = String(ev.skill || "").toLowerCase();
+        // elemente gore gidecek efekt: hepsi "ucan/giden" tipler (registry'de projectile)
+        const _travelProj = { fire:"fireball_streak", frost:"frost_crystal_spear", water:"frost_crystal_spear", earth:"rock_avalanche_barrage", lightning:"storm_spear_throw", blood:"blood_drain", dark:"dark_matter_orb", shadow:"dark_matter_orb", holy:"holy_lance_projectile", arcane:"ball_lightning_plasma", physical:"piercing_rapier_thrust" };
+        if (/beam|ray|laser|lazer/.test(_sid)) _travel = "beam";
+        else if (/bolt/.test(_sid)) _travel = (_elem === "lightning" || _elem === "holy" || _elem === "arcane") ? "beam" : "projectile";
+        else if (/spear|javelin|lance|dagger|arrow|shot|thrust|throw|orb|ball|missile|spike/.test(_sid)) _travel = "projectile";
+        else if (_elem === "lightning") _travel = "beam"; // lightning defaultu gokten iniyordu, isin olmali
+        if (_travel && _travelProj[_elem]) vfxId = _travelProj[_elem];
+      }
+    } catch (e) { /* gorsel fallback: vfxId aynen kalir */ }
     if (vfx && el) {
       const fromRect = fromEl ? fromEl.getBoundingClientRect() : el.getBoundingClientRect();
       const toRect = el.getBoundingClientRect();
@@ -385,7 +406,7 @@ function drainCombatFx(root) {
       const toY = toRect.top + toRect.height/2;
       // 400ms delay for pet-like smoothness, player skills also 0-400ms
       const delay = ev.source==="pet" ? 400 : 0;
-      setTimeout(()=>{ try{ vfx.play(vfxId, {fromX, fromY, toX, toY}); }catch(e){} }, delay);
+      setTimeout(()=>{ try{ vfx.play(vfxId, {fromX, fromY, toX, toY, travel: _travel}); }catch(e){} }, delay);
     }
     if (ev.type === "damage") {
       const r = fxRecipe(ev.effect);

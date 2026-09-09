@@ -150,3 +150,80 @@
   }
   requestAnimationFrame(frame);
 })();
+
+/* ============================================================
+   ARKAPLAN FOTOGRAFI YUKLEYICI (jpg/png otomatik bulma)
+   ------------------------------------------------------------
+   Nasil resim koyarsin?
+     public/images/backgrounds/  klasorune ekran adiyla at:
+       menu.png | setup.png | lobby.png | town.png | dungeon.png | tavern.png
+     UZANTI SERBEST: .png yoksa .jpg, .jpeg, .webp sirasiyla denenir.
+     Yani "town.jpg" koyman yeterli, kod degisikligi gerekmez.
+   Resim yoksa: katman gizli kalir, eski degrade gorunum surer.
+   ============================================================ */
+(function () {
+  const SCREEN_TO_PHOTO = {
+    "screen-mode": "menu",
+    "screen-setup": "setup",
+    "screen-lobby": "lobby",
+    "screen-town": "town",
+  };
+  const EXTS = ["png", "jpg", "jpeg", "webp"];
+  const cache = {}; // base -> url | null (yok)
+
+  function el() { return document.getElementById("bg-photo"); }
+
+  function probe(base, i, done) {
+    if (i >= EXTS.length) { done(null); return; }
+    const url = base + "." + EXTS[i];
+    const img = new Image();
+    img.onload = () => done(url);
+    img.onerror = () => probe(base, i + 1, done);
+    img.src = url;
+  }
+
+  function applyPhoto() {
+    const box = el();
+    if (!box) return;
+    // savas/taverna overlay'i aciksa onun resmini tercih et
+    let key = SCREEN_TO_PHOTO[document.body.dataset.screen] || "menu";
+    if (document.body.dataset.screen === "screen-town") {
+      if (!document.getElementById("dungeon-view")?.classList.contains("hidden")) key = "dungeon";
+      else if (!document.getElementById("tavern-view")?.classList.contains("hidden")) key = "tavern";
+    }
+    const base = "/images/backgrounds/" + key;
+    if (box.dataset.base === base) return; // ayni ekran, tekrar deneme
+    box.dataset.base = base;
+    if (cache[base] !== undefined) {
+      setPhoto(box, cache[base]);
+      return;
+    }
+    probe(base, 0, (url) => {
+      cache[base] = url;
+      // kullanici bu arada baska ekrana gectiyse eski sonucu uygulama
+      if (box.dataset.base !== base) return;
+      setPhoto(box, url);
+    });
+  }
+
+  function setPhoto(box, url) {
+    if (url) {
+      // ayni resim zaten yukluyse goz kirpmasin
+      if (box.dataset.url !== url) {
+        box.style.backgroundImage = "url('" + url + "')";
+        box.dataset.url = url;
+      }
+      box.classList.add("has-photo");
+    } else {
+      box.classList.remove("has-photo");
+    }
+  }
+
+  // ekran degisince (showScreen body.dataset.screen yazar) otomatik guncelle
+  new MutationObserver(applyPhoto).observe(document.body, { attributes: true, attributeFilter: ["data-screen"] });
+  // overlay acilip kapaninca (dungeon/tavern resmi icin) yakala
+  new MutationObserver(applyPhoto).observe(document.documentElement, { subtree: true, attributes: true, attributeFilter: ["class"] });
+  window.addEventListener("load", applyPhoto);
+  if (document.readyState !== "loading") applyPhoto();
+  else document.addEventListener("DOMContentLoaded", applyPhoto);
+})();

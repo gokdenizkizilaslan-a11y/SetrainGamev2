@@ -53,6 +53,48 @@ body {
   z-index: 0;
   pointer-events: none;
 }
+/* NOT: #bg-photo da z-index:0 ama DOM'da canvas'tan ONCE geldigi icin
+   siralama: foto (altta) -> partikul canvas'i -> vignette -> oyun. */
+
+/* ============================================================
+   ARKAPLAN RESMI (BACKGROUND IMAGE) — AYARLAR BURADA
+   ------------------------------------------------------------
+   Resim KOYMAK icin style.css'i degistirmene GEREK YOK:
+     public/images/backgrounds/town.png  (veya town.jpg)
+   adiyla dosyayi klasore atman yeterli. bgfx.js onu otomatik
+   bulup asagidaki #bg-photo katmanina yerlestirir.
+   BURADA sadece gorunumu ayarlarsin:
+     --bg-photo-opacity : resmin ne kadar gorunecegi (0 = gizli, 1 = tam)
+     --bg-photo-blur    : resme bulaniklik (ornek: 0px / 2px)
+   Resim bulunamazsa katman seffaf kalir ve alttaki degrade
+   (html,body background) gorunur. Yani .jpg de .png de olur,
+   dosya yoksa oyun bozulmaz.
+   Katman sirasi (alttan uste): degrade -> #bg-photo -> #bg-fx
+   (partikul) -> vignette -> oyun ekrani (.screen).
+   ============================================================ */
+:root {
+  --bg-photo-opacity: 0.55;
+  --bg-photo-blur: 0px;
+}
+#bg-photo {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(var(--bg-photo-blur));
+  opacity: 0;
+  transition: opacity 0.6s ease, background-image 0.3s ease;
+}
+#bg-photo.has-photo {
+  opacity: var(--bg-photo-opacity);
+}
+/* TOWN ekraninda panel cam gibi oldugu icin resmi biraz daha silik goster */
+body[data-screen="screen-town"] #bg-photo.has-photo {
+  opacity: 0.45;
+}
 
 .screen {
   position: relative;
@@ -93,9 +135,47 @@ body {
 .panel--dashboard {
   width: min(1180px, 96vw);
   height: calc(100dvh - 6.8rem);
-  overflow-y: auto;
+  max-height: calc(100dvh - 6.8rem);
+  overflow: hidden;
   margin: auto;
-  padding: 1.8rem;
+  padding: 1.4rem 1.4rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+/* Town ana + overlay kaplar: panel içinde esner, kendisi kaymaz */
+#town-main {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Sayfa (window) scroll'unu town/lobby'de kapat — sadece iç kutular kayar */
+body[data-screen="screen-town"],
+body[data-screen="screen-lobby"] {
+  overflow: hidden;
+  height: 100dvh;
+}
+body[data-screen="screen-town"] {
+  overscroll-behavior: none;
+}
+#screen-town {
+  height: 100dvh;
+  min-height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+  align-items: stretch;
+  justify-content: center;
+  padding-top: 4.2rem;
+  padding-bottom: 0.8rem;
+}
+#screen-lobby {
+  height: 100dvh;
+  min-height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
 }
 .right-players {
   position: fixed;
@@ -551,15 +631,32 @@ input:focus {
 .dashboard-grid {
   display: grid;
   grid-template-columns: 320px minmax(0, 1fr);
-  gap: 1.4rem;
-  align-items: start;
+  gap: 1.2rem;
+  align-items: stretch;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
+/* Sağ aksiyon kolonu kendi içinde kayar */
+.action-panel {
+  min-height: 0;
+  min-width: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+}
+.action-panel::-webkit-scrollbar { width: 6px; }
+.action-panel::-webkit-scrollbar-thumb { background: rgba(232,183,108,0.25); border-radius: 3px; }
 
 .town-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1rem;
+  gap: 0.6rem;
+  margin-bottom: 0.7rem;
+  flex-shrink: 0;
 }
 
 .town-day {
@@ -589,31 +686,40 @@ input:focus {
 /* Profile card (left column) */
 
 .profile-card {
-  position: sticky;
-  top: 4.2rem;
+  position: static;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.7rem;
+  gap: 0.6rem;
   background: var(--glass-2);
   border: 1px solid var(--glass-line);
   border-radius: 16px;
-  padding: 1.5rem 1.3rem 1.3rem;
+  padding: 1.2rem 1.1rem 1rem;
   text-align: center;
+  min-height: 0;
+  max-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  align-self: stretch;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
 }
+.profile-card::-webkit-scrollbar { width: 6px; }
+.profile-card::-webkit-scrollbar-thumb { background: rgba(232,183,108,0.25); border-radius: 3px; }
 
 .profile-avatar {
-  width: 120px;
-  height: 120px;
+  width: 88px;
+  height: 88px;
+  flex-shrink: 0;
   border-radius: 50%;
-  padding: 5px;
+  padding: 4px;
   background: conic-gradient(from 210deg, var(--gold), #8a5a24, var(--gold-bright), #7c4e1e, var(--gold));
   box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
 }
 
 .profile-portrait {
-  width: 110px;
-  height: 110px;
+  width: 80px;
+  height: 80px;
   border-width: 3px;
 }
 
@@ -902,19 +1008,23 @@ input:focus {
 
 #skilltree-content .skilltree {
   width: min(1080px, 100%);
-  min-height: min(70vh, 900px);
-  max-height: calc(100dvh - 9.5rem);
+  min-height: 0;
+  max-height: none;
+  height: auto;
   margin: 0 auto;
 }
 #skilltree-content .skilltree-map-viewport {
   max-height: none;
+  min-height: 280px;
+  height: 38vh;
+  max-height: 420px;
 }
 .skilltree {
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
-  min-height: 420px;
-  max-height: 68vh;
+  min-height: 0;
+  max-height: none;
   background: var(--glass-2);
   border: 1px solid var(--glass-line);
   border-radius: 16px;
@@ -1274,14 +1384,68 @@ input:focus {
 
 .overlay-view {
   padding-top: 0.2rem;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.overlay-view.hidden {
+  display: none !important;
+}
+/* Town ana gizliyken panel yine dolu kalsın */
+#town-main.hidden {
+  display: none !important;
 }
 
 .overlay-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.4rem;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: transparent;
 }
+/* Overlay içerikleri: başlık sabit, gövde kendi içinde kayar */
+#skilltree-content,
+#dungeon-content,
+#tavern-content,
+#blacksmith-content,
+#merchant-content,
+#inventory-content,
+#temple-content,
+#pvp-content,
+#pets-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+}
+#skilltree-content::-webkit-scrollbar,
+#dungeon-content::-webkit-scrollbar,
+#tavern-content::-webkit-scrollbar,
+#blacksmith-content::-webkit-scrollbar,
+#merchant-content::-webkit-scrollbar,
+#inventory-content::-webkit-scrollbar,
+#temple-content::-webkit-scrollbar,
+#pvp-content::-webkit-scrollbar,
+#pets-content::-webkit-scrollbar { width: 6px; }
+#skilltree-content::-webkit-scrollbar-thumb,
+#dungeon-content::-webkit-scrollbar-thumb,
+#tavern-content::-webkit-scrollbar-thumb,
+#blacksmith-content::-webkit-scrollbar-thumb,
+#merchant-content::-webkit-scrollbar-thumb,
+#inventory-content::-webkit-scrollbar-thumb,
+#temple-content::-webkit-scrollbar-thumb,
+#pvp-content::-webkit-scrollbar-thumb,
+#pets-content::-webkit-scrollbar-thumb { background: rgba(232,183,108,0.25); border-radius: 3px; }
 
 .dungeon-grid {
   display: grid;
@@ -1445,11 +1609,12 @@ input:focus {
 }
 .dungeon-browser-left {
   position: sticky;
-  top: 0.5rem;
-  height: calc(100dvh - 8rem);
+  top: 0;
+  max-height: 100%;
   overflow-y: auto;
   padding-right: 4px;
   scrollbar-width: thin;
+  align-self: start;
 }
 .dungeon-browser-left::-webkit-scrollbar { width: 6px; }
 .dungeon-browser-left::-webkit-scrollbar-thumb { background: rgba(232,183,108,0.25); border-radius: 3px; }
@@ -1511,10 +1676,10 @@ input:focus {
   flex-direction: column;
   gap: 0.9rem;
   min-width: 0;
-  max-height: calc(100dvh - 8rem);
-  overflow-y: auto;
-  padding-right: 4px;
-  scrollbar-width: thin;
+  min-height: 0;
+  max-height: none;
+  overflow: visible;
+  padding-right: 2px;
 }
 .dungeon-browser-right::-webkit-scrollbar { width: 6px; }
 .dungeon-browser-right::-webkit-scrollbar-thumb { background: rgba(232,183,108,0.25); border-radius: 3px; }
@@ -2147,10 +2312,9 @@ input:focus {
   grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
   gap: 0.75rem;
   margin-bottom: 1.2rem;
-  max-height: 52vh;
-  overflow-y: auto;
-  padding-right: 4px;
- Scrollbar-width: thin;
+  max-height: none;
+  overflow: visible;
+  padding-right: 2px;
 }
 .shop-grid::-webkit-scrollbar { width: 6px; }
 .shop-grid::-webkit-scrollbar-thumb { background: rgba(232,183,108,0.25); border-radius: 3px; }
@@ -2325,10 +2489,9 @@ input:focus {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  max-height: 38vh;
-  overflow-y: auto;
-  padding-right: 4px;
-  scrollbar-width: thin;
+  max-height: none;
+  overflow: visible;
+  padding-right: 2px;
 }
 .bag-list::-webkit-scrollbar { width: 6px; }
 .bag-list::-webkit-scrollbar-thumb { background: rgba(232,183,108,0.25); border-radius: 3px; }
@@ -3249,12 +3412,42 @@ input:focus {
 /* ---- Responsive ---- */
 
 @media (max-width: 900px) {
+  #screen-town {
+    padding-top: 3.8rem;
+  }
+  .panel--dashboard {
+    height: calc(100dvh - 5.2rem);
+    max-height: calc(100dvh - 5.2rem);
+    padding: 1rem 0.9rem 0.9rem;
+  }
+  #town-main {
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
   .dashboard-grid {
     grid-template-columns: 1fr;
+    overflow: visible;
+    flex: none;
   }
-
-  .profile-card {
+  .profile-card,
+  .action-panel {
+    overflow: visible;
+    max-height: none;
+  }
+  .dungeon-browser {
+    grid-template-columns: 1fr;
+  }
+  .dungeon-browser-left {
     position: static;
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+/* Dar ekranda overlay başlığı kaymasın */
+@media (max-width: 560px) {
+  .overlay-head {
+    flex-wrap: wrap;
   }
 }
 
