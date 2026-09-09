@@ -40,7 +40,7 @@
          partikul canvas'i (#bg-fx) ve karartma (vignette) durur.
       NOT: Daha once resim koyup gelmemesinin sebebi: bu katman bagli
       degildi. Artik asagidaki #bg-photo + bgfx.js otomatik yukluyor.
-    ============================================================ →
+    ============================================================ -->
     <div id="bg-photo" aria-hidden="true"></div>
     <div class="parchment-vignette"></div>
     <canvas id="bg-fx" aria-hidden="true"></canvas>
@@ -68,10 +68,7 @@
           if (window.__bootConnected) return hide();
           if (window.__bootFailCount < 1) {
             window.__bootFailCount++;
-            show("Sunucu henüz uyanmadı, tek deniyorum...");
-            setTimeout(function () { location.reload(); }, 1200);
-          } else {
-            show("Sunucuya ulaşılamıyor. Lütfen sayfayı yenile (F5).");
+            show("Sunucuya bağlanılmaya çalışılıyor... (uyanıyorsa birkaç saniye sürebilir)");
           }
         }, 12000);
         window.__bootHide = hide;
