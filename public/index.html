@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>The Setra Game</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23543b21'/%3E%3Ctext x='16' y='23' font-size='20' text-anchor='middle' fill='%23e8c15a' font-family='serif' font-weight='bold'%3ES%3C/text%3E%3C/svg%3E"
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -40,6 +44,43 @@
     <div id="bg-photo" aria-hidden="true"></div>
     <div class="parchment-vignette"></div>
     <canvas id="bg-fx" aria-hidden="true"></canvas>
+
+    <div id="boot-warn" aria-live="polite" style="position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:9999;background:rgba(0,0,0,.8);color:#ffe9b0;padding:10px 16px;border-radius:10px;font:12px/1.5 system-ui,sans-serif;display:none;max-width:80vw;text-align:center;box-shadow:0 4px 18px rgba(0,0,0,.5);"></div>
+    <script>
+      (function () {
+        var warn = document.getElementById("boot-warn");
+        function show(msg) {
+          warn.textContent = msg;
+          warn.style.display = "block";
+        }
+        function hide() {
+          warn.style.display = "none";
+        }
+        if (typeof fetch === "function") {
+          fetch("/api/music").catch(function () {});
+        }
+        setTimeout(function () {
+          if (window.__bootConnected) return hide();
+          show("Sunucu uyanıyor... birkaç saniye, oyun bağlanacak.");
+        }, 3500);
+        window.__bootFailCount = window.__bootFailCount || 0;
+        setTimeout(function () {
+          if (window.__bootConnected) return hide();
+          if (window.__bootFailCount < 1) {
+            window.__bootFailCount++;
+            show("Sunucu henüz uyanmadı, tek deniyorum...");
+            setTimeout(function () { location.reload(); }, 1200);
+          } else {
+            show("Sunucuya ulaşılamıyor. Lütfen sayfayı yenile (F5).");
+          }
+        }, 12000);
+        window.__bootHide = hide;
+        window.setConnected = function () {
+          window.__bootConnected = true;
+          hide();
+        };
+      })();
+    </script>
 
     <div id="toast" class="toast hidden" role="status"></div>
     <div id="notice" class="notice hidden" role="dialog" aria-modal="true"></div>

@@ -13,6 +13,14 @@ const AUDIO_EXT = [".mp3", ".ogg", ".wav", ".m4a", ".flac"];
 
 const app = express();
 app.use(express.json({ limit: "50mb" }));
+
+// Ana sayfayi hicbir zaman tarayicida tutma: her acilista yeni surum yuklenir,
+// boylece eski cached bir build'den kaynakli 404 / bos ekran yasanmaz.
+app.get("/", (req, res, next) => {
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+  next();
+});
+
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/editor", editorRoutes);

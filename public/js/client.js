@@ -543,6 +543,7 @@ socket.on("chest:loot", (payload) => {
 // ---- Session resume (page-refresh persistence) ----
 
 socket.on("connect", () => {
+  if (window.setConnected) window.setConnected();
   if (localStorage.getItem(ACTIVE_KEY) === "1" && getSessionId()) {
     socket.emit("session:resume", { sessionId: getSessionId() });
   }

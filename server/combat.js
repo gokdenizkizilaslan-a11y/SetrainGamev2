@@ -1130,6 +1130,11 @@ function petActForPlayer(room, d, player){
     const isTamer = player.character === "tamer";
     const mult = isTamer ? 2 : 1;
     const lvlScale = 1 + petLevel * 0.04;
+    // Pet'in KENDİ statları kendi çıktısını etkiler (oyuncuya stat vermez):
+    const pStats = petDef.stats || {};
+    const pAtk = pStats.attack || 0;
+    const pMag = pStats.magicPower || 0;
+    const pRes = pStats.resistance || 0;
     const skills = petDef.petSkills || (petDef.buffKind ? [{kind: petDef.buffKind, value:0.15, interval:2, element: petDef.element}] : []);
     // if no petSkills, fallback to random as before
     let toUse = [];
@@ -1155,18 +1160,18 @@ function petActForPlayer(room, d, player){
         if(d.status!=="fighting" || d.phase!=="players") return;
         const pid = player.id;
         if(sk.kind==="heal"){
-          const amt=Math.max(1, Math.round(player.maxHp * (sk.value||0.12) * (1 + (player.healPower||0)/50) * lvlScale * mult));
+          const amt=Math.max(1, Math.round((player.maxHp * (sk.value||0.12) * (1 + (player.healPower||0)/50) + pMag*3) * lvlScale * mult));
           const before=player.hp; heal(player, amt); const healed=player.hp-before;
           if(healed>0){ addFx(d,{type:"heal", actor:pid, target:pid, amount:healed, source:"pet", petId:petDef.id, effect:"heal"}); d.log.push(`${petDef.name} heals ${player.name} for ${healed} HP!`); if(typeof room.broadcast==="function") room.broadcast(); else if(room._emitCombat) room._emitCombat(); }
         } else if(sk.kind==="shield"){
-          const amt=Math.round((sk.value||30) * lvlScale * mult);
+          const amt=Math.round(((sk.value||30) + pMag*1.2) * lvlScale * mult);
           addShield(player, amt); addFx(d,{type:"shield", actor:pid, target:pid, amount:amt, petId:petDef.id}); d.log.push(`${petDef.name} shields ${player.name} for ${amt}!`); if(typeof room.broadcast==="function") room.broadcast(); else if(room._emitCombat) room._emitCombat();
         } else if(sk.kind==="attack"){
           const alive=d.wave.map((m,i)=>({m,i})).filter(x=>x.m.hp>0);
           if(!alive.length) return;
           const pick=alive[Math.floor(Math.random()*alive.length)];
           const base=player.magicPower > player.attack ? player.magicPower : player.attack;
-          const dmg=Math.max(1, Math.round(base * (sk.value||0.6) * lvlScale * mult * randVariance(CONTENT.combat.damageVariance)));
+          const dmg=Math.max(1, Math.round((base * (sk.value||0.6) + Math.max(pAtk, pMag)*2) * lvlScale * mult * randVariance(CONTENT.combat.damageVariance)));
           // vfx
           const _pElem = sk.element || petDef.element || "physical";
           const _pEl = (CONTENT.elements || []).find((e) => e.id === _pElem);
@@ -1177,13 +1182,13 @@ function petActForPlayer(room, d, player){
           if(!alive.length) return;
           const pick=alive[Math.floor(Math.random()*alive.length)];
           const k=sk.kind==="weaken"?"pet_weaken":sk.kind;
-          const v= (sk.value||0.15)*mult;
+          const v= (sk.value||0.15)*mult + pAtk*0.005;
           d.buffId=(d.buffId||0)+1; d.buffs.push({uid:d.buffId, targetType:"monster", targetId:pick.i, kind:k, value:v, turns: sk.duration||2, name:petDef.name});
           addFx(d,{type:"buff", actor:pid, target:"enemy", targetId:pick.i, kind:k, value:v, turns:sk.duration||2, petId:petDef.id, vfxId: sk.kind==="frozen"?"frost_prison_dome": sk.kind==="wet"?"tidal_wave_water":"blood_curse_mist"});
           d.log.push(`${petDef.name} ${sk.kind}s ${pick.m.name}!`); if(typeof room.broadcast==="function") room.broadcast(); else if(room._emitCombat) room._emitCombat();
         } else if(sk.kind==="attack" || sk.kind==="magicBoost" || sk.kind==="defense"){
           const petKind = sk.kind==="attack"?"pet_attack": sk.kind==="magicBoost"?"pet_magic":"pet_defense";
-          const bv= (sk.value||0.15)*mult;
+          const bv= (sk.value||0.15)*mult + (sk.kind==="attack"?pAtk : sk.kind==="magicBoost"?pMag : pRes)*0.01;
           d.buffId=(d.buffId||0)+1; d.buffs.push({uid:d.buffId, targetType:"player", targetId:pid, kind:petKind, value:bv, turns:2, name:petDef.name});
           addFx(d,{type:"buff", actor:pid, target:"player", targetId:pid, kind:petKind, value:bv, turns:2, petId:petDef.id, vfxId: petKind==="pet_attack"?"cross_cut_x_slash": petKind==="pet_magic"?"frost_crystal_spear":"radiant_halo_shield"});
           d.log.push(`${petDef.name} buffs ${player.name} ${petKind} +${Math.round(bv*100)}%!`); if(typeof room.broadcast==="function") room.broadcast(); else if(room._emitCombat) room._emitCombat();
@@ -1208,9 +1213,13 @@ function petAct(room, d) {
       const petLevel = petInst ? (petInst.level||1) : 1;
       const isTamer = player.character === "tamer";
       const mult = isTamer ? 2 : 1;
+      const pStats = petDef.stats || {};
+      const pAtk = pStats.attack || 0;
+      const pMag = pStats.magicPower || 0;
+      const pRes = pStats.resistance || 0;
       if (petDef.buffKind && ["attack","magicBoost","defense"].includes(petDef.buffKind)) {
         const petKind = petDef.buffKind === "attack" ? "pet_attack" : petDef.buffKind === "magicBoost" ? "pet_magic" : "pet_defense";
-        const buffVal = 0.15 * mult;
+        const buffVal = 0.15 * mult + (petKind === "pet_attack" ? pAtk : petKind === "pet_magic" ? pMag : pRes) * 0.01;
         const targetId = pid;
         d.buffId=(d.buffId||0)+1;
         d.buffs.push({uid:d.buffId, targetType:"player", targetId, kind: petKind, value: buffVal, turns: 2, name: petDef.name});
@@ -1223,7 +1232,7 @@ function petAct(room, d) {
       const lvlScale = 1 + petLevel * 0.04;
       if (roll < 0.35) {
         const before = targetAlly.hp;
-        const amt = Math.max(1, Math.round(targetAlly.maxHp * 0.12 * (1 + (player.healPower || 0) / 50) * lvlScale * mult));
+        const amt = Math.max(1, Math.round((targetAlly.maxHp * 0.12 * (1 + (player.healPower || 0) / 50) + pMag * 3) * lvlScale * mult));
         heal(targetAlly, amt);
         const healed = targetAlly.hp - before;
         if (healed > 0) {
@@ -1231,7 +1240,7 @@ function petAct(room, d) {
           d.log.push(`${petDef.name} heals ${player.name} for ${healed} HP!`);
         }
       } else if (roll < 0.6) {
-        const amt = Math.round((30 + Math.floor(Math.random() * 20)) * lvlScale * mult);
+        const amt = Math.round(((30 + Math.floor(Math.random() * 20)) + pMag * 1.2) * lvlScale * mult);
         addShield(targetAlly, amt);
         addFx(d, { type: "shield", actor: pid, target: pid, amount: amt, petId: petDef.id });
         d.log.push(`${petDef.name} shields ${player.name} for ${amt}!`);
@@ -1244,7 +1253,7 @@ function petAct(room, d) {
           addFx(d, { type: "buff", actor: pid, target: "enemy", targetId: pick.i, kind: "frozen", value: 0, turns: 1 });
           d.log.push(`${petDef.name} freezes ${pick.m.name}!`);
         } else {
-          const weakenVal = 0.15 * mult;
+          const weakenVal = 0.15 * mult + pAtk * 0.005;
           d.buffs.push({ uid: (d.buffId = (d.buffId || 0) + 1), targetType: "monster", targetId: pick.i, kind: "pet_weaken", value: weakenVal, turns: 2, name: petDef.name });
           addFx(d, { type: "buff", actor: pid, target: "enemy", targetId: pick.i, kind: "pet_weaken", value: weakenVal, turns: 2 });
           d.log.push(`${petDef.name} weakens ${pick.m.name}!`);
@@ -1254,7 +1263,7 @@ function petAct(room, d) {
         if (!alive.length) continue;
         const pick = alive[Math.floor(Math.random() * alive.length)];
         const base = player.magicPower > player.attack ? player.magicPower : player.attack;
-        const dmg = Math.max(1, Math.round(base * 0.6 * lvlScale * mult * randVariance(CONTENT.combat.damageVariance)));
+        const dmg = Math.max(1, Math.round((base * 0.6 + Math.max(pAtk, pMag) * 2) * lvlScale * mult * randVariance(CONTENT.combat.damageVariance)));
       dealDamage(pick.m, dmg);
       addFx(d, { type: "damage", actor: pid, target: "enemy", targetId: pick.i, amount: dmg, source: "pet", petId: petDef.id, elem: petDef.element || "physical", effect: petDef.element || "slash" });
       d.log.push(`${petDef.name} hits ${pick.m.name} for ${dmg}!`);

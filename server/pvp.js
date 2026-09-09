@@ -237,15 +237,19 @@ function advanceTurn(room,d){
           const isTamer=pl.character==="tamer";
           const mult=isTamer?2:1;
           const lvlScale=1+petLevel*0.04;
+          const pStats=petDef? (petDef.stats||{}) : {};
+          const pAtk=pStats.attack||0;
+          const pMag=pStats.magicPower||0;
+          const pRes=pStats.resistance||0;
           if(petDef && petDef.buffKind && ["attack","magicBoost","defense"].includes(petDef.buffKind)){
-            const bv=0.15*mult;
+            const bv=0.15*mult + (petDef.buffKind==="attack"?pAtk : petDef.buffKind==="magicBoost"?pMag : pRes)*0.01;
             d.buffId=(d.buffId||0)+1;
             d.buffs.push({uid:d.buffId, targetType:"player", targetId:pid, kind:petDef.buffKind, value:bv, turns:2, name:petDef.name});
             addFx(d,{type:"buff", actor:pid, target:"player", targetId:pid, kind:petDef.buffKind, value:bv, turns:2, petId});
           } else if(Math.random()<0.5){
-            const before=pl.hp; const amt=Math.round(pl.maxHp*0.12*(1+(pl.healPower||0)/50)*lvlScale*mult); heal(pl, amt); const h=pl.hp-before; if(h>0) addFx(d,{type:"heal", actor:pid, target:pid, amount:h, source:"pet", petId});
+            const before=pl.hp; const amt=Math.round((pl.maxHp*0.12*(1+(pl.healPower||0)/50) + pMag*3)*lvlScale*mult); heal(pl, amt); const h=pl.hp-before; if(h>0) addFx(d,{type:"heal", actor:pid, target:pid, amount:h, source:"pet", petId});
           } else {
-            const amt=Math.round((30+Math.floor(Math.random()*20))*lvlScale*mult); addShield(pl, amt); addFx(d,{type:"shield", actor:pid, target:pid, amount:amt, petId});
+            const amt=Math.round(((30+Math.floor(Math.random()*20)) + pMag*1.2)*lvlScale*mult); addShield(pl, amt); addFx(d,{type:"shield", actor:pid, target:pid, amount:amt, petId});
           }
         }
       }
