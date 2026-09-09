@@ -161,6 +161,25 @@ function joinRoomByCode({ socketId, name, character, code }) {
   return joinRoom({ socketId, name, character, roomId: room.id });
 }
 
+// After a member leaves a fight, guarantee the combat can always move forward:
+// - "monsters" phase with a cleared monster timer must resume (else it wedges forever).
+// - "players" phase with no current turn owner must advance to the next player.
+function reviveMonsterPhase(room, d) {
+  let combat = null;
+  try { combat = require("./combat"); } catch (e) {}
+  if (!combat) return;
+  try {
+    if (d.phase === "monsters") {
+      combat.resumeMonsterPhase(room, d);
+    } else if (d.phase === "players" && combat.armTurnTimer) {
+      // re-arm the active player's stall timer after a member departure
+      combat.armTurnTimer(room, d);
+    }
+  } catch (e) {
+    console.error("[reviveMonsterPhase]", e);
+  }
+}
+
 function leaveRoom(socketId) {
   const room = getRoomForSocket(socketId);
   if (!room) {
@@ -182,8 +201,11 @@ function leaveRoom(socketId) {
       if (d.currentTurnId === socketId) d.currentTurnId = d.turnOrder[d.turnIndex] || d.turnOrder[0] || null;
       if (d.memberIds.length === 0) {
         room.dungeons = room.dungeons.filter((x) => x !== d);
-      } else if (d.status === "fighting" && d.phase === "players" && d.turnOrder.length === 0) {
-        // no players left to act – monsters would win, but dungeon will be removed on empty
+      } else if (d.status === "fighting") {
+        // A member leaving mid-combat must not wedge the monster phase. If the
+        // monsters were acting, the monster timer we just cleared was the only
+        // thing driving the phase — restart it so the fight continues.
+        reviveMonsterPhase(room, d);
       }
     }
   }
@@ -199,7 +221,11 @@ function leaveRoom(socketId) {
       if (b.turnOrder) b.turnOrder = b.turnOrder.filter(id=> id!==socketId);
       if (b.leaderId===socketId) b.leaderId=b.memberIds[0]||null;
       if (b.currentTurnId===socketId) b.currentTurnId=b.turnOrder[b.turnIndex]||b.turnOrder[0]||null;
-      if (b.memberIds.length===0) room.bossParties = room.bossParties.filter(x=> x!==b);
+      if (b.memberIds.length===0) {
+        room.bossParties = room.bossParties.filter(x=> x!==b);
+      } else if (b.status === "fighting") {
+        reviveMonsterPhase(room, b);
+      }
     }
   }
   if (room.pvpDuels) {

@@ -1,6 +1,6 @@
 const { getDungeon, getDungeonSize } = require("../content");
 const { spendStamina } = require("./town");
-const { spawnWave } = require("./combat");
+const { spawnWave, resumeMonsterPhase } = require("./combat");
 
 let dungeonCounter = 0;
 
@@ -257,6 +257,10 @@ function returnFromDungeon(room, player) {
       }
     }
     d.buffs = (d.buffs || []).filter((b) => !(b.targetType === "player" && b.targetId === player.id));
+    // A member leaving mid-combat must not wedge the monster phase — restart it.
+    if (d.phase === "monsters" && !d.monsterTimer) {
+      resumeMonsterPhase(room, d);
+    }
   }
   return d;
 }

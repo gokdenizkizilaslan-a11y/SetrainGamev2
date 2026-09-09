@@ -63,6 +63,46 @@ function clearMonsterTimer(d) {
     clearTimeout(d.monsterTimer);
     d.monsterTimer = null;
   }
+  if (d.monsterWatchdog) {
+    clearTimeout(d.monsterWatchdog);
+    d.monsterWatchdog = null;
+  }
+}
+
+// Safety net: if the monster phase somehow loses its chain (e.g. a member
+// disconnected/left while the monsters were acting and their handler cleared
+// the pending monster timer), restart the queue so combat can never wedge at
+// "the monsters are acting…". Also re-arms from startMonsterPhase as a watchdog.
+function resumeMonsterPhase(room, d) {
+  if (!d || d.status !== "fighting" || d.phase !== "monsters") return;
+  if (d.monsterTimer) return; // already progressing
+  if (livingMembers(room, d).length === 0) {
+    finishMonsterPhase(room, d);
+    return;
+  }
+  d.monsterQueue = (d.monsterQueue || []).filter((x) => x.mon && x.mon.hp > 0);
+  if (d.monsterQueue.length === 0) {
+    // queue drained while wave still alive (stale state) — rebuild from the wave
+    d.monsterQueue = d.wave.map((mon, index) => ({ mon, index })).filter((x) => x.mon && x.mon.hp > 0);
+  }
+  if (d.monsterQueue.length === 0) {
+    finishMonsterPhase(room, d);
+    return;
+  }
+  d.monsterTimer = setTimeout(() => runNextMonster(room, d), CONTENT.combat.monsterAttackDelayMs || 900);
+}
+
+function armMonsterWatchdog(room, d) {
+  if (d.monsterWatchdog) {
+    clearTimeout(d.monsterWatchdog);
+    d.monsterWatchdog = null;
+  }
+  const alive = (d.wave || []).filter((m) => m.hp > 0).length;
+  const perAttack = CONTENT.combat.monsterAttackDelayMs || 900;
+  d.monsterWatchdog = setTimeout(() => {
+    d.monsterWatchdog = null;
+    resumeMonsterPhase(room, d);
+  }, perAttack * Math.max(2, alive + 2) + 1500);
 }
 
 function addFx(d, evt) {
@@ -670,75 +710,89 @@ function startMonsterPhase(room, d) {
     .filter((x) => x.mon.hp > 0);
   clearMonsterTimer(d);
   d.monsterTimer = setTimeout(() => runNextMonster(room, d), 0);
+  armMonsterWatchdog(room, d);
 }
 
 function runNextMonster(room, d) {
-  if (d.status !== "fighting" || d.phase !== "monsters") return;
-  d.monsterTimer = null;
-  // filter dead monsters that may have died from DoT or prior kill
-  d.monsterQueue = (d.monsterQueue || []).filter((x) => x.mon && x.mon.hp > 0);
-  if (livingMembers(room, d).length === 0 || d.monsterQueue.length === 0) {
-    finishMonsterPhase(room, d);
-    return;
-  }
-  const { mon, index } = d.monsterQueue.shift();
-  if (mon.hp > 0) {
-    const skill = pickMonsterSkill(mon);
-    const targets = livingMembers(room, d);
-    const target = targets[Math.floor(Math.random() * targets.length)];
-    const combat = CONTENT.combat;
-    if (skill.kind === "heal") {
-      const healed = healMonster(mon, skill.amount);
-      if (healed > 0) {
-        addFx(d, { type: "heal", actor: index, target: "enemy", targetId: index, amount: healed, source: "monster", effect: "heal" });
-        d.log.push(`${mon.name} uses ${skill.name} and recovers ${healed} HP.`);
-      }
-    } else if (skill.kind === "buff") {
-      applyBuffs(room, d, { id: "monster_" + index }, mon.name, skill, "monster", [index], false);
-    } else if (skill.kind === "debuff") {
-      if (target) {
-        applyBuffs(room, d, { id: "monster_" + index }, mon.name, skill, "player", [target.id], false);
-      }
-    } else {
-      if (target) {
-        const crit = Math.random() < (combat.critChance || 0);
-        const critMult = crit ? combat.critMult || 1.5 : 1;
-        const mAtk = buffSum(d, "monster", index, "attack") - buffSum(d, "monster", index, "weaken");
-        const pDef = buffSum(d, "player", target.id, "defense");
-        const pExp = buffSum(d, "player", target.id, "expose");
-        let dmg = Math.round(
-          mon.attack * (skill.power || 1) * randVariance(combat.damageVariance) * critMult * (1 + mAtk) * (1 - pDef + pExp)
-        );
-        dmg -= Math.round(target.resistance * combat.resistanceMitigation);
-        dmg = Math.max(1, dmg);
-        const eff = skill.effect || defaultEffectFor(skill.element || mon.element);
-        dealDamage(target, dmg);
-        addFx(d, { type: "damage", actor: target.id, target: "player", targetId: target.id, amount: dmg, source: "monster", monster: mon.kind, elem: skill.element || mon.element || "physical", effect: eff, crit });
-      }
-    }
-    // ensure fx/broadcast even if room.broadcast not set (fallback)
-    if (typeof room.broadcast === "function") room.broadcast();
-    else if (room._emitCombat) room._emitCombat();
-    if (livingMembers(room, d).length === 0) {
-      clearMonsterTimer(d);
-      defeat(room, d);
-      if (typeof room.broadcast === "function") room.broadcast();
-      else if (room._emitCombat) room._emitCombat();
+  try {
+    if (d.status !== "fighting" || d.phase !== "monsters") return;
+    d.monsterTimer = null;
+    // filter dead monsters that may have died from DoT or prior kill
+    d.monsterQueue = (d.monsterQueue || []).filter((x) => x.mon && x.mon.hp > 0);
+    if (livingMembers(room, d).length === 0 || d.monsterQueue.length === 0) {
+      finishMonsterPhase(room, d);
       return;
     }
-  } else {
-    // dead monster was queued but died before its turn — skip silently
+    const { mon, index } = d.monsterQueue.shift();
+    if (mon.hp > 0) {
+      const skill = pickMonsterSkill(mon);
+      const targets = livingMembers(room, d);
+      const target = targets[Math.floor(Math.random() * targets.length)];
+      const combat = CONTENT.combat;
+      if (skill.kind === "heal") {
+        const healed = healMonster(mon, skill.amount);
+        if (healed > 0) {
+          addFx(d, { type: "heal", actor: index, target: "enemy", targetId: index, amount: healed, source: "monster", effect: "heal" });
+          d.log.push(`${mon.name} uses ${skill.name} and recovers ${healed} HP.`);
+        }
+      } else if (skill.kind === "buff") {
+        applyBuffs(room, d, { id: "monster_" + index }, mon.name, skill, "monster", [index], false);
+      } else if (skill.kind === "debuff") {
+        if (target) {
+          applyBuffs(room, d, { id: "monster_" + index }, mon.name, skill, "player", [target.id], false);
+        }
+      } else {
+        if (target) {
+          const crit = Math.random() < (combat.critChance || 0);
+          const critMult = crit ? combat.critMult || 1.5 : 1;
+          const mAtk = buffSum(d, "monster", index, "attack") - buffSum(d, "monster", index, "weaken");
+          const pDef = buffSum(d, "player", target.id, "defense");
+          const pExp = buffSum(d, "player", target.id, "expose");
+          let dmg = Math.round(
+            mon.attack * (skill.power || 1) * randVariance(combat.damageVariance) * critMult * (1 + mAtk) * (1 - pDef + pExp)
+          );
+          dmg -= Math.round(target.resistance * combat.resistanceMitigation);
+          dmg = Math.max(1, dmg);
+          const eff = skill.effect || defaultEffectFor(skill.element || mon.element);
+          dealDamage(target, dmg);
+          addFx(d, { type: "damage", actor: target.id, target: "player", targetId: target.id, amount: dmg, source: "monster", monster: mon.kind, elem: skill.element || mon.element || "physical", effect: eff, crit });
+        }
+      }
+      // ensure fx/broadcast even if room.broadcast not set (fallback)
+      if (typeof room.broadcast === "function") room.broadcast();
+      else if (room._emitCombat) room._emitCombat();
+      if (livingMembers(room, d).length === 0) {
+        clearMonsterTimer(d);
+        defeat(room, d);
+        if (typeof room.broadcast === "function") room.broadcast();
+        else if (room._emitCombat) room._emitCombat();
+        return;
+      }
+    } else {
+      // dead monster was queued but died before its turn — skip silently
+      if (typeof room.broadcast === "function") room.broadcast();
+    }
+    if (d.status !== "fighting" || d.phase !== "monsters") return;
+    // filter again before scheduling next
+    d.monsterQueue = (d.monsterQueue || []).filter((x) => x.mon && x.mon.hp > 0);
+    if (d.monsterQueue.length === 0) {
+      finishMonsterPhase(room, d);
+      return;
+    }
+    clearMonsterTimer(d);
+    d.monsterTimer = setTimeout(() => runNextMonster(room, d), CONTENT.combat.monsterAttackDelayMs || 900);
+    armMonsterWatchdog(room, d);
+  } catch (err) {
+    // Never let an unexpected error permanently wedge the "monsters are acting" phase.
+    console.error("[runNextMonster] error:", err && err.stack || err);
+    try {
+      finishMonsterPhase(room, d);
+    } catch (e) {
+      console.error("[runNextMonster] finish recovery error:", e);
+    }
     if (typeof room.broadcast === "function") room.broadcast();
+    else if (room._emitCombat) room._emitCombat();
   }
-  if (d.status !== "fighting" || d.phase !== "monsters") return;
-  // filter again before scheduling next
-  d.monsterQueue = (d.monsterQueue || []).filter((x) => x.mon && x.mon.hp > 0);
-  if (d.monsterQueue.length === 0) {
-    finishMonsterPhase(room, d);
-    return;
-  }
-  clearMonsterTimer(d);
-  d.monsterTimer = setTimeout(() => runNextMonster(room, d), CONTENT.combat.monsterAttackDelayMs || 900);
 }
 
 function finishMonsterPhase(room, d) {
@@ -1232,4 +1286,5 @@ module.exports = {
   armTurnTimer,
   clearTurnTimer,
   petAct,
+  resumeMonsterPhase,
 };

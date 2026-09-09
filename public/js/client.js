@@ -462,7 +462,9 @@ socket.on("combat:fx", (payload) => {
   if (!payload || !Array.isArray(payload.fx)) return;
   if (payload.dungeonId) {
     const me = (state.room && state.room.players.find((p) => p.id === state.playerId)) || null;
-    if (!me || me.dungeonId !== payload.dungeonId) return;
+    if (!me) return;
+    // dungeon fights use dungeonId; boss fights use bossId — both are emitted as payload.dungeonId
+    if (me.dungeonId !== payload.dungeonId && me.bossId !== payload.dungeonId) return;
   }
   state.pendingFx.push(...payload.fx);
 });
