@@ -14,6 +14,9 @@
 // `path` is a dotted path into the whole CONTENT object.
 "use strict";
 
+const fs = require("fs");
+const path = require("path");
+
 const statLabels = {
   maxHp: "Max HP",
   hp: "Max HP",
@@ -26,8 +29,50 @@ const statLabels = {
   speed: "Speed",
 };
 
-const ELEMENTS = ["physical", "arcane", "shadow", "holy", "frost", "fire", "water", "earth", "lightning", "blood", "dark"];
+const DEFAULT_ELEMENTS = ["physical", "arcane", "shadow", "holy", "frost", "fire", "water", "earth", "nature", "lightning", "blood", "dark"];
 const SLOTS = ["weapon", "head", "armor", "legs", "boots", "amulet", "ring", "consumable", "material"];
+
+// Elements are now data-driven: the list comes from CONTENT.elements so that any
+// element added in the Elements page immediately becomes selectable for monsters,
+// pets and skills. Falls back to the built-in list if no elements data exists yet.
+const ELEMENTS = (data) => {
+  const ids = ((data && data.elements) || []).map((e) => e && e.id).filter(Boolean);
+  return ids.length ? ids : DEFAULT_ELEMENTS;
+};
+
+// Choices backed by the live project files (always in sync with the VFX registry
+// and the sounds folder, no manual maintenance needed).
+const VFX_IDS = (() => {
+  try {
+    const src = fs.readFileSync(path.join(__dirname, "public", "effects.js"), "utf8");
+    const ids = [];
+    const re = /\{\s*id:\s*"([A-Za-z0-9_]+)"/g;
+    let m;
+    while ((m = re.exec(src))) ids.push(m[1]);
+    if (ids.length) return ids;
+  } catch (e) {
+    // fall through to the curated fallback below
+  }
+  return [
+    "rising_katana_slash", "frost_crystal_spear", "fire_meteor_crash", "blood_scythe",
+    "shadow_scythe_reap", "holy_pillar_smite", "lightning_strike_heavy", "earth_fissure_rupture",
+    "tidal_wave_water", "nature_vine_burst", "nature_vine_projectile",
+    "heal_aura_fountain", "radiant_halo_shield",
+  ];
+})();
+
+const SOUND_IDS = (() => {
+  try {
+    const dir = path.join(__dirname, "public", "sounds");
+    return fs
+      .readdirSync(dir)
+      .map((f) => f.replace(/\.[^.]+$/, ""))
+      .filter(Boolean)
+      .sort();
+  } catch (e) {
+    return [];
+  }
+})();
 
 const rarityOptions = (data) =>
   (data && data.loot && data.loot.rarityOrder) ||
@@ -40,6 +85,27 @@ function formatLabel(template, item) {
 }
 
 const collections = [
+  {
+    id: "elements",
+    label: "Elements",
+    kind: "collection",
+    path: "elements",
+    idField: "id",
+    idLabel: "id (e.g. nature)",
+    nameField: "name",
+    itemLabelTemplate: "{name} ({id})",
+    fields: [
+      { key: "id", label: "Element id (e.g. nature)", type: "string" },
+      { key: "name", label: "Display name", type: "string" },
+      { key: "palette", label: "Colors (comma-separated hex, drawn by VFX)", type: "array" },
+      { key: "gravity", label: "Particle gravity (0 = none, negative = rises)", type: "number" },
+      { key: "sound", label: "Hit sound", type: "choice", options: SOUND_IDS },
+      { key: "effect", label: "Core VFX effect (leave blank to auto-generate)", type: "choice", options: VFX_IDS },
+      { key: "travel", label: "Travel/projectile VFX effect", type: "choice", options: VFX_IDS },
+      { key: "description", label: "Description", type: "string" },
+    ],
+  },
+
   {
     id: "classes",
     label: "Classes",

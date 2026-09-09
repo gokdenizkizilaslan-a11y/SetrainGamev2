@@ -40,7 +40,10 @@
   function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
 
   // ---------------- Kategori temaları ----------------
-  const CAT_PALETTES = {
+  // Seeded from CONTENT.elements at runtime (SetraEffects.setElements) so the
+  // colors stay in sync with the editor's Elements page. The static list below
+  // is only the fallback used before element data has been received.
+  let CAT_PALETTES = {
     blood:     ['#dc2626', '#b91c1c', '#7f1d1d'],
     dark:      ['#a855f7', '#7c3aed', '#4c1d95'],
     fire:      ['#f97316', '#ef4444', '#fde047'],
@@ -48,11 +51,16 @@
     frost:     ['#38bdf8', '#7dd3fc', '#0ea5e9', '#e0f2fe'],
     lightning: ['#facc15', '#fef08a', '#ffffff'],
     holy:      ['#facc15', '#ffffff', '#fde047'],
-    physical:  ['#ffffff', '#fde047', '#94a3b8']
+    physical:  ['#ffffff', '#fde047', '#94a3b8'],
+    arcane:    ['#a78bfa', '#7c3aed', '#e0e7ff'],
+    water:     ['#3b82f6', '#2563eb', '#0ea5e9'],
+    shadow:    ['#6b7280', '#4b5563', '#374151'],
+    nature:    ['#4ade80', '#22c55e', '#15803d', '#bef264']
   };
-  const CAT_GRAVITY = {
+  let CAT_GRAVITY = {
     blood: 0.22, dark: -0.05, fire: -0.08, earth: 0.25,
-    frost: 0.13, lightning: 0.06, holy: -0.04, physical: 0.16
+    frost: 0.13, lightning: 0.06, holy: -0.04, physical: 0.16,
+    arcane: 0.02, water: 0.1, shadow: -0.05, nature: 0.08
   };
   const CAT_SHAPE = { earth: 'rock', frost: 'shard' };
 
@@ -152,10 +160,36 @@
     { id: "sonic_air_blade", name: "Windcutter Wave", cat: "physical", color: "#94a3b8", type: "projectile" },
     { id: "shield_bash_shock", name: "Shield Bash", cat: "physical", color: "#64748b", type: "shockwave" },
     { id: "triple_dagger_slash", name: "Thousand Daggers", cat: "physical", color: "#e2e8f0", type: "slash" },
-    { id: "guillotine_fall", name: "Executioner's Fall", cat: "physical", color: "#dc2626", type: "slash" }
+    { id: "guillotine_fall", name: "Executioner's Fall", cat: "physical", color: "#dc2626", type: "slash" },
+
+    // 9. DOĞA / NATURE (2)
+    { id: "nature_vine_burst", name: "Thornbloom Burst", cat: "nature", color: "#4ade80", type: "burst" },
+    { id: "nature_vine_projectile", name: "Vine Spear", cat: "nature", color: "#22c55e", type: "projectile" }
   ];
 
   class SetraEffects {
+    // Accepts CONTENT.elements so every element (including ones added in the
+    // editor) gets its own palette, gravity and a working auto-generated VFX:
+    //   element_<id>                    — colored burst on the target
+    //   element_<id>_projectile         — colored projectile that flies to the target
+    // Elements with a custom `effect`/`travel` defined in the Elements page still
+    // use those (via the screens.js resolvers); this is just the safety net.
+    static setElements(elements) {
+      if (!Array.isArray(elements)) return;
+      for (const el of elements) {
+        if (!el || !el.id) continue;
+        const pal = (Array.isArray(el.palette) && el.palette.length) ? el.palette : [el.color || "#ffffff"];
+        if (pal.length) CAT_PALETTES[el.id] = pal;
+        if (typeof el.gravity === "number") CAT_GRAVITY[el.id] = el.gravity;
+        if (!EFFECTS_REGISTRY.some((x) => x.id === "element_" + el.id)) {
+          EFFECTS_REGISTRY.push({ id: "element_" + el.id, name: (el.name || el.id) + " Burst", cat: el.id, color: pal[0], type: "burst" });
+        }
+        if (!EFFECTS_REGISTRY.some((x) => x.id === "element_" + el.id + "_projectile")) {
+          EFFECTS_REGISTRY.push({ id: "element_" + el.id + "_projectile", name: (el.name || el.id) + " Projectile", cat: el.id, color: pal[0], type: "projectile" });
+        }
+      }
+    }
+
     constructor(canvasId) {
       this.canvas = typeof canvasId === 'string' ? document.getElementById(canvasId) : canvasId;
       if (!this.canvas) throw new Error('Canvas element not found: ' + canvasId);

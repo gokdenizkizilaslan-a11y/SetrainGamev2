@@ -132,9 +132,23 @@ A skill row in the `skills` array has:
 - `heal` — fraction of the target's `maxHp` restored (e.g. `0.35` = 35%). With `target: "party"` this heals **every** living member.
 - `manaRestore` / `manaRestorePct` — optional mana refunded to the caster (flat, or a fraction of max mana). With `target: "party"` it restores **every** living member, capped at their max. Example: `spirit_surge` restores 30% of each ally's max mana.
 - `defense` — fraction of incoming monster damage blocked for the round (e.g. `0.5` = 50%)
-- `element` — optional damage type that changes the hit animation, damage-number color, and sound: `physical` (default), `arcane`, `holy`, `shadow`. Arcane wobbles the target, holy pulses it, shadow jitters it. Class basic attacks and monsters can also carry `element`.
+- `element` — optional damage type that changes the hit animation, damage-number color, sound, and VFX. Built-in choices: `physical`, `arcane`, `shadow`, `holy`, `frost`, `fire`, `water`, `earth`, `nature`, `lightning`, `blood`, `dark`. The full pick list (for skills, monsters, and pets) is driven by the **Elements** page, so any element you add there immediately becomes selectable. Class basic attacks and monsters can also carry `element`.
 
 Add a new skill by pushing a row onto `skills` (give it a `description`), then adding its `id` to a class's `startingSkills`.
+
+### Elements (damage types)
+
+Elements live in the `elements` array (editable in the **Elements** page of `/editor`). Each entry:
+
+- `id` — the internal id used by skills, monsters and pets (e.g. `nature`)
+- `name` — display name
+- `palette` — comma-separated hex colors; used for particles and UI tints
+- `gravity` — VFX particle gravity (negative values rise, e.g. fire)
+- `sound` — hit sound (picked from the sounds folder)
+- `effect` / `travel` — the VFX id used for a hit / a flying projectile. Optional: if left empty, the game auto-generates a colored effect (`element_<id>` burst and `element_<id>_projectile` projectile) from the element's palette, so new elements work even without a custom VFX.
+- `description` — for your own reference
+
+Adding a brand-new element is only a matter of adding a row here (plus optionally a custom VFX entry in `public/effects.js`); the editor, combat, sounds, and visuals pick it up automatically.
 
 Add a new skill by pushing a row onto `skills` (give it a `description`), then adding its `id` to a class's `startingSkills`.
 

@@ -1245,6 +1245,11 @@ input:focus {
 .st-node-ico--dark { background: linear-gradient(135deg, #4a3a6e, #2a2045); }
 .st-node-ico--physical { background: linear-gradient(135deg, #8f8b86, #57534e); }
 .st-node-ico--holy { background: linear-gradient(135deg, #d9b34a, #a8792e); }
+.st-node-ico--earth { background: linear-gradient(135deg, #854d0e, #57534e); }
+.st-node-ico--arcane { background: linear-gradient(135deg, #a78bfa, #7c3aed); }
+.st-node-ico--blood { background: linear-gradient(135deg, #dc2626, #7f1d1d); }
+.st-node-ico--shadow { background: linear-gradient(135deg, #6b7280, #374151); }
+.st-node-ico--nature { background: linear-gradient(135deg, #4ade80, #15803d); }
 
 .st-node--learned {
   border-color: rgba(132, 204, 140, 0.65);

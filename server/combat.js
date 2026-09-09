@@ -15,17 +15,9 @@ function randVariance(variance) {
 }
 
 function defaultEffectFor(elem) {
-  if (elem === "arcane") return "frost_crystal_spear";
-  if (elem === "holy") return "holy_pillar_smite";
-  if (elem === "shadow") return "shadow_scythe_reap";
-  if (elem === "fire") return "fire_meteor_crash";
-  if (elem === "frost") return "frost_crystal_spear";
-  if (elem === "water") return "tidal_wave_water";
-  if (elem === "earth") return "earth_fissure_rupture";
-  if (elem === "lightning") return "lightning_strike_heavy";
-  if (elem === "blood") return "blood_scythe";
-  if (elem === "dark") return "shadow_scythe_reap";
-  return "rising_katana_slash";
+  const id = elem || "physical";
+  const el = (CONTENT.elements || []).find((e) => e.id === id);
+  return (el && el.effect) || "element_" + id;
 }
 
 function myDungeon(room, player) {
@@ -1176,8 +1168,9 @@ function petActForPlayer(room, d, player){
           const base=player.magicPower > player.attack ? player.magicPower : player.attack;
           const dmg=Math.max(1, Math.round(base * (sk.value||0.6) * lvlScale * mult * randVariance(CONTENT.combat.damageVariance)));
           // vfx
-          const vfxMap={fire:"fire_meteor_crash", frost:"frost_crystal_spear", water:"tidal_wave_water", earth:"earth_fissure_rupture", lightning:"lightning_strike_heavy", blood:"blood_scythe", dark:"shadow_scythe_reap", physical:"rising_katana_slash"};
-          const vfxId = vfxMap[sk.element||petDef.element] || vfxMap[petDef.element] || "rising_katana_slash";
+          const _pElem = sk.element || petDef.element || "physical";
+          const _pEl = (CONTENT.elements || []).find((e) => e.id === _pElem);
+          const vfxId = (_pEl && _pEl.effect) || "element_" + _pElem;
           dealDamage(pick.m, dmg); addFx(d,{type:"damage", actor:pid, target:"enemy", targetId:pick.i, amount:dmg, source:"pet", petId:petDef.id, elem: sk.element||petDef.element||"physical", effect:sk.element||petDef.element||"slash", vfxId}); d.log.push(`${petDef.name} hits ${pick.m.name} for ${dmg}!`); if(pick.m.hp<=0){ d.buffs=(d.buffs||[]).filter(b=> !(b.targetType==="monster" && Number(b.targetId)===Number(pick.i))); checkEnd(room,d); } if(typeof room.broadcast==="function") room.broadcast(); else if(room._emitCombat) room._emitCombat();
         } else if(sk.kind==="weaken" || sk.kind==="frozen" || sk.kind==="wet"){
           const alive=d.wave.map((m,i)=>({m,i})).filter(x=>x.m.hp>0);

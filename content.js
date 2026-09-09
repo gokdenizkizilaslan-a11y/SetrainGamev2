@@ -31,6 +31,20 @@ const CONTENT = {
     { "id": "break_guard", "name": "Break Guard", "when": "expose", "ifElement": "physical", "mult": 1.35, "desc": "Exposed enemies take +35% physical damage." },
     { "id": "overwhelm", "name": "Overwhelm", "when": "weaken", "ifElement": "physical", "mult": 1.2, "desc": "Weakened enemies crumble, taking +20% physical damage." }
   ],
+  "elements": [
+    { "id": "physical", "name": "Physical", "palette": ["#ffffff", "#fde047", "#94a3b8"], "gravity": 0.16, "sound": "slash1", "effect": "rising_katana_slash", "travel": "piercing_rapier_thrust", "description": "Plain weapon strikes and brute force." },
+    { "id": "arcane", "name": "Arcane", "palette": ["#a78bfa", "#7c3aed", "#e0e7ff"], "gravity": 0.02, "sound": "normalmagic", "effect": "frost_crystal_spear", "travel": "ball_lightning_plasma", "description": "Raw magical energy and eldritch plasma." },
+    { "id": "shadow", "name": "Shadow", "palette": ["#6b7280", "#4b5563", "#374151"], "gravity": -0.05, "sound": "bloodmagic1", "effect": "shadow_scythe_reap", "travel": "dark_matter_orb", "description": "Darkness and cold moonlight arts." },
+    { "id": "holy", "name": "Holy", "palette": ["#facc15", "#ffffff", "#fde047"], "gravity": -0.04, "sound": "normalmagic", "effect": "holy_pillar_smite", "travel": "holy_lance_projectile", "description": "Divine light and radiant judgement." },
+    { "id": "frost", "name": "Frost", "palette": ["#38bdf8", "#7dd3fc", "#0ea5e9", "#e0f2fe"], "gravity": 0.13, "sound": "frostmagic", "effect": "frost_crystal_spear", "travel": "frost_crystal_spear", "description": "Ice, cold and glacial shards." },
+    { "id": "fire", "name": "Fire", "palette": ["#f97316", "#ef4444", "#fde047"], "gravity": -0.08, "sound": "firemagic", "effect": "fire_meteor_crash", "travel": "fireball_streak", "description": "Burning flame and searing heat." },
+    { "id": "water", "name": "Water", "palette": ["#3b82f6", "#2563eb", "#0ea5e9"], "gravity": 0.1, "sound": "frostmagic", "effect": "tidal_wave_water", "travel": "frost_crystal_spear", "description": "Flowing currents and crushing waves." },
+    { "id": "earth", "name": "Earth", "palette": ["#854d0e", "#a16207", "#713f12", "#57534e"], "gravity": 0.25, "sound": "battleaxe", "effect": "earth_fissure_rupture", "travel": "rock_avalanche_barrage", "description": "Stone, soil and bedrock." },
+    { "id": "nature", "name": "Nature", "palette": ["#4ade80", "#22c55e", "#15803d", "#bef264"], "gravity": 0.08, "sound": "normalmagic", "effect": "nature_vine_burst", "travel": "nature_vine_projectile", "description": "Growth, vines, thorns and the living forest." },
+    { "id": "lightning", "name": "Lightning", "palette": ["#facc15", "#fef08a", "#ffffff"], "gravity": 0.06, "sound": "normalmagic", "effect": "lightning_strike_heavy", "travel": "storm_spear_throw", "description": "Storms, thunder and electric surges." },
+    { "id": "blood", "name": "Blood", "palette": ["#dc2626", "#b91c1c", "#7f1d1d"], "gravity": 0.22, "sound": "bloodmagic1", "effect": "blood_scythe", "travel": "blood_drain", "description": "Crimson hemomancy and life-stealing arts." },
+    { "id": "dark", "name": "Dark", "palette": ["#a855f7", "#7c3aed", "#4c1d95"], "gravity": -0.05, "sound": "bloodmagic2", "effect": "shadow_scythe_reap", "travel": "dark_matter_orb", "description": "Void, abyss and forbidden power." }
+  ],
   "skillTree": {
     "pointsPerLevel": 3,
     "startingPoints": 3,
@@ -2221,7 +2235,10 @@ const CONTENT = {
     "group_guard",
     "cripple",
     "venom_strike",
-    "rejuvenate"
+    "rejuvenate",
+    "vine_lash",
+    "thorn_volley",
+    "forest_renewal"
   ],
   "combat": {
     "damageVariance": 0.2,
@@ -3188,7 +3205,9 @@ const CONTENT = {
         "forest_mite",
         "grove_sprite",
         "ember_sprite",
-        "vine_lurker"
+        "vine_lurker",
+        "vine_wraith",
+        "thornback_boar"
       ],
       "monsterCount": 2,
       "monsterPower": 1,
@@ -3284,7 +3303,8 @@ const CONTENT = {
         "crystal_golem",
         "wyvern",
         "frost_wyvern",
-        "void_golem"
+        "void_golem",
+        "elder_treant"
       ],
       "monsterCount": 3,
       "monsterPower": 2,
@@ -3740,7 +3760,7 @@ const CONTENT = {
     {"id":"pet_ember_pup","name":"Ember Pup","image":"/images/pets/pet_ember_pup.png","element":"fire","stats":{"attack":7,"magicPower":5},"description":"Ember Pup from Red Egg","egg":"egg_red"},
     {"id":"pet_cinder_cub","name":"Cinder Cub","image":"/images/pets/pet_cinder_cub.png","element":"fire","stats":{"attack":6,"magicPower":5},"description":"Cinder Cub from Red Egg","egg":"egg_red"},
     {"id":"pet_slime","name":"Slime","image":"/images/pets/pet_slime.png","element":"fire","stats":{"attack":3,"magicPower":7},"description":"Slime from Red Egg","egg":"egg_red"},
-    {"id":"pet_sprout","name":"Sprout","image":"/images/pets/pet_sprout.png","element":"fire","stats":{"attack":3,"magicPower":7},"description":"Sprout from Red Egg","egg":"egg_red"},
+    {"id":"pet_sprout","name":"Sprout","image":"/images/pets/pet_sprout.png","element":"nature","stats":{"attack":3,"magicPower":7},"description":"Sprout from Red Egg","egg":"egg_red"},
     {"id":"pet_flame_sprite","name":"Flame Sprite","image":"/images/pets/pet_flame_sprite.png","element":"fire","stats":{"attack":3,"magicPower":4},"description":"Flame Sprite from Red Egg","egg":"egg_red"},
     {"id":"pet_mossling","name":"Mossling","image":"/images/pets/pet_mossling.png","element":"earth","stats":{"attack":4,"magicPower":6},"description":"Mossling from Green Egg","egg":"egg_green"},
     {"id":"pet_vine_pup","name":"Vine Pup","image":"/images/pets/pet_vine_pup.png","element":"earth","stats":{"attack":5,"magicPower":5},"description":"Vine Pup from Green Egg","egg":"egg_green"},
@@ -3748,6 +3768,7 @@ const CONTENT = {
     {"id":"pet_grove_sprite","name":"Grove Sprite","image":"/images/pets/pet_grove_sprite.png","element":"earth","stats":{"attack":4,"magicPower":3},"description":"Grove Sprite from Green Egg","egg":"egg_green"},
     {"id":"pet_slime_king","name":"Slime King","image":"/images/pets/pet_slime_king.png","element":"earth","stats":{"attack":6,"magicPower":6},"description":"Slime King from Green Egg","egg":"egg_green"},
     {"id":"pet_forest_cub","name":"Forest Cub","image":"/images/pets/pet_forest_cub.png","element":"earth","stats":{"attack":5,"magicPower":3},"description":"Forest Cub from Green Egg","egg":"egg_green"},
+    {"id":"pet_natureling","name":"Natureling","image":"/images/pets/pet_natureling.png","element":"nature","stats":{"attack":3,"magicPower":7},"description":"A budding nature spirit from the Green Egg.","egg":"egg_green"},
     {"id":"pet_frost_pup","name":"Frost Pup","image":"/images/pets/pet_frost_pup.png","element":"water","stats":{"attack":7,"magicPower":3},"description":"Frost Pup from Blue Egg","egg":"egg_blue"},
     {"id":"pet_ice_whelp","name":"Ice Whelp","image":"/images/pets/pet_ice_whelp.png","element":"water","stats":{"attack":3,"magicPower":3},"description":"Ice Whelp from Blue Egg","egg":"egg_blue"},
     {"id":"pet_snow_cub","name":"Snow Cub","image":"/images/pets/pet_snow_cub.png","element":"water","stats":{"attack":5,"magicPower":7},"description":"Snow Cub from Blue Egg","egg":"egg_blue"},
@@ -3838,7 +3859,7 @@ const CONTENT = {
   ],
   "eggs": [
     {"id":"egg_red","label":"Red Egg","rarity":"common","dropRate":0.1,"dungeons":["f","fast"],"pets":["pet_direwolf","pet_ember_pup","pet_cinder_cub","pet_slime","pet_sprout","pet_flame_sprite"]},
-    {"id":"egg_green","label":"Green Egg","rarity":"common","dropRate":0.05,"dungeons":["f","d"],"pets":["pet_mossling","pet_vine_pup","pet_thorn_whelp","pet_grove_sprite","pet_slime_king","pet_forest_cub"]},
+    {"id":"egg_green","label":"Green Egg","rarity":"common","dropRate":0.05,"dungeons":["f","d"],"pets":["pet_mossling","pet_vine_pup","pet_thorn_whelp","pet_grove_sprite","pet_slime_king","pet_forest_cub","pet_natureling"]},
     {"id":"egg_blue","label":"Blue Egg","rarity":"uncommon","dropRate":0.03,"dungeons":["d","c"],"pets":["pet_frost_pup","pet_ice_whelp","pet_snow_cub","pet_glacierling","pet_chill_sprite","pet_frost_drake"]},
     {"id":"egg_brown","label":"Brown Egg","rarity":"uncommon","dropRate":0.02,"dungeons":["c","b"],"pets":["pet_stone_pup","pet_rockling","pet_boulder_cub","pet_crystal_sprite","pet_golem_whelp","pet_granite_pup"]},
     {"id":"egg_yellow","label":"Yellow Egg","rarity":"rare","dropRate":0.015,"dungeons":["b","a"],"pets":["pet_storm_pup","pet_thunder_cub","pet_lightning_drake","pet_wind_sprite","pet_gale_whelp","pet_storm_hatchling"]},
@@ -5975,6 +5996,36 @@ const CONTENT = {
       "rarity": "mythic",
       "element": "physical",
       "image": "/images/monsters/world_eater.png"
+    },
+    {
+      "id": "vine_wraith",
+      "name": "Vine Wraith",
+      "hp": 95,
+      "attack": 14,
+      "speed": 12,
+      "rarity": "uncommon",
+      "element": "nature",
+      "image": "/images/monsters/vine_wraith.png"
+    },
+    {
+      "id": "thornback_boar",
+      "name": "Thornback Boar",
+      "hp": 130,
+      "attack": 18,
+      "speed": 8,
+      "rarity": "uncommon",
+      "element": "nature",
+      "image": "/images/monsters/thornback_boar.png"
+    },
+    {
+      "id": "elder_treant",
+      "name": "Elder Treant",
+      "hp": 260,
+      "attack": 24,
+      "speed": 5,
+      "rarity": "rare",
+      "element": "nature",
+      "image": "/images/monsters/elder_treant.png"
     }
   ],
   "skills": [
@@ -7259,6 +7310,41 @@ const CONTENT = {
       "effect": "heavy_hammer_slam",
       "image": "/images/skills/devastate.png",
       "description": "A crushing blow for 2.6× attack; weakened targets take +35%."
+    },
+    {
+      "id": "vine_lash",
+      "name": "Vine Lash",
+      "target": "enemy",
+      "mana": 6,
+      "power": 1.4,
+      "element": "nature",
+      "effect": "nature_vine_burst",
+      "image": "/images/skills/vine_lash.png",
+      "description": "Whipping vines strike for 1.4× magic power."
+    },
+    {
+      "id": "thorn_volley",
+      "name": "Thorn Volley",
+      "target": "enemy",
+      "mana": 9,
+      "power": 1.9,
+      "element": "nature",
+      "effect": "nature_vine_projectile",
+      "buffs": [{"kind": "dot", "value": 0.05}],
+      "duration": 3,
+      "image": "/images/skills/thorn_volley.png",
+      "description": "A barrage of thorns for 1.9× magic that bleeds the target."
+    },
+    {
+      "id": "forest_renewal",
+      "name": "Forest Renewal",
+      "target": "self",
+      "mana": 10,
+      "element": "nature",
+      "effect": "heal_aura_fountain",
+      "healSelfPct": 0.3,
+      "image": "/images/skills/forest_renewal.png",
+      "description": "Bloom with nature's blessing, restoring 30% of your max HP."
     }
   ]
 };
@@ -7323,6 +7409,7 @@ function publicCatalog() {
       maxLives: CONTENT.starting.lives,
     },
     effects: CONTENT.effects,
+    elements: CONTENT.elements || [],
     affinity: CONTENT.affinity || {},
     combos: CONTENT.combos || [],
     darkTrait: CONTENT.darkTrait || { deal: 1.3, taken: 1.5 },

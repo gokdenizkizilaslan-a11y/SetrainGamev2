@@ -4,11 +4,56 @@ const CATALOG = {
   skills: [],
   monsters: [],
   dungeons: [],
+  elements: [],
   town: { tavern: { bets: [5, 10, 25] } },
 };
 
+function elemDef(id) {
+  return (CATALOG.elements || []).find((e) => e && e.id === id) || null;
+}
+function elemSound(id) {
+  const d = elemDef(id);
+  return (d && d.sound) || ELEMENT_SOUNDS[id] || "";
+}
+function elemDefaultFx(id) {
+  const d = elemDef(id);
+  return (d && d.effect) || "element_" + id;
+}
+function elemTravelFx(id) {
+  const d = elemDef(id);
+  return (d && d.travel) || "element_" + id + "_projectile";
+}
+function injectElementTints(elements) {
+  try {
+    let css = "";
+    for (const el of elements) {
+      if (!el || !el.id) continue;
+      const pal = Array.isArray(el.palette) && el.palette.length ? el.palette : [el.color || "#658a5e"];
+      const c1 = pal[0];
+      const c2 = pal[pal.length - 1];
+      css += ".st-node-ico--" + el.id + " { background: linear-gradient(135deg, " + c1 + ", " + c2 + "); }\n";
+    }
+    if (!css) return;
+    let st = document.getElementById("setra-element-tints");
+    if (!st) {
+      st = document.createElement("style");
+      st.id = "setra-element-tints";
+      (document.head || document.documentElement).appendChild(st);
+    }
+    st.textContent = css;
+  } catch (e) {
+    /* non-fatal */
+  }
+}
+
 function applyCatalog(cat) {
   Object.assign(CATALOG, cat);
+  if (Array.isArray(cat.elements) && cat.elements.length) {
+    if (window.SetraEffects && typeof window.SetraEffects.setElements === "function") {
+      try { window.SetraEffects.setElements(cat.elements); } catch (e) { /* non-fatal */ }
+    }
+    injectElementTints(cat.elements);
+  }
 }
 
 function $(id) {
@@ -161,7 +206,7 @@ let soundMap = new Map();
 const audioCache = {};
 const SYNTH_FALLBACK = {
   slash: "hit", heavy: "hit", axe: "hit", crush: "crit", arcane: "arcane",
-  fire: "arcane", frost: "arcane", water: "arcane", earth: "hit", lightning: "arcane", blood: "shadow", dark: "shadow", holy: "holy", shadow: "shadow",
+  fire: "arcane", frost: "arcane", water: "arcane", earth: "hit", lightning: "arcane", blood: "shadow", dark: "shadow", holy: "holy", shadow: "shadow", nature: "arcane",
   heal: "heal", defend: "block", monster: "hit", crit: "crit",
 };
 
@@ -195,7 +240,7 @@ function sfxPlay(names, vol) {
     a.play().catch(() => {});
     return;
   }
-  const name = SYNTH_FALLBACK[group[0]] || (group.length ? group[0] : null);
+  const name = SYNTH_FALLBACK[group[0]] || (group.length ? "arcane" : null);
   if (name) playSfx(name);
 }
 
@@ -318,9 +363,14 @@ function buffBadges(d, targetType, targetId) {
     .join("")}</span>`;
 }
 
-function fxRecipe(effect) {
+function fxRecipe(effect, elem) {
   const effects = (CATALOG && CATALOG.effects) || {};
-  return effects[effect] || effects.slash || { animation: "hit", color: "#ff7a5c", particles: "slash" };
+  const r = effects[effect] || effects.slash || { animation: "hit", color: "#ff7a5c", particles: "slash" };
+  if (!effects[effect]) {
+    const d = elemDef(elem);
+    if (d && d.palette && d.palette.length) return Object.assign({}, r, { color: d.palette[0] });
+  }
+  return r;
 }
 
 function spawnParticles(el, type, color) {
@@ -372,10 +422,13 @@ function drainCombatFx(root) {
     if (ev.target === "enemy") { el = root.querySelector('.enemy[data-enemy="' + ev.targetId + '"]'); fromEl = root.querySelector('.fighter[data-fighter="' + ev.actor + '"]') || el; }
     else if (ev.target === "player") { el = root.querySelector('.fighter[data-fighter="' + ev.targetId + '"]'); fromEl = root.querySelector('.enemy[data-enemy="0"]') || root.querySelector('.fighter[data-fighter="' + ev.actor + '"]') || el; }
     // map old effect to new 80
-    const vfxMap = { slash:"rising_katana_slash", heavy:"heavy_hammer_slam", axe:"axe_cleave_horizontal", crush:"heavy_hammer_slam", arcane:"frost_crystal_spear", fire:"fire_meteor_crash", frost:"frost_crystal_spear", water:"tidal_wave_water", earth:"earth_fissure_rupture", lightning:"lightning_strike_heavy", blood:"blood_scythe", dark:"shadow_scythe_reap", holy:"holy_pillar_smite", shadow:"shadow_scythe_reap", heal:"heal_aura_fountain", defend:"radiant_halo_shield", monster:"rising_katana_slash", crit:"heavy_hammer_slam", buff:"radiant_halo_shield", dot:"blood_needles", shield:"radiant_halo_shield", wet:"tidal_wave_water", frozen:"frost_prison_dome" };
+    const vfxMap = { slash:"rising_katana_slash", heavy:"heavy_hammer_slam", axe:"axe_cleave_horizontal", crush:"heavy_hammer_slam", heal:"heal_aura_fountain", defend:"radiant_halo_shield", monster:"rising_katana_slash", crit:"heavy_hammer_slam", buff:"radiant_halo_shield", dot:"blood_needles", shield:"radiant_halo_shield", wet:"tidal_wave_water", frozen:"frost_prison_dome" };
     const _registryIds = (typeof window !== "undefined" && Array.isArray(window.SETRA_EFFECTS_REGISTRY)) ? window.SETRA_EFFECTS_REGISTRY : [];
     const _isRealId = (v) => typeof v === "string" && v.length > 0 && _registryIds.some((e) => e && e.id === v);
-    let vfxId = (_isRealId(ev.vfxId) && ev.vfxId) || (_isRealId(ev.effect) && ev.effect) || vfxMap[ev.effect] || vfxMap[ev.elem] || "rising_katana_slash";
+    const _sk0 = (ev.skill && typeof skillById === "function") ? skillById(ev.skill) : null;
+    const _elem = ev.elem || (_sk0 && _sk0.element) || null;
+    const _defFx = _elem ? elemDefaultFx(_elem) : null;
+    let vfxId = (_isRealId(ev.vfxId) && ev.vfxId) || (_isRealId(ev.effect) && ev.effect) || vfxMap[ev.effect] || (_isRealId(_defFx) && _defFx) || vfxMap[ev.elem] || "rising_katana_slash";
     // --- GEZGIN SKILL DUZELTMESI (sadece gorsel, oyun mantigi degismez) ---
     // bolt/beam/ray/laser/spear/javelin/lance gibi skiller hedefte belirmemeli;
     // caster kartindan baslayip hedef karta gitmeli (capraz konumda capraz gider).
@@ -401,7 +454,11 @@ function drainCombatFx(root) {
         if (_sid === "shadow_step" || _sid === "static_overload" || _sid === "thunderbolt") _travel = null;
         // Explicit effect varsa onu koru, sadece travel mode ayarla
         const _hasExplicitFx = !!(_sk && _sk.effect);
-        if (_travel && !_hasExplicitFx && _travelProj[_elem]) vfxId = _travelProj[_elem];
+        if (_travel && !_hasExplicitFx) {
+          const _tp = elemTravelFx(_elem);
+          if (_isRealId(_tp)) vfxId = _tp;
+          else if (_travelProj[_elem]) vfxId = _travelProj[_elem];
+        }
       }
     } catch (e) { /* gorsel fallback: vfxId aynen kalir */ }
     if (vfx && el) {
@@ -416,7 +473,7 @@ function drainCombatFx(root) {
       setTimeout(()=>{ try{ vfx.play(vfxId, {fromX, fromY, toX, toY, travel: _travel}); }catch(e){} }, delay);
     }
     if (ev.type === "damage") {
-      const r = fxRecipe(ev.effect);
+      const r = fxRecipe(ev.effect, ev.elem);
       if (ev.crit) {
         spawnPopup(el, "CRIT " + ev.amount, "crit", r.color);
         sfxPlay(["skull_crush"]);
@@ -424,7 +481,7 @@ function drainCombatFx(root) {
       } else {
         spawnPopup(el, "-" + ev.amount, "damage", r.color);
         const monsterDefault = ev.source === "monster" && (!ev.elem || ev.elem === "physical");
-        sfxPlay(monsterDefault ? ELEMENT_SOUNDS.monster : ELEMENT_SOUNDS[ev.elem] || r.sound);
+        sfxPlay(monsterDefault ? ELEMENT_SOUNDS.monster : elemSound(ev.elem) || r.sound);
       }
     } else if (ev.type === "heal") {
       spawnPopup(el, "+" + ev.amount, "heal", "#4ade80");
