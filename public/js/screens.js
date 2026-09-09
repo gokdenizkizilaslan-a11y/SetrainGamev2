@@ -476,12 +476,14 @@ function drainCombatFx(root) {
       const r = fxRecipe(ev.effect, ev.elem);
       if (ev.crit) {
         spawnPopup(el, "CRIT " + ev.amount, "crit", r.color);
-        sfxPlay(["skull_crush"]);
+        const critSnd = ev.sound || "skull_crush";
+        sfxPlay(critSnd);
         shakeCombat(root);
       } else {
         spawnPopup(el, "-" + ev.amount, "damage", r.color);
         const monsterDefault = ev.source === "monster" && (!ev.elem || ev.elem === "physical");
-        sfxPlay(monsterDefault ? ELEMENT_SOUNDS.monster : elemSound(ev.elem) || r.sound);
+        const snd = ev.sound || (monsterDefault ? ELEMENT_SOUNDS.monster : null) || elemSound(ev.elem) || r.sound;
+        if (snd) sfxPlay(snd);
       }
     } else if (ev.type === "heal") {
       spawnPopup(el, "+" + ev.amount, "heal", "#4ade80");

@@ -60,9 +60,12 @@ body {
    ARKAPLAN RESMI (BACKGROUND IMAGE) — AYARLAR BURADA
    ------------------------------------------------------------
    Resim KOYMAK icin style.css'i degistirmene GEREK YOK:
-     public/images/backgrounds/town.png  (veya town.jpg)
-   adiyla dosyayi klasore atman yeterli. bgfx.js onu otomatik
-   bulup asagidaki #bg-photo katmanina yerlestirir.
+     public/images/backgrounds/bg.png  -> TUM ekranlarda tek resim
+     (veya bg.jpg). Ekrana ozel istersen: town.png, dungeon.png,
+     tavern.png, setup.png, lobby.png, menu.png. Ekran resmi yoksa
+     bg.png, o da yoksa menu.png her ekranda fallback olur.
+   bgfx.js onlari otomatik bulup asagidaki #bg-photo katmanina
+   yerlestirir.
    BURADA sadece gorunumu ayarlarsin:
      --bg-photo-opacity : resmin ne kadar gorunecegi (0 = gizli, 1 = tam)
      --bg-photo-blur    : resme bulaniklik (ornek: 0px / 2px)

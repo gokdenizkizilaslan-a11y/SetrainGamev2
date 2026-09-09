@@ -1,37 +1,44 @@
-# Characters — How to replace
+# Sınıflar — Görsel Ekleme
 
-Each class portrait is loaded by its `slug`. Drop a file named exactly like the slug.
+Her sınıf portresi `slug`'u ile yüklenir. Dosya adı tam olarak slug olsun:
 
-| Filename | Class | Notes |
-|---|---|---|
-| `warrior.png` | Warrior | Base class (visible on setup) |
-| `ranger.png` | Ranger |  |
-| `mage.png` | Mage |  |
-| `rogue.png` | Rogue |  |
-| `paladin.png` | Paladin |  |
-| `assassin.png` | Assassin |  |
-| `support.png` | Support Mage | slug is `support` |
-| `tank.png` | Tank |  |
-| `warlord.png` | War Lord | Evolution of warrior (Lv20) |
-| `warden.png` | Warden | Evolution of ranger |
-| `archmage.png` | Archmage | Evolution of mage |
-| `nightblade.png` | Nightblade | Evolution of rogue |
-| `crusader.png` | Crusader | Evolution of paladin |
-| `reaper.png` | Reaper | Evolution of assassin |
-| `high_priest.png` | High Priest | Evolution of support |
-| `juggernaut.png` | Juggernaut | Evolution of tank |
-| `war_emperor.png` | War Emperor | Lv40 |
-| `storm_warden.png` | Storm Warden | Lv40 |
-| `archon.png` | Archon | Lv40 |
-| `shade_king.png` | Shade King | Lv40 |
-| `lightbringer.png` | Lightbringer | Lv40 |
-| `death_lord.png` | Death Lord | Lv40 |
-| `divine_saint.png` | Divine Saint | Lv40 |
-| `colossus.png` | Colossus | Lv40 |
+```
+public/images/characters/<slug>.png     →  örnek: warrior.png
+```
 
-- Path in `content.js`: `classes[].image = "/images/characters/<slug>.png"`
-- Format: `PNG` or `JPG` both work (`warrior.jpg` also works if you change content.js, but keep `.png` to avoid editing content.js).
-- Recommended: 512x512 transparent PNG, circle-cropped in CSS.
-- Missing file → colored gradient circle fallback (game still works).
+> ipucu: slug'ı `/editor` → **Classes** sayfasından görürsün (Edit → "Image path").
 
-Add new class: add entry in `content.js` with `slug: "myclass"` and drop `myclass.png` here.
+## Tüm slug'lar
+
+| Dosya | Sınıf | Dosya | Sınıf |
+|---|---|---|---|
+| `warrior.png` | Warrior | `warlord.png` | War Lord (Lv20) |
+| `ranger.png` | Ranger | `warden.png` | Warden (Lv20) |
+| `mage.png` | Mage | `archmage.png` | Archmage (Lv20) |
+| `rogue.png` | Rogue | `nightblade.png` | Nightblade (Lv20) |
+| `paladin.png` | Paladin | `crusader.png` | Crusader (Lv20) |
+| `assassin.png` | Assassin | `reaper.png` | Reaper (Lv20) |
+| `support.png` | Support Mage | `high_priest.png` | High Priest (Lv20) |
+| `tank.png` | Tank | `juggernaut.png` | Juggernaut (Lv20) |
+| `tamer.png` | Tamer | `beastmaster.png` | Beastmaster (Lv20?) |
+| — | — | `war_emperor.png` | War Emperor (Lv40) |
+| — | — | `storm_warden.png` | Storm Warden (Lv40) |
+| — | — | `archon.png` | Archon (Lv40) |
+| — | — | `shade_king.png` | Shade King (Lv40) |
+| — | — | `lightbringer.png` | Lightbringer (Lv40) |
+| — | — | `death_lord.png` | Death Lord (Lv40) |
+| — | — | `divine_saint.png` | Divine Saint (Lv40) |
+| — | — | `colossus.png` | Colossus (Lv40) |
+
+## Kurallar
+
+- Yol: `classes[].image = "/images/characters/<slug>.png"` (editörde değiştirilebilir).
+- Format: PNG veya JPG. `.png` önerilir (content.js'teki yol zaten `.png`).
+- Önerilen boyut: `512×512` şeffaf PNG (CSS yuvarlak gösterir).
+- **Dosya yoksa:** renkli degrade + ilk harf fallback'i görünür, oyun çökmez.
+
+## Yeni sınıf eklerken
+
+1. `/editor` → **Classes** → **Add**: `slug` (küçük harf, boşluksuz) ve `label` gir.
+2. **Image path**'te **"Default: ..."** butonuna bas.
+3. Kaydet → `public/images/characters/<slug>.png` dosyasını at → restart.

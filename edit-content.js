@@ -17,7 +17,7 @@ const readline = require("readline/promises");
 
 const { CONTENT } = require("./content.js");
 const { writeContent } = require("./editor-save.js");
-const { formatLabel, collections: EDITOR_COLLECTIONS } = require("./editor-defs.js");
+const { formatLabel, collections: EDITOR_COLLECTIONS, SOUND_IDS } = require("./editor-defs.js");
 
 const FILE = path.join(__dirname, "content.js");
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
@@ -203,10 +203,17 @@ async function editOneField(item, field) {
     case "number": val = await askNumber(field.label, cur, field); break;
     case "percent": val = await askPercent(field.label, cur); break;
     case "string": val = await askString(field.label, cur); break;
+    case "image": val = await askString(field.label, cur); break;
     case "array": val = await askArray(field.label, cur); break;
     case "choice": {
       const opts = Array.isArray(field.options) ? field.options : field.options(CONTENT);
-      val = await pick(opts, `${field.label} (current: ${cur ?? "none"})`);
+      const full = field.allowBlank ? ["", ...opts] : opts;
+      val = await pick(full, `${field.label} (current: ${cur ?? "none"})`);
+      if (val === null) return;
+      break;
+    }
+    case "sound": {
+      val = await pick(["", ...SOUND_IDS], `${field.label} (current: ${cur ?? "none"}, blank = auto)`);
       if (val === null) return;
       break;
     }

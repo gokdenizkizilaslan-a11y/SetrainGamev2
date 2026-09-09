@@ -209,12 +209,20 @@
 /* ============================================================
    ARKAPLAN FOTOGRAFI YUKLEYICI (jpg/png otomatik bulma)
    ------------------------------------------------------------
-   Nasil resim koyarsin?
-     public/images/backgrounds/  klasorune ekran adiyla at:
-       menu.png | setup.png | lobby.png | town.png | dungeon.png | tavern.png
-     UZANTI SERBEST: .png yoksa .jpg, .jpeg, .webp sirasiyla denenir.
-     Yani "town.jpg" koyman yeterli, kod degisikligi gerekmez.
-   Resim yoksa: katman gizli kalir, eski degrade gorunum surer.
+   Tek resim HER YERDE gorunsun istiyorsan:
+     1) public/images/backgrounds/bg.png  (veya bg.jpg) at  -> TUM
+        ekranlarda gozukur (town, lobby, dungeon dahil).
+     2) Ya da sadece menu.png at; o da olmadigi ekranlarda
+        HER YERDE fallback olarak kullanilir.
+   Ekrana ozel resim tercih edersen (ustune biner):
+     town.png    -> town ekrani
+     dungeon.png -> dungeon/savas overlay'i acikken
+     tavern.png  -> taverna overlay'i acikken
+     setup.png   -> karakter yaratma
+     lobby.png   -> lobi
+     menu.png    -> ana menu
+   UZANTI SERBEST: .png yoksa .jpg, .jpeg, .webp sirasiyla denenir.
+   Hicbir resim yoksa: katman gizli kalir, eski degrade gorunum surer.
    ============================================================ */
 (function () {
   const SCREEN_TO_PHOTO = {
@@ -223,6 +231,8 @@
     "screen-lobby": "lobby",
     "screen-town": "town",
   };
+  // Once ekrana ozel, sonra global bg, en sonda menu (eski davranis):
+  const GLOBAL_BASES = ["/images/backgrounds/bg", "/images/backgrounds/menu"];
   const EXTS = ["png", "jpg", "jpeg", "webp"];
   const cache = {}; // base -> url | null (yok)
 
@@ -237,6 +247,22 @@
     img.src = url;
   }
 
+  // Oncelik sirasini dener: ekran resmi -> bg.png (global) -> menu.png
+  function probeChain(chain, i, done) {
+    if (i >= chain.length) { done(null); return; }
+    const base = chain[i];
+    if (cache[base] !== undefined) {
+      if (cache[base]) done(cache[base]);
+      else probeChain(chain, i + 1, done);
+      return;
+    }
+    probe(base, 0, (url) => {
+      cache[base] = url;
+      if (url) done(url);
+      else probeChain(chain, i + 1, done);
+    });
+  }
+
   function applyPhoto() {
     const box = el();
     if (!box) return;
@@ -247,16 +273,14 @@
       else if (!document.getElementById("tavern-view")?.classList.contains("hidden")) key = "tavern";
     }
     const base = "/images/backgrounds/" + key;
-    if (box.dataset.base === base) return; // ayni ekran, tekrar deneme
-    box.dataset.base = base;
-    if (cache[base] !== undefined) {
-      setPhoto(box, cache[base]);
-      return;
-    }
-    probe(base, 0, (url) => {
-      cache[base] = url;
+    // mükerrer girislerde atla (ayni ekran + ayni hiyerarsi)
+    const chain = Array.from(new Set([base, ...GLOBAL_BASES]));
+    const chainId = chain.join(",");
+    if (box.dataset.chain === chainId) return;
+    box.dataset.chain = chainId;
+    probeChain(chain, 0, (url) => {
       // kullanici bu arada baska ekrana gectiyse eski sonucu uygulama
-      if (box.dataset.base !== base) return;
+      if (box.dataset.chain !== chainId) return;
       setPhoto(box, url);
     });
   }

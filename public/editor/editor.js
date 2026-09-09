@@ -1,5 +1,13 @@
 "use strict";
 
+// Real sound files served by the game (/api/sounds); used for the sound
+// fields so the editor can both list the REAL files and play-test them.
+const SOUND_LIST = { sounds: [] };
+fetch("/api/sounds")
+  .then((r) => r.json())
+  .then((d) => { SOUND_LIST.sounds = (d && d.sounds) || []; })
+  .catch(() => {});
+
 const state = {
   defs: null,
   data: null,
@@ -179,8 +187,10 @@ function setBanner(kind, text) {
 
 function updateBanner() {
   const save = document.getElementById("btn-save");
+  const commit = document.getElementById("btn-commit");
   save.disabled = !state.dirty;
-  if (state.dirty) setBanner("unsaved", "Unsaved changes — click Save to write them to content.js.");
+  if (commit) commit.disabled = !state.dirty;
+  if (state.dirty) setBanner("unsaved", "Unsaved changes — click Save or Commit & Push.");
 }
 
 function markDirty() {
@@ -206,8 +216,40 @@ async function saveAll() {
     state.dirty = false;
     setBanner("saved", "Saved to content.js. " + (json.note || ""));
     saveBtn.disabled = true;
+    document.getElementById("btn-commit").disabled = true;
   } catch (e) {
     setBanner("error", "Save failed: " + e.message);
+    saveBtn.disabled = false;
+  }
+}
+
+async function saveAndPush() {
+  const commitBtn = document.getElementById("btn-commit");
+  const saveBtn = document.getElementById("btn-save");
+  const msgInput = document.getElementById("commit-msg");
+  const message = (msgInput.value || "").trim() || "güncelleme";
+  commitBtn.disabled = true;
+  saveBtn.disabled = true;
+  setBanner("unsaved", "Saving + committing + pushing...");
+  try {
+    const res = await fetch("/editor/api/editor/save-and-push", {
+      method: "POST",
+      headers: apiHeaders(),
+      body: JSON.stringify({ data: state.data, message }),
+    });
+    const json = await res.json();
+    if (!res.ok || !json.ok) {
+      setBanner("error", "Failed: " + (json.error || "Unknown error"));
+      commitBtn.disabled = false;
+      saveBtn.disabled = false;
+      return;
+    }
+    state.dirty = false;
+    setBanner("saved", "✓ " + (json.note || "Done."));
+    // don't re-enable buttons — nothing is dirty
+  } catch (e) {
+    setBanner("error", "Failed: " + e.message);
+    commitBtn.disabled = false;
     saveBtn.disabled = false;
   }
 }
@@ -351,7 +393,7 @@ function deleteEntry(page, item) {
 function openEntryEditor(entry, page) {
   const snapshot = deepClone(entry);
   const fieldsBox = el("div", {});
-  for (const field of page.fields) fieldsBox.appendChild(renderField(entry, field));
+  for (const field of page.fields) fieldsBox.appendChild(renderField(entry, field, page));
 
   MODAL_ROOT.replaceChildren(
     el("div", { class: "modal-overlay" },
@@ -387,7 +429,7 @@ function openEntryEditor(entry, page) {
 
 /* ---------- fields ---------- */
 
-function renderField(dataObj, field) {
+function renderField(dataObj, field, page) {
   const accessor = field.key || field.path;
   const wrap = el("div", { class: "field" });
   let control;
@@ -432,13 +474,35 @@ function renderField(dataObj, field) {
     }
     case "choice": {
       const current = getPath(dataObj, accessor);
+      const opts = field.options || [];
       const sel = el("select", {},
-        ...(field.options || []).map((o) =>
+        ...(field.allowBlank ? [el("option", { value: "", selected: current == null || current === "" }, "(auto)")] : []),
+        ...opts.map((o) =>
           el("option", { value: String(o), selected: String(o) === String(current) }, esc(o))
         )
       );
-      sel.addEventListener("change", () => { setPath(dataObj, accessor, sel.value); mark(); });
+      sel.addEventListener("change", () => { setPath(dataObj, accessor, sel.value === "" ? "" : sel.value); mark(); });
       control = sel;
+      break;
+    }
+    case "sound": {
+      const current = getPath(dataObj, accessor);
+      const sel = el("select", {},
+        el("option", { value: "", selected: current == null || current === "" }, "(auto — element/default)"),
+        ...(SOUND_LIST.sounds || []).map((s) =>
+          el("option", { value: s.id, selected: s.id === current }, esc(s.id))
+        )
+      );
+      sel.addEventListener("change", () => { setPath(dataObj, accessor, sel.value); mark(); });
+      const playBtn = mkButton("▶ test", "mini", () => {
+        const id = sel.value;
+        const s = (SOUND_LIST.sounds || []).find((x) => x.id === id);
+        if (s) { const a = new Audio(s.url); a.volume = 0.5; a.play().catch(() => {}); }
+      });
+      playBtn.disabled = true;
+      sel.addEventListener("change", () => { playBtn.disabled = !(sel.value && (SOUND_LIST.sounds || []).some((s) => s.id === sel.value)); });
+      if (sel.value) playBtn.disabled = false;
+      control = el("div", { class: "img-row" }, sel, playBtn);
       break;
     }
     case "bool": {
@@ -457,6 +521,41 @@ function renderField(dataObj, field) {
         mark();
       }));
       control = box;
+      break;
+    }
+    case "image": {
+      const input = el("input", { type: "text", value: getPath(dataObj, accessor) ?? "" });
+      input.addEventListener("change", () => { setPath(dataObj, accessor, input.value || ""); mark(); });
+      const prev = document.createElement("img");
+      prev.className = "img-prev";
+      prev.hidden = true;
+      prev.alt = "";
+      const refreshPrev = () => {
+        const v = getPath(dataObj, accessor);
+        if (v) {
+          prev.src = v;
+          prev.hidden = false;
+          prev.onerror = () => { prev.hidden = true; };
+        } else {
+          prev.hidden = true;
+        }
+      };
+      input.addEventListener("input", refreshPrev);
+      refreshPrev();
+      const row = el("div", { class: "img-row" }, input);
+      const idVal = page ? (dataObj[page.idField] ?? "") : "";
+      if (field.folder && idVal) {
+        const suggested = "/images/" + field.folder + "/" + idVal + ".png";
+        row.appendChild(mkButton("Default: " + suggested, "mini", () => {
+          setPath(dataObj, accessor, suggested);
+          input.value = suggested;
+          mark();
+          refreshPrev();
+        }));
+        row.appendChild(el("div", { class: "sub" }, "Drop the art file at " + "public/images/" + field.folder + "/" + idVal + ".png (or .jpg) or type any /images/... path."));
+      }
+      row.appendChild(prev);
+      control = row;
       break;
     }
     default:
@@ -517,7 +616,7 @@ function renderStatMap(target, statKeys, onChange) {
 
 function renderForm(page) {
   const box = el("div", {});
-  for (const field of page.fields) box.appendChild(renderField(state.data, field));
+  for (const field of page.fields) box.appendChild(renderField(state.data, field, page));
   return box;
 }
 
@@ -589,7 +688,7 @@ function renderLoot(page) {
 
 function renderAnomalies(page) {
   const box = el("div", {});
-  for (const field of page.fields) box.appendChild(renderField(state.data, field));
+  for (const field of page.fields) box.appendChild(renderField(state.data, field, page));
 
   box.appendChild(el("h3", {}, page.traits.label));
   const items = getPath(state.data, page.traits.path) || [];
@@ -651,6 +750,7 @@ function renderStory(page) {
 
 window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btn-save").addEventListener("click", saveAll);
+  document.getElementById("btn-commit").addEventListener("click", saveAndPush);
   document.getElementById("btn-discard").addEventListener("click", discard);
   init();
 });

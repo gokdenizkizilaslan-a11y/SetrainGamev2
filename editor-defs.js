@@ -9,6 +9,8 @@
 //   choice  — pick one of `options` (an array, or a function(data) returning an array)
 //   bool    — yes / no
 //   statmap — a set of stat bonuses; `statKeys` lists the available stats
+//   image   — image path. In the web editor it auto-suggests
+//             /images/<folder>/<id>.png and shows a live thumbnail.
 //
 // In a collection, `key` is a dotted path within one entry. In a form page,
 // `path` is a dotted path into the whole CONTENT object.
@@ -16,6 +18,11 @@
 
 const fs = require("fs");
 const path = require("path");
+
+// Image field helper for the collections below: `folder` is the public/images
+// subfolder where the player drops the file, so the editor can suggest the
+// default "/images/<folder>/<id>.png" path when a new entry is created.
+const img = (folder) => ({ type: "image", folder });
 
 const statLabels = {
   maxHp: "Max HP",
@@ -99,9 +106,9 @@ const collections = [
       { key: "name", label: "Display name", type: "string" },
       { key: "palette", label: "Colors (comma-separated hex, drawn by VFX)", type: "array" },
       { key: "gravity", label: "Particle gravity (0 = none, negative = rises)", type: "number" },
-      { key: "sound", label: "Hit sound", type: "choice", options: SOUND_IDS },
-      { key: "effect", label: "Core VFX effect (leave blank to auto-generate)", type: "choice", options: VFX_IDS },
-      { key: "travel", label: "Travel/projectile VFX effect", type: "choice", options: VFX_IDS },
+      { key: "sound", label: "Hit sound (blank = auto)", type: "sound" },
+      { key: "effect", label: "Core VFX effect (blank = auto)", type: "choice", options: VFX_IDS, allowBlank: true },
+      { key: "travel", label: "Travel/projectile VFX effect (blank = auto)", type: "choice", options: VFX_IDS, allowBlank: true },
       { key: "description", label: "Description", type: "string" },
     ],
   },
@@ -165,7 +172,7 @@ const collections = [
       { key: "speed", label: "Speed", type: "number" },
       { key: "rarity", label: "Rarity (higher = rarer drops)", type: "choice", options: rarityOptions },
       { key: "element", label: "Element", type: "choice", options: ELEMENTS },
-      { key: "image", label: "Image path", type: "string" },
+      { key: "image", label: "Image path", ...img("monsters") },
     ],
   },
 
@@ -181,7 +188,7 @@ const collections = [
     fields: [
       { key: "name", label: "Name", type: "string" },
       { key: "element", label: "Element", type: "choice", options: ELEMENTS },
-      { key: "image", label: "Image path", type: "string" },
+      { key: "image", label: "Image path", ...img("pets") },
       { key: "description", label: "Description", type: "string" },
     ],
   },
@@ -210,7 +217,7 @@ const collections = [
       { key: "heal", label: "HP healed when used (consumables)", type: "number", if: (i) => i.slot === "consumable" },
       { key: "food", label: "Food gained when used (consumables)", type: "number", if: (i) => i.slot === "consumable" },
       { key: "description", label: "Description", type: "string" },
-      { key: "image", label: "Image path", type: "string" },
+      { key: "image", label: "Image path", ...img("items") },
     ],
   },
 
@@ -229,6 +236,8 @@ const collections = [
       { key: "mana", label: "Mana cost", type: "number" },
       { key: "power", label: "Damage (1.6 = 1.6× magic/attack)", type: "number" },
       { key: "element", label: "Element", type: "choice", options: ELEMENTS },
+      { key: "effect", label: "VFX Effect (blank = element auto)", type: "choice", options: VFX_IDS, allowBlank: true },
+      { key: "sound", label: "Hit Sound (blank = element auto)", type: "sound" },
       { key: "heal", label: "Heal (number= maxHp% or {stat,mult} e.g. {stat:'attack',mult:1.3})", type: "string" },
       { key: "healSelfPct", label: "Heal % of own max HP", type: "percent" },
       { key: "defense", label: "Damage blocked %", type: "percent" },
@@ -237,7 +246,7 @@ const collections = [
       { key: "manaRestore", label: "Flat mana restored", type: "number" },
       { key: "bonusVsStatus", label: "Bonus vs status (e.g. {status:'wet',mult:0.5})", type: "string" },
       { key: "description", label: "Description", type: "string" },
-      { key: "image", label: "Image path", type: "string" },
+      { key: "image", label: "Image path", ...img("skills") },
     ],
   },
 
@@ -354,4 +363,4 @@ const pages = [
   },
 ];
 
-module.exports = { statLabels, formatLabel, collections, pages };
+module.exports = { statLabels, formatLabel, collections, pages, SOUND_IDS, VFX_IDS };

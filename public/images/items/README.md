@@ -1,20 +1,38 @@
-# Items — How to replace
+# Eşyalar — Görsel Ekleme
 
-Each item is loaded by its `id`.
+Her eşya `id`'si ile yüklenir:
 
-| Filename | Example | Slot |
-|---|---|---|
-| `<item_id>.png` | `rusty_sword.png` | weapon |
-| `leather_helm.png` | head | head |
-| `void_crown.png` | legendary head | head |
+```
+public/images/items/<item_id>.png     →  örnek: rusty_sword.png
+```
 
-Full pattern: `items[].image = "/images/items/<id>.png"`
+> Yol: `items[].image = "/images/items/<id>.png"`. id'yi `/editor` → **Items & Shop**
+> sayfasından görürsün.
 
-Current items (100+): `rusty_sword, leather_helm, leather_chest, leather_pants, leather_boots, iron_amulet, iron_ring, mana_talisman, battle_axe, war_hammer, longbow, shortbow, apprentice_staff, archon_staff, dagger, poison_dagger, mace, holy_sword, kris_blade, whisper_blade, scepter, cleric_staff, maul, bulwark_hammer, stone_ash_sword, hearth_tea, field_rations, fire_essence, frost_essence, arcane_essence, shadow_essence, heart_of_fire, golem_heart, ancient_relic, fire_ash_sword, molten_cleaver, frost_gladius, arcane_rod, shadow_knife, ember_sword, phoenix_staff, void_cleaver, iron_greatsword, steel_blade, ranger_bow, arcane_scepter, shadow_dagger, dragon_spear, titan_hammer, storm_bow, void_blade, world_breaker, bronze_helm...` (see content.js items array for full list)
+## Örnek id'ler (100+)
 
-- Format: PNG or JPG both work.
-- Recommended: 256x256 transparent PNG.
-- Missing → brown gradient circle fallback with icon.
-- Chests (`wooden_chest, iron_chest, gold_chest`) have no image by default — they render as colored chest icon. Drop an image to override: `wooden_chest.png`.
+Silahlar: `rusty_sword, battle_axe, war_hammer, longbow, shortbow,
+apprentice_staff, archon_staff, dagger, poison_dagger, mace, holy_sword,
+kris_blade, whisper_blade, scepter, cleric_staff, maul, bulwark_hammer,
+molten_cleaver, frost_gladius, ember_sword, phoenix_staff, void_cleaver,
+iron_greatsword, steel_blade, ranger_bow, arcane_scepter, shadow_dagger,
+dragon_spear, titan_hammer, storm_bow, void_blade, world_breaker...`
+Zırhlar/ekipman: `leather_helm, leather_chest, leather_pants, leather_boots,
+iron_amulet, iron_ring, mana_talisman, bronze_helm...`
+Sarf malzemeleri (consumable): `hearth_tea, field_rations, fire_essence,
+frost_essence, arcane_essence, shadow_essence, heart_of_fire, golem_heart,
+ancient_relic...`
+Sandıklar: `wooden_chest, iron_chest, gold_chest` (varsayılan ikonlu; resim
+atarsan onu kullanır).
 
-Add new item: push to `items` array in content.js with `id: "my_item"` and `image: "/images/items/my_item.png"` then drop `my_item.png` here.
+## Kurallar
+
+- Format: PNG veya JPG.
+- Önerilen boyut: `256×256` şeffaf PNG.
+- **Dosya yoksa:** kahverengi degrade + ilgili ikon fallback'i görünür, oyun çökmez.
+
+## Yeni eşya eklerken
+
+1. `/editor` → **Items & Shop** → **Add**: `id`, `name`, `slot`, `rarity` gir.
+2. **Image path**'teki **"Default: ..."** butonuna bas.
+3. Kaydet → `public/images/items/<id>.png` dosyasını at → restart.

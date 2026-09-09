@@ -504,7 +504,7 @@ function act(room, player, skillId, targetId) {
         dmg = Math.round(dmg * (1 + (skill.bonusVsStatus.mult || 0)));
       }
       dealDamage(mon, dmg);
-      addFx(d, { type: "damage", actor: player.id, target: "enemy", targetId: Number(targetId), amount: dmg, skill: skill.id, elem: skill.element || "physical", effect: skill.effect || defaultEffectFor(skill.element), crit });
+      addFx(d, { type: "damage", actor: player.id, target: "enemy", targetId: Number(targetId), amount: dmg, skill: skill.id, elem: skill.element || "physical", effect: skill.effect || defaultEffectFor(skill.element), sound: skill.sound || "", crit });
       if (skill.lifesteal) {
         const before = player.hp;
         const amt = Math.max(1, Math.round(dmg * skill.lifesteal));
@@ -747,7 +747,7 @@ function runNextMonster(room, d) {
           dmg = Math.max(1, dmg);
           const eff = skill.effect || defaultEffectFor(skill.element || mon.element);
           dealDamage(target, dmg);
-          addFx(d, { type: "damage", actor: target.id, target: "player", targetId: target.id, amount: dmg, source: "monster", monster: mon.kind, elem: skill.element || mon.element || "physical", effect: eff, crit });
+          addFx(d, { type: "damage", actor: target.id, target: "player", targetId: target.id, amount: dmg, source: "monster", monster: mon.kind, elem: skill.element || mon.element || "physical", effect: eff, sound: skill.sound || "", crit });
         }
       }
       // ensure fx/broadcast even if room.broadcast not set (fallback)

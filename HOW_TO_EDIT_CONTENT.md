@@ -394,9 +394,11 @@ The `cta` is the button text. When the day changes, a "Day N" overlay appears (y
 
 ## Images (color placeholders → real art)
 
-Class portraits, monsters, and dungeons render as **colored circles/tiles** (set in `public/style.css` under `.portrait--*`). Drop a PNG/JPG at the path listed in `content.js` and it **automatically replaces the color** — no code change needed.
+Class portraits, monsters, pets, items, skills, and dungeons render as **colored circles/tiles** (set in `public/style.css` under `.portrait--*`). Drop a PNG/JPG at the path listed in `content.js` and it **automatically replaces the color** — no code change needed. See `public/images/README.md` (Turkish, thorough) for the full guide.
 
-`images.backgrounds.menu`, `.setup`, `.lobby`, `.town`, `.dungeon`, `.tavern` are reserved for future background art; the UI uses warm parchment gradients for now. `images.ui.panel` is an optional texture for the gold-bordered container.
+The web editor (`/editor`) shows an `Image path` field with a **"Default: ..."** button that auto-fills `/images/<folder>/<id>.png` and a live thumbnail, so you always know the exact filename to drop into `public/images/<folder>/`.
+
+Backgrounds are now live: drop `public/images/backgrounds/bg.png` and it shows on **every screen** (menu, setup, lobby, town, dungeon, tavern). Screen-specific art overrides it: `menu.png`, `setup.png`, `lobby.png`, `town.png`, `dungeon.png`, `tavern.png`; if neither exists, `menu.png` is used everywhere as a fallback. Extensions are auto-probed (`png → jpg → jpeg → webp`). `images.ui.panel` is an optional texture for the gold-bordered container.
 
 Suggested folders:
 
@@ -407,8 +409,10 @@ Suggested folders:
 - `public/images/dungeons/`
 - `public/images/items/`
 - `public/images/skills/`
+- `public/images/pets/`
+- `public/images/bosses/`
 
-Set the matching path in `content.js`. PNG or JPG both work.
+Set the matching path in `content.js` (or via the editor's Image field). PNG or JPG both work.
 
 ## Music
 

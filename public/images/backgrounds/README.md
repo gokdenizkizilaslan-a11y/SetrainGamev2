@@ -1,25 +1,59 @@
-# Backgrounds — How to replace
+# Arkaplanlar (Backgrounds) — Nasıl değiştirilir?
 
-Drop an image file here and push — Render will serve it instantly. No code change needed.
+Arkaplan resmini buraya at → her yerde otomatik görünür. **Kod değiştirmene gerek yok.**
 
-| Filename (exact) | Where it appears | Content.js key |
-|---|---|---|
-| `menu.png` (or `.jpg`) | Main menu screen | `images.backgrounds.menu` |
-| `setup.png` | Character creation | `images.backgrounds.setup` |
-| `lobby.png` | Lobby / hall list | `images.backgrounds.lobby` |
-| `town.png` | Town dashboard | `images.backgrounds.town` |
-| `dungeon.png` | Dungeon / combat overlay | `images.backgrounds.dungeon` |
-| `tavern.png` | Tavern overlay | `images.backgrounds.tavern` |
+---
 
-- Format: `PNG`, `JPG`, `JPEG` veya `WEBP` — hepsi otomatik bulunur
-  (`town.jpg` koyman yeterli, `.png` ŞART DEĞİL; oyun sırayla dener).
-- Recommended size: 1920x1080, will be stretched/covered.
-- If file is missing: warm parchment gradient fallback is shown (game still works).
-- To replace: just drop `town.png` (veya `town.jpg`) here → commit → push to Render.
-- Opaklık ayarı: `public/style.css` içinde `--bg-photo-opacity` değerini değiştir.
+## Tek resim her yerde görünsün istiyorsan (önerilen)
 
-Example:
+Dosyanı **`bg.png`** (veya `bg.jpg`, `bg.webp`) adıyla buraya at:
+
 ```
-public/images/backgrounds/town.png   →  shows in town
-public/images/backgrounds/dungeon.png →  shows in combat
+public/images/backgrounds/bg.png
 ```
+
+`bg.png`, **menü, karakter yaratma, lobi, town, dungeon, taverna — yani TÜM
+ekranlarda** en arkada görünür. Büyük kısmını yapmak istediğin tek dosyalık çözüm budur.
+
+> Alternatif: Sadece `menu.png` koyarsan o da her ekranda fallback olarak kullanılır
+> (eski sistem davranışı korunur).
+
+## Ekrana özel resimler istiyorsan (opsiyonel)
+
+| Dosya adı | Nerede görünür |
+|---|---|
+| `bg.png` | **Global** — her yerde (önceliği en düşüktür) |
+| `setup.png` | Karakter yaratma ekranı |
+| `lobby.png` | Lobi / salon listesi |
+| `town.png` | Town ekranı |
+| `dungeon.png` | Zindan / savaş ekranı (overlay açıkken) |
+| `tavern.png` | Taverna ekranı (overlay açıkken) |
+| `menu.png` | Ana menü (ayrıca her yerde fallback) |
+
+**Öncelik sırası:** Ekrana özel resim → `bg.png` (global) → `menu.png` (fallback).
+Yani `town.png` atarsan town'da o görünür, diğer ekranlarda `bg.png` (veya `menu.png`).
+
+---
+
+## Kurallar
+
+- **Uzantı:** PNG, JPG, JPEG, WEBP hepsi otomatik bulunur. `bg.jpg` koyman yeterli,
+  `.png` şart değil (oyun sırayla `png → jpg → jpeg → webp` dener).
+- **Önerilen boyut:** `1920×1080`. Resim ekranı kaplar (`cover`), sıkıştırılmaz.
+- **Resim yoksa:** sıcak parşömen degrade gösterilir, oyun bozulmaz.
+- **Opaklık / bulanıklık:** `public/style.css` içinde
+  `--bg-photo-opacity` (varsayılan 0.55) ve `--bg-photo-blur` değerlerini değiştir.
+- Town'da resim otomatik olarak biraz daha soluk gösterilir (panel okunurluğu için).
+
+## Örnek
+
+```
+public/images/backgrounds/bg.png     →  her ekranda görünür
+public/images/backgrounds/town.png   →  town'da bg.png'nin üstüne biner
+public/images/backgrounds/dungeon.png → dungeon/savaş açıkken görünür
+```
+
+## Deploy
+
+`git add` + `git commit` + `git push` → Render `public/` klasörünü doğrudan servis
+eder. Sunucu restartı gerekmez (statik dosya).

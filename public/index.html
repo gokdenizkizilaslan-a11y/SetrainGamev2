@@ -13,25 +13,30 @@
     <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
-    <!-- ============================================================
+<!-- ============================================================
       ARKAPLAN RESMI (BACKGROUND IMAGE) — BURAYA RESIM KOYMAK ICIN:
       1) Resmini su klasore at:  public/images/backgrounds/
       2) Dosya adi ekrana gore secilir (OTOMATIK, kod degisikligi gerekmez):
-           menu.png    -> ana menu ekrani
+           bg.png      -> TUM ekranlarda (global) — tek resim her yerde
+                          (town, lobby, dungeon dahil) gorunsun istersen
+                          adini bg.png yap, gerisini bosver.
+           menu.png    -> ana menu; ayrica hicbir ekran resmi yoksa
+                          HER YERDE fallback olarak kullanilir.
            setup.png   -> karakter yaratma ekrani
            lobby.png   -> lobi / salon listesi
-           town.png    -> TOWN ekrani (ortadaki buyuk kutunun arkasi)
-           dungeon.png -> dungeon / savas ekrani
-           tavern.png  -> taverna
+           town.png    -> TOWN ekrani (ekrana ozel, bg.den ustun gelir)
+           dungeon.png -> dungeon / savas ekrani (overlay acikken)
+           tavern.png  -> taverna (overlay acikken)
       3) UZANTI SERBEST: .png, .jpg, .jpeg, .webp hepsi olur.
-         Ornek: "town.jpg" koyarsan town ekraninda otomatik gorunur.
+         Ornek: "bg.jpg" koyarsan her ekranda otomatik gorunur.
          (.png sart DEGIL — oyun once .png, sonra .jpg/.jpeg/.webp dener.)
+         Oncelik sirasi: ekrana ozel -> bg.png (global) -> menu.png.
       4) Resim yoksa oyun ESKI degrade gorunume doner, hata vermez.
       5) Onerilen boyut: 1920x1080. Resim ekrani kaplar (cover), ustunde
          partikul canvas'i (#bg-fx) ve karartma (vignette) durur.
       NOT: Daha once resim koyup gelmemesinin sebebi: bu katman bagli
       degildi. Artik asagidaki #bg-photo + bgfx.js otomatik yukluyor.
-    ============================================================ -->
+    ============================================================ →
     <div id="bg-photo" aria-hidden="true"></div>
     <div class="parchment-vignette"></div>
     <canvas id="bg-fx" aria-hidden="true"></canvas>

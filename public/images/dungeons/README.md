@@ -1,34 +1,42 @@
-# Dungeons — How to replace
+# Zindanlar — Görsel Ekleme
 
-Each dungeon tile is loaded by its `rank`.
+Her zindan `rank`'i ile yüklenir:
 
-| Filename | Dungeon | Rank key |
-|---|---|---|
-| `f.png` | F-Rank | `f` |
-| `d.png` | D-Rank | `d` |
-| `c.png` | C-Rank | `c` |
-| `b.png` | B-Rank | `b` |
-| `a.png` | A-Rank | `a` |
-| `s.png` | S-Rank | `s` |
-| `ss.png` | SS-Rank | `ss` |
-| `ssplus.png` | SS+ | `ssplus` |
-| `fast.png` | Fast Dungeon | `fast` |
-| `ember_hollow.png` | Ember Hollow | `special1` |
-| `frost_crypt.png` | Frost Crypt | `special2` |
-| `shadow_sanctum.png` | Shadow Sanctum | `special3` |
-| `storm_bastion.png` | Storm Bastion | `special4` |
-| `void_maw.png` | Void Maw | `special5` |
-| `ancient_foundry.png` | Ancient Foundry | `special6` |
-| `phoenix_sanctum.png` | Phoenix Sanctum | `special7` |
-| `boss_ember_king.png` | Ember King (dungeon tile) | `boss_ember_king` |
-| `boss_frost_titan.png` | Frost Titan | `boss_frost_titan` |
-| `boss_void_herald.png` | Void Herald | `boss_void_herald` |
-| `boss_storm_colossus.png` | Storm Colossus | `boss_storm_colossus` |
-| `boss_world_eater.png` | World Eater | `boss_world_eater` |
+```
+public/images/dungeons/<rank>.png     →  örnek: f.png
+```
 
-- Path: `dungeons[].image = "/images/dungeons/<rank>.png"` — filename must match exactly.
-- Format: PNG or JPG both work.
-- Recommended: 512x512 or 1024x1024.
-- Missing → warm brown gradient tile fallback.
+> Yol: `dungeons[].image = "/images/dungeons/<rank>.png"` — dosya adı tam olarak
+> rank ile aynı olmalıdır. rank'ı `/editor` → **Dungeons** sayfasından görürsün.
 
-Add new dungeon: add entry in `dungeons` with `rank: "myrank"` and drop `myrank.png` here.
+## Rank listesi
+
+| Dosya | Zindan | Dosya | Zindan |
+|---|---|---|---|
+| `f.png` | F-Rank | `ss.png` | SS-Rank |
+| `d.png` | D-Rank | `ssplus.png` | SS+ |
+| `c.png` | C-Rank | `fast.png` | Fast Dungeon |
+| `b.png` | B-Rank | `ember_hollow.png` | Ember Hollow (special1) |
+| `a.png` | A-Rank | `frost_crypt.png` | Frost Crypt (special2) |
+| `s.png` | S-Rank | `shadow_sanctum.png` | Shadow Sanctum (special3) |
+| — | — | `storm_bastion.png` | Storm Bastion (special4) |
+| — | — | `void_maw.png` | Void Maw (special5) |
+| — | — | `ancient_foundry.png` | Ancient Foundry (special6) |
+| — | — | `phoenix_sanctum.png` | Phoenix Sanctum (special7) |
+
+Patron zindanları (dungeon listesindeki kutucuk görseli):
+`boss_ember_king.png, boss_frost_titan.png, boss_void_herald.png,
+boss_storm_colossus.png, boss_world_eater.png`
+
+## Kurallar
+
+- Format: PNG veya JPG.
+- Önerilen boyut: `512×512` veya `1024×1024` (kart büyük gösterilir).
+- **Dosya yoksa:** sıcak kahverengi degrade kutu fallback'i görünür, oyun çökmez.
+- Patronun savaş portresi ayrı klasörde: `public/images/bosses/` (oraya bak).
+
+## Yeni zindan eklerken
+
+1. `/editor` → **Dungeons** → **Add**: `rank`, `label` gir.
+2. `Image path` alanına `/images/dungeons/<rank>.png` yaz.
+3. Kaydet → `public/images/dungeons/<rank>.png` dosyasını at → restart.

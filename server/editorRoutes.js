@@ -8,6 +8,7 @@
 
 const express = require("express");
 const path = require("path");
+const { execFileSync } = require("child_process");
 
 const { CONTENT } = require("../content.js");
 const { writeContent } = require("../editor-save.js");
@@ -117,6 +118,39 @@ router.post("/api/editor/save", auth, (req, res) => {
       ok: true,
       backup: result.backup,
       note: "Saved to content.js. Restart the server (Ctrl+C, then npm start) for the game to use it.",
+    });
+  } catch (e) {
+    res.status(400).json({ ok: false, error: String(e.message).slice(0, 1200) });
+  }
+});
+
+router.post("/api/editor/save-and-push", auth, (req, res) => {
+  const data = req.body && req.body.data;
+  const message = (req.body && req.body.message) || "güncelleme";
+  if (!data || typeof data !== "object" || Array.isArray(data)) {
+    return res.status(400).json({ ok: false, error: "Expected a JSON body of the form { data: { ... }, message: \"...\" }." });
+  }
+  try {
+    // 1) save content.js
+    const result = writeContent(data, { backup: true });
+    editorData = data;
+
+    // 2) git add + commit + push (best-effort via execFileSync: no shell, no injection)
+    const cwd = path.join(__dirname, "..");
+    const gitLines = [];
+    try {
+      gitLines.push(execFileSync("git", ["add", "."], { cwd, encoding: "utf8", timeout: 30000 }).trim());
+      gitLines.push(execFileSync("git", ["commit", "-m", message], { cwd, encoding: "utf8", timeout: 30000 }).trim());
+      gitLines.push(execFileSync("git", ["push"], { cwd, encoding: "utf8", timeout: 60000 }).trim());
+    } catch (gitErr) {
+      gitLines.push(String((gitErr.stdout || "")).trim());
+      gitLines.push(String((gitErr.stderr || "")).trim());
+    }
+
+    res.json({
+      ok: true,
+      backup: result.backup,
+      note: "Saved + committed. " + gitLines.filter(Boolean).join(" | ").slice(0, 500),
     });
   } catch (e) {
     res.status(400).json({ ok: false, error: String(e.message).slice(0, 1200) });

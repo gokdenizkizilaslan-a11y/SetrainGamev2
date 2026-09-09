@@ -12,7 +12,7 @@ const SOUND_DIR = path.join(__dirname, "public", "sounds");
 const AUDIO_EXT = [".mp3", ".ogg", ".wav", ".m4a", ".flac"];
 
 const app = express();
-app.use(express.json());
+app.use(express.json({ limit: "50mb" }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/editor", editorRoutes);

@@ -1,12 +1,17 @@
-# UI — How to replace
+# UI — Görsel Ekleme
 
-| Filename | Where it appears | Content.js key |
+| Dosya | Nerede görünür | content.js anahtarı |
 |---|---|---|
-| `panel.png` | Gold-bordered container texture (optional) | `images.ui.panel` |
+| `panel.png` | Altın çerçeveli panel dokusu (opsiyonel) | `images.ui.panel` |
 
-- Format: PNG or JPG both work.
-- This is an **optional** texture overlay on panels. If missing, CSS glass effect is used (game still works).
-- Recommended: 1024x1024 tileable parchment/gold texture, semi-transparent.
-- To add: drop `panel.png` here → push → no code change needed. To use JPG, change `content.js` path to `/images/ui/panel.jpg`.
+- **Opsiyonel** bir overlay dokusudur. Yoksa CSS cam (glass) efekti kullanılır,
+  oyun yine güzel çalışır.
+- Format: PNG veya JPG. `panel.jpg` kullanmak için `content.js` içindeki yolu
+  `/images/ui/panel.jpg` yap.
+- Önerilen: `1024×1024` dikişsiz (tileable) parşömen/altın dokusu, yarı-şeffaf.
+- Butonlar ve barlar tamamen CSS'tir — resim gerekmez.
+- Panel dokusunu `/editor` → yok, doğrudan `content.js` `images.ui.panel` alanından
+  değiştirebilirsin.
 
-Other UI elements (buttons, bars) are pure CSS — no image needed. Add more textures by referencing them in `public/style.css` directly.
+Ek UI dokusu eklemek istersen: dosyayı buraya at ve `public/style.css` içinde
+`url('/images/ui/<ad>.png')` ile referans ver.

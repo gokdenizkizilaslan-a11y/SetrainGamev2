@@ -1,18 +1,40 @@
-# Monsters — How to replace
+# Canavarlar — Görsel Ekleme
 
-Each monster is loaded by its `id`.
+Her canavar `id`'si ile yüklenir:
 
-| Filename pattern | Example | Content.js source |
-|---|---|---|
-| `<monster_id>.png` | `slime.png` | `monsters[].id` |
-| Also `JPG` works | `slime.jpg` | same path |
+```
+public/images/monsters/<monster_id>.png     →  örnek: slime.png
+```
 
-Full list currently (30+):
-`slime, goblin, giant_rat, cave_bat, wolf, kobold, forest_mite, grove_sprite, ember_sprite, vine_lurker, iron_goblin, bone_archer, frost_wolf, ash_spider, brigand_captain, marsh_crawler, abyss_wraith, storm_harpy, flame_witch, goblin_warrior, skeleton, dire_wolf, crystal_golem, cursed_knight, iron_ogre, golem, wraith, manticore, harpy, stone_warden, ogre, dark_knight, witch, wyvern, frost_wyvern, void_golem, storm_lich, nether_hydra, dusk_manticore, ancient_golem, lich, doom_lord, world_eater, hydra, stone_titan, molten_behemoth, frost_titan, void_herald, storm_colossus, phoenix_canary` + 5 bosses: `boss_ember_king, boss_frost_titan, boss_void_herald, boss_storm_colossus, boss_world_eater`
+> Yol: `monsters[].image = "/images/monsters/<id>.png"`. id'yi `/editor` →
+> **Monsters** sayfasından görürsün.
 
-- Path: `monsters[].image = "/images/monsters/<id>.png"` (bosses use `/images/bosses/...` but can also be here)
-- Format: PNG or JPG.
-- Recommended: 512x512, combat card is 200x120 cover.
-- Missing → dark red gradient fallback.
+## Sık kullanılan id'ler (yaklaşık 50+)
 
-Add new monster: add to `monsters` array in content.js with `id: "my_monster"` and drop `my_monster.png` here, then add id to a dungeon's `monsterPool`.
+`slime, goblin, giant_rat, cave_bat, wolf, kobold, forest_mite, grove_sprite,
+ember_sprite, vine_lurker, iron_goblin, bone_archer, frost_wolf, ash_spider,
+brigand_captain, marsh_crawler, abyss_wraith, storm_harpy, flame_witch,
+goblin_warrior, skeleton, dire_wolf, crystal_golem, cursed_knight, iron_ogre,
+golem, wraith, manticore, harpy, stone_warden, ogre, dark_knight, witch, wyvern,
+frost_wyvern, void_golem, storm_lich, nether_hydra, dusk_manticore, ancient_golem,
+lich, doom_lord, world_eater, hydra, stone_titan, molten_behemoth, frost_titan,
+void_herald, storm_colossus, phoenix_canary, vine_wraith, thornback_boar, elder_treant`
+
+> Patronlar ayrıca `public/images/bosses/` klasörünü kullanır (aşağıya bak) ama
+> istersen canavarla aynı `id`'li dosya burada da kabul edilir.
+
+## Kurallar
+
+- Ek bir adım: canavarı bir zindana eklemek istersen dungeon'ın `monsterPool` listesine
+  (editörde **Dungeons** → `Monster ids`) id'yi yaz.
+- Format: PNG veya JPG.
+- Önerilen boyut: `512×512`; savaş kartı `cover` ile 200×120 kırpar.
+- **Dosya yoksa:** koyu kırmızı degrade fallback'i görünür, oyun çökmez.
+
+## Yeni canavar eklerken
+
+1. `/editor` → **Monsters** → **Add**: `id` (örn. `my_monster`), `name`, `hp`,
+   `attack`, `speed`, `rarity` gir.
+2. **Image path**'te **"Default: ..."** butonuna bas.
+3. Kaydet → `public/images/monsters/my_monster.png` dosyasını at.
+4. Bir zindanın `monsterPool`'una ekle → restart.

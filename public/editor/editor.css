@@ -95,6 +95,40 @@ button {
 
 .btn.ghost { background: transparent; }
 
+.btn.accent {
+  background: #2e8b57;
+  border-color: #2e8b57;
+  color: #fff;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.btn.accent:hover { background: #37a06a; }
+
+.btn.accent:disabled {
+  background: var(--bg-card);
+  border-color: var(--line);
+  color: var(--text-dim);
+  cursor: not-allowed;
+}
+
+.commit-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#commit-msg {
+  width: 190px;
+  padding: 7px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  background: var(--bg-card);
+  color: var(--text);
+}
+
+#commit-msg:focus { outline: none; border-color: var(--gold-dim); }
+
 .btn.mini {
   padding: 3px 9px;
   font-size: 13px;
@@ -220,6 +254,26 @@ button {
 }
 
 .field .sub { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
+
+/* ---------- Image fields ---------- */
+
+.img-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.img-row input[type="text"] { flex: 1 1 220px; }
+
+.img-prev {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  background: var(--input-bg);
+}
 
 .check-row {
   display: flex;

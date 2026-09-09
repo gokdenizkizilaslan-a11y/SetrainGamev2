@@ -137,7 +137,7 @@ function act(room, player, skillId){
       }
     }
     dealDamage(opponent,dmg);
-    addFx(d,{type:"damage", actor:player.id, target:"player", targetId:oppId, amount:dmg, elem:skill.element||"physical", effect:skill.effect||skill.element||"slash", crit});
+    addFx(d,{type:"damage", actor:player.id, target:"player", targetId:oppId, amount:dmg, elem:skill.element||"physical", effect:skill.effect||skill.element||"slash", sound:skill.sound||"", crit});
     if(skill.lifesteal){
       const before=player.hp; heal(player, Math.round(dmg*skill.lifesteal));
       const h=player.hp-before; if(h>0) addFx(d,{type:"heal", actor:player.id, target:player.id, amount:h, source:"lifesteal"});

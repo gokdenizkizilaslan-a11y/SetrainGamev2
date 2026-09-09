@@ -1,8 +1,13 @@
-# Bosses — How to replace
+# Patronlar — Görsel Ekleme
 
-Each boss portrait is loaded by `bosses[].image`.
+Boss portresi `bosses[].image` ile yüklenir. Dikkat: **dosya adı id'nin öneksiz
+haliyle** yazılır:
 
-| Filename | Boss | Content.js id |
+```
+public/images/bosses/<id_without_boss_>.png     →  örnek: ember_king.png
+```
+
+| Dosya | Patron | content.js id |
 |---|---|---|
 | `ember_king.png` | Ember King | `boss_ember_king` |
 | `frost_titan.png` | Frost Titan | `boss_frost_titan` |
@@ -10,10 +15,11 @@ Each boss portrait is loaded by `bosses[].image`.
 | `storm_colossus.png` | Storm Colossus | `boss_storm_colossus` |
 | `world_eater.png` | World Eater | `boss_world_eater` |
 
-- Content.js path: `bosses[].image = "/images/bosses/<id_without_prefix>.png"` — e.g. `boss_ember_king` → `ember_king.png`
-- Dungeon tiles for bosses (same bosses shown in dungeon list) are separate: `public/images/dungeons/boss_ember_king.png`
-- Format: PNG or JPG both work.
-- Recommended: 512x512 or 1024x1024, boss card is large.
-- Missing → gradient fallback.
+- Zindan listesindeki kutucuk görseli ayrıdır: `public/images/dungeons/boss_ember_king.png`
+  (rank dosya adı patron id'siyle aynıdır — bkz. `dungeons/README.md`).
+- Format: PNG veya JPG.
+- Önerilen boyut: `512×512`–`1024×1024` (boss kartı büyük gösterilir).
+- **Dosya yoksa:** renkli degrade fallback'i görünür, oyun çökmez.
 
-Add new boss: add to `bosses` array and `dungeons` (isBoss:true) and drop `my_boss.png` here.
+Yeni boss eklerken: `bosses` dizisine kayıt ekle + `dungeons`'a `isBoss: true`
+kayıt + `public/images/bosses/<ad>.png` + `public/images/dungeons/boss_<ad>.png`.

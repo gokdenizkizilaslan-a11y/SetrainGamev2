@@ -24,145 +24,734 @@ const CONTENT = {
     "xpExponent": 1.45
   },
   "combos": [
-    { "id": "overcharge", "name": "Overcharge", "when": "wet", "ifElement": "lightning", "mult": 1.5, "desc": "Lightning surges through soaked foes, dealing +50% damage to wet targets." },
-    { "id": "deep_freeze", "name": "Deep Freeze", "when": "wet", "ifElement": "frost", "mult": 1.4, "desc": "Frost latches onto moisture, dealing +40% damage to wet targets." },
-    { "id": "shatter", "name": "Shatter", "when": "frozen", "ifElement": "physical", "mult": 1.6, "desc": "Physical blows shatter frozen enemies, dealing +60% damage." },
-    { "id": "burning", "name": "Burning Blaze", "when": "dot", "ifElement": "fire", "mult": 1.6, "desc": "Fire erupts on burning foes, dealing +60% damage to poisoned targets." },
-    { "id": "break_guard", "name": "Break Guard", "when": "expose", "ifElement": "physical", "mult": 1.35, "desc": "Exposed enemies take +35% physical damage." },
-    { "id": "overwhelm", "name": "Overwhelm", "when": "weaken", "ifElement": "physical", "mult": 1.2, "desc": "Weakened enemies crumble, taking +20% physical damage." }
+    {
+      "id": "overcharge",
+      "name": "Overcharge",
+      "when": "wet",
+      "ifElement": "lightning",
+      "mult": 1.5,
+      "desc": "Lightning surges through soaked foes, dealing +50% damage to wet targets."
+    },
+    {
+      "id": "deep_freeze",
+      "name": "Deep Freeze",
+      "when": "wet",
+      "ifElement": "frost",
+      "mult": 1.4,
+      "desc": "Frost latches onto moisture, dealing +40% damage to wet targets."
+    },
+    {
+      "id": "shatter",
+      "name": "Shatter",
+      "when": "frozen",
+      "ifElement": "physical",
+      "mult": 1.6,
+      "desc": "Physical blows shatter frozen enemies, dealing +60% damage."
+    },
+    {
+      "id": "burning",
+      "name": "Burning Blaze",
+      "when": "dot",
+      "ifElement": "fire",
+      "mult": 1.6,
+      "desc": "Fire erupts on burning foes, dealing +60% damage to poisoned targets."
+    },
+    {
+      "id": "break_guard",
+      "name": "Break Guard",
+      "when": "expose",
+      "ifElement": "physical",
+      "mult": 1.35,
+      "desc": "Exposed enemies take +35% physical damage."
+    },
+    {
+      "id": "overwhelm",
+      "name": "Overwhelm",
+      "when": "weaken",
+      "ifElement": "physical",
+      "mult": 1.2,
+      "desc": "Weakened enemies crumble, taking +20% physical damage."
+    }
   ],
   "elements": [
-    { "id": "physical", "name": "Physical", "palette": ["#ffffff", "#fde047", "#94a3b8"], "gravity": 0.16, "sound": "slash1", "effect": "rising_katana_slash", "travel": "piercing_rapier_thrust", "description": "Plain weapon strikes and brute force." },
-    { "id": "arcane", "name": "Arcane", "palette": ["#a78bfa", "#7c3aed", "#e0e7ff"], "gravity": 0.02, "sound": "normalmagic", "effect": "frost_crystal_spear", "travel": "ball_lightning_plasma", "description": "Raw magical energy and eldritch plasma." },
-    { "id": "shadow", "name": "Shadow", "palette": ["#6b7280", "#4b5563", "#374151"], "gravity": -0.05, "sound": "bloodmagic1", "effect": "shadow_scythe_reap", "travel": "dark_matter_orb", "description": "Darkness and cold moonlight arts." },
-    { "id": "holy", "name": "Holy", "palette": ["#facc15", "#ffffff", "#fde047"], "gravity": -0.04, "sound": "normalmagic", "effect": "holy_pillar_smite", "travel": "holy_lance_projectile", "description": "Divine light and radiant judgement." },
-    { "id": "frost", "name": "Frost", "palette": ["#38bdf8", "#7dd3fc", "#0ea5e9", "#e0f2fe"], "gravity": 0.13, "sound": "frostmagic", "effect": "frost_crystal_spear", "travel": "frost_crystal_spear", "description": "Ice, cold and glacial shards." },
-    { "id": "fire", "name": "Fire", "palette": ["#f97316", "#ef4444", "#fde047"], "gravity": -0.08, "sound": "firemagic", "effect": "fire_meteor_crash", "travel": "fireball_streak", "description": "Burning flame and searing heat." },
-    { "id": "water", "name": "Water", "palette": ["#3b82f6", "#2563eb", "#0ea5e9"], "gravity": 0.1, "sound": "frostmagic", "effect": "tidal_wave_water", "travel": "frost_crystal_spear", "description": "Flowing currents and crushing waves." },
-    { "id": "earth", "name": "Earth", "palette": ["#854d0e", "#a16207", "#713f12", "#57534e"], "gravity": 0.25, "sound": "battleaxe", "effect": "earth_fissure_rupture", "travel": "rock_avalanche_barrage", "description": "Stone, soil and bedrock." },
-    { "id": "nature", "name": "Nature", "palette": ["#4ade80", "#22c55e", "#15803d", "#bef264"], "gravity": 0.08, "sound": "normalmagic", "effect": "nature_vine_burst", "travel": "nature_vine_projectile", "description": "Growth, vines, thorns and the living forest." },
-    { "id": "lightning", "name": "Lightning", "palette": ["#facc15", "#fef08a", "#ffffff"], "gravity": 0.06, "sound": "normalmagic", "effect": "lightning_strike_heavy", "travel": "storm_spear_throw", "description": "Storms, thunder and electric surges." },
-    { "id": "blood", "name": "Blood", "palette": ["#dc2626", "#b91c1c", "#7f1d1d"], "gravity": 0.22, "sound": "bloodmagic1", "effect": "blood_scythe", "travel": "blood_drain", "description": "Crimson hemomancy and life-stealing arts." },
-    { "id": "dark", "name": "Dark", "palette": ["#a855f7", "#7c3aed", "#4c1d95"], "gravity": -0.05, "sound": "bloodmagic2", "effect": "shadow_scythe_reap", "travel": "dark_matter_orb", "description": "Void, abyss and forbidden power." }
+    {
+      "id": "physical",
+      "name": "Physical",
+      "palette": [
+        "#ffffff",
+        "#fde047",
+        "#94a3b8"
+      ],
+      "gravity": 0.16,
+      "sound": "slash1",
+      "effect": "rising_katana_slash",
+      "travel": "piercing_rapier_thrust",
+      "description": "Plain weapon strikes and brute force."
+    },
+    {
+      "id": "arcane",
+      "name": "Arcane",
+      "palette": [
+        "#a78bfa",
+        "#7c3aed",
+        "#e0e7ff"
+      ],
+      "gravity": 0.02,
+      "sound": "normalmagic",
+      "effect": "frost_crystal_spear",
+      "travel": "ball_lightning_plasma",
+      "description": "Raw magical energy and eldritch plasma."
+    },
+    {
+      "id": "shadow",
+      "name": "Shadow",
+      "palette": [
+        "#6b7280",
+        "#4b5563",
+        "#374151"
+      ],
+      "gravity": -0.05,
+      "sound": "bloodmagic1",
+      "effect": "shadow_scythe_reap",
+      "travel": "dark_matter_orb",
+      "description": "Darkness and cold moonlight arts."
+    },
+    {
+      "id": "holy",
+      "name": "Holy",
+      "palette": [
+        "#facc15",
+        "#ffffff",
+        "#fde047"
+      ],
+      "gravity": -0.04,
+      "sound": "normalmagic",
+      "effect": "holy_pillar_smite",
+      "travel": "holy_lance_projectile",
+      "description": "Divine light and radiant judgement."
+    },
+    {
+      "id": "frost",
+      "name": "Frost",
+      "palette": [
+        "#38bdf8",
+        "#7dd3fc",
+        "#0ea5e9",
+        "#e0f2fe"
+      ],
+      "gravity": 0.13,
+      "sound": "frostmagic",
+      "effect": "frost_crystal_spear",
+      "travel": "frost_crystal_spear",
+      "description": "Ice, cold and glacial shards."
+    },
+    {
+      "id": "fire",
+      "name": "Fire",
+      "palette": [
+        "#f97316",
+        "#ef4444",
+        "#fde047"
+      ],
+      "gravity": -0.08,
+      "sound": "firemagic",
+      "effect": "fire_meteor_crash",
+      "travel": "fireball_streak",
+      "description": "Burning flame and searing heat."
+    },
+    {
+      "id": "water",
+      "name": "Water",
+      "palette": [
+        "#3b82f6",
+        "#2563eb",
+        "#0ea5e9"
+      ],
+      "gravity": 0.1,
+      "sound": "frostmagic",
+      "effect": "tidal_wave_water",
+      "travel": "frost_crystal_spear",
+      "description": "Flowing currents and crushing waves."
+    },
+    {
+      "id": "earth",
+      "name": "Earth",
+      "palette": [
+        "#854d0e",
+        "#a16207",
+        "#713f12",
+        "#57534e"
+      ],
+      "gravity": 0.25,
+      "sound": "battleaxe",
+      "effect": "earth_fissure_rupture",
+      "travel": "rock_avalanche_barrage",
+      "description": "Stone, soil and bedrock."
+    },
+    {
+      "id": "nature",
+      "name": "Nature",
+      "palette": [
+        "#4ade80",
+        "#22c55e",
+        "#15803d",
+        "#bef264"
+      ],
+      "gravity": 0.08,
+      "sound": "normalmagic",
+      "effect": "nature_vine_burst",
+      "travel": "nature_vine_projectile",
+      "description": "Growth, vines, thorns and the living forest."
+    },
+    {
+      "id": "lightning",
+      "name": "Lightning",
+      "palette": [
+        "#facc15",
+        "#fef08a",
+        "#ffffff"
+      ],
+      "gravity": 0.06,
+      "sound": "normalmagic",
+      "effect": "lightning_strike_heavy",
+      "travel": "storm_spear_throw",
+      "description": "Storms, thunder and electric surges."
+    },
+    {
+      "id": "blood",
+      "name": "Blood",
+      "palette": [
+        "#dc2626",
+        "#b91c1c",
+        "#7f1d1d"
+      ],
+      "gravity": 0.22,
+      "sound": "bloodmagic1",
+      "effect": "blood_scythe",
+      "travel": "blood_drain",
+      "description": "Crimson hemomancy and life-stealing arts."
+    },
+    {
+      "id": "dark",
+      "name": "Dark",
+      "palette": [
+        "#a855f7",
+        "#7c3aed",
+        "#4c1d95"
+      ],
+      "gravity": -0.05,
+      "sound": "bloodmagic2",
+      "effect": "shadow_scythe_reap",
+      "travel": "dark_matter_orb",
+      "description": "Void, abyss and forbidden power."
+    }
   ],
   "skillTree": {
     "pointsPerLevel": 3,
     "startingPoints": 3,
     "maxLoadout": 5,
     "global": [
-      { "id": "g_def_divine_guard", "skillId": "divine_guard", "cost": 2, "group": "defense", "desc": "A holy ward turns aside a heavy blow." },
-      { "id": "g_def_fortify", "skillId": "fortify", "cost": 3, "group": "defense", "desc": "Steady yourself against damage." },
-      { "id": "g_def_war_banner", "skillId": "war_banner", "cost": 4, "group": "combat", "desc": "Raise morale; allies strike true." },
-      { "id": "g_def_dark_veil", "skillId": "dark_veil", "cost": 6, "group": "defense", "desc": "Wraiths of shadow guard you and sap the foe." },
-      { "id": "g_def_aegis", "skillId": "aegis", "cost": 3, "group": "defense", "desc": "A mighty ward shields body and spirit." },
-      { "id": "g_def_barrier", "skillId": "barrier", "cost": 4, "group": "defense", "desc": "A resilient bulwark of pure will." },
-      { "id": "g_def_stone_skin", "skillId": "stone_skin", "cost": 4, "group": "defense", "desc": "Your hide hardens into living stone." },
-      { "id": "g_def_iron_wall", "skillId": "iron_wall", "cost": 6, "group": "defense", "desc": "Become an unyielding wall of iron." },
-      { "id": "g_def_group_guard", "skillId": "group_guard", "cost": 7, "group": "defense", "desc": "Guard the whole party with armored grace." },
-      { "id": "g_def_holy_ward", "skillId": "holy_ward", "cost": 6, "group": "defense", "desc": "A radiant barrier blessed against harm." },
-      { "id": "g_def_rejuvenate", "skillId": "rejuvenate", "cost": 3, "group": "heal", "desc": "Renew vitality, round after round." },
-      { "id": "g_def_magic_mend", "skillId": "magic_mend", "cost": 5, "group": "heal", "desc": "Mend wounds with pure channeled magic." },
-      { "id": "g_elem_water_splash", "skillId": "water_splash", "cost": 2, "group": "frost", "desc": "Soak the foe — wet makes lightning and frost bite harder." },
-      { "id": "g_elem_lightning_bolt", "skillId": "lightning_bolt", "cost": 4, "group": "lightning", "desc": "Overcharge: +50% vs wet." },
-      { "id": "g_elem_static_overload", "skillId": "static_overload", "cost": 10, "group": "lightning", "desc": "Mighty lightning; still +50% vs wet." },
-      { "id": "g_elem_volt_conduit", "skillId": "volt_conduit", "cost": 4, "group": "lightning", "desc": "Electrify the foe while wet." },
-      { "id": "g_elem_frost_bolt", "skillId": "frost_bolt", "cost": 2, "group": "frost", "desc": "A chill that lingers." },
-      { "id": "g_elem_cold_snap", "skillId": "cold_snap", "cost": 4, "group": "frost", "desc": "Freeze the foe solid." },
-      { "id": "g_elem_frost_nova", "skillId": "frost_nova", "cost": 5, "group": "frost", "desc": "A burst of frost; freezes, then Shatter for +60%." },
-      { "id": "g_elem_glacial_shatter", "skillId": "glacial_shatter", "cost": 10, "group": "frost", "desc": "Shatter the ice for huge frost damage." },
-      { "id": "g_elem_scorch_mark", "skillId": "scorch_mark", "cost": 2, "group": "fire", "desc": "Set the foe alight." },
-      { "id": "g_elem_ember_storm", "skillId": "ember_storm", "cost": 4, "group": "fire", "desc": "Whirling cinders that keep burning." },
-      { "id": "g_elem_blaze_rupture", "skillId": "blaze_rupture", "cost": 7, "group": "fire", "desc": "Burning Blaze: +60% vs poisoned foes." },
-      { "id": "g_brk_venom_strike", "skillId": "venom_strike", "cost": 2, "group": "poison", "desc": "Lace your weapon with venom." },
-      { "id": "g_brk_toxin_drench", "skillId": "toxin_drench", "cost": 4, "group": "poison", "desc": "Heavy poison for 6% max HP / round." },
-      { "id": "g_brk_venom_burst", "skillId": "venom_burst", "cost": 6, "group": "poison", "desc": "Poisoned targets take +50%." },
-      { "id": "g_brk_cripple", "skillId": "cripple", "cost": 2, "group": "break", "desc": "Weaken and expose the foe in one blow." },
-      { "id": "g_brk_broken_guard", "skillId": "broken_guard", "cost": 4, "group": "break", "desc": "Shatter guard: expose + weaken." },
-      { "id": "g_brk_shatter_point", "skillId": "shatter_point", "cost": 7, "group": "break", "desc": "Break Guard: +80% vs exposed." },
-      { "id": "g_brk_devastate", "skillId": "devastate", "cost": 10, "group": "break", "desc": "Overwhelm: +35% vs weakened." }
+      {
+        "id": "g_def_divine_guard",
+        "skillId": "divine_guard",
+        "cost": 2,
+        "group": "defense",
+        "desc": "A holy ward turns aside a heavy blow."
+      },
+      {
+        "id": "g_def_fortify",
+        "skillId": "fortify",
+        "cost": 3,
+        "group": "defense",
+        "desc": "Steady yourself against damage."
+      },
+      {
+        "id": "g_def_war_banner",
+        "skillId": "war_banner",
+        "cost": 4,
+        "group": "combat",
+        "desc": "Raise morale; allies strike true."
+      },
+      {
+        "id": "g_def_dark_veil",
+        "skillId": "dark_veil",
+        "cost": 6,
+        "group": "defense",
+        "desc": "Wraiths of shadow guard you and sap the foe."
+      },
+      {
+        "id": "g_def_aegis",
+        "skillId": "aegis",
+        "cost": 3,
+        "group": "defense",
+        "desc": "A mighty ward shields body and spirit."
+      },
+      {
+        "id": "g_def_barrier",
+        "skillId": "barrier",
+        "cost": 4,
+        "group": "defense",
+        "desc": "A resilient bulwark of pure will."
+      },
+      {
+        "id": "g_def_stone_skin",
+        "skillId": "stone_skin",
+        "cost": 4,
+        "group": "defense",
+        "desc": "Your hide hardens into living stone."
+      },
+      {
+        "id": "g_def_iron_wall",
+        "skillId": "iron_wall",
+        "cost": 6,
+        "group": "defense",
+        "desc": "Become an unyielding wall of iron."
+      },
+      {
+        "id": "g_def_group_guard",
+        "skillId": "group_guard",
+        "cost": 7,
+        "group": "defense",
+        "desc": "Guard the whole party with armored grace."
+      },
+      {
+        "id": "g_def_holy_ward",
+        "skillId": "holy_ward",
+        "cost": 6,
+        "group": "defense",
+        "desc": "A radiant barrier blessed against harm."
+      },
+      {
+        "id": "g_def_rejuvenate",
+        "skillId": "rejuvenate",
+        "cost": 3,
+        "group": "heal",
+        "desc": "Renew vitality, round after round."
+      },
+      {
+        "id": "g_def_magic_mend",
+        "skillId": "magic_mend",
+        "cost": 5,
+        "group": "heal",
+        "desc": "Mend wounds with pure channeled magic."
+      },
+      {
+        "id": "g_elem_water_splash",
+        "skillId": "water_splash",
+        "cost": 2,
+        "group": "frost",
+        "desc": "Soak the foe — wet makes lightning and frost bite harder."
+      },
+      {
+        "id": "g_elem_lightning_bolt",
+        "skillId": "lightning_bolt",
+        "cost": 4,
+        "group": "lightning",
+        "desc": "Overcharge: +50% vs wet."
+      },
+      {
+        "id": "g_elem_static_overload",
+        "skillId": "static_overload",
+        "cost": 10,
+        "group": "lightning",
+        "desc": "Mighty lightning; still +50% vs wet."
+      },
+      {
+        "id": "g_elem_volt_conduit",
+        "skillId": "volt_conduit",
+        "cost": 4,
+        "group": "lightning",
+        "desc": "Electrify the foe while wet."
+      },
+      {
+        "id": "g_elem_frost_bolt",
+        "skillId": "frost_bolt",
+        "cost": 2,
+        "group": "frost",
+        "desc": "A chill that lingers."
+      },
+      {
+        "id": "g_elem_cold_snap",
+        "skillId": "cold_snap",
+        "cost": 4,
+        "group": "frost",
+        "desc": "Freeze the foe solid."
+      },
+      {
+        "id": "g_elem_frost_nova",
+        "skillId": "frost_nova",
+        "cost": 5,
+        "group": "frost",
+        "desc": "A burst of frost; freezes, then Shatter for +60%."
+      },
+      {
+        "id": "g_elem_glacial_shatter",
+        "skillId": "glacial_shatter",
+        "cost": 10,
+        "group": "frost",
+        "desc": "Shatter the ice for huge frost damage."
+      },
+      {
+        "id": "g_elem_scorch_mark",
+        "skillId": "scorch_mark",
+        "cost": 2,
+        "group": "fire",
+        "desc": "Set the foe alight."
+      },
+      {
+        "id": "g_elem_ember_storm",
+        "skillId": "ember_storm",
+        "cost": 4,
+        "group": "fire",
+        "desc": "Whirling cinders that keep burning."
+      },
+      {
+        "id": "g_elem_blaze_rupture",
+        "skillId": "blaze_rupture",
+        "cost": 7,
+        "group": "fire",
+        "desc": "Burning Blaze: +60% vs poisoned foes."
+      },
+      {
+        "id": "g_brk_venom_strike",
+        "skillId": "venom_strike",
+        "cost": 2,
+        "group": "poison",
+        "desc": "Lace your weapon with venom."
+      },
+      {
+        "id": "g_brk_toxin_drench",
+        "skillId": "toxin_drench",
+        "cost": 4,
+        "group": "poison",
+        "desc": "Heavy poison for 6% max HP / round."
+      },
+      {
+        "id": "g_brk_venom_burst",
+        "skillId": "venom_burst",
+        "cost": 6,
+        "group": "poison",
+        "desc": "Poisoned targets take +50%."
+      },
+      {
+        "id": "g_brk_cripple",
+        "skillId": "cripple",
+        "cost": 2,
+        "group": "break",
+        "desc": "Weaken and expose the foe in one blow."
+      },
+      {
+        "id": "g_brk_broken_guard",
+        "skillId": "broken_guard",
+        "cost": 4,
+        "group": "break",
+        "desc": "Shatter guard: expose + weaken."
+      },
+      {
+        "id": "g_brk_shatter_point",
+        "skillId": "shatter_point",
+        "cost": 7,
+        "group": "break",
+        "desc": "Break Guard: +80% vs exposed."
+      },
+      {
+        "id": "g_brk_devastate",
+        "skillId": "devastate",
+        "cost": 10,
+        "group": "break",
+        "desc": "Overwhelm: +35% vs weakened."
+      }
     ],
     "lineages": {
       "warrior": {
         "label": "Warrior Path",
         "nodes": [
-          { "id": "w_heavy_strike", "skillId": "heavy_strike", "owned": true, "cost": 0 },
-          { "id": "w_defend", "skillId": "defend", "owned": true, "cost": 0 },
-          { "id": "w_battle_fury", "skillId": "battle_fury", "owned": true, "cost": 0 },
-          { "id": "w_war_cry", "skillId": "war_cry", "ownerClass": "warlord", "cost": 4, "minLevel": 20 },
-          { "id": "w_cataclysm", "skillId": "cataclysm", "ownerClass": "war_emperor", "cost": 8, "minLevel": 40 }
+          {
+            "id": "w_heavy_strike",
+            "skillId": "heavy_strike",
+            "owned": true,
+            "cost": 0
+          },
+          {
+            "id": "w_defend",
+            "skillId": "defend",
+            "owned": true,
+            "cost": 0
+          },
+          {
+            "id": "w_battle_fury",
+            "skillId": "battle_fury",
+            "owned": true,
+            "cost": 0
+          },
+          {
+            "id": "w_war_cry",
+            "skillId": "war_cry",
+            "ownerClass": "warlord",
+            "cost": 4,
+            "minLevel": 20
+          },
+          {
+            "id": "w_cataclysm",
+            "skillId": "cataclysm",
+            "ownerClass": "war_emperor",
+            "cost": 8,
+            "minLevel": 40
+          }
         ]
       },
       "ranger": {
         "label": "Ranger Path",
         "nodes": [
-          { "id": "r_aimed_shot", "skillId": "aimed_shot", "owned": true, "cost": 0 },
-          { "id": "r_piercing_shot", "skillId": "piercing_shot", "owned": true, "cost": 0 },
-          { "id": "r_volley", "skillId": "volley", "ownerClass": "warden", "cost": 4, "minLevel": 20 },
-          { "id": "r_storm_barrage", "skillId": "storm_barrage", "ownerClass": "storm_warden", "cost": 8, "minLevel": 40 }
+          {
+            "id": "r_aimed_shot",
+            "skillId": "aimed_shot",
+            "owned": true,
+            "cost": 0
+          },
+          {
+            "id": "r_piercing_shot",
+            "skillId": "piercing_shot",
+            "owned": true,
+            "cost": 0
+          },
+          {
+            "id": "r_volley",
+            "skillId": "volley",
+            "ownerClass": "warden",
+            "cost": 4,
+            "minLevel": 20
+          },
+          {
+            "id": "r_storm_barrage",
+            "skillId": "storm_barrage",
+            "ownerClass": "storm_warden",
+            "cost": 8,
+            "minLevel": 40
+          }
         ]
       },
       "mage": {
         "label": "Mage Path",
         "nodes": [
-          { "id": "m_arcane_barrage", "skillId": "arcane_barrage", "owned": true, "cost": 0 },
-          { "id": "m_mana_shield", "skillId": "mana_shield", "owned": true, "cost": 0 },
-          { "id": "m_meteor", "skillId": "meteor", "ownerClass": "archmage", "cost": 4, "minLevel": 20 },
-          { "id": "m_comet", "skillId": "comet", "ownerClass": "archon", "cost": 8, "minLevel": 40 }
+          {
+            "id": "m_arcane_barrage",
+            "skillId": "arcane_barrage",
+            "owned": true,
+            "cost": 0
+          },
+          {
+            "id": "m_mana_shield",
+            "skillId": "mana_shield",
+            "owned": true,
+            "cost": 0
+          },
+          {
+            "id": "m_meteor",
+            "skillId": "meteor",
+            "ownerClass": "archmage",
+            "cost": 4,
+            "minLevel": 20
+          },
+          {
+            "id": "m_comet",
+            "skillId": "comet",
+            "ownerClass": "archon",
+            "cost": 8,
+            "minLevel": 40
+          }
         ]
       },
       "rogue": {
         "label": "Rogue Path",
         "nodes": [
-          { "id": "rg_vampiric_strike", "skillId": "vampiric_strike", "owned": true, "cost": 0 },
-          { "id": "rg_shadow_meld", "skillId": "shadow_meld", "owned": true, "cost": 0 },
-          { "id": "rg_shadow_veil", "skillId": "shadow_veil", "ownerClass": "nightblade", "cost": 4, "minLevel": 20 },
-          { "id": "rg_soul_thief", "skillId": "soul_thief", "ownerClass": "shade_king", "cost": 8, "minLevel": 40 }
+          {
+            "id": "rg_vampiric_strike",
+            "skillId": "vampiric_strike",
+            "owned": true,
+            "cost": 0
+          },
+          {
+            "id": "rg_shadow_meld",
+            "skillId": "shadow_meld",
+            "owned": true,
+            "cost": 0
+          },
+          {
+            "id": "rg_shadow_veil",
+            "skillId": "shadow_veil",
+            "ownerClass": "nightblade",
+            "cost": 4,
+            "minLevel": 20
+          },
+          {
+            "id": "rg_soul_thief",
+            "skillId": "soul_thief",
+            "ownerClass": "shade_king",
+            "cost": 8,
+            "minLevel": 40
+          }
         ]
       },
       "paladin": {
         "label": "Paladin Path",
         "nodes": [
-          { "id": "p_holy_strike", "skillId": "holy_strike", "owned": true, "cost": 0 },
-          { "id": "p_mend", "skillId": "mend", "owned": true, "cost": 0 },
-          { "id": "p_holy_judgement", "skillId": "holy_judgement", "ownerClass": "crusader", "cost": 4, "minLevel": 20 },
-          { "id": "p_radiance", "skillId": "radiance", "ownerClass": "lightbringer", "cost": 8, "minLevel": 40 }
+          {
+            "id": "p_holy_strike",
+            "skillId": "holy_strike",
+            "owned": true,
+            "cost": 0
+          },
+          {
+            "id": "p_mend",
+            "skillId": "mend",
+            "owned": true,
+            "cost": 0
+          },
+          {
+            "id": "p_holy_judgement",
+            "skillId": "holy_judgement",
+            "ownerClass": "crusader",
+            "cost": 4,
+            "minLevel": 20
+          },
+          {
+            "id": "p_radiance",
+            "skillId": "radiance",
+            "ownerClass": "lightbringer",
+            "cost": 8,
+            "minLevel": 40
+          }
         ]
       },
       "assassin": {
         "label": "Assassin Path",
         "nodes": [
-          { "id": "a_execute", "skillId": "execute", "owned": true, "cost": 0 },
-          { "id": "a_shadow_step", "skillId": "shadow_step", "owned": true, "cost": 0 },
-          { "id": "a_death_mark", "skillId": "death_mark", "ownerClass": "reaper", "cost": 4, "minLevel": 20 },
-          { "id": "a_soul_reap", "skillId": "soul_reap", "ownerClass": "death_lord", "cost": 8, "minLevel": 40 }
+          {
+            "id": "a_execute",
+            "skillId": "execute",
+            "owned": true,
+            "cost": 0
+          },
+          {
+            "id": "a_shadow_step",
+            "skillId": "shadow_step",
+            "owned": true,
+            "cost": 0
+          },
+          {
+            "id": "a_death_mark",
+            "skillId": "death_mark",
+            "ownerClass": "reaper",
+            "cost": 4,
+            "minLevel": 20
+          },
+          {
+            "id": "a_soul_reap",
+            "skillId": "soul_reap",
+            "ownerClass": "death_lord",
+            "cost": 8,
+            "minLevel": 40
+          }
         ]
       },
       "support": {
         "label": "Support Path",
         "nodes": [
-          { "id": "s_mend", "skillId": "mend", "owned": true, "cost": 0 },
-          { "id": "s_greater_mend", "skillId": "greater_mend", "owned": true, "cost": 0 },
-          { "id": "s_spirit_surge", "skillId": "spirit_surge", "owned": true, "cost": 0 },
-          { "id": "s_divine_blessing", "skillId": "divine_blessing", "ownerClass": "high_priest", "cost": 4, "minLevel": 20 },
-          { "id": "s_resurgence", "skillId": "resurgence", "ownerClass": "divine_saint", "cost": 8, "minLevel": 40 }
+          {
+            "id": "s_mend",
+            "skillId": "mend",
+            "owned": true,
+            "cost": 0
+          },
+          {
+            "id": "s_greater_mend",
+            "skillId": "greater_mend",
+            "owned": true,
+            "cost": 0
+          },
+          {
+            "id": "s_spirit_surge",
+            "skillId": "spirit_surge",
+            "owned": true,
+            "cost": 0
+          },
+          {
+            "id": "s_divine_blessing",
+            "skillId": "divine_blessing",
+            "ownerClass": "high_priest",
+            "cost": 4,
+            "minLevel": 20
+          },
+          {
+            "id": "s_resurgence",
+            "skillId": "resurgence",
+            "ownerClass": "divine_saint",
+            "cost": 8,
+            "minLevel": 40
+          }
         ]
       },
       "tank": {
         "label": "Tank Path",
         "nodes": [
-          { "id": "t_cleave", "skillId": "cleave", "owned": true, "cost": 0 },
-          { "id": "t_shield_wall", "skillId": "shield_wall", "owned": true, "cost": 0 },
-          { "id": "t_bastion", "skillId": "bastion", "ownerClass": "juggernaut", "cost": 4, "minLevel": 20 },
-          { "id": "t_immovable", "skillId": "immovable", "ownerClass": "colossus", "cost": 8, "minLevel": 40 }
+          {
+            "id": "t_cleave",
+            "skillId": "cleave",
+            "owned": true,
+            "cost": 0
+          },
+          {
+            "id": "t_shield_wall",
+            "skillId": "shield_wall",
+            "owned": true,
+            "cost": 0
+          },
+          {
+            "id": "t_bastion",
+            "skillId": "bastion",
+            "ownerClass": "juggernaut",
+            "cost": 4,
+            "minLevel": 20
+          },
+          {
+            "id": "t_immovable",
+            "skillId": "immovable",
+            "ownerClass": "colossus",
+            "cost": 8,
+            "minLevel": 40
+          }
         ]
       },
       "tamer": {
         "label": "Tamer Path",
         "nodes": [
-          { "id": "tm_war_heal", "skillId": "war_heal", "owned": true, "cost": 0 },
-          { "id": "tm_defend", "skillId": "defend", "owned": true, "cost": 0 },
-          { "id": "tm_battle_fury", "skillId": "battle_fury", "ownerClass": "beastmaster", "cost": 4, "minLevel": 20 },
-          { "id": "tm_war_cry", "skillId": "war_cry", "ownerClass": "alpha_tamer", "cost": 8, "minLevel": 40 }
+          {
+            "id": "tm_war_heal",
+            "skillId": "war_heal",
+            "owned": true,
+            "cost": 0
+          },
+          {
+            "id": "tm_defend",
+            "skillId": "defend",
+            "owned": true,
+            "cost": 0
+          },
+          {
+            "id": "tm_battle_fury",
+            "skillId": "battle_fury",
+            "ownerClass": "beastmaster",
+            "cost": 4,
+            "minLevel": 20
+          },
+          {
+            "id": "tm_war_cry",
+            "skillId": "war_cry",
+            "ownerClass": "alpha_tamer",
+            "cost": 8,
+            "minLevel": 40
+          }
         ]
       }
     }
@@ -2090,7 +2679,8 @@ const CONTENT = {
         "cost": {
           "gold": 25,
           "wood": 0
-        },      "description": "Forge a sword that still smoulders."
+        },
+        "description": "Forge a sword that still smoulders."
       },
       {
         "id": "molten_cleaver",
@@ -2112,7 +2702,8 @@ const CONTENT = {
         "cost": {
           "gold": 60,
           "wood": 10
-        },      "description": "Bond the heart of a fire spirit to the blade."
+        },
+        "description": "Bond the heart of a fire spirit to the blade."
       },
       {
         "id": "frost_gladius",
@@ -2134,7 +2725,8 @@ const CONTENT = {
         "cost": {
           "gold": 25,
           "wood": 0
-        },      "description": "Temper the blade in hoarfrost."
+        },
+        "description": "Temper the blade in hoarfrost."
       },
       {
         "id": "arcane_rod",
@@ -2156,7 +2748,8 @@ const CONTENT = {
         "cost": {
           "gold": 30,
           "wood": 0
-        },      "description": "Weave raw magic into the staff."
+        },
+        "description": "Weave raw magic into the staff."
       },
       {
         "id": "shadow_knife",
@@ -2474,7 +3067,7 @@ const CONTENT = {
         "epic": 25,
         "legendary": 42,
         "mythic": 24,
-        "ancient_relic": 1.0
+        "ancient_relic": 1
       },
       "boss_world_eater": {
         "common": 0,
@@ -2496,7 +3089,7 @@ const CONTENT = {
       }
     }
   },
-      "effects": {
+  "effects": {
     "blood_scythe": {
       "animation": "hit",
       "color": "#dc2626",
@@ -3478,15 +4071,22 @@ const CONTENT = {
       "stamina": 4,
       "xpReward": 180,
       "goldScale": 1.2,
-      "woodScale": 1.0,
+      "woodScale": 1,
       "goldBase": 120,
       "woodBase": 70,
-      "monsterPool": ["molten_behemoth", "flame_witch", "ember_sprite"],
+      "monsterPool": [
+        "molten_behemoth",
+        "flame_witch",
+        "ember_sprite"
+      ],
       "monsterCount": 1,
       "monsterPower": 3.5,
       "sizeProfile": "fewerStronger",
       "isSpecial": true,
-      "materialPool": ["fire_essence", "heart_of_fire"]
+      "materialPool": [
+        "fire_essence",
+        "heart_of_fire"
+      ]
     },
     {
       "rank": "special2",
@@ -3495,15 +4095,21 @@ const CONTENT = {
       "stamina": 4,
       "xpReward": 180,
       "goldScale": 1.2,
-      "woodScale": 1.0,
+      "woodScale": 1,
       "goldBase": 120,
       "woodBase": 70,
-      "monsterPool": ["frost_titan", "frost_wolf", "stone_titan"],
+      "monsterPool": [
+        "frost_titan",
+        "frost_wolf",
+        "stone_titan"
+      ],
       "monsterCount": 1,
       "monsterPower": 3.5,
       "sizeProfile": "fewerStronger",
       "isSpecial": true,
-      "materialPool": ["frost_essence"]
+      "materialPool": [
+        "frost_essence"
+      ]
     },
     {
       "rank": "special3",
@@ -3512,15 +4118,21 @@ const CONTENT = {
       "stamina": 4,
       "xpReward": 180,
       "goldScale": 1.2,
-      "woodScale": 1.0,
+      "woodScale": 1,
       "goldBase": 120,
       "woodBase": 70,
-      "monsterPool": ["void_herald", "abyss_wraith", "cursed_knight"],
+      "monsterPool": [
+        "void_herald",
+        "abyss_wraith",
+        "cursed_knight"
+      ],
       "monsterCount": 1,
       "monsterPower": 3.5,
       "sizeProfile": "fewerStronger",
       "isSpecial": true,
-      "materialPool": ["shadow_essence"]
+      "materialPool": [
+        "shadow_essence"
+      ]
     },
     {
       "rank": "special4",
@@ -3529,15 +4141,21 @@ const CONTENT = {
       "stamina": 4,
       "xpReward": 180,
       "goldScale": 1.2,
-      "woodScale": 1.0,
+      "woodScale": 1,
       "goldBase": 120,
       "woodBase": 70,
-      "monsterPool": ["storm_colossus", "storm_harpy", "griffin"],
+      "monsterPool": [
+        "storm_colossus",
+        "storm_harpy",
+        "griffin"
+      ],
       "monsterCount": 1,
       "monsterPower": 3.5,
       "sizeProfile": "fewerStronger",
       "isSpecial": true,
-      "materialPool": ["arcane_essence"]
+      "materialPool": [
+        "arcane_essence"
+      ]
     },
     {
       "rank": "special5",
@@ -3549,12 +4167,19 @@ const CONTENT = {
       "woodScale": 1.2,
       "goldBase": 150,
       "woodBase": 90,
-      "monsterPool": ["void_golem", "world_eater", "abyss_wraith"],
+      "monsterPool": [
+        "void_golem",
+        "world_eater",
+        "abyss_wraith"
+      ],
       "monsterCount": 1,
-      "monsterPower": 4.0,
+      "monsterPower": 4,
       "sizeProfile": "fewerStronger",
       "isSpecial": true,
-      "materialPool": ["shadow_essence", "arcane_essence"]
+      "materialPool": [
+        "shadow_essence",
+        "arcane_essence"
+      ]
     },
     {
       "rank": "special6",
@@ -3566,12 +4191,20 @@ const CONTENT = {
       "woodScale": 1.2,
       "goldBase": 150,
       "woodBase": 90,
-      "monsterPool": ["ancient_golem", "stone_titan", "crystal_golem"],
+      "monsterPool": [
+        "ancient_golem",
+        "stone_titan",
+        "crystal_golem"
+      ],
       "monsterCount": 1,
-      "monsterPower": 4.0,
+      "monsterPower": 4,
       "sizeProfile": "fewerStronger",
       "isSpecial": true,
-      "materialPool": ["golem_heart", "fire_essence", "arcane_essence"]
+      "materialPool": [
+        "golem_heart",
+        "fire_essence",
+        "arcane_essence"
+      ]
     },
     {
       "rank": "special7",
@@ -3583,12 +4216,19 @@ const CONTENT = {
       "woodScale": 1.3,
       "goldBase": 180,
       "woodBase": 110,
-      "monsterPool": ["phoenix_canary", "molten_behemoth", "frost_titan"],
+      "monsterPool": [
+        "phoenix_canary",
+        "molten_behemoth",
+        "frost_titan"
+      ],
       "monsterCount": 1,
       "monsterPower": 4.5,
       "sizeProfile": "fewerStronger",
       "isSpecial": true,
-      "materialPool": ["the_essence_of_life", "fire_essence"]
+      "materialPool": [
+        "the_essence_of_life",
+        "fire_essence"
+      ]
     },
     {
       "rank": "boss_ember_king",
@@ -3600,14 +4240,18 @@ const CONTENT = {
       "woodScale": 1.1,
       "goldBase": 150,
       "woodBase": 90,
-      "monsterPool": ["boss_ember_king"],
+      "monsterPool": [
+        "boss_ember_king"
+      ],
       "monsterCount": 1,
       "monsterPower": 0.22,
       "sizeProfile": "fewerStronger",
       "unlockAfter": null,
       "isBoss": true,
       "isSpecial": true,
-      "materialPool": ["the_essence_of_life"]
+      "materialPool": [
+        "the_essence_of_life"
+      ]
     },
     {
       "rank": "boss_frost_titan",
@@ -3619,14 +4263,18 @@ const CONTENT = {
       "woodScale": 1.2,
       "goldBase": 180,
       "woodBase": 110,
-      "monsterPool": ["boss_frost_titan"],
+      "monsterPool": [
+        "boss_frost_titan"
+      ],
       "monsterCount": 1,
       "monsterPower": 0.22,
       "sizeProfile": "fewerStronger",
       "unlockAfter": "boss_ember_king",
       "isBoss": true,
       "isSpecial": true,
-      "materialPool": ["the_essence_of_life"]
+      "materialPool": [
+        "the_essence_of_life"
+      ]
     },
     {
       "rank": "boss_void_herald",
@@ -3638,14 +4286,18 @@ const CONTENT = {
       "woodScale": 1.3,
       "goldBase": 220,
       "woodBase": 130,
-      "monsterPool": ["boss_void_herald"],
+      "monsterPool": [
+        "boss_void_herald"
+      ],
       "monsterCount": 1,
       "monsterPower": 0.22,
       "sizeProfile": "fewerStronger",
       "unlockAfter": "boss_frost_titan",
       "isBoss": true,
       "isSpecial": true,
-      "materialPool": ["the_essence_of_life"]
+      "materialPool": [
+        "the_essence_of_life"
+      ]
     },
     {
       "rank": "boss_storm_colossus",
@@ -3657,14 +4309,18 @@ const CONTENT = {
       "woodScale": 1.4,
       "goldBase": 260,
       "woodBase": 150,
-      "monsterPool": ["boss_storm_colossus"],
+      "monsterPool": [
+        "boss_storm_colossus"
+      ],
       "monsterCount": 1,
       "monsterPower": 0.22,
       "sizeProfile": "fewerStronger",
       "unlockAfter": "boss_void_herald",
       "isBoss": true,
       "isSpecial": true,
-      "materialPool": ["the_essence_of_life"]
+      "materialPool": [
+        "the_essence_of_life"
+      ]
     },
     {
       "rank": "boss_world_eater",
@@ -3676,15 +4332,19 @@ const CONTENT = {
       "woodScale": 1.5,
       "goldBase": 320,
       "woodBase": 180,
-      "monsterPool": ["boss_world_eater"],
+      "monsterPool": [
+        "boss_world_eater"
+      ],
       "monsterCount": 1,
       "monsterPower": 0.22,
       "sizeProfile": "fewerStronger",
       "unlockAfter": "boss_storm_colossus",
       "isBoss": true,
       "isSpecial": true,
-      "materialPool": ["the_essence_of_life"]
-    },
+      "materialPool": [
+        "the_essence_of_life"
+      ]
+    }
   ],
   "bosses": [
     {
@@ -3754,132 +4414,1519 @@ const CONTENT = {
     }
   ],
   "pets": [
-    {"id":"fire_wolf","name":"Fire Wolf","image":"/images/pets/fire_wolf.png","element":"fire","stats":{"attack":5},"description":"A loyal ember pup. +5 Attack.","egg":""},
-    {"id":"water_sprite","name":"Water Sprite","image":"/images/pets/water_sprite.png","element":"water","stats":{"magicPower":6},"description":"A bubbling companion. +6 Magic Power.","egg":""},
-    {"id":"pet_direwolf","name":"Direwolf","image":"/images/pets/pet_direwolf.png","element":"fire","stats":{"attack":4,"magicPower":7},"description":"Direwolf from Red Egg","egg":"egg_red"},
-    {"id":"pet_ember_pup","name":"Ember Pup","image":"/images/pets/pet_ember_pup.png","element":"fire","stats":{"attack":7,"magicPower":5},"description":"Ember Pup from Red Egg","egg":"egg_red"},
-    {"id":"pet_cinder_cub","name":"Cinder Cub","image":"/images/pets/pet_cinder_cub.png","element":"fire","stats":{"attack":6,"magicPower":5},"description":"Cinder Cub from Red Egg","egg":"egg_red"},
-    {"id":"pet_slime","name":"Slime","image":"/images/pets/pet_slime.png","element":"fire","stats":{"attack":3,"magicPower":7},"description":"Slime from Red Egg","egg":"egg_red"},
-    {"id":"pet_sprout","name":"Sprout","image":"/images/pets/pet_sprout.png","element":"nature","stats":{"attack":3,"magicPower":7},"description":"Sprout from Red Egg","egg":"egg_red"},
-    {"id":"pet_flame_sprite","name":"Flame Sprite","image":"/images/pets/pet_flame_sprite.png","element":"fire","stats":{"attack":3,"magicPower":4},"description":"Flame Sprite from Red Egg","egg":"egg_red"},
-    {"id":"pet_mossling","name":"Mossling","image":"/images/pets/pet_mossling.png","element":"earth","stats":{"attack":4,"magicPower":6},"description":"Mossling from Green Egg","egg":"egg_green"},
-    {"id":"pet_vine_pup","name":"Vine Pup","image":"/images/pets/pet_vine_pup.png","element":"earth","stats":{"attack":5,"magicPower":5},"description":"Vine Pup from Green Egg","egg":"egg_green"},
-    {"id":"pet_thorn_whelp","name":"Thorn Whelp","image":"/images/pets/pet_thorn_whelp.png","element":"earth","stats":{"attack":4,"magicPower":3},"description":"Thorn Whelp from Green Egg","egg":"egg_green"},
-    {"id":"pet_grove_sprite","name":"Grove Sprite","image":"/images/pets/pet_grove_sprite.png","element":"earth","stats":{"attack":4,"magicPower":3},"description":"Grove Sprite from Green Egg","egg":"egg_green"},
-    {"id":"pet_slime_king","name":"Slime King","image":"/images/pets/pet_slime_king.png","element":"earth","stats":{"attack":6,"magicPower":6},"description":"Slime King from Green Egg","egg":"egg_green"},
-    {"id":"pet_forest_cub","name":"Forest Cub","image":"/images/pets/pet_forest_cub.png","element":"earth","stats":{"attack":5,"magicPower":3},"description":"Forest Cub from Green Egg","egg":"egg_green"},
-    {"id":"pet_natureling","name":"Natureling","image":"/images/pets/pet_natureling.png","element":"nature","stats":{"attack":3,"magicPower":7},"description":"A budding nature spirit from the Green Egg.","egg":"egg_green"},
-    {"id":"pet_frost_pup","name":"Frost Pup","image":"/images/pets/pet_frost_pup.png","element":"water","stats":{"attack":7,"magicPower":3},"description":"Frost Pup from Blue Egg","egg":"egg_blue"},
-    {"id":"pet_ice_whelp","name":"Ice Whelp","image":"/images/pets/pet_ice_whelp.png","element":"water","stats":{"attack":3,"magicPower":3},"description":"Ice Whelp from Blue Egg","egg":"egg_blue"},
-    {"id":"pet_snow_cub","name":"Snow Cub","image":"/images/pets/pet_snow_cub.png","element":"water","stats":{"attack":5,"magicPower":7},"description":"Snow Cub from Blue Egg","egg":"egg_blue"},
-    {"id":"pet_glacierling","name":"Glacierling","image":"/images/pets/pet_glacierling.png","element":"water","stats":{"attack":5,"magicPower":6},"description":"Glacierling from Blue Egg","egg":"egg_blue"},
-    {"id":"pet_chill_sprite","name":"Chill Sprite","image":"/images/pets/pet_chill_sprite.png","element":"water","stats":{"attack":3,"magicPower":7},"description":"Chill Sprite from Blue Egg","egg":"egg_blue"},
-    {"id":"pet_frost_drake","name":"Frost Drake","image":"/images/pets/pet_frost_drake.png","element":"water","stats":{"attack":5,"magicPower":7},"description":"Frost Drake from Blue Egg","egg":"egg_blue"},
-    {"id":"pet_stone_pup","name":"Stone Pup","image":"/images/pets/pet_stone_pup.png","element":"earth","stats":{"attack":5,"magicPower":7},"description":"Stone Pup from Brown Egg","egg":"egg_brown"},
-    {"id":"pet_rockling","name":"Rockling","image":"/images/pets/pet_rockling.png","element":"earth","stats":{"attack":4,"magicPower":6},"description":"Rockling from Brown Egg","egg":"egg_brown"},
-    {"id":"pet_boulder_cub","name":"Boulder Cub","image":"/images/pets/pet_boulder_cub.png","element":"earth","stats":{"attack":7,"magicPower":6},"description":"Boulder Cub from Brown Egg","egg":"egg_brown"},
-    {"id":"pet_crystal_sprite","name":"Crystal Sprite","image":"/images/pets/pet_crystal_sprite.png","element":"earth","stats":{"attack":5,"magicPower":4},"description":"Crystal Sprite from Brown Egg","egg":"egg_brown"},
-    {"id":"pet_golem_whelp","name":"Golem Whelp","image":"/images/pets/pet_golem_whelp.png","element":"earth","stats":{"attack":6,"magicPower":6},"description":"Golem Whelp from Brown Egg","egg":"egg_brown"},
-    {"id":"pet_granite_pup","name":"Granite Pup","image":"/images/pets/pet_granite_pup.png","element":"earth","stats":{"attack":7,"magicPower":3},"description":"Granite Pup from Brown Egg","egg":"egg_brown"},
-    {"id":"pet_storm_pup","name":"Storm Pup","image":"/images/pets/pet_storm_pup.png","element":"lightning","stats":{"attack":3,"magicPower":4},"description":"Storm Pup from Yellow Egg","egg":"egg_yellow"},
-    {"id":"pet_thunder_cub","name":"Thunder Cub","image":"/images/pets/pet_thunder_cub.png","element":"lightning","stats":{"attack":7,"magicPower":4},"description":"Thunder Cub from Yellow Egg","egg":"egg_yellow"},
-    {"id":"pet_lightning_drake","name":"Lightning Drake","image":"/images/pets/pet_lightning_drake.png","element":"lightning","stats":{"attack":5,"magicPower":4},"description":"Lightning Drake from Yellow Egg","egg":"egg_yellow"},
-    {"id":"pet_wind_sprite","name":"Wind Sprite","image":"/images/pets/pet_wind_sprite.png","element":"lightning","stats":{"attack":3,"magicPower":3},"description":"Wind Sprite from Yellow Egg","egg":"egg_yellow"},
-    {"id":"pet_gale_whelp","name":"Gale Whelp","image":"/images/pets/pet_gale_whelp.png","element":"lightning","stats":{"attack":7,"magicPower":6},"description":"Gale Whelp from Yellow Egg","egg":"egg_yellow"},
-    {"id":"pet_storm_hatchling","name":"Storm Hatchling","image":"/images/pets/pet_storm_hatchling.png","element":"lightning","stats":{"attack":6,"magicPower":5},"description":"Storm Hatchling from Yellow Egg","egg":"egg_yellow"},
-    {"id":"pet_shadow_pup","name":"Shadow Pup","image":"/images/pets/pet_shadow_pup.png","element":"dark","stats":{"attack":4,"magicPower":3},"description":"Shadow Pup from Purple Egg","egg":"egg_purple"},
-    {"id":"pet_voidling","name":"Voidling","image":"/images/pets/pet_voidling.png","element":"dark","stats":{"attack":6,"magicPower":3},"description":"Voidling from Purple Egg","egg":"egg_purple"},
-    {"id":"pet_dusk_whelp","name":"Dusk Whelp","image":"/images/pets/pet_dusk_whelp.png","element":"dark","stats":{"attack":7,"magicPower":5},"description":"Dusk Whelp from Purple Egg","egg":"egg_purple"},
-    {"id":"pet_night_cub","name":"Night Cub","image":"/images/pets/pet_night_cub.png","element":"dark","stats":{"attack":6,"magicPower":7},"description":"Night Cub from Purple Egg","egg":"egg_purple"},
-    {"id":"pet_shade_sprite","name":"Shade Sprite","image":"/images/pets/pet_shade_sprite.png","element":"dark","stats":{"attack":4,"magicPower":4},"description":"Shade Sprite from Purple Egg","egg":"egg_purple"},
-    {"id":"pet_umbra_drake","name":"Umbra Drake","image":"/images/pets/pet_umbra_drake.png","element":"dark","stats":{"attack":7,"magicPower":3},"description":"Umbra Drake from Purple Egg","egg":"egg_purple"},
-    {"id":"pet_crystal_drake","name":"Crystal Drake","image":"/images/pets/pet_crystal_drake.png","element":"water","stats":{"attack":5,"magicPower":4},"description":"Crystal Drake from Cyan Egg","egg":"egg_cyan"},
-    {"id":"pet_arcane_pup","name":"Arcane Pup","image":"/images/pets/pet_arcane_pup.png","element":"water","stats":{"attack":5,"magicPower":6},"description":"Arcane Pup from Cyan Egg","egg":"egg_cyan"},
-    {"id":"pet_mana_sprite","name":"Mana Sprite","image":"/images/pets/pet_mana_sprite.png","element":"water","stats":{"attack":5,"magicPower":7},"description":"Mana Sprite from Cyan Egg","egg":"egg_cyan"},
-    {"id":"pet_spell_whelp","name":"Spell Whelp","image":"/images/pets/pet_spell_whelp.png","element":"water","stats":{"attack":6,"magicPower":7},"description":"Spell Whelp from Cyan Egg","egg":"egg_cyan"},
-    {"id":"pet_runeling","name":"Runeling","image":"/images/pets/pet_runeling.png","element":"water","stats":{"attack":4,"magicPower":4},"description":"Runeling from Cyan Egg","egg":"egg_cyan"},
-    {"id":"pet_crystal_hound","name":"Crystal Hound","image":"/images/pets/pet_crystal_hound.png","element":"water","stats":{"attack":4,"magicPower":6},"description":"Crystal Hound from Cyan Egg","egg":"egg_cyan"},
-    {"id":"pet_void_pup","name":"Void Pup","image":"/images/pets/pet_void_pup.png","element":"dark","stats":{"attack":5,"magicPower":7},"description":"Void Pup from Dark Egg","egg":"egg_dark"},
-    {"id":"pet_abyssling","name":"Abyssling","image":"/images/pets/pet_abyssling.png","element":"dark","stats":{"attack":6,"magicPower":3},"description":"Abyssling from Dark Egg","egg":"egg_dark"},
-    {"id":"pet_nether_cub","name":"Nether Cub","image":"/images/pets/pet_nether_cub.png","element":"dark","stats":{"attack":4,"magicPower":4},"description":"Nether Cub from Dark Egg","egg":"egg_dark"},
-    {"id":"pet_shadow_drake","name":"Shadow Drake","image":"/images/pets/pet_shadow_drake.png","element":"dark","stats":{"attack":4,"magicPower":4},"description":"Shadow Drake from Dark Egg","egg":"egg_dark"},
-    {"id":"pet_dark_hound","name":"Dark Hound","image":"/images/pets/pet_dark_hound.png","element":"dark","stats":{"attack":4,"magicPower":6},"description":"Dark Hound from Dark Egg","egg":"egg_dark"},
-    {"id":"pet_void_sprite","name":"Void Sprite","image":"/images/pets/pet_void_sprite.png","element":"dark","stats":{"attack":6,"magicPower":5},"description":"Void Sprite from Dark Egg","egg":"egg_dark"},
-    {"id":"pet_phoenix_hatchling","name":"Phoenix Hatchling","image":"/images/pets/pet_phoenix_hatchling.png","element":"fire","stats":{"attack":5,"magicPower":7},"description":"Phoenix Hatchling from Orange Egg","egg":"egg_orange"},
-    {"id":"pet_ember_drake","name":"Ember Drake","image":"/images/pets/pet_ember_drake.png","element":"fire","stats":{"attack":4,"magicPower":4},"description":"Ember Drake from Orange Egg","egg":"egg_orange"},
-    {"id":"pet_flame_hound","name":"Flame Hound","image":"/images/pets/pet_flame_hound.png","element":"fire","stats":{"attack":4,"magicPower":7},"description":"Flame Hound from Orange Egg","egg":"egg_orange"},
-    {"id":"pet_inferno_pup","name":"Inferno Pup","image":"/images/pets/pet_inferno_pup.png","element":"fire","stats":{"attack":5,"magicPower":3},"description":"Inferno Pup from Orange Egg","egg":"egg_orange"},
-    {"id":"pet_blaze_drake","name":"Blaze Drake","image":"/images/pets/pet_blaze_drake.png","element":"fire","stats":{"attack":4,"magicPower":3},"description":"Blaze Drake from Orange Egg","egg":"egg_orange"},
-    {"id":"pet_phoenix_chick","name":"Phoenix Chick","image":"/images/pets/pet_phoenix_chick.png","element":"fire","stats":{"attack":3,"magicPower":5},"description":"Phoenix Chick from Orange Egg","egg":"egg_orange"},
-    {"id":"pet_mythic_drake","name":"Mythic Drake","image":"/images/pets/pet_mythic_drake.png","element":"physical","stats":{"attack":7,"magicPower":7},"description":"Mythic Drake from Gold Egg","egg":"egg_gold"},
-    {"id":"pet_gold_pup","name":"Gold Pup","image":"/images/pets/pet_gold_pup.png","element":"physical","stats":{"attack":7,"magicPower":7},"description":"Gold Pup from Gold Egg","egg":"egg_gold"},
-    {"id":"pet_radiant_cub","name":"Radiant Cub","image":"/images/pets/pet_radiant_cub.png","element":"physical","stats":{"attack":3,"magicPower":6},"description":"Radiant Cub from Gold Egg","egg":"egg_gold"},
-    {"id":"pet_divine_whelp","name":"Divine Whelp","image":"/images/pets/pet_divine_whelp.png","element":"physical","stats":{"attack":3,"magicPower":5},"description":"Divine Whelp from Gold Egg","egg":"egg_gold"},
-    {"id":"pet_light_sprite","name":"Light Sprite","image":"/images/pets/pet_light_sprite.png","element":"physical","stats":{"attack":4,"magicPower":7},"description":"Light Sprite from Gold Egg","egg":"egg_gold"},
-    {"id":"pet_mythic_hound","name":"Mythic Hound","image":"/images/pets/pet_mythic_hound.png","element":"physical","stats":{"attack":6,"magicPower":5},"description":"Mythic Hound from Gold Egg","egg":"egg_gold"}
-,
-    {"id":"pet_rage_pup_100","name":"Rage Pup","image":"/images/pets/pet_rage_pup_100.png","element":"fire","stats":{"attack":5},"description":"Rage Pup — grants attack buff. From egg_red","egg":"egg_red","buffKind":"attack"},
-    {"id":"pet_fury_cub_101","name":"Fury Cub","image":"/images/pets/pet_fury_cub_101.png","element":"water","stats":{"magicPower":6},"description":"Fury Cub — grants magicBoost buff. From egg_green","egg":"egg_green","buffKind":"magicBoost"},
-    {"id":"pet_berserk_whelp_102","name":"Berserk Whelp","image":"/images/pets/pet_berserk_whelp_102.png","element":"earth","stats":{"resistance":5},"description":"Berserk Whelp — grants defense buff. From egg_blue","egg":"egg_blue","buffKind":"defense"},
-    {"id":"pet_war_hound_103","name":"War Hound","image":"/images/pets/pet_war_hound_103.png","element":"lightning","stats":{"attack":4},"description":"War Hound — grants attack buff. From egg_brown","egg":"egg_brown","buffKind":"attack"},
-    {"id":"pet_battle_pup_104","name":"Battle Pup","image":"/images/pets/pet_battle_pup_104.png","element":"dark","stats":{"magicPower":6},"description":"Battle Pup — grants magicBoost buff. From egg_yellow","egg":"egg_yellow","buffKind":"magicBoost"},
-    {"id":"pet_might_cub_105","name":"Might Cub","image":"/images/pets/pet_might_cub_105.png","element":"physical","stats":{"resistance":5},"description":"Might Cub — grants defense buff. From egg_purple","egg":"egg_purple","buffKind":"defense"},
-    {"id":"pet_arcane_pup_106","name":"Arcane Pup","image":"/images/pets/pet_arcane_pup_106.png","element":"frost","stats":{"attack":6},"description":"Arcane Pup — grants attack buff. From egg_cyan","egg":"egg_cyan","buffKind":"attack"},
-    {"id":"pet_mana_sprite_107","name":"Mana Sprite","image":"/images/pets/pet_mana_sprite_107.png","element":"arcane","stats":{"magicPower":5},"description":"Mana Sprite — grants magicBoost buff. From egg_dark","egg":"egg_dark","buffKind":"magicBoost"},
-    {"id":"pet_spell_whelp_108","name":"Spell Whelp","image":"/images/pets/pet_spell_whelp_108.png","element":"holy","stats":{"resistance":4},"description":"Spell Whelp — grants defense buff. From egg_orange","egg":"egg_orange","buffKind":"defense"},
-    {"id":"pet_mystic_cub_109","name":"Mystic Cub","image":"/images/pets/pet_mystic_cub_109.png","element":"shadow","stats":{"attack":5},"description":"Mystic Cub — grants attack buff. From egg_gold","egg":"egg_gold","buffKind":"attack"},
-    {"id":"pet_rune_pup_110","name":"Rune Pup","image":"/images/pets/pet_rune_pup_110.png","element":"fire","stats":{"magicPower":4},"description":"Rune Pup — grants magicBoost buff. From egg_red","egg":"egg_red","buffKind":"magicBoost"},
-    {"id":"pet_gale_sprite_111","name":"Gale Sprite","image":"/images/pets/pet_gale_sprite_111.png","element":"water","stats":{"resistance":4},"description":"Gale Sprite — grants defense buff. From egg_green","egg":"egg_green","buffKind":"defense"},
-    {"id":"pet_stone_guardian_112","name":"Stone Guardian","image":"/images/pets/pet_stone_guardian_112.png","element":"earth","stats":{"attack":6},"description":"Stone Guardian — grants attack buff. From egg_blue","egg":"egg_blue","buffKind":"attack"},
-    {"id":"pet_iron_pup_113","name":"Iron Pup","image":"/images/pets/pet_iron_pup_113.png","element":"lightning","stats":{"magicPower":5},"description":"Iron Pup — grants magicBoost buff. From egg_brown","egg":"egg_brown","buffKind":"magicBoost"},
-    {"id":"pet_granite_whelp_114","name":"Granite Whelp","image":"/images/pets/pet_granite_whelp_114.png","element":"dark","stats":{"resistance":5},"description":"Granite Whelp — grants defense buff. From egg_yellow","egg":"egg_yellow","buffKind":"defense"},
-    {"id":"pet_crystal_pup_115","name":"Crystal Pup","image":"/images/pets/pet_crystal_pup_115.png","element":"physical","stats":{"attack":4},"description":"Crystal Pup — grants attack buff. From egg_purple","egg":"egg_purple","buffKind":"attack"},
-    {"id":"pet_boulder_cub_116","name":"Boulder Cub","image":"/images/pets/pet_boulder_cub_116.png","element":"frost","stats":{"magicPower":5},"description":"Boulder Cub — grants magicBoost buff. From egg_cyan","egg":"egg_cyan","buffKind":"magicBoost"},
-    {"id":"pet_rock_sprite_117","name":"Rock Sprite","image":"/images/pets/pet_rock_sprite_117.png","element":"arcane","stats":{"resistance":3},"description":"Rock Sprite — grants defense buff. From egg_dark","egg":"egg_dark","buffKind":"defense"},
-    {"id":"pet_frost_lynx_118","name":"Frost Lynx","image":"/images/pets/pet_frost_lynx_118.png","element":"holy","stats":{"attack":4},"description":"Frost Lynx — grants attack buff. From egg_orange","egg":"egg_orange","buffKind":"attack"},
-    {"id":"pet_glacier_pup_119","name":"Glacier Pup","image":"/images/pets/pet_glacier_pup_119.png","element":"shadow","stats":{"magicPower":6},"description":"Glacier Pup — grants magicBoost buff. From egg_gold","egg":"egg_gold","buffKind":"magicBoost"},
-    {"id":"pet_snow_hound_120","name":"Snow Hound","image":"/images/pets/pet_snow_hound_120.png","element":"fire","stats":{"resistance":3},"description":"Snow Hound — grants defense buff. From egg_red","egg":"egg_red","buffKind":"defense"},
-    {"id":"pet_ice_cub_121","name":"Ice Cub","image":"/images/pets/pet_ice_cub_121.png","element":"water","stats":{"attack":6},"description":"Ice Cub — grants attack buff. From egg_green","egg":"egg_green","buffKind":"attack"},
-    {"id":"pet_chill_whelp_122","name":"Chill Whelp","image":"/images/pets/pet_chill_whelp_122.png","element":"earth","stats":{"magicPower":6},"description":"Chill Whelp — grants magicBoost buff. From egg_blue","egg":"egg_blue","buffKind":"magicBoost"},
-    {"id":"pet_frost_kit_123","name":"Frost Kit","image":"/images/pets/pet_frost_kit_123.png","element":"lightning","stats":{"resistance":4},"description":"Frost Kit — grants defense buff. From egg_brown","egg":"egg_brown","buffKind":"defense"},
-    {"id":"pet_ember_lynx_124","name":"Ember Lynx","image":"/images/pets/pet_ember_lynx_124.png","element":"dark","stats":{"attack":6},"description":"Ember Lynx — grants attack buff. From egg_yellow","egg":"egg_yellow","buffKind":"attack"},
-    {"id":"pet_flame_hound_125","name":"Flame Hound","image":"/images/pets/pet_flame_hound_125.png","element":"physical","stats":{"magicPower":6},"description":"Flame Hound — grants magicBoost buff. From egg_purple","egg":"egg_purple","buffKind":"magicBoost"},
-    {"id":"pet_cinder_pup_126","name":"Cinder Pup","image":"/images/pets/pet_cinder_pup_126.png","element":"frost","stats":{"resistance":3},"description":"Cinder Pup — grants defense buff. From egg_cyan","egg":"egg_cyan","buffKind":"defense"},
-    {"id":"pet_blaze_cub_127","name":"Blaze Cub","image":"/images/pets/pet_blaze_cub_127.png","element":"arcane","stats":{"attack":5},"description":"Blaze Cub — grants attack buff. From egg_dark","egg":"egg_dark","buffKind":"attack"},
-    {"id":"pet_inferno_whelp_128","name":"Inferno Whelp","image":"/images/pets/pet_inferno_whelp_128.png","element":"holy","stats":{"magicPower":6},"description":"Inferno Whelp — grants magicBoost buff. From egg_orange","egg":"egg_orange","buffKind":"magicBoost"},
-    {"id":"pet_fire_sprite_129","name":"Fire Sprite","image":"/images/pets/pet_fire_sprite_129.png","element":"shadow","stats":{"resistance":5},"description":"Fire Sprite — grants defense buff. From egg_gold","egg":"egg_gold","buffKind":"defense"},
-    {"id":"pet_storm_hawk_130","name":"Storm Hawk","image":"/images/pets/pet_storm_hawk_130.png","element":"fire","stats":{"attack":5},"description":"Storm Hawk — grants attack buff. From egg_red","egg":"egg_red","buffKind":"attack"},
-    {"id":"pet_thunder_pup_131","name":"Thunder Pup","image":"/images/pets/pet_thunder_pup_131.png","element":"water","stats":{"magicPower":6},"description":"Thunder Pup — grants magicBoost buff. From egg_green","egg":"egg_green","buffKind":"magicBoost"},
-    {"id":"pet_gale_cub_132","name":"Gale Cub","image":"/images/pets/pet_gale_cub_132.png","element":"earth","stats":{"resistance":3},"description":"Gale Cub — grants defense buff. From egg_blue","egg":"egg_blue","buffKind":"defense"},
-    {"id":"pet_wind_sprite_133","name":"Wind Sprite","image":"/images/pets/pet_wind_sprite_133.png","element":"lightning","stats":{"attack":4},"description":"Wind Sprite — grants attack buff. From egg_brown","egg":"egg_brown","buffKind":"attack"},
-    {"id":"pet_lightning_pup_134","name":"Lightning Pup","image":"/images/pets/pet_lightning_pup_134.png","element":"dark","stats":{"magicPower":5},"description":"Lightning Pup — grants magicBoost buff. From egg_yellow","egg":"egg_yellow","buffKind":"magicBoost"},
-    {"id":"pet_tempest_whelp_135","name":"Tempest Whelp","image":"/images/pets/pet_tempest_whelp_135.png","element":"physical","stats":{"resistance":3},"description":"Tempest Whelp — grants defense buff. From egg_purple","egg":"egg_purple","buffKind":"defense"},
-    {"id":"pet_shadow_cat_136","name":"Shadow Cat","image":"/images/pets/pet_shadow_cat_136.png","element":"frost","stats":{"attack":6},"description":"Shadow Cat — grants attack buff. From egg_cyan","egg":"egg_cyan","buffKind":"attack"},
-    {"id":"pet_void_pup_137","name":"Void Pup","image":"/images/pets/pet_void_pup_137.png","element":"arcane","stats":{"magicPower":5},"description":"Void Pup — grants magicBoost buff. From egg_dark","egg":"egg_dark","buffKind":"magicBoost"}
+    {
+      "id": "fire_wolf",
+      "name": "Fire Wolf",
+      "image": "/images/pets/fire_wolf.png",
+      "element": "fire",
+      "stats": {
+        "attack": 5
+      },
+      "description": "A loyal ember pup. +5 Attack.",
+      "egg": ""
+    },
+    {
+      "id": "water_sprite",
+      "name": "Water Sprite",
+      "image": "/images/pets/water_sprite.png",
+      "element": "water",
+      "stats": {
+        "magicPower": 6
+      },
+      "description": "A bubbling companion. +6 Magic Power.",
+      "egg": ""
+    },
+    {
+      "id": "pet_direwolf",
+      "name": "Direwolf",
+      "image": "/images/pets/pet_direwolf.png",
+      "element": "fire",
+      "stats": {
+        "attack": 4,
+        "magicPower": 7
+      },
+      "description": "Direwolf from Red Egg",
+      "egg": "egg_red"
+    },
+    {
+      "id": "pet_ember_pup",
+      "name": "Ember Pup",
+      "image": "/images/pets/pet_ember_pup.png",
+      "element": "fire",
+      "stats": {
+        "attack": 7,
+        "magicPower": 5
+      },
+      "description": "Ember Pup from Red Egg",
+      "egg": "egg_red"
+    },
+    {
+      "id": "pet_cinder_cub",
+      "name": "Cinder Cub",
+      "image": "/images/pets/pet_cinder_cub.png",
+      "element": "fire",
+      "stats": {
+        "attack": 6,
+        "magicPower": 5
+      },
+      "description": "Cinder Cub from Red Egg",
+      "egg": "egg_red"
+    },
+    {
+      "id": "pet_slime",
+      "name": "Slime",
+      "image": "/images/pets/pet_slime.png",
+      "element": "fire",
+      "stats": {
+        "attack": 3,
+        "magicPower": 7
+      },
+      "description": "Slime from Red Egg",
+      "egg": "egg_red"
+    },
+    {
+      "id": "pet_sprout",
+      "name": "Sprout",
+      "image": "/images/pets/pet_sprout.png",
+      "element": "nature",
+      "stats": {
+        "attack": 3,
+        "magicPower": 7
+      },
+      "description": "Sprout from Red Egg",
+      "egg": "egg_red"
+    },
+    {
+      "id": "pet_flame_sprite",
+      "name": "Flame Sprite",
+      "image": "/images/pets/pet_flame_sprite.png",
+      "element": "fire",
+      "stats": {
+        "attack": 3,
+        "magicPower": 4
+      },
+      "description": "Flame Sprite from Red Egg",
+      "egg": "egg_red"
+    },
+    {
+      "id": "pet_mossling",
+      "name": "Mossling",
+      "image": "/images/pets/pet_mossling.png",
+      "element": "earth",
+      "stats": {
+        "attack": 4,
+        "magicPower": 6
+      },
+      "description": "Mossling from Green Egg",
+      "egg": "egg_green"
+    },
+    {
+      "id": "pet_vine_pup",
+      "name": "Vine Pup",
+      "image": "/images/pets/pet_vine_pup.png",
+      "element": "earth",
+      "stats": {
+        "attack": 5,
+        "magicPower": 5
+      },
+      "description": "Vine Pup from Green Egg",
+      "egg": "egg_green"
+    },
+    {
+      "id": "pet_thorn_whelp",
+      "name": "Thorn Whelp",
+      "image": "/images/pets/pet_thorn_whelp.png",
+      "element": "earth",
+      "stats": {
+        "attack": 4,
+        "magicPower": 3
+      },
+      "description": "Thorn Whelp from Green Egg",
+      "egg": "egg_green"
+    },
+    {
+      "id": "pet_grove_sprite",
+      "name": "Grove Sprite",
+      "image": "/images/pets/pet_grove_sprite.png",
+      "element": "earth",
+      "stats": {
+        "attack": 4,
+        "magicPower": 3
+      },
+      "description": "Grove Sprite from Green Egg",
+      "egg": "egg_green"
+    },
+    {
+      "id": "pet_slime_king",
+      "name": "Slime King",
+      "image": "/images/pets/pet_slime_king.png",
+      "element": "earth",
+      "stats": {
+        "attack": 6,
+        "magicPower": 6
+      },
+      "description": "Slime King from Green Egg",
+      "egg": "egg_green"
+    },
+    {
+      "id": "pet_forest_cub",
+      "name": "Forest Cub",
+      "image": "/images/pets/pet_forest_cub.png",
+      "element": "earth",
+      "stats": {
+        "attack": 5,
+        "magicPower": 3
+      },
+      "description": "Forest Cub from Green Egg",
+      "egg": "egg_green"
+    },
+    {
+      "id": "pet_natureling",
+      "name": "Natureling",
+      "image": "/images/pets/pet_natureling.png",
+      "element": "nature",
+      "stats": {
+        "attack": 3,
+        "magicPower": 7
+      },
+      "description": "A budding nature spirit from the Green Egg.",
+      "egg": "egg_green"
+    },
+    {
+      "id": "pet_frost_pup",
+      "name": "Frost Pup",
+      "image": "/images/pets/pet_frost_pup.png",
+      "element": "water",
+      "stats": {
+        "attack": 7,
+        "magicPower": 3
+      },
+      "description": "Frost Pup from Blue Egg",
+      "egg": "egg_blue"
+    },
+    {
+      "id": "pet_ice_whelp",
+      "name": "Ice Whelp",
+      "image": "/images/pets/pet_ice_whelp.png",
+      "element": "water",
+      "stats": {
+        "attack": 3,
+        "magicPower": 3
+      },
+      "description": "Ice Whelp from Blue Egg",
+      "egg": "egg_blue"
+    },
+    {
+      "id": "pet_snow_cub",
+      "name": "Snow Cub",
+      "image": "/images/pets/pet_snow_cub.png",
+      "element": "water",
+      "stats": {
+        "attack": 5,
+        "magicPower": 7
+      },
+      "description": "Snow Cub from Blue Egg",
+      "egg": "egg_blue"
+    },
+    {
+      "id": "pet_glacierling",
+      "name": "Glacierling",
+      "image": "/images/pets/pet_glacierling.png",
+      "element": "water",
+      "stats": {
+        "attack": 5,
+        "magicPower": 6
+      },
+      "description": "Glacierling from Blue Egg",
+      "egg": "egg_blue"
+    },
+    {
+      "id": "pet_chill_sprite",
+      "name": "Chill Sprite",
+      "image": "/images/pets/pet_chill_sprite.png",
+      "element": "water",
+      "stats": {
+        "attack": 3,
+        "magicPower": 7
+      },
+      "description": "Chill Sprite from Blue Egg",
+      "egg": "egg_blue"
+    },
+    {
+      "id": "pet_frost_drake",
+      "name": "Frost Drake",
+      "image": "/images/pets/pet_frost_drake.png",
+      "element": "water",
+      "stats": {
+        "attack": 5,
+        "magicPower": 7
+      },
+      "description": "Frost Drake from Blue Egg",
+      "egg": "egg_blue"
+    },
+    {
+      "id": "pet_stone_pup",
+      "name": "Stone Pup",
+      "image": "/images/pets/pet_stone_pup.png",
+      "element": "earth",
+      "stats": {
+        "attack": 5,
+        "magicPower": 7
+      },
+      "description": "Stone Pup from Brown Egg",
+      "egg": "egg_brown"
+    },
+    {
+      "id": "pet_rockling",
+      "name": "Rockling",
+      "image": "/images/pets/pet_rockling.png",
+      "element": "earth",
+      "stats": {
+        "attack": 4,
+        "magicPower": 6
+      },
+      "description": "Rockling from Brown Egg",
+      "egg": "egg_brown"
+    },
+    {
+      "id": "pet_boulder_cub",
+      "name": "Boulder Cub",
+      "image": "/images/pets/pet_boulder_cub.png",
+      "element": "earth",
+      "stats": {
+        "attack": 7,
+        "magicPower": 6
+      },
+      "description": "Boulder Cub from Brown Egg",
+      "egg": "egg_brown"
+    },
+    {
+      "id": "pet_crystal_sprite",
+      "name": "Crystal Sprite",
+      "image": "/images/pets/pet_crystal_sprite.png",
+      "element": "earth",
+      "stats": {
+        "attack": 5,
+        "magicPower": 4
+      },
+      "description": "Crystal Sprite from Brown Egg",
+      "egg": "egg_brown"
+    },
+    {
+      "id": "pet_golem_whelp",
+      "name": "Golem Whelp",
+      "image": "/images/pets/pet_golem_whelp.png",
+      "element": "earth",
+      "stats": {
+        "attack": 6,
+        "magicPower": 6
+      },
+      "description": "Golem Whelp from Brown Egg",
+      "egg": "egg_brown"
+    },
+    {
+      "id": "pet_granite_pup",
+      "name": "Granite Pup",
+      "image": "/images/pets/pet_granite_pup.png",
+      "element": "earth",
+      "stats": {
+        "attack": 7,
+        "magicPower": 3
+      },
+      "description": "Granite Pup from Brown Egg",
+      "egg": "egg_brown"
+    },
+    {
+      "id": "pet_storm_pup",
+      "name": "Storm Pup",
+      "image": "/images/pets/pet_storm_pup.png",
+      "element": "lightning",
+      "stats": {
+        "attack": 3,
+        "magicPower": 4
+      },
+      "description": "Storm Pup from Yellow Egg",
+      "egg": "egg_yellow"
+    },
+    {
+      "id": "pet_thunder_cub",
+      "name": "Thunder Cub",
+      "image": "/images/pets/pet_thunder_cub.png",
+      "element": "lightning",
+      "stats": {
+        "attack": 7,
+        "magicPower": 4
+      },
+      "description": "Thunder Cub from Yellow Egg",
+      "egg": "egg_yellow"
+    },
+    {
+      "id": "pet_lightning_drake",
+      "name": "Lightning Drake",
+      "image": "/images/pets/pet_lightning_drake.png",
+      "element": "lightning",
+      "stats": {
+        "attack": 5,
+        "magicPower": 4
+      },
+      "description": "Lightning Drake from Yellow Egg",
+      "egg": "egg_yellow"
+    },
+    {
+      "id": "pet_wind_sprite",
+      "name": "Wind Sprite",
+      "image": "/images/pets/pet_wind_sprite.png",
+      "element": "lightning",
+      "stats": {
+        "attack": 3,
+        "magicPower": 3
+      },
+      "description": "Wind Sprite from Yellow Egg",
+      "egg": "egg_yellow"
+    },
+    {
+      "id": "pet_gale_whelp",
+      "name": "Gale Whelp",
+      "image": "/images/pets/pet_gale_whelp.png",
+      "element": "lightning",
+      "stats": {
+        "attack": 7,
+        "magicPower": 6
+      },
+      "description": "Gale Whelp from Yellow Egg",
+      "egg": "egg_yellow"
+    },
+    {
+      "id": "pet_storm_hatchling",
+      "name": "Storm Hatchling",
+      "image": "/images/pets/pet_storm_hatchling.png",
+      "element": "lightning",
+      "stats": {
+        "attack": 6,
+        "magicPower": 5
+      },
+      "description": "Storm Hatchling from Yellow Egg",
+      "egg": "egg_yellow"
+    },
+    {
+      "id": "pet_shadow_pup",
+      "name": "Shadow Pup",
+      "image": "/images/pets/pet_shadow_pup.png",
+      "element": "dark",
+      "stats": {
+        "attack": 4,
+        "magicPower": 3
+      },
+      "description": "Shadow Pup from Purple Egg",
+      "egg": "egg_purple"
+    },
+    {
+      "id": "pet_voidling",
+      "name": "Voidling",
+      "image": "/images/pets/pet_voidling.png",
+      "element": "dark",
+      "stats": {
+        "attack": 6,
+        "magicPower": 3
+      },
+      "description": "Voidling from Purple Egg",
+      "egg": "egg_purple"
+    },
+    {
+      "id": "pet_dusk_whelp",
+      "name": "Dusk Whelp",
+      "image": "/images/pets/pet_dusk_whelp.png",
+      "element": "dark",
+      "stats": {
+        "attack": 7,
+        "magicPower": 5
+      },
+      "description": "Dusk Whelp from Purple Egg",
+      "egg": "egg_purple"
+    },
+    {
+      "id": "pet_night_cub",
+      "name": "Night Cub",
+      "image": "/images/pets/pet_night_cub.png",
+      "element": "dark",
+      "stats": {
+        "attack": 6,
+        "magicPower": 7
+      },
+      "description": "Night Cub from Purple Egg",
+      "egg": "egg_purple"
+    },
+    {
+      "id": "pet_shade_sprite",
+      "name": "Shade Sprite",
+      "image": "/images/pets/pet_shade_sprite.png",
+      "element": "dark",
+      "stats": {
+        "attack": 4,
+        "magicPower": 4
+      },
+      "description": "Shade Sprite from Purple Egg",
+      "egg": "egg_purple"
+    },
+    {
+      "id": "pet_umbra_drake",
+      "name": "Umbra Drake",
+      "image": "/images/pets/pet_umbra_drake.png",
+      "element": "dark",
+      "stats": {
+        "attack": 7,
+        "magicPower": 3
+      },
+      "description": "Umbra Drake from Purple Egg",
+      "egg": "egg_purple"
+    },
+    {
+      "id": "pet_crystal_drake",
+      "name": "Crystal Drake",
+      "image": "/images/pets/pet_crystal_drake.png",
+      "element": "water",
+      "stats": {
+        "attack": 5,
+        "magicPower": 4
+      },
+      "description": "Crystal Drake from Cyan Egg",
+      "egg": "egg_cyan"
+    },
+    {
+      "id": "pet_arcane_pup",
+      "name": "Arcane Pup",
+      "image": "/images/pets/pet_arcane_pup.png",
+      "element": "water",
+      "stats": {
+        "attack": 5,
+        "magicPower": 6
+      },
+      "description": "Arcane Pup from Cyan Egg",
+      "egg": "egg_cyan"
+    },
+    {
+      "id": "pet_mana_sprite",
+      "name": "Mana Sprite",
+      "image": "/images/pets/pet_mana_sprite.png",
+      "element": "water",
+      "stats": {
+        "attack": 5,
+        "magicPower": 7
+      },
+      "description": "Mana Sprite from Cyan Egg",
+      "egg": "egg_cyan"
+    },
+    {
+      "id": "pet_spell_whelp",
+      "name": "Spell Whelp",
+      "image": "/images/pets/pet_spell_whelp.png",
+      "element": "water",
+      "stats": {
+        "attack": 6,
+        "magicPower": 7
+      },
+      "description": "Spell Whelp from Cyan Egg",
+      "egg": "egg_cyan"
+    },
+    {
+      "id": "pet_runeling",
+      "name": "Runeling",
+      "image": "/images/pets/pet_runeling.png",
+      "element": "water",
+      "stats": {
+        "attack": 4,
+        "magicPower": 4
+      },
+      "description": "Runeling from Cyan Egg",
+      "egg": "egg_cyan"
+    },
+    {
+      "id": "pet_crystal_hound",
+      "name": "Crystal Hound",
+      "image": "/images/pets/pet_crystal_hound.png",
+      "element": "water",
+      "stats": {
+        "attack": 4,
+        "magicPower": 6
+      },
+      "description": "Crystal Hound from Cyan Egg",
+      "egg": "egg_cyan"
+    },
+    {
+      "id": "pet_void_pup",
+      "name": "Void Pup",
+      "image": "/images/pets/pet_void_pup.png",
+      "element": "dark",
+      "stats": {
+        "attack": 5,
+        "magicPower": 7
+      },
+      "description": "Void Pup from Dark Egg",
+      "egg": "egg_dark"
+    },
+    {
+      "id": "pet_abyssling",
+      "name": "Abyssling",
+      "image": "/images/pets/pet_abyssling.png",
+      "element": "dark",
+      "stats": {
+        "attack": 6,
+        "magicPower": 3
+      },
+      "description": "Abyssling from Dark Egg",
+      "egg": "egg_dark"
+    },
+    {
+      "id": "pet_nether_cub",
+      "name": "Nether Cub",
+      "image": "/images/pets/pet_nether_cub.png",
+      "element": "dark",
+      "stats": {
+        "attack": 4,
+        "magicPower": 4
+      },
+      "description": "Nether Cub from Dark Egg",
+      "egg": "egg_dark"
+    },
+    {
+      "id": "pet_shadow_drake",
+      "name": "Shadow Drake",
+      "image": "/images/pets/pet_shadow_drake.png",
+      "element": "dark",
+      "stats": {
+        "attack": 4,
+        "magicPower": 4
+      },
+      "description": "Shadow Drake from Dark Egg",
+      "egg": "egg_dark"
+    },
+    {
+      "id": "pet_dark_hound",
+      "name": "Dark Hound",
+      "image": "/images/pets/pet_dark_hound.png",
+      "element": "dark",
+      "stats": {
+        "attack": 4,
+        "magicPower": 6
+      },
+      "description": "Dark Hound from Dark Egg",
+      "egg": "egg_dark"
+    },
+    {
+      "id": "pet_void_sprite",
+      "name": "Void Sprite",
+      "image": "/images/pets/pet_void_sprite.png",
+      "element": "dark",
+      "stats": {
+        "attack": 6,
+        "magicPower": 5
+      },
+      "description": "Void Sprite from Dark Egg",
+      "egg": "egg_dark"
+    },
+    {
+      "id": "pet_phoenix_hatchling",
+      "name": "Phoenix Hatchling",
+      "image": "/images/pets/pet_phoenix_hatchling.png",
+      "element": "fire",
+      "stats": {
+        "attack": 5,
+        "magicPower": 7
+      },
+      "description": "Phoenix Hatchling from Orange Egg",
+      "egg": "egg_orange"
+    },
+    {
+      "id": "pet_ember_drake",
+      "name": "Ember Drake",
+      "image": "/images/pets/pet_ember_drake.png",
+      "element": "fire",
+      "stats": {
+        "attack": 4,
+        "magicPower": 4
+      },
+      "description": "Ember Drake from Orange Egg",
+      "egg": "egg_orange"
+    },
+    {
+      "id": "pet_flame_hound",
+      "name": "Flame Hound",
+      "image": "/images/pets/pet_flame_hound.png",
+      "element": "fire",
+      "stats": {
+        "attack": 4,
+        "magicPower": 7
+      },
+      "description": "Flame Hound from Orange Egg",
+      "egg": "egg_orange"
+    },
+    {
+      "id": "pet_inferno_pup",
+      "name": "Inferno Pup",
+      "image": "/images/pets/pet_inferno_pup.png",
+      "element": "fire",
+      "stats": {
+        "attack": 5,
+        "magicPower": 3
+      },
+      "description": "Inferno Pup from Orange Egg",
+      "egg": "egg_orange"
+    },
+    {
+      "id": "pet_blaze_drake",
+      "name": "Blaze Drake",
+      "image": "/images/pets/pet_blaze_drake.png",
+      "element": "fire",
+      "stats": {
+        "attack": 4,
+        "magicPower": 3
+      },
+      "description": "Blaze Drake from Orange Egg",
+      "egg": "egg_orange"
+    },
+    {
+      "id": "pet_phoenix_chick",
+      "name": "Phoenix Chick",
+      "image": "/images/pets/pet_phoenix_chick.png",
+      "element": "fire",
+      "stats": {
+        "attack": 3,
+        "magicPower": 5
+      },
+      "description": "Phoenix Chick from Orange Egg",
+      "egg": "egg_orange"
+    },
+    {
+      "id": "pet_mythic_drake",
+      "name": "Mythic Drake",
+      "image": "/images/pets/pet_mythic_drake.png",
+      "element": "physical",
+      "stats": {
+        "attack": 7,
+        "magicPower": 7
+      },
+      "description": "Mythic Drake from Gold Egg",
+      "egg": "egg_gold"
+    },
+    {
+      "id": "pet_gold_pup",
+      "name": "Gold Pup",
+      "image": "/images/pets/pet_gold_pup.png",
+      "element": "physical",
+      "stats": {
+        "attack": 7,
+        "magicPower": 7
+      },
+      "description": "Gold Pup from Gold Egg",
+      "egg": "egg_gold"
+    },
+    {
+      "id": "pet_radiant_cub",
+      "name": "Radiant Cub",
+      "image": "/images/pets/pet_radiant_cub.png",
+      "element": "physical",
+      "stats": {
+        "attack": 3,
+        "magicPower": 6
+      },
+      "description": "Radiant Cub from Gold Egg",
+      "egg": "egg_gold"
+    },
+    {
+      "id": "pet_divine_whelp",
+      "name": "Divine Whelp",
+      "image": "/images/pets/pet_divine_whelp.png",
+      "element": "physical",
+      "stats": {
+        "attack": 3,
+        "magicPower": 5
+      },
+      "description": "Divine Whelp from Gold Egg",
+      "egg": "egg_gold"
+    },
+    {
+      "id": "pet_light_sprite",
+      "name": "Light Sprite",
+      "image": "/images/pets/pet_light_sprite.png",
+      "element": "physical",
+      "stats": {
+        "attack": 4,
+        "magicPower": 7
+      },
+      "description": "Light Sprite from Gold Egg",
+      "egg": "egg_gold"
+    },
+    {
+      "id": "pet_mythic_hound",
+      "name": "Mythic Hound",
+      "image": "/images/pets/pet_mythic_hound.png",
+      "element": "physical",
+      "stats": {
+        "attack": 6,
+        "magicPower": 5
+      },
+      "description": "Mythic Hound from Gold Egg",
+      "egg": "egg_gold"
+    },
+    {
+      "id": "pet_rage_pup_100",
+      "name": "Rage Pup",
+      "image": "/images/pets/pet_rage_pup_100.png",
+      "element": "fire",
+      "stats": {
+        "attack": 5
+      },
+      "description": "Rage Pup — grants attack buff. From egg_red",
+      "egg": "egg_red",
+      "buffKind": "attack"
+    },
+    {
+      "id": "pet_fury_cub_101",
+      "name": "Fury Cub",
+      "image": "/images/pets/pet_fury_cub_101.png",
+      "element": "water",
+      "stats": {
+        "magicPower": 6
+      },
+      "description": "Fury Cub — grants magicBoost buff. From egg_green",
+      "egg": "egg_green",
+      "buffKind": "magicBoost"
+    },
+    {
+      "id": "pet_berserk_whelp_102",
+      "name": "Berserk Whelp",
+      "image": "/images/pets/pet_berserk_whelp_102.png",
+      "element": "earth",
+      "stats": {
+        "resistance": 5
+      },
+      "description": "Berserk Whelp — grants defense buff. From egg_blue",
+      "egg": "egg_blue",
+      "buffKind": "defense"
+    },
+    {
+      "id": "pet_war_hound_103",
+      "name": "War Hound",
+      "image": "/images/pets/pet_war_hound_103.png",
+      "element": "lightning",
+      "stats": {
+        "attack": 4
+      },
+      "description": "War Hound — grants attack buff. From egg_brown",
+      "egg": "egg_brown",
+      "buffKind": "attack"
+    },
+    {
+      "id": "pet_battle_pup_104",
+      "name": "Battle Pup",
+      "image": "/images/pets/pet_battle_pup_104.png",
+      "element": "dark",
+      "stats": {
+        "magicPower": 6
+      },
+      "description": "Battle Pup — grants magicBoost buff. From egg_yellow",
+      "egg": "egg_yellow",
+      "buffKind": "magicBoost"
+    },
+    {
+      "id": "pet_might_cub_105",
+      "name": "Might Cub",
+      "image": "/images/pets/pet_might_cub_105.png",
+      "element": "physical",
+      "stats": {
+        "resistance": 5
+      },
+      "description": "Might Cub — grants defense buff. From egg_purple",
+      "egg": "egg_purple",
+      "buffKind": "defense"
+    },
+    {
+      "id": "pet_arcane_pup_106",
+      "name": "Arcane Pup",
+      "image": "/images/pets/pet_arcane_pup_106.png",
+      "element": "frost",
+      "stats": {
+        "attack": 6
+      },
+      "description": "Arcane Pup — grants attack buff. From egg_cyan",
+      "egg": "egg_cyan",
+      "buffKind": "attack"
+    },
+    {
+      "id": "pet_mana_sprite_107",
+      "name": "Mana Sprite",
+      "image": "/images/pets/pet_mana_sprite_107.png",
+      "element": "arcane",
+      "stats": {
+        "magicPower": 5
+      },
+      "description": "Mana Sprite — grants magicBoost buff. From egg_dark",
+      "egg": "egg_dark",
+      "buffKind": "magicBoost"
+    },
+    {
+      "id": "pet_spell_whelp_108",
+      "name": "Spell Whelp",
+      "image": "/images/pets/pet_spell_whelp_108.png",
+      "element": "holy",
+      "stats": {
+        "resistance": 4
+      },
+      "description": "Spell Whelp — grants defense buff. From egg_orange",
+      "egg": "egg_orange",
+      "buffKind": "defense"
+    },
+    {
+      "id": "pet_mystic_cub_109",
+      "name": "Mystic Cub",
+      "image": "/images/pets/pet_mystic_cub_109.png",
+      "element": "shadow",
+      "stats": {
+        "attack": 5
+      },
+      "description": "Mystic Cub — grants attack buff. From egg_gold",
+      "egg": "egg_gold",
+      "buffKind": "attack"
+    },
+    {
+      "id": "pet_rune_pup_110",
+      "name": "Rune Pup",
+      "image": "/images/pets/pet_rune_pup_110.png",
+      "element": "fire",
+      "stats": {
+        "magicPower": 4
+      },
+      "description": "Rune Pup — grants magicBoost buff. From egg_red",
+      "egg": "egg_red",
+      "buffKind": "magicBoost"
+    },
+    {
+      "id": "pet_gale_sprite_111",
+      "name": "Gale Sprite",
+      "image": "/images/pets/pet_gale_sprite_111.png",
+      "element": "water",
+      "stats": {
+        "resistance": 4
+      },
+      "description": "Gale Sprite — grants defense buff. From egg_green",
+      "egg": "egg_green",
+      "buffKind": "defense"
+    },
+    {
+      "id": "pet_stone_guardian_112",
+      "name": "Stone Guardian",
+      "image": "/images/pets/pet_stone_guardian_112.png",
+      "element": "earth",
+      "stats": {
+        "attack": 6
+      },
+      "description": "Stone Guardian — grants attack buff. From egg_blue",
+      "egg": "egg_blue",
+      "buffKind": "attack"
+    },
+    {
+      "id": "pet_iron_pup_113",
+      "name": "Iron Pup",
+      "image": "/images/pets/pet_iron_pup_113.png",
+      "element": "lightning",
+      "stats": {
+        "magicPower": 5
+      },
+      "description": "Iron Pup — grants magicBoost buff. From egg_brown",
+      "egg": "egg_brown",
+      "buffKind": "magicBoost"
+    },
+    {
+      "id": "pet_granite_whelp_114",
+      "name": "Granite Whelp",
+      "image": "/images/pets/pet_granite_whelp_114.png",
+      "element": "dark",
+      "stats": {
+        "resistance": 5
+      },
+      "description": "Granite Whelp — grants defense buff. From egg_yellow",
+      "egg": "egg_yellow",
+      "buffKind": "defense"
+    },
+    {
+      "id": "pet_crystal_pup_115",
+      "name": "Crystal Pup",
+      "image": "/images/pets/pet_crystal_pup_115.png",
+      "element": "physical",
+      "stats": {
+        "attack": 4
+      },
+      "description": "Crystal Pup — grants attack buff. From egg_purple",
+      "egg": "egg_purple",
+      "buffKind": "attack"
+    },
+    {
+      "id": "pet_boulder_cub_116",
+      "name": "Boulder Cub",
+      "image": "/images/pets/pet_boulder_cub_116.png",
+      "element": "frost",
+      "stats": {
+        "magicPower": 5
+      },
+      "description": "Boulder Cub — grants magicBoost buff. From egg_cyan",
+      "egg": "egg_cyan",
+      "buffKind": "magicBoost"
+    },
+    {
+      "id": "pet_rock_sprite_117",
+      "name": "Rock Sprite",
+      "image": "/images/pets/pet_rock_sprite_117.png",
+      "element": "arcane",
+      "stats": {
+        "resistance": 3
+      },
+      "description": "Rock Sprite — grants defense buff. From egg_dark",
+      "egg": "egg_dark",
+      "buffKind": "defense"
+    },
+    {
+      "id": "pet_frost_lynx_118",
+      "name": "Frost Lynx",
+      "image": "/images/pets/pet_frost_lynx_118.png",
+      "element": "holy",
+      "stats": {
+        "attack": 4
+      },
+      "description": "Frost Lynx — grants attack buff. From egg_orange",
+      "egg": "egg_orange",
+      "buffKind": "attack"
+    },
+    {
+      "id": "pet_glacier_pup_119",
+      "name": "Glacier Pup",
+      "image": "/images/pets/pet_glacier_pup_119.png",
+      "element": "shadow",
+      "stats": {
+        "magicPower": 6
+      },
+      "description": "Glacier Pup — grants magicBoost buff. From egg_gold",
+      "egg": "egg_gold",
+      "buffKind": "magicBoost"
+    },
+    {
+      "id": "pet_snow_hound_120",
+      "name": "Snow Hound",
+      "image": "/images/pets/pet_snow_hound_120.png",
+      "element": "fire",
+      "stats": {
+        "resistance": 3
+      },
+      "description": "Snow Hound — grants defense buff. From egg_red",
+      "egg": "egg_red",
+      "buffKind": "defense"
+    },
+    {
+      "id": "pet_ice_cub_121",
+      "name": "Ice Cub",
+      "image": "/images/pets/pet_ice_cub_121.png",
+      "element": "water",
+      "stats": {
+        "attack": 6
+      },
+      "description": "Ice Cub — grants attack buff. From egg_green",
+      "egg": "egg_green",
+      "buffKind": "attack"
+    },
+    {
+      "id": "pet_chill_whelp_122",
+      "name": "Chill Whelp",
+      "image": "/images/pets/pet_chill_whelp_122.png",
+      "element": "earth",
+      "stats": {
+        "magicPower": 6
+      },
+      "description": "Chill Whelp — grants magicBoost buff. From egg_blue",
+      "egg": "egg_blue",
+      "buffKind": "magicBoost"
+    },
+    {
+      "id": "pet_frost_kit_123",
+      "name": "Frost Kit",
+      "image": "/images/pets/pet_frost_kit_123.png",
+      "element": "lightning",
+      "stats": {
+        "resistance": 4
+      },
+      "description": "Frost Kit — grants defense buff. From egg_brown",
+      "egg": "egg_brown",
+      "buffKind": "defense"
+    },
+    {
+      "id": "pet_ember_lynx_124",
+      "name": "Ember Lynx",
+      "image": "/images/pets/pet_ember_lynx_124.png",
+      "element": "dark",
+      "stats": {
+        "attack": 6
+      },
+      "description": "Ember Lynx — grants attack buff. From egg_yellow",
+      "egg": "egg_yellow",
+      "buffKind": "attack"
+    },
+    {
+      "id": "pet_flame_hound_125",
+      "name": "Flame Hound",
+      "image": "/images/pets/pet_flame_hound_125.png",
+      "element": "physical",
+      "stats": {
+        "magicPower": 6
+      },
+      "description": "Flame Hound — grants magicBoost buff. From egg_purple",
+      "egg": "egg_purple",
+      "buffKind": "magicBoost"
+    },
+    {
+      "id": "pet_cinder_pup_126",
+      "name": "Cinder Pup",
+      "image": "/images/pets/pet_cinder_pup_126.png",
+      "element": "frost",
+      "stats": {
+        "resistance": 3
+      },
+      "description": "Cinder Pup — grants defense buff. From egg_cyan",
+      "egg": "egg_cyan",
+      "buffKind": "defense"
+    },
+    {
+      "id": "pet_blaze_cub_127",
+      "name": "Blaze Cub",
+      "image": "/images/pets/pet_blaze_cub_127.png",
+      "element": "arcane",
+      "stats": {
+        "attack": 5
+      },
+      "description": "Blaze Cub — grants attack buff. From egg_dark",
+      "egg": "egg_dark",
+      "buffKind": "attack"
+    },
+    {
+      "id": "pet_inferno_whelp_128",
+      "name": "Inferno Whelp",
+      "image": "/images/pets/pet_inferno_whelp_128.png",
+      "element": "holy",
+      "stats": {
+        "magicPower": 6
+      },
+      "description": "Inferno Whelp — grants magicBoost buff. From egg_orange",
+      "egg": "egg_orange",
+      "buffKind": "magicBoost"
+    },
+    {
+      "id": "pet_fire_sprite_129",
+      "name": "Fire Sprite",
+      "image": "/images/pets/pet_fire_sprite_129.png",
+      "element": "shadow",
+      "stats": {
+        "resistance": 5
+      },
+      "description": "Fire Sprite — grants defense buff. From egg_gold",
+      "egg": "egg_gold",
+      "buffKind": "defense"
+    },
+    {
+      "id": "pet_storm_hawk_130",
+      "name": "Storm Hawk",
+      "image": "/images/pets/pet_storm_hawk_130.png",
+      "element": "fire",
+      "stats": {
+        "attack": 5
+      },
+      "description": "Storm Hawk — grants attack buff. From egg_red",
+      "egg": "egg_red",
+      "buffKind": "attack"
+    },
+    {
+      "id": "pet_thunder_pup_131",
+      "name": "Thunder Pup",
+      "image": "/images/pets/pet_thunder_pup_131.png",
+      "element": "water",
+      "stats": {
+        "magicPower": 6
+      },
+      "description": "Thunder Pup — grants magicBoost buff. From egg_green",
+      "egg": "egg_green",
+      "buffKind": "magicBoost"
+    },
+    {
+      "id": "pet_gale_cub_132",
+      "name": "Gale Cub",
+      "image": "/images/pets/pet_gale_cub_132.png",
+      "element": "earth",
+      "stats": {
+        "resistance": 3
+      },
+      "description": "Gale Cub — grants defense buff. From egg_blue",
+      "egg": "egg_blue",
+      "buffKind": "defense"
+    },
+    {
+      "id": "pet_wind_sprite_133",
+      "name": "Wind Sprite",
+      "image": "/images/pets/pet_wind_sprite_133.png",
+      "element": "lightning",
+      "stats": {
+        "attack": 4
+      },
+      "description": "Wind Sprite — grants attack buff. From egg_brown",
+      "egg": "egg_brown",
+      "buffKind": "attack"
+    },
+    {
+      "id": "pet_lightning_pup_134",
+      "name": "Lightning Pup",
+      "image": "/images/pets/pet_lightning_pup_134.png",
+      "element": "dark",
+      "stats": {
+        "magicPower": 5
+      },
+      "description": "Lightning Pup — grants magicBoost buff. From egg_yellow",
+      "egg": "egg_yellow",
+      "buffKind": "magicBoost"
+    },
+    {
+      "id": "pet_tempest_whelp_135",
+      "name": "Tempest Whelp",
+      "image": "/images/pets/pet_tempest_whelp_135.png",
+      "element": "physical",
+      "stats": {
+        "resistance": 3
+      },
+      "description": "Tempest Whelp — grants defense buff. From egg_purple",
+      "egg": "egg_purple",
+      "buffKind": "defense"
+    },
+    {
+      "id": "pet_shadow_cat_136",
+      "name": "Shadow Cat",
+      "image": "/images/pets/pet_shadow_cat_136.png",
+      "element": "frost",
+      "stats": {
+        "attack": 6
+      },
+      "description": "Shadow Cat — grants attack buff. From egg_cyan",
+      "egg": "egg_cyan",
+      "buffKind": "attack"
+    },
+    {
+      "id": "pet_void_pup_137",
+      "name": "Void Pup",
+      "image": "/images/pets/pet_void_pup_137.png",
+      "element": "arcane",
+      "stats": {
+        "magicPower": 5
+      },
+      "description": "Void Pup — grants magicBoost buff. From egg_dark",
+      "egg": "egg_dark",
+      "buffKind": "magicBoost"
+    }
   ],
   "eggs": [
-    {"id":"egg_red","label":"Red Egg","rarity":"common","dropRate":0.1,"dungeons":["f","fast"],"pets":["pet_direwolf","pet_ember_pup","pet_cinder_cub","pet_slime","pet_sprout","pet_flame_sprite"]},
-    {"id":"egg_green","label":"Green Egg","rarity":"common","dropRate":0.05,"dungeons":["f","d"],"pets":["pet_mossling","pet_vine_pup","pet_thorn_whelp","pet_grove_sprite","pet_slime_king","pet_forest_cub","pet_natureling"]},
-    {"id":"egg_blue","label":"Blue Egg","rarity":"uncommon","dropRate":0.03,"dungeons":["d","c"],"pets":["pet_frost_pup","pet_ice_whelp","pet_snow_cub","pet_glacierling","pet_chill_sprite","pet_frost_drake"]},
-    {"id":"egg_brown","label":"Brown Egg","rarity":"uncommon","dropRate":0.02,"dungeons":["c","b"],"pets":["pet_stone_pup","pet_rockling","pet_boulder_cub","pet_crystal_sprite","pet_golem_whelp","pet_granite_pup"]},
-    {"id":"egg_yellow","label":"Yellow Egg","rarity":"rare","dropRate":0.015,"dungeons":["b","a"],"pets":["pet_storm_pup","pet_thunder_cub","pet_lightning_drake","pet_wind_sprite","pet_gale_whelp","pet_storm_hatchling"]},
-    {"id":"egg_purple","label":"Purple Egg","rarity":"rare","dropRate":0.01,"dungeons":["a","s"],"pets":["pet_shadow_pup","pet_voidling","pet_dusk_whelp","pet_night_cub","pet_shade_sprite","pet_umbra_drake"]},
-    {"id":"egg_cyan","label":"Cyan Egg","rarity":"epic","dropRate":0.008,"dungeons":["s","ss"],"pets":["pet_crystal_drake","pet_arcane_pup","pet_mana_sprite","pet_spell_whelp","pet_runeling","pet_crystal_hound"]},
-    {"id":"egg_dark","label":"Dark Egg","rarity":"epic","dropRate":0.006,"dungeons":["ss","ssplus"],"pets":["pet_void_pup","pet_abyssling","pet_nether_cub","pet_shadow_drake","pet_dark_hound","pet_void_sprite"]},
-    {"id":"egg_orange","label":"Orange Egg","rarity":"legendary","dropRate":0.004,"dungeons":["special7"],"pets":["pet_phoenix_hatchling","pet_ember_drake","pet_flame_hound","pet_inferno_pup","pet_blaze_drake","pet_phoenix_chick"]},
-    {"id":"egg_gold","label":"Gold Egg","rarity":"mythic","dropRate":0.002,"dungeons":["ssplus"],"pets":["pet_mythic_drake","pet_gold_pup","pet_radiant_cub","pet_divine_whelp","pet_light_sprite","pet_mythic_hound"]}
+    {
+      "id": "egg_red",
+      "label": "Red Egg",
+      "rarity": "common",
+      "dropRate": 0.1,
+      "dungeons": [
+        "f",
+        "fast"
+      ],
+      "pets": [
+        "pet_direwolf",
+        "pet_ember_pup",
+        "pet_cinder_cub",
+        "pet_slime",
+        "pet_sprout",
+        "pet_flame_sprite"
+      ]
+    },
+    {
+      "id": "egg_green",
+      "label": "Green Egg",
+      "rarity": "common",
+      "dropRate": 0.05,
+      "dungeons": [
+        "f",
+        "d"
+      ],
+      "pets": [
+        "pet_mossling",
+        "pet_vine_pup",
+        "pet_thorn_whelp",
+        "pet_grove_sprite",
+        "pet_slime_king",
+        "pet_forest_cub",
+        "pet_natureling"
+      ]
+    },
+    {
+      "id": "egg_blue",
+      "label": "Blue Egg",
+      "rarity": "uncommon",
+      "dropRate": 0.03,
+      "dungeons": [
+        "d",
+        "c"
+      ],
+      "pets": [
+        "pet_frost_pup",
+        "pet_ice_whelp",
+        "pet_snow_cub",
+        "pet_glacierling",
+        "pet_chill_sprite",
+        "pet_frost_drake"
+      ]
+    },
+    {
+      "id": "egg_brown",
+      "label": "Brown Egg",
+      "rarity": "uncommon",
+      "dropRate": 0.02,
+      "dungeons": [
+        "c",
+        "b"
+      ],
+      "pets": [
+        "pet_stone_pup",
+        "pet_rockling",
+        "pet_boulder_cub",
+        "pet_crystal_sprite",
+        "pet_golem_whelp",
+        "pet_granite_pup"
+      ]
+    },
+    {
+      "id": "egg_yellow",
+      "label": "Yellow Egg",
+      "rarity": "rare",
+      "dropRate": 0.015,
+      "dungeons": [
+        "b",
+        "a"
+      ],
+      "pets": [
+        "pet_storm_pup",
+        "pet_thunder_cub",
+        "pet_lightning_drake",
+        "pet_wind_sprite",
+        "pet_gale_whelp",
+        "pet_storm_hatchling"
+      ]
+    },
+    {
+      "id": "egg_purple",
+      "label": "Purple Egg",
+      "rarity": "rare",
+      "dropRate": 0.01,
+      "dungeons": [
+        "a",
+        "s"
+      ],
+      "pets": [
+        "pet_shadow_pup",
+        "pet_voidling",
+        "pet_dusk_whelp",
+        "pet_night_cub",
+        "pet_shade_sprite",
+        "pet_umbra_drake"
+      ]
+    },
+    {
+      "id": "egg_cyan",
+      "label": "Cyan Egg",
+      "rarity": "epic",
+      "dropRate": 0.008,
+      "dungeons": [
+        "s",
+        "ss"
+      ],
+      "pets": [
+        "pet_crystal_drake",
+        "pet_arcane_pup",
+        "pet_mana_sprite",
+        "pet_spell_whelp",
+        "pet_runeling",
+        "pet_crystal_hound"
+      ]
+    },
+    {
+      "id": "egg_dark",
+      "label": "Dark Egg",
+      "rarity": "epic",
+      "dropRate": 0.006,
+      "dungeons": [
+        "ss",
+        "ssplus"
+      ],
+      "pets": [
+        "pet_void_pup",
+        "pet_abyssling",
+        "pet_nether_cub",
+        "pet_shadow_drake",
+        "pet_dark_hound",
+        "pet_void_sprite"
+      ]
+    },
+    {
+      "id": "egg_orange",
+      "label": "Orange Egg",
+      "rarity": "legendary",
+      "dropRate": 0.004,
+      "dungeons": [
+        "special7"
+      ],
+      "pets": [
+        "pet_phoenix_hatchling",
+        "pet_ember_drake",
+        "pet_flame_hound",
+        "pet_inferno_pup",
+        "pet_blaze_drake",
+        "pet_phoenix_chick"
+      ]
+    },
+    {
+      "id": "egg_gold",
+      "label": "Gold Egg",
+      "rarity": "mythic",
+      "dropRate": 0.002,
+      "dungeons": [
+        "ssplus"
+      ],
+      "pets": [
+        "pet_mythic_drake",
+        "pet_gold_pup",
+        "pet_radiant_cub",
+        "pet_divine_whelp",
+        "pet_light_sprite",
+        "pet_mythic_hound"
+      ]
+    }
   ],
   "items": [
-    {"id":"egg_red","name":"Red Egg","slot":"egg","rarity":"common","price":{"gold":0,"wood":0},"image":"/images/items/egg_red.png","description":"Red Egg — hatch to get a random pet. Drops in specific dungeons."},
-    {"id":"egg_green","name":"Green Egg","slot":"egg","rarity":"common","price":{"gold":0,"wood":0},"image":"/images/items/egg_green.png","description":"Green Egg — hatch to get a random pet. Drops in specific dungeons."},
-    {"id":"egg_blue","name":"Blue Egg","slot":"egg","rarity":"uncommon","price":{"gold":0,"wood":0},"image":"/images/items/egg_blue.png","description":"Blue Egg — hatch to get a random pet. Drops in specific dungeons."},
-    {"id":"egg_brown","name":"Brown Egg","slot":"egg","rarity":"uncommon","price":{"gold":0,"wood":0},"image":"/images/items/egg_brown.png","description":"Brown Egg — hatch to get a random pet. Drops in specific dungeons."},
-    {"id":"egg_yellow","name":"Yellow Egg","slot":"egg","rarity":"rare","price":{"gold":0,"wood":0},"image":"/images/items/egg_yellow.png","description":"Yellow Egg — hatch to get a random pet. Drops in specific dungeons."},
-    {"id":"egg_purple","name":"Purple Egg","slot":"egg","rarity":"rare","price":{"gold":0,"wood":0},"image":"/images/items/egg_purple.png","description":"Purple Egg — hatch to get a random pet. Drops in specific dungeons."},
-    {"id":"egg_cyan","name":"Cyan Egg","slot":"egg","rarity":"epic","price":{"gold":0,"wood":0},"image":"/images/items/egg_cyan.png","description":"Cyan Egg — hatch to get a random pet. Drops in specific dungeons."},
-    {"id":"egg_dark","name":"Dark Egg","slot":"egg","rarity":"epic","price":{"gold":0,"wood":0},"image":"/images/items/egg_dark.png","description":"Dark Egg — hatch to get a random pet. Drops in specific dungeons."},
-    {"id":"egg_orange","name":"Orange Egg","slot":"egg","rarity":"legendary","price":{"gold":0,"wood":0},"image":"/images/items/egg_orange.png","description":"Orange Egg — hatch to get a random pet. Drops in specific dungeons."},
-    {"id":"egg_gold","name":"Gold Egg","slot":"egg","rarity":"mythic","price":{"gold":0,"wood":0},"image":"/images/items/egg_gold.png","description":"Gold Egg — hatch to get a random pet. Drops in specific dungeons."},
+    {
+      "id": "egg_red",
+      "name": "Red Egg",
+      "slot": "egg",
+      "rarity": "common",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "image": "/images/items/egg_red.png",
+      "description": "Red Egg — hatch to get a random pet. Drops in specific dungeons."
+    },
+    {
+      "id": "egg_green",
+      "name": "Green Egg",
+      "slot": "egg",
+      "rarity": "common",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "image": "/images/items/egg_green.png",
+      "description": "Green Egg — hatch to get a random pet. Drops in specific dungeons."
+    },
+    {
+      "id": "egg_blue",
+      "name": "Blue Egg",
+      "slot": "egg",
+      "rarity": "uncommon",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "image": "/images/items/egg_blue.png",
+      "description": "Blue Egg — hatch to get a random pet. Drops in specific dungeons."
+    },
+    {
+      "id": "egg_brown",
+      "name": "Brown Egg",
+      "slot": "egg",
+      "rarity": "uncommon",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "image": "/images/items/egg_brown.png",
+      "description": "Brown Egg — hatch to get a random pet. Drops in specific dungeons."
+    },
+    {
+      "id": "egg_yellow",
+      "name": "Yellow Egg",
+      "slot": "egg",
+      "rarity": "rare",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "image": "/images/items/egg_yellow.png",
+      "description": "Yellow Egg — hatch to get a random pet. Drops in specific dungeons."
+    },
+    {
+      "id": "egg_purple",
+      "name": "Purple Egg",
+      "slot": "egg",
+      "rarity": "rare",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "image": "/images/items/egg_purple.png",
+      "description": "Purple Egg — hatch to get a random pet. Drops in specific dungeons."
+    },
+    {
+      "id": "egg_cyan",
+      "name": "Cyan Egg",
+      "slot": "egg",
+      "rarity": "epic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "image": "/images/items/egg_cyan.png",
+      "description": "Cyan Egg — hatch to get a random pet. Drops in specific dungeons."
+    },
+    {
+      "id": "egg_dark",
+      "name": "Dark Egg",
+      "slot": "egg",
+      "rarity": "epic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "image": "/images/items/egg_dark.png",
+      "description": "Dark Egg — hatch to get a random pet. Drops in specific dungeons."
+    },
+    {
+      "id": "egg_orange",
+      "name": "Orange Egg",
+      "slot": "egg",
+      "rarity": "legendary",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "image": "/images/items/egg_orange.png",
+      "description": "Orange Egg — hatch to get a random pet. Drops in specific dungeons."
+    },
+    {
+      "id": "egg_gold",
+      "name": "Gold Egg",
+      "slot": "egg",
+      "rarity": "mythic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "image": "/images/items/egg_gold.png",
+      "description": "Gold Egg — hatch to get a random pet. Drops in specific dungeons."
+    },
     {
       "id": "rusty_sword",
       "name": "Rusty Sword",
@@ -3889,8 +5936,12 @@ const CONTENT = {
         "gold": 30,
         "wood": 5
       },
-      "stats": {"attack": 18, "speed": 3},
-      "image": "/images/items/rusty_sword.png",      "description": "+4 Attack"
+      "stats": {
+        "attack": 18,
+        "speed": 3
+      },
+      "image": "/images/items/rusty_sword.png",
+      "description": "+4 Attack"
     },
     {
       "id": "leather_helm",
@@ -4388,7 +6439,9 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "stats": {"attack": 16},
+      "stats": {
+        "attack": 16
+      },
       "image": "/images/items/fire_ash_sword.png",
       "craftOnly": true,
       "description": "+12 Attack. Still warm to the touch."
@@ -4402,7 +6455,9 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "stats": {"attack": 28},
+      "stats": {
+        "attack": 28
+      },
       "image": "/images/items/molten_cleaver.png",
       "craftOnly": true,
       "description": "+20 Attack. It hums with fire."
@@ -4416,7 +6471,10 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "stats": {"attack": 18, "resistance": 6},
+      "stats": {
+        "attack": 18,
+        "resistance": 6
+      },
       "image": "/images/items/frost_gladius.png",
       "craftOnly": true,
       "description": "+12 Attack, +3 Resistance."
@@ -4430,7 +6488,10 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "stats": {"magicPower": 20, "mana": 15},
+      "stats": {
+        "magicPower": 20,
+        "mana": 15
+      },
       "image": "/images/items/arcane_rod.png",
       "craftOnly": true,
       "description": "+14 Magic Power, +10 Mana."
@@ -4444,7 +6505,10 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "stats": {"attack": 18, "speed": 3},
+      "stats": {
+        "attack": 18,
+        "speed": 3
+      },
       "image": "/images/items/shadow_knife.png",
       "craftOnly": true,
       "description": "+11 Attack, +2 Speed."
@@ -4565,8 +6629,13 @@ const CONTENT = {
       "name": "Iron Greatsword",
       "slot": "weapon",
       "rarity": "common",
-      "price": {"gold": 60, "wood": 10},
-      "stats": {"attack": 12},
+      "price": {
+        "gold": 60,
+        "wood": 10
+      },
+      "stats": {
+        "attack": 12
+      },
       "image": "/images/items/iron_greatsword.png",
       "description": "+12 attack"
     },
@@ -4575,8 +6644,13 @@ const CONTENT = {
       "name": "Steel Blade",
       "slot": "weapon",
       "rarity": "common",
-      "price": {"gold": 60, "wood": 10},
-      "stats": {"attack": 14},
+      "price": {
+        "gold": 60,
+        "wood": 10
+      },
+      "stats": {
+        "attack": 14
+      },
       "image": "/images/items/steel_blade.png",
       "description": "+14 attack"
     },
@@ -4585,8 +6659,14 @@ const CONTENT = {
       "name": "Ranger Bow",
       "slot": "weapon",
       "rarity": "uncommon",
-      "price": {"gold": 120, "wood": 20},
-      "stats": {"attack": 16, "speed": 1},
+      "price": {
+        "gold": 120,
+        "wood": 20
+      },
+      "stats": {
+        "attack": 16,
+        "speed": 1
+      },
       "image": "/images/items/ranger_bow.png",
       "description": "+16 attack, +1 speed"
     },
@@ -4595,8 +6675,14 @@ const CONTENT = {
       "name": "Arcane Scepter",
       "slot": "weapon",
       "rarity": "uncommon",
-      "price": {"gold": 120, "wood": 20},
-      "stats": {"magicPower": 16, "mana": 12},
+      "price": {
+        "gold": 120,
+        "wood": 20
+      },
+      "stats": {
+        "magicPower": 16,
+        "mana": 12
+      },
       "image": "/images/items/arcane_scepter.png",
       "description": "+16 magicPower, +12 mana"
     },
@@ -4605,8 +6691,14 @@ const CONTENT = {
       "name": "Shadow Dagger",
       "slot": "weapon",
       "rarity": "rare",
-      "price": {"gold": 220, "wood": 35},
-      "stats": {"attack": 20, "speed": 2},
+      "price": {
+        "gold": 220,
+        "wood": 35
+      },
+      "stats": {
+        "attack": 20,
+        "speed": 2
+      },
       "image": "/images/items/shadow_dagger.png",
       "description": "+20 attack, +2 speed"
     },
@@ -4615,8 +6707,14 @@ const CONTENT = {
       "name": "Dragon Spear",
       "slot": "weapon",
       "rarity": "rare",
-      "price": {"gold": 220, "wood": 35},
-      "stats": {"attack": 22, "speed": 1},
+      "price": {
+        "gold": 220,
+        "wood": 35
+      },
+      "stats": {
+        "attack": 22,
+        "speed": 1
+      },
       "image": "/images/items/dragon_spear.png",
       "description": "+22 attack, +1 speed"
     },
@@ -4625,8 +6723,13 @@ const CONTENT = {
       "name": "Titan Hammer",
       "slot": "weapon",
       "rarity": "epic",
-      "price": {"gold": 400, "wood": 60},
-      "stats": {"attack": 26},
+      "price": {
+        "gold": 400,
+        "wood": 60
+      },
+      "stats": {
+        "attack": 26
+      },
       "image": "/images/items/titan_hammer.png",
       "description": "+26 attack"
     },
@@ -4635,8 +6738,14 @@ const CONTENT = {
       "name": "Storm Bow",
       "slot": "weapon",
       "rarity": "epic",
-      "price": {"gold": 400, "wood": 60},
-      "stats": {"attack": 24, "speed": 2},
+      "price": {
+        "gold": 400,
+        "wood": 60
+      },
+      "stats": {
+        "attack": 24,
+        "speed": 2
+      },
       "image": "/images/items/storm_bow.png",
       "description": "+24 attack, +2 speed"
     },
@@ -4645,8 +6754,14 @@ const CONTENT = {
       "name": "Void Blade",
       "slot": "weapon",
       "rarity": "legendary",
-      "price": {"gold": 650, "wood": 90},
-      "stats": {"attack": 32, "speed": 1},
+      "price": {
+        "gold": 650,
+        "wood": 90
+      },
+      "stats": {
+        "attack": 32,
+        "speed": 1
+      },
       "image": "/images/items/void_blade.png",
       "description": "+32 attack, +1 speed"
     },
@@ -4655,8 +6770,13 @@ const CONTENT = {
       "name": "World Breaker",
       "slot": "weapon",
       "rarity": "mythic",
-      "price": {"gold": 900, "wood": 120},
-      "stats": {"attack": 38},
+      "price": {
+        "gold": 900,
+        "wood": 120
+      },
+      "stats": {
+        "attack": 38
+      },
       "image": "/images/items/world_breaker.png",
       "description": "+38 attack"
     },
@@ -4665,8 +6785,14 @@ const CONTENT = {
       "name": "Bronze Helm",
       "slot": "head",
       "rarity": "common",
-      "price": {"gold": 40, "wood": 8},
-      "stats": {"maxHp": 35, "resistance": 5},
+      "price": {
+        "gold": 40,
+        "wood": 8
+      },
+      "stats": {
+        "maxHp": 35,
+        "resistance": 5
+      },
       "image": "/images/items/bronze_helm.png",
       "description": "+35 maxHp, +5 resistance"
     },
@@ -4675,8 +6801,14 @@ const CONTENT = {
       "name": "Iron Helm",
       "slot": "head",
       "rarity": "common",
-      "price": {"gold": 40, "wood": 8},
-      "stats": {"maxHp": 45, "resistance": 7},
+      "price": {
+        "gold": 40,
+        "wood": 8
+      },
+      "stats": {
+        "maxHp": 45,
+        "resistance": 7
+      },
       "image": "/images/items/iron_helm.png",
       "description": "+45 maxHp, +7 resistance"
     },
@@ -4685,8 +6817,15 @@ const CONTENT = {
       "name": "Ranger Hood",
       "slot": "head",
       "rarity": "uncommon",
-      "price": {"gold": 90, "wood": 15},
-      "stats": {"maxHp": 40, "resistance": 6, "speed": 1},
+      "price": {
+        "gold": 90,
+        "wood": 15
+      },
+      "stats": {
+        "maxHp": 40,
+        "resistance": 6,
+        "speed": 1
+      },
       "image": "/images/items/ranger_hood.png",
       "description": "+40 maxHp, +6 resistance, +1 speed"
     },
@@ -4695,8 +6834,15 @@ const CONTENT = {
       "name": "Mage Cowl",
       "slot": "head",
       "rarity": "uncommon",
-      "price": {"gold": 90, "wood": 15},
-      "stats": {"maxHp": 30, "magicPower": 8, "mana": 12},
+      "price": {
+        "gold": 90,
+        "wood": 15
+      },
+      "stats": {
+        "maxHp": 30,
+        "magicPower": 8,
+        "mana": 12
+      },
       "image": "/images/items/mage_cowl.png",
       "description": "+30 maxHp, +8 magicPower, +12 mana"
     },
@@ -4705,8 +6851,14 @@ const CONTENT = {
       "name": "Knight Helm",
       "slot": "head",
       "rarity": "rare",
-      "price": {"gold": 180, "wood": 28},
-      "stats": {"maxHp": 70, "resistance": 12},
+      "price": {
+        "gold": 180,
+        "wood": 28
+      },
+      "stats": {
+        "maxHp": 70,
+        "resistance": 12
+      },
       "image": "/images/items/knight_helm.png",
       "description": "+70 maxHp, +12 resistance"
     },
@@ -4715,8 +6867,15 @@ const CONTENT = {
       "name": "Shadow Mask",
       "slot": "head",
       "rarity": "rare",
-      "price": {"gold": 180, "wood": 28},
-      "stats": {"maxHp": 55, "resistance": 9, "speed": 1},
+      "price": {
+        "gold": 180,
+        "wood": 28
+      },
+      "stats": {
+        "maxHp": 55,
+        "resistance": 9,
+        "speed": 1
+      },
       "image": "/images/items/shadow_mask.png",
       "description": "+55 maxHp, +9 resistance, +1 speed"
     },
@@ -4725,8 +6884,15 @@ const CONTENT = {
       "name": "Dragon Helm",
       "slot": "head",
       "rarity": "epic",
-      "price": {"gold": 350, "wood": 45},
-      "stats": {"maxHp": 100, "resistance": 18, "attack": 5},
+      "price": {
+        "gold": 350,
+        "wood": 45
+      },
+      "stats": {
+        "maxHp": 100,
+        "resistance": 18,
+        "attack": 5
+      },
       "image": "/images/items/dragon_helm.png",
       "description": "+100 maxHp, +18 resistance, +5 attack"
     },
@@ -4735,8 +6901,15 @@ const CONTENT = {
       "name": "Void Crown",
       "slot": "head",
       "rarity": "legendary",
-      "price": {"gold": 600, "wood": 70},
-      "stats": {"maxHp": 130, "resistance": 22, "magicPower": 12},
+      "price": {
+        "gold": 600,
+        "wood": 70
+      },
+      "stats": {
+        "maxHp": 130,
+        "resistance": 22,
+        "magicPower": 12
+      },
       "image": "/images/items/void_crown.png",
       "description": "+130 maxHp, +22 resistance, +12 magicPower"
     },
@@ -4745,8 +6918,14 @@ const CONTENT = {
       "name": "Padded Armor",
       "slot": "armor",
       "rarity": "common",
-      "price": {"gold": 50, "wood": 12},
-      "stats": {"maxHp": 55, "resistance": 7},
+      "price": {
+        "gold": 50,
+        "wood": 12
+      },
+      "stats": {
+        "maxHp": 55,
+        "resistance": 7
+      },
       "image": "/images/items/padded_armor.png",
       "description": "+55 maxHp, +7 resistance"
     },
@@ -4755,8 +6934,14 @@ const CONTENT = {
       "name": "Chainmail",
       "slot": "armor",
       "rarity": "common",
-      "price": {"gold": 50, "wood": 12},
-      "stats": {"maxHp": 65, "resistance": 9},
+      "price": {
+        "gold": 50,
+        "wood": 12
+      },
+      "stats": {
+        "maxHp": 65,
+        "resistance": 9
+      },
       "image": "/images/items/chainmail.png",
       "description": "+65 maxHp, +9 resistance"
     },
@@ -4765,8 +6950,15 @@ const CONTENT = {
       "name": "Ranger Vest",
       "slot": "armor",
       "rarity": "uncommon",
-      "price": {"gold": 110, "wood": 22},
-      "stats": {"maxHp": 60, "resistance": 8, "speed": 1},
+      "price": {
+        "gold": 110,
+        "wood": 22
+      },
+      "stats": {
+        "maxHp": 60,
+        "resistance": 8,
+        "speed": 1
+      },
       "image": "/images/items/ranger_vest.png",
       "description": "+60 maxHp, +8 resistance, +1 speed"
     },
@@ -4775,8 +6967,15 @@ const CONTENT = {
       "name": "Silk Robe",
       "slot": "armor",
       "rarity": "uncommon",
-      "price": {"gold": 110, "wood": 22},
-      "stats": {"maxHp": 45, "resistance": 6, "magicPower": 10},
+      "price": {
+        "gold": 110,
+        "wood": 22
+      },
+      "stats": {
+        "maxHp": 45,
+        "resistance": 6,
+        "magicPower": 10
+      },
       "image": "/images/items/silk_robe.png",
       "description": "+45 maxHp, +6 resistance, +10 magicPower"
     },
@@ -4785,8 +6984,14 @@ const CONTENT = {
       "name": "Plate Armor",
       "slot": "armor",
       "rarity": "rare",
-      "price": {"gold": 210, "wood": 35},
-      "stats": {"maxHp": 110, "resistance": 18},
+      "price": {
+        "gold": 210,
+        "wood": 35
+      },
+      "stats": {
+        "maxHp": 110,
+        "resistance": 18
+      },
       "image": "/images/items/plate_armor.png",
       "description": "+110 maxHp, +18 resistance"
     },
@@ -4795,8 +7000,15 @@ const CONTENT = {
       "name": "Shadow Garb",
       "slot": "armor",
       "rarity": "rare",
-      "price": {"gold": 210, "wood": 35},
-      "stats": {"maxHp": 85, "resistance": 14, "speed": 1},
+      "price": {
+        "gold": 210,
+        "wood": 35
+      },
+      "stats": {
+        "maxHp": 85,
+        "resistance": 14,
+        "speed": 1
+      },
       "image": "/images/items/shadow_garb.png",
       "description": "+85 maxHp, +14 resistance, +1 speed"
     },
@@ -4805,8 +7017,15 @@ const CONTENT = {
       "name": "Dragon Scale",
       "slot": "armor",
       "rarity": "epic",
-      "price": {"gold": 420, "wood": 60},
-      "stats": {"maxHp": 150, "resistance": 26, "attack": 6},
+      "price": {
+        "gold": 420,
+        "wood": 60
+      },
+      "stats": {
+        "maxHp": 150,
+        "resistance": 26,
+        "attack": 6
+      },
       "image": "/images/items/dragon_scale.png",
       "description": "+150 maxHp, +26 resistance, +6 attack"
     },
@@ -4815,8 +7034,15 @@ const CONTENT = {
       "name": "Void Plate",
       "slot": "armor",
       "rarity": "mythic",
-      "price": {"gold": 950, "wood": 130},
-      "stats": {"maxHp": 200, "resistance": 35, "magicPower": 10},
+      "price": {
+        "gold": 950,
+        "wood": 130
+      },
+      "stats": {
+        "maxHp": 200,
+        "resistance": 35,
+        "magicPower": 10
+      },
       "image": "/images/items/void_plate.png",
       "description": "+200 maxHp, +35 resistance, +10 magicPower"
     },
@@ -4825,8 +7051,14 @@ const CONTENT = {
       "name": "Leather Greaves",
       "slot": "legs",
       "rarity": "common",
-      "price": {"gold": 45, "wood": 10},
-      "stats": {"maxHp": 40, "resistance": 6},
+      "price": {
+        "gold": 45,
+        "wood": 10
+      },
+      "stats": {
+        "maxHp": 40,
+        "resistance": 6
+      },
       "image": "/images/items/leather_greaves.png",
       "description": "+40 maxHp, +6 resistance"
     },
@@ -4835,8 +7067,14 @@ const CONTENT = {
       "name": "Iron Greaves",
       "slot": "legs",
       "rarity": "common",
-      "price": {"gold": 45, "wood": 10},
-      "stats": {"maxHp": 50, "resistance": 8},
+      "price": {
+        "gold": 45,
+        "wood": 10
+      },
+      "stats": {
+        "maxHp": 50,
+        "resistance": 8
+      },
       "image": "/images/items/iron_greaves.png",
       "description": "+50 maxHp, +8 resistance"
     },
@@ -4845,8 +7083,15 @@ const CONTENT = {
       "name": "Swift Leggings",
       "slot": "legs",
       "rarity": "uncommon",
-      "price": {"gold": 100, "wood": 18},
-      "stats": {"maxHp": 45, "resistance": 7, "speed": 1},
+      "price": {
+        "gold": 100,
+        "wood": 18
+      },
+      "stats": {
+        "maxHp": 45,
+        "resistance": 7,
+        "speed": 1
+      },
       "image": "/images/items/swift_leggings.png",
       "description": "+45 maxHp, +7 resistance, +1 speed"
     },
@@ -4855,8 +7100,15 @@ const CONTENT = {
       "name": "Sage Pants",
       "slot": "legs",
       "rarity": "uncommon",
-      "price": {"gold": 100, "wood": 18},
-      "stats": {"maxHp": 35, "magicPower": 9, "mana": 10},
+      "price": {
+        "gold": 100,
+        "wood": 18
+      },
+      "stats": {
+        "maxHp": 35,
+        "magicPower": 9,
+        "mana": 10
+      },
       "image": "/images/items/sage_pants.png",
       "description": "+35 maxHp, +9 magicPower, +10 mana"
     },
@@ -4865,8 +7117,14 @@ const CONTENT = {
       "name": "Knight Leggings",
       "slot": "legs",
       "rarity": "rare",
-      "price": {"gold": 190, "wood": 30},
-      "stats": {"maxHp": 80, "resistance": 14},
+      "price": {
+        "gold": 190,
+        "wood": 30
+      },
+      "stats": {
+        "maxHp": 80,
+        "resistance": 14
+      },
       "image": "/images/items/knight_leggings.png",
       "description": "+80 maxHp, +14 resistance"
     },
@@ -4875,8 +7133,15 @@ const CONTENT = {
       "name": "Shadow Leggings",
       "slot": "legs",
       "rarity": "rare",
-      "price": {"gold": 190, "wood": 30},
-      "stats": {"maxHp": 65, "resistance": 11, "speed": 1},
+      "price": {
+        "gold": 190,
+        "wood": 30
+      },
+      "stats": {
+        "maxHp": 65,
+        "resistance": 11,
+        "speed": 1
+      },
       "image": "/images/items/shadow_leggings.png",
       "description": "+65 maxHp, +11 resistance, +1 speed"
     },
@@ -4885,8 +7150,15 @@ const CONTENT = {
       "name": "Dragon Leggings",
       "slot": "legs",
       "rarity": "epic",
-      "price": {"gold": 380, "wood": 55},
-      "stats": {"maxHp": 120, "resistance": 22, "attack": 4},
+      "price": {
+        "gold": 380,
+        "wood": 55
+      },
+      "stats": {
+        "maxHp": 120,
+        "resistance": 22,
+        "attack": 4
+      },
       "image": "/images/items/dragon_leggings.png",
       "description": "+120 maxHp, +22 resistance, +4 attack"
     },
@@ -4895,8 +7167,15 @@ const CONTENT = {
       "name": "Void Leggings",
       "slot": "legs",
       "rarity": "legendary",
-      "price": {"gold": 600, "wood": 85},
-      "stats": {"maxHp": 160, "resistance": 28, "magicPower": 10},
+      "price": {
+        "gold": 600,
+        "wood": 85
+      },
+      "stats": {
+        "maxHp": 160,
+        "resistance": 28,
+        "magicPower": 10
+      },
       "image": "/images/items/void_leggings.png",
       "description": "+160 maxHp, +28 resistance, +10 magicPower"
     },
@@ -4905,8 +7184,13 @@ const CONTENT = {
       "name": "Worn Boots",
       "slot": "boots",
       "rarity": "common",
-      "price": {"gold": 30, "wood": 8},
-      "stats": {"speed": 1},
+      "price": {
+        "gold": 30,
+        "wood": 8
+      },
+      "stats": {
+        "speed": 1
+      },
       "image": "/images/items/worn_boots.png",
       "description": "+1 speed"
     },
@@ -4915,8 +7199,15 @@ const CONTENT = {
       "name": "Iron Boots",
       "slot": "boots",
       "rarity": "common",
-      "price": {"gold": 30, "wood": 8},
-      "stats": {"maxHp": 20, "resistance": 4, "speed": 1},
+      "price": {
+        "gold": 30,
+        "wood": 8
+      },
+      "stats": {
+        "maxHp": 20,
+        "resistance": 4,
+        "speed": 1
+      },
       "image": "/images/items/iron_boots.png",
       "description": "+20 maxHp, +4 resistance, +1 speed"
     },
@@ -4925,8 +7216,13 @@ const CONTENT = {
       "name": "Ranger Boots",
       "slot": "boots",
       "rarity": "uncommon",
-      "price": {"gold": 70, "wood": 12},
-      "stats": {"speed": 2},
+      "price": {
+        "gold": 70,
+        "wood": 12
+      },
+      "stats": {
+        "speed": 2
+      },
       "image": "/images/items/ranger_boots.png",
       "description": "+2 speed"
     },
@@ -4935,8 +7231,14 @@ const CONTENT = {
       "name": "Sorcery Boots",
       "slot": "boots",
       "rarity": "uncommon",
-      "price": {"gold": 70, "wood": 12},
-      "stats": {"mana": 12, "magicPower": 6},
+      "price": {
+        "gold": 70,
+        "wood": 12
+      },
+      "stats": {
+        "mana": 12,
+        "magicPower": 6
+      },
       "image": "/images/items/sorcery_boots.png",
       "description": "+12 mana, +6 magicPower"
     },
@@ -4945,8 +7247,15 @@ const CONTENT = {
       "name": "Knight Boots",
       "slot": "boots",
       "rarity": "rare",
-      "price": {"gold": 140, "wood": 22},
-      "stats": {"maxHp": 40, "resistance": 8, "speed": 1},
+      "price": {
+        "gold": 140,
+        "wood": 22
+      },
+      "stats": {
+        "maxHp": 40,
+        "resistance": 8,
+        "speed": 1
+      },
       "image": "/images/items/knight_boots.png",
       "description": "+40 maxHp, +8 resistance, +1 speed"
     },
@@ -4955,8 +7264,15 @@ const CONTENT = {
       "name": "Void Boots",
       "slot": "boots",
       "rarity": "epic",
-      "price": {"gold": 300, "wood": 40},
-      "stats": {"maxHp": 60, "resistance": 12, "speed": 2},
+      "price": {
+        "gold": 300,
+        "wood": 40
+      },
+      "stats": {
+        "maxHp": 60,
+        "resistance": 12,
+        "speed": 2
+      },
       "image": "/images/items/void_boots.png",
       "description": "+60 maxHp, +12 resistance, +2 speed"
     },
@@ -4965,8 +7281,14 @@ const CONTENT = {
       "name": "Copper Amulet",
       "slot": "amulet",
       "rarity": "common",
-      "price": {"gold": 45, "wood": 10},
-      "stats": {"mana": 8, "magicPower": 4},
+      "price": {
+        "gold": 45,
+        "wood": 10
+      },
+      "stats": {
+        "mana": 8,
+        "magicPower": 4
+      },
       "image": "/images/items/copper_amulet.png",
       "description": "+8 mana, +4 magicPower"
     },
@@ -4975,8 +7297,14 @@ const CONTENT = {
       "name": "Silver Amulet",
       "slot": "amulet",
       "rarity": "uncommon",
-      "price": {"gold": 100, "wood": 18},
-      "stats": {"mana": 14, "magicPower": 7},
+      "price": {
+        "gold": 100,
+        "wood": 18
+      },
+      "stats": {
+        "mana": 14,
+        "magicPower": 7
+      },
       "image": "/images/items/silver_amulet.png",
       "description": "+14 mana, +7 magicPower"
     },
@@ -4985,8 +7313,15 @@ const CONTENT = {
       "name": "Ruby Amulet",
       "slot": "amulet",
       "rarity": "rare",
-      "price": {"gold": 200, "wood": 30},
-      "stats": {"mana": 20, "magicPower": 12, "healPower": 4},
+      "price": {
+        "gold": 200,
+        "wood": 30
+      },
+      "stats": {
+        "mana": 20,
+        "magicPower": 12,
+        "healPower": 4
+      },
       "image": "/images/items/ruby_amulet.png",
       "description": "+20 mana, +12 magicPower, +4 healPower"
     },
@@ -4995,8 +7330,15 @@ const CONTENT = {
       "name": "Sapphire Amulet",
       "slot": "amulet",
       "rarity": "epic",
-      "price": {"gold": 380, "wood": 50},
-      "stats": {"mana": 30, "magicPower": 18, "manaRegen": 2},
+      "price": {
+        "gold": 380,
+        "wood": 50
+      },
+      "stats": {
+        "mana": 30,
+        "magicPower": 18,
+        "manaRegen": 2
+      },
       "image": "/images/items/sapphire_amulet.png",
       "description": "+30 mana, +18 magicPower, +2 manaRegen"
     },
@@ -5005,8 +7347,15 @@ const CONTENT = {
       "name": "Void Amulet",
       "slot": "amulet",
       "rarity": "legendary",
-      "price": {"gold": 600, "wood": 80},
-      "stats": {"mana": 40, "magicPower": 24, "healPower": 8},
+      "price": {
+        "gold": 600,
+        "wood": 80
+      },
+      "stats": {
+        "mana": 40,
+        "magicPower": 24,
+        "healPower": 8
+      },
       "image": "/images/items/void_amulet.png",
       "description": "+40 mana, +24 magicPower, +8 healPower"
     },
@@ -5015,8 +7364,13 @@ const CONTENT = {
       "name": "Copper Ring",
       "slot": "ring",
       "rarity": "common",
-      "price": {"gold": 40, "wood": 8},
-      "stats": {"attack": 3},
+      "price": {
+        "gold": 40,
+        "wood": 8
+      },
+      "stats": {
+        "attack": 3
+      },
       "image": "/images/items/copper_ring.png",
       "description": "+3 attack"
     },
@@ -5025,8 +7379,14 @@ const CONTENT = {
       "name": "Silver Ring",
       "slot": "ring",
       "rarity": "uncommon",
-      "price": {"gold": 90, "wood": 15},
-      "stats": {"attack": 5, "mana": 8},
+      "price": {
+        "gold": 90,
+        "wood": 15
+      },
+      "stats": {
+        "attack": 5,
+        "mana": 8
+      },
       "image": "/images/items/silver_ring.png",
       "description": "+5 attack, +8 mana"
     },
@@ -5035,8 +7395,14 @@ const CONTENT = {
       "name": "Ruby Ring",
       "slot": "ring",
       "rarity": "rare",
-      "price": {"gold": 180, "wood": 25},
-      "stats": {"attack": 8, "critChance": 5},
+      "price": {
+        "gold": 180,
+        "wood": 25
+      },
+      "stats": {
+        "attack": 8,
+        "critChance": 5
+      },
       "image": "/images/items/ruby_ring.png",
       "description": "+8 attack, +5 critChance"
     },
@@ -5045,8 +7411,15 @@ const CONTENT = {
       "name": "Sapphire Ring",
       "slot": "ring",
       "rarity": "epic",
-      "price": {"gold": 350, "wood": 45},
-      "stats": {"attack": 12, "magicPower": 10, "critChance": 7},
+      "price": {
+        "gold": 350,
+        "wood": 45
+      },
+      "stats": {
+        "attack": 12,
+        "magicPower": 10,
+        "critChance": 7
+      },
       "image": "/images/items/sapphire_ring.png",
       "description": "+12 attack, +10 magicPower, +7 critChance"
     },
@@ -5055,11 +7428,19 @@ const CONTENT = {
       "name": "Void Ring",
       "slot": "ring",
       "rarity": "legendary",
-      "price": {"gold": 580, "wood": 75},
-      "stats": {"attack": 16, "magicPower": 14, "critDamage": 15},
+      "price": {
+        "gold": 580,
+        "wood": 75
+      },
+      "stats": {
+        "attack": 16,
+        "magicPower": 14,
+        "critDamage": 15
+      },
       "image": "/images/items/void_ring.png",
       "description": "+16 attack, +14 magicPower, +15 critDamage"
-    },    {
+    },
+    {
       "id": "the_essence_of_life",
       "name": "The Essence of Life",
       "slot": "material",
@@ -5076,8 +7457,14 @@ const CONTENT = {
       "name": "Tome of Ember",
       "slot": "book",
       "rarity": "uncommon",
-      "price": {"gold": 110, "wood": 18},
-      "stats": {"magicPower": 12, "healPower": 2},
+      "price": {
+        "gold": 110,
+        "wood": 18
+      },
+      "stats": {
+        "magicPower": 12,
+        "healPower": 2
+      },
       "image": "/images/items/tome_ember.png",
       "description": "+12 Magic Power, +2 Heal Power. For mages."
     },
@@ -5086,8 +7473,14 @@ const CONTENT = {
       "name": "Tome of Frost",
       "slot": "book",
       "rarity": "rare",
-      "price": {"gold": 180, "wood": 30},
-      "stats": {"magicPower": 14, "mana": 12},
+      "price": {
+        "gold": 180,
+        "wood": 30
+      },
+      "stats": {
+        "magicPower": 14,
+        "mana": 12
+      },
       "image": "/images/items/tome_frost.png",
       "description": "+14 Magic Power, +12 Mana."
     },
@@ -5096,8 +7489,15 @@ const CONTENT = {
       "name": "Tome of Shadows",
       "slot": "book",
       "rarity": "rare",
-      "price": {"gold": 190, "wood": 32},
-      "stats": {"magicPower": 10, "mana": 8, "omnivamp": 3},
+      "price": {
+        "gold": 190,
+        "wood": 32
+      },
+      "stats": {
+        "magicPower": 10,
+        "mana": 8,
+        "omnivamp": 3
+      },
       "image": "/images/items/tome_shadow.png",
       "description": "+10 Magic Power, +3% Omnivamp."
     },
@@ -5106,8 +7506,15 @@ const CONTENT = {
       "name": "Tome of Light",
       "slot": "book",
       "rarity": "epic",
-      "price": {"gold": 320, "wood": 50},
-      "stats": {"magicPower": 16, "healPower": 6, "mana": 10},
+      "price": {
+        "gold": 320,
+        "wood": 50
+      },
+      "stats": {
+        "magicPower": 16,
+        "healPower": 6,
+        "mana": 10
+      },
       "image": "/images/items/tome_light.png",
       "description": "+16 Magic Power, +6 Heal, +10 Mana."
     },
@@ -5116,8 +7523,14 @@ const CONTENT = {
       "name": "Tome of Void",
       "slot": "book",
       "rarity": "legendary",
-      "price": {"gold": 550, "wood": 80},
-      "stats": {"magicPower": 22, "manaRegen": 2},
+      "price": {
+        "gold": 550,
+        "wood": 80
+      },
+      "stats": {
+        "magicPower": 22,
+        "manaRegen": 2
+      },
       "image": "/images/items/tome_void.png",
       "description": "+22 Magic Power, +2 Mana Regen."
     },
@@ -5126,8 +7539,13 @@ const CONTENT = {
       "name": "The Stone of Blood",
       "slot": "stone",
       "rarity": "legendary",
-      "price": {"gold": 0, "wood": 0},
-      "stats": {"omnivamp": 10},
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "omnivamp": 10
+      },
       "image": "/images/items/stone_blood.png",
       "craftOnly": true,
       "description": "+10% Omnivamp. Heals 10% of all damage dealt. (Craftable)"
@@ -5137,8 +7555,14 @@ const CONTENT = {
       "name": "Stone of Frost",
       "slot": "stone",
       "rarity": "mythic",
-      "price": {"gold": 0, "wood": 0},
-      "stats": {"omnivamp": 8, "resistance": 10},
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "omnivamp": 8,
+        "resistance": 10
+      },
       "image": "/images/items/stone_frost.png",
       "description": "+8% Omnivamp, +10 Resistance."
     },
@@ -5147,8 +7571,13 @@ const CONTENT = {
       "name": "Stone of Shadows",
       "slot": "stone",
       "rarity": "mythic",
-      "price": {"gold": 0, "wood": 0},
-      "stats": {"omnivamp": 12},
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "omnivamp": 12
+      },
       "image": "/images/items/stone_shadow.png",
       "description": "+12% Omnivamp."
     },
@@ -5157,8 +7586,14 @@ const CONTENT = {
       "name": "Stone of Arcane",
       "slot": "stone",
       "rarity": "legendary",
-      "price": {"gold": 0, "wood": 0},
-      "stats": {"omnivamp": 6, "magicPower": 15},
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "omnivamp": 6,
+        "magicPower": 15
+      },
       "image": "/images/items/stone_arcane.png",
       "description": "+6% Omnivamp, +15 Magic Power."
     },
@@ -5167,8 +7602,14 @@ const CONTENT = {
       "name": "Stone of Earth",
       "slot": "stone",
       "rarity": "legendary",
-      "price": {"gold": 0, "wood": 0},
-      "stats": {"omnivamp": 7, "maxHp": 50},
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "omnivamp": 7,
+        "maxHp": 50
+      },
       "image": "/images/items/stone_earth.png",
       "description": "+7% Omnivamp, +50 Max HP."
     },
@@ -5177,8 +7618,14 @@ const CONTENT = {
       "name": "Vampiric Ring",
       "slot": "ring",
       "rarity": "rare",
-      "price": {"gold": 220, "wood": 30},
-      "stats": {"omnivamp": 5, "attack": 4},
+      "price": {
+        "gold": 220,
+        "wood": 30
+      },
+      "stats": {
+        "omnivamp": 5,
+        "attack": 4
+      },
       "image": "/images/items/vampiric_ring.png",
       "description": "+5% Omnivamp, +4 Attack."
     },
@@ -5187,8 +7634,14 @@ const CONTENT = {
       "name": "Crimson Blade",
       "slot": "weapon",
       "rarity": "epic",
-      "price": {"gold": 420, "wood": 60},
-      "stats": {"attack": 24, "omnivamp": 4},
+      "price": {
+        "gold": 420,
+        "wood": 60
+      },
+      "stats": {
+        "attack": 24,
+        "omnivamp": 4
+      },
       "image": "/images/items/crimson_blade.png",
       "description": "+24 Attack, +4% Omnivamp."
     },
@@ -5197,8 +7650,15 @@ const CONTENT = {
       "name": "Glacial Helm",
       "slot": "head",
       "rarity": "rare",
-      "price": {"gold": 160, "wood": 28},
-      "stats": {"maxHp": 60, "resistance": 10, "magicPower": 6},
+      "price": {
+        "gold": 160,
+        "wood": 28
+      },
+      "stats": {
+        "maxHp": 60,
+        "resistance": 10,
+        "magicPower": 6
+      },
       "image": "/images/items/glacial_helm.png",
       "description": "+60 HP, +10 Res, +6 Mgc."
     },
@@ -5207,8 +7667,15 @@ const CONTENT = {
       "name": "Ember Plate",
       "slot": "armor",
       "rarity": "epic",
-      "price": {"gold": 380, "wood": 55},
-      "stats": {"maxHp": 130, "resistance": 20, "attack": 5},
+      "price": {
+        "gold": 380,
+        "wood": 55
+      },
+      "stats": {
+        "maxHp": 130,
+        "resistance": 20,
+        "attack": 5
+      },
       "image": "/images/items/ember_plate.png",
       "description": "+130 HP, +20 Res, +5 Atk."
     },
@@ -5217,8 +7684,14 @@ const CONTENT = {
       "name": "Ember King's Blade",
       "slot": "weapon",
       "rarity": "epic",
-      "price": {"gold": 0, "wood": 0},
-      "stats": {"attack": 32, "critChance": 5},
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 32,
+        "critChance": 5
+      },
       "image": "/images/items/boss_weapon_ember.png",
       "bossWeapon": true,
       "description": "Ember King's blade — only drops from Ember King (50%)."
@@ -5228,8 +7701,14 @@ const CONTENT = {
       "name": "Frost Titan's Axe",
       "slot": "weapon",
       "rarity": "epic",
-      "price": {"gold": 0, "wood": 0},
-      "stats": {"attack": 36, "resistance": 8},
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 36,
+        "resistance": 8
+      },
       "image": "/images/items/boss_weapon_frost.png",
       "bossWeapon": true,
       "description": "Frost Titan's axe — only drops from Frost Titan (50%)."
@@ -5239,8 +7718,14 @@ const CONTENT = {
       "name": "Void Herald's Scythe",
       "slot": "weapon",
       "rarity": "legendary",
-      "price": {"gold": 0, "wood": 0},
-      "stats": {"attack": 40, "omnivamp": 4},
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 40,
+        "omnivamp": 4
+      },
       "image": "/images/items/boss_weapon_void.png",
       "bossWeapon": true,
       "description": "Void Herald's scythe — only drops from Void Herald (50%)."
@@ -5250,8 +7735,14 @@ const CONTENT = {
       "name": "Storm Colossus Hammer",
       "slot": "weapon",
       "rarity": "legendary",
-      "price": {"gold": 0, "wood": 0},
-      "stats": {"attack": 44, "speed": 1},
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 44,
+        "speed": 1
+      },
       "image": "/images/items/boss_weapon_storm.png",
       "bossWeapon": true,
       "description": "Storm Colossus hammer — only drops from Storm Colossus (50%)."
@@ -5261,8 +7752,14 @@ const CONTENT = {
       "name": "World Eater Fang",
       "slot": "weapon",
       "rarity": "mythic",
-      "price": {"gold": 0, "wood": 0},
-      "stats": {"attack": 48, "critDamage": 15},
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 48,
+        "critDamage": 15
+      },
       "image": "/images/items/boss_weapon_world.png",
       "bossWeapon": true,
       "description": "World Eater's fang — only drops from World Eater (50%)."
@@ -5272,7 +7769,10 @@ const CONTENT = {
       "name": "Ember Chest",
       "slot": "chest",
       "rarity": "epic",
-      "price": {"gold": 0, "wood": 0},
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
       "image": "/images/items/boss_chest_ember.png",
       "chestTier": "a",
       "description": "Ember King's chest — rare+ guaranteed."
@@ -5282,7 +7782,10 @@ const CONTENT = {
       "name": "Frost Chest",
       "slot": "chest",
       "rarity": "epic",
-      "price": {"gold": 0, "wood": 0},
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
       "image": "/images/items/boss_chest_frost.png",
       "chestTier": "s",
       "description": "Frost Titan's chest — rare+ guaranteed."
@@ -5292,7 +7795,10 @@ const CONTENT = {
       "name": "Void Chest",
       "slot": "chest",
       "rarity": "legendary",
-      "price": {"gold": 0, "wood": 0},
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
       "image": "/images/items/boss_chest_void.png",
       "chestTier": "s",
       "description": "Void Herald's chest — epic+ guaranteed."
@@ -5302,7 +7808,10 @@ const CONTENT = {
       "name": "Storm Chest",
       "slot": "chest",
       "rarity": "legendary",
-      "price": {"gold": 0, "wood": 0},
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
       "image": "/images/items/boss_chest_storm.png",
       "chestTier": "ss",
       "description": "Storm Colossus chest — epic+ guaranteed."
@@ -5312,12 +7821,14 @@ const CONTENT = {
       "name": "World Chest",
       "slot": "chest",
       "rarity": "mythic",
-      "price": {"gold": 0, "wood": 0},
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
       "image": "/images/items/boss_chest_world.png",
       "chestTier": "ss",
       "description": "World Eater's chest — legendary+ guaranteed."
     },
-
     {
       "id": "mythic_chest",
       "name": "Mythic Chest",
@@ -5676,7 +8187,8 @@ const CONTENT = {
       "rarity": "mythic",
       "element": "physical",
       "image": "/images/monsters/hydra.png"
-    },    {
+    },
+    {
       "id": "kobold",
       "name": "Kobold",
       "hp": 50,
@@ -5685,7 +8197,8 @@ const CONTENT = {
       "rarity": "common",
       "element": "physical",
       "image": "/images/monsters/kobold.png"
-    },    {
+    },
+    {
       "id": "scavenger",
       "name": "Scavenger",
       "hp": 55,
@@ -5694,7 +8207,8 @@ const CONTENT = {
       "rarity": "common",
       "element": "physical",
       "image": "/images/monsters/scavenger.png"
-    },    {
+    },
+    {
       "id": "cave_crawler",
       "name": "Cave Crawler",
       "hp": 48,
@@ -5703,7 +8217,8 @@ const CONTENT = {
       "rarity": "common",
       "element": "physical",
       "image": "/images/monsters/cave_crawler.png"
-    },    {
+    },
+    {
       "id": "forest_mite",
       "name": "Forest Mite",
       "hp": 38,
@@ -5712,7 +8227,8 @@ const CONTENT = {
       "rarity": "common",
       "element": "physical",
       "image": "/images/monsters/forest_mite.png"
-    },    {
+    },
+    {
       "id": "sludge",
       "name": "Sludge",
       "hp": 60,
@@ -5721,7 +8237,8 @@ const CONTENT = {
       "rarity": "common",
       "element": "physical",
       "image": "/images/monsters/sludge.png"
-    },    {
+    },
+    {
       "id": "thug",
       "name": "Thug",
       "hp": 62,
@@ -5730,7 +8247,8 @@ const CONTENT = {
       "rarity": "common",
       "element": "physical",
       "image": "/images/monsters/thug.png"
-    },    {
+    },
+    {
       "id": "dusk_bat",
       "name": "Dusk Bat",
       "hp": 36,
@@ -5739,7 +8257,8 @@ const CONTENT = {
       "rarity": "common",
       "element": "physical",
       "image": "/images/monsters/dusk_bat.png"
-    },    {
+    },
+    {
       "id": "ember_slime",
       "name": "Ember Slime",
       "hp": 42,
@@ -5748,7 +8267,8 @@ const CONTENT = {
       "rarity": "common",
       "element": "physical",
       "image": "/images/monsters/ember_slime.png"
-    },    {
+    },
+    {
       "id": "iron_goblin",
       "name": "Iron Goblin",
       "hp": 105,
@@ -5757,7 +8277,8 @@ const CONTENT = {
       "rarity": "uncommon",
       "element": "physical",
       "image": "/images/monsters/iron_goblin.png"
-    },    {
+    },
+    {
       "id": "bone_archer",
       "name": "Bone Archer",
       "hp": 88,
@@ -5766,7 +8287,8 @@ const CONTENT = {
       "rarity": "uncommon",
       "element": "physical",
       "image": "/images/monsters/bone_archer.png"
-    },    {
+    },
+    {
       "id": "frost_wolf",
       "name": "Frost Wolf",
       "hp": 115,
@@ -5775,7 +8297,8 @@ const CONTENT = {
       "rarity": "uncommon",
       "element": "physical",
       "image": "/images/monsters/frost_wolf.png"
-    },    {
+    },
+    {
       "id": "vine_lurker",
       "name": "Vine Lurker",
       "hp": 95,
@@ -5784,7 +8307,8 @@ const CONTENT = {
       "rarity": "uncommon",
       "element": "arcane",
       "image": "/images/monsters/vine_lurker.png"
-    },    {
+    },
+    {
       "id": "ash_spider",
       "name": "Ash Spider",
       "hp": 78,
@@ -5793,7 +8317,8 @@ const CONTENT = {
       "rarity": "uncommon",
       "element": "shadow",
       "image": "/images/monsters/ash_spider.png"
-    },    {
+    },
+    {
       "id": "brigand_captain",
       "name": "Brigand Captain",
       "hp": 125,
@@ -5802,7 +8327,8 @@ const CONTENT = {
       "rarity": "uncommon",
       "element": "physical",
       "image": "/images/monsters/brigand_captain.png"
-    },    {
+    },
+    {
       "id": "marsh_crawler",
       "name": "Marsh Crawler",
       "hp": 135,
@@ -5811,7 +8337,8 @@ const CONTENT = {
       "rarity": "uncommon",
       "element": "physical",
       "image": "/images/monsters/marsh_crawler.png"
-    },    {
+    },
+    {
       "id": "ember_sprite",
       "name": "Ember Sprite",
       "hp": 82,
@@ -5820,7 +8347,8 @@ const CONTENT = {
       "rarity": "uncommon",
       "element": "arcane",
       "image": "/images/monsters/ember_sprite.png"
-    },    {
+    },
+    {
       "id": "crystal_golem",
       "name": "Crystal Golem",
       "hp": 260,
@@ -5829,7 +8357,8 @@ const CONTENT = {
       "rarity": "rare",
       "element": "physical",
       "image": "/images/monsters/crystal_golem.png"
-    },    {
+    },
+    {
       "id": "abyss_wraith",
       "name": "Abyss Wraith",
       "hp": 135,
@@ -5838,7 +8367,8 @@ const CONTENT = {
       "rarity": "rare",
       "element": "shadow",
       "image": "/images/monsters/abyss_wraith.png"
-    },    {
+    },
+    {
       "id": "storm_harpy",
       "name": "Storm Harpy",
       "hp": 105,
@@ -5847,7 +8377,8 @@ const CONTENT = {
       "rarity": "rare",
       "element": "physical",
       "image": "/images/monsters/storm_harpy.png"
-    },    {
+    },
+    {
       "id": "iron_ogre",
       "name": "Iron Ogre",
       "hp": 240,
@@ -5856,7 +8387,8 @@ const CONTENT = {
       "rarity": "rare",
       "element": "physical",
       "image": "/images/monsters/iron_ogre.png"
-    },    {
+    },
+    {
       "id": "cursed_knight",
       "name": "Cursed Knight",
       "hp": 190,
@@ -5865,7 +8397,8 @@ const CONTENT = {
       "rarity": "rare",
       "element": "shadow",
       "image": "/images/monsters/cursed_knight.png"
-    },    {
+    },
+    {
       "id": "flame_witch",
       "name": "Flame Witch",
       "hp": 145,
@@ -5874,7 +8407,8 @@ const CONTENT = {
       "rarity": "rare",
       "element": "arcane",
       "image": "/images/monsters/flame_witch.png"
-    },    {
+    },
+    {
       "id": "stone_titan",
       "name": "Stone Titan",
       "hp": 270,
@@ -5883,7 +8417,8 @@ const CONTENT = {
       "rarity": "rare",
       "element": "physical",
       "image": "/images/monsters/stone_titan.png"
-    },    {
+    },
+    {
       "id": "dusk_manticore",
       "name": "Dusk Manticore",
       "hp": 175,
@@ -5892,7 +8427,8 @@ const CONTENT = {
       "rarity": "rare",
       "element": "physical",
       "image": "/images/monsters/dusk_manticore.png"
-    },    {
+    },
+    {
       "id": "frost_wyvern",
       "name": "Frost Wyvern",
       "hp": 270,
@@ -5901,7 +8437,8 @@ const CONTENT = {
       "rarity": "epic",
       "element": "arcane",
       "image": "/images/monsters/frost_wyvern.png"
-    },    {
+    },
+    {
       "id": "void_golem",
       "name": "Void Golem",
       "hp": 380,
@@ -5910,7 +8447,8 @@ const CONTENT = {
       "rarity": "epic",
       "element": "physical",
       "image": "/images/monsters/void_golem.png"
-    },    {
+    },
+    {
       "id": "storm_lich",
       "name": "Storm Lich",
       "hp": 250,
@@ -5919,7 +8457,8 @@ const CONTENT = {
       "rarity": "epic",
       "element": "shadow",
       "image": "/images/monsters/storm_lich.png"
-    },    {
+    },
+    {
       "id": "nether_hydra",
       "name": "Nether Hydra",
       "hp": 330,
@@ -5928,7 +8467,8 @@ const CONTENT = {
       "rarity": "epic",
       "element": "physical",
       "image": "/images/monsters/nether_hydra.png"
-    },    {
+    },
+    {
       "id": "doom_lord",
       "name": "Doom Lord",
       "hp": 300,
@@ -5937,7 +8477,8 @@ const CONTENT = {
       "rarity": "legendary",
       "element": "shadow",
       "image": "/images/monsters/doom_lord.png"
-    },        {
+    },
+    {
       "id": "molten_behemoth",
       "name": "Molten Behemoth",
       "hp": 520,
@@ -5976,7 +8517,8 @@ const CONTENT = {
       "rarity": "epic",
       "element": "arcane",
       "image": "/images/monsters/storm_colossus.png"
-    },    {
+    },
+    {
       "id": "phoenix_canary",
       "name": "Phoenix Canary",
       "hp": 460,
@@ -5986,8 +8528,7 @@ const CONTENT = {
       "element": "holy",
       "image": "/images/monsters/phoenix_canary.png"
     },
-
-{
+    {
       "id": "world_eater",
       "name": "World Eater",
       "hp": 360,
@@ -6029,7 +8570,7 @@ const CONTENT = {
     }
   ],
   "skills": [
-        {
+    {
       "id": "boss_ember_skill1",
       "name": "Ember Strike",
       "target": "enemy",
@@ -6090,7 +8631,7 @@ const CONTENT = {
       "element": "physical",
       "image": "/images/bosses/world_eater.png"
     },
-        {
+    {
       "id": "boss_ember_skill2",
       "name": "Ember Heavy",
       "target": "enemy",
@@ -6101,31 +8642,41 @@ const CONTENT = {
       "image": "/images/skills/boss_ember_skill2.png",
       "description": "Ember 2.4x heavy flame"
     },
-        {
+    {
       "id": "boss_ember_skill3",
       "name": "Ember Weaken",
       "target": "enemy",
       "mana": 8,
-      "buffs": [{"kind": "weaken", "value": 0.35}],
+      "buffs": [
+        {
+          "kind": "weaken",
+          "value": 0.35
+        }
+      ],
       "duration": 2,
       "element": "fire",
       "effect": "fire_meteor_crash",
       "image": "/images/skills/boss_ember_skill3.png",
       "description": "Ember weaken 35% 2t"
     },
-        {
+    {
       "id": "boss_ember_skill4",
       "name": "Ember Fortify",
       "target": "self",
       "mana": 8,
-      "buffs": [{"kind": "defense", "value": 0.45}],
+      "buffs": [
+        {
+          "kind": "defense",
+          "value": 0.45
+        }
+      ],
       "duration": 2,
       "element": "fire",
       "effect": "fire_meteor_crash",
       "image": "/images/skills/boss_ember_skill4.png",
       "description": "Ember fortify 45% 2t"
     },
-        {
+    {
       "id": "boss_ember_skill5",
       "name": "Ember Venom",
       "target": "enemy",
@@ -6133,12 +8684,17 @@ const CONTENT = {
       "power": 0.9,
       "element": "fire",
       "effect": "fire_meteor_crash",
-      "buffs": [{"kind": "dot", "value": 0.07}],
+      "buffs": [
+        {
+          "kind": "dot",
+          "value": 0.07
+        }
+      ],
       "duration": 3,
       "image": "/images/skills/boss_ember_skill5.png",
       "description": "Ember 0.9x +7% burn 3t"
     },
-        {
+    {
       "id": "boss_ember_skill6",
       "name": "Ember Heal",
       "target": "self",
@@ -6148,7 +8704,7 @@ const CONTENT = {
       "image": "/images/skills/boss_ember_skill6.png",
       "description": "Ember heal 25%"
     },
-        {
+    {
       "id": "boss_frost_skill1",
       "name": "Frost Strike",
       "target": "enemy",
@@ -6159,7 +8715,7 @@ const CONTENT = {
       "image": "/images/skills/boss_frost_skill1.png",
       "description": "Frost 1.6x ice strike"
     },
-        {
+    {
       "id": "boss_frost_skill2",
       "name": "Frost Heavy",
       "target": "enemy",
@@ -6170,31 +8726,41 @@ const CONTENT = {
       "image": "/images/skills/boss_frost_skill2.png",
       "description": "Frost 2.4x shatter"
     },
-        {
+    {
       "id": "boss_frost_skill3",
       "name": "Frost Weaken",
       "target": "enemy",
       "mana": 8,
-      "buffs": [{"kind": "weaken", "value": 0.35}],
+      "buffs": [
+        {
+          "kind": "weaken",
+          "value": 0.35
+        }
+      ],
       "duration": 2,
       "element": "frost",
       "effect": "frost_crystal_spear",
       "image": "/images/skills/boss_frost_skill3.png",
       "description": "Frost weaken 35% 2t"
     },
-        {
+    {
       "id": "boss_frost_skill4",
       "name": "Frost Fortify",
       "target": "self",
       "mana": 8,
-      "buffs": [{"kind": "defense", "value": 0.45}],
+      "buffs": [
+        {
+          "kind": "defense",
+          "value": 0.45
+        }
+      ],
       "duration": 2,
       "element": "frost",
       "effect": "frost_crystal_spear",
       "image": "/images/skills/boss_frost_skill4.png",
       "description": "Frost fortify 45% 2t"
     },
-        {
+    {
       "id": "boss_frost_skill5",
       "name": "Frost Venom",
       "target": "enemy",
@@ -6202,12 +8768,17 @@ const CONTENT = {
       "power": 0.9,
       "element": "frost",
       "effect": "frost_crystal_spear",
-      "buffs": [{"kind": "dot", "value": 0.06}],
+      "buffs": [
+        {
+          "kind": "dot",
+          "value": 0.06
+        }
+      ],
       "duration": 3,
       "image": "/images/skills/boss_frost_skill5.png",
       "description": "Frost 0.9x +6% frostbite 3t"
     },
-        {
+    {
       "id": "boss_frost_skill6",
       "name": "Frost Heal",
       "target": "self",
@@ -6217,7 +8788,7 @@ const CONTENT = {
       "image": "/images/skills/boss_frost_skill6.png",
       "description": "Frost heal 25%"
     },
-        {
+    {
       "id": "boss_void_skill1",
       "name": "Void Strike",
       "target": "enemy",
@@ -6228,7 +8799,7 @@ const CONTENT = {
       "image": "/images/skills/boss_void_skill1.png",
       "description": "Void 1.7x shadow strike"
     },
-        {
+    {
       "id": "boss_void_skill2",
       "name": "Void Heavy",
       "target": "enemy",
@@ -6239,31 +8810,41 @@ const CONTENT = {
       "image": "/images/skills/boss_void_skill2.png",
       "description": "Void 2.5x crush"
     },
-        {
+    {
       "id": "boss_void_skill3",
       "name": "Void Weaken",
       "target": "enemy",
       "mana": 8,
-      "buffs": [{"kind": "expose", "value": 0.3}],
+      "buffs": [
+        {
+          "kind": "expose",
+          "value": 0.3
+        }
+      ],
       "duration": 2,
       "element": "shadow",
       "effect": "shadow_scythe_reap",
       "image": "/images/skills/boss_void_skill3.png",
       "description": "Void expose 30% 2t"
     },
-        {
+    {
       "id": "boss_void_skill4",
       "name": "Void Fortify",
       "target": "self",
       "mana": 8,
-      "buffs": [{"kind": "defense", "value": 0.5}],
+      "buffs": [
+        {
+          "kind": "defense",
+          "value": 0.5
+        }
+      ],
       "duration": 2,
       "element": "shadow",
       "effect": "shadow_scythe_reap",
       "image": "/images/skills/boss_void_skill4.png",
       "description": "Void fortify 50% 2t"
     },
-        {
+    {
       "id": "boss_void_skill5",
       "name": "Void Venom",
       "target": "enemy",
@@ -6271,12 +8852,17 @@ const CONTENT = {
       "power": 0.85,
       "element": "shadow",
       "effect": "shadow_scythe_reap",
-      "buffs": [{"kind": "dot", "value": 0.08}],
+      "buffs": [
+        {
+          "kind": "dot",
+          "value": 0.08
+        }
+      ],
       "duration": 3,
       "image": "/images/skills/boss_void_skill5.png",
       "description": "Void 0.85x +8% curse 3t"
     },
-        {
+    {
       "id": "boss_void_skill6",
       "name": "Void Heal",
       "target": "self",
@@ -6286,7 +8872,7 @@ const CONTENT = {
       "image": "/images/skills/boss_void_skill6.png",
       "description": "Void heal 30%"
     },
-        {
+    {
       "id": "boss_storm_skill1",
       "name": "Storm Strike",
       "target": "enemy",
@@ -6297,7 +8883,7 @@ const CONTENT = {
       "image": "/images/skills/boss_storm_skill1.png",
       "description": "Storm 1.7x arcane"
     },
-        {
+    {
       "id": "boss_storm_skill2",
       "name": "Storm Heavy",
       "target": "enemy",
@@ -6308,31 +8894,45 @@ const CONTENT = {
       "image": "/images/skills/boss_storm_skill2.png",
       "description": "Storm 2.5x storm hammer"
     },
-        {
+    {
       "id": "boss_storm_skill3",
       "name": "Storm Weaken",
       "target": "enemy",
       "mana": 8,
-      "buffs": [{"kind": "weaken", "value": 0.3}, {"kind": "expose", "value": 0.2}],
+      "buffs": [
+        {
+          "kind": "weaken",
+          "value": 0.3
+        },
+        {
+          "kind": "expose",
+          "value": 0.2
+        }
+      ],
       "duration": 2,
       "element": "arcane",
       "effect": "frost_crystal_spear",
       "image": "/images/skills/boss_storm_skill3.png",
       "description": "Storm weaken+expose 2t"
     },
-        {
+    {
       "id": "boss_storm_skill4",
       "name": "Storm Fortify",
       "target": "self",
       "mana": 8,
-      "buffs": [{"kind": "defense", "value": 0.4}],
+      "buffs": [
+        {
+          "kind": "defense",
+          "value": 0.4
+        }
+      ],
       "duration": 2,
       "element": "arcane",
       "effect": "frost_crystal_spear",
       "image": "/images/skills/boss_storm_skill4.png",
       "description": "Storm fortify 40% 2t"
     },
-        {
+    {
       "id": "boss_storm_skill5",
       "name": "Storm Venom",
       "target": "enemy",
@@ -6340,12 +8940,17 @@ const CONTENT = {
       "power": 0.9,
       "element": "arcane",
       "effect": "frost_crystal_spear",
-      "buffs": [{"kind": "dot", "value": 0.07}],
+      "buffs": [
+        {
+          "kind": "dot",
+          "value": 0.07
+        }
+      ],
       "duration": 3,
       "image": "/images/skills/boss_storm_skill5.png",
       "description": "Storm 0.9x +7% shock 3t"
     },
-        {
+    {
       "id": "boss_storm_skill6",
       "name": "Storm Heal",
       "target": "self",
@@ -6355,7 +8960,7 @@ const CONTENT = {
       "image": "/images/skills/boss_storm_skill6.png",
       "description": "Storm heal 25%"
     },
-        {
+    {
       "id": "boss_world_skill1",
       "name": "World Strike",
       "target": "enemy",
@@ -6366,7 +8971,7 @@ const CONTENT = {
       "image": "/images/skills/boss_world_skill1.png",
       "description": "World 1.8x crush"
     },
-        {
+    {
       "id": "boss_world_skill2",
       "name": "World Heavy",
       "target": "enemy",
@@ -6377,44 +8982,59 @@ const CONTENT = {
       "image": "/images/skills/boss_world_skill2.png",
       "description": "World 2.6x world break"
     },
-        {
+    {
       "id": "boss_world_skill3",
       "name": "World Weaken",
       "target": "enemy",
       "mana": 8,
-      "buffs": [{"kind": "weaken", "value": 0.4}],
+      "buffs": [
+        {
+          "kind": "weaken",
+          "value": 0.4
+        }
+      ],
       "duration": 2,
       "element": "physical",
       "effect": "heavy_hammer_slam",
       "image": "/images/skills/boss_world_skill3.png",
       "description": "World weaken 40% 2t"
     },
-        {
+    {
       "id": "boss_world_skill4",
       "name": "World Fortify",
       "target": "self",
       "mana": 8,
-      "buffs": [{"kind": "attack", "value": 0.4}],
+      "buffs": [
+        {
+          "kind": "attack",
+          "value": 0.4
+        }
+      ],
       "duration": 2,
       "element": "physical",
       "effect": "heavy_hammer_slam",
       "image": "/images/skills/boss_world_skill4.png",
       "description": "World frenzy 40% 2t"
     },
-        {
+    {
       "id": "boss_world_skill5",
       "name": "World Venom",
       "target": "enemy",
       "mana": 9,
-      "power": 1.0,
+      "power": 1,
       "element": "physical",
       "effect": "rising_katana_slash",
-      "buffs": [{"kind": "dot", "value": 0.09}],
+      "buffs": [
+        {
+          "kind": "dot",
+          "value": 0.09
+        }
+      ],
       "duration": 3,
       "image": "/images/skills/boss_world_skill5.png",
       "description": "World 1.0x +9% bleed 3t"
     },
-        {
+    {
       "id": "boss_world_skill6",
       "name": "World Heal",
       "target": "self",
@@ -6783,7 +9403,10 @@ const CONTENT = {
       "target": "self",
       "mana": 8,
       "buffs": [
-        { "kind": "attack", "value": 0.3 }
+        {
+          "kind": "attack",
+          "value": 0.3
+        }
       ],
       "duration": 2,
       "image": "/images/skills/battle_fury.png",
@@ -6795,7 +9418,10 @@ const CONTENT = {
       "target": "self",
       "mana": 8,
       "buffs": [
-        { "kind": "defense", "value": 0.4 }
+        {
+          "kind": "defense",
+          "value": 0.4
+        }
       ],
       "duration": 2,
       "image": "/images/skills/iron_wall.png",
@@ -6807,7 +9433,10 @@ const CONTENT = {
       "target": "party",
       "mana": 10,
       "buffs": [
-        { "kind": "defense", "value": 0.25 }
+        {
+          "kind": "defense",
+          "value": 0.25
+        }
       ],
       "duration": 2,
       "image": "/images/skills/group_guard.png",
@@ -6819,8 +9448,14 @@ const CONTENT = {
       "target": "enemy",
       "mana": 8,
       "buffs": [
-        { "kind": "weaken", "value": 0.3 },
-        { "kind": "expose", "value": 0.2 }
+        {
+          "kind": "weaken",
+          "value": 0.3
+        },
+        {
+          "kind": "expose",
+          "value": 0.2
+        }
       ],
       "duration": 2,
       "image": "/images/skills/cripple.png",
@@ -6834,7 +9469,10 @@ const CONTENT = {
       "power": 0.6,
       "element": "physical",
       "buffs": [
-        { "kind": "dot", "value": 0.05 }
+        {
+          "kind": "dot",
+          "value": 0.05
+        }
       ],
       "duration": 3,
       "image": "/images/skills/venom_strike.png",
@@ -6846,7 +9484,10 @@ const CONTENT = {
       "target": "ally",
       "mana": 8,
       "buffs": [
-        { "kind": "regen", "value": 0.08 }
+        {
+          "kind": "regen",
+          "value": 0.08
+        }
       ],
       "duration": 3,
       "image": "/images/skills/rejuvenate.png",
@@ -6918,7 +9559,10 @@ const CONTENT = {
       "target": "self",
       "kind": "buff",
       "buffs": [
-        { "kind": "attack", "value": 0.3 }
+        {
+          "kind": "attack",
+          "value": 0.3
+        }
       ],
       "duration": 2,
       "monster": true,
@@ -6930,7 +9574,10 @@ const CONTENT = {
       "target": "self",
       "kind": "buff",
       "buffs": [
-        { "kind": "defense", "value": 0.3 }
+        {
+          "kind": "defense",
+          "value": 0.3
+        }
       ],
       "duration": 2,
       "monster": true,
@@ -6942,7 +9589,10 @@ const CONTENT = {
       "target": "self",
       "kind": "buff",
       "buffs": [
-        { "kind": "regen", "value": 0.05 }
+        {
+          "kind": "regen",
+          "value": 0.05
+        }
       ],
       "duration": 3,
       "monster": true,
@@ -6954,7 +9604,10 @@ const CONTENT = {
       "target": "enemy",
       "kind": "debuff",
       "buffs": [
-        { "kind": "weaken", "value": 0.25 }
+        {
+          "kind": "weaken",
+          "value": 0.25
+        }
       ],
       "duration": 2,
       "monster": true,
@@ -6966,7 +9619,10 @@ const CONTENT = {
       "target": "enemy",
       "kind": "debuff",
       "buffs": [
-        { "kind": "expose", "value": 0.25 }
+        {
+          "kind": "expose",
+          "value": 0.25
+        }
       ],
       "duration": 2,
       "monster": true,
@@ -6978,7 +9634,10 @@ const CONTENT = {
       "target": "enemy",
       "kind": "debuff",
       "buffs": [
-        { "kind": "dot", "value": 0.06 }
+        {
+          "kind": "dot",
+          "value": 0.06
+        }
       ],
       "duration": 3,
       "monster": true,
@@ -7162,7 +9821,10 @@ const CONTENT = {
       "power": 1.1,
       "element": "fire",
       "buffs": [
-        { "kind": "dot", "value": 0.04 }
+        {
+          "kind": "dot",
+          "value": 0.04
+        }
       ],
       "duration": 3,
       "effect": "fire_slash_arc",
@@ -7177,7 +9839,10 @@ const CONTENT = {
       "power": 1.6,
       "element": "fire",
       "buffs": [
-        { "kind": "dot", "value": 0.03 }
+        {
+          "kind": "dot",
+          "value": 0.03
+        }
       ],
       "duration": 3,
       "effect": "ember_whirlwind",
@@ -7203,7 +9868,10 @@ const CONTENT = {
       "power": 1.3,
       "element": "frost",
       "buffs": [
-        { "kind": "frozen", "value": 0 }
+        {
+          "kind": "frozen",
+          "value": 0
+        }
       ],
       "duration": 2,
       "effect": "frost_crystal_spear",
@@ -7229,7 +9897,10 @@ const CONTENT = {
       "power": 1.2,
       "element": "lightning",
       "buffs": [
-        { "kind": "dot", "value": 0.03 }
+        {
+          "kind": "dot",
+          "value": 0.03
+        }
       ],
       "duration": 3,
       "effect": "electric_sparks_shower",
@@ -7255,7 +9926,10 @@ const CONTENT = {
       "power": 0.9,
       "element": "physical",
       "buffs": [
-        { "kind": "dot", "value": 0.06 }
+        {
+          "kind": "dot",
+          "value": 0.06
+        }
       ],
       "duration": 3,
       "effect": "mud_splash_entangle",
@@ -7278,11 +9952,17 @@ const CONTENT = {
       "name": "Broken Guard",
       "target": "enemy",
       "mana": 7,
-      "power": 1.0,
+      "power": 1,
       "element": "physical",
       "buffs": [
-        { "kind": "expose", "value": 0.25 },
-        { "kind": "weaken", "value": 0.2 }
+        {
+          "kind": "expose",
+          "value": 0.25
+        },
+        {
+          "kind": "weaken",
+          "value": 0.2
+        }
       ],
       "duration": 2,
       "effect": "shield_bash_shock",
@@ -7330,7 +10010,12 @@ const CONTENT = {
       "power": 1.9,
       "element": "nature",
       "effect": "nature_vine_projectile",
-      "buffs": [{"kind": "dot", "value": 0.05}],
+      "buffs": [
+        {
+          "kind": "dot",
+          "value": 0.05
+        }
+      ],
       "duration": 3,
       "image": "/images/skills/thorn_volley.png",
       "description": "A barrage of thorns for 1.9× magic that bleeds the target."
