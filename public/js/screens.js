@@ -247,12 +247,18 @@ function sfxPlay(names, vol) {
 const INTERACTIVE_SELECTOR =
   ".btn, .action-card, .class-card, .room-row, .dungeon-card, .size-card, .bet-btn, .skill-slot, .item-btn, .enemy, .fighter, .equip-slot, .bag-row, .shop-card, .temple-card, .btn-chest-action, .btn-chest-confirm";
 let lastHoverEl = null;
+let lastHoverSfxTime = 0;
+const HOVER_SFX_COOLDOWN_MS = 100;
 document.addEventListener("mouseover", (e) => {
   if (!sfxEnabled) return;
   const el = e.target && e.target.closest ? e.target.closest(INTERACTIVE_SELECTOR) : null;
   if (el && el !== lastHoverEl) {
     lastHoverEl = el;
-    sfxPlay("hoversound", 0.3);
+    const now = performance.now();
+    if (now - lastHoverSfxTime >= HOVER_SFX_COOLDOWN_MS) {
+      lastHoverSfxTime = now;
+      sfxPlay("hoversound", 0.25 + Math.random() * 0.1);
+    }
   }
 });
 document.addEventListener("mouseout", (e) => {
