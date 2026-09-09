@@ -23,10 +23,18 @@
 
   const rnd = (a, b) => a + Math.random() * (b - a);
 
+  // Ana menu partikulleri: iki katman — her yere dagilan ince toz + isik
+  // huzmelerinin icinde suruklenen iri, yumusak tozlar. Dengeli tutuldu:
+  // sayi artti ama alfa dusuk, yazi okunabilirligi bozulmaz.
   const motes = [];
-  const MOTE_COUNT = 26;
+  const MOTE_COUNT = 70;
   for (let i = 0; i < MOTE_COUNT; i++) {
-    motes.push({ x: Math.random(), y: Math.random(), r: rnd(0.8, 2.4), vy: rnd(4, 14), vx: rnd(-5, 5), a: rnd(0.15, 0.6), ph: rnd(0, Math.PI * 2) });
+    motes.push({ x: Math.random(), y: Math.random(), r: rnd(0.7, 2.2), vy: rnd(3, 12), vx: rnd(-5, 5), a: rnd(0.1, 0.45), ph: rnd(0, Math.PI * 2) });
+  }
+  // Huzme tozu: gunes yonunden (sol ust) saga asagiya yavasca kayar
+  const beamDust = [];
+  for (let i = 0; i < 22; i++) {
+    beamDust.push({ x: Math.random(), y: Math.random(), r: rnd(1.6, 3.6), sp: rnd(6, 18), a: rnd(0.08, 0.3), ph: rnd(0, Math.PI * 2) });
   }
 
   const cornerDefs = [
@@ -42,12 +50,22 @@
   }
 
   const blobs = [];
-  for (let i = 0; i < 3; i++) {
-    blobs.push({ fx: rnd(0.15, 0.85), fy: rnd(0.15, 0.85), rad: rnd(180, 340), ph: rnd(0, Math.PI * 2), sp: rnd(0.3, 0.7), alpha: rnd(0.16, 0.3) });
+  for (let i = 0; i < 4; i++) {
+    // ilk leke gunesin etrafinda (sol ust), digerleri daginik sicaklik icin
+    const nearSun = i === 0;
+    blobs.push({
+      fx: nearSun ? rnd(0.3, 0.45) : rnd(0.15, 0.85),
+      fy: nearSun ? rnd(0.02, 0.12) : rnd(0.15, 0.85),
+      rad: nearSun ? rnd(280, 420) : rnd(180, 320),
+      ph: rnd(0, Math.PI * 2), sp: rnd(0.25, 0.6),
+      alpha: nearSun ? rnd(0.22, 0.34) : rnd(0.12, 0.24),
+    });
   }
+  // Gunes sol ustten vurdugu icin huzmeler yukari-soldan asagi-saga akar
   const shafts = [
-    { y: 0.3, w: 130, st: 1.0, ph: 0 },
-    { y: 0.72, w: 210, st: 0.6, ph: 2.1 },
+    { y: 0.22, w: 150, st: 1.1, ph: 0 },
+    { y: 0.5, w: 230, st: 0.7, ph: 2.1 },
+    { y: 0.78, w: 110, st: 0.9, ph: 4.0 },
   ];
 
   let t = 0;
@@ -69,6 +87,25 @@
       ctx.fillStyle = "#ffe9c0";
       ctx.beginPath();
       ctx.arc(m.x * W, m.y * H, m.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    // Huzme tozu: isik yonunde (sol ust -> sag alt) suruklenir, yumusak parlar
+    for (const d of beamDust) {
+      d.x += ((d.sp * 0.8) * dt) / W;
+      d.y += ((d.sp * 0.45) * dt) / H;
+      d.ph += dt * 0.8;
+      if (d.x > 1.03) { d.x = -0.03; d.y = Math.random(); }
+      if (d.y > 1.03) { d.y = -0.03; }
+      const tw = 0.5 + 0.5 * Math.sin(d.ph * 1.8);
+      ctx.globalAlpha = Math.max(0, d.a * (0.4 + 0.6 * tw));
+      ctx.fillStyle = "#ffdf9e";
+      ctx.beginPath();
+      ctx.arc(d.x * W, d.y * H, d.r, 0, Math.PI * 2);
+      ctx.fill();
+      // hale: iki kat buyuk, cok silik daire
+      ctx.globalAlpha = Math.max(0, d.a * 0.25 * tw);
+      ctx.beginPath();
+      ctx.arc(d.x * W, d.y * H, d.r * 2.4, 0, Math.PI * 2);
       ctx.fill();
     }
     ctx.globalAlpha = 1;
@@ -93,12 +130,27 @@
   function drawDaylight() {
     ctx.globalCompositeOperation = "lighter";
 
-    const sun = 0.5 + 0.5 * Math.sin(t * 0.5);
-    const g = ctx.createRadialGradient(W * 0.5, H * 0.06, 40, W * 0.5, H * 0.06, W * 0.55);
-    g.addColorStop(0, "rgba(255,214,140," + (0.1 + 0.1 * sun).toFixed(3) + ")");
-    g.addColorStop(0.45, "rgba(255,180,90,0.04)");
+    // GUNES: orta-sol ustten (x ~0.38, ekranin ust kenari). Yavas nefes alir,
+    // goz yormamasi icin tepe parlaklik dengeli tutuldu.
+    const sun = 0.5 + 0.5 * Math.sin(t * 0.45);
+    const SX = W * 0.38;
+    const SY = H * -0.02;
+    const sunR = Math.max(W, H) * 0.55;
+    const g = ctx.createRadialGradient(SX, SY, 30, SX, SY, sunR);
+    g.addColorStop(0, "rgba(255,226,160," + (0.22 + 0.1 * sun).toFixed(3) + ")");
+    g.addColorStop(0.25, "rgba(255,200,120," + (0.1 + 0.05 * sun).toFixed(3) + ")");
+    g.addColorStop(0.55, "rgba(255,180,90,0.035)");
     g.addColorStop(1, "rgba(255,180,90,0)");
     ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+
+    // gunes cekirdegi: kucuk, parlak disk + hale (ust kenarda yarim gorunur)
+    const corePulse = 0.75 + 0.25 * Math.sin(t * 0.9);
+    const core = ctx.createRadialGradient(SX, SY, 2, SX, SY, 90 * corePulse);
+    core.addColorStop(0, "rgba(255,246,220,0.5)");
+    core.addColorStop(0.4, "rgba(255,220,150,0.18)");
+    core.addColorStop(1, "rgba(255,220,150,0)");
+    ctx.fillStyle = core;
     ctx.fillRect(0, 0, W, H);
 
     for (const b of blobs) {
@@ -112,20 +164,23 @@
       ctx.fillRect(0, 0, W, H);
     }
 
+    // Isik huzmeleri: sol ustten saga asagiya (aci ~0.5 rad). Soldan dogup
+    // saga suprulurler; genislik ve parlaklik dengeli, yazi okunur kalir.
     for (const s of shafts) {
       const w = s.w;
-      const cx = (((t * s.st) % (W + w * 3)) - w * 1.5);
+      const span = W + w * 4;
+      const cx = ((((t * 28 * s.st + s.ph * 200) % span) + span) % span) - w * 2;
       ctx.save();
-      ctx.translate(cx, H * s.y);
-      ctx.rotate(0.55);
+      ctx.translate(cx, H * s.y - H * 0.12);
+      ctx.rotate(0.5);
       const lg = ctx.createLinearGradient(0, -w, 0, w);
       lg.addColorStop(0, "rgba(255,214,140,0)");
-      lg.addColorStop(0.5, "rgba(255,214,140,0.16)");
+      lg.addColorStop(0.5, "rgba(255,214,140,0.13)");
       lg.addColorStop(1, "rgba(255,214,140,0)");
       ctx.fillStyle = lg;
-      ctx.fillRect(-w * 0.4, -w, w * 0.8, w * 2);
-      ctx.fillStyle = "rgba(255,240,210,0.08)";
-      ctx.fillRect(-w * 0.9, -w * 0.5, w * 0.35, w);
+      ctx.fillRect(-w * 0.4, -H * 0.7, w * 0.8, H * 1.4);
+      ctx.fillStyle = "rgba(255,240,210,0.06)";
+      ctx.fillRect(-w * 0.9, -H * 0.4, w * 0.35, H * 0.8);
       ctx.restore();
     }
 

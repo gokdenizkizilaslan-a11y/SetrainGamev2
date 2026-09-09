@@ -379,22 +379,29 @@ function drainCombatFx(root) {
     // --- GEZGIN SKILL DUZELTMESI (sadece gorsel, oyun mantigi degismez) ---
     // bolt/beam/ray/laser/spear/javelin/lance gibi skiller hedefte belirmemeli;
     // caster kartindan baslayip hedef karta gitmeli (capraz konumda capraz gider).
-    // Acik 'effect' tanimli skillere dokunulmaz (ornegin static_overload bilerek
-    // gokten yildirim indirir, scorch_mark bilerek yakin dovus kesigi yapar).
+    // Tum skiller icin travel mode tespiti calisir (explicit effect olsa bile).
+    // Explicit effect tanimi varsa korunur, sadece travel mode ayarlanir.
+    // Savunma skilleri (shadow_step, static_overload, thunderbolt) haric tutulur.
     let _travel = null; // 'beam' (lazer isin) | 'projectile' (firlatilan cisim) | null
     try {
       const _sk = (ev.skill && typeof skillById === "function") ? skillById(ev.skill) : null;
-      const _hasExplicitFx = !!(_sk && _sk.effect);
       const _elem = ev.elem || (_sk && _sk.element) || null;
-      if (!_hasExplicitFx && _elem && (ev.target === "enemy" || ev.target === "player")) {
+      if (_elem && (ev.target === "enemy" || ev.target === "player")) {
         const _sid = String(ev.skill || "").toLowerCase();
-        // elemente gore gidecek efekt: hepsi "ucan/giden" tipler (registry'de projectile)
+        // Elemente gore gidecek efekt: hepsi "ucan/giden" tipler (registry'de projectile)
         const _travelProj = { fire:"fireball_streak", frost:"frost_crystal_spear", water:"frost_crystal_spear", earth:"rock_avalanche_barrage", lightning:"storm_spear_throw", blood:"blood_drain", dark:"dark_matter_orb", shadow:"dark_matter_orb", holy:"holy_lance_projectile", arcane:"ball_lightning_plasma", physical:"piercing_rapier_thrust" };
+        // Skil adindan travel mode tespiti (explicit effect olsa bile calisir)
         if (/beam|ray|laser|lazer/.test(_sid)) _travel = "beam";
         else if (/bolt/.test(_sid)) _travel = (_elem === "lightning" || _elem === "holy" || _elem === "arcane") ? "beam" : "projectile";
-        else if (/spear|javelin|lance|dagger|arrow|shot|thrust|throw|orb|ball|missile|spike/.test(_sid)) _travel = "projectile";
-        else if (_elem === "lightning") _travel = "beam"; // lightning defaultu gokten iniyordu, isin olmali
-        if (_travel && _travelProj[_elem]) vfxId = _travelProj[_elem];
+        else if (/spear|javelin|lance|dagger|arrow|shot|thrust|throw|orb|ball|missile|spike|barrage|volley/.test(_sid)) _travel = "projectile";
+        // Elemente gore default travel mode
+        if (!_travel && _elem === "lightning") _travel = "beam"; // lightning defaultu gokten iniyordu, isin olmali
+        else if (!_travel && _elem === "holy") _travel = "beam"; // holy skilleri caster'dan hedefe lazer olarak gider
+        // Savunma/buff skilleri travel olmamali (yanlis keyword eslesmeleri)
+        if (_sid === "shadow_step" || _sid === "static_overload" || _sid === "thunderbolt") _travel = null;
+        // Explicit effect varsa onu koru, sadece travel mode ayarla
+        const _hasExplicitFx = !!(_sk && _sk.effect);
+        if (_travel && !_hasExplicitFx && _travelProj[_elem]) vfxId = _travelProj[_elem];
       }
     } catch (e) { /* gorsel fallback: vfxId aynen kalir */ }
     if (vfx && el) {
@@ -2298,20 +2305,27 @@ function renderInventory(room) {
     center: ["head","armor","legs","boots"],
     right: ["weapon","book","stone"]
   };
+  function statChips(item) {
+    if (!item || !item.stats) return "";
+    return Object.entries(item.stats)
+      .map(([k, v]) => `<span class="stat-chip"><em>${escapeHtml(statLabel(k))}</em><b>${escapeHtml(String(v))}${k === "omnivamp" ? "%" : ""}</b></span>`)
+      .join("");
+  }
   function renderSlot(id) {
     const slot = (CATALOG.equipmentSlots || []).find((s)=>s.id===id);
     if (!slot) return "";
     const itemId = me.equipment[id];
     const item = itemId ? CATALOG.items.find((x)=>x.id===itemId) : null;
-    const stats = item && item.stats ? Object.entries(item.stats).map(([k,v])=> `${statLabel(k)} ${v}${k==="omnivamp"?"%":""}`).join(" · ") : "";
+    const chips = statChips(item);
     const isStone = id==="stone";
-    const stoneTip = isStone && item ? ` Omnivamp ${item.stats.omnivamp||0}% stacks` : "";
-    return `<div class="equip-slot${item ? " equip-slot--filled" : " equip-slot--empty"}">
+    const stoneTip = isStone && item ? `<span class="stat-chip"><em>Stack</em><b>Omni ${item.stats.omnivamp || 0}%</b></span>` : "";
+    const tip = item ? `${escapeHtml(item.name)}${item.description ? " — " + escapeHtml(item.description) : ""}` : slot.label + " (empty)";
+    return `<div class="equip-slot${item ? " equip-slot--filled" : " equip-slot--empty"}" title="${tip}">
         <span class="equip-slot-label">${escapeHtml(slot.label)}</span>
-        <span class="equip-slot-icon">${item ? itemIconEl(item) : `<span class="equip-slot-placeholder">${icon(slotGlyphs[id] || "weapon")}</span>`}</span>
-        <span class="equip-slot-item">${item ? escapeHtml(item.name) : '<span class="muted">Empty</span>'}</span>
+        <span class="equip-socket">${item ? itemIconEl(item) : `<span class="equip-slot-placeholder">${icon(slotGlyphs[id] || "weapon")}</span>`}</span>
+        <span class="equip-slot-item">${item ? escapeHtml(item.name) : '<span class="muted">— Empty —</span>'}</span>
         <span class="equip-slot-badges">${item ? rarityBadge(item) : ""}</span>
-        <span class="equip-slot-stats">${stats}${stoneTip}</span>
+        <span class="equip-slot-stats">${chips}${stoneTip}</span>
         ${item ? `<button type="button" class="btn btn--mini" data-unequip="${id}">Unequip</button>` : ""}
       </div>`;
   }
@@ -2336,14 +2350,20 @@ function renderInventory(room) {
         ? `<button type="button" class="btn btn--mini" data-equip="${inv.itemId}">Equip</button>`
         : "";
       const chestRates = item.slot === "chest" ? chestRatesHtml(item) : "";
-      return `<div class="bag-row">
-        <span class="bag-icon">${itemIconEl(item)}</span>
-        <span class="bag-name">${escapeHtml(item.name)} <span class="bag-qty">×${inv.qty}</span> ${rarityBadge(item)}</span>
-        <span class="bag-desc">${escapeHtml(item.description)}${chestRates ? `<br><span style="font-size:0.68rem;color:var(--muted)">${chestRates}</span>` : ""}</span>
+      const chestPlain = chestRates.replace(/<[^>]*>/g, "");
+      const tip = `${escapeHtml(item.name)}${item.description ? " — " + escapeHtml(item.description) : ""}${chestPlain ? " — " + escapeHtml(chestPlain) : ""}`;
+      return `<div class="bag-row bag-card" title="${tip}">
+        <span class="bag-socket">${itemIconEl(item)}</span>
+        <span class="bag-name">${escapeHtml(item.name)} <span class="bag-qty">×${inv.qty}</span></span>
+        <span class="bag-badges">${rarityBadge(item)}</span>
+        <span class="bag-desc">${escapeHtml(item.description)}</span>
+        ${chestRates ? `<span class="bag-rates" title="${escapeHtml(chestPlain)}">${chestRates}</span>` : ""}
         ${action}
       </div>`;
     })
     .join("");
+  const equippedCount = Object.values(me.equipment || {}).filter(Boolean).length;
+  const slotTotal = (CATALOG.equipmentSlots || []).length || 10;
 
   root.innerHTML = `
     <div class="shop-resources">
@@ -2351,10 +2371,14 @@ function renderInventory(room) {
       ${chip(icon("gold"), `Gold ${me.gold}`)}
       ${chip(icon("wood"), `Wood ${me.wood}`)}
     </div>
-    <p class="subhead">Equipment</p>
-    <div class="equip-grid">${slots}</div>
-    <p class="subhead">Pack</p>
-    <div class="bag-list">${bag || '<div class="muted">Your pack is empty.</div>'}</div>`;
+    <section class="inv-section">
+      <div class="inv-section-head"><span class="subhead" style="margin:0">Equipment</span><span class="inv-count">${equippedCount}/${slotTotal} worn</span></div>
+      <div class="equip-grid">${slots}</div>
+    </section>
+    <section class="inv-section">
+      <div class="inv-section-head"><span class="subhead" style="margin:0">Pack</span><span class="inv-count">${(me.inventory || []).length} kinds</span></div>
+      <div class="bag-list">${bag || '<div class="muted">Your pack is empty.</div>'}</div>
+    </section>`;
   initImages(root);
 
   root.querySelectorAll("[data-unequip]").forEach((b) =>
@@ -2417,9 +2441,9 @@ function renderPetsView(room){
     const displayName = pd ? petDisplayName(pd, lvl) : "Empty";
     const img = pd ? petImageForLevel(pd, lvl) : "";
     const stage = petStage(lvl);
-    slots.push(`<div class="pet-slot ${pid?"pet-slot--filled":"pet-slot--empty"} ${isMiddle?"pet-slot--middle":""}" data-pet-slot="${i}">
+    slots.push(`<div class="pet-slot ${pid?"pet-slot--filled":"pet-slot--empty"} ${isMiddle?"pet-slot--middle":""}" data-pet-slot="${i}" title="${pd ? escapeHtml(displayName) + " — Lv " + lvl + " " + stage : "Empty slot"}">
       <span class="pet-slot-label">${isMiddle && maxPets===3 ? "Middle" : "Slot "+(i+1)}</span>
-      ${pid ? `<span class="pet-slot-icon" data-img="${escapeHtml(img)}" data-variant="${escapeHtml(pid)}" style="width:3rem;height:3rem;"></span><span class="pet-slot-name">${escapeHtml(displayName)}</span><span class="pet-slot-level">Lv ${lvl} ${stage}</span><button type="button" class="btn btn--mini" data-pet-unequip="${pid}">Unequip</button>` : `<span class="pet-slot-empty">Empty</span><span class="muted">Drag pet here</span>`}
+      ${pid ? `<span class="pet-socket"><span class="pet-slot-icon" data-img="${escapeHtml(img)}" data-variant="${escapeHtml(pid)}"></span></span><span class="pet-slot-name">${escapeHtml(displayName)}</span><span class="pet-slot-level">Lv ${lvl} · ${stage}</span><button type="button" class="btn btn--mini" data-pet-unequip="${pid}">Unequip</button>` : `<span class="pet-socket pet-socket--empty"><span class="pet-slot-empty">?</span></span><span class="muted" style="font-size:0.68rem">Empty slot</span>`}
     </div>`);
   }
   const petsList = pets.map(pp=>{
@@ -2429,12 +2453,16 @@ function renderPetsView(room){
     const stage = petStage(lvl);
     const displayName = pd ? petDisplayName(pd, lvl) : pp.petId;
     const img = pd ? petImageForLevel(pd, lvl) : "";
-    const stats = pd && pd.stats ? Object.entries(pd.stats).map(([k,v])=> `${k} ${v + (pp.bonusAttack||0) + (pp.bonusMagic||0)}`).join(" · ") : "";
+    const statChips = pd && pd.stats ? Object.entries(pd.stats).map(([k,v])=> `<span class="stat-chip"><em>${escapeHtml(k)}</em><b>${escapeHtml(String(v + (pp.bonusAttack||0) + (pp.bonusMagic||0)))}</b></span>`).join("") : "";
     const petSkills = pd && pd.petSkills ? pd.petSkills.map(s=> `${s.kind} ${s.value}${s.kind==="attack"||s.kind==="heal"||s.kind==="shield"?"":"%"} /${s.interval}t`).join(" · ") : (pd && pd.buffKind ? `${pd.buffKind} (${pd.element})` : "auto");
-    return `<div class="bag-row" style="flex-wrap:wrap;">
-      <span class="bag-icon"><span class="item-icon" data-img="${escapeHtml(img)}" data-variant="${escapeHtml(pp.petId)}"></span></span>
-      <span class="bag-name">${escapeHtml(displayName)} ${isActive?'<span class="badge badge--ready">Active</span>':''} <span class="muted">Lv ${lvl} ${stage}</span></span>
-      <span class="bag-desc" style="flex-basis:100%;">${pd?escapeHtml(pd.description):''}<br><span class="muted">${escapeHtml(stats)} · ${pd?pd.element:''} · XP ${pp.xp||0}/${pp.xpToNext||0}</span><br><span style="color:#e8b45c;font-size:0.7rem;">Skills: ${escapeHtml(petSkills)}</span></span>
+    const tip = `${escapeHtml(displayName)} — Lv ${lvl} ${stage}${pd && pd.description ? " — " + escapeHtml(pd.description) : ""}`;
+    return `<div class="bag-row pet-card" title="${tip}">
+      <span class="bag-socket pet-socket"><span class="item-icon" data-img="${escapeHtml(img)}" data-variant="${escapeHtml(pp.petId)}"></span></span>
+      <span class="bag-name">${escapeHtml(displayName)}</span>
+      <span class="bag-badges">${isActive?'<span class="badge badge--ready">Active</span>':''}<span class="pet-lvl">Lv ${lvl} · ${stage}</span>${pd && pd.element ? `<span class="pet-el">${escapeHtml(pd.element)}</span>` : ""}</span>
+      <span class="bag-desc">${pd?escapeHtml(pd.description):''}</span>
+      <span class="pet-stats">${statChips}<span class="stat-chip"><em>XP</em><b>${pp.xp||0}/${pp.xpToNext||0}</b></span></span>
+      <span class="pet-skills">Skills: ${escapeHtml(petSkills)}</span>
       <button type="button" class="btn btn--mini" data-pet-active="${pp.petId}">${isActive?'Unequip':'Equip'}</button>
     </div>`;
   }).join("");
@@ -2445,23 +2473,32 @@ function renderPetsView(room){
   const eggsList = eggs.map(inv=>{
     const it=(CATALOG.items||[]).find(x=>x.id===inv.itemId);
     const eggDef=(CATALOG.eggs||[]).find(x=>x.id===inv.itemId);
-    return `<div class="bag-row">
-      <span class="bag-icon">${itemIconEl(it)}</span>
-      <span class="bag-name">${escapeHtml(it.name)} <span class="bag-qty">×${inv.qty}</span> ${rarityBadge(it)}</span>
-      <span class="bag-desc">${it?escapeHtml(it.description):''} ${eggDef?`<br><span class="muted">${escapeHtml(eggDef.label)} — ${eggDef.pets.length} pets • Click Hatch (3 clicks)</span>`:''}</span>
+    const tip = `${escapeHtml(it.name)}${it.description ? " — " + escapeHtml(it.description) : ""}`;
+    return `<div class="bag-row bag-card egg-card" title="${tip}">
+      <span class="bag-socket egg-socket">${itemIconEl(it)}</span>
+      <span class="bag-name">${escapeHtml(it.name)} <span class="bag-qty">×${inv.qty}</span></span>
+      <span class="bag-badges">${rarityBadge(it)}</span>
+      <span class="bag-desc">${it?escapeHtml(it.description):''}</span>
+      ${eggDef?`<span class="egg-meta">${escapeHtml(eggDef.label)} · ${eggDef.pets.length} pets · 3 clicks</span>`:""}
       <button type="button" class="btn btn--mini" data-hatch="${inv.itemId}">Hatch</button>
     </div>`;
   }).join("");
   root.innerHTML = `
-    <div class="pets-top">
-      <p class="subhead">Equipped Pets (${activeIds.length}/${maxPets}) ${me.character==="tamer"?"— Tamer 2× bonus!":""}</p>
-      <div class="pet-slots ${maxPets===3?"pet-slots--3":""}">${slots.join("")}</div>
-    </div>
-    <p class="subhead">Eggs — ${eggs.length} to hatch (3 clicks)</p>
-    <div class="bag-list">${eggsList || '<div class="muted">No eggs. Win dungeons to find Red–Gold eggs!</div>'}</div>
-    <p class="subhead">Collection — ${pets.length} pets</p>
-    <div class="bag-list">${petsList || '<div class="muted">No pets yet. Hatch eggs above!</div>'}</div>
-    <p class="hint">All pets start as Baby (Lv 1-7), Young at 8, Adult at 15. Images change with stage. Tamer can equip 3, others 2.</p>
+    <section class="inv-section">
+      <div class="inv-section-head"><span class="subhead" style="margin:0">Equipped Pets (${activeIds.length}/${maxPets}) ${me.character==="tamer"?"— Tamer 2× bonus!":""}</span></div>
+      <div class="pets-top">
+        <div class="pet-slots ${maxPets===3?"pet-slots--3":""}">${slots.join("")}</div>
+      </div>
+    </section>
+    <section class="inv-section">
+      <div class="inv-section-head"><span class="subhead" style="margin:0">Eggs</span><span class="inv-count">${eggs.length} to hatch</span></div>
+      <div class="bag-list">${eggsList || '<div class="muted">No eggs. Win dungeons to find Red–Gold eggs!</div>'}</div>
+    </section>
+    <section class="inv-section">
+      <div class="inv-section-head"><span class="subhead" style="margin:0">Collection</span><span class="inv-count">${pets.length} pets</span></div>
+      <div class="bag-list">${petsList || '<div class="muted">No pets yet. Hatch eggs above!</div>'}</div>
+      <p class="hint">Baby Lv 1-7 · Young Lv 8+ · Adult Lv 15+. Tamer 3 takar, diğerleri 2.</p>
+    </section>
   `;
   initImages(root);
   root.querySelectorAll("[data-pet-unequip]").forEach(b=> b.addEventListener("click", ()=>{ sfxPlay("clicksound"); socket.emit("pet:setActive", {petId: b.getAttribute("data-pet-unequip")}); }));
