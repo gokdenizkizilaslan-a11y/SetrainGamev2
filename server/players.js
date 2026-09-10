@@ -213,7 +213,8 @@ function addPetXp(player, petId, amount){
 function createPlayer({ id, name, character, isHost = false }) {
   const anomaly = pickAnomaly();
   const cls = getClass(character);
-  const starting = cls && Array.isArray(cls.startingSkills) ? cls.startingSkills.slice() : [];
+  const maxLoadout = (CONTENT.skillTree && CONTENT.skillTree.maxLoadout) || 5;
+  const starting = cls && Array.isArray(cls.startingSkills) ? cls.startingSkills.slice(0, maxLoadout) : [];
   const player = {
     id,
     name,
@@ -502,7 +503,8 @@ function eatFood(player) {
 }
 
 function setSkillLoadout(player, ids) {
-  const arr = Array.isArray(ids) ? ids.slice(0, 5) : [];
+  const maxLoadout = (CONTENT.skillTree && CONTENT.skillTree.maxLoadout) || 5;
+  const arr = Array.isArray(ids) ? ids.slice(0, maxLoadout) : [];
   for (const id of arr) {
     if (!player.unlockedSkills.includes(id)) {
       throw new Error("That skill is not unlocked.");

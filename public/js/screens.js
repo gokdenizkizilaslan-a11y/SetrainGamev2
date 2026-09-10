@@ -1666,8 +1666,9 @@ function combatLoadout(me) {
   const basic = raw ? { ...raw, target: "enemy", mana: 0 } : { id: "auto_attack", name: "Basic Attack", target: "enemy", power: 1.0, mana: 0, image: "" };
   const ids = me.skillLoadout || [];
   const skills = [basic, ...ids.map((id) => CATALOG.skills.find((s) => s.id === id)).filter(Boolean)];
-  while (skills.length < 6) skills.push(null);
-  return skills.slice(0, 6);
+  const maxLoadout = (CATALOG.skillTree && CATALOG.skillTree.maxLoadout) || 5;
+  while (skills.length < maxLoadout + 1) skills.push(null);
+  return skills.slice(0, maxLoadout + 1);
 }
 
 function skillTipEl(s) {
@@ -2631,7 +2632,8 @@ function renderMap(room) {
     // random dots already via CSS, no extra JS needed
   }
   pinsEl.innerHTML = bosses.map((b,i)=>{
-    const x = 12 + i * 16; // 12%,28%,44%,60%,76%
+    const n = bosses.length;
+    const x = n === 1 ? 50 : 12 + (i * (n > 1 ? 76 / (n - 1) : 0)); // tek boss ortada, çoklu boss tüm haritaya yayılır
     const y = 50 + Math.sin(i*0.9)*12;
     const locked = b.unlockAfter && !kills.includes(b.unlockAfter);
     const icon = b.element==="fire"?"🔥":b.element==="frost"?"❄️":b.element==="shadow"?"👁️":b.element==="arcane"?"⚡":"💀";

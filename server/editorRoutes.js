@@ -203,7 +203,7 @@ router.post("/api/editor/save", auth, (req, res) => {
     res.json({
       ok: true,
       backup: result.backup,
-      note: "Saved to content.js. Restart the server (Ctrl+C, then npm start) for the game to use it.",
+      note: "content.js güncellendi. Sunucuyu yeniden başlat (Ctrl+C, sonra npm start) — oyun restart'tan sonra kullanır. Yedek: " + (result.backup || "—") + ".",
     });
   } catch (e) {
     res.status(400).json({ ok: false, error: String(e.message).slice(0, 1200) });

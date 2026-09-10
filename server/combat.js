@@ -329,7 +329,10 @@ function buildWaveForFloor(def, size, power, floor, totalFloors, totalCount) {
   // For small dungeons total is small, so floor 1 gets all
   const wave = [];
   for (let i = 0; i < count; i++) {
-    const m = getMonster(def.monsterPool[Math.floor(Math.random() * def.monsterPool.length)]);
+    const pool = (Array.isArray(def.monsterPool) && def.monsterPool.length) ? def.monsterPool : (CONTENT.monsters || []).map((mm) => mm.id);
+    let m = getMonster(pool[Math.floor(Math.random() * pool.length)]);
+    if (!m) m = (CONTENT.monsters || [])[0];
+    if (!m) throw new Error(`Dungeon "${def.rank}" has no valid monsters in its pool.`);
     wave.push({
       id: `${m.id}_${floor}_${i}`,
       kind: m.id,
