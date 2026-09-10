@@ -8,6 +8,7 @@
 
 const express = require("express");
 const path = require("path");
+const fs = require("fs");
 const { execFileSync } = require("child_process");
 
 const { CONTENT } = require("../content.js");
@@ -101,6 +102,91 @@ function resolveDefs(data) {
 }
 
 router.use(express.static(path.join(__dirname, "..", "public", "editor")));
+
+// --- Image upload / listing (GameCraft "Fotoğraf Yükle" -> gerçek dosya) ---
+const IMG_ROOT = path.join(__dirname, "..", "public", "images");
+const IMG_FOLDERS = new Set([
+  "backgrounds",
+  "characters",
+  "monsters",
+  "bosses",
+  "dungeons",
+  "items",
+  "skills",
+  "pets",
+  "ui",
+]);
+const IMG_EXT_RE = /^\.(png|jpe?g|webp|gif|svg)$/i;
+const MAX_IMG_BYTES = 12 * 1024 * 1024; // ~12MB (base64 ~16MB)<express.json 50mb
+
+router.get("/api/images", auth, (req, res) => {
+  const folder = String(req.query.folder || "").toLowerCase();
+  if (!IMG_FOLDERS.has(folder)) {
+    return res.status(400).json({ ok: false, error: "Bilinmeyen resim klasörü: " + folder });
+  }
+  const dir = path.join(IMG_ROOT, folder);
+  let names = [];
+  try {
+    names = fs
+      .readdirSync(dir)
+      .filter((f) => IMG_EXT_RE.test(path.extname(f)))
+      .sort();
+  } catch (e) {
+    // folder may not exist yet
+  }
+  res.json({ ok: true, folder, files: names.map((n) => ({ name: n, url: "/images/" + folder + "/" + n })) });
+});
+
+// Uploads a base64 image into public/images/<folder>/<filename>. The client
+// (GameCraft studio) sends the file bytes; the game serves it as a static
+// file and the image field stores the returned /images/... path.
+router.post("/api/upload", auth, (req, res) => {
+  const folder = String((req.body && req.body.folder) || "").toLowerCase();
+  const filename = String((req.body && req.body.filename) || "").toLowerCase();
+  const data = (req.body && req.body.data) || "";
+
+  if (!IMG_FOLDERS.has(folder)) {
+    return res.status(400).json({ ok: false, error: "Bilinmeyen resim klasörü: " + folder });
+  }
+  const nameMatch = /^([a-z0-9][a-z0-9_-]*)\.([a-z0-9]+)$/.exec(filename);
+  if (!nameMatch) {
+    return res.status(400).json({ ok: false, error: "Geçersiz dosya adı (ör: " + folder + "_adi.png)." });
+  }
+  const ext = nameMatch[2];
+  const ALLOWED_EXT = ["png", "jpg", "jpeg", "webp", "gif", "svg"];
+  if (!ALLOWED_EXT.includes(ext)) {
+    return res.status(400).json({ ok: false, error: "Desteklenen uzantılar: " + ALLOWED_EXT.join(", ") });
+  }
+  const safeName = nameMatch[1] + "." + ext;
+
+  let buf;
+  try {
+    const b64 = String(data).includes(",") ? String(data).slice(String(data).indexOf(",") + 1) : String(data);
+    buf = Buffer.from(b64, "base64");
+  } catch (e) {
+    return res.status(400).json({ ok: false, error: "Görsel verisi çözülemedi (base64)." });
+  }
+  if (!buf || buf.length === 0) {
+    return res.status(400).json({ ok: false, error: "Boş görsel dosyası." });
+  }
+  if (buf.length > MAX_IMG_BYTES) {
+    return res.status(413).json({ ok: false, error: "Görsel çok büyük (maks ~12MB)." });
+  }
+
+  const dir = path.resolve(IMG_ROOT, folder);
+  const target = path.resolve(dir, safeName);
+  if (!target.startsWith(path.resolve(IMG_ROOT) + path.sep)) {
+    return res.status(400).json({ ok: false, error: "Geçersiz hedef yol." });
+  }
+  try {
+    fs.mkdirSync(dir, { recursive: true });
+    const existed = fs.existsSync(target);
+    fs.writeFileSync(target, buf);
+    res.json({ ok: true, url: "/images/" + folder + "/" + safeName, file: folder + "/" + safeName, overwritten: existed });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: "Dosya yazılamadı: " + String(e.message).slice(0, 300) });
+  }
+});
 
 router.get("/api/editor", auth, (req, res) => {
   res.json({ defs: resolveDefs(editorData), data: editorData });
