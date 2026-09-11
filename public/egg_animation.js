@@ -6,6 +6,17 @@
  */
 
 (function (window) {
+  // Game catalog lives in a lexical global (screens.js `const CATALOG`),
+  // NOT on window — resolve defensively so stats/skills/desc always show.
+  function catalogPets() {
+    try {
+      if (typeof CATALOG !== "undefined" && CATALOG && CATALOG.pets) return CATALOG.pets;
+    } catch (e) {}
+    return (window.CATALOG && window.CATALOG.pets) || [];
+  }
+  function stripOrigin(text) {
+    return String(text || "").replace(/\s+from\s+[\w\s'-]*egg\s*$/i, "").trim();
+  }
   // 10 Egg Theme Configurations
   const EGG_THEMES = {
     egg_red: { name: 'Red Egg', primary: '#c82424', secondary: '#660c0c', accent: '#ff7a3c', crack: '#ffaa33', symbol: '🔥' },
@@ -91,8 +102,13 @@
           <h2 id="egg-title-el" class="egg-title">Click the Egg to Crack!</h2>
           <p id="egg-sub-el" class="egg-subtext">The shell pulses with mysterious energy from the deep ruins.</p>
           <div id="egg-visual-box" class="egg-visual-wrap">
-            <svg id="egg-svg-el" width="220" height="290" viewBox="0 0 220 290" fill="none" class="overflow-visible">
-              <ellipse cx="110" cy="155" rx="90" ry="120" id="egg-aura" fill="rgba(255,100,50,0.5)" filter="blur(20px)" />
+              <svg id="egg-svg-el" width="220" height="290" viewBox="0 0 220 290" fill="none" class="overflow-visible">
+              <defs>
+                <filter id="egg-aura-blur" x="-60%" y="-60%" width="220%" height="220%">
+                  <feGaussianBlur stdDeviation="20" />
+                </filter>
+              </defs>
+              <ellipse cx="110" cy="155" rx="90" ry="120" id="egg-aura" fill="rgba(255,100,50,0.5)" filter="url(#egg-aura-blur)" />
               <path id="egg-shell-path" d="M 110,18 C 165,18 205,85 205,160 C 205,225 165,268 110,268 C 55,268 15,225 15,160 C 15,85 55,18 110,18 Z" fill="#c82424" stroke="rgba(255,235,190,0.3)" stroke-width="2" />
               <!-- Crack Overlay -->
               <g id="egg-cracks-group" stroke="#ffaa33" stroke-width="3" stroke-linecap="round" fill="none" opacity="0"></g>
@@ -363,14 +379,14 @@
               // show element
               const petEl = document.getElementById('pet-element-el');
               if(petEl){
-                const pd = (window.CATALOG && window.CATALOG.pets || []).find(x=>x.id===petId);
+                const pd = catalogPets().find(x=>x.id===petId);
                 petEl.innerText = pd ? pd.element : 'pet';
                 petEl.style.background = pd ? `rgba(0,0,0,0.4)` : '';
               }
               const statsEl = document.getElementById('pet-stats-el');
               const skillsEl = document.getElementById('pet-skills-el');
               if(statsEl){
-                const pd = (window.CATALOG && window.CATALOG.pets || []).find(x=>x.id===petId);
+                const pd = catalogPets().find(x=>x.id===petId);
                 if(pd){
                   const lvl = 1;
                   const stage = lvl>=15?"Adult": lvl>=8?"Young":"Baby";
@@ -379,7 +395,7 @@
                 } else statsEl.innerHTML = '';
               }
               if(skillsEl){
-                const pd = (window.CATALOG && window.CATALOG.pets || []).find(x=>x.id===petId);
+                const pd = catalogPets().find(x=>x.id===petId);
                 if(pd && pd.petSkills && pd.petSkills.length){
                   const map={attack:'Atk', heal:'Heal', shield:'Shield', weaken:'Weaken', frozen:'Frozen', wet:'Wet', magicBoost:'Mgc'};
                   skillsEl.innerHTML = pd.petSkills.map(s=> `${map[s.kind]||s.kind} ${s.value}${s.kind==="attack"||s.kind==="heal"||s.kind==="shield"?"" : "%"} /${s.interval}t`).join(' · ') + ` · ${pd.element}`;
@@ -392,8 +408,8 @@
               }
               const descEl = document.getElementById('pet-desc-el');
               if(descEl){
-                const pd = (window.CATALOG && window.CATALOG.pets || []).find(x=>x.id===petId);
-                if(pd) descEl.innerText = pd.description;
+                const pd = catalogPets().find(x=>x.id===petId);
+                if(pd) descEl.innerText = stripOrigin(pd.description);
               }
 
               stageRevealed.classList.remove('hidden');

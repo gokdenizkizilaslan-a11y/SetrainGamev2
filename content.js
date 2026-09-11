@@ -11283,7 +11283,7 @@ function publicCatalog() {
       global: (CONTENT.skillTree && CONTENT.skillTree.global) || [],
       lineages: (CONTENT.skillTree && CONTENT.skillTree.lineages) || {},
     },
-    pets: (CONTENT.pets || []).map((p) => ({ id: p.id, name: p.name, image: p.image, element: p.element, description: p.description || "" })),
+    pets: (CONTENT.pets || []).map((p) => ({ id: p.id, name: p.name, image: p.image, imageYoung: p.imageYoung || "", imageAdult: p.imageAdult || "", element: p.element, description: p.description || "", egg: p.egg || "", stats: p.stats || {}, buffKind: p.buffKind || "", petSkills: p.petSkills || null })),
     food: CONTENT.food,
     loot: {
       rarityOrder: CONTENT.loot.rarityOrder,

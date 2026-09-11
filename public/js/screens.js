@@ -347,6 +347,11 @@ function petDisplayName(petDef, level){
   if(base.toLowerCase().includes("baby") || base.toLowerCase().includes("young") || base.toLowerCase().includes("adult")) return base;
   return prefix + base;
 }
+// Origin phrases like "Slime King from Green Egg" describe data, not gameplay —
+// show the name/description without the origin tail.
+function stripPetOrigin(text) {
+  return String(text || "").replace(/\s+from\s+[\w\s'-]*egg\s*$/i, "").trim();
+}
 function petImageForLevel(petDef, level){
   if(!petDef || !petDef.image) return "";
   const stage = petStage(level);
@@ -2772,12 +2777,12 @@ function renderPetsView(room){
     const img = pd ? petImageForLevel(pd, lvl) : "";
     const statChips = pd && pd.stats ? Object.entries(pd.stats).map(([k,v])=> `<span class="stat-chip"><em>${escapeHtml(k)}</em><b>${escapeHtml(String(v + (pp.bonusAttack||0) + (pp.bonusMagic||0)))}</b></span>`).join("") : "";
     const petSkills = pd && pd.petSkills ? pd.petSkills.map(s=> `${s.kind} ${s.value}${s.kind==="attack"||s.kind==="heal"||s.kind==="shield"?"":"%"} /${s.interval}t`).join(" · ") : (pd && pd.buffKind ? `${pd.buffKind} (${pd.element})` : "auto");
-    const tip = `${escapeHtml(displayName)} — Lv ${lvl} ${stage}${pd && pd.description ? " — " + escapeHtml(pd.description) : ""}`;
+    const tip = `${escapeHtml(displayName)} — Lv ${lvl} ${stage}${pd && pd.description ? " — " + escapeHtml(stripPetOrigin(pd.description)) : ""}`;
     return `<div class="bag-row pet-card" title="${tip}">
       <span class="bag-socket pet-socket"><span class="item-icon" data-img="${escapeHtml(img)}" data-variant="${escapeHtml(pp.petId)}"></span></span>
       <span class="bag-name">${escapeHtml(displayName)}</span>
       <span class="bag-badges">${isActive?'<span class="badge badge--ready">Active</span>':''}<span class="pet-lvl">Lv ${lvl} · ${stage}</span>${pd && pd.element ? `<span class="pet-el">${escapeHtml(pd.element)}</span>` : ""}</span>
-      <span class="bag-desc">${pd?escapeHtml(pd.description):''}</span>
+      <span class="bag-desc">${pd?escapeHtml(stripPetOrigin(pd.description)):''}</span>
       <span class="pet-stats">${statChips}<span class="stat-chip"><em>XP</em><b>${pp.xp||0}/${pp.xpToNext||0}</b></span></span>
       <span class="pet-skills">Skills: ${escapeHtml(petSkills)}</span>
       <button type="button" class="btn btn--mini" data-pet-active="${pp.petId}">${isActive?'Unequip':'Equip'}</button>
