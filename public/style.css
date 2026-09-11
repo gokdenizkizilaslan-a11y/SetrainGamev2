@@ -1848,45 +1848,8 @@ input:focus {
 
 .combat-wrap {
   position: relative;
-}
-
-/* Wide combat layout: battlefield left, skills right */
-.combat-main {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
-  gap: 0.6rem;
-  align-items: start;
-}
-.combat-left {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-}
-.combat-side .skill-bar {
-  grid-template-columns: repeat(2, 1fr);
-  margin-top: 0;
-}
-.combat-top-items {
-  display: flex;
-  gap: 0.4rem;
-  flex-wrap: wrap;
-  align-items: center;
-}
-.combat-top-items .item-btn {
-  padding: 0.3rem 0.5rem;
-  font-size: 0.72rem;
-}
-.combat-top-items .item-btn .item-icon {
-  width: 1.2rem;
-  height: 1.2rem;
-}
-@media (max-width: 900px) {
-  .combat-main {
-    grid-template-columns: 1fr;
-  }
-  .combat-side .skill-bar {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
 .enemy-wave {

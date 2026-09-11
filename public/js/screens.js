@@ -2006,19 +2006,13 @@ function renderCombat(room, root) {
         <p class="subhead">${escapeHtml(d.label || "")} — ${sizeLabel(d.size)}${floorInfo} · Round ${d.round}</p>
         ${timerHtml}
         <div class="combat-actions combat-actions--top">${endTurnBtn}${fleeBtnHtml}</div>
-        <div class="combat-top-items">${itemsHtml}</div>
       </div>
-      <div class="combat-main">
-        <div class="combat-left">
-          <div class="enemy-wave">${enemiesHtml || '<div class="muted">No foes remain.</div>'}</div>
-          <div class="party-row">${partyHtml}</div>
-          ${logHtml}
-        </div>
-        <div class="combat-side">
-          <div class="skill-bar">${skillsHtml}</div>
-          <div class="combat-hint">${escapeHtml(hint)}${canAct ? ' <span class="muted">[Q-T] skills · [1-5] target · [O] end · [P] flee</span>' : ""}</div>
-        </div>
-      </div>
+      <div class="enemy-wave">${enemiesHtml || '<div class="muted">No foes remain.</div>'}</div>
+      <div class="party-row">${partyHtml}</div>
+      <div class="skill-bar">${skillsHtml}</div>
+      <div class="item-bar">${itemsHtml}</div>
+      <div class="combat-hint">${escapeHtml(hint)}${canAct ? ' <span class="muted">[Q-T] skills · [1-5] target · [O] end · [P] flee</span>' : ""}</div>
+      ${logHtml}
     </div>
     ${d.result ? renderResultOverlay(d.result, firstChestId(me)) : ""}
   `;
@@ -2200,17 +2194,11 @@ function renderPvpView(room){
   const hint = d.status==="done"? (d.result?d.result.text:"") : isMyTurn? "Your turn — pick a skill." : `Waiting for ${opp?opp.name:"opponent"}...`;
   root.innerHTML=`<div class="combat-wrap">
     <div class="combat-top"><p class="subhead">Duel — Round ${d.round}</p><div class="combat-actions"><button type="button" class="btn btn--ghost" id="btn-pvp-end">End Turn</button><button type="button" class="btn btn--ghost" id="btn-pvp-leave">Leave Duel</button></div></div>
-    <div class="combat-main">
-      <div class="combat-left">
-        <div class="enemy-wave" style="flex-direction:column;gap:0.5rem;">${oppHtml}</div>
-        <div class="party-row" style="margin-top:0.5rem;">${meHtml}</div>
-        <div class="combat-log">${d.log.slice(-6).map(l=>`<div class="log-line">${escapeHtml(l)}</div>`).join("")}</div>
-      </div>
-      <div class="combat-side">
-        <div class="skill-bar">${skillsHtml}</div>
-        <div class="combat-hint">${escapeHtml(hint)}${canAct ? ' <span class="muted">[Q-T] skills · [O] end · [P] leave</span>' : ""}</div>
-      </div>
-    </div>
+    <div class="enemy-wave" style="flex-direction:column;gap:0.5rem;">${oppHtml}</div>
+    <div class="party-row" style="margin-top:0.5rem;">${meHtml}</div>
+    <div class="skill-bar">${skillsHtml}</div>
+    <div class="combat-hint">${escapeHtml(hint)}${canAct ? ' <span class="muted">[Q-T] skills · [O] end · [P] leave</span>' : ""}</div>
+    <div class="combat-log">${d.log.slice(-6).map(l=>`<div class="log-line">${escapeHtml(l)}</div>`).join("")}</div>
     ${d.result? renderResultOverlay(d.result, null).replace('btn-result-return','btn-pvp-return') : '' }
   </div>`;
   initImages(root);
