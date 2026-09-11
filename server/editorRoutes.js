@@ -1,8 +1,11 @@
-// Web content editor routes. The UI lives in public/editor/ and edits content.js.
+// GameCraft studio API bridge. The GameCraft editor (gamecraft-rpg-studiov1,
+// port 3054) talks to the game through these endpoints ("Oyun Verisini Çek" /
+// "Oyuna Uygula" / "Commit & Push" / image upload). Do NOT delete this file —
+// without it GameCraft cannot read or write content.js.
 //
-// Safety: on your own machine (localhost) the editor is open. Anywhere else it is
+// Safety: on your own machine (localhost) the API is open. Anywhere else it is
 // locked unless you set the CONTENT_EDIT_TOKEN environment variable and use that
-// token (as `?token=...` or the `x-edit-token` header). Without a token the editor
+// token (as `?token=...` or the `x-edit-token` header). Without a token the API
 // works only locally, so the deployed game cannot be tampered with remotely.
 "use strict";
 
@@ -97,11 +100,19 @@ function resolveDefs(data) {
         ctaPath: p.ctaPath,
       };
     }
+    if (p.kind === "affinity") {
+      return {
+        id: p.id,
+        label: p.label,
+        kind: "affinity",
+      };
+    }
     return p;
   });
 }
 
-router.use(express.static(path.join(__dirname, "..", "public", "editor")));
+// NOTE: the old standalone web UI (public/editor) was removed. GameCraft is the
+// editor now; it only needs the /api/* endpoints below (plus the vite proxy).
 
 // --- Image upload / listing (GameCraft "Fotoğraf Yükle" -> gerçek dosya) ---
 const IMG_ROOT = path.join(__dirname, "..", "public", "images");

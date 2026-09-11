@@ -272,6 +272,24 @@ const collections = [
       { key: "monsterPool", label: "Monster ids (use names from the Monsters page)", type: "array" },
     ],
   },
+  {
+    id: "combos",
+    label: "Element Combos",
+    kind: "collection",
+    path: "combos",
+    idField: "id",
+    idLabel: "id",
+    nameField: "name",
+    itemLabelTemplate: "{name} ({ifElement} → {when}: ×{mult})",
+    fields: [
+      { key: "id", label: "Combo ID", type: "string" },
+      { key: "name", label: "Display Name", type: "string" },
+      { key: "when", label: "Target Status", type: "choice", options: ["wet", "frozen", "dot", "expose", "weaken", "poison"] },
+      { key: "ifElement", label: "Attacker Element", type: "choice", options: ELEMENTS },
+      { key: "mult", label: "Damage Multiplier", type: "number" },
+      { key: "desc", label: "Description", type: "string" },
+    ],
+  },
 ];
 
 const pages = [
@@ -352,6 +370,11 @@ const pages = [
         { key: "effect.amount", label: "Amount (non-lifesteal effects)", type: "number", if: (t) => t.effect && t.effect.type !== "lifesteal" },
       ],
     },
+  },
+  {
+    id: "affinity",
+    label: "Element Affinity",
+    kind: "affinity",
   },
   {
     id: "story",

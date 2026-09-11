@@ -4,8 +4,7 @@
   "description": "Authoritative-server turn-based medieval RPG (Phase 1: menus and rooms)",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "edit": "node edit-content.js"
+    "start": "node server.js"
   },
   "engines": {
     "node": ">=18"

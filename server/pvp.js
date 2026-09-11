@@ -49,6 +49,7 @@ function createPvp(room, challenger, targetId){
     buffId:0,
     endedTurns:new Set(),
     usedSkills:{},
+    cooldowns:{},
     fx:[],
     turnTimer:null,
     log:[`${challenger.name} challenges ${target.name} to duel!`],
@@ -93,6 +94,26 @@ function buffSum(d, targetType, targetId, kind){
 function hasStatus(d, targetType, targetId, kind){
   return buffSum(d, targetType, targetId, kind) > 0;
 }
+
+// Skill cooldowns (see combat.js): optional `cooldown: N` = usable every N rounds.
+function cooldownLeft(d, playerId, skillId){
+  return (d.cooldowns && d.cooldowns[playerId] && d.cooldowns[playerId][skillId]) || 0;
+}
+function setCooldown(d, playerId, skillId, rounds){
+  const n = Math.floor(Number(rounds) || 0);
+  if (n <= 0) return;
+  if (!d.cooldowns) d.cooldowns = {};
+  if (!d.cooldowns[playerId]) d.cooldowns[playerId] = {};
+  d.cooldowns[playerId][skillId] = n;
+}
+function tickCooldowns(d){
+  if (!d.cooldowns) return;
+  for (const pid of Object.keys(d.cooldowns)) {
+    for (const sid of Object.keys(d.cooldowns[pid])) {
+      d.cooldowns[pid][sid] = Math.max(0, d.cooldowns[pid][sid] - 1);
+    }
+  }
+}
 function act(room, player, skillId){
   const d=getPvpFor(room,player);
   if(!d||d.status!=="fighting") throw new Error("No PvP in progress.");
@@ -102,6 +123,8 @@ function act(room, player, skillId){
   if(!skill) throw new Error("Unknown skill.");
   const used=(d.usedSkills[player.id]||new Set());
   if(used.has(skillId)) throw new Error("Skill already used this turn.");
+  const cdLeft=cooldownLeft(d,player.id,skillId);
+  if(cdLeft>0) throw new Error("That skill needs " + cdLeft + " more round(s).");
   if(player.mana < (skill.mana||0)) throw new Error("Not enough mana.");
   // find opponent
   const oppId = d.memberIds.find(id=>id!==player.id);
@@ -109,6 +132,7 @@ function act(room, player, skillId){
   if(!opponent || opponent.hp<=0) throw new Error("Opponent down.");
   player.mana -= (skill.mana||0);
   used.add(skillId); d.usedSkills[player.id]=used;
+  setCooldown(d,player.id,skillId,skill.cooldown);
   if(skill.mana) addFx(d,{type:"mana", actor:player.id, amount:skill.mana, skill:skill.id});
   if(skill.power){
     const isPhysical = !skill.element || skill.element==="physical";
@@ -141,6 +165,12 @@ function act(room, player, skillId){
     if(skill.lifesteal){
       const before=player.hp; heal(player, Math.round(dmg*skill.lifesteal));
       const h=player.hp-before; if(h>0) addFx(d,{type:"heal", actor:player.id, target:player.id, amount:h, source:"lifesteal"});
+    }
+    // Anomaly trait lifesteal (e.g. Sanguine Thirst): heals % of all damage dealt
+    const traitFx = player.anomaly && player.anomaly.effect;
+    if(traitFx && traitFx.type==="lifesteal" && traitFx.percent>0 && dmg>0){
+      const before=player.hp; heal(player, Math.max(1, Math.round(dmg*traitFx.percent)));
+      const h=player.hp-before; if(h>0) addFx(d,{type:"heal", actor:player.id, target:player.id, amount:h, source:"trait_lifesteal"});
     }
   }
   // heal
@@ -213,6 +243,7 @@ function advanceTurn(room,d){
   }
   // round over
   d.round+=1;
+  tickCooldowns(d);
   d.endedTurns=new Set();
   buildTurnOrder(room,d);
   // mana regen
@@ -268,6 +299,10 @@ function publicPvp(d, room){
     turnOrder:d.turnOrder||[],
     currentTurnId:d.currentTurnId||null,
     buffs:d.buffs||[],
+    usedSkills: d.usedSkills
+      ? Object.fromEntries(Object.entries(d.usedSkills).map(([k, v]) => [k, [...(v || [])]]))
+      : {},
+    cooldowns: d.cooldowns || {},
     log:d.log||[],
     result:d.result||null,
   };

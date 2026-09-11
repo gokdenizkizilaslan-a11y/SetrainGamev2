@@ -32,7 +32,7 @@ function sanitizeName(raw) {
   return name;
 }
 
-function sanitizeCharacter(raw) {
+function sanitizeCharacter(raw, secret) {
   const character = String(raw || "").trim().toLowerCase();
   if (!CLASS_SLUGS.includes(character)) {
     throw new Error("Choose a valid class.");
@@ -40,6 +40,11 @@ function sanitizeCharacter(raw) {
   const cls = getClass(character);
   if (cls && cls.baseClass) {
     throw new Error("Choose a base class.");
+  }
+  // Secret (test) classes: only with the right password. The password itself
+  // never leaves the server — the client only sends what the user typed.
+  if (cls && cls.secret && String(secret || "") !== String(cls.secret)) {
+    throw new Error("That class is locked.");
   }
   return character;
 }
@@ -110,7 +115,7 @@ function registerSocketHandlers(io) {
           throw new Error("Choose singleplayer or multiplayer.");
         }
         const name = sanitizeName(payload.name);
-        const character = sanitizeCharacter(payload.character);
+        const character = sanitizeCharacter(payload.character, payload.secret);
         const profile = { name, character };
         socket.data.mode = mode;
         socket.data.profile = profile;

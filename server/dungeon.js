@@ -329,6 +329,7 @@ function publicDungeon(d) {
     usedSkills: d.usedSkills
       ? Object.fromEntries(Object.entries(d.usedSkills).map(([k, v]) => [k, [...(v || [])]]))
       : {},
+    cooldowns: d.cooldowns || {},
     wave: (d.wave || []).map((m) => ({ id: m.id, kind: m.kind, name: m.name, image: m.image, hp: m.hp, maxHp: m.maxHp })),
     result: d.result,
     log: d.log,

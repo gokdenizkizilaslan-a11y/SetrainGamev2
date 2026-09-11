@@ -27,7 +27,20 @@ function evolve(room, player) {
   player.character = evolvedCls.slug;
   // Evolving no longer grants the ascended skill directly —
   // the Skill Tree is now the path to learning it (after ascending).
-  return { type: "temple", text: `You ascend into ${evolvedCls.label}!` };
+  // Ascend cinematic: optional per-evolution presentation (color/sound/title),
+  // with safe defaults so old evolutions get the overlay too.
+  const evo = baseCls.evolution || {};
+  return {
+    type: "temple",
+    text: `You ascend into ${evolvedCls.label}!`,
+    ascend: {
+      to: evolvedCls.slug,
+      label: evolvedCls.label,
+      title: evo.ascendTitle || `You have ascended to ${evolvedCls.label}!`,
+      color: evo.ascendColor || "#e8c547",
+      sound: evo.ascendSound || "",
+    },
+  };
 }
 
 function restoreHeart(room, player) {

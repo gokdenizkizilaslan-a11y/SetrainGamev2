@@ -142,6 +142,28 @@ function hasStatus(d, targetType, targetId, kind) {
   return d.buffs.some((b) => b.targetType === targetType && String(b.targetId) === String(targetId) && b.kind === kind);
 }
 
+// Skill cooldowns: optional `cooldown: N` on a skill means "usable every N rounds"
+// (N=2 → usable on rounds 1,3,5…). Stored as rounds-left per player per skill.
+// Skills without the field behave exactly as before.
+function cooldownLeft(d, playerId, skillId) {
+  return (d.cooldowns && d.cooldowns[playerId] && d.cooldowns[playerId][skillId]) || 0;
+}
+function setCooldown(d, playerId, skillId, rounds) {
+  const n = Math.floor(Number(rounds) || 0);
+  if (n <= 0) return;
+  if (!d.cooldowns) d.cooldowns = {};
+  if (!d.cooldowns[playerId]) d.cooldowns[playerId] = {};
+  d.cooldowns[playerId][skillId] = n;
+}
+function tickCooldowns(d) {
+  if (!d.cooldowns) return;
+  for (const pid of Object.keys(d.cooldowns)) {
+    for (const sid of Object.keys(d.cooldowns[pid])) {
+      d.cooldowns[pid][sid] = Math.max(0, d.cooldowns[pid][sid] - 1);
+    }
+  }
+}
+
 function applyBuffs(room, d, actor, actorName, skill, targetType, targetIds, actorIsPlayer) {
   const entries = buffEntries(skill);
   if (!entries || !entries.length) return;
@@ -376,6 +398,10 @@ function spawnWave(room, d) {
   d.status = "fighting";
   d.fx = [];
   d.usedSkills = {};
+  d.cooldowns = {};
+  // Fresh delve = fresh kill counter (never carries into the next run).
+  d.totalKills = 0;
+  d.bankedBonus = { gold: 0, wood: 0, xp: 0 };
   d.monsterQueue = [];
   d.monsterTimer = null;
   for (const p of allMembers(room, d)) {
@@ -393,6 +419,19 @@ function spawnNextFloor(room, d) {
   const size = getDungeonSize(d.size);
   d.floor += 1;
   d._floorTransition = false;
+  // Bank this floor's kills BEFORE the wave is replaced, so victory XP
+  // counts every floor — not just the last one.
+  d.totalKills = (d.totalKills || 0) + d.wave.filter((m) => m.hp <= 0).length;
+  // Same for per-monster bonus rewards (gold/wood/xp): bank them now.
+  d.bankedBonus = d.bankedBonus || { gold: 0, wood: 0, xp: 0 };
+  for (const mon of d.wave) {
+    if (mon.hp > 0) continue;
+    const mdef = getMonster(mon.kind);
+    if (!mdef) continue;
+    d.bankedBonus.gold += Math.max(0, Math.floor(mdef.goldReward || 0));
+    d.bankedBonus.wood += Math.max(0, Math.floor(mdef.woodReward || 0));
+    d.bankedBonus.xp += Math.max(0, Math.floor(mdef.xpReward || 0));
+  }
   const wave = buildWaveForFloor(def, size, d.power, d.floor, d.totalFloors, d.totalCount);
   d.wave = wave;
   d.round = 1;
@@ -401,6 +440,7 @@ function spawnNextFloor(room, d) {
   d.buffId = 0;
   d.endedTurns = new Set();
   d.usedSkills = {};
+  d.cooldowns = {};
   d.monsterQueue = [];
   d.monsterTimer = null;
   // Keep hp/mana as is (persist across floors), but give small regen
@@ -446,6 +486,10 @@ function act(room, player, skillId, targetId) {
   if (used.has(skillId)) {
     throw new Error("That skill is spent for this turn.");
   }
+  const cdLeft = cooldownLeft(d, player.id, skillId);
+  if (cdLeft > 0) {
+    throw new Error("That skill needs " + cdLeft + " more round(s).");
+  }
   if (player.mana < mana) {
     throw new Error("Not enough mana.");
   }
@@ -464,6 +508,7 @@ function act(room, player, skillId, targetId) {
   player.mana -= mana;
   used.add(skillId);
   d.usedSkills[player.id] = used;
+  setCooldown(d, player.id, skillId, skill.cooldown);
   if (mana > 0) addFx(d, { type: "mana", actor: player.id, amount: mana, skill: skill.id });
   if (skill.target === "enemy") {
     const mon = d.wave[Number(targetId)];
@@ -532,6 +577,15 @@ function act(room, player, skillId, targetId) {
           const healedOmni = player.hp - before;
           if (healedOmni > 0) addFx(d, { type: "heal", actor: player.id, target: player.id, amount: healedOmni, source: "omnivamp", skill: skill.id, effect: "heal" });
         }
+      }
+      // Anomaly trait lifesteal (e.g. Sanguine Thirst): heals % of all damage dealt
+      const traitFx = player.anomaly && player.anomaly.effect;
+      if (traitFx && traitFx.type === "lifesteal" && traitFx.percent > 0 && dmg > 0) {
+        const before = player.hp;
+        const traitAmt = Math.max(1, Math.round(dmg * traitFx.percent));
+        heal(player, traitAmt);
+        const healedTrait = player.hp - before;
+        if (healedTrait > 0) addFx(d, { type: "heal", actor: player.id, target: player.id, amount: healedTrait, source: "trait_lifesteal", skill: skill.id, effect: "heal" });
       }
     }
     applyBuffs(room, d, player, player.name, skill, "monster", [Number(targetId)], true);
@@ -805,6 +859,7 @@ function finishMonsterPhase(room, d) {
   checkEnd(room, d); // a DoT tick may have finished the last monster
   if (d.status !== "fighting" || d._floorTransition) return;
   d.round += 1;
+  tickCooldowns(d);
   d.phase = "players";
   buildTurnOrder(room, d);
   for (const p of allMembers(room, d)) {
@@ -906,10 +961,11 @@ function victory(room, d) {
   const size = getDungeonSize(d.size);
   const members = allMembers(room, d);
 
-  const gold = Math.round(def.goldBase * size.goldScale);
-  const wood = Math.round(def.woodBase * size.woodScale);
-  // XP now per killed monster: F 80-120, scaling with size and rank
-  const killed = d.wave.filter((m) => m.hp <= 0).length || d.wave.length;
+  let gold = Math.round(def.goldBase * size.goldScale);
+  let wood = Math.round(def.woodBase * size.woodScale);
+  // XP now per killed monster across ALL floors (earlier floors were banked
+  // in totalKills at each transition): F 80-120, scaling with size and rank
+  const killed = (d.totalKills || 0) + d.wave.filter((m) => m.hp <= 0).length || d.wave.length;
   const [xpMin, xpMax] = xpRangeForRank(d.rank);
   let xp = 0;
   for (let i = 0; i < killed; i++) {
@@ -917,6 +973,21 @@ function victory(room, d) {
   }
   // fallback if somehow killed 0
   if (xp <= 0) xp = Math.round(randInt(xpMin, xpMax) * (size.xpScale || 1));
+  // Per-monster bonus rewards (data-driven: monster.goldReward/woodReward/xpReward).
+  // Zero/undefined = no bonus, so old content behaves exactly as before.
+  // Earlier floors were banked at each transition; this wave is counted here.
+  const banked = d.bankedBonus || { gold: 0, wood: 0, xp: 0 };
+  gold += banked.gold || 0;
+  wood += banked.wood || 0;
+  xp += banked.xp || 0;
+  for (const mon of d.wave) {
+    if (mon.hp > 0) continue;
+    const mdef = getMonster(mon.kind);
+    if (!mdef) continue;
+    gold += Math.max(0, Math.floor(mdef.goldReward || 0));
+    wood += Math.max(0, Math.floor(mdef.woodReward || 0));
+    xp += Math.max(0, Math.floor(mdef.xpReward || 0));
+  }
 
   for (const p of members) {
     p.gold += gold;

@@ -209,18 +209,19 @@
 /* ============================================================
    ARKAPLAN FOTOGRAFI YUKLEYICI (jpg/png otomatik bulma)
    ------------------------------------------------------------
-   Tek resim HER YERDE gorunsun istiyorsan:
-     1) public/images/backgrounds/bg.png  (veya bg.jpg) at  -> TUM
-        ekranlarda gozukur (town, lobby, dungeon dahil).
-     2) Ya da sadece menu.png at; o da olmadigi ekranlarda
-        HER YERDE fallback olarak kullanilir.
-   Ekrana ozel resim tercih edersen (ustune biner):
-     town.png    -> town ekrani
-     dungeon.png -> dungeon/savas overlay'i acikken
-     tavern.png  -> taverna overlay'i acikken
-     setup.png   -> karakter yaratma
-     lobby.png   -> lobi
-     menu.png    -> ana menu
+   Oncelik sirasi:
+     1) GameCraft content.images.backgrounds.<ekran> yolu (varsa)
+     2) Ekrana ozel dosya adi:
+      town.png    -> town ekrani
+      dungeon.png -> dungeon/savas overlay'i acikken
+      tavern.png  -> taverna overlay'i acikken
+      blacksmith.png -> demirci overlay'i acikken
+      merchant.png   -> tuccar overlay'i acikken
+      temple.png     -> tapinak overlay'i acikken
+      setup.png   -> karakter yaratma
+      lobby.png   -> lobi
+      menu.png    -> ana menu
+     3) Global bg.png, en sonda menu.png (eski davranis)
    UZANTI SERBEST: .png yoksa .jpg, .jpeg, .webp sirasiyla denenir.
    Hicbir resim yoksa: katman gizli kalir, eski degrade gorunum surer.
    ============================================================ */
@@ -247,6 +248,14 @@
     img.src = url;
   }
 
+  // Tam yolu (uzantili) tek seferde dene — GameCraft'in yazdigi ozel yol icin.
+  function probeExact(url, done) {
+    const img = new Image();
+    img.onload = () => done(url);
+    img.onerror = () => done(null);
+    img.src = url;
+  }
+
   // Oncelik sirasini dener: ekran resmi -> bg.png (global) -> menu.png
   function probeChain(chain, i, done) {
     if (i >= chain.length) { done(null); return; }
@@ -266,23 +275,38 @@
   function applyPhoto() {
     const box = el();
     if (!box) return;
-    // savas/taverna overlay'i aciksa onun resmini tercih et
+    // savas/taverna/demirci/tuccar/tapinak overlay'i aciksa onun resmini tercih et
     let key = SCREEN_TO_PHOTO[document.body.dataset.screen] || "menu";
     if (document.body.dataset.screen === "screen-town") {
       if (!document.getElementById("dungeon-view")?.classList.contains("hidden")) key = "dungeon";
       else if (!document.getElementById("tavern-view")?.classList.contains("hidden")) key = "tavern";
+      else if (!document.getElementById("blacksmith-view")?.classList.contains("hidden")) key = "blacksmith";
+      else if (!document.getElementById("merchant-view")?.classList.contains("hidden")) key = "merchant";
+      else if (!document.getElementById("temple-view")?.classList.contains("hidden")) key = "temple";
     }
     const base = "/images/backgrounds/" + key;
+    // GameCraft'ten gelen ozel yol oncelikli (dosya yoksa asagidaki dosya-adi
+    // aramasina duser, eski davranis korunur):
+    let contentUrl = "";
+    try {
+      const bg = (typeof CATALOG !== "undefined" && CATALOG && CATALOG.images && CATALOG.images.backgrounds) || {};
+      if (typeof bg[key] === "string" && bg[key]) contentUrl = bg[key];
+    } catch (e) { contentUrl = ""; }
     // mükerrer girislerde atla (ayni ekran + ayni hiyerarsi)
     const chain = Array.from(new Set([base, ...GLOBAL_BASES]));
-    const chainId = chain.join(",");
+    const chainId = (contentUrl || "") + "|" + chain.join(",");
     if (box.dataset.chain === chainId) return;
     box.dataset.chain = chainId;
-    probeChain(chain, 0, (url) => {
+    const finish = (url) => {
       // kullanici bu arada baska ekrana gectiyse eski sonucu uygulama
       if (box.dataset.chain !== chainId) return;
       setPhoto(box, url);
-    });
+    };
+    if (contentUrl) {
+      probeExact(contentUrl, (url) => { if (url) finish(url); else probeChain(chain, 0, finish); });
+    } else {
+      probeChain(chain, 0, finish);
+    }
   }
 
   function setPhoto(box, url) {

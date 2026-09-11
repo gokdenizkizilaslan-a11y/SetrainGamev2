@@ -246,6 +246,176 @@ const CONTENT = {
       "description": "Void, abyss and forbidden power."
     }
   ],
+  "affinity": {
+    "physical": {
+      "physical": 1,
+      "arcane": 1,
+      "shadow": 1,
+      "holy": 1,
+      "frost": 1,
+      "fire": 1,
+      "water": 1,
+      "earth": 1,
+      "nature": 1,
+      "lightning": 1,
+      "blood": 1,
+      "dark": 1
+    },
+    "arcane": {
+      "physical": 1,
+      "arcane": 0.8,
+      "shadow": 1.2,
+      "holy": 0.8,
+      "frost": 1,
+      "fire": 1,
+      "water": 1,
+      "earth": 1,
+      "nature": 1,
+      "lightning": 1,
+      "blood": 1,
+      "dark": 1.2
+    },
+    "shadow": {
+      "physical": 1,
+      "arcane": 1.2,
+      "shadow": 0.8,
+      "holy": 1.3,
+      "frost": 1,
+      "fire": 1,
+      "water": 1,
+      "earth": 1,
+      "nature": 1,
+      "lightning": 1,
+      "blood": 1,
+      "dark": 0.8
+    },
+    "holy": {
+      "physical": 1,
+      "arcane": 0.8,
+      "shadow": 1.3,
+      "holy": 0.8,
+      "frost": 1,
+      "fire": 1,
+      "water": 1,
+      "earth": 1,
+      "nature": 1,
+      "lightning": 1,
+      "blood": 1.2,
+      "dark": 1.3
+    },
+    "frost": {
+      "physical": 1,
+      "arcane": 1,
+      "shadow": 1,
+      "holy": 1,
+      "frost": 0.7,
+      "fire": 1.3,
+      "water": 1,
+      "earth": 1,
+      "nature": 1,
+      "lightning": 1,
+      "blood": 1,
+      "dark": 1
+    },
+    "fire": {
+      "physical": 1,
+      "arcane": 1,
+      "shadow": 1,
+      "holy": 1,
+      "frost": 1.3,
+      "fire": 0.7,
+      "water": 1.3,
+      "earth": 1,
+      "nature": 1.2,
+      "lightning": 1,
+      "blood": 1,
+      "dark": 1
+    },
+    "water": {
+      "physical": 1,
+      "arcane": 1,
+      "shadow": 1,
+      "holy": 1,
+      "frost": 1,
+      "fire": 1.3,
+      "water": 0.7,
+      "earth": 1.2,
+      "nature": 1,
+      "lightning": 1.4,
+      "blood": 1,
+      "dark": 1
+    },
+    "earth": {
+      "physical": 1,
+      "arcane": 1,
+      "shadow": 1,
+      "holy": 1,
+      "frost": 1,
+      "fire": 1,
+      "water": 1.2,
+      "earth": 0.7,
+      "nature": 1.2,
+      "lightning": 1,
+      "blood": 1,
+      "dark": 1
+    },
+    "nature": {
+      "physical": 1,
+      "arcane": 1,
+      "shadow": 1,
+      "holy": 1,
+      "frost": 1,
+      "fire": 1.2,
+      "water": 1,
+      "earth": 1.2,
+      "nature": 0.7,
+      "lightning": 1,
+      "blood": 1,
+      "dark": 1
+    },
+    "lightning": {
+      "physical": 1,
+      "arcane": 1,
+      "shadow": 1,
+      "holy": 1,
+      "frost": 1,
+      "fire": 1,
+      "water": 1.4,
+      "earth": 0.8,
+      "nature": 1,
+      "lightning": 0.7,
+      "blood": 1,
+      "dark": 1
+    },
+    "blood": {
+      "physical": 1,
+      "arcane": 1,
+      "shadow": 1,
+      "holy": 1.2,
+      "frost": 1,
+      "fire": 1,
+      "water": 1,
+      "earth": 1,
+      "nature": 1,
+      "lightning": 1,
+      "blood": 0.7,
+      "dark": 1.2
+    },
+    "dark": {
+      "physical": 1,
+      "arcane": 1.2,
+      "shadow": 0.8,
+      "holy": 1.3,
+      "frost": 1,
+      "fire": 1,
+      "water": 1,
+      "earth": 1,
+      "nature": 1,
+      "lightning": 1,
+      "blood": 1.2,
+      "dark": 0.7
+    }
+  },
   "skillTree": {
     "pointsPerLevel": 3,
     "startingPoints": 3,
@@ -340,7 +510,7 @@ const CONTENT = {
         "skillId": "water_splash",
         "cost": 2,
         "group": "frost",
-        "desc": "Soak the foe — wet makes lightning and frost bite harder."
+        "desc": "Soak the foe - wet makes lightning and frost bite harder."
       },
       {
         "id": "g_elem_lightning_bolt",
@@ -460,6 +630,30 @@ const CONTENT = {
         "cost": 10,
         "group": "break",
         "desc": "Overwhelm: +35% vs weakened."
+      },
+      {
+        "id": "g_nat_vine_lash",
+        "skillId": "vine_lash",
+        "cost": 3,
+        "group": "poison",
+        "desc": "Whipping vines for 1.4� magic - first link of the nature chain."
+      },
+      {
+        "id": "g_nat_thorn_volley",
+        "skillId": "thorn_volley",
+        "cost": 5,
+        "group": "poison",
+        "desc": "Thorny barrage for 1.9� magic that bleeds. Requires Vine Lash.",
+        "prereqs": [
+          "g_nat_vine_lash"
+        ]
+      },
+      {
+        "id": "g_nat_forest_renewal",
+        "skillId": "forest_renewal",
+        "cost": 4,
+        "group": "heal",
+        "desc": "Bloom restores 30% of your max HP."
       }
     ],
     "lineages": {
@@ -753,6 +947,37 @@ const CONTENT = {
             "minLevel": 40
           }
         ]
+      },
+      "gardener": {
+        "label": "Gardener Path",
+        "nodes": [
+          {
+            "id": "gd_vine_lash",
+            "skillId": "vine_lash",
+            "owned": true,
+            "cost": 0
+          },
+          {
+            "id": "gd_forest_renewal",
+            "skillId": "forest_renewal",
+            "owned": true,
+            "cost": 0
+          },
+          {
+            "id": "gd_thorn_volley",
+            "skillId": "thorn_volley",
+            "ownerClass": "rootbinder",
+            "cost": 4,
+            "minLevel": 20
+          },
+          {
+            "id": "gd_rejuvenate",
+            "skillId": "rejuvenate",
+            "ownerClass": "lifeweaver",
+            "cost": 8,
+            "minLevel": 40
+          }
+        ]
       }
     }
   },
@@ -858,7 +1083,7 @@ const CONTENT = {
         "power": 1,
         "element": "physical",
         "image": "/images/skills/slash.png",
-        "description": "Deals 1× attack damage."
+        "description": "Deals 1� attack damage."
       },
       "startingSkills": [
         "heavy_strike",
@@ -923,7 +1148,7 @@ const CONTENT = {
         "power": 0.9,
         "element": "physical",
         "image": "/images/skills/quick_shot.png",
-        "description": "Deals 0.9× attack damage."
+        "description": "Deals 0.9� attack damage."
       },
       "startingSkills": [
         "aimed_shot",
@@ -987,7 +1212,7 @@ const CONTENT = {
         "power": 0.95,
         "element": "arcane",
         "image": "/images/skills/arcane_bolt.png",
-        "description": "Deals 0.95× magic damage."
+        "description": "Deals 0.95� magic damage."
       },
       "startingSkills": [
         "arcane_barrage",
@@ -1052,7 +1277,7 @@ const CONTENT = {
         "power": 1,
         "element": "physical",
         "image": "/images/skills/stab.png",
-        "description": "Deals 1× attack damage."
+        "description": "Deals 1� attack damage."
       },
       "startingSkills": [
         "vampiric_strike",
@@ -1116,7 +1341,7 @@ const CONTENT = {
         "power": 0.95,
         "element": "holy",
         "image": "/images/skills/smite.png",
-        "description": "Deals 0.95× attack damage."
+        "description": "Deals 0.95� attack damage."
       },
       "startingSkills": [
         "holy_strike",
@@ -1180,7 +1405,7 @@ const CONTENT = {
         "power": 1.05,
         "element": "physical",
         "image": "/images/skills/lunge.png",
-        "description": "Deals 1.05× attack damage."
+        "description": "Deals 1.05� attack damage."
       },
       "startingSkills": [
         "execute",
@@ -1244,7 +1469,7 @@ const CONTENT = {
         "power": 0.9,
         "element": "holy",
         "image": "/images/skills/sanct_bolt.png",
-        "description": "Deals 0.9× magic damage."
+        "description": "Deals 0.9� magic damage."
       },
       "startingSkills": [
         "mend",
@@ -1311,7 +1536,7 @@ const CONTENT = {
         "element": "physical",
         "effect": "heavy_hammer_slam",
         "image": "/images/skills/shield_bash.png",
-        "description": "Deals 0.85× attack damage."
+        "description": "Deals 0.85� attack damage."
       },
       "startingSkills": [
         "cleave",
@@ -1375,7 +1600,7 @@ const CONTENT = {
         "power": 1,
         "element": "physical",
         "image": "/images/skills/tame_hit.png",
-        "description": "Deals 1× attack damage."
+        "description": "Deals 1� attack damage."
       },
       "startingSkills": [
         "war_heal",
@@ -1444,7 +1669,7 @@ const CONTENT = {
         "power": 1.15,
         "element": "physical",
         "image": "/images/skills/beast_strike.png",
-        "description": "Deals 1.15× attack damage."
+        "description": "Deals 1.15� attack damage."
       },
       "startingSkills": [
         "battle_fury"
@@ -1503,7 +1728,7 @@ const CONTENT = {
         "power": 1.25,
         "element": "physical",
         "image": "/images/skills/alpha_strike.png",
-        "description": "Deals 1.25× attack damage."
+        "description": "Deals 1.25� attack damage."
       },
       "startingSkills": [
         "war_cry"
@@ -1552,6 +1777,367 @@ const CONTENT = {
       }
     },
     {
+      "slug": "gardener",
+      "label": "Gardener",
+      "image": "/images/characters/gardener.png",
+      "basicAttack": {
+        "id": "garden_swipe",
+        "name": "Garden Swipe",
+        "power": 0.9,
+        "element": "nature",
+        "image": "/images/skills/vine_lash.png",
+        "description": "Deals 0.9� magic damage."
+      },
+      "startingSkills": [
+        "vine_lash",
+        "forest_renewal"
+      ],
+      "evolution": {
+        "level": 20,
+        "to": "rootbinder",
+        "ascendTitle": "You have ascended to Rootbinder!",
+        "ascendColor": "#4ade80",
+        "ascendSound": "neutralascension"
+      },
+      "speed": 9,
+      "manaRegen": 1,
+      "hp": {
+        "min": 400,
+        "max": 470
+      },
+      "attack": {
+        "min": 20,
+        "max": 30
+      },
+      "mana": {
+        "min": 60,
+        "max": 80
+      },
+      "resistance": {
+        "min": 20,
+        "max": 30
+      },
+      "magicPower": {
+        "min": 42,
+        "max": 56
+      },
+      "healPower": {
+        "min": 8,
+        "max": 14
+      },
+      "growth": {
+        "hp": 11,
+        "attack": 2,
+        "mana": 5,
+        "resistance": 2,
+        "magicPower": 5,
+        "healPower": 1,
+        "critChance": 1,
+        "critDamage": 2
+      },
+      "critChance": {
+        "min": 8,
+        "max": 14
+      },
+      "critDamage": {
+        "min": 40,
+        "max": 80
+      }
+    },
+    {
+      "slug": "rootbinder",
+      "label": "Rootbinder",
+      "baseClass": "gardener",
+      "evolution": {
+        "level": 40,
+        "to": "lifeweaver",
+        "ascendTitle": "You have ascended to Lifeweaver!",
+        "ascendColor": "#bef264",
+        "ascendSound": "holy-ascensionsound"
+      },
+      "image": "/images/characters/rootbinder.png",
+      "basicAttack": {
+        "id": "root_lash",
+        "name": "Root Lash",
+        "power": 1.1,
+        "element": "nature",
+        "image": "/images/skills/thorn_volley.png",
+        "description": "Deals 1.1� magic damage."
+      },
+      "startingSkills": [
+        "thorn_volley"
+      ],
+      "speed": 9,
+      "manaRegen": 2,
+      "hp": {
+        "min": 440,
+        "max": 510
+      },
+      "attack": {
+        "min": 24,
+        "max": 34
+      },
+      "mana": {
+        "min": 65,
+        "max": 85
+      },
+      "resistance": {
+        "min": 24,
+        "max": 34
+      },
+      "magicPower": {
+        "min": 48,
+        "max": 62
+      },
+      "healPower": {
+        "min": 10,
+        "max": 16
+      },
+      "growth": {
+        "hp": 13,
+        "attack": 3,
+        "mana": 5,
+        "resistance": 3,
+        "magicPower": 6,
+        "healPower": 1,
+        "critChance": 1,
+        "critDamage": 2
+      },
+      "critChance": {
+        "min": 8,
+        "max": 14
+      },
+      "critDamage": {
+        "min": 40,
+        "max": 80
+      },
+      "evolveBonus": {
+        "hp": 45,
+        "attack": 5,
+        "mana": 20,
+        "resistance": 5,
+        "magicPower": 8,
+        "healPower": 2
+      }
+    },
+    {
+      "slug": "lifeweaver",
+      "label": "Lifeweaver",
+      "baseClass": "rootbinder",
+      "image": "/images/characters/lifeweaver.png",
+      "basicAttack": {
+        "id": "bloom_burst",
+        "name": "Bloom Burst",
+        "power": 1.2,
+        "element": "nature",
+        "image": "/images/skills/forest_renewal.png",
+        "description": "Deals 1.2� magic damage."
+      },
+      "startingSkills": [
+        "rejuvenate"
+      ],
+      "speed": 10,
+      "manaRegen": 3,
+      "hp": {
+        "min": 470,
+        "max": 540
+      },
+      "attack": {
+        "min": 26,
+        "max": 36
+      },
+      "mana": {
+        "min": 70,
+        "max": 90
+      },
+      "resistance": {
+        "min": 28,
+        "max": 38
+      },
+      "magicPower": {
+        "min": 54,
+        "max": 68
+      },
+      "healPower": {
+        "min": 14,
+        "max": 20
+      },
+      "growth": {
+        "hp": 15,
+        "attack": 3,
+        "mana": 6,
+        "resistance": 3,
+        "magicPower": 7,
+        "healPower": 2,
+        "critChance": 1,
+        "critDamage": 2
+      },
+      "critChance": {
+        "min": 8,
+        "max": 14
+      },
+      "critDamage": {
+        "min": 40,
+        "max": 80
+      },
+      "evolveBonus": {
+        "hp": 55,
+        "attack": 6,
+        "mana": 25,
+        "resistance": 6,
+        "magicPower": 10,
+        "healPower": 3
+      }
+    },
+    {
+      "slug": "moderator",
+      "label": "Moderator",
+      "secret": "xx0mod0xx",
+      "startLevel": 45,
+      "image": "/images/characters/moderator.png",
+      "basicAttack": {
+        "id": "mod_strike",
+        "name": "Mod Strike",
+        "power": 1.5,
+        "element": "arcane",
+        "image": "/images/skills/meteor.png",
+        "description": "Deals 1.5� magic damage."
+      },
+      "startingSkills": [
+        "meteor",
+        "static_overload",
+        "glacial_shatter",
+        "soul_reap",
+        "radiance",
+        "cataclysm"
+      ],
+      "evolution": {
+        "level": 45,
+        "to": "ultra_moderator",
+        "ascendTitle": "You have ascended to ULTRA MODERATOR!",
+        "ascendColor": "#ff2d78",
+        "ascendSound": ""
+      },
+      "speed": 14,
+      "manaRegen": 3,
+      "hp": {
+        "min": 900,
+        "max": 1000
+      },
+      "attack": {
+        "min": 80,
+        "max": 95
+      },
+      "mana": {
+        "min": 120,
+        "max": 140
+      },
+      "resistance": {
+        "min": 45,
+        "max": 55
+      },
+      "magicPower": {
+        "min": 80,
+        "max": 95
+      },
+      "healPower": {
+        "min": 12,
+        "max": 18
+      },
+      "growth": {
+        "hp": 25,
+        "attack": 7,
+        "mana": 6,
+        "resistance": 5,
+        "magicPower": 7,
+        "healPower": 2,
+        "critChance": 1,
+        "critDamage": 2
+      },
+      "critChance": {
+        "min": 8,
+        "max": 14
+      },
+      "critDamage": {
+        "min": 40,
+        "max": 80
+      }
+    },
+    {
+      "slug": "ultra_moderator",
+      "label": "Ultra Moderator",
+      "baseClass": "moderator",
+      "image": "/images/characters/ultra_moderator.png",
+      "basicAttack": {
+        "id": "mod_obliterate",
+        "name": "Mod Obliterate",
+        "power": 1.8,
+        "element": "arcane",
+        "image": "/images/skills/cataclysm.png",
+        "description": "Deals 1.8� magic damage."
+      },
+      "startingSkills": [
+        "meteor",
+        "static_overload",
+        "glacial_shatter",
+        "soul_reap",
+        "radiance",
+        "cataclysm"
+      ],
+      "speed": 16,
+      "manaRegen": 4,
+      "hp": {
+        "min": 1200,
+        "max": 1350
+      },
+      "attack": {
+        "min": 105,
+        "max": 125
+      },
+      "mana": {
+        "min": 150,
+        "max": 170
+      },
+      "resistance": {
+        "min": 60,
+        "max": 70
+      },
+      "magicPower": {
+        "min": 105,
+        "max": 125
+      },
+      "healPower": {
+        "min": 16,
+        "max": 22
+      },
+      "growth": {
+        "hp": 30,
+        "attack": 8,
+        "mana": 7,
+        "resistance": 6,
+        "magicPower": 8,
+        "healPower": 2,
+        "critChance": 1,
+        "critDamage": 2
+      },
+      "critChance": {
+        "min": 8,
+        "max": 14
+      },
+      "critDamage": {
+        "min": 40,
+        "max": 80
+      },
+      "evolveBonus": {
+        "hp": 200,
+        "attack": 20,
+        "mana": 40,
+        "resistance": 15,
+        "magicPower": 20,
+        "healPower": 5
+      }
+    },
+    {
       "slug": "warlord",
       "label": "War Lord",
       "baseClass": "warrior",
@@ -1566,7 +2152,7 @@ const CONTENT = {
         "power": 1.2,
         "element": "physical",
         "image": "/images/skills/great_slash.png",
-        "description": "Deals 1.2× attack damage."
+        "description": "Deals 1.2� attack damage."
       },
       "startingSkills": [
         "war_cry"
@@ -1629,7 +2215,7 @@ const CONTENT = {
         "power": 1.05,
         "element": "physical",
         "image": "/images/skills/hunter_shot.png",
-        "description": "Deals 1.05× attack damage."
+        "description": "Deals 1.05� attack damage."
       },
       "startingSkills": [
         "volley"
@@ -1692,7 +2278,7 @@ const CONTENT = {
         "power": 1.1,
         "element": "arcane",
         "image": "/images/skills/arcane_blast.png",
-        "description": "Deals 1.1× magic damage."
+        "description": "Deals 1.1� magic damage."
       },
       "startingSkills": [
         "meteor"
@@ -1756,7 +2342,7 @@ const CONTENT = {
         "power": 1.1,
         "element": "shadow",
         "image": "/images/skills/shadow_stab.png",
-        "description": "Deals 1.1× attack damage."
+        "description": "Deals 1.1� attack damage."
       },
       "startingSkills": [
         "shadow_veil"
@@ -1819,7 +2405,7 @@ const CONTENT = {
         "power": 1.1,
         "element": "holy",
         "image": "/images/skills/blessed_blade.png",
-        "description": "Deals 1.1× attack damage."
+        "description": "Deals 1.1� attack damage."
       },
       "startingSkills": [
         "holy_judgement"
@@ -1883,7 +2469,7 @@ const CONTENT = {
         "power": 1.2,
         "element": "shadow",
         "image": "/images/skills/reap.png",
-        "description": "Deals 1.2× attack damage."
+        "description": "Deals 1.2� attack damage."
       },
       "startingSkills": [
         "death_mark"
@@ -1946,7 +2532,7 @@ const CONTENT = {
         "power": 1,
         "element": "holy",
         "image": "/images/skills/hallowed_bolt.png",
-        "description": "Deals 1× magic damage."
+        "description": "Deals 1� magic damage."
       },
       "startingSkills": [
         "divine_blessing"
@@ -2012,7 +2598,7 @@ const CONTENT = {
         "element": "physical",
         "effect": "heavy_hammer_slam",
         "image": "/images/skills/adamant_bash.png",
-        "description": "Deals 0.95× attack damage."
+        "description": "Deals 0.95� attack damage."
       },
       "startingSkills": [
         "bastion"
@@ -2071,7 +2657,7 @@ const CONTENT = {
         "power": 1.3,
         "element": "physical",
         "image": "/images/skills/colossal_slash.png",
-        "description": "Deals 1.3× attack damage."
+        "description": "Deals 1.3� attack damage."
       },
       "startingSkills": [
         "cataclysm"
@@ -2130,7 +2716,7 @@ const CONTENT = {
         "power": 1.15,
         "element": "physical",
         "image": "/images/skills/storm_shot.png",
-        "description": "Deals 1.15× attack damage."
+        "description": "Deals 1.15� attack damage."
       },
       "startingSkills": [
         "storm_barrage"
@@ -2189,7 +2775,7 @@ const CONTENT = {
         "power": 1.2,
         "element": "arcane",
         "image": "/images/skills/primordial_bolt.png",
-        "description": "Deals 1.2× magic damage."
+        "description": "Deals 1.2� magic damage."
       },
       "startingSkills": [
         "comet"
@@ -2249,7 +2835,7 @@ const CONTENT = {
         "power": 1.2,
         "element": "shadow",
         "image": "/images/skills/eclipse_strike.png",
-        "description": "Deals 1.2× attack damage."
+        "description": "Deals 1.2� attack damage."
       },
       "startingSkills": [
         "soul_thief"
@@ -2308,7 +2894,7 @@ const CONTENT = {
         "power": 1.2,
         "element": "holy",
         "image": "/images/skills/radiant_edge.png",
-        "description": "Deals 1.2× attack damage."
+        "description": "Deals 1.2� attack damage."
       },
       "startingSkills": [
         "radiance"
@@ -2368,7 +2954,7 @@ const CONTENT = {
         "power": 1.3,
         "element": "shadow",
         "image": "/images/skills/scythe_sweep.png",
-        "description": "Deals 1.3× attack damage."
+        "description": "Deals 1.3� attack damage."
       },
       "startingSkills": [
         "soul_reap"
@@ -2427,7 +3013,7 @@ const CONTENT = {
         "power": 1.1,
         "element": "holy",
         "image": "/images/skills/divine_light.png",
-        "description": "Deals 1.1× magic damage."
+        "description": "Deals 1.1� magic damage."
       },
       "startingSkills": [
         "resurgence"
@@ -2489,7 +3075,7 @@ const CONTENT = {
         "element": "physical",
         "effect": "heavy_hammer_slam",
         "image": "/images/skills/titan_slam.png",
-        "description": "Deals 1.05× attack damage."
+        "description": "Deals 1.05� attack damage."
       },
       "startingSkills": [
         "immovable"
@@ -2545,7 +3131,14 @@ const CONTENT = {
       "lobby": "/images/backgrounds/lobby.png",
       "town": "/images/backgrounds/town.png",
       "dungeon": "/images/backgrounds/dungeon.png",
-      "tavern": "/images/backgrounds/tavern.png"
+      "tavern": "/images/backgrounds/tavern.png",
+      "blacksmith": "/images/backgrounds/blacksmith.png",
+      "merchant": "/images/backgrounds/merchant.png",
+      "temple": "/images/backgrounds/temple.png"
+    },
+    "combat": {
+      "enemy": "",
+      "party": ""
     },
     "ui": {
       "panel": "/images/ui/panel.png"
@@ -2799,7 +3392,7 @@ const CONTENT = {
           "gold": 120,
           "wood": 30
         },
-        "description": "Forge a stone that drinks blood — 10% omnivamp."
+        "description": "Forge a stone that drinks blood - 10% omnivamp."
       }
     ]
   },
@@ -2842,6 +3435,10 @@ const CONTENT = {
     "critMult": 1.6,
     "monsterScale": 5,
     "monsterAttackDelayMs": 900
+  },
+  "darkTrait": {
+    "deal": 1.3,
+    "taken": 1.5
   },
   "loot": {
     "buyable": [
@@ -5176,7 +5773,7 @@ const CONTENT = {
       "stats": {
         "attack": 5
       },
-      "description": "Rage Pup — grants attack buff. From egg_red",
+      "description": "Rage Pup - grants attack buff. From egg_red",
       "egg": "egg_red",
       "buffKind": "attack"
     },
@@ -5188,7 +5785,7 @@ const CONTENT = {
       "stats": {
         "magicPower": 6
       },
-      "description": "Fury Cub — grants magicBoost buff. From egg_green",
+      "description": "Fury Cub - grants magicBoost buff. From egg_green",
       "egg": "egg_green",
       "buffKind": "magicBoost"
     },
@@ -5200,7 +5797,7 @@ const CONTENT = {
       "stats": {
         "resistance": 5
       },
-      "description": "Berserk Whelp — grants defense buff. From egg_blue",
+      "description": "Berserk Whelp - grants defense buff. From egg_blue",
       "egg": "egg_blue",
       "buffKind": "defense"
     },
@@ -5212,7 +5809,7 @@ const CONTENT = {
       "stats": {
         "attack": 4
       },
-      "description": "War Hound — grants attack buff. From egg_brown",
+      "description": "War Hound - grants attack buff. From egg_brown",
       "egg": "egg_brown",
       "buffKind": "attack"
     },
@@ -5224,7 +5821,7 @@ const CONTENT = {
       "stats": {
         "magicPower": 6
       },
-      "description": "Battle Pup — grants magicBoost buff. From egg_yellow",
+      "description": "Battle Pup - grants magicBoost buff. From egg_yellow",
       "egg": "egg_yellow",
       "buffKind": "magicBoost"
     },
@@ -5236,7 +5833,7 @@ const CONTENT = {
       "stats": {
         "resistance": 5
       },
-      "description": "Might Cub — grants defense buff. From egg_purple",
+      "description": "Might Cub - grants defense buff. From egg_purple",
       "egg": "egg_purple",
       "buffKind": "defense"
     },
@@ -5248,7 +5845,7 @@ const CONTENT = {
       "stats": {
         "attack": 6
       },
-      "description": "Arcane Pup — grants attack buff. From egg_cyan",
+      "description": "Arcane Pup - grants attack buff. From egg_cyan",
       "egg": "egg_cyan",
       "buffKind": "attack"
     },
@@ -5260,7 +5857,7 @@ const CONTENT = {
       "stats": {
         "magicPower": 5
       },
-      "description": "Mana Sprite — grants magicBoost buff. From egg_dark",
+      "description": "Mana Sprite - grants magicBoost buff. From egg_dark",
       "egg": "egg_dark",
       "buffKind": "magicBoost"
     },
@@ -5272,7 +5869,7 @@ const CONTENT = {
       "stats": {
         "resistance": 4
       },
-      "description": "Spell Whelp — grants defense buff. From egg_orange",
+      "description": "Spell Whelp - grants defense buff. From egg_orange",
       "egg": "egg_orange",
       "buffKind": "defense"
     },
@@ -5284,7 +5881,7 @@ const CONTENT = {
       "stats": {
         "attack": 5
       },
-      "description": "Mystic Cub — grants attack buff. From egg_gold",
+      "description": "Mystic Cub - grants attack buff. From egg_gold",
       "egg": "egg_gold",
       "buffKind": "attack"
     },
@@ -5296,7 +5893,7 @@ const CONTENT = {
       "stats": {
         "magicPower": 4
       },
-      "description": "Rune Pup — grants magicBoost buff. From egg_red",
+      "description": "Rune Pup - grants magicBoost buff. From egg_red",
       "egg": "egg_red",
       "buffKind": "magicBoost"
     },
@@ -5308,7 +5905,7 @@ const CONTENT = {
       "stats": {
         "resistance": 4
       },
-      "description": "Gale Sprite — grants defense buff. From egg_green",
+      "description": "Gale Sprite - grants defense buff. From egg_green",
       "egg": "egg_green",
       "buffKind": "defense"
     },
@@ -5320,7 +5917,7 @@ const CONTENT = {
       "stats": {
         "attack": 6
       },
-      "description": "Stone Guardian — grants attack buff. From egg_blue",
+      "description": "Stone Guardian - grants attack buff. From egg_blue",
       "egg": "egg_blue",
       "buffKind": "attack"
     },
@@ -5332,7 +5929,7 @@ const CONTENT = {
       "stats": {
         "magicPower": 5
       },
-      "description": "Iron Pup — grants magicBoost buff. From egg_brown",
+      "description": "Iron Pup - grants magicBoost buff. From egg_brown",
       "egg": "egg_brown",
       "buffKind": "magicBoost"
     },
@@ -5344,7 +5941,7 @@ const CONTENT = {
       "stats": {
         "resistance": 5
       },
-      "description": "Granite Whelp — grants defense buff. From egg_yellow",
+      "description": "Granite Whelp - grants defense buff. From egg_yellow",
       "egg": "egg_yellow",
       "buffKind": "defense"
     },
@@ -5356,7 +5953,7 @@ const CONTENT = {
       "stats": {
         "attack": 4
       },
-      "description": "Crystal Pup — grants attack buff. From egg_purple",
+      "description": "Crystal Pup - grants attack buff. From egg_purple",
       "egg": "egg_purple",
       "buffKind": "attack"
     },
@@ -5368,7 +5965,7 @@ const CONTENT = {
       "stats": {
         "magicPower": 5
       },
-      "description": "Boulder Cub — grants magicBoost buff. From egg_cyan",
+      "description": "Boulder Cub - grants magicBoost buff. From egg_cyan",
       "egg": "egg_cyan",
       "buffKind": "magicBoost"
     },
@@ -5380,7 +5977,7 @@ const CONTENT = {
       "stats": {
         "resistance": 3
       },
-      "description": "Rock Sprite — grants defense buff. From egg_dark",
+      "description": "Rock Sprite - grants defense buff. From egg_dark",
       "egg": "egg_dark",
       "buffKind": "defense"
     },
@@ -5392,7 +5989,7 @@ const CONTENT = {
       "stats": {
         "attack": 4
       },
-      "description": "Frost Lynx — grants attack buff. From egg_orange",
+      "description": "Frost Lynx - grants attack buff. From egg_orange",
       "egg": "egg_orange",
       "buffKind": "attack"
     },
@@ -5404,7 +6001,7 @@ const CONTENT = {
       "stats": {
         "magicPower": 6
       },
-      "description": "Glacier Pup — grants magicBoost buff. From egg_gold",
+      "description": "Glacier Pup - grants magicBoost buff. From egg_gold",
       "egg": "egg_gold",
       "buffKind": "magicBoost"
     },
@@ -5416,7 +6013,7 @@ const CONTENT = {
       "stats": {
         "resistance": 3
       },
-      "description": "Snow Hound — grants defense buff. From egg_red",
+      "description": "Snow Hound - grants defense buff. From egg_red",
       "egg": "egg_red",
       "buffKind": "defense"
     },
@@ -5428,7 +6025,7 @@ const CONTENT = {
       "stats": {
         "attack": 6
       },
-      "description": "Ice Cub — grants attack buff. From egg_green",
+      "description": "Ice Cub - grants attack buff. From egg_green",
       "egg": "egg_green",
       "buffKind": "attack"
     },
@@ -5440,7 +6037,7 @@ const CONTENT = {
       "stats": {
         "magicPower": 6
       },
-      "description": "Chill Whelp — grants magicBoost buff. From egg_blue",
+      "description": "Chill Whelp - grants magicBoost buff. From egg_blue",
       "egg": "egg_blue",
       "buffKind": "magicBoost"
     },
@@ -5452,7 +6049,7 @@ const CONTENT = {
       "stats": {
         "resistance": 4
       },
-      "description": "Frost Kit — grants defense buff. From egg_brown",
+      "description": "Frost Kit - grants defense buff. From egg_brown",
       "egg": "egg_brown",
       "buffKind": "defense"
     },
@@ -5464,7 +6061,7 @@ const CONTENT = {
       "stats": {
         "attack": 6
       },
-      "description": "Ember Lynx — grants attack buff. From egg_yellow",
+      "description": "Ember Lynx - grants attack buff. From egg_yellow",
       "egg": "egg_yellow",
       "buffKind": "attack"
     },
@@ -5476,7 +6073,7 @@ const CONTENT = {
       "stats": {
         "magicPower": 6
       },
-      "description": "Flame Hound — grants magicBoost buff. From egg_purple",
+      "description": "Flame Hound - grants magicBoost buff. From egg_purple",
       "egg": "egg_purple",
       "buffKind": "magicBoost"
     },
@@ -5488,7 +6085,7 @@ const CONTENT = {
       "stats": {
         "resistance": 3
       },
-      "description": "Cinder Pup — grants defense buff. From egg_cyan",
+      "description": "Cinder Pup - grants defense buff. From egg_cyan",
       "egg": "egg_cyan",
       "buffKind": "defense"
     },
@@ -5500,7 +6097,7 @@ const CONTENT = {
       "stats": {
         "attack": 5
       },
-      "description": "Blaze Cub — grants attack buff. From egg_dark",
+      "description": "Blaze Cub - grants attack buff. From egg_dark",
       "egg": "egg_dark",
       "buffKind": "attack"
     },
@@ -5512,7 +6109,7 @@ const CONTENT = {
       "stats": {
         "magicPower": 6
       },
-      "description": "Inferno Whelp — grants magicBoost buff. From egg_orange",
+      "description": "Inferno Whelp - grants magicBoost buff. From egg_orange",
       "egg": "egg_orange",
       "buffKind": "magicBoost"
     },
@@ -5524,7 +6121,7 @@ const CONTENT = {
       "stats": {
         "resistance": 5
       },
-      "description": "Fire Sprite — grants defense buff. From egg_gold",
+      "description": "Fire Sprite - grants defense buff. From egg_gold",
       "egg": "egg_gold",
       "buffKind": "defense"
     },
@@ -5536,7 +6133,7 @@ const CONTENT = {
       "stats": {
         "attack": 5
       },
-      "description": "Storm Hawk — grants attack buff. From egg_red",
+      "description": "Storm Hawk - grants attack buff. From egg_red",
       "egg": "egg_red",
       "buffKind": "attack"
     },
@@ -5548,7 +6145,7 @@ const CONTENT = {
       "stats": {
         "magicPower": 6
       },
-      "description": "Thunder Pup — grants magicBoost buff. From egg_green",
+      "description": "Thunder Pup - grants magicBoost buff. From egg_green",
       "egg": "egg_green",
       "buffKind": "magicBoost"
     },
@@ -5560,7 +6157,7 @@ const CONTENT = {
       "stats": {
         "resistance": 3
       },
-      "description": "Gale Cub — grants defense buff. From egg_blue",
+      "description": "Gale Cub - grants defense buff. From egg_blue",
       "egg": "egg_blue",
       "buffKind": "defense"
     },
@@ -5572,7 +6169,7 @@ const CONTENT = {
       "stats": {
         "attack": 4
       },
-      "description": "Wind Sprite — grants attack buff. From egg_brown",
+      "description": "Wind Sprite - grants attack buff. From egg_brown",
       "egg": "egg_brown",
       "buffKind": "attack"
     },
@@ -5584,7 +6181,7 @@ const CONTENT = {
       "stats": {
         "magicPower": 5
       },
-      "description": "Lightning Pup — grants magicBoost buff. From egg_yellow",
+      "description": "Lightning Pup - grants magicBoost buff. From egg_yellow",
       "egg": "egg_yellow",
       "buffKind": "magicBoost"
     },
@@ -5596,7 +6193,7 @@ const CONTENT = {
       "stats": {
         "resistance": 3
       },
-      "description": "Tempest Whelp — grants defense buff. From egg_purple",
+      "description": "Tempest Whelp - grants defense buff. From egg_purple",
       "egg": "egg_purple",
       "buffKind": "defense"
     },
@@ -5608,7 +6205,7 @@ const CONTENT = {
       "stats": {
         "attack": 6
       },
-      "description": "Shadow Cat — grants attack buff. From egg_cyan",
+      "description": "Shadow Cat - grants attack buff. From egg_cyan",
       "egg": "egg_cyan",
       "buffKind": "attack"
     },
@@ -5620,7 +6217,7 @@ const CONTENT = {
       "stats": {
         "magicPower": 5
       },
-      "description": "Void Pup — grants magicBoost buff. From egg_dark",
+      "description": "Void Pup - grants magicBoost buff. From egg_dark",
       "egg": "egg_dark",
       "buffKind": "magicBoost"
     }
@@ -5817,7 +6414,7 @@ const CONTENT = {
         "wood": 0
       },
       "image": "/images/items/egg_red.png",
-      "description": "Red Egg — hatch to get a random pet. Drops in specific dungeons."
+      "description": "Red Egg - hatch to get a random pet. Drops in specific dungeons."
     },
     {
       "id": "egg_green",
@@ -5829,7 +6426,7 @@ const CONTENT = {
         "wood": 0
       },
       "image": "/images/items/egg_green.png",
-      "description": "Green Egg — hatch to get a random pet. Drops in specific dungeons."
+      "description": "Green Egg - hatch to get a random pet. Drops in specific dungeons."
     },
     {
       "id": "egg_blue",
@@ -5841,7 +6438,7 @@ const CONTENT = {
         "wood": 0
       },
       "image": "/images/items/egg_blue.png",
-      "description": "Blue Egg — hatch to get a random pet. Drops in specific dungeons."
+      "description": "Blue Egg - hatch to get a random pet. Drops in specific dungeons."
     },
     {
       "id": "egg_brown",
@@ -5853,7 +6450,7 @@ const CONTENT = {
         "wood": 0
       },
       "image": "/images/items/egg_brown.png",
-      "description": "Brown Egg — hatch to get a random pet. Drops in specific dungeons."
+      "description": "Brown Egg - hatch to get a random pet. Drops in specific dungeons."
     },
     {
       "id": "egg_yellow",
@@ -5865,7 +6462,7 @@ const CONTENT = {
         "wood": 0
       },
       "image": "/images/items/egg_yellow.png",
-      "description": "Yellow Egg — hatch to get a random pet. Drops in specific dungeons."
+      "description": "Yellow Egg - hatch to get a random pet. Drops in specific dungeons."
     },
     {
       "id": "egg_purple",
@@ -5877,7 +6474,7 @@ const CONTENT = {
         "wood": 0
       },
       "image": "/images/items/egg_purple.png",
-      "description": "Purple Egg — hatch to get a random pet. Drops in specific dungeons."
+      "description": "Purple Egg - hatch to get a random pet. Drops in specific dungeons."
     },
     {
       "id": "egg_cyan",
@@ -5889,7 +6486,7 @@ const CONTENT = {
         "wood": 0
       },
       "image": "/images/items/egg_cyan.png",
-      "description": "Cyan Egg — hatch to get a random pet. Drops in specific dungeons."
+      "description": "Cyan Egg - hatch to get a random pet. Drops in specific dungeons."
     },
     {
       "id": "egg_dark",
@@ -5901,7 +6498,7 @@ const CONTENT = {
         "wood": 0
       },
       "image": "/images/items/egg_dark.png",
-      "description": "Dark Egg — hatch to get a random pet. Drops in specific dungeons."
+      "description": "Dark Egg - hatch to get a random pet. Drops in specific dungeons."
     },
     {
       "id": "egg_orange",
@@ -5913,7 +6510,7 @@ const CONTENT = {
         "wood": 0
       },
       "image": "/images/items/egg_orange.png",
-      "description": "Orange Egg — hatch to get a random pet. Drops in specific dungeons."
+      "description": "Orange Egg - hatch to get a random pet. Drops in specific dungeons."
     },
     {
       "id": "egg_gold",
@@ -5925,7 +6522,7 @@ const CONTENT = {
         "wood": 0
       },
       "image": "/images/items/egg_gold.png",
-      "description": "Gold Egg — hatch to get a random pet. Drops in specific dungeons."
+      "description": "Gold Egg - hatch to get a random pet. Drops in specific dungeons."
     },
     {
       "id": "rusty_sword",
@@ -7694,7 +8291,7 @@ const CONTENT = {
       },
       "image": "/images/items/boss_weapon_ember.png",
       "bossWeapon": true,
-      "description": "Ember King's blade — only drops from Ember King (50%)."
+      "description": "Ember King's blade - only drops from Ember King (50%)."
     },
     {
       "id": "boss_weapon_frost",
@@ -7711,7 +8308,7 @@ const CONTENT = {
       },
       "image": "/images/items/boss_weapon_frost.png",
       "bossWeapon": true,
-      "description": "Frost Titan's axe — only drops from Frost Titan (50%)."
+      "description": "Frost Titan's axe - only drops from Frost Titan (50%)."
     },
     {
       "id": "boss_weapon_void",
@@ -7728,7 +8325,7 @@ const CONTENT = {
       },
       "image": "/images/items/boss_weapon_void.png",
       "bossWeapon": true,
-      "description": "Void Herald's scythe — only drops from Void Herald (50%)."
+      "description": "Void Herald's scythe - only drops from Void Herald (50%)."
     },
     {
       "id": "boss_weapon_storm",
@@ -7745,7 +8342,7 @@ const CONTENT = {
       },
       "image": "/images/items/boss_weapon_storm.png",
       "bossWeapon": true,
-      "description": "Storm Colossus hammer — only drops from Storm Colossus (50%)."
+      "description": "Storm Colossus hammer - only drops from Storm Colossus (50%)."
     },
     {
       "id": "boss_weapon_world",
@@ -7762,7 +8359,7 @@ const CONTENT = {
       },
       "image": "/images/items/boss_weapon_world.png",
       "bossWeapon": true,
-      "description": "World Eater's fang — only drops from World Eater (50%)."
+      "description": "World Eater's fang - only drops from World Eater (50%)."
     },
     {
       "id": "boss_chest_ember",
@@ -7775,7 +8372,7 @@ const CONTENT = {
       },
       "image": "/images/items/boss_chest_ember.png",
       "chestTier": "a",
-      "description": "Ember King's chest — rare+ guaranteed."
+      "description": "Ember King's chest - rare+ guaranteed."
     },
     {
       "id": "boss_chest_frost",
@@ -7788,7 +8385,7 @@ const CONTENT = {
       },
       "image": "/images/items/boss_chest_frost.png",
       "chestTier": "s",
-      "description": "Frost Titan's chest — rare+ guaranteed."
+      "description": "Frost Titan's chest - rare+ guaranteed."
     },
     {
       "id": "boss_chest_void",
@@ -7801,7 +8398,7 @@ const CONTENT = {
       },
       "image": "/images/items/boss_chest_void.png",
       "chestTier": "s",
-      "description": "Void Herald's chest — epic+ guaranteed."
+      "description": "Void Herald's chest - epic+ guaranteed."
     },
     {
       "id": "boss_chest_storm",
@@ -7814,7 +8411,7 @@ const CONTENT = {
       },
       "image": "/images/items/boss_chest_storm.png",
       "chestTier": "ss",
-      "description": "Storm Colossus chest — epic+ guaranteed."
+      "description": "Storm Colossus chest - epic+ guaranteed."
     },
     {
       "id": "boss_chest_world",
@@ -7827,7 +8424,7 @@ const CONTENT = {
       },
       "image": "/images/items/boss_chest_world.png",
       "chestTier": "ss",
-      "description": "World Eater's chest — legendary+ guaranteed."
+      "description": "World Eater's chest - legendary+ guaranteed."
     },
     {
       "id": "mythic_chest",
@@ -9053,7 +9650,7 @@ const CONTENT = {
       "element": "physical",
       "effect": "heavy_hammer_slam",
       "image": "/images/skills/heavy_strike.png",
-      "description": "Deals 1.6× attack damage."
+      "description": "Deals 1.6� attack damage."
     },
     {
       "id": "defend",
@@ -9072,7 +9669,7 @@ const CONTENT = {
       "power": 1.9,
       "element": "arcane",
       "image": "/images/skills/arcane_barrage.png",
-      "description": "Deals 1.9× magic damage."
+      "description": "Deals 1.9� magic damage."
     },
     {
       "id": "mana_shield",
@@ -9091,7 +9688,7 @@ const CONTENT = {
       "power": 2,
       "element": "physical",
       "image": "/images/skills/aimed_shot.png",
-      "description": "Deals 2× attack damage."
+      "description": "Deals 2� attack damage."
     },
     {
       "id": "piercing_shot",
@@ -9101,7 +9698,7 @@ const CONTENT = {
       "power": 1.3,
       "element": "physical",
       "image": "/images/skills/piercing_shot.png",
-      "description": "Deals 1.3× attack damage."
+      "description": "Deals 1.3� attack damage."
     },
     {
       "id": "vampiric_strike",
@@ -9113,7 +9710,7 @@ const CONTENT = {
       "element": "shadow",
       "effect": "shadow_scythe_reap",
       "image": "/images/skills/vampiric_strike.png",
-      "description": "Deals 2× attack damage and heals for half the damage dealt."
+      "description": "Deals 2� attack damage and heals for half the damage dealt."
     },
     {
       "id": "shadow_meld",
@@ -9132,7 +9729,7 @@ const CONTENT = {
       "power": 1.5,
       "element": "holy",
       "image": "/images/skills/holy_strike.png",
-      "description": "Deals 1.5× attack damage."
+      "description": "Deals 1.5� attack damage."
     },
     {
       "id": "divine_guard",
@@ -9152,7 +9749,7 @@ const CONTENT = {
       "element": "shadow",
       "effect": "shadow_scythe_reap",
       "image": "/images/skills/execute.png",
-      "description": "Deals 2.5× attack damage."
+      "description": "Deals 2.5� attack damage."
     },
     {
       "id": "shadow_step",
@@ -9208,7 +9805,7 @@ const CONTENT = {
       "element": "physical",
       "effect": "axe_cleave_horizontal",
       "image": "/images/skills/cleave.png",
-      "description": "Deals 1.5× attack damage."
+      "description": "Deals 1.5� attack damage."
     },
     {
       "id": "shield_wall",
@@ -9237,7 +9834,7 @@ const CONTENT = {
       "element": "physical",
       "effect": "heavy_hammer_slam",
       "image": "/images/skills/war_cry.png",
-      "description": "Deals 2.6× attack damage."
+      "description": "Deals 2.6� attack damage."
     },
     {
       "id": "volley",
@@ -9247,7 +9844,7 @@ const CONTENT = {
       "power": 2.4,
       "element": "physical",
       "image": "/images/skills/volley.png",
-      "description": "Deals 2.4× attack damage."
+      "description": "Deals 2.4� attack damage."
     },
     {
       "id": "meteor",
@@ -9258,7 +9855,7 @@ const CONTENT = {
       "element": "arcane",
       "effect": "heavy_hammer_slam",
       "image": "/images/skills/meteor.png",
-      "description": "Deals 2.8× magic damage."
+      "description": "Deals 2.8� magic damage."
     },
     {
       "id": "shadow_veil",
@@ -9270,7 +9867,7 @@ const CONTENT = {
       "element": "shadow",
       "effect": "shadow_scythe_reap",
       "image": "/images/skills/shadow_veil.png",
-      "description": "Deals 2.6× attack damage and heals for 40% of the damage dealt."
+      "description": "Deals 2.6� attack damage and heals for 40% of the damage dealt."
     },
     {
       "id": "holy_judgement",
@@ -9281,7 +9878,7 @@ const CONTENT = {
       "healSelfPct": 0.4,
       "element": "holy",
       "image": "/images/skills/holy_judgement.png",
-      "description": "Deals 2.2× holy damage and restores 40% of your max HP."
+      "description": "Deals 2.2� holy damage and restores 40% of your max HP."
     },
     {
       "id": "death_mark",
@@ -9292,7 +9889,7 @@ const CONTENT = {
       "element": "shadow",
       "effect": "shadow_scythe_reap",
       "image": "/images/skills/death_mark.png",
-      "description": "Deals 3× attack damage."
+      "description": "Deals 3� attack damage."
     },
     {
       "id": "divine_blessing",
@@ -9321,7 +9918,7 @@ const CONTENT = {
       "element": "physical",
       "effect": "heavy_hammer_slam",
       "image": "/images/skills/cataclysm.png",
-      "description": "Deals 3× attack damage."
+      "description": "Deals 3� attack damage."
     },
     {
       "id": "storm_barrage",
@@ -9331,7 +9928,7 @@ const CONTENT = {
       "power": 2.9,
       "element": "physical",
       "image": "/images/skills/storm_barrage.png",
-      "description": "Deals 2.9× attack damage."
+      "description": "Deals 2.9� attack damage."
     },
     {
       "id": "comet",
@@ -9342,7 +9939,7 @@ const CONTENT = {
       "element": "arcane",
       "effect": "heavy_hammer_slam",
       "image": "/images/skills/comet.png",
-      "description": "Deals 3.2× magic damage."
+      "description": "Deals 3.2� magic damage."
     },
     {
       "id": "soul_thief",
@@ -9354,7 +9951,7 @@ const CONTENT = {
       "element": "shadow",
       "effect": "shadow_scythe_reap",
       "image": "/images/skills/soul_thief.png",
-      "description": "Deals 3× attack damage and heals for half the damage dealt."
+      "description": "Deals 3� attack damage and heals for half the damage dealt."
     },
     {
       "id": "radiance",
@@ -9365,7 +9962,7 @@ const CONTENT = {
       "healSelfPct": 0.6,
       "element": "holy",
       "image": "/images/skills/radiance.png",
-      "description": "Deals 2.5× holy damage and restores 60% of your max HP."
+      "description": "Deals 2.5� holy damage and restores 60% of your max HP."
     },
     {
       "id": "soul_reap",
@@ -9376,7 +9973,7 @@ const CONTENT = {
       "element": "shadow",
       "effect": "shadow_scythe_reap",
       "image": "/images/skills/soul_reap.png",
-      "description": "Deals 3.4× attack damage."
+      "description": "Deals 3.4� attack damage."
     },
     {
       "id": "resurgence",
@@ -9743,7 +10340,7 @@ const CONTENT = {
       "power": 2,
       "element": "frost",
       "image": "/images/skills/frost_bolt.png",
-      "description": "Deals 2× magicPower frost damage. May freeze the target."
+      "description": "Deals 2� magicPower frost damage. May freeze the target."
     },
     {
       "id": "frost_nova",
@@ -9760,7 +10357,7 @@ const CONTENT = {
       ],
       "duration": 1,
       "image": "/images/skills/frost_nova.png",
-      "description": "Deals 1.8× magicPower frost damage and freezes the target for 1 turn."
+      "description": "Deals 1.8� magicPower frost damage and freezes the target for 1 turn."
     },
     {
       "id": "water_splash",
@@ -9777,7 +10374,7 @@ const CONTENT = {
       ],
       "duration": 2,
       "image": "/images/skills/water_splash.png",
-      "description": "Deals 1.5× magicPower water damage and soaks the target for 2 turns (wet)."
+      "description": "Deals 1.5� magicPower water damage and soaks the target for 2 turns (wet)."
     },
     {
       "id": "lightning_bolt",
@@ -9787,7 +10384,7 @@ const CONTENT = {
       "power": 1.8,
       "element": "lightning",
       "image": "/images/skills/lightning_bolt.png",
-      "description": "Deals 1.8× magicPower lightning damage, +50% vs wet (Overcharge)."
+      "description": "Deals 1.8� magicPower lightning damage, +50% vs wet (Overcharge)."
     },
     {
       "id": "war_heal",
@@ -9799,7 +10396,7 @@ const CONTENT = {
         "mult": 1.3
       },
       "image": "/images/skills/war_heal.png",
-      "description": "Heals 1.3× attack power. Scales with healPower."
+      "description": "Heals 1.3� attack power. Scales with healPower."
     },
     {
       "id": "magic_mend",
@@ -9811,7 +10408,7 @@ const CONTENT = {
         "mult": 2
       },
       "image": "/images/skills/magic_mend.png",
-      "description": "Heals 2× magicPower. Scales with healPower."
+      "description": "Heals 2� magicPower. Scales with healPower."
     },
     {
       "id": "scorch_mark",
@@ -9829,7 +10426,7 @@ const CONTENT = {
       "duration": 3,
       "effect": "fire_slash_arc",
       "image": "/images/skills/scorch_mark.png",
-      "description": "Sear the foe for 1.1× magicPower and set it burning (4% max HP / round for 3 rounds)."
+      "description": "Sear the foe for 1.1� magicPower and set it burning (4% max HP / round for 3 rounds)."
     },
     {
       "id": "ember_storm",
@@ -9847,7 +10444,7 @@ const CONTENT = {
       "duration": 3,
       "effect": "ember_whirlwind",
       "image": "/images/skills/ember_storm.png",
-      "description": "A whirl of cinders deals 1.6× magicPower and leaves the foe burning."
+      "description": "A whirl of cinders deals 1.6� magicPower and leaves the foe burning."
     },
     {
       "id": "blaze_rupture",
@@ -9858,7 +10455,7 @@ const CONTENT = {
       "element": "fire",
       "effect": "magma_eruption_burst",
       "image": "/images/skills/blaze_rupture.png",
-      "description": "Detonate magma for 2.3× magicPower; burning targets take +60%."
+      "description": "Detonate magma for 2.3� magicPower; burning targets take +60%."
     },
     {
       "id": "cold_snap",
@@ -9876,7 +10473,7 @@ const CONTENT = {
       "duration": 2,
       "effect": "frost_crystal_spear",
       "image": "/images/skills/cold_snap.png",
-      "description": "Hurl a frost spear for 1.3× magicPower and freeze the target for 2 rounds."
+      "description": "Hurl a frost spear for 1.3� magicPower and freeze the target for 2 rounds."
     },
     {
       "id": "glacial_shatter",
@@ -9887,7 +10484,7 @@ const CONTENT = {
       "element": "frost",
       "effect": "ice_spikes_ground",
       "image": "/images/skills/glacial_shatter.png",
-      "description": "Implode the ice for 2.4× magicPower; frozen targets take +65%."
+      "description": "Implode the ice for 2.4� magicPower; frozen targets take +65%."
     },
     {
       "id": "volt_conduit",
@@ -9905,7 +10502,7 @@ const CONTENT = {
       "duration": 3,
       "effect": "electric_sparks_shower",
       "image": "/images/skills/volt_conduit.png",
-      "description": "Channel crackling current for 1.2× magicPower and electrify the target."
+      "description": "Channel crackling current for 1.2� magicPower and electrify the target."
     },
     {
       "id": "static_overload",
@@ -9916,7 +10513,7 @@ const CONTENT = {
       "element": "lightning",
       "effect": "lightning_strike_heavy",
       "image": "/images/skills/static_overload.png",
-      "description": "Call down 2.2× magicPower lightning; wet targets take +50%."
+      "description": "Call down 2.2� magicPower lightning; wet targets take +50%."
     },
     {
       "id": "toxin_drench",
@@ -9934,7 +10531,7 @@ const CONTENT = {
       "duration": 3,
       "effect": "mud_splash_entangle",
       "image": "/images/skills/toxin_drench.png",
-      "description": "Soak the foe in venom for 0.9× attack; poison deals 6% max HP / round."
+      "description": "Soak the foe in venom for 0.9� attack; poison deals 6% max HP / round."
     },
     {
       "id": "venom_burst",
@@ -9945,7 +10542,7 @@ const CONTENT = {
       "element": "physical",
       "effect": "earth_fissure_rupture",
       "image": "/images/skills/venom_burst.png",
-      "description": "Burst the blisters for 2.2× attack; poisoned targets take +50%."
+      "description": "Burst the blisters for 2.2� attack; poisoned targets take +50%."
     },
     {
       "id": "broken_guard",
@@ -9967,7 +10564,7 @@ const CONTENT = {
       "duration": 2,
       "effect": "shield_bash_shock",
       "image": "/images/skills/broken_guard.png",
-      "description": "Shatter defenses for 1× attack: the foe takes 25% more and deals 20% less for 2 rounds."
+      "description": "Shatter defenses for 1� attack: the foe takes 25% more and deals 20% less for 2 rounds."
     },
     {
       "id": "shatter_point",
@@ -9978,7 +10575,7 @@ const CONTENT = {
       "element": "physical",
       "effect": "piercing_rapier_thrust",
       "image": "/images/skills/shatter_point.png",
-      "description": "Strike the weak point for 1.6× attack; exposed targets take +80%."
+      "description": "Strike the weak point for 1.6� attack; exposed targets take +80%."
     },
     {
       "id": "devastate",
@@ -9989,7 +10586,7 @@ const CONTENT = {
       "element": "physical",
       "effect": "heavy_hammer_slam",
       "image": "/images/skills/devastate.png",
-      "description": "A crushing blow for 2.6× attack; weakened targets take +35%."
+      "description": "A crushing blow for 2.6� attack; weakened targets take +35%."
     },
     {
       "id": "vine_lash",
@@ -10000,7 +10597,7 @@ const CONTENT = {
       "element": "nature",
       "effect": "nature_vine_burst",
       "image": "/images/skills/vine_lash.png",
-      "description": "Whipping vines strike for 1.4× magic power."
+      "description": "Whipping vines strike for 1.4� magic power."
     },
     {
       "id": "thorn_volley",
@@ -10018,7 +10615,7 @@ const CONTENT = {
       ],
       "duration": 3,
       "image": "/images/skills/thorn_volley.png",
-      "description": "A barrage of thorns for 1.9× magic that bleeds the target."
+      "description": "A barrage of thorns for 1.9� magic that bleeds the target."
     },
     {
       "id": "forest_renewal",
@@ -10058,6 +10655,11 @@ function publicCatalog() {
         level: c.evolution.level || 20,
         skill: skill ? { name: skill.name, description: skill.description || "", mana: skill.mana, image: skill.image } : null,
         bonusText,
+        ascend: {
+          title: c.evolution.ascendTitle || null,
+          color: c.evolution.ascendColor || "#e8c547",
+          sound: c.evolution.ascendSound || "",
+        },
       };
     });
 
@@ -10069,6 +10671,8 @@ function publicCatalog() {
       label: c.label,
       image: c.image,
       baseClass: c.baseClass || null,
+      // Secret flag only (boolean) — the password itself NEVER leaves the server.
+      secret: !!c.secret,
       evolution: c.evolution ? { to: c.evolution.to, level: c.evolution.level } : null,
       basicAttack: c.basicAttack,
       skills: c.startingSkills || [],
@@ -10119,6 +10723,7 @@ function publicCatalog() {
       rank: d.rank,
       label: d.label,
       image: d.image,
+      battleImage: d.battleImage || "",
       monsterPool: d.monsterPool || [],
     })),
     skills: CONTENT.skills.map((s) => ({

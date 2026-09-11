@@ -213,8 +213,9 @@ function addPetXp(player, petId, amount){
 function createPlayer({ id, name, character, isHost = false }) {
   const anomaly = pickAnomaly();
   const cls = getClass(character);
-  const maxLoadout = (CONTENT.skillTree && CONTENT.skillTree.maxLoadout) || 5;
-  const starting = cls && Array.isArray(cls.startingSkills) ? cls.startingSkills.slice(0, maxLoadout) : [];
+  // Secret (test) classes may carry more than the normal 5-skill loadout.
+  const loadoutCap = cls && cls.secret ? 8 : ((CONTENT.skillTree && CONTENT.skillTree.maxLoadout) || 5);
+  const starting = cls && Array.isArray(cls.startingSkills) ? cls.startingSkills.slice(0, loadoutCap) : [];
   const player = {
     id,
     name,
@@ -274,6 +275,15 @@ function createPlayer({ id, name, character, isHost = false }) {
   };
   if (character === "tamer") {
     player.inventory.push({ itemId: "egg_red", qty: 1 }, { itemId: "egg_green", qty: 1 });
+  }
+  // Secret (test) classes may start above level 1: apply per-level growth so
+  // stats match a naturally leveled character. Normal classes skip this.
+  const startLevel = Math.min(CONTENT.leveling.maxLevel, Math.max(1, Math.floor((cls && cls.startLevel) || 1)));
+  if (startLevel > 1) {
+    for (let lv = 1; lv < startLevel; lv++) applyClassGrowth(player);
+    player.level = startLevel;
+    player.hp = player.maxHp;
+    player.mana = player.maxMana;
   }
   seedOwnedTreeNodes(player);
   return player;

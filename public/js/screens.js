@@ -64,8 +64,9 @@ function showScreen(id) {
   document.querySelectorAll(".screen").forEach((el) => el.classList.add("hidden"));
   $(id).classList.remove("hidden");
   if (document.body) document.body.dataset.screen = id;
+  // Ses + menü kısayolları her ekranda (ana menü dahil) görünür.
   const edge = $("edge-buttons");
-  if (edge) edge.classList.toggle("hidden", id === "screen-mode" || id === "screen-setup");
+  if (edge) edge.classList.remove("hidden");
 }
 
 function showToast(message) {
@@ -537,6 +538,29 @@ function showNotice(kind, title, subtitle) {
   else if (kind === "search") playSfx("coin");
 }
 
+function showAscendCinematic(ascend, fallbackText) {
+  const el = $("notice");
+  if (!el) return;
+  const a = ascend || {};
+  const color = typeof a.color === "string" && /^#[0-9a-fA-F]{6}$/.test(a.color) ? a.color : "#e8c547";
+  const title = a.title || fallbackText || "You have ascended!";
+  const label = a.label || "";
+  el.innerHTML = `<div class="ascend-overlay" style="--ascend:${color}">
+    <div class="ascend-rays"></div>
+    <div class="ascend-card">
+      <div class="ascend-kicker">✦ ASCENSION ✦</div>
+      <h2>${escapeHtml(title)}</h2>
+      ${label ? `<p class="ascend-class">${escapeHtml(label)}</p>` : ""}
+      <button type="button" class="btn btn--gold" id="btn-notice-ok">Continue</button>
+    </div>
+  </div>`;
+  el.classList.remove("hidden");
+  if (a.sound) sfxPlay(a.sound);
+  else sfxPlay("neutralascension");
+  const ok = el.querySelector("#btn-notice-ok");
+  if (ok) ok.addEventListener("click", () => el.classList.add("hidden"));
+}
+
 function showStoryIntro() {
   const el = $("story-overlay");
   if (!el) return;
@@ -609,6 +633,37 @@ function itemIconEl(item) {
   return `<span class="item-icon" data-img="${escapeHtml(item.image || "")}" data-variant="${escapeHtml(item.id || "")}"></span>`;
 }
 
+// Combat zone backgrounds (data-driven, all optional):
+// enemy area <- dungeon battleImage, else images.combat.enemy; party area <- images.combat.party.
+// Missing/blank = plain default look, never an error.
+function zoneBg(el, url) {
+  if (!el) return;
+  if (!url) {
+    el.style.backgroundImage = "";
+    el.classList.remove("has-zone-bg");
+    return;
+  }
+  const img = new Image();
+  img.onload = () => {
+    el.style.backgroundImage = `url('${url}')`;
+    el.classList.add("has-zone-bg");
+  };
+  img.onerror = () => {
+    el.style.backgroundImage = "";
+    el.classList.remove("has-zone-bg");
+  };
+  img.src = url;
+}
+function applyCombatZones(root, rank) {
+  if (!root) return;
+  const imgs = (CATALOG && CATALOG.images) || {};
+  const dg = (CATALOG.dungeons || []).find((x) => x && x.rank === rank) || {};
+  const enemyUrl = dg.battleImage || (imgs.combat && imgs.combat.enemy) || "";
+  const partyUrl = (imgs.combat && imgs.combat.party) || "";
+  zoneBg(root.querySelector(".enemy-wave"), enemyUrl);
+  zoneBg(root.querySelector(".party-row"), partyUrl);
+}
+
 let combatTimerInterval = null;
 function startCombatTimer() {
   if (combatTimerInterval) return;
@@ -644,7 +699,11 @@ function stopCombatTimer() {
 function renderClassGrid(selected, onSelect) {
   const grid = $("class-grid");
   grid.innerHTML = "";
-  CATALOG.classes.filter((c) => !c.baseClass).forEach((cls) => {
+  // Secret (password-locked) classes stay hidden until the user enters a
+  // password. The password itself is NEVER checked here — the server decides.
+  let storedSecret = "";
+  try { storedSecret = localStorage.getItem("setra_class_secret") || ""; } catch (e) {}
+  CATALOG.classes.filter((c) => !c.baseClass && (!c.secret || storedSecret)).forEach((cls) => {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "class-card" + (selected === cls.slug ? " is-selected" : "");
@@ -654,13 +713,38 @@ function renderClassGrid(selected, onSelect) {
     portrait.setAttribute("data-variant", cls.slug);
     const name = document.createElement("span");
     name.className = "class-card-name";
-    name.textContent = cls.label;
+    name.textContent = (cls.secret ? "🔒 " : "") + cls.label;
     btn.appendChild(portrait);
     btn.appendChild(name);
     btn.addEventListener("click", () => onSelect(cls.slug));
     grid.appendChild(btn);
   });
   initImages(grid);
+  // Password row lives next to the grid so it survives re-renders.
+  let row = $("class-secret-row");
+  if (!row) {
+    row = document.createElement("div");
+    row.id = "class-secret-row";
+    row.style.cssText = "margin-top:0.6rem;display:flex;gap:0.5rem;align-items:center;justify-content:center;";
+    grid.parentNode.insertBefore(row, grid.nextSibling);
+  }
+  row.innerHTML = "";
+  const toggle = document.createElement("button");
+  toggle.type = "button";
+  toggle.className = "btn btn--ghost";
+  toggle.textContent = storedSecret ? "🔑 Şifreyi temizle" : "🔑 Gizli class şifresi";
+  toggle.addEventListener("click", () => {
+    if (storedSecret) {
+      try { localStorage.removeItem("setra_class_secret"); } catch (e) {}
+      renderClassGrid(selected, onSelect);
+      return;
+    }
+    const pw = window.prompt("Gizli class şifresi:");
+    if (!pw) return;
+    try { localStorage.setItem("setra_class_secret", pw); } catch (e) {}
+    renderClassGrid(selected, onSelect);
+  });
+  row.appendChild(toggle);
 }
 
 function setLobbyView(inRoom) {
@@ -1759,6 +1843,7 @@ function renderCombat(room, root) {
   // clear pending that are now confirmed
   for (const pid of [...pending]) { if (usedIdsRaw.includes(pid)) pending.delete(pid); }
   const usedIds = [...usedIdsRaw, ...pending];
+  const cdMap = (d.cooldowns && d.cooldowns[me.id]) || {};
   const skillsHtml = combatLoadout(me)
     .map((s) => {
       if (!s) {
@@ -1766,14 +1851,16 @@ function renderCombat(room, root) {
       }
       const affordable = me.mana >= (s.mana || 0);
       const usedNow = usedIds.includes(s.id);
+      const cdLeft = cdMap[s.id] || 0;
       const picked = state.selectedSkill && state.selectedSkill.id === s.id;
-      const disabled = !canAct || !affordable || usedNow;
+      const disabled = !canAct || !affordable || usedNow || cdLeft > 0;
       return `<button type="button" class="skill-slot${disabled ? " skill-slot--disabled" : ""}${picked ? " skill-slot--picked" : ""}${usedNow ? " skill-slot--used" : ""}" data-skill="${s.id}" data-target="${s.target}">
         ${skillTipEl(s)}
         ${skillIconEl(s)}
         <span class="skill-name">${escapeHtml(s.name)}</span>
         <span class="skill-mana">${s.mana || 0} mana</span>
         ${usedNow ? '<span class="skill-used-tag">Used</span>' : ""}
+        ${!usedNow && cdLeft > 0 ? `<span class="skill-used-tag">⏳${cdLeft}</span>` : ""}
       </button>`;
     })
     .join("");
@@ -1799,7 +1886,7 @@ function renderCombat(room, root) {
   else if (me.hp <= 0) hint = "You are down — wait to be revived.";
   else if (state.selectedSkill)
     hint = state.selectedSkill.target === "self" ? "Click the skill again to use it." : "Choose a target.";
-  else if (canAct && combatLoadout(me).filter(Boolean).every((s) => usedIds.includes(s.id)))
+  else if (canAct && combatLoadout(me).filter(Boolean).every((s) => usedIds.includes(s.id) || (cdMap[s.id] || 0) > 0))
     hint = "All skills used — end your turn when ready.";
   else hint = "Your turn — choose an action.";
 
@@ -1832,6 +1919,7 @@ function renderCombat(room, root) {
   `;
   initImages(root);
   drainCombatFx(root);
+  applyCombatZones(root, d && d.rank);
 
   root.querySelectorAll("[data-skill]").forEach((b) => {
     b.addEventListener("click", () => {
@@ -1975,12 +2063,14 @@ function renderPvpView(room){
   const isMyTurn=d.status==="fighting" && d.currentTurnId===state.playerId;
   const canAct=isMyTurn && me && me.hp>0;
   const usedIds = (d.usedSkills && d.usedSkills[me.id])||[];
+  const cdMap = (d.cooldowns && d.cooldowns[me.id])||{};
   const skillsHtml = combatLoadout(me).map(s=>{
     if(!s) return `<div class="skill-slot skill-slot--empty"></div>`;
     const affordable=me.mana>=(s.mana||0);
     const usedNow=usedIds.includes(s.id);
-    const disabled=!canAct||!affordable||usedNow;
-    return `<button type="button" class="skill-slot${disabled?" skill-slot--disabled":""}${usedNow?" skill-slot--used":""}" data-pskill="${s.id}">${skillTipEl(s)}${skillIconEl(s)}<span class="skill-name">${escapeHtml(s.name)}</span><span class="skill-mana">${s.mana||0} mana</span></button>`;
+    const cdLeft=cdMap[s.id]||0;
+    const disabled=!canAct||!affordable||usedNow||cdLeft>0;
+    return `<button type="button" class="skill-slot${disabled?" skill-slot--disabled":""}${usedNow?" skill-slot--used":""}" data-pskill="${s.id}">${skillTipEl(s)}${skillIconEl(s)}<span class="skill-name">${escapeHtml(s.name)}</span><span class="skill-mana">${s.mana||0} mana</span>${usedNow?'<span class="skill-used-tag">Used</span>':""}${!usedNow&&cdLeft>0?`<span class="skill-used-tag">⏳${cdLeft}</span>`:""}</button>`;
   }).join("");
   const oppFrame=opp && opp.anomaly?` style="--frame:${opp.anomaly.frameColor}"`:"";
   const meFrame=me && me.anomaly?` style="--frame:${me.anomaly.frameColor}"`:"";
@@ -2014,6 +2104,7 @@ function renderPvpView(room){
   </div>`;
   initImages(root);
   drainCombatFx(root);
+  applyCombatZones(root, null);
   root.querySelectorAll("[data-pskill]").forEach(b=>{
     b.addEventListener("click",()=>{
       const sid=b.getAttribute("data-pskill");

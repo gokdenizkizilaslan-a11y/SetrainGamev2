@@ -112,8 +112,12 @@ function renderTown(room) {
   }
   if (me && room.log && room.log.type === "temple" && room.log.name === me.name && state.templeNoticeKey !== room.log.ts) {
     state.templeNoticeKey = room.log.ts;
-    sfxPlay("neutralascension");
-    showNotice("temple", "Ascension", room.log.text);
+    if (room.log.ascend) {
+      showAscendCinematic(room.log.ascend, room.log.text);
+    } else {
+      sfxPlay("neutralascension");
+      showNotice("temple", "Ascension", room.log.text);
+    }
   }
   if (me && room.log && room.log.type === "day" && state.dayNoticeKey !== room.log.ts) {
     state.dayNoticeKey = room.log.ts;
@@ -255,10 +259,13 @@ $("player-name").addEventListener("input", updateContinue);
 
 $("btn-continue").addEventListener("click", () => {
   const name = $("player-name").value.trim();
+  let secret = "";
+  try { secret = localStorage.getItem("setra_class_secret") || ""; } catch (e) {}
   socket.emit("player:setup", {
     mode: state.mode,
     name,
     character: state.selectedClass,
+    secret,
     sessionId: getSessionId(),
   });
 });
@@ -406,6 +413,7 @@ $("settings-leave").addEventListener("click", leaveToMainMenu);
 
 $("settings-music-volume").addEventListener("input", () => {
   const v = $("settings-music-volume").value;
+  stopFade();
   $("music-audio").volume = v / 100;
   $("music-volume").value = v;
   localStorage.setItem("setra-music-volume", v);
@@ -565,13 +573,54 @@ socket.on("session:expired", () => {
   showScreen("screen-mode");
 });
 
-// ---- Music ----
+// ---- Music (sequential playlist, fade in/out, loops back to start) ----
 
 const music = {
   tracks: [],
   index: 0,
   playing: false,
 };
+
+const FADE_IN_MS = 2000;
+const FADE_OUT_MS = 1500;
+let fadeTimer = null;
+let fadeToken = 0;
+
+function musicTargetVolume() {
+  const v = Number($("music-volume").value);
+  return Number.isFinite(v) ? Math.max(0, Math.min(100, v)) / 100 : 0.7;
+}
+
+function stopFade() {
+  fadeToken++;
+  if (fadeTimer) {
+    clearInterval(fadeTimer);
+    fadeTimer = null;
+  }
+}
+
+function fadeAudioTo(audio, target, ms, done) {
+  stopFade();
+  const id = fadeToken;
+  const steps = Math.max(1, Math.round(ms / 50));
+  const start = audio.volume;
+  let i = 0;
+  fadeTimer = setInterval(() => {
+    if (id !== fadeToken) {
+      clearInterval(fadeTimer);
+      fadeTimer = null;
+      return;
+    }
+    i++;
+    const t = Math.min(1, i / steps);
+    audio.volume = start + (target - start) * t;
+    if (t >= 1) {
+      clearInterval(fadeTimer);
+      fadeTimer = null;
+      if (done) done();
+    }
+  }, 50);
+}
 
 function musicTrackName() {
   return music.tracks[music.index] || "No music";
@@ -581,30 +630,48 @@ function updateMusicTrack() {
   $("music-track").textContent = musicTrackName();
 }
 
+function playAudioSafe(audio) {
+  try {
+    const pr = audio.play();
+    if (pr && typeof pr.catch === "function") pr.catch(() => {});
+  } catch (e) { /* older browser: play started synchronously */ }
+}
+
 function playMusic() {
   const audio = $("music-audio");
   if (!music.tracks.length) return;
   if (!audio.src) audio.src = "/music/" + music.tracks[music.index];
-  audio.play().catch(() => {});
+  audio.volume = 0;
+  playAudioSafe(audio);
+  fadeAudioTo(audio, musicTargetVolume(), FADE_IN_MS);
   music.playing = true;
   $("music-toggle").textContent = "⏸";
   localStorage.setItem("setra-music-playing", "1");
 }
 
 function pauseMusic() {
-  $("music-audio").pause();
+  const audio = $("music-audio");
+  fadeAudioTo(audio, 0, 500, () => audio.pause());
   music.playing = false;
   $("music-toggle").textContent = "▶";
   localStorage.setItem("setra-music-playing", "0");
 }
 
-function nextTrack() {
-  if (!music.tracks.length) return;
-  music.index = (music.index + 1) % music.tracks.length;
+function startTrackNow() {
   const audio = $("music-audio");
   audio.src = "/music/" + music.tracks[music.index];
   updateMusicTrack();
-  if (music.playing) audio.play().catch(() => {});
+  if (music.playing) {
+    audio.volume = 0;
+    playAudioSafe(audio);
+    fadeAudioTo(audio, musicTargetVolume(), FADE_IN_MS);
+  }
+}
+
+function nextTrack() {
+  if (!music.tracks.length) return;
+  music.index = (music.index + 1) % music.tracks.length;
+  startTrackNow();
 }
 
 async function loadMusic() {
@@ -634,11 +701,22 @@ $("music-toggle").addEventListener("click", () => {
 });
 
 $("music-volume").addEventListener("input", () => {
-  $("music-audio").volume = $("music-volume").value / 100;
+  stopFade();
+  $("music-audio").volume = musicTargetVolume();
   localStorage.setItem("setra-music-volume", $("music-volume").value);
 });
 
 $("music-audio").addEventListener("ended", nextTrack);
+
+// Parça bitmeden fade-out başlat (doğal bitişte kuyruk kesilmesin).
+$("music-audio").addEventListener("timeupdate", () => {
+  const audio = $("music-audio");
+  if (!music.playing || !Number.isFinite(audio.duration) || audio.duration <= 0) return;
+  const remaining = audio.duration - audio.currentTime;
+  if (remaining < FADE_OUT_MS / 1000 && remaining > 0 && audio.volume > 0.03) {
+    fadeAudioTo(audio, 0, Math.max(200, remaining * 1000));
+  }
+});
 
 loadMusic();
 
