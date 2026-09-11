@@ -625,6 +625,65 @@ function initImages(root) {
   });
 }
 
+// Sessiz arka plan ön-yükleme: katalogdaki tüm oyun görsellerini menüde
+// beklerken indirir, oyunda ilk görünümde takılma kalmaz. Oyuncu hiçbir şey
+// görmez; hatalar sessiz geçilir, oyun asla engellenmez.
+const _preloadedUrls = new Set();
+function collectGameImageUrls() {
+  const out = [];
+  const push = (u) => {
+    if (typeof u === "string" && u && !u.startsWith("data:") && !_preloadedUrls.has(u)) {
+      _preloadedUrls.add(u);
+      out.push(u);
+    }
+  };
+  const C = (typeof CATALOG !== "undefined" && CATALOG) || {};
+  for (const c of C.classes || []) {
+    push(c.image);
+    if (c.basicAttack) push(c.basicAttack.image);
+  }
+  for (const s of C.skills || []) push(s.image);
+  for (const i of C.items || []) push(i.image);
+  for (const m of C.monsters || []) push(m.image);
+  for (const p of C.pets || []) {
+    push(p.image);
+    push(p.imageYoung);
+    push(p.imageAdult);
+  }
+  for (const d of C.dungeons || []) {
+    push(d.image);
+    push(d.battleImage);
+  }
+  for (const b of C.bosses || []) push(b.image);
+  for (const e of C.eggs || []) push(e.image);
+  const imgs = C.images || {};
+  for (const v of Object.values(imgs.backgrounds || {})) push(v);
+  for (const v of Object.values(imgs.combat || {})) push(v);
+  for (const v of Object.values(imgs.ui || {})) {
+    if (typeof v === "string") push(v);
+    else if (v && typeof v === "object") for (const vv of Object.values(v)) push(vv);
+  }
+  return out;
+}
+
+function preloadGameAssets() {
+  try {
+    const urls = collectGameImageUrls();
+    if (!urls.length) return;
+    // Aynı anda en fazla 6 istek — bağlantıyı tıkamaz.
+    let idx = 0;
+    const workers = Math.min(6, urls.length);
+    const pump = () => {
+      if (idx >= urls.length) return;
+      const url = urls[idx++];
+      const img = new Image();
+      img.onload = img.onerror = () => pump();
+      img.src = url;
+    };
+    for (let w = 0; w < workers; w++) pump();
+  } catch (e) { /* sessiz: ön-yükleme asla oyunu kırmaz */ }
+}
+
 function skillIconEl(skill) {
   return `<span class="skill-icon" data-img="${escapeHtml(skill.image || "")}" data-variant="${escapeHtml(skill.id || "")}"></span>`;
 }
@@ -1947,13 +2006,19 @@ function renderCombat(room, root) {
         <p class="subhead">${escapeHtml(d.label || "")} — ${sizeLabel(d.size)}${floorInfo} · Round ${d.round}</p>
         ${timerHtml}
         <div class="combat-actions combat-actions--top">${endTurnBtn}${fleeBtnHtml}</div>
+        <div class="combat-top-items">${itemsHtml}</div>
       </div>
-      <div class="enemy-wave">${enemiesHtml || '<div class="muted">No foes remain.</div>'}</div>
-      <div class="party-row">${partyHtml}</div>
-      <div class="skill-bar">${skillsHtml}</div>
-      <div class="item-bar">${itemsHtml}</div>
-      <div class="combat-hint">${escapeHtml(hint)}</div>
-      ${logHtml}
+      <div class="combat-main">
+        <div class="combat-left">
+          <div class="enemy-wave">${enemiesHtml || '<div class="muted">No foes remain.</div>'}</div>
+          <div class="party-row">${partyHtml}</div>
+          ${logHtml}
+        </div>
+        <div class="combat-side">
+          <div class="skill-bar">${skillsHtml}</div>
+          <div class="combat-hint">${escapeHtml(hint)}${canAct ? ' <span class="muted">[Q-T] skills · [1-5] target · [O] end · [P] flee</span>' : ""}</div>
+        </div>
+      </div>
     </div>
     ${d.result ? renderResultOverlay(d.result, firstChestId(me)) : ""}
   `;
@@ -2134,12 +2199,18 @@ function renderPvpView(room){
   </div>`;
   const hint = d.status==="done"? (d.result?d.result.text:"") : isMyTurn? "Your turn — pick a skill." : `Waiting for ${opp?opp.name:"opponent"}...`;
   root.innerHTML=`<div class="combat-wrap">
-    <div class="combat-top"><p class="subhead">Duel — Round ${d.round}</p><div class="combat-actions"><button type="button" class="btn btn--ghost" id="btn-pvp-leave">Leave Duel</button>${canAct?'<button type="button" class="btn btn--gold" id="btn-pvp-end">End Turn</button>':''}</div></div>
-    <div class="enemy-wave" style="flex-direction:column;gap:0.5rem;">${oppHtml}</div>
-    <div class="party-row" style="margin-top:0.5rem;">${meHtml}</div>
-    <div class="skill-bar">${skillsHtml}</div>
-    <div class="combat-hint">${escapeHtml(hint)}</div>
-    <div class="combat-log">${d.log.slice(-6).map(l=>`<div class="log-line">${escapeHtml(l)}</div>`).join("")}</div>
+    <div class="combat-top"><p class="subhead">Duel — Round ${d.round}</p><div class="combat-actions"><button type="button" class="btn btn--ghost" id="btn-pvp-end">End Turn</button><button type="button" class="btn btn--ghost" id="btn-pvp-leave">Leave Duel</button></div></div>
+    <div class="combat-main">
+      <div class="combat-left">
+        <div class="enemy-wave" style="flex-direction:column;gap:0.5rem;">${oppHtml}</div>
+        <div class="party-row" style="margin-top:0.5rem;">${meHtml}</div>
+        <div class="combat-log">${d.log.slice(-6).map(l=>`<div class="log-line">${escapeHtml(l)}</div>`).join("")}</div>
+      </div>
+      <div class="combat-side">
+        <div class="skill-bar">${skillsHtml}</div>
+        <div class="combat-hint">${escapeHtml(hint)}${canAct ? ' <span class="muted">[Q-T] skills · [O] end · [P] leave</span>' : ""}</div>
+      </div>
+    </div>
     ${d.result? renderResultOverlay(d.result, null).replace('btn-result-return','btn-pvp-return') : '' }
   </div>`;
   initImages(root);

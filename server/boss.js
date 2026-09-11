@@ -134,6 +134,7 @@ function startBoss(room, player) {
     maxHp: bossDef.hp,
     attack: bossDef.attack,
     speed: bossDef.speed,
+    resistance: Math.max(0, Math.round(bossDef.resistance || 0)),
     skills: skills.length? skills : [{id:"auto_attack", name:"Strike", power:1, element:"physical"}]
   }];
   b.status="fighting";

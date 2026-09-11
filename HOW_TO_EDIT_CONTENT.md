@@ -178,7 +178,6 @@ A skill node looks like:
 {
   skill: "heavy_strike",          // id from the `skills` array
   prereq: "cleave",               // skill id you must already own to learn this (omit for no requirement)
-  minLevel: 12,                   // optional level gate (use 20/40 to gate evolution skills)
   cost: 1,                        // skill points to spend (default 1 if omitted)
   owned: true,                    // optional: true = granted automatically at creation (base-class skills)
 }
@@ -187,10 +186,10 @@ A skill node looks like:
 Rules:
 
 - **Prereqs:** a node can't be learned until you own `prereq`. The layout builds chains from this — no positions needed.
-- **Availability:** nodes with `ownerClass` are restricted to that class (evolution signature skills are gated like this). Global nodes ignore the field.
-- **Gates:** if a node has `minLevel`, you must be that level. Use `minLevel: 20` / `minLevel: 40` for evolution skills so players unlock them as they evolve.
+- **Availability:** nodes with `ownerClass` are restricted to that class path (a class sees its own + previous classes' nodes only). Global nodes ignore the field.
+- **No level gates:** skills open with skill points only (old `minLevel` fields are ignored).
 - **Learned skills** appear in combat slots automatically (like the old starting skills). You can pick up to `maxLoadout` of them to actually carry into battle via the loadout strip at the bottom of the tree panel.
-- **Adding skills:** add the skill to the `skills` array first (so the tooltip, effects, and combat know it), then push a node onto `global` or the matching lineage with its `prereq`/`minLevel`. Restart and it appears on the map.
+- **Adding skills:** add the skill to the `skills` array first (so the tooltip, effects, and combat know it), then push a node onto `global` or the matching lineage with its `prereq`. Restart and it appears on the map.
 
 ### Combos (element interplay)
 

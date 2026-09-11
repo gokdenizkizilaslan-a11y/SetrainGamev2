@@ -365,6 +365,7 @@ function buildWaveForFloor(def, size, power, floor, totalFloors, totalCount) {
       maxHp: Math.max(1, Math.round(m.hp * power)),
       attack: Math.max(1, Math.round(m.attack * power)),
       speed: m.speed,
+      resistance: Math.max(0, Math.round(m.resistance || 0)),
       skills: monsterSkills(m),
     });
   }
@@ -550,6 +551,12 @@ function act(room, player, skillId, targetId) {
       // bonus vs frozen etc (generic)
       if (skill.bonusVsStatus && hasStatus(d, "monster", Number(targetId), skill.bonusVsStatus.status)) {
         dmg = Math.round(dmg * (1 + (skill.bonusVsStatus.mult || 0)));
+      }
+      // Monster/boss resistance — mirrors the monster-vs-player formula.
+      // resistance 0 (old content) = no change.
+      const monRes = (mon && mon.resistance) || 0;
+      if (monRes > 0) {
+        dmg = Math.max(1, dmg - Math.round(monRes * (CONTENT.combat.resistanceMitigation || 0)));
       }
       dealDamage(mon, dmg);
       addFx(d, { type: "damage", actor: player.id, target: "enemy", targetId: Number(targetId), amount: dmg, skill: skill.id, elem: skill.element || "physical", effect: skill.effect || defaultEffectFor(skill.element), sound: skill.sound || "", crit });

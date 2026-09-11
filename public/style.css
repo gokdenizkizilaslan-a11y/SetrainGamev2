@@ -1850,6 +1850,45 @@ input:focus {
   position: relative;
 }
 
+/* Wide combat layout: battlefield left, skills right */
+.combat-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 0.6rem;
+  align-items: start;
+}
+.combat-left {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.combat-side .skill-bar {
+  grid-template-columns: repeat(2, 1fr);
+  margin-top: 0;
+}
+.combat-top-items {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.combat-top-items .item-btn {
+  padding: 0.3rem 0.5rem;
+  font-size: 0.72rem;
+}
+.combat-top-items .item-btn .item-icon {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+@media (max-width: 900px) {
+  .combat-main {
+    grid-template-columns: 1fr;
+  }
+  .combat-side .skill-bar {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 .enemy-wave {
   display: flex;
   flex-wrap: wrap;
@@ -1883,9 +1922,9 @@ input:focus {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.3rem;
-  min-width: 152px;
-  padding: 0.7rem;
+  gap: 0.25rem;
+  min-width: 120px;
+  padding: 0.5rem;
   border: 1px solid var(--glass-line);
   border-radius: 13px;
   background: var(--glass-2);
@@ -1897,24 +1936,29 @@ input:focus {
 
 .monster-portrait,
 .fighter-portrait {
-  width: 3.9rem;
-  height: 3.9rem;
+  width: 2.9rem;
+  height: 2.9rem;
 }
 
 .enemy {
   padding: 0;
   overflow: hidden;
-  width: 200px;
+  width: 160px;
 }
 
 .enemy .monster-portrait {
   width: 100%;
-  height: 7.5rem;
+  height: 5.5rem;
   border-radius: 0;
   border: none;
   box-shadow: none;
   background-size: cover;
   background-position: center;
+}
+
+.fighter-stats {
+  font-size: 0.68rem;
+  color: var(--muted);
 }
 
 .enemy-meta {

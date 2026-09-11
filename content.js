@@ -3127,7 +3127,7 @@ const CONTENT = {
   ],
   "images": {
     "backgrounds": {
-      "menu": "/images/backgrounds/menu.png",
+      "menu": "/images/backgrounds/menu.webp",
       "setup": "/images/backgrounds/setup.png",
       "lobby": "/images/backgrounds/lobby.png",
       "town": "/images/backgrounds/town.png",
@@ -4960,7 +4960,8 @@ const CONTENT = {
       "rarity": "mythic",
       "weaponId": "boss_weapon_ember",
       "chestId": "boss_chest_ember",
-      "unlockAfter": null
+      "unlockAfter": null,
+      "resistance": 20
     },
     {
       "id": "boss_frost_titan",
@@ -4973,7 +4974,8 @@ const CONTENT = {
       "rarity": "mythic",
       "weaponId": "boss_weapon_frost",
       "chestId": "boss_chest_frost",
-      "unlockAfter": "boss_ember_king"
+      "unlockAfter": "boss_ember_king",
+      "resistance": 25
     },
     {
       "id": "boss_void_herald",
@@ -4986,7 +4988,8 @@ const CONTENT = {
       "rarity": "mythic",
       "weaponId": "boss_weapon_void",
       "chestId": "boss_chest_void",
-      "unlockAfter": "boss_frost_titan"
+      "unlockAfter": "boss_frost_titan",
+      "resistance": 30
     },
     {
       "id": "boss_storm_colossus",
@@ -4999,7 +5002,8 @@ const CONTENT = {
       "rarity": "mythic",
       "weaponId": "boss_weapon_storm",
       "chestId": "boss_chest_storm",
-      "unlockAfter": "boss_void_herald"
+      "unlockAfter": "boss_void_herald",
+      "resistance": 35
     },
     {
       "id": "boss_world_eater",
@@ -5012,7 +5016,8 @@ const CONTENT = {
       "rarity": "mythic",
       "weaponId": "boss_weapon_world",
       "chestId": "boss_chest_world",
-      "unlockAfter": "boss_storm_colossus"
+      "unlockAfter": "boss_storm_colossus",
+      "resistance": 45
     }
   ],
   "pets": [
@@ -9067,7 +9072,8 @@ const CONTENT = {
       "speed": 4,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/slime.png"
+      "image": "/images/monsters/slime.png",
+      "resistance": 4
     },
     {
       "id": "goblin",
@@ -9077,7 +9083,8 @@ const CONTENT = {
       "speed": 8,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/goblin.png"
+      "image": "/images/monsters/goblin.png",
+      "resistance": 5
     },
     {
       "id": "giant_rat",
@@ -9087,7 +9094,8 @@ const CONTENT = {
       "speed": 9,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/giant_rat.png"
+      "image": "/images/monsters/giant_rat.png",
+      "resistance": 5
     },
     {
       "id": "cave_bat",
@@ -9097,7 +9105,8 @@ const CONTENT = {
       "speed": 14,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/cave_bat.png"
+      "image": "/images/monsters/cave_bat.png",
+      "resistance": 1
     },
     {
       "id": "wolf",
@@ -9107,7 +9116,8 @@ const CONTENT = {
       "speed": 11,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/wolf.png"
+      "image": "/images/monsters/wolf.png",
+      "resistance": 2
     },
     {
       "id": "bandit",
@@ -9117,7 +9127,8 @@ const CONTENT = {
       "speed": 9,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/bandit.png"
+      "image": "/images/monsters/bandit.png",
+      "resistance": 2
     },
     {
       "id": "spider",
@@ -9127,7 +9138,8 @@ const CONTENT = {
       "speed": 10,
       "rarity": "common",
       "element": "shadow",
-      "image": "/images/monsters/spider.png"
+      "image": "/images/monsters/spider.png",
+      "resistance": 5
     },
     {
       "id": "wild_boar",
@@ -9137,7 +9149,8 @@ const CONTENT = {
       "speed": 7,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/wild_boar.png"
+      "image": "/images/monsters/wild_boar.png",
+      "resistance": 3
     },
     {
       "id": "goblin_archer",
@@ -9147,7 +9160,8 @@ const CONTENT = {
       "speed": 10,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/goblin_archer.png"
+      "image": "/images/monsters/goblin_archer.png",
+      "resistance": 5
     },
     {
       "id": "rat_king",
@@ -9157,7 +9171,8 @@ const CONTENT = {
       "speed": 12,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/rat_king.png"
+      "image": "/images/monsters/rat_king.png",
+      "resistance": 3
     },
     {
       "id": "grove_sprite",
@@ -9167,7 +9182,8 @@ const CONTENT = {
       "speed": 10,
       "rarity": "uncommon",
       "element": "arcane",
-      "image": "/images/monsters/grove_sprite.png"
+      "image": "/images/monsters/grove_sprite.png",
+      "resistance": 6
     },
     {
       "id": "goblin_warrior",
@@ -9177,7 +9193,8 @@ const CONTENT = {
       "speed": 8,
       "rarity": "uncommon",
       "element": "physical",
-      "image": "/images/monsters/goblin_warrior.png"
+      "image": "/images/monsters/goblin_warrior.png",
+      "resistance": 7
     },
     {
       "id": "skeleton",
@@ -9187,7 +9204,8 @@ const CONTENT = {
       "speed": 7,
       "rarity": "uncommon",
       "element": "shadow",
-      "image": "/images/monsters/skeleton.png"
+      "image": "/images/monsters/skeleton.png",
+      "resistance": 10
     },
     {
       "id": "dire_wolf",
@@ -9197,7 +9215,8 @@ const CONTENT = {
       "speed": 12,
       "rarity": "uncommon",
       "element": "physical",
-      "image": "/images/monsters/dire_wolf.png"
+      "image": "/images/monsters/dire_wolf.png",
+      "resistance": 6
     },
     {
       "id": "harpy",
@@ -9207,7 +9226,8 @@ const CONTENT = {
       "speed": 15,
       "rarity": "uncommon",
       "element": "physical",
-      "image": "/images/monsters/harpy.png"
+      "image": "/images/monsters/harpy.png",
+      "resistance": 7
     },
     {
       "id": "orc",
@@ -9217,7 +9237,8 @@ const CONTENT = {
       "speed": 6,
       "rarity": "uncommon",
       "element": "physical",
-      "image": "/images/monsters/orc.png"
+      "image": "/images/monsters/orc.png",
+      "resistance": 5
     },
     {
       "id": "thorn_viper",
@@ -9227,7 +9248,8 @@ const CONTENT = {
       "speed": 13,
       "rarity": "uncommon",
       "element": "shadow",
-      "image": "/images/monsters/thorn_viper.png"
+      "image": "/images/monsters/thorn_viper.png",
+      "resistance": 7
     },
     {
       "id": "swamp_troll",
@@ -9237,7 +9259,8 @@ const CONTENT = {
       "speed": 4,
       "rarity": "uncommon",
       "element": "physical",
-      "image": "/images/monsters/swamp_troll.png"
+      "image": "/images/monsters/swamp_troll.png",
+      "resistance": 7
     },
     {
       "id": "griffin",
@@ -9247,27 +9270,30 @@ const CONTENT = {
       "speed": 11,
       "rarity": "uncommon",
       "element": "physical",
-      "image": "/images/monsters/griffin.png"
+      "image": "/images/monsters/griffin.png",
+      "resistance": 8
     },
     {
       "id": "golem",
       "name": "Golem",
       "hp": 300,
-      "attack": 30,
+      "attack": 18,
       "speed": 3,
       "rarity": "rare",
       "element": "physical",
-      "image": "/images/monsters/golem.png"
+      "image": "/images/monsters/golem.png",
+      "resistance": 38
     },
     {
       "id": "stone_warden",
       "name": "Stone Warden",
       "hp": 220,
-      "attack": 22,
+      "attack": 16,
       "speed": 4,
       "rarity": "rare",
       "element": "physical",
-      "image": "/images/monsters/stone_warden.png"
+      "image": "/images/monsters/stone_warden.png",
+      "resistance": 30
     },
     {
       "id": "wraith",
@@ -9277,7 +9303,8 @@ const CONTENT = {
       "speed": 12,
       "rarity": "rare",
       "element": "shadow",
-      "image": "/images/monsters/wraith.png"
+      "image": "/images/monsters/wraith.png",
+      "resistance": 25
     },
     {
       "id": "manticore",
@@ -9287,7 +9314,8 @@ const CONTENT = {
       "speed": 10,
       "rarity": "rare",
       "element": "physical",
-      "image": "/images/monsters/manticore.png"
+      "image": "/images/monsters/manticore.png",
+      "resistance": 12
     },
     {
       "id": "ogre",
@@ -9297,7 +9325,8 @@ const CONTENT = {
       "speed": 5,
       "rarity": "rare",
       "element": "physical",
-      "image": "/images/monsters/ogre.png"
+      "image": "/images/monsters/ogre.png",
+      "resistance": 25
     },
     {
       "id": "dark_knight",
@@ -9307,7 +9336,8 @@ const CONTENT = {
       "speed": 9,
       "rarity": "rare",
       "element": "shadow",
-      "image": "/images/monsters/dark_knight.png"
+      "image": "/images/monsters/dark_knight.png",
+      "resistance": 20
     },
     {
       "id": "witch",
@@ -9317,7 +9347,8 @@ const CONTENT = {
       "speed": 8,
       "rarity": "rare",
       "element": "arcane",
-      "image": "/images/monsters/witch.png"
+      "image": "/images/monsters/witch.png",
+      "resistance": 15
     },
     {
       "id": "wyvern",
@@ -9327,7 +9358,8 @@ const CONTENT = {
       "speed": 12,
       "rarity": "epic",
       "element": "arcane",
-      "image": "/images/monsters/wyvern.png"
+      "image": "/images/monsters/wyvern.png",
+      "resistance": 25
     },
     {
       "id": "ancient_golem",
@@ -9337,7 +9369,8 @@ const CONTENT = {
       "speed": 3,
       "rarity": "epic",
       "element": "physical",
-      "image": "/images/monsters/ancient_golem.png"
+      "image": "/images/monsters/ancient_golem.png",
+      "resistance": 46
     },
     {
       "id": "lich",
@@ -9347,7 +9380,8 @@ const CONTENT = {
       "speed": 8,
       "rarity": "legendary",
       "element": "shadow",
-      "image": "/images/monsters/lich.png"
+      "image": "/images/monsters/lich.png",
+      "resistance": 45
     },
     {
       "id": "hydra",
@@ -9357,7 +9391,8 @@ const CONTENT = {
       "speed": 6,
       "rarity": "mythic",
       "element": "physical",
-      "image": "/images/monsters/hydra.png"
+      "image": "/images/monsters/hydra.png",
+      "resistance": 47
     },
     {
       "id": "kobold",
@@ -9367,7 +9402,8 @@ const CONTENT = {
       "speed": 10,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/kobold.png"
+      "image": "/images/monsters/kobold.png",
+      "resistance": 5
     },
     {
       "id": "scavenger",
@@ -9377,7 +9413,8 @@ const CONTENT = {
       "speed": 9,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/scavenger.png"
+      "image": "/images/monsters/scavenger.png",
+      "resistance": 0
     },
     {
       "id": "cave_crawler",
@@ -9387,7 +9424,8 @@ const CONTENT = {
       "speed": 8,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/cave_crawler.png"
+      "image": "/images/monsters/cave_crawler.png",
+      "resistance": 0
     },
     {
       "id": "forest_mite",
@@ -9397,7 +9435,8 @@ const CONTENT = {
       "speed": 13,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/forest_mite.png"
+      "image": "/images/monsters/forest_mite.png",
+      "resistance": 1
     },
     {
       "id": "sludge",
@@ -9407,7 +9446,8 @@ const CONTENT = {
       "speed": 4,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/sludge.png"
+      "image": "/images/monsters/sludge.png",
+      "resistance": 2
     },
     {
       "id": "thug",
@@ -9417,7 +9457,8 @@ const CONTENT = {
       "speed": 7,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/thug.png"
+      "image": "/images/monsters/thug.png",
+      "resistance": 2
     },
     {
       "id": "dusk_bat",
@@ -9427,7 +9468,8 @@ const CONTENT = {
       "speed": 14,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/dusk_bat.png"
+      "image": "/images/monsters/dusk_bat.png",
+      "resistance": 3
     },
     {
       "id": "ember_slime",
@@ -9437,7 +9479,8 @@ const CONTENT = {
       "speed": 5,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/ember_slime.png"
+      "image": "/images/monsters/ember_slime.png",
+      "resistance": 4
     },
     {
       "id": "iron_goblin",
@@ -9447,7 +9490,8 @@ const CONTENT = {
       "speed": 8,
       "rarity": "uncommon",
       "element": "physical",
-      "image": "/images/monsters/iron_goblin.png"
+      "image": "/images/monsters/iron_goblin.png",
+      "resistance": 11
     },
     {
       "id": "bone_archer",
@@ -9457,7 +9501,8 @@ const CONTENT = {
       "speed": 11,
       "rarity": "uncommon",
       "element": "physical",
-      "image": "/images/monsters/bone_archer.png"
+      "image": "/images/monsters/bone_archer.png",
+      "resistance": 11
     },
     {
       "id": "frost_wolf",
@@ -9467,7 +9512,8 @@ const CONTENT = {
       "speed": 13,
       "rarity": "uncommon",
       "element": "physical",
-      "image": "/images/monsters/frost_wolf.png"
+      "image": "/images/monsters/frost_wolf.png",
+      "resistance": 10
     },
     {
       "id": "vine_lurker",
@@ -9477,7 +9523,8 @@ const CONTENT = {
       "speed": 9,
       "rarity": "uncommon",
       "element": "arcane",
-      "image": "/images/monsters/vine_lurker.png"
+      "image": "/images/monsters/vine_lurker.png",
+      "resistance": 9
     },
     {
       "id": "ash_spider",
@@ -9487,7 +9534,8 @@ const CONTENT = {
       "speed": 12,
       "rarity": "uncommon",
       "element": "shadow",
-      "image": "/images/monsters/ash_spider.png"
+      "image": "/images/monsters/ash_spider.png",
+      "resistance": 11
     },
     {
       "id": "brigand_captain",
@@ -9497,7 +9545,8 @@ const CONTENT = {
       "speed": 9,
       "rarity": "uncommon",
       "element": "physical",
-      "image": "/images/monsters/brigand_captain.png"
+      "image": "/images/monsters/brigand_captain.png",
+      "resistance": 11
     },
     {
       "id": "marsh_crawler",
@@ -9507,7 +9556,8 @@ const CONTENT = {
       "speed": 6,
       "rarity": "uncommon",
       "element": "physical",
-      "image": "/images/monsters/marsh_crawler.png"
+      "image": "/images/monsters/marsh_crawler.png",
+      "resistance": 5
     },
     {
       "id": "ember_sprite",
@@ -9517,7 +9567,8 @@ const CONTENT = {
       "speed": 12,
       "rarity": "uncommon",
       "element": "arcane",
-      "image": "/images/monsters/ember_sprite.png"
+      "image": "/images/monsters/ember_sprite.png",
+      "resistance": 10
     },
     {
       "id": "crystal_golem",
@@ -9527,7 +9578,8 @@ const CONTENT = {
       "speed": 3,
       "rarity": "rare",
       "element": "physical",
-      "image": "/images/monsters/crystal_golem.png"
+      "image": "/images/monsters/crystal_golem.png",
+      "resistance": 45
     },
     {
       "id": "abyss_wraith",
@@ -9537,7 +9589,8 @@ const CONTENT = {
       "speed": 11,
       "rarity": "rare",
       "element": "shadow",
-      "image": "/images/monsters/abyss_wraith.png"
+      "image": "/images/monsters/abyss_wraith.png",
+      "resistance": 14
     },
     {
       "id": "storm_harpy",
@@ -9547,7 +9600,8 @@ const CONTENT = {
       "speed": 15,
       "rarity": "rare",
       "element": "physical",
-      "image": "/images/monsters/storm_harpy.png"
+      "image": "/images/monsters/storm_harpy.png",
+      "resistance": 16
     },
     {
       "id": "iron_ogre",
@@ -9557,7 +9611,8 @@ const CONTENT = {
       "speed": 5,
       "rarity": "rare",
       "element": "physical",
-      "image": "/images/monsters/iron_ogre.png"
+      "image": "/images/monsters/iron_ogre.png",
+      "resistance": 32
     },
     {
       "id": "cursed_knight",
@@ -9567,7 +9622,8 @@ const CONTENT = {
       "speed": 9,
       "rarity": "rare",
       "element": "shadow",
-      "image": "/images/monsters/cursed_knight.png"
+      "image": "/images/monsters/cursed_knight.png",
+      "resistance": 20
     },
     {
       "id": "flame_witch",
@@ -9577,7 +9633,8 @@ const CONTENT = {
       "speed": 8,
       "rarity": "rare",
       "element": "arcane",
-      "image": "/images/monsters/flame_witch.png"
+      "image": "/images/monsters/flame_witch.png",
+      "resistance": 17
     },
     {
       "id": "stone_titan",
@@ -9587,7 +9644,8 @@ const CONTENT = {
       "speed": 3,
       "rarity": "rare",
       "element": "physical",
-      "image": "/images/monsters/stone_titan.png"
+      "image": "/images/monsters/stone_titan.png",
+      "resistance": 42
     },
     {
       "id": "dusk_manticore",
@@ -9597,7 +9655,8 @@ const CONTENT = {
       "speed": 10,
       "rarity": "rare",
       "element": "physical",
-      "image": "/images/monsters/dusk_manticore.png"
+      "image": "/images/monsters/dusk_manticore.png",
+      "resistance": 24
     },
     {
       "id": "frost_wyvern",
@@ -9607,7 +9666,8 @@ const CONTENT = {
       "speed": 11,
       "rarity": "epic",
       "element": "arcane",
-      "image": "/images/monsters/frost_wyvern.png"
+      "image": "/images/monsters/frost_wyvern.png",
+      "resistance": 36
     },
     {
       "id": "void_golem",
@@ -9617,7 +9677,8 @@ const CONTENT = {
       "speed": 3,
       "rarity": "epic",
       "element": "physical",
-      "image": "/images/monsters/void_golem.png"
+      "image": "/images/monsters/void_golem.png",
+      "resistance": 44
     },
     {
       "id": "storm_lich",
@@ -9627,7 +9688,8 @@ const CONTENT = {
       "speed": 9,
       "rarity": "epic",
       "element": "shadow",
-      "image": "/images/monsters/storm_lich.png"
+      "image": "/images/monsters/storm_lich.png",
+      "resistance": 23
     },
     {
       "id": "nether_hydra",
@@ -9637,7 +9699,8 @@ const CONTENT = {
       "speed": 6,
       "rarity": "epic",
       "element": "physical",
-      "image": "/images/monsters/nether_hydra.png"
+      "image": "/images/monsters/nether_hydra.png",
+      "resistance": 40
     },
     {
       "id": "doom_lord",
@@ -9647,7 +9710,8 @@ const CONTENT = {
       "speed": 7,
       "rarity": "legendary",
       "element": "shadow",
-      "image": "/images/monsters/doom_lord.png"
+      "image": "/images/monsters/doom_lord.png",
+      "resistance": 30
     },
     {
       "id": "molten_behemoth",
@@ -9657,7 +9721,8 @@ const CONTENT = {
       "speed": 4,
       "rarity": "epic",
       "element": "physical",
-      "image": "/images/monsters/molten_behemoth.png"
+      "image": "/images/monsters/molten_behemoth.png",
+      "resistance": 40
     },
     {
       "id": "frost_titan",
@@ -9667,7 +9732,8 @@ const CONTENT = {
       "speed": 3,
       "rarity": "epic",
       "element": "physical",
-      "image": "/images/monsters/frost_titan.png"
+      "image": "/images/monsters/frost_titan.png",
+      "resistance": 38
     },
     {
       "id": "void_herald",
@@ -9677,7 +9743,8 @@ const CONTENT = {
       "speed": 8,
       "rarity": "epic",
       "element": "shadow",
-      "image": "/images/monsters/void_herald.png"
+      "image": "/images/monsters/void_herald.png",
+      "resistance": 21
     },
     {
       "id": "storm_colossus",
@@ -9687,7 +9754,8 @@ const CONTENT = {
       "speed": 6,
       "rarity": "epic",
       "element": "arcane",
-      "image": "/images/monsters/storm_colossus.png"
+      "image": "/images/monsters/storm_colossus.png",
+      "resistance": 37
     },
     {
       "id": "phoenix_canary",
@@ -9697,7 +9765,8 @@ const CONTENT = {
       "speed": 12,
       "rarity": "epic",
       "element": "holy",
-      "image": "/images/monsters/phoenix_canary.png"
+      "image": "/images/monsters/phoenix_canary.png",
+      "resistance": 36
     },
     {
       "id": "world_eater",
@@ -9707,7 +9776,8 @@ const CONTENT = {
       "speed": 5,
       "rarity": "mythic",
       "element": "physical",
-      "image": "/images/monsters/world_eater.png"
+      "image": "/images/monsters/world_eater.png",
+      "resistance": 40
     },
     {
       "id": "vine_wraith",
@@ -9717,7 +9787,8 @@ const CONTENT = {
       "speed": 12,
       "rarity": "uncommon",
       "element": "nature",
-      "image": "/images/monsters/vine_wraith.png"
+      "image": "/images/monsters/vine_wraith.png",
+      "resistance": 9
     },
     {
       "id": "thornback_boar",
@@ -9727,7 +9798,8 @@ const CONTENT = {
       "speed": 8,
       "rarity": "uncommon",
       "element": "nature",
-      "image": "/images/monsters/thornback_boar.png"
+      "image": "/images/monsters/thornback_boar.png",
+      "resistance": 12
     },
     {
       "id": "elder_treant",
@@ -9737,7 +9809,8 @@ const CONTENT = {
       "speed": 5,
       "rarity": "rare",
       "element": "nature",
-      "image": "/images/monsters/elder_treant.png"
+      "image": "/images/monsters/elder_treant.png",
+      "resistance": 19
     }
   ],
   "skills": [

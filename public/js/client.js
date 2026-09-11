@@ -447,6 +447,8 @@ updateSoundButton(sfxEnabled);
 socket.on("catalog", (cat) => {
   applyCatalog(cat);
   renderClassGrid(state.selectedClass, selectClass);
+  // Katalog tazelenince yeni görselleri sessizce önden indir.
+  if (typeof preloadGameAssets === "function") preloadGameAssets();
 });
 
 socket.on("self", (payload) => {
@@ -740,6 +742,17 @@ document.addEventListener("keydown", (e) => {
     const root = dOpen ? dRoot : pRoot;
     const sel = dOpen ? ".skill-slot[data-skill]" : ".skill-slot[data-pskill]";
     hotkeyClickSlot([...root.querySelectorAll(sel)], qi);
+    return;
+  }
+  // O = turu bitir, P = kaç (buton yoksa bir şey olmaz).
+  if (k === "o" || k === "p") {
+    const root = dOpen ? dRoot : pRoot;
+    if (!root) return;
+    const id = dOpen
+      ? (k === "o" ? "btn-end-turn" : "btn-flee")
+      : (k === "o" ? "btn-pvp-end" : "btn-pvp-leave");
+    const btn = root.querySelector("#" + id);
+    if (btn) btn.click();
     return;
   }
   // Number keys pick a target in visual order (only dungeon has target picking).
