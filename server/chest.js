@@ -2,7 +2,7 @@ const { CONTENT, getItem } = require("../content");
 const { requirePlaying } = require("./town");
 const { hasItem, removeItem, addItem } = require("./players");
 
-const TIER_ORDER = ["f", "d", "c", "b", "a", "s"];
+const TIER_ORDER = ["f", "d", "c", "b", "a", "s", "ss", "ssplus"];
 
 // Dungeon rank -> chest id (f-rank gives a Wooden Chest, etc.)
 const RANK_TO_CHEST = {
@@ -53,14 +53,26 @@ function openChest(room, player, itemId) {
 
   const tier = TIER_ORDER.includes(chest.chestTier) ? chest.chestTier : "f";
   const tierIndex = TIER_ORDER.indexOf(tier);
-  const rollCount = Math.min(3, 1 + tierIndex);
+  // 2-6 pulls per chest (f:2 … a/s/ss/ssplus:6). Each pull rolls rarity, then
+  // category (craftables vs gear), then a random item of that rarity.
+  const rollCount = Math.min(6, 2 + tierIndex);
   const gradeWeights = ((CONTENT.loot || {}).gradeWeights || {})[tier] || CONTENT.loot.gradeWeights.f;
   const dropChance = (CONTENT.loot && CONTENT.loot.dropChance) || {};
+  const catW = ((CONTENT.loot || {}).categoryWeights) || { material: 60, gear: 40 };
 
-  const poolForRarity = (rarity) =>
-    CONTENT.items.filter((it) => it.rarity === rarity && it.slot !== "chest" && it.slot !== "material" && !it.craftOnly && !it.bossWeapon);
+  // Materials (slime, hides, essences…) — blueprints NEVER drop from chests.
+  const poolForMaterial = (rarity) =>
+    CONTENT.items.filter((it) => it.rarity === rarity && it.slot === "material" && !it.blueprint);
+  // Gear (weapons/armor/stones…) — craftOnly joins ONLY when flagged chestDrop.
+  const poolForGear = (rarity) =>
+    CONTENT.items.filter((it) => it.rarity === rarity && it.slot !== "chest" && it.slot !== "material" && !it.blueprint && (!it.craftOnly || it.chestDrop) && !it.bossWeapon);
   const pickOne = (rarity) => {
-    const pool = poolForRarity(rarity);
+    const matW = (catW.material || 0);
+    const gearW = (catW.gear || 0);
+    const total = matW + gearW;
+    const wantMaterial = total > 0 && Math.random() * total < matW;
+    let pool = wantMaterial ? poolForMaterial(rarity) : poolForGear(rarity);
+    if (!pool.length) pool = wantMaterial ? poolForGear(rarity) : poolForMaterial(rarity);
     return pool.length ? pool[Math.floor(Math.random() * pool.length)] : null;
   };
 

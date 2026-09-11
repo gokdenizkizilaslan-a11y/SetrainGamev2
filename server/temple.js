@@ -74,6 +74,8 @@ function craft(room, player, recipeId) {
   }
   spendStamina(player, CONTENT.town.temple.stamina);
   for (const input of recipe.inputs || []) {
+    // Blueprints (consume: false) stay in the pack; everything else is spent.
+    if (input.consume === false) continue;
     removeItem(player, input.item, input.qty);
   }
   player.gold -= cost.gold || 0;

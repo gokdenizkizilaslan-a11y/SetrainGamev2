@@ -540,22 +540,60 @@ window.ChestSystem = {
       title: options.title || 'Royal Chest',
       tier: options.tier || 'gold',
       items: options.items || [],
+      revealed: 0,
       onComplete: options.onComplete || null
     };
 
     document.getElementById('chest-title-badge').innerText = this.activeSession.title.toUpperCase();
     document.getElementById('chest-status-text').innerText = "Click Chest to Unlock";
     document.getElementById('chest-box').className = "chest-3d-box";
-    document.getElementById('btn-open-chest').classList.remove('hidden');
+    const btn = document.getElementById('btn-open-chest');
+    btn.classList.remove('hidden');
+    btn.innerText = "Unlock Chest ➔";
     document.getElementById('loot-cards-container').classList.add('hidden');
     document.getElementById('loot-cards-container').innerHTML = '';
     document.getElementById('chest-footer-actions').classList.add('hidden');
     document.getElementById('chest-overlay').classList.remove('hidden');
   },
 
+  revealOne: function() {
+    const s = this.activeSession;
+    if (!s || s.revealed >= s.items.length) return;
+    const container = document.getElementById('loot-cards-container');
+    container.classList.remove('hidden');
+    const item = s.items[s.revealed];
+    const card = document.createElement('div');
+    card.className = `loot-card ${item.rarity || 'common'}`;
+    card.innerHTML = `
+      <span style="font-size: 10px; text-transform: uppercase; color: #aaa; font-weight: bold;">${item.rarity || 'Item'}</span>
+      <div style="font-size: 40px; margin: 8px 0;">${item.icon || '🎁'}</div>
+      <strong style="font-size: 13px; color: #fff;">${item.name}</strong>
+      <small style="font-size: 11px; color: #aaa; margin-top: 4px;">${item.description || ''}</small>
+    `;
+    container.appendChild(card);
+    s.revealed++;
+    const btn = document.getElementById('btn-open-chest');
+    if (s.revealed >= s.items.length) {
+      document.getElementById('chest-status-text').innerText = "All loot revealed!";
+      btn.classList.add('hidden');
+      document.getElementById('chest-footer-actions').classList.remove('hidden');
+    } else {
+      document.getElementById('chest-status-text').innerText = `Tap to reveal (${s.revealed}/${s.items.length})`;
+      btn.innerText = `Reveal Next ➔ (${s.revealed}/${s.items.length})`;
+    }
+  },
+
   triggerOpen: function() {
     const box = document.getElementById('chest-box');
-    if (box.classList.contains('opened') || box.classList.contains('shaking')) return;
+    if (box.classList.contains('shaking')) return;
+    const s = this.activeSession;
+    if (!s) return;
+
+    // Chest already open -> each click reveals the next item.
+    if (box.classList.contains('opened')) {
+      this.revealOne();
+      return;
+    }
 
     box.classList.add('shaking');
     document.getElementById('chest-status-text').innerText = "Breaking Lock...";
@@ -563,27 +601,13 @@ window.ChestSystem = {
     setTimeout(() => {
       box.classList.remove('shaking');
       box.classList.add('opened');
-      document.getElementById('chest-status-text').innerText = "Loot Revealed!";
-      document.getElementById('btn-open-chest').classList.add('hidden');
-
-      const container = document.getElementById('loot-cards-container');
-      container.classList.remove('hidden');
-      container.innerHTML = '';
-
-      this.activeSession.items.forEach((item, index) => {
-        const card = document.createElement('div');
-        card.className = `loot-card ${item.rarity || 'common'}`;
-        card.style.animationDelay = (index * 0.15) + 's';
-        card.innerHTML = `
-          <span style="font-size: 10px; text-transform: uppercase; color: #aaa; font-weight: bold;">${item.rarity || 'Item'}</span>
-          <div style="font-size: 40px; margin: 8px 0;">${item.icon || '🎁'}</div>
-          <strong style="font-size: 13px; color: #fff;">${item.name}</strong>
-          <small style="font-size: 11px; color: #aaa; margin-top: 4px;">${item.description || ''}</small>
-        `;
-        container.appendChild(card);
-      });
-
-      document.getElementById('chest-footer-actions').classList.remove('hidden');
+      if (!this.activeSession.items.length) {
+        document.getElementById('chest-status-text').innerText = "The chest was empty...";
+        document.getElementById('btn-open-chest').classList.add('hidden');
+        document.getElementById('chest-footer-actions').classList.remove('hidden');
+        return;
+      }
+      this.revealOne();
     }, 1200);
   },
 

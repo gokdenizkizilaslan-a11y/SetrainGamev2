@@ -850,6 +850,16 @@ function statLabel(key) {
   return map[key] || key;
 }
 
+function slotLabel(slot) {
+  const map = {
+    weapon: "Weapon", head: "Head", armor: "Armor", legs: "Legs", boots: "Boots",
+    amulet: "Amulet", ring: "Ring", ring1: "Ring", ring2: "Ring",
+    book: "Book", stone: "Stone", consumable: "Use", material: "Material",
+    chest: "Chest", egg: "Egg",
+  };
+  return map[slot] || slot;
+}
+
 function pct(value, max) {
   if (!max) return 0;
   return Math.max(0, Math.min(100, Math.round((value / max) * 100)));
@@ -2224,11 +2234,137 @@ function firstChestId(me) {
   return e ? e.itemId : null;
 }
 
+// ---- Crafting bench (3 slots, multiset match, server authoritative) ----
+
+function craftPlacedMap() {
+  const have = {};
+  (state.craftSlots || []).forEach((s) => {
+    if (s && s.itemId) have[s.itemId] = (have[s.itemId] || 0) + s.qty;
+  });
+  return have;
+}
+
+function matchBenchRecipe(recipes) {
+  const have = craftPlacedMap();
+  const keys = Object.keys(have);
+  if (!keys.length) return null;
+  for (const r of recipes || []) {
+    const need = {};
+    (r.inputs || []).forEach((i) => { need[i.item] = (need[i.item] || 0) + (i.qty || 1); });
+    const nk = Object.keys(need);
+    if (nk.length !== keys.length) continue;
+    if (nk.every((k) => have[k] === need[k])) return r;
+  }
+  return null;
+}
+
+function renderCraftBench(room, me, root) {
+  if (!state.craftSlots) {
+    state.craftSlots = [null, null, null];
+    state.craftSel = 0;
+  }
+  const recipes = (CATALOG.temple && CATALOG.temple.recipes) || [];
+  const st = (CATALOG.town && CATALOG.town.temple && CATALOG.town.temple.stamina) || 2;
+  const staminaOk = me.stamina >= st;
+  const pack = (me.inventory || [])
+    .map((inv) => ({ inv, item: CATALOG.items.find((x) => x.id === inv.itemId) }))
+    .filter((e) => e.item && e.item.slot !== "chest" && e.item.slot !== "egg");
+  const placed = craftPlacedMap();
+  const match = matchBenchRecipe(recipes);
+  const canTake = match && staminaOk && me.gold >= ((match.cost && match.cost.gold) || 0) && me.wood >= ((match.cost && match.cost.wood) || 0);
+
+  const slotsHtml = [0, 1, 2].map((i) => {
+    const s = state.craftSlots[i];
+    const it = s ? CATALOG.items.find((x) => x.id === s.itemId) : null;
+    return `<div class="craft-slot${state.craftSel === i ? " craft-slot--sel" : ""}" data-cslot="${i}" title="Slot ${i + 1} — seçmek için tıkla">
+      ${it ? `${itemIconEl(it)}<span class="craft-slot-name">${escapeHtml(it.name)}</span><span class="craft-slot-qty">×${s.qty}</span><button type="button" class="craft-slot-x" data-cslot-clear="${i}" title="Boşalt">×</button>` : `<span class="muted">Boş slot</span>`}
+    </div>`;
+  }).join("");
+
+  let resultHtml;
+  if (match) {
+    const out = CATALOG.items.find((x) => x.id === match.output.item);
+    resultHtml = `<div class="craft-result craft-result--ok">
+      <span>${out ? itemIconEl(out) : ""}</span>
+      <span><b>${escapeHtml(out ? out.name : match.output.item)}</b> ×${match.output.qty || 1}${out ? rarityBadge(out) : ""}
+      <span class="muted"> — ${(match.cost && match.cost.gold) || 0} altın${(match.cost && match.cost.wood) ? ` + ${match.cost.wood} odun` : ""}</span></span>
+      <button type="button" class="btn btn--gold${canTake ? "" : " btn--mini-disabled"}" data-craft-take="${escapeHtml(match.id)}">Al</button>
+    </div>`;
+  } else if (Object.keys(placed).length) {
+    resultHtml = `<div class="craft-result"><span class="muted">Bu kombinasyon bir şey yapmıyor.</span></div>`;
+  } else {
+    resultHtml = `<div class="craft-result"><span class="muted">Slota tıkla, sonra eşyaya tıkla. Aynı slota tekrar tıklayarak yığ.</span></div>`;
+  }
+
+  const pickerHtml = pack.map((e) => {
+    const left = e.inv.qty - (placed[e.inv.itemId] || 0);
+    return `<button type="button" class="craft-pick${left <= 0 ? " craft-pick--empty" : ""}" data-craft-add="${e.inv.itemId}" ${left <= 0 ? "disabled" : ""} title="${escapeHtml(e.item.name)}">
+      ${itemIconEl(e.item)}<span class="craft-pick-name">${escapeHtml(e.item.name)}</span><span class="bag-qty">×${e.inv.qty}</span>
+    </button>`;
+  }).join("");
+
+  root.innerHTML = `
+    <div class="btn-row"><button type="button" class="btn btn--ghost" id="btn-craft-back">← Tapınak</button></div>
+    <p class="subhead">Crafting Bench — 3 slot</p>
+    <div class="craft-slots">${slotsHtml}</div>
+    ${resultHtml}
+    <p class="subhead">Çanta (kaydırmalı)</p>
+    <div class="craft-picker">${pickerHtml || '<div class="muted">Çanta boş.</div>'}</div>`;
+
+  root.querySelector("#btn-craft-back").addEventListener("click", () => {
+    state.craftOpen = false;
+    renderTempleView(room);
+  });
+  root.querySelectorAll("[data-cslot]").forEach((el) =>
+    el.addEventListener("click", (ev) => {
+      if (ev.target.closest("[data-cslot-clear]")) return;
+      state.craftSel = Number(el.getAttribute("data-cslot"));
+      renderCraftBench(room, me, root);
+    })
+  );
+  root.querySelectorAll("[data-cslot-clear]").forEach((el) =>
+    el.addEventListener("click", (ev) => {
+      ev.stopPropagation();
+      state.craftSlots[Number(el.getAttribute("data-cslot-clear"))] = null;
+      renderCraftBench(room, me, root);
+    })
+  );
+  root.querySelectorAll("[data-craft-add]").forEach((el) =>
+    el.addEventListener("click", () => {
+      const id = el.getAttribute("data-craft-add");
+      const owned = itemOwnedQty(me, id);
+      if ((craftPlacedMap()[id] || 0) >= owned) {
+        showToast("Yetersiz eşya.");
+        return;
+      }
+      const idx = state.craftSel || 0;
+      const cur = state.craftSlots[idx];
+      if (cur && cur.itemId !== id) {
+        showToast("Slot dolu — önce boşalt ya da başka slot seç.");
+        return;
+      }
+      state.craftSlots[idx] = { itemId: id, qty: (cur ? cur.qty : 0) + 1 };
+      sfxPlay("clicksound");
+      renderCraftBench(room, me, root);
+    })
+  );
+  const take = root.querySelector("[data-craft-take]");
+  if (take) take.addEventListener("click", () => {
+    state.craftSlots = [null, null, null];
+    sfxPlay("lootsound");
+    socket.emit("temple:craft", { recipeId: take.getAttribute("data-craft-take") });
+  });
+}
+
 function renderTempleView(room) {
   const me = room.players.find((p) => p.id === state.playerId);
   const root = $("temple-content");
   if (!me) {
     root.innerHTML = "";
+    return;
+  }
+  if (state.craftOpen) {
+    renderCraftBench(room, me, root);
     return;
   }
   const temple = CATALOG.temple || {};
@@ -2264,6 +2400,7 @@ function renderTempleView(room) {
 
   const craftHtml = `<div class="temple-card">
     <p class="subhead">Craft</p>
+    <button type="button" class="btn btn--gold" id="btn-open-bench">⚒️ Tezgâhı Aç (${recipes.length} tarif)</button>
     <div class="craft-grid">${recipes.map((r) => {
       const owned = (r.inputs || []).every((inp) => itemOwnedQty(me, inp.item) >= inp.qty);
       const can = staminaOk && owned && me.gold >= (r.cost.gold || 0) && me.wood >= (r.cost.wood || 0);
@@ -2303,6 +2440,13 @@ function renderTempleView(room) {
 
   const evBtn = root.querySelector("#btn-temple-evolve");
   if (evBtn) evBtn.addEventListener("click", () => socket.emit("temple:evolve"));
+  const benchBtn = root.querySelector("#btn-open-bench");
+  if (benchBtn) benchBtn.addEventListener("click", () => {
+    state.craftOpen = true;
+    state.craftSlots = [null, null, null];
+    state.craftSel = 0;
+    renderTempleView(room);
+  });
   const rsBtn = root.querySelector("#btn-temple-restore");
   if (rsBtn) rsBtn.addEventListener("click", () => socket.emit("temple:restore"));
   root.querySelectorAll("[data-craft]").forEach((b) =>
@@ -2339,7 +2483,7 @@ function shopCardHtml(me, staminaOk, item, buyEvent, isSold) {
   const chestRates = item.slot === "chest" ? chestRatesHtml(item) : "";
   return `<div class="shop-card ${isSold ? "shop-card--sold" : ""}">
     <span class="shop-card-top">${itemIconEl(item)}<span class="shop-card-name">${escapeHtml(item.name)}</span></span>
-    <span class="shop-card-badges">${rarityBadge(item)}${ownedBadge}${soldBadge}</span>
+    <span class="shop-card-badges">${rarityBadge(item)}<span class="purchased-badge">${escapeHtml(slotLabel(item.slot))}</span>${ownedBadge}${soldBadge}</span>
     <span class="shop-card-desc">${escapeHtml(item.description)}</span>
     ${chestRates ? `<span class="shop-card-desc" style="font-size:0.68rem;color:var(--muted)">${chestRates}</span>` : ""}
     <span class="shop-card-price">
@@ -2377,11 +2521,15 @@ function renderBlacksmithView(room) {
     : (CATALOG.items || []).filter(
         (i) => i.slot !== "consumable" && i.slot !== "material" && i.slot !== "chest" && buyable.includes(i.rarity) && !i.craftOnly
       );
+  // Pinned wares (blueprints): always available, shown first in their own row.
+  const pinned = (CATALOG.items || []).filter((i) => i.blueprint && i.price && i.price.gold);
+  const rotGear = gear.filter((i) => !(i.blueprint && i.price && i.price.gold));
 
   root.innerHTML = `
     ${shopResources(me)}
-    <p class="subhead">Armor & Weapons — Week ${room.shopStock ? room.shopStock.week : 1} · ${stockArr.length} items (7 days rotation)</p>
-    <div class="shop-grid">${gear.map((i) => shopCardHtml(me, staminaOk, i, "blacksmith:buy", soldSet.includes(i.id))).join("") || '<div class="muted">Nothing for sale today.</div>'}</div>
+    <p class="subhead">Armor & Weapons — Week ${room.shopStock ? room.shopStock.week : 1} · ${rotGear.length} items (7 days rotation)</p>
+    ${pinned.length ? `<p class="subhead">📐 Always in stock — Blueprints</p><div class="shop-grid shop-grid--pinned">${pinned.map((i) => shopCardHtml(me, staminaOk, i, "blacksmith:buy", soldSet.includes(i.id))).join("")}</div>` : ""}
+    <div class="shop-grid">${rotGear.map((i) => shopCardHtml(me, staminaOk, i, "blacksmith:buy", soldSet.includes(i.id))).join("") || '<div class="muted">Nothing for sale today.</div>'}</div>
     <div class="btn-row">
       <button type="button" class="btn btn--bronze" id="btn-shop-inventory">Open Inventory</button>
     </div>`;
@@ -2501,11 +2649,17 @@ function renderInventory(room) {
       if (!item) return "";
       const equipable = item.slot !== "consumable" && item.slot !== "material" && item.slot !== "chest";
       const isChest = item.slot === "chest";
+      // Tüccar geri alımı: değerin %60'ı (değer yoksa altın fiyatından).
+      const sellUnit = Math.floor((((typeof item.value === "number" && item.value > 0) ? item.value : (item.price && item.price.gold) || 0)) * 0.6);
+      const sellBtns = (!isChest && sellUnit > 0)
+        ? `<button type="button" class="btn btn--mini" data-sell="${inv.itemId}" data-qty="1" title="Tüccara sat: +${sellUnit} altın">Sat +${sellUnit}g</button>` +
+          (inv.qty > 1 ? `<button type="button" class="btn btn--mini" data-sell="${inv.itemId}" data-qty="${inv.qty}" title="Tümünü sat: +${sellUnit * inv.qty} altın">Tümü +${sellUnit * inv.qty}g</button>` : "")
+        : "";
       const action = isChest
         ? `<button type="button" class="btn btn--mini" data-open-chest="${inv.itemId}">Open</button>`
         : equipable
-        ? `<button type="button" class="btn btn--mini" data-equip="${inv.itemId}">Equip</button>`
-        : "";
+        ? `<button type="button" class="btn btn--mini" data-equip="${inv.itemId}">Equip</button>${sellBtns}`
+        : `${sellBtns}`;
       const chestRates = item.slot === "chest" ? chestRatesHtml(item) : "";
       const chestPlain = chestRates.replace(/<[^>]*>/g, "");
       const tip = `${escapeHtml(item.name)}${item.description ? " — " + escapeHtml(item.description) : ""}${chestPlain ? " — " + escapeHtml(chestPlain) : ""}`;
@@ -2554,6 +2708,12 @@ function renderInventory(room) {
     b.addEventListener("click", () => {
       sfxPlay("lootsound");
       socket.emit("chest:open", { itemId: b.getAttribute("data-open-chest") });
+    })
+  );
+  root.querySelectorAll("[data-sell]").forEach((b) =>
+    b.addEventListener("click", () => {
+      sfxPlay("inventorysound");
+      socket.emit("merchant:sell", { itemId: b.getAttribute("data-sell"), qty: Number(b.getAttribute("data-qty")) || 1 });
     })
   );
   root.querySelectorAll("[data-hatch]").forEach((b)=>

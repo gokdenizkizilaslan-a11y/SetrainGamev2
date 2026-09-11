@@ -433,6 +433,19 @@ function registerSocketHandlers(io) {
       }
     });
 
+    socket.on("merchant:sell", (payload = {}) => {
+      try {
+        const { room, player } = gameContext(socket);
+        requireAlive(player);
+        const res = merchant.sell(room, player, payload.itemId, payload.qty);
+        room.log = { ...res, name: player.name, ts: Date.now() };
+        emitRoomState(io, room);
+        socket.emit("shop:buyResult", { text: res.text, itemId: payload.itemId });
+      } catch (err) {
+        emitError(socket, err);
+      }
+    });
+
     socket.on("chest:open", (payload = {}) => {
       try {
         const { room, player } = gameContext(socket);

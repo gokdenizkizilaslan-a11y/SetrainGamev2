@@ -3684,6 +3684,10 @@ const CONTENT = {
         "mythic": 0,
         "ancient_relic": 0
       }
+    },
+    "categoryWeights": {
+      "material": 60,
+      "gear": 40
     }
   },
   "effects": {
@@ -8438,6 +8442,575 @@ const CONTENT = {
       "chestTier": "s",
       "image": "",
       "description": "A chest of legend. Great odds of mythic loot."
+    },
+    {
+      "id": "sturdy_club",
+      "name": "Sturdy Club",
+      "rarity": "common",
+      "slot": "weapon",
+      "stats": {
+        "attack": 11
+      },
+      "description": "A dependable oaken club.",
+      "value": 25,
+      "image": "/images/items/sturdy_club.png"
+    },
+    {
+      "id": "cloth_cap",
+      "name": "Cloth Cap",
+      "rarity": "common",
+      "slot": "head",
+      "stats": {
+        "maxHp": 35
+      },
+      "description": "Stitched cloth, better than nothing.",
+      "value": 22,
+      "image": "/images/items/cloth_cap.png"
+    },
+    {
+      "id": "bone_ring",
+      "name": "Bone Ring",
+      "rarity": "common",
+      "slot": "ring",
+      "stats": {
+        "resistance": 6
+      },
+      "description": "Carved from a dire wolf fang.",
+      "value": 24,
+      "image": "/images/items/bone_ring.png"
+    },
+    {
+      "id": "travel_boots",
+      "name": "Travel Boots",
+      "rarity": "common",
+      "slot": "boots",
+      "stats": {
+        "maxHp": 25,
+        "speed": 1
+      },
+      "description": "Worn soles, swift steps.",
+      "value": 26,
+      "image": "/images/items/travel_boots.png"
+    },
+    {
+      "id": "hunter_axe",
+      "name": "Hunter Axe",
+      "rarity": "uncommon",
+      "slot": "weapon",
+      "stats": {
+        "attack": 17
+      },
+      "description": "A woodsman's heavy axe.",
+      "value": 70,
+      "image": "/images/items/hunter_axe.png"
+    },
+    {
+      "id": "wolf_helm",
+      "name": "Wolf Helm",
+      "rarity": "uncommon",
+      "slot": "head",
+      "stats": {
+        "maxHp": 60,
+        "resistance": 6
+      },
+      "description": "Fashioned from an alpha pelt.",
+      "value": 65,
+      "image": "/images/items/wolf_helm.png"
+    },
+    {
+      "id": "boar_hide_armor",
+      "name": "Boar Hide Armor",
+      "rarity": "uncommon",
+      "slot": "armor",
+      "stats": {
+        "maxHp": 80,
+        "resistance": 8
+      },
+      "description": "Thick, musky, tough.",
+      "value": 75,
+      "image": "/images/items/boar_hide_armor.png"
+    },
+    {
+      "id": "swift_greaves",
+      "name": "Swift Greaves",
+      "rarity": "uncommon",
+      "slot": "legs",
+      "stats": {
+        "resistance": 6,
+        "speed": 1
+      },
+      "description": "Light plates for fast feet.",
+      "value": 68,
+      "image": "/images/items/swift_greaves.png"
+    },
+    {
+      "id": "ember_boots",
+      "name": "Ember Boots",
+      "rarity": "uncommon",
+      "slot": "boots",
+      "stats": {
+        "maxHp": 50,
+        "resistance": 8
+      },
+      "description": "Still warm from the forge.",
+      "value": 72,
+      "image": "/images/items/ember_boots.png"
+    },
+    {
+      "id": "moon_amulet",
+      "name": "Moon Amulet",
+      "rarity": "uncommon",
+      "slot": "amulet",
+      "stats": {
+        "mana": 25
+      },
+      "description": "Drinks in moonlight.",
+      "value": 70,
+      "image": "/images/items/moon_amulet.png"
+    },
+    {
+      "id": "serpent_ring",
+      "name": "Serpent Ring",
+      "rarity": "uncommon",
+      "slot": "ring",
+      "stats": {
+        "attack": 6
+      },
+      "description": "A coiled silver serpent.",
+      "value": 66,
+      "image": "/images/items/serpent_ring.png"
+    },
+    {
+      "id": "oak_staff",
+      "name": "Oak Staff",
+      "rarity": "uncommon",
+      "slot": "weapon",
+      "stats": {
+        "magicPower": 18
+      },
+      "description": "Heartwood humming with mana.",
+      "value": 74,
+      "image": "/images/items/oak_staff.png"
+    },
+    {
+      "id": "frostbrand_axe",
+      "name": "Frostbrand Axe",
+      "rarity": "rare",
+      "slot": "weapon",
+      "stats": {
+        "attack": 24
+      },
+      "description": "Its edge never thaws.",
+      "value": 200,
+      "image": "/images/items/frostbrand_axe.png"
+    },
+    {
+      "id": "sentinel_helm",
+      "name": "Sentinel Helm",
+      "rarity": "rare",
+      "slot": "head",
+      "stats": {
+        "maxHp": 95,
+        "resistance": 12
+      },
+      "description": "Stood a hundred sieges.",
+      "value": 185,
+      "image": "/images/items/sentinel_helm.png"
+    },
+    {
+      "id": "shadowplate",
+      "name": "Shadowplate",
+      "rarity": "rare",
+      "slot": "armor",
+      "stats": {
+        "maxHp": 110,
+        "resistance": 14
+      },
+      "description": "Forged in eclipse dark.",
+      "value": 210,
+      "image": "/images/items/shadowplate.png"
+    },
+    {
+      "id": "storm_leggings",
+      "name": "Storm Leggings",
+      "rarity": "rare",
+      "slot": "legs",
+      "stats": {
+        "resistance": 10,
+        "speed": 2
+      },
+      "description": "Crackling with static.",
+      "value": 190,
+      "image": "/images/items/storm_leggings.png"
+    },
+    {
+      "id": "thunder_amulet",
+      "name": "Thunder Amulet",
+      "rarity": "rare",
+      "slot": "amulet",
+      "stats": {
+        "attack": 10
+      },
+      "description": "A bottled thunderstorm.",
+      "value": 195,
+      "image": "/images/items/thunder_amulet.png"
+    },
+    {
+      "id": "warden_ring",
+      "name": "Warden Ring",
+      "rarity": "rare",
+      "slot": "ring",
+      "stats": {
+        "resistance": 14,
+        "maxHp": 40
+      },
+      "description": "Oath-bound silver.",
+      "value": 188,
+      "image": "/images/items/warden_ring.png"
+    },
+    {
+      "id": "runed_bow",
+      "name": "Runed Bow",
+      "rarity": "rare",
+      "slot": "weapon",
+      "stats": {
+        "attack": 22,
+        "speed": 1
+      },
+      "description": "Runes guide every shaft.",
+      "value": 205,
+      "image": "/images/items/runed_bow.png"
+    },
+    {
+      "id": "void_reaver",
+      "name": "Void Reaver",
+      "rarity": "epic",
+      "slot": "weapon",
+      "stats": {
+        "attack": 34
+      },
+      "description": "It hungers between swings.",
+      "value": 500,
+      "image": "/images/items/void_reaver.png"
+    },
+    {
+      "id": "aegis_armor",
+      "name": "Aegis Armor",
+      "rarity": "epic",
+      "slot": "armor",
+      "stats": {
+        "maxHp": 150,
+        "resistance": 18
+      },
+      "description": "A wall you can wear.",
+      "value": 520,
+      "image": "/images/items/aegis_armor.png"
+    },
+    {
+      "id": "archon_crown",
+      "name": "Archon Crown",
+      "rarity": "epic",
+      "slot": "head",
+      "stats": {
+        "magicPower": 30,
+        "mana": 40
+      },
+      "description": "Worn by sky-tyrants.",
+      "value": 510,
+      "image": "/images/items/archon_crown.png"
+    },
+    {
+      "id": "stormcaller_staff",
+      "name": "Stormcaller Staff",
+      "rarity": "epic",
+      "slot": "weapon",
+      "stats": {
+        "magicPower": 38
+      },
+      "description": "Points at clouds; clouds obey.",
+      "value": 530,
+      "image": "/images/items/stormcaller_staff.png"
+    },
+    {
+      "id": "kingsfall_blade",
+      "name": "Kingsfall Blade",
+      "rarity": "legendary",
+      "slot": "weapon",
+      "stats": {
+        "attack": 48
+      },
+      "description": "Ended a dynasty.",
+      "value": 1200,
+      "image": "/images/items/kingsfall_blade.png"
+    },
+    {
+      "id": "titanward_plate",
+      "name": "Titanward Plate",
+      "rarity": "legendary",
+      "slot": "armor",
+      "stats": {
+        "maxHp": 220,
+        "resistance": 24
+      },
+      "description": "Titan-forged bulwark.",
+      "value": 1250,
+      "image": "/images/items/titanward_plate.png"
+    },
+    {
+      "id": "worldsplitter_axe",
+      "name": "Worldsplitter Axe",
+      "rarity": "mythic",
+      "slot": "weapon",
+      "stats": {
+        "attack": 62
+      },
+      "description": "The ground remembers it.",
+      "value": 2500,
+      "image": "/images/items/worldsplitter_axe.png"
+    },
+    {
+      "id": "slime_bottle",
+      "name": "Bottle of Slime",
+      "rarity": "common",
+      "slot": "material",
+      "description": "A jiggling bottle of fresh slime.",
+      "image": "/images/items/slime_bottle.png",
+      "value": 6
+    },
+    {
+      "id": "wolf_fang",
+      "name": "Wolf Fang",
+      "rarity": "common",
+      "slot": "material",
+      "description": "A sharp fang, still warm.",
+      "image": "/images/items/wolf_fang.png",
+      "value": 6
+    },
+    {
+      "id": "bat_wing",
+      "name": "Cave Bat Wing",
+      "rarity": "common",
+      "slot": "material",
+      "description": "Leathery and light.",
+      "image": "/images/items/bat_wing.png",
+      "value": 5
+    },
+    {
+      "id": "spider_silk",
+      "name": "Ash Spider Silk",
+      "rarity": "common",
+      "slot": "material",
+      "description": "Stronger than it looks.",
+      "image": "/images/items/spider_silk.png",
+      "value": 7
+    },
+    {
+      "id": "tough_hide",
+      "name": "Tough Hide",
+      "rarity": "uncommon",
+      "slot": "material",
+      "description": "Thick hide of a hardy beast.",
+      "image": "/images/items/tough_hide.png",
+      "value": 15
+    },
+    {
+      "id": "skeleton_bone",
+      "name": "Old Bone",
+      "rarity": "uncommon",
+      "slot": "material",
+      "description": "Dense with old malice.",
+      "image": "/images/items/skeleton_bone.png",
+      "value": 14
+    },
+    {
+      "id": "orc_tusk",
+      "name": "Orc Tusk",
+      "rarity": "uncommon",
+      "slot": "material",
+      "description": "A trophy with an edge.",
+      "image": "/images/items/orc_tusk.png",
+      "value": 16
+    },
+    {
+      "id": "harpy_feather",
+      "name": "Storm Harpy Feather",
+      "rarity": "uncommon",
+      "slot": "material",
+      "description": "Crackles faintly.",
+      "image": "/images/items/harpy_feather.png",
+      "value": 18
+    },
+    {
+      "id": "golem_fragment",
+      "name": "Golem Fragment",
+      "rarity": "rare",
+      "slot": "material",
+      "description": "A chip of living stone.",
+      "image": "/images/items/golem_fragment.png",
+      "value": 50
+    },
+    {
+      "id": "wraith_wisp",
+      "name": "Wraith Wisp",
+      "rarity": "rare",
+      "slot": "material",
+      "description": "Cold light in a jar.",
+      "image": "/images/items/wraith_wisp.png",
+      "value": 55
+    },
+    {
+      "id": "treant_bark",
+      "name": "Elder Treant Bark",
+      "rarity": "rare",
+      "slot": "material",
+      "description": "Bark that slowly regrows.",
+      "image": "/images/items/treant_bark.png",
+      "value": 48
+    },
+    {
+      "id": "hydra_scale",
+      "name": "Hydra Scale",
+      "rarity": "epic",
+      "slot": "material",
+      "description": "It shimmers with regrowth.",
+      "image": "/images/items/hydra_scale.png",
+      "value": 150
+    },
+    {
+      "id": "minor_salve",
+      "name": "Minor Salve",
+      "rarity": "common",
+      "slot": "consumable",
+      "description": "Heals small wounds.",
+      "image": "/images/items/minor_salve.png",
+      "heal": 25,
+      "value": 10
+    },
+    {
+      "id": "wolf_jerky",
+      "name": "Wolf Jerky",
+      "rarity": "common",
+      "slot": "consumable",
+      "description": "Chewy trail food.",
+      "image": "/images/items/wolf_jerky.png",
+      "heal": 15,
+      "food": 1,
+      "value": 8
+    },
+    {
+      "id": "mushroom_stew",
+      "name": "Mushroom Stew",
+      "rarity": "uncommon",
+      "slot": "consumable",
+      "description": "A hearty dungeon stew.",
+      "image": "/images/items/mushroom_stew.png",
+      "heal": 45,
+      "food": 1,
+      "value": 20
+    },
+    {
+      "id": "frost_berry",
+      "name": "Frost Berry",
+      "rarity": "uncommon",
+      "slot": "consumable",
+      "description": "Numbing and sweet.",
+      "image": "/images/items/frost_berry.png",
+      "heal": 30,
+      "value": 12
+    },
+    {
+      "id": "ember_pepper",
+      "name": "Ember Pepper",
+      "rarity": "uncommon",
+      "slot": "consumable",
+      "description": "Burns going down.",
+      "image": "/images/items/ember_pepper.png",
+      "heal": 20,
+      "food": 2,
+      "value": 10
+    },
+    {
+      "id": "troll_draught",
+      "name": "Troll Draught",
+      "rarity": "rare",
+      "slot": "consumable",
+      "description": "Regrows more than courage.",
+      "image": "/images/items/troll_draught.png",
+      "heal": 90,
+      "value": 45
+    },
+    {
+      "id": "skyshard_omelet",
+      "name": "Skyshard Omelet",
+      "rarity": "rare",
+      "slot": "consumable",
+      "description": "Storm-harpy eggs, fried.",
+      "image": "/images/items/skyshard_omelet.png",
+      "heal": 60,
+      "food": 2,
+      "value": 35
+    },
+    {
+      "id": "elixir_of_dawn",
+      "name": "Elixir of Dawn",
+      "rarity": "epic",
+      "slot": "consumable",
+      "description": "First light, bottled.",
+      "image": "/images/items/elixir_of_dawn.png",
+      "heal": 150,
+      "value": 90
+    },
+    {
+      "id": "sword_blueprint",
+      "name": "Sword Blueprint",
+      "rarity": "uncommon",
+      "slot": "material",
+      "description": "Reusable weapon pattern.",
+      "image": "/images/items/sword_blueprint.png",
+      "blueprint": true,
+      "price": {
+        "gold": 300,
+        "wood": 0
+      }
+    },
+    {
+      "id": "armor_blueprint",
+      "name": "Armor Blueprint",
+      "rarity": "uncommon",
+      "slot": "material",
+      "description": "Reusable armor pattern.",
+      "image": "/images/items/armor_blueprint.png",
+      "blueprint": true,
+      "price": {
+        "gold": 450,
+        "wood": 0
+      }
+    },
+    {
+      "id": "staff_blueprint",
+      "name": "Staff Blueprint",
+      "rarity": "rare",
+      "slot": "material",
+      "description": "Reusable staff pattern.",
+      "image": "/images/items/staff_blueprint.png",
+      "blueprint": true,
+      "price": {
+        "gold": 600,
+        "wood": 0
+      }
+    },
+    {
+      "id": "sage_circlet",
+      "name": "Sage Circlet",
+      "rarity": "uncommon",
+      "slot": "head",
+      "value": 64,
+      "stats": {
+        "magicPower": 12,
+        "mana": 15
+      },
+      "description": "For quiet, clever minds.",
+      "image": "/images/items/sage_circlet.png"
     }
   ],
   "equipmentSlots": [
@@ -10754,6 +11327,7 @@ function publicCatalog() {
       slot: i.slot,
       rarity: i.rarity || "common",
       price: i.price,
+      value: i.value || 0,
       stats: i.stats || {},
       heal: i.heal,
       food: i.food,

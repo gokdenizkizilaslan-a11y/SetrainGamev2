@@ -3654,6 +3654,105 @@ input:focus {
   flex-wrap: wrap;
 }
 
+/* ---- Crafting bench ---- */
+.craft-slots {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+  margin: 0.6rem 0;
+}
+.craft-slot {
+  position: relative;
+  min-height: 5.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  border: 2px dashed var(--glass-line);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  padding: 0.5rem;
+  font-size: 0.75rem;
+}
+.craft-slot--sel {
+  border-style: solid;
+  border-color: var(--gold-bright);
+  box-shadow: 0 0 14px rgba(232, 183, 108, 0.35);
+}
+.craft-slot-name {
+  font-family: "Cinzel", serif;
+  font-size: 0.72rem;
+}
+.craft-slot-qty {
+  font-family: monospace;
+  font-weight: 700;
+  color: var(--gold-bright);
+}
+.craft-slot-x {
+  position: absolute;
+  top: 0.2rem;
+  right: 0.35rem;
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+}
+.craft-result {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--glass-line);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  margin-bottom: 0.6rem;
+  font-size: 0.85rem;
+}
+.craft-result--ok {
+  border-color: rgba(143, 201, 122, 0.55);
+}
+.craft-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.45rem;
+  max-height: 46vh;
+  overflow-y: auto;
+  padding: 0.4rem;
+  border: 1px solid var(--glass-line);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.15);
+}
+.craft-pick {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 10px;
+  border: 1px solid var(--glass-line);
+  background: var(--glass-2);
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 0.75rem;
+  text-align: left;
+}
+.craft-pick:hover {
+  border-color: var(--gold-bright);
+}
+.craft-pick--empty {
+  opacity: 0.4;
+  cursor: default;
+}
+.craft-pick-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .craft-in,
 .craft-cost {
   font-size: 0.76rem;

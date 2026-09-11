@@ -527,7 +527,8 @@ function lootItemIcon(item) {
   const slot = full ? full.slot : "";
   const map = {
     weapon: "⚔️", head: "🪖", armor: "🛡️", legs: "🦿", boots: "👢",
-    amulet: "📿", ring: "💍", consumable: "🧪",
+    amulet: "📿", ring: "💍", consumable: "🧪", material: "⛏️",
+    book: "📖", stone: "💎", chest: "🎁", egg: "🥚",
   };
   return map[slot] || "🎁";
 }

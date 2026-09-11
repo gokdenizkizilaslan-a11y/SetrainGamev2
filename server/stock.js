@@ -16,9 +16,17 @@ function poolFor(kind) {
     if (!rarities.includes(i.rarity)) return false;
     if (i.craftOnly) return false; // craftables not sold
     if (i.bossWeapon) return false;
+    // Blueprints: pinned blacksmith stock (always there), never at the merchant.
+    if (i.blueprint) return kind !== "merchant";
     if (kind === "merchant") return MERCHANT_SLOTS.includes(i.slot);
     return i.slot !== "consumable" && i.slot !== "material" && i.slot !== "chest";
   });
+}
+
+function pinnedFor(kind) {
+  // Always in stock, never rotates out, never sells out (e.g. blueprints).
+  if (kind !== "blacksmith") return [];
+  return CONTENT.items.filter((i) => i.blueprint && i.price && i.price.gold).map((i) => i.id);
 }
 
 function pick(pool, n) {
@@ -55,6 +63,9 @@ function maybeRotate(room) {
 
 function inStock(room, shop, itemId) {
   const stock = room && room.shopStock && room.shopStock[shop];
+  // Pinned wares (blueprints) are always available.
+  const def = getItem(itemId);
+  if (shop === "blacksmith" && def && def.blueprint) return true;
   if (!stock) return true; // no stock system yet -> allow (safe fallback)
   const sold = room.shopStock.sold && room.shopStock.sold[shop];
   if (sold && sold.includes(itemId)) return false;

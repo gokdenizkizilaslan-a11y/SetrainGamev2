@@ -1,4 +1,4 @@
-const { CONTENT, getClass, getSkill } = require("../content");
+const { CONTENT, getClass, getSkill, getItem } = require("../content");
 
 function randomInt(min, max) {
   const lo = Math.ceil(min);
@@ -405,28 +405,42 @@ function loseLife(player) {
 }
 
 function addItem(player, itemId, qty = 1) {
+  const n = Math.max(1, Math.floor(qty || 1));
+  // Gear never stacks (one unit per entry); consumables/materials/chests/eggs stack.
+  const def = getItem(itemId);
+  const stackable = !def || ["consumable", "material", "chest", "egg"].includes(def.slot);
+  if (!stackable) {
+    for (let i = 0; i < n; i++) player.inventory.push({ itemId, qty: 1 });
+    return;
+  }
   const entry = player.inventory.find((i) => i.itemId === itemId);
   if (entry) {
-    entry.qty += qty;
+    entry.qty += n;
   } else {
-    player.inventory.push({ itemId, qty });
+    player.inventory.push({ itemId, qty: n });
   }
 }
 
 function removeItem(player, itemId, qty = 1) {
-  const entry = player.inventory.find((i) => i.itemId === itemId);
-  if (!entry || entry.qty < qty) {
+  const n = Math.max(1, Math.floor(qty || 1));
+  const total = (player.inventory || []).reduce((s, i) => s + (i.itemId === itemId ? i.qty : 0), 0);
+  if (total < n) {
     throw new Error("You do not have that item.");
   }
-  entry.qty -= qty;
-  if (entry.qty <= 0) {
-    player.inventory = player.inventory.filter((i) => i.itemId !== itemId);
+  let left = n;
+  for (const entry of player.inventory) {
+    if (entry.itemId !== itemId || left <= 0) continue;
+    const take = Math.min(entry.qty, left);
+    entry.qty -= take;
+    left -= take;
   }
+  player.inventory = player.inventory.filter((i) => i.qty > 0);
 }
 
 function hasItem(player, itemId, qty = 1) {
-  const entry = player.inventory.find((i) => i.itemId === itemId);
-  return !!(entry && entry.qty >= qty);
+  const n = Math.max(1, Math.floor(qty || 1));
+  const total = (player.inventory || []).reduce((s, i) => s + (i.itemId === itemId ? i.qty : 0), 0);
+  return total >= n;
 }
 
 function applyStatDelta(player, stats, sign) {
