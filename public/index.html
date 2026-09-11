@@ -61,14 +61,14 @@
         }
         setTimeout(function () {
           if (window.__bootConnected) return hide();
-          show("Sunucu uyanıyor... birkaç saniye, oyun bağlanacak.");
+          show("Waking the server... a few seconds, the game will connect.");
         }, 3500);
         window.__bootFailCount = window.__bootFailCount || 0;
         setTimeout(function () {
           if (window.__bootConnected) return hide();
           if (window.__bootFailCount < 1) {
             window.__bootFailCount++;
-            show("Sunucuya bağlanılmaya çalışılıyor... (uyanıyorsa birkaç saniye sürebilir)");
+            show("Trying to reach the server... (may take a few seconds if waking)");
           }
         }, 12000);
         window.__bootHide = hide;

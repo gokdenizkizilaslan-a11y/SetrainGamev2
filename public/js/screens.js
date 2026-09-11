@@ -732,14 +732,14 @@ function renderClassGrid(selected, onSelect) {
   const toggle = document.createElement("button");
   toggle.type = "button";
   toggle.className = "btn btn--ghost";
-  toggle.textContent = storedSecret ? "🔑 Şifreyi temizle" : "🔑 Gizli class şifresi";
+  toggle.textContent = storedSecret ? "🔑 Clear password" : "🔑 Secret class password";
   toggle.addEventListener("click", () => {
     if (storedSecret) {
       try { localStorage.removeItem("setra_class_secret"); } catch (e) {}
       renderClassGrid(selected, onSelect);
       return;
     }
-    const pw = window.prompt("Gizli class şifresi:");
+    const pw = window.prompt("Secret class password:");
     if (!pw) return;
     try { localStorage.setItem("setra_class_secret", pw); } catch (e) {}
     renderClassGrid(selected, onSelect);
@@ -2276,8 +2276,8 @@ function renderCraftBench(room, me, root) {
   const slotsHtml = [0, 1, 2].map((i) => {
     const s = state.craftSlots[i];
     const it = s ? CATALOG.items.find((x) => x.id === s.itemId) : null;
-    return `<div class="craft-slot${state.craftSel === i ? " craft-slot--sel" : ""}" data-cslot="${i}" title="Slot ${i + 1} — seçmek için tıkla">
-      ${it ? `${itemIconEl(it)}<span class="craft-slot-name">${escapeHtml(it.name)}</span><span class="craft-slot-qty">×${s.qty}</span><button type="button" class="craft-slot-x" data-cslot-clear="${i}" title="Boşalt">×</button>` : `<span class="muted">Boş slot</span>`}
+    return `<div class="craft-slot${state.craftSel === i ? " craft-slot--sel" : ""}" data-cslot="${i}" title="Slot ${i + 1} — click to select">
+      ${it ? `${itemIconEl(it)}<span class="craft-slot-name">${escapeHtml(it.name)}</span><span class="craft-slot-qty">×${s.qty}</span><button type="button" class="craft-slot-x" data-cslot-clear="${i}" title="Empty">×</button>` : `<span class="muted">Empty slot</span>`}
     </div>`;
   }).join("");
 
@@ -2287,13 +2287,13 @@ function renderCraftBench(room, me, root) {
     resultHtml = `<div class="craft-result craft-result--ok">
       <span>${out ? itemIconEl(out) : ""}</span>
       <span><b>${escapeHtml(out ? out.name : match.output.item)}</b> ×${match.output.qty || 1}${out ? rarityBadge(out) : ""}
-      <span class="muted"> — ${(match.cost && match.cost.gold) || 0} altın${(match.cost && match.cost.wood) ? ` + ${match.cost.wood} odun` : ""}</span></span>
-      <button type="button" class="btn btn--gold${canTake ? "" : " btn--mini-disabled"}" data-craft-take="${escapeHtml(match.id)}">Al</button>
+      <span class="muted"> — ${(match.cost && match.cost.gold) || 0} gold${(match.cost && match.cost.wood) ? ` + ${match.cost.wood} wood` : ""}</span></span>
+      <button type="button" class="btn btn--gold${canTake ? "" : " btn--mini-disabled"}" data-craft-take="${escapeHtml(match.id)}">Take</button>
     </div>`;
   } else if (Object.keys(placed).length) {
-    resultHtml = `<div class="craft-result"><span class="muted">Bu kombinasyon bir şey yapmıyor.</span></div>`;
+    resultHtml = `<div class="craft-result"><span class="muted">That combination makes nothing.</span></div>`;
   } else {
-    resultHtml = `<div class="craft-result"><span class="muted">Slota tıkla, sonra eşyaya tıkla. Aynı slota tekrar tıklayarak yığ.</span></div>`;
+    resultHtml = `<div class="craft-result"><span class="muted">Click a slot, then an item. Click again on the same slot to stack.</span></div>`;
   }
 
   const pickerHtml = pack.map((e) => {
@@ -2304,12 +2304,12 @@ function renderCraftBench(room, me, root) {
   }).join("");
 
   root.innerHTML = `
-    <div class="btn-row"><button type="button" class="btn btn--ghost" id="btn-craft-back">← Tapınak</button></div>
-    <p class="subhead">Crafting Bench — 3 slot</p>
+    <div class="btn-row"><button type="button" class="btn btn--ghost" id="btn-craft-back">← Temple</button></div>
+    <p class="subhead">Crafting Bench — 3 slots</p>
     <div class="craft-slots">${slotsHtml}</div>
     ${resultHtml}
-    <p class="subhead">Çanta (kaydırmalı)</p>
-    <div class="craft-picker">${pickerHtml || '<div class="muted">Çanta boş.</div>'}</div>`;
+    <p class="subhead">Pack (scrollable)</p>
+    <div class="craft-picker">${pickerHtml || '<div class="muted">Pack empty.</div>'}</div>`;
 
   root.querySelector("#btn-craft-back").addEventListener("click", () => {
     state.craftOpen = false;
@@ -2334,13 +2334,13 @@ function renderCraftBench(room, me, root) {
       const id = el.getAttribute("data-craft-add");
       const owned = itemOwnedQty(me, id);
       if ((craftPlacedMap()[id] || 0) >= owned) {
-        showToast("Yetersiz eşya.");
+        showToast("Not enough items.");
         return;
       }
       const idx = state.craftSel || 0;
       const cur = state.craftSlots[idx];
       if (cur && cur.itemId !== id) {
-        showToast("Slot dolu — önce boşalt ya da başka slot seç.");
+        showToast("Slot full — empty it or pick another slot.");
         return;
       }
       state.craftSlots[idx] = { itemId: id, qty: (cur ? cur.qty : 0) + 1 };
@@ -2380,14 +2380,14 @@ function renderTempleView(room) {
   const heartQty = itemOwnedQty(me, restoreItem.item);
   const recipes = temple.recipes || [];
 
-  const evolveHtml = `<div class="temple-card">
-    <p class="subhead">Ascension</p>
+  const evolveHtml = `<div class="temple-card temple-card--ascend">
+    <p class="subhead">✦ Ascension</p>
     ${baseCls && evo ? `
-      <p>At level ${evo.level}, ${escapeHtml(baseCls.label)} may ascend into <strong>${escapeHtml(evo.to.label)}</strong>.</p>
-      ${evo.skill ? `<p class="temple-skill">Gains <strong>${escapeHtml(evo.skill.name)}</strong> — ${escapeHtml(evo.skill.description)}</p>` : ""}
+      <p class="ascend-line"><span>${escapeHtml(baseCls.label)}</span><span class="ascend-arrow">➤</span><strong>${escapeHtml(evo.to.label)}</strong></p>
+      <p class="temple-req">Requires level ${evo.level}+ · Ancient Relic (${relicQty} owned)</p>
+      ${evo.skill ? `<p class="temple-skill">Unlocks <strong>${escapeHtml(evo.skill.name)}</strong><span class="muted"> — ${escapeHtml(evo.skill.description)}</span></p>` : ""}
       ${evo.bonusText ? `<p class="temple-bonus">${escapeHtml(evo.bonusText)}</p>` : ""}
     ` : `<p>Your class holds no further form.</p>`}
-    <p class="temple-req">Requires level ${evo ? evo.level : 20}+ · Ancient Relic (${relicQty} owned)</p>
     <button type="button" class="btn btn--gold${canEvolve && baseCls && evo ? "" : " btn--mini-disabled"}" id="btn-temple-evolve">Ascend</button>
   </div>`;
 
@@ -2400,7 +2400,7 @@ function renderTempleView(room) {
 
   const craftHtml = `<div class="temple-card">
     <p class="subhead">Craft</p>
-    <button type="button" class="btn btn--gold" id="btn-open-bench">⚒️ Tezgâhı Aç (${recipes.length} tarif)</button>
+    <button type="button" class="btn btn--gold" id="btn-open-bench">⚒️ Open Workbench (${recipes.length} recipes)</button>
     <div class="craft-grid">${recipes.map((r) => {
       const owned = (r.inputs || []).every((inp) => itemOwnedQty(me, inp.item) >= inp.qty);
       const can = staminaOk && owned && me.gold >= (r.cost.gold || 0) && me.wood >= (r.cost.wood || 0);
@@ -2652,8 +2652,8 @@ function renderInventory(room) {
       // Tüccar geri alımı: değerin %60'ı (değer yoksa altın fiyatından).
       const sellUnit = Math.floor((((typeof item.value === "number" && item.value > 0) ? item.value : (item.price && item.price.gold) || 0)) * 0.6);
       const sellBtns = (!isChest && sellUnit > 0)
-        ? `<button type="button" class="btn btn--mini" data-sell="${inv.itemId}" data-qty="1" title="Tüccara sat: +${sellUnit} altın">Sat +${sellUnit}g</button>` +
-          (inv.qty > 1 ? `<button type="button" class="btn btn--mini" data-sell="${inv.itemId}" data-qty="${inv.qty}" title="Tümünü sat: +${sellUnit * inv.qty} altın">Tümü +${sellUnit * inv.qty}g</button>` : "")
+        ? `<button type="button" class="btn btn--mini" data-sell="${inv.itemId}" data-qty="1" title="Sell to merchant: +${sellUnit} gold">Sell +${sellUnit}g</button>` +
+          (inv.qty > 1 ? `<button type="button" class="btn btn--mini" data-sell="${inv.itemId}" data-qty="${inv.qty}" title="Sell all: +${sellUnit * inv.qty} gold">All +${sellUnit * inv.qty}g</button>` : "")
         : "";
       const action = isChest
         ? `<button type="button" class="btn btn--mini" data-open-chest="${inv.itemId}">Open</button>`
@@ -2814,7 +2814,7 @@ function renderPetsView(room){
     <section class="inv-section">
       <div class="inv-section-head"><span class="subhead" style="margin:0">Collection</span><span class="inv-count">${pets.length} pets</span></div>
       <div class="bag-list">${petsList || '<div class="muted">No pets yet. Hatch eggs above!</div>'}</div>
-      <p class="hint">Baby Lv 1-7 · Young Lv 8+ · Adult Lv 15+. Tamer 3 takar, diğerleri 2.</p>
+      <p class="hint">Baby Lv 1-7 · Young Lv 8+ · Adult Lv 15+. Tamers hold 3, others 2.</p>
     </section>
   `;
   initImages(root);
@@ -2901,11 +2901,11 @@ function renderMap(room) {
       const bid = el.getAttribute("data-boss");
       const b = (CATALOG.bosses||[]).find(x=>x.id===bid);
       if (!b) return;
-      if (el.classList.contains("locked")) { showToast("Önceki boss öldürülmeli."); playSfx("block"); return; }
+      if (el.classList.contains("locked")) { showToast("Defeat the previous boss first."); playSfx("block"); return; }
       // Check if boss dungeon already has a fighting party (single party per boss)
       const bossRank = bid; // boss id same as dungeon rank for new boss dungeons
       const existingBossDungeon = (room.dungeons||[]).find(x=>x.rank===bossRank && x.status==="fighting");
-      if (existingBossDungeon) { showToast("Bu boss'ta başka bir savaş yapılıyor."); return; }
+      if (existingBossDungeon) { showToast("Another fight is already running on this boss."); return; }
       const existingWaiting = (room.dungeons||[]).find(x=>x.rank===bossRank && x.status==="forming");
       if (existingWaiting) {
         socket.emit("dungeon:joinById", {dungeonId: existingWaiting.id});

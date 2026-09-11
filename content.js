@@ -21,7 +21,8 @@ const CONTENT = {
   "leveling": {
     "maxLevel": 50,
     "xpBase": 500,
-    "xpExponent": 1.45
+    "xpExponent": 1.45,
+    "growthScale": 0.02
   },
   "combos": [
     {
@@ -636,14 +637,14 @@ const CONTENT = {
         "skillId": "vine_lash",
         "cost": 3,
         "group": "poison",
-        "desc": "Whipping vines for 1.4� magic - first link of the nature chain."
+        "desc": "Whipping vines for 1.4× magic - first link of the nature chain."
       },
       {
         "id": "g_nat_thorn_volley",
         "skillId": "thorn_volley",
         "cost": 5,
         "group": "poison",
-        "desc": "Thorny barrage for 1.9� magic that bleeds. Requires Vine Lash.",
+        "desc": "Thorny barrage for 1.9× magic that bleeds. Requires Vine Lash.",
         "prereqs": [
           "g_nat_vine_lash"
         ]
@@ -1083,7 +1084,7 @@ const CONTENT = {
         "power": 1,
         "element": "physical",
         "image": "/images/skills/slash.png",
-        "description": "Deals 1� attack damage."
+        "description": "Deals 1× attack damage."
       },
       "startingSkills": [
         "heavy_strike",
@@ -1148,7 +1149,7 @@ const CONTENT = {
         "power": 0.9,
         "element": "physical",
         "image": "/images/skills/quick_shot.png",
-        "description": "Deals 0.9� attack damage."
+        "description": "Deals 0.9× attack damage."
       },
       "startingSkills": [
         "aimed_shot",
@@ -1212,7 +1213,7 @@ const CONTENT = {
         "power": 0.95,
         "element": "arcane",
         "image": "/images/skills/arcane_bolt.png",
-        "description": "Deals 0.95� magic damage."
+        "description": "Deals 0.95× magic damage."
       },
       "startingSkills": [
         "arcane_barrage",
@@ -1277,7 +1278,7 @@ const CONTENT = {
         "power": 1,
         "element": "physical",
         "image": "/images/skills/stab.png",
-        "description": "Deals 1� attack damage."
+        "description": "Deals 1× attack damage."
       },
       "startingSkills": [
         "vampiric_strike",
@@ -1341,7 +1342,7 @@ const CONTENT = {
         "power": 0.95,
         "element": "holy",
         "image": "/images/skills/smite.png",
-        "description": "Deals 0.95� attack damage."
+        "description": "Deals 0.95× attack damage."
       },
       "startingSkills": [
         "holy_strike",
@@ -1405,7 +1406,7 @@ const CONTENT = {
         "power": 1.05,
         "element": "physical",
         "image": "/images/skills/lunge.png",
-        "description": "Deals 1.05� attack damage."
+        "description": "Deals 1.05× attack damage."
       },
       "startingSkills": [
         "execute",
@@ -1469,7 +1470,7 @@ const CONTENT = {
         "power": 0.9,
         "element": "holy",
         "image": "/images/skills/sanct_bolt.png",
-        "description": "Deals 0.9� magic damage."
+        "description": "Deals 0.9× magic damage."
       },
       "startingSkills": [
         "mend",
@@ -1536,7 +1537,7 @@ const CONTENT = {
         "element": "physical",
         "effect": "heavy_hammer_slam",
         "image": "/images/skills/shield_bash.png",
-        "description": "Deals 0.85� attack damage."
+        "description": "Deals 0.85× attack damage."
       },
       "startingSkills": [
         "cleave",
@@ -1600,7 +1601,7 @@ const CONTENT = {
         "power": 1,
         "element": "physical",
         "image": "/images/skills/tame_hit.png",
-        "description": "Deals 1� attack damage."
+        "description": "Deals 1× attack damage."
       },
       "startingSkills": [
         "war_heal",
@@ -1669,7 +1670,7 @@ const CONTENT = {
         "power": 1.15,
         "element": "physical",
         "image": "/images/skills/beast_strike.png",
-        "description": "Deals 1.15� attack damage."
+        "description": "Deals 1.15× attack damage."
       },
       "startingSkills": [
         "battle_fury"
@@ -1728,7 +1729,7 @@ const CONTENT = {
         "power": 1.25,
         "element": "physical",
         "image": "/images/skills/alpha_strike.png",
-        "description": "Deals 1.25� attack damage."
+        "description": "Deals 1.25× attack damage."
       },
       "startingSkills": [
         "war_cry"
@@ -1786,7 +1787,7 @@ const CONTENT = {
         "power": 0.9,
         "element": "nature",
         "image": "/images/skills/vine_lash.png",
-        "description": "Deals 0.9� magic damage."
+        "description": "Deals 0.9× magic damage."
       },
       "startingSkills": [
         "vine_lash",
@@ -1862,7 +1863,7 @@ const CONTENT = {
         "power": 1.1,
         "element": "nature",
         "image": "/images/skills/thorn_volley.png",
-        "description": "Deals 1.1� magic damage."
+        "description": "Deals 1.1× magic damage."
       },
       "startingSkills": [
         "thorn_volley"
@@ -1931,7 +1932,7 @@ const CONTENT = {
         "power": 1.2,
         "element": "nature",
         "image": "/images/skills/forest_renewal.png",
-        "description": "Deals 1.2� magic damage."
+        "description": "Deals 1.2× magic damage."
       },
       "startingSkills": [
         "rejuvenate"
@@ -2001,7 +2002,7 @@ const CONTENT = {
         "power": 1.5,
         "element": "arcane",
         "image": "/images/skills/meteor.png",
-        "description": "Deals 1.5� magic damage."
+        "description": "Deals 1.5× magic damage."
       },
       "startingSkills": [
         "meteor",
@@ -2074,7 +2075,7 @@ const CONTENT = {
         "power": 1.8,
         "element": "arcane",
         "image": "/images/skills/cataclysm.png",
-        "description": "Deals 1.8� magic damage."
+        "description": "Deals 1.8× magic damage."
       },
       "startingSkills": [
         "meteor",
@@ -2152,7 +2153,7 @@ const CONTENT = {
         "power": 1.2,
         "element": "physical",
         "image": "/images/skills/great_slash.png",
-        "description": "Deals 1.2� attack damage."
+        "description": "Deals 1.2× attack damage."
       },
       "startingSkills": [
         "war_cry"
@@ -2215,7 +2216,7 @@ const CONTENT = {
         "power": 1.05,
         "element": "physical",
         "image": "/images/skills/hunter_shot.png",
-        "description": "Deals 1.05� attack damage."
+        "description": "Deals 1.05× attack damage."
       },
       "startingSkills": [
         "volley"
@@ -2278,7 +2279,7 @@ const CONTENT = {
         "power": 1.1,
         "element": "arcane",
         "image": "/images/skills/arcane_blast.png",
-        "description": "Deals 1.1� magic damage."
+        "description": "Deals 1.1× magic damage."
       },
       "startingSkills": [
         "meteor"
@@ -2342,7 +2343,7 @@ const CONTENT = {
         "power": 1.1,
         "element": "shadow",
         "image": "/images/skills/shadow_stab.png",
-        "description": "Deals 1.1� attack damage."
+        "description": "Deals 1.1× attack damage."
       },
       "startingSkills": [
         "shadow_veil"
@@ -2405,7 +2406,7 @@ const CONTENT = {
         "power": 1.1,
         "element": "holy",
         "image": "/images/skills/blessed_blade.png",
-        "description": "Deals 1.1� attack damage."
+        "description": "Deals 1.1× attack damage."
       },
       "startingSkills": [
         "holy_judgement"
@@ -2469,7 +2470,7 @@ const CONTENT = {
         "power": 1.2,
         "element": "shadow",
         "image": "/images/skills/reap.png",
-        "description": "Deals 1.2� attack damage."
+        "description": "Deals 1.2× attack damage."
       },
       "startingSkills": [
         "death_mark"
@@ -2532,7 +2533,7 @@ const CONTENT = {
         "power": 1,
         "element": "holy",
         "image": "/images/skills/hallowed_bolt.png",
-        "description": "Deals 1� magic damage."
+        "description": "Deals 1× magic damage."
       },
       "startingSkills": [
         "divine_blessing"
@@ -2598,7 +2599,7 @@ const CONTENT = {
         "element": "physical",
         "effect": "heavy_hammer_slam",
         "image": "/images/skills/adamant_bash.png",
-        "description": "Deals 0.95� attack damage."
+        "description": "Deals 0.95× attack damage."
       },
       "startingSkills": [
         "bastion"
@@ -2657,7 +2658,7 @@ const CONTENT = {
         "power": 1.3,
         "element": "physical",
         "image": "/images/skills/colossal_slash.png",
-        "description": "Deals 1.3� attack damage."
+        "description": "Deals 1.3× attack damage."
       },
       "startingSkills": [
         "cataclysm"
@@ -2716,7 +2717,7 @@ const CONTENT = {
         "power": 1.15,
         "element": "physical",
         "image": "/images/skills/storm_shot.png",
-        "description": "Deals 1.15� attack damage."
+        "description": "Deals 1.15× attack damage."
       },
       "startingSkills": [
         "storm_barrage"
@@ -2775,7 +2776,7 @@ const CONTENT = {
         "power": 1.2,
         "element": "arcane",
         "image": "/images/skills/primordial_bolt.png",
-        "description": "Deals 1.2� magic damage."
+        "description": "Deals 1.2× magic damage."
       },
       "startingSkills": [
         "comet"
@@ -2835,7 +2836,7 @@ const CONTENT = {
         "power": 1.2,
         "element": "shadow",
         "image": "/images/skills/eclipse_strike.png",
-        "description": "Deals 1.2� attack damage."
+        "description": "Deals 1.2× attack damage."
       },
       "startingSkills": [
         "soul_thief"
@@ -2894,7 +2895,7 @@ const CONTENT = {
         "power": 1.2,
         "element": "holy",
         "image": "/images/skills/radiant_edge.png",
-        "description": "Deals 1.2� attack damage."
+        "description": "Deals 1.2× attack damage."
       },
       "startingSkills": [
         "radiance"
@@ -2954,7 +2955,7 @@ const CONTENT = {
         "power": 1.3,
         "element": "shadow",
         "image": "/images/skills/scythe_sweep.png",
-        "description": "Deals 1.3� attack damage."
+        "description": "Deals 1.3× attack damage."
       },
       "startingSkills": [
         "soul_reap"
@@ -3013,7 +3014,7 @@ const CONTENT = {
         "power": 1.1,
         "element": "holy",
         "image": "/images/skills/divine_light.png",
-        "description": "Deals 1.1� magic damage."
+        "description": "Deals 1.1× magic damage."
       },
       "startingSkills": [
         "resurgence"
@@ -3075,7 +3076,7 @@ const CONTENT = {
         "element": "physical",
         "effect": "heavy_hammer_slam",
         "image": "/images/skills/titan_slam.png",
-        "description": "Deals 1.05� attack damage."
+        "description": "Deals 1.05× attack damage."
       },
       "startingSkills": [
         "immovable"
@@ -10223,7 +10224,7 @@ const CONTENT = {
       "element": "physical",
       "effect": "heavy_hammer_slam",
       "image": "/images/skills/heavy_strike.png",
-      "description": "Deals 1.6� attack damage."
+      "description": "Deals 1.6× attack damage."
     },
     {
       "id": "defend",
@@ -10242,7 +10243,7 @@ const CONTENT = {
       "power": 1.9,
       "element": "arcane",
       "image": "/images/skills/arcane_barrage.png",
-      "description": "Deals 1.9� magic damage."
+      "description": "Deals 1.9× magic damage."
     },
     {
       "id": "mana_shield",
@@ -10261,7 +10262,7 @@ const CONTENT = {
       "power": 2,
       "element": "physical",
       "image": "/images/skills/aimed_shot.png",
-      "description": "Deals 2� attack damage."
+      "description": "Deals 2× attack damage."
     },
     {
       "id": "piercing_shot",
@@ -10271,7 +10272,7 @@ const CONTENT = {
       "power": 1.3,
       "element": "physical",
       "image": "/images/skills/piercing_shot.png",
-      "description": "Deals 1.3� attack damage."
+      "description": "Deals 1.3× attack damage."
     },
     {
       "id": "vampiric_strike",
@@ -10283,7 +10284,7 @@ const CONTENT = {
       "element": "shadow",
       "effect": "shadow_scythe_reap",
       "image": "/images/skills/vampiric_strike.png",
-      "description": "Deals 2� attack damage and heals for half the damage dealt."
+      "description": "Deals 2× attack damage and heals for half the damage dealt."
     },
     {
       "id": "shadow_meld",
@@ -10302,7 +10303,7 @@ const CONTENT = {
       "power": 1.5,
       "element": "holy",
       "image": "/images/skills/holy_strike.png",
-      "description": "Deals 1.5� attack damage."
+      "description": "Deals 1.5× attack damage."
     },
     {
       "id": "divine_guard",
@@ -10322,7 +10323,7 @@ const CONTENT = {
       "element": "shadow",
       "effect": "shadow_scythe_reap",
       "image": "/images/skills/execute.png",
-      "description": "Deals 2.5� attack damage."
+      "description": "Deals 2.5× attack damage."
     },
     {
       "id": "shadow_step",
@@ -10378,7 +10379,7 @@ const CONTENT = {
       "element": "physical",
       "effect": "axe_cleave_horizontal",
       "image": "/images/skills/cleave.png",
-      "description": "Deals 1.5� attack damage."
+      "description": "Deals 1.5× attack damage."
     },
     {
       "id": "shield_wall",
@@ -10407,7 +10408,7 @@ const CONTENT = {
       "element": "physical",
       "effect": "heavy_hammer_slam",
       "image": "/images/skills/war_cry.png",
-      "description": "Deals 2.6� attack damage."
+      "description": "Deals 2.6× attack damage."
     },
     {
       "id": "volley",
@@ -10417,7 +10418,7 @@ const CONTENT = {
       "power": 2.4,
       "element": "physical",
       "image": "/images/skills/volley.png",
-      "description": "Deals 2.4� attack damage."
+      "description": "Deals 2.4× attack damage."
     },
     {
       "id": "meteor",
@@ -10428,7 +10429,7 @@ const CONTENT = {
       "element": "arcane",
       "effect": "heavy_hammer_slam",
       "image": "/images/skills/meteor.png",
-      "description": "Deals 2.8� magic damage."
+      "description": "Deals 2.8× magic damage."
     },
     {
       "id": "shadow_veil",
@@ -10440,7 +10441,7 @@ const CONTENT = {
       "element": "shadow",
       "effect": "shadow_scythe_reap",
       "image": "/images/skills/shadow_veil.png",
-      "description": "Deals 2.6� attack damage and heals for 40% of the damage dealt."
+      "description": "Deals 2.6× attack damage and heals for 40% of the damage dealt."
     },
     {
       "id": "holy_judgement",
@@ -10451,7 +10452,7 @@ const CONTENT = {
       "healSelfPct": 0.4,
       "element": "holy",
       "image": "/images/skills/holy_judgement.png",
-      "description": "Deals 2.2� holy damage and restores 40% of your max HP."
+      "description": "Deals 2.2× holy damage and restores 40% of your max HP."
     },
     {
       "id": "death_mark",
@@ -10462,7 +10463,7 @@ const CONTENT = {
       "element": "shadow",
       "effect": "shadow_scythe_reap",
       "image": "/images/skills/death_mark.png",
-      "description": "Deals 3� attack damage."
+      "description": "Deals 3× attack damage."
     },
     {
       "id": "divine_blessing",
@@ -10491,7 +10492,7 @@ const CONTENT = {
       "element": "physical",
       "effect": "heavy_hammer_slam",
       "image": "/images/skills/cataclysm.png",
-      "description": "Deals 3� attack damage."
+      "description": "Deals 3× attack damage."
     },
     {
       "id": "storm_barrage",
@@ -10501,7 +10502,7 @@ const CONTENT = {
       "power": 2.9,
       "element": "physical",
       "image": "/images/skills/storm_barrage.png",
-      "description": "Deals 2.9� attack damage."
+      "description": "Deals 2.9× attack damage."
     },
     {
       "id": "comet",
@@ -10512,7 +10513,7 @@ const CONTENT = {
       "element": "arcane",
       "effect": "heavy_hammer_slam",
       "image": "/images/skills/comet.png",
-      "description": "Deals 3.2� magic damage."
+      "description": "Deals 3.2× magic damage."
     },
     {
       "id": "soul_thief",
@@ -10524,7 +10525,7 @@ const CONTENT = {
       "element": "shadow",
       "effect": "shadow_scythe_reap",
       "image": "/images/skills/soul_thief.png",
-      "description": "Deals 3� attack damage and heals for half the damage dealt."
+      "description": "Deals 3× attack damage and heals for half the damage dealt."
     },
     {
       "id": "radiance",
@@ -10535,7 +10536,7 @@ const CONTENT = {
       "healSelfPct": 0.6,
       "element": "holy",
       "image": "/images/skills/radiance.png",
-      "description": "Deals 2.5� holy damage and restores 60% of your max HP."
+      "description": "Deals 2.5× holy damage and restores 60% of your max HP."
     },
     {
       "id": "soul_reap",
@@ -10546,7 +10547,7 @@ const CONTENT = {
       "element": "shadow",
       "effect": "shadow_scythe_reap",
       "image": "/images/skills/soul_reap.png",
-      "description": "Deals 3.4� attack damage."
+      "description": "Deals 3.4× attack damage."
     },
     {
       "id": "resurgence",
@@ -10913,7 +10914,7 @@ const CONTENT = {
       "power": 2,
       "element": "frost",
       "image": "/images/skills/frost_bolt.png",
-      "description": "Deals 2� magicPower frost damage. May freeze the target."
+      "description": "Deals 2× magicPower frost damage. May freeze the target."
     },
     {
       "id": "frost_nova",
@@ -10930,7 +10931,7 @@ const CONTENT = {
       ],
       "duration": 1,
       "image": "/images/skills/frost_nova.png",
-      "description": "Deals 1.8� magicPower frost damage and freezes the target for 1 turn."
+      "description": "Deals 1.8× magicPower frost damage and freezes the target for 1 turn."
     },
     {
       "id": "water_splash",
@@ -10947,7 +10948,7 @@ const CONTENT = {
       ],
       "duration": 2,
       "image": "/images/skills/water_splash.png",
-      "description": "Deals 1.5� magicPower water damage and soaks the target for 2 turns (wet)."
+      "description": "Deals 1.5× magicPower water damage and soaks the target for 2 turns (wet)."
     },
     {
       "id": "lightning_bolt",
@@ -10957,7 +10958,7 @@ const CONTENT = {
       "power": 1.8,
       "element": "lightning",
       "image": "/images/skills/lightning_bolt.png",
-      "description": "Deals 1.8� magicPower lightning damage, +50% vs wet (Overcharge)."
+      "description": "Deals 1.8× magicPower lightning damage, +50% vs wet (Overcharge)."
     },
     {
       "id": "war_heal",
@@ -10969,7 +10970,7 @@ const CONTENT = {
         "mult": 1.3
       },
       "image": "/images/skills/war_heal.png",
-      "description": "Heals 1.3� attack power. Scales with healPower."
+      "description": "Heals 1.3× attack power. Scales with healPower."
     },
     {
       "id": "magic_mend",
@@ -10981,7 +10982,7 @@ const CONTENT = {
         "mult": 2
       },
       "image": "/images/skills/magic_mend.png",
-      "description": "Heals 2� magicPower. Scales with healPower."
+      "description": "Heals 2× magicPower. Scales with healPower."
     },
     {
       "id": "scorch_mark",
@@ -10999,7 +11000,7 @@ const CONTENT = {
       "duration": 3,
       "effect": "fire_slash_arc",
       "image": "/images/skills/scorch_mark.png",
-      "description": "Sear the foe for 1.1� magicPower and set it burning (4% max HP / round for 3 rounds)."
+      "description": "Sear the foe for 1.1× magicPower and set it burning (4% max HP / round for 3 rounds)."
     },
     {
       "id": "ember_storm",
@@ -11017,7 +11018,7 @@ const CONTENT = {
       "duration": 3,
       "effect": "ember_whirlwind",
       "image": "/images/skills/ember_storm.png",
-      "description": "A whirl of cinders deals 1.6� magicPower and leaves the foe burning."
+      "description": "A whirl of cinders deals 1.6× magicPower and leaves the foe burning."
     },
     {
       "id": "blaze_rupture",
@@ -11028,7 +11029,7 @@ const CONTENT = {
       "element": "fire",
       "effect": "magma_eruption_burst",
       "image": "/images/skills/blaze_rupture.png",
-      "description": "Detonate magma for 2.3� magicPower; burning targets take +60%."
+      "description": "Detonate magma for 2.3× magicPower; burning targets take +60%."
     },
     {
       "id": "cold_snap",
@@ -11046,7 +11047,7 @@ const CONTENT = {
       "duration": 2,
       "effect": "frost_crystal_spear",
       "image": "/images/skills/cold_snap.png",
-      "description": "Hurl a frost spear for 1.3� magicPower and freeze the target for 2 rounds."
+      "description": "Hurl a frost spear for 1.3× magicPower and freeze the target for 2 rounds."
     },
     {
       "id": "glacial_shatter",
@@ -11057,7 +11058,7 @@ const CONTENT = {
       "element": "frost",
       "effect": "ice_spikes_ground",
       "image": "/images/skills/glacial_shatter.png",
-      "description": "Implode the ice for 2.4� magicPower; frozen targets take +65%."
+      "description": "Implode the ice for 2.4× magicPower; frozen targets take +65%."
     },
     {
       "id": "volt_conduit",
@@ -11075,7 +11076,7 @@ const CONTENT = {
       "duration": 3,
       "effect": "electric_sparks_shower",
       "image": "/images/skills/volt_conduit.png",
-      "description": "Channel crackling current for 1.2� magicPower and electrify the target."
+      "description": "Channel crackling current for 1.2× magicPower and electrify the target."
     },
     {
       "id": "static_overload",
@@ -11086,7 +11087,7 @@ const CONTENT = {
       "element": "lightning",
       "effect": "lightning_strike_heavy",
       "image": "/images/skills/static_overload.png",
-      "description": "Call down 2.2� magicPower lightning; wet targets take +50%."
+      "description": "Call down 2.2× magicPower lightning; wet targets take +50%."
     },
     {
       "id": "toxin_drench",
@@ -11104,7 +11105,7 @@ const CONTENT = {
       "duration": 3,
       "effect": "mud_splash_entangle",
       "image": "/images/skills/toxin_drench.png",
-      "description": "Soak the foe in venom for 0.9� attack; poison deals 6% max HP / round."
+      "description": "Soak the foe in venom for 0.9× attack; poison deals 6% max HP / round."
     },
     {
       "id": "venom_burst",
@@ -11115,7 +11116,7 @@ const CONTENT = {
       "element": "physical",
       "effect": "earth_fissure_rupture",
       "image": "/images/skills/venom_burst.png",
-      "description": "Burst the blisters for 2.2� attack; poisoned targets take +50%."
+      "description": "Burst the blisters for 2.2× attack; poisoned targets take +50%."
     },
     {
       "id": "broken_guard",
@@ -11137,7 +11138,7 @@ const CONTENT = {
       "duration": 2,
       "effect": "shield_bash_shock",
       "image": "/images/skills/broken_guard.png",
-      "description": "Shatter defenses for 1� attack: the foe takes 25% more and deals 20% less for 2 rounds."
+      "description": "Shatter defenses for 1× attack: the foe takes 25% more and deals 20% less for 2 rounds."
     },
     {
       "id": "shatter_point",
@@ -11148,7 +11149,7 @@ const CONTENT = {
       "element": "physical",
       "effect": "piercing_rapier_thrust",
       "image": "/images/skills/shatter_point.png",
-      "description": "Strike the weak point for 1.6� attack; exposed targets take +80%."
+      "description": "Strike the weak point for 1.6× attack; exposed targets take +80%."
     },
     {
       "id": "devastate",
@@ -11159,7 +11160,7 @@ const CONTENT = {
       "element": "physical",
       "effect": "heavy_hammer_slam",
       "image": "/images/skills/devastate.png",
-      "description": "A crushing blow for 2.6� attack; weakened targets take +35%."
+      "description": "A crushing blow for 2.6× attack; weakened targets take +35%."
     },
     {
       "id": "vine_lash",
@@ -11170,7 +11171,7 @@ const CONTENT = {
       "element": "nature",
       "effect": "nature_vine_burst",
       "image": "/images/skills/vine_lash.png",
-      "description": "Whipping vines strike for 1.4� magic power."
+      "description": "Whipping vines strike for 1.4× magic power."
     },
     {
       "id": "thorn_volley",
@@ -11188,7 +11189,7 @@ const CONTENT = {
       ],
       "duration": 3,
       "image": "/images/skills/thorn_volley.png",
-      "description": "A barrage of thorns for 1.9� magic that bleeds the target."
+      "description": "A barrage of thorns for 1.9× magic that bleeds the target."
     },
     {
       "id": "forest_renewal",

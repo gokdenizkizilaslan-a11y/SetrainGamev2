@@ -75,13 +75,19 @@ function applyClassGrowth(player) {
   const cls = getClass(player.character);
   if (!cls) return;
   const g = cls.growth;
-  player.maxHp += g.hp;
-  player.hp = Math.min(player.maxHp, player.hp + g.hp);
-  player.attack += g.attack;
-  player.mana += g.mana;
-  player.resistance += g.resistance;
-  player.magicPower += g.magicPower;
-  player.healPower += g.healPower || 0;
+  // Level-scaled growth: higher levels gain more per level-up.
+  // growthScale 0 = flat (old behavior, exactly). e.g. 0.02 → level 48
+  // gains ~1.94x the base growth. Crit stays flat (percentage points).
+  const scale = (CONTENT.leveling && CONTENT.leveling.growthScale) || 0;
+  const mult = 1 + Math.max(0, (player.level || 1) - 1) * Math.max(0, scale);
+  const gain = (v) => Math.round((v || 0) * mult);
+  player.maxHp += gain(g.hp);
+  player.hp = Math.min(player.maxHp, player.hp + gain(g.hp));
+  player.attack += gain(g.attack);
+  player.mana += gain(g.mana);
+  player.resistance += gain(g.resistance);
+  player.magicPower += gain(g.magicPower);
+  player.healPower += gain(g.healPower || 0);
   player.critChance = (player.critChance || 0) + (g.critChance || 0);
   player.critDamage = (player.critDamage || 0) + (g.critDamage || 0);
 }
@@ -280,8 +286,10 @@ function createPlayer({ id, name, character, isHost = false }) {
   // stats match a naturally leveled character. Normal classes skip this.
   const startLevel = Math.min(CONTENT.leveling.maxLevel, Math.max(1, Math.floor((cls && cls.startLevel) || 1)));
   if (startLevel > 1) {
-    for (let lv = 1; lv < startLevel; lv++) applyClassGrowth(player);
-    player.level = startLevel;
+    for (let lv = 1; lv < startLevel; lv++) {
+      player.level = lv + 1;
+      applyClassGrowth(player);
+    }
     player.hp = player.maxHp;
     player.mana = player.maxMana;
   }
