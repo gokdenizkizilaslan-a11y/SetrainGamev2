@@ -136,6 +136,31 @@ function lineageSkillTree(slug) {
   return st.lineages[chain[0]] || null;
 }
 
+// Ancestors-or-self by baseClass links: [current, base, base-of-base, ...].
+// Used for class-gated skill visibility (a class sees its own path only).
+function ancestorsOf(slug) {
+  const out = [slug];
+  const seen = new Set([slug]);
+  let c = getClass(slug);
+  while (c && c.baseClass && !seen.has(c.baseClass)) {
+    c = getClass(c.baseClass);
+    if (!c) break;
+    seen.add(c.slug);
+    out.push(c.slug);
+  }
+  return out;
+}
+
+// Which class a tree node belongs to: explicit ownerClass, else the lineage
+// root that contains it, else null (global nodes are open to every class).
+function nodeScope(st, node) {
+  if (node.ownerClass) return node.ownerClass;
+  for (const [key, lin] of Object.entries((st && st.lineages) || {})) {
+    if ((lin.nodes || []).some((n) => n.id === node.id)) return key;
+  }
+  return null;
+}
+
 function seedOwnedTreeNodes(player) {
   const spec = lineageSkillTree(player.character);
   player.learnedTreeNodes = player.learnedTreeNodes || [];
@@ -167,8 +192,13 @@ function learnTreeNode(player, nodeId) {
     const chain = lineageFor(player.character);
     if (!chain.includes(node.ownerClass)) throw new Error("That skill is not part of your class path.");
   }
-  if (node.minLevel && player.level < node.minLevel) {
-    throw new Error("Requires level " + node.minLevel + ".");
+  // Class-gated visibility: a lineage node is learnable only if its class is
+  // the player's own or an ancestor (evolved classes see previous + own).
+  // Global nodes (scope null) stay open to every class.
+  // NOTE: no level requirement — skills open with skill points only.
+  const scope = nodeScope(st, node);
+  if (scope && !ancestorsOf(player.character).includes(scope)) {
+    throw new Error("That skill is not part of your class path.");
   }
   const cost = node.cost || 1;
   if ((player.skillPoints || 0) < cost) throw new Error("Not enough skill points (" + cost + " needed).");
@@ -569,4 +599,5 @@ module.exports = {
   eatFood,
   setSkillLoadout,
   learnTreeNode,
+  ancestorsOf,
 };

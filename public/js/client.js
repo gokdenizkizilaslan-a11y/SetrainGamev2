@@ -709,6 +709,51 @@ $("music-volume").addEventListener("input", () => {
 
 $("music-audio").addEventListener("ended", nextTrack);
 
+// ---- Combat hotkeys ----
+// Q W E R T Y = skill slots (left to right), 1-5 = targets by visual order
+// (living enemies left to right, living allies left to right).
+// Handlers behind the buttons already guard turn/mana/cooldown, and typing
+// in inputs is ignored — so this cannot break anything.
+const SKILL_HOTKEYS = ["q", "w", "e", "r", "t", "y"];
+
+function hotkeyClickSlot(list, n) {
+  const el = list[n];
+  if (!el) return;
+  if (el.classList.contains("skill-slot--disabled") || el.classList.contains("skill-slot--used")) return;
+  el.click();
+}
+
+document.addEventListener("keydown", (e) => {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  const t = e.target;
+  if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT" || t.isContentEditable)) return;
+  const k = (e.key || "").toLowerCase();
+  const qi = SKILL_HOTKEYS.indexOf(k);
+  const ni = ["1", "2", "3", "4", "5"].indexOf(k);
+  if (qi === -1 && ni === -1) return;
+  const dRoot = document.getElementById("dungeon-content");
+  const dOpen = state.dungeonOpen && dRoot && !document.getElementById("dungeon-view").classList.contains("hidden");
+  const pRoot = document.getElementById("pvp-content");
+  const pOpen = state.pvpOpen && pRoot && !document.getElementById("pvp-view").classList.contains("hidden");
+  if (!dOpen && !pOpen) return;
+  if (qi !== -1) {
+    const root = dOpen ? dRoot : pRoot;
+    const sel = dOpen ? ".skill-slot[data-skill]" : ".skill-slot[data-pskill]";
+    hotkeyClickSlot([...root.querySelectorAll(sel)], qi);
+    return;
+  }
+  // Number keys pick a target in visual order (only dungeon has target picking).
+  if (dOpen && state.selectedSkill) {
+    if (state.selectedSkill.target === "enemy") {
+      const list = [...dRoot.querySelectorAll(".enemy.enemy--targetable")];
+      if (list[ni]) list[ni].click();
+    } else if (state.selectedSkill.target === "ally") {
+      const list = [...dRoot.querySelectorAll(".fighter.fighter--targetable")];
+      if (list[ni]) list[ni].click();
+    }
+  }
+});
+
 // Parça bitmeden fade-out başlat (doğal bitişte kuyruk kesilmesin).
 $("music-audio").addEventListener("timeupdate", () => {
   const audio = $("music-audio");

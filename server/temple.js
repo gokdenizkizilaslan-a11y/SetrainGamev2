@@ -2,19 +2,35 @@ const { CONTENT, getClass, getItem } = require("../content");
 const { requirePlaying, spendStamina } = require("./town");
 const { hasItem, removeItem, addItem, applyStatDelta } = require("./players");
 
-function evolve(room, player) {
+function evolve(room, player, targetTo) {
   requirePlaying(room, player);
   const baseCls = getClass(player.character);
-  if (!baseCls || !baseCls.evolution) {
+  if (!baseCls) {
     throw new Error("Your class has no ascension.");
   }
-  if (player.level < (baseCls.evolution.level || 20)) {
-    throw new Error(`You must reach level ${baseCls.evolution.level || 20} to ascend.`);
+  // One class may offer several upper classes (branching ascension).
+  // The player picks one; without a pick the first route is used.
+  const routes = Array.isArray(baseCls.evolutions) && baseCls.evolutions.length
+    ? baseCls.evolutions
+    : (baseCls.evolution ? [baseCls.evolution] : []);
+  if (!routes.length) {
+    throw new Error("Your class has no ascension.");
+  }
+  let route = routes[0];
+  if (targetTo) {
+    const picked = routes.find((r) => r && r.to === targetTo);
+    if (!picked) {
+      throw new Error("That ascension is not offered to your class.");
+    }
+    route = picked;
+  }
+  if (player.level < (route.level || 20)) {
+    throw new Error(`You must reach level ${route.level || 20} to ascend.`);
   }
   if (!hasItem(player, "ancient_relic", 1)) {
     throw new Error("You need an Ancient Relic to ascend.");
   }
-  const evolvedCls = getClass(baseCls.evolution.to);
+  const evolvedCls = getClass(route.to);
   if (!evolvedCls) {
     throw new Error("That ascension is not written in the temple.");
   }
@@ -29,7 +45,7 @@ function evolve(room, player) {
   // the Skill Tree is now the path to learning it (after ascending).
   // Ascend cinematic: optional per-evolution presentation (color/sound/title),
   // with safe defaults so old evolutions get the overlay too.
-  const evo = baseCls.evolution || {};
+  const evo = route || {};
   return {
     type: "temple",
     text: `You ascend into ${evolvedCls.label}!`,

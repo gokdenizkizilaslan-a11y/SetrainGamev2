@@ -1153,14 +1153,36 @@ function treeNodeState(node, ts, player) {
       reason = "Requires: " + ((preSkill && preSkill.name) || (pn && pn.id) || p);
     }
   }
-  if (unlocked && node.minLevel && player.level < node.minLevel) {
-    unlocked = false;
-    reason = "Requires level " + node.minLevel;
-  }
+  // NOTE: no level requirement — skills open with skill points only.
   if (!unlocked) return { s: "locked", reason };
   const cost = node.cost || 1;
   if (player.skillPoints < cost) return { s: "noPts", reason: "Not enough skill points (" + cost + " needed)" };
   return { s: "open", reason: "" };
+}
+
+// Ancestors-or-self by baseClass links. A class sees its own path's nodes
+// only (base sees own starters; evolved sees previous + own). Global tab stays
+// open to every class.
+function classAncestors(slug) {
+  const list = CATALOG.classes || [];
+  const out = [slug];
+  const seen = new Set([slug]);
+  let c = list.find((x) => x.slug === slug);
+  while (c && c.baseClass && !seen.has(c.baseClass)) {
+    c = list.find((x) => x.slug === c.baseClass);
+    if (!c) break;
+    seen.add(c.slug);
+    out.push(c.slug);
+  }
+  return out;
+}
+
+function treeNodeVisible(node, me, isClassTab, ts) {
+  if (treeNodeIsLearned(node, ts)) return true;
+  if (!isClassTab) return true;
+  const scope = node.ownerClass || (ts.lineage && ts.lineage[0]);
+  if (!scope) return true;
+  return classAncestors(me.character).includes(scope);
 }
 
 function comboHintsFor(skill) {
@@ -1247,7 +1269,6 @@ function renderTreeMap(nodes, ts, me) {
       if (sk && sk.description) titleParts.push(sk.description);
       if (n.desc) titleParts.push(n.desc);
       titleParts.push("Cost: " + (n.cost || 1) + " skill point" + ((n.cost || 1) === 1 ? "" : "s"));
-      if (n.minLevel) titleParts.push("Level " + n.minLevel + "+");
       if (stt.s === "locked" || stt.s === "noPts") titleParts.push(stt.reason);
       const hints = comboHintsFor(sk);
       if (hints.length) titleParts.push("Combo: " + hints.join(" · "));
@@ -1413,7 +1434,8 @@ function renderSkillTreeView(room) {
   const ts = skillTreeInfo(me);
   const st = ts.st;
   const showClass = state.skillTreeTab === "class";
-  const nodes = showClass && ts.spec ? ts.spec.nodes : ts.global;
+  const allNodes = showClass && ts.spec ? ts.spec.nodes : ts.global;
+  const nodes = (allNodes || []).filter((n) => treeNodeVisible(n, me, showClass, ts));
   const classLabelText = ts.lineage.map((s) => (CATALOG.classes.find((c) => c.slug === s) || {}).label || s).join(" → ");
   content.innerHTML = `
     <div class="skilltree">
@@ -1822,6 +1844,7 @@ function renderCombat(room, root) {
       const dead = m.hp <= 0;
       const targetable = canAct && state.selectedSkill && state.selectedSkill.target === "enemy" && !dead;
       return `<button type="button" class="enemy${dead ? " enemy--dead" : ""}${targetable ? " enemy--targetable" : ""}" data-enemy="${i}">
+        ${targetable ? `<span class="tgtkey">${d.wave.slice(0, i + 1).filter((x) => x.hp > 0).length}</span>` : ""}
         <span class="portrait portrait--monster monster-portrait" data-img="${imgFor(m.kind, "monster")}" data-variant="monster"></span>
         <span class="enemy-meta">
           <span class="enemy-name">${escapeHtml(m.name)}</span>
@@ -1834,11 +1857,12 @@ function renderCombat(room, root) {
     .join("");
 
   const partyHtml = members
-    .map((p) => {
+    .map((p, fi) => {
       const frame = p.anomaly ? ` style="--frame:${p.anomaly.frameColor}"` : "";
       const targetable = canAct && state.selectedSkill && state.selectedSkill.target === "ally" && p.hp > 0;
       const isCurrent = d.phase === "players" && d.currentTurnId === p.id;
       return `<button type="button" class="fighter${p.hp <= 0 ? " fighter--down" : ""}${isCurrent ? " fighter--turn" : ""}${targetable ? " fighter--targetable" : ""}" data-fighter="${p.id}">
+        ${targetable ? `<span class="tgtkey">${members.slice(0, fi + 1).filter((x) => x.hp > 0).length}</span>` : ""}
         <span class="portrait portrait--${p.character} fighter-portrait" data-img="${imgFor(p.character, "class")}" data-variant="${p.character}"${frame}></span>
         <span class="fighter-name">${escapeHtml(p.name)}${p.id === d.leaderId ? " ★" : ""}${isCurrent ? ' <span class="turn-tag">turn</span>' : ""}</span>
         <span class="hpbar"><span class="hpbar-fill hpbar-fill--party" style="width:${Math.round((p.hp / p.maxHp) * 100)}%"></span></span>
@@ -1860,7 +1884,7 @@ function renderCombat(room, root) {
   const usedIds = [...usedIdsRaw, ...pending];
   const cdMap = (d.cooldowns && d.cooldowns[me.id]) || {};
   const skillsHtml = combatLoadout(me)
-    .map((s) => {
+    .map((s, si) => {
       if (!s) {
         return `<div class="skill-slot skill-slot--empty"></div>`;
       }
@@ -1870,6 +1894,7 @@ function renderCombat(room, root) {
       const picked = state.selectedSkill && state.selectedSkill.id === s.id;
       const disabled = !canAct || !affordable || usedNow || cdLeft > 0;
       return `<button type="button" class="skill-slot${disabled ? " skill-slot--disabled" : ""}${picked ? " skill-slot--picked" : ""}${usedNow ? " skill-slot--used" : ""}" data-skill="${s.id}" data-target="${s.target}">
+        ${"QWERTY"[si] ? `<span class="hotkey">${"QWERTY"[si]}</span>` : ""}
         ${skillTipEl(s)}
         ${skillIconEl(s)}
         <span class="skill-name">${escapeHtml(s.name)}</span>
@@ -2079,13 +2104,13 @@ function renderPvpView(room){
   const canAct=isMyTurn && me && me.hp>0;
   const usedIds = (d.usedSkills && d.usedSkills[me.id])||[];
   const cdMap = (d.cooldowns && d.cooldowns[me.id])||{};
-  const skillsHtml = combatLoadout(me).map(s=>{
+  const skillsHtml = combatLoadout(me).map((s, si)=>{
     if(!s) return `<div class="skill-slot skill-slot--empty"></div>`;
     const affordable=me.mana>=(s.mana||0);
     const usedNow=usedIds.includes(s.id);
     const cdLeft=cdMap[s.id]||0;
     const disabled=!canAct||!affordable||usedNow||cdLeft>0;
-    return `<button type="button" class="skill-slot${disabled?" skill-slot--disabled":""}${usedNow?" skill-slot--used":""}" data-pskill="${s.id}">${skillTipEl(s)}${skillIconEl(s)}<span class="skill-name">${escapeHtml(s.name)}</span><span class="skill-mana">${s.mana||0} mana</span>${usedNow?'<span class="skill-used-tag">Used</span>':""}${!usedNow&&cdLeft>0?`<span class="skill-used-tag">⏳${cdLeft}</span>`:""}</button>`;
+    return `<button type="button" class="skill-slot${disabled?" skill-slot--disabled":""}${usedNow?" skill-slot--used":""}" data-pskill="${s.id}">${"QWERTY"[si] ? `<span class="hotkey">${"QWERTY"[si]}</span>` : ""}${skillTipEl(s)}${skillIconEl(s)}<span class="skill-name">${escapeHtml(s.name)}</span><span class="skill-mana">${s.mana||0} mana</span>${usedNow?'<span class="skill-used-tag">Used</span>':""}${!usedNow&&cdLeft>0?`<span class="skill-used-tag">⏳${cdLeft}</span>`:""}</button>`;
   }).join("");
   const oppFrame=opp && opp.anomaly?` style="--frame:${opp.anomaly.frameColor}"`:"";
   const meFrame=me && me.anomaly?` style="--frame:${me.anomaly.frameColor}"`:"";
@@ -2377,23 +2402,29 @@ function renderTempleView(room) {
   const staminaOk = me.stamina >= st;
   const maxLives = (CATALOG.temple && CATALOG.temple.maxLives) || 3;
   const baseCls = CATALOG.classes.find((c) => c.slug === me.character);
-  const evo = (temple.evolutions || []).find((e) => e.from === me.character);
-  const canEvolve = staminaOk && me.level >= (evo ? evo.level : 20) && itemOwnedQty(me, "ancient_relic") >= 1;
+  const evos = (temple.evolutions || []).filter((e) => e.from === me.character);
+  const canEvolve = (ev) => staminaOk && me.level >= (ev ? ev.level : 20) && itemOwnedQty(me, "ancient_relic") >= 1;
   const relicQty = itemOwnedQty(me, "ancient_relic");
   const restoreItem = temple.restore || {};
   const canRestore = staminaOk && me.lives < maxLives && itemOwnedQty(me, restoreItem.item) >= 1;
   const heartQty = itemOwnedQty(me, restoreItem.item);
   const recipes = temple.recipes || [];
 
-  const evolveHtml = `<div class="temple-card temple-card--ascend">
+  const evoCard = (ev) => `<div class="temple-card temple-card--ascend">
     <p class="subhead">✦ Ascension</p>
-    ${baseCls && evo ? `
-      <p class="ascend-line"><span>${escapeHtml(baseCls.label)}</span><span class="ascend-arrow">➤</span><strong>${escapeHtml(evo.to.label)}</strong></p>
-      <p class="temple-req">Requires level ${evo.level}+ · Ancient Relic (${relicQty} owned)</p>
-      ${evo.skill ? `<p class="temple-skill">Unlocks <strong>${escapeHtml(evo.skill.name)}</strong><span class="muted"> — ${escapeHtml(evo.skill.description)}</span></p>` : ""}
-      ${evo.bonusText ? `<p class="temple-bonus">${escapeHtml(evo.bonusText)}</p>` : ""}
+    ${baseCls ? `
+      <p class="ascend-line"><span>${escapeHtml(baseCls.label)}</span><span class="ascend-arrow">➤</span><strong>${escapeHtml(ev.to.label)}</strong></p>
+      <p class="temple-req">Requires level ${ev.level}+ · Ancient Relic (${relicQty} owned)</p>
+      ${ev.skill ? `<p class="temple-skill">Unlocks <strong>${escapeHtml(ev.skill.name)}</strong><span class="muted"> — ${escapeHtml(ev.skill.description)}</span></p>` : ""}
+      ${ev.bonusText ? `<p class="temple-bonus">${escapeHtml(ev.bonusText)}</p>` : ""}
     ` : `<p>Your class holds no further form.</p>`}
-    <button type="button" class="btn btn--gold${canEvolve && baseCls && evo ? "" : " btn--mini-disabled"}" id="btn-temple-evolve">Ascend</button>
+    <button type="button" class="btn btn--gold${canEvolve(ev) && baseCls ? "" : " btn--mini-disabled"}" data-evolve-to="${escapeHtml(ev.to.slug)}">Ascend${evos.length > 1 ? ` → ${escapeHtml(ev.to.label)}` : ""}</button>
+  </div>`;
+  const evolveHtml = evos.length
+    ? evos.map(evoCard).join("")
+    : `<div class="temple-card temple-card--ascend">
+    <p class="subhead">✦ Ascension</p>
+    <p>Your class holds no further form.</p>
   </div>`;
 
   const restoreHtml = `<div class="temple-card">
@@ -2443,8 +2474,9 @@ function renderTempleView(room) {
     <p class="subhead">The Ancient Temple remembers a purpose older than the kingdom.</p>
     <div class="temple-grid">${evolveHtml}${restoreHtml}${craftHtml}${reviveHtml}</div>`;
 
-  const evBtn = root.querySelector("#btn-temple-evolve");
-  if (evBtn) evBtn.addEventListener("click", () => socket.emit("temple:evolve"));
+  root.querySelectorAll("[data-evolve-to]").forEach((b) =>
+    b.addEventListener("click", () => socket.emit("temple:evolve", { to: b.getAttribute("data-evolve-to") }))
+  );
   const benchBtn = root.querySelector("#btn-open-bench");
   if (benchBtn) benchBtn.addEventListener("click", () => {
     state.craftOpen = true;
@@ -2889,7 +2921,9 @@ function renderMap(room) {
   }
   pinsEl.innerHTML = bosses.map((b,i)=>{
     const n = bosses.length;
-    const x = n === 1 ? 50 : 12 + (i * (n > 1 ? 76 / (n - 1) : 0)); // tek boss ortada, çoklu boss tüm haritaya yayılır
+    // Sabit slotlar: ilk boss %12'de, her boss +15 puan sağda. Yeni boss en
+    // sağa eklenir, eskiler kımıldamaz. Tek boss ortalanır.
+    const x = n === 1 ? 50 : 12 + i * 15;
     const y = 50 + Math.sin(i*0.9)*12;
     const locked = b.unlockAfter && !kills.includes(b.unlockAfter);
     const icon = b.element==="fire"?"🔥":b.element==="frost"?"❄️":b.element==="shadow"?"👁️":b.element==="arcane"?"⚡":"💀";
@@ -2900,6 +2934,15 @@ function renderMap(room) {
   }).join("");
   // Reset transform
   mapState.scale = 1; mapState.x=0; mapState.y=0;
+  // Harita boss sayısına göre sağa büyür (yeni boss her zaman en sağda).
+  const n = bosses.length;
+  const mapW = n <= 1 ? 100 : 12 + (n - 1) * 15 + 12;
+  if (inner) inner.style.width = Math.max(100, mapW) + "%";
+  const route = inner ? inner.querySelector(".map-route") : null;
+  if (route && n > 1) {
+    route.style.left = "12%";
+    route.style.width = ((n - 1) * 15) + "%";
+  }
   updateMapTransform();
   pinsEl.querySelectorAll("[data-boss]").forEach((el)=>{
     el.addEventListener("click", ()=>{
@@ -2926,10 +2969,12 @@ function updateMapTransform() {
   const inner = $("map-inner");
   const vp = $("map-viewport");
   if (!inner || !vp) return;
-  // clamp panning so you cannot go infinitely
-  const maxX = 120 * mapState.scale;
+  // clamp panning so you cannot go infinitely (geniş haritada sağa daha fazla)
+  const overX = Math.max(0, (inner.offsetWidth || 0) - (vp.clientWidth || 0));
+  const maxRight = (120 + overX) * mapState.scale;
+  const maxLeft = 120 * mapState.scale;
   const maxY = 80 * mapState.scale;
-  mapState.x = Math.max(-maxX, Math.min(maxX, mapState.x));
+  mapState.x = Math.max(-maxRight, Math.min(maxLeft, mapState.x));
   mapState.y = Math.max(-maxY, Math.min(maxY, mapState.y));
   inner.style.transform = `translate(${mapState.x}px, ${mapState.y}px) scale(${mapState.scale})`;
 }

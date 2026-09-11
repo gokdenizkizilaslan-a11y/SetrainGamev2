@@ -11214,28 +11214,32 @@ function getDungeon(rank) {
 }
 
 function publicCatalog() {
-  const evolutions = CONTENT.classes
-    .filter((c) => c.evolution)
-    .map((c) => {
-      const evolved = getClass(c.evolution.to);
+  const evolutions = [];
+  for (const c of CONTENT.classes) {
+    const routes = Array.isArray(c.evolutions) && c.evolutions.length
+      ? c.evolutions
+      : (c.evolution ? [c.evolution] : []);
+    for (const route of routes) {
+      const evolved = getClass(route.to);
       const skill = evolved ? getSkill(evolved.startingSkills && evolved.startingSkills[0]) : null;
       const bonus = evolved && evolved.evolveBonus ? evolved.evolveBonus : {};
       const bonusText = Object.entries(bonus)
         .map(([k, v]) => `${statLabel(k)} +${v}`)
         .join(" · ");
-      return {
+      evolutions.push({
         from: c.slug,
-        to: { slug: evolved ? evolved.slug : c.evolution.to, label: evolved ? evolved.label : c.evolution.to, image: evolved ? evolved.image : "" },
-        level: c.evolution.level || 20,
+        to: { slug: evolved ? evolved.slug : route.to, label: evolved ? evolved.label : route.to, image: evolved ? evolved.image : "" },
+        level: route.level || 20,
         skill: skill ? { name: skill.name, description: skill.description || "", mana: skill.mana, image: skill.image } : null,
         bonusText,
         ascend: {
-          title: c.evolution.ascendTitle || null,
-          color: c.evolution.ascendColor || "#e8c547",
-          sound: c.evolution.ascendSound || "",
+          title: route.ascendTitle || null,
+          color: route.ascendColor || "#e8c547",
+          sound: route.ascendSound || "",
         },
-      };
-    });
+      });
+    }
+  }
 
   return {
     baseSkills: CONTENT.baseSkills,

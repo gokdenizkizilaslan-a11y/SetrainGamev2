@@ -2090,6 +2090,33 @@ input:focus {
   font-size: 0.9rem;
 }
 
+/* Combat hotkeys (Q-T skills, 1-5 targets) */
+.hotkey,
+.tgtkey {
+  position: absolute;
+  top: 0.25rem;
+  left: 0.35rem;
+  font-size: 0.62rem;
+  font-family: monospace;
+  font-weight: 700;
+  color: var(--gold-bright);
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid var(--glass-line);
+  border-radius: 5px;
+  padding: 0 0.3rem;
+  line-height: 1.35;
+  pointer-events: none;
+  z-index: 2;
+}
+.enemy .tgtkey,
+.fighter .tgtkey {
+  display: none;
+}
+.enemy--targetable .tgtkey,
+.fighter--targetable .tgtkey {
+  display: block;
+}
+
 .skill-mana {
   font-size: 0.75rem;
   color: var(--muted);

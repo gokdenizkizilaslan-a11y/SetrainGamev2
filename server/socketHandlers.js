@@ -461,11 +461,11 @@ function registerSocketHandlers(io) {
 
     // ---- Ancient Temple ----
 
-    socket.on("temple:evolve", () => {
+    socket.on("temple:evolve", (payload = {}) => {
       try {
         const { room, player } = gameContext(socket);
         requireAlive(player);
-        const res = temple.evolve(room, player);
+        const res = temple.evolve(room, player, payload && payload.to);
         room.log = { ...res, name: player.name, ts: Date.now() };
         emitRoomState(io, room);
       } catch (err) {
