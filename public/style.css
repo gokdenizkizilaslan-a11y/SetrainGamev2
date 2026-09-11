@@ -507,8 +507,23 @@ input:focus {
 
 /* Karakter seçim ekranı tek bakışta sığsın (10 class = 2 satır) */
 #screen-setup .menu--wide {
-  width: min(760px, 100%);
+  width: min(1020px, 100%);
   gap: 0.7rem;
+  max-height: 92vh;
+  overflow: hidden;
+}
+/* İki panel: sol grid (TEK scrollable alan) + sağ sabit detay kartı. Sayfa kaymaz. */
+.setup-layout {
+  display: grid;
+  grid-template-columns: 1fr 330px;
+  gap: 0.8rem;
+  min-height: 0;
+}
+#screen-setup .class-grid {
+  max-height: 52vh;
+  overflow-y: auto;
+  padding-right: 0.3rem;
+  align-content: start;
 }
 @media (min-width: 900px) {
   #screen-setup .class-grid {
@@ -519,6 +534,117 @@ input:focus {
   #screen-setup .class-grid {
     grid-template-columns: repeat(3, 1fr);
   }
+}
+@media (max-width: 760px) {
+  .setup-layout {
+    grid-template-columns: 1fr;
+  }
+  #screen-setup .class-grid {
+    max-height: 30vh;
+  }
+}
+
+/* ---- Class detail preview card (LoL/Genshin tarzı) ---- */
+.class-preview {
+  background: var(--glass-2);
+  border: 1px solid rgba(232, 183, 108, 0.35);
+  border-radius: 16px;
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-height: 0;
+  overflow-y: auto;
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.4),
+    0 0 24px rgba(216, 156, 74, 0.12);
+}
+.cp-portrait-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.cp-portrait {
+  width: 5.2rem;
+  height: 5.2rem;
+  flex: none;
+  border-width: 2px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+}
+.cp-title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.cp-title strong {
+  font-family: "Cinzel", serif;
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+}
+.cp-title em {
+  font-style: normal;
+  font-size: 0.78rem;
+  color: #e8b76c;
+}
+.cp-lore {
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--ink-dim, #cfc6b4);
+  margin: 0;
+}
+.cp-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+}
+.cp-stat {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+}
+.cp-bar {
+  display: block;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+  overflow: hidden;
+}
+.cp-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #d89c4a, #f3d894);
+}
+.cp-kit {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.cp-kit-head {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #e8b76c;
+  margin: 0.2rem 0 0;
+}
+.cp-skill {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.76rem;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--glass-line);
+  border-radius: 9px;
+  padding: 0.3rem 0.55rem;
+}
+.cp-skill em {
+  font-style: normal;
+  font-family: ui-monospace, monospace;
+  color: #f3d894;
+  white-space: nowrap;
 }
 
 /* ---- Lobby lists ---- */

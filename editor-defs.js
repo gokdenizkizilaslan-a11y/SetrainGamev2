@@ -126,6 +126,8 @@ const collections = [
     newStrips: ["evolution", "baseClass"],
     fields: [
       { key: "label", label: "Name", type: "string" },
+      { key: "tagline", label: "Tagline (shown on class select, e.g. Beginner Mage)", type: "string" },
+      { key: "lore", label: "Lore (2-3 sentences for class select detail)", type: "string" },
       { key: "speed", label: "Speed", type: "number" },
       { key: "hp.min", label: "Base HP (min)", type: "number" },
       { key: "hp.max", label: "Base HP (max)", type: "number" },
@@ -235,6 +237,8 @@ const collections = [
       { key: "target", label: "Target", type: "choice", options: ["enemy", "ally", "self", "party"] },
       { key: "mana", label: "Mana cost", type: "number" },
       { key: "power", label: "Damage (1.6 = 1.6× magic/attack)", type: "number" },
+      { key: "baseDamage", label: "Base damage (flat, added on top — 0 = none)", type: "number" },
+      { key: "trueDamage", label: "True damage (LoL-style: exact, ignores all reductions)", type: "bool" },
       { key: "element", label: "Element", type: "choice", options: ELEMENTS },
       { key: "effect", label: "VFX Effect (blank = element auto)", type: "choice", options: VFX_IDS, allowBlank: true },
       { key: "sound", label: "Hit Sound (blank = element auto)", type: "sound" },

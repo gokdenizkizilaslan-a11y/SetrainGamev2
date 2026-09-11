@@ -809,6 +809,73 @@ function renderClassGrid(selected, onSelect) {
     renderClassGrid(selected, onSelect);
   });
   row.appendChild(toggle);
+  renderClassPreview(selected);
+}
+
+// ---- Class-select detail panel (big portrait + stats + lore + kit) ----
+// Only #class-grid scrolls; the page itself never scrolls on this screen.
+function classAvg(range) {
+  if (!range) return 0;
+  return Math.round(((Number(range.min) || 0) + (Number(range.max) || 0)) / 2);
+}
+function skillShort(s) {
+  if (!s) return "";
+  let f = "";
+  if (s.target === "enemy" && (Number(s.power) > 0 || Number(s.baseDamage) > 0)) {
+    f = (Number(s.baseDamage) > 0 ? s.baseDamage + "+" : "") + (Number(s.power) > 0 ? s.power + "×" : "") + (s.trueDamage ? " ✦" : "");
+  } else if (s.target === "self" && s.defense) {
+    f = "🛡 " + Math.round(s.defense * 100) + "%";
+  } else if (s.heal != null && typeof s.heal !== "object") {
+    f = "💚 " + Math.round(s.heal * 100) + "%";
+  } else if (s.healSelfPct) {
+    f = "💚 " + Math.round(s.healSelfPct * 100) + "%";
+  } else if (s.manaRestorePct) {
+    f = "💧 " + Math.round(s.manaRestorePct * 100) + "%";
+  } else if (s.buffs && s.buffs.length) {
+    f = "✨ buff";
+  } else {
+    f = s.target || "";
+  }
+  return f;
+}
+function renderClassPreview(selected) {
+  const panel = $("class-preview");
+  if (!panel) return;
+  const list = CATALOG.classes.filter((c) => !c.baseClass);
+  const cls = list.find((c) => c.slug === selected) || list[0];
+  if (!cls) {
+    panel.innerHTML = "";
+    return;
+  }
+  const hp = classAvg(cls.hp), atk = classAvg(cls.attack), mag = classAvg(cls.magicPower);
+  const res = classAvg(cls.resistance), spd = cls.speed || 0;
+  const bar = (v, max) => `<span class="cp-bar"><span class="cp-fill" style="width:${Math.max(4, Math.min(100, Math.round((v / max) * 100)))}%"></span></span>`;
+  const basic = cls.basicAttack || {};
+  const kit = (cls.startingSkills || []).map((id) => CATALOG.skills.find((s) => s.id === id)).filter(Boolean);
+  const tagline = cls.tagline || classLabel(cls.slug);
+  const lore = cls.lore || "A wandering soul answering the call of Setra. Their legend is yet unwritten.";
+  panel.innerHTML = `
+    <div class="cp-portrait-wrap">
+      <span class="portrait portrait--${cls.slug} cp-portrait" data-img="${escapeHtml(cls.image || "")}" data-variant="${cls.slug}"></span>
+      <div class="cp-title">
+        <strong>${escapeHtml(cls.label)}</strong>
+        <em>${escapeHtml(tagline)}</em>
+      </div>
+    </div>
+    <p class="cp-lore">${escapeHtml(lore)}</p>
+    <div class="cp-stats">
+      <div class="cp-stat"><span>❤️ HP ${hp}</span>${bar(hp, 750)}</div>
+      <div class="cp-stat"><span>⚔️ ATK ${atk}</span>${bar(atk, 64)}</div>
+      <div class="cp-stat"><span>🔮 MAG ${mag}</span>${bar(mag, 62)}</div>
+      <div class="cp-stat"><span>🛡️ RES ${res}</span>${bar(res, 55)}</div>
+      <div class="cp-stat"><span>👟 SPD ${spd}</span>${bar(spd, 15)}</div>
+    </div>
+    <div class="cp-kit">
+      <p class="cp-kit-head">Starter kit</p>
+      <div class="cp-skill"><span>${escapeHtml(basic.name || "Strike")}</span><em>${escapeHtml(skillShort({ ...basic, target: "enemy" }))}</em></div>
+      ${kit.map((s) => `<div class="cp-skill"><span>${escapeHtml(s.name)}</span><em>${escapeHtml(skillShort(s))}</em></div>`).join("")}
+    </div>`;
+  initImages(panel);
 }
 
 function setLobbyView(inRoom) {

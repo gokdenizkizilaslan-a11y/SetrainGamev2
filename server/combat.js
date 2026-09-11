@@ -513,21 +513,31 @@ function act(room, player, skillId, targetId) {
   if (mana > 0) addFx(d, { type: "mana", actor: player.id, amount: mana, skill: skill.id });
   if (skill.target === "enemy") {
     const mon = d.wave[Number(targetId)];
-    if (skill.power) {
+    const skillBase = Math.max(0, Math.round(Number(skill.baseDamage) || 0));
+    const skillPower = Math.max(0, Number(skill.power) || 0);
+    if (skillPower > 0 || skillBase > 0) {
+      const isPhysical = !skill.element || skill.element === "physical";
+      const baseStat = isPhysical ? player.attack : player.magicPower;
+      const rawBase = skillBase + baseStat * skillPower;
+      let dmg;
+      let crit = false;
+      if (skill.trueDamage) {
+        // LoL-style true damage: exact number. No variance, no crit, no buffs,
+        // no affinity/combo/bonus, no resistance. Shield still absorbs via dealDamage.
+        dmg = Math.max(1, Math.round(rawBase));
+      } else {
       const critChance = player.critChance != null ? player.critChance / 100 : (CONTENT.combat.critChance || 0);
       const critBonus = player.critDamage != null ? player.critDamage : Math.round(((CONTENT.combat.critMult || 1.5) - 1) * 100);
-      const crit = Math.random() < critChance;
+      crit = Math.random() < critChance;
       const critMult = crit ? 1 + critBonus / 100 : 1;
       const pAtk = buffSum(d, "player", player.id, "attack") + buffSum(d, "player", player.id, "pet_attack") - buffSum(d, "player", player.id, "weaken") - buffSum(d, "player", player.id, "pet_weaken");
       const pMagic = buffSum(d, "player", player.id, "magicBoost") + buffSum(d, "player", player.id, "pet_magic") - buffSum(d, "player", player.id, "weaken") - buffSum(d, "player", player.id, "pet_weaken");
       const mDef = buffSum(d, "monster", Number(targetId), "defense") + buffSum(d, "monster", Number(targetId), "pet_defense");
       const mExp = buffSum(d, "monster", Number(targetId), "expose") + buffSum(d, "monster", Number(targetId), "pet_expose");
-      const isPhysical = !skill.element || skill.element === "physical";
-      const baseStat = isPhysical ? player.attack : player.magicPower;
       const pBoost = isPhysical ? pAtk : pMagic;
-      let dmg = Math.max(
+      dmg = Math.max(
         1,
-        Math.round(baseStat * skill.power * randVariance(CONTENT.combat.damageVariance) * critMult * (1 + pBoost) * (1 - mDef + mExp))
+        Math.round(rawBase * randVariance(CONTENT.combat.damageVariance) * critMult * (1 + pBoost) * (1 - mDef + mExp))
       );
       // affinity: defender element vs attacker element
       const monDefForAff = getMonster(mon.kind);
@@ -554,10 +564,12 @@ function act(room, player, skillId, targetId) {
       }
       // Monster/boss resistance — mirrors the monster-vs-player formula.
       // resistance 0 (old content) = no change.
+      // True damage skips all of the above (exact number).
       const monRes = (mon && mon.resistance) || 0;
-      if (monRes > 0) {
+      if (!skill.trueDamage && monRes > 0) {
         dmg = Math.max(1, dmg - Math.round(monRes * (CONTENT.combat.resistanceMitigation || 0)));
       }
+      } // end non-true-damage path
       dealDamage(mon, dmg);
       addFx(d, { type: "damage", actor: player.id, target: "enemy", targetId: Number(targetId), amount: dmg, skill: skill.id, elem: skill.element || "physical", effect: skill.effect || defaultEffectFor(skill.element), sound: skill.sound || "", crit });
       if (skill.lifesteal) {
