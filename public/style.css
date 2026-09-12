@@ -610,9 +610,11 @@ input:focus {
     0 12px 28px rgba(0, 0, 0, 0.4),
     0 0 24px rgba(216, 156, 74, 0.12);
 }
-/* Kart zemini (preview, profil, ...): resim + perde elementin KENDİSİNDE —
-   scroll dahil, köşeler dahil her yeri kaplar, hiçbir boşluk kalmaz. */
-.has-card-bg {
+/* Kart zemini (preview, profil): resim + perde elementin KENDİSİNDE —
+   scroll dahil, köşeler dahil her yeri kaplar. Çift sınıf = kartın kendi
+   background kısaltmasını ezer (sıralamadan bağımsız). */
+.class-preview.has-card-bg,
+.profile-card.has-card-bg {
   background-image:
     linear-gradient(to top,
       rgba(0, 0, 0, 0.62) 0%,
