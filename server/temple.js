@@ -25,17 +25,35 @@ function evolve(room, player, targetTo) {
     route = picked;
   }
   if (player.level < (route.level || 20)) {
-    throw new Error(`You must reach level ${route.level || 20} to ascend.`);
+    // level_or_item routes may bypass the level gate with the item instead.
+    const bypass = route.requirementType === "level_or_item" || route.requirementType === "item_only";
+    if (!bypass) {
+      throw new Error(`You must reach level ${route.level || 20} to ascend.`);
+    }
   }
-  if (!hasItem(player, "ancient_relic", 1)) {
-    throw new Error("You need an Ancient Relic to ascend.");
+  // Ascension requirement, editable per class in the editor:
+  // - legacy routes (no requirementType): level + 1 Ancient Relic (unchanged behavior)
+  // - level_only: level gate above is enough, no item burns
+  // - item_only: item instead of level (level gate bypassed above)
+  // - level_and_item: both level and item
+  // - level_or_item: level, or the item as an alternative (burns only when used)
+  const reqType = route.requirementType || "legacy";
+  const needItem = reqType === "legacy" || reqType === "item_only" || reqType === "level_and_item"
+    || (reqType === "level_or_item" && player.level < (route.level || 20));
+  const itemId = route.requiredItem || "ancient_relic";
+  const itemCount = Math.max(1, route.requiredItemCount || 1);
+  if (needItem) {
+    const itemDef = getItem(itemId);
+    if (!hasItem(player, itemId, itemCount)) {
+      throw new Error(`You need ${itemCount > 1 ? itemCount + "× " : ""}${itemDef ? itemDef.name : itemId} to ascend.`);
+    }
   }
   const evolvedCls = getClass(route.to);
   if (!evolvedCls) {
     throw new Error("That ascension is not written in the temple.");
   }
   spendStamina(player, CONTENT.town.temple.stamina);
-  removeItem(player, "ancient_relic", 1);
+  if (needItem) removeItem(player, itemId, itemCount);
   applyStatDelta(player, evolvedCls.evolveBonus || {}, 1);
   player.manaRegen += (evolvedCls.manaRegen || 0) - (baseCls.manaRegen || 0);
   player.hp = player.maxHp;

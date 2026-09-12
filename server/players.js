@@ -322,6 +322,8 @@ function createPlayer({ id, name, character, isHost = false }) {
       seen.add(itemId);
       player.inventory.push({ itemId, qty: qty || 1 });
     };
+    // Ascension fuel: legacy routes always burn one Ancient Relic.
+    grant("ancient_relic", 3);
     for (const it of CONTENT.items || []) {
       if (it.slot === "chest") grant(it.id, 1);
     }
