@@ -360,6 +360,39 @@ function petImageForLevel(petDef, level){
   const suffix = stage==="young" ? "_young.png" : "_adult.png";
   return base + suffix;
 }
+// Hover tooltip içeriği: isim + statlar (level bonusları dahil) + skiller.
+// Fighter kartları overflow:hidden olduğu için özel balon kesilirdi —
+// native title çok satırlı basılır, her yerde risksiz çalışır.
+function petStatText(pd, pp) {
+  const st = (pd && pd.stats) || {};
+  const bA = (pp && pp.bonusAttack) || 0;
+  const bM = (pp && pp.bonusMagic) || 0;
+  const bR = (pp && pp.bonusResist) || 0;
+  const parts = [];
+  if (st.attack) parts.push(`Atk ${st.attack + bA}`);
+  if (st.magicPower) parts.push(`Mgc ${st.magicPower + bM}`);
+  if (st.resistance) parts.push(`Res ${st.resistance + bR}`);
+  return parts.join(" · ");
+}
+function petSkillText(pd) {
+  if (pd && Array.isArray(pd.petSkills) && pd.petSkills.length) {
+    return pd.petSkills
+      .map((s) => `${s.kind} ${s.value}${s.kind === "attack" || s.kind === "heal" || s.kind === "shield" ? "" : "%"} /${s.interval || 2}t`)
+      .join(" · ");
+  }
+  if (pd && pd.buffKind) return `${pd.buffKind} (${pd.element || "physical"})`;
+  return "auto";
+}
+function petTitleText(pd, pp, lvl) {
+  if (!pd) return "Pet";
+  const lines = [`${petDisplayName(pd, lvl)} — Lv ${lvl} ${petStage(lvl)}`];
+  if (pd.element) lines.push(`Element: ${pd.element}`);
+  const stats = petStatText(pd, pp);
+  if (stats) lines.push(stats);
+  lines.push("Skills: " + petSkillText(pd));
+  if (pd.description) lines.push(stripPetOrigin(pd.description));
+  return lines.join("\n");
+}
 
 function buffBadges(d, targetType, targetId) {
   const list = (d && d.buffs || []).filter(
@@ -2053,7 +2086,7 @@ function renderCombat(room, root) {
         ${p.shield>0 ? `<span class="hpbar shieldbar"><span class="hpbar-fill shieldbar-fill" style="width:${Math.round((p.shield/(p.maxShield||p.shield))*100)}%"></span></span><span class="hpnum shieldnum">🛡️ ${p.shield}/${p.maxShield}</span>` : ``}
         <span class="fighter-stats">Atk ${p.attack} · Res ${p.resistance} · Mgc ${p.magicPower} · Heal ${p.healPower} · Spd ${p.speed} · Crit ${p.critChance}%</span>
         <span class="fighter-mana">Mana ${p.mana}/${p.maxMana}</span>
-        <span class="fighter-pets">${(p.activePetIds|| (p.activePetId?[p.activePetId]:[])).map(pid=>{ const pd=(CATALOG.pets||[]).find(x=>x.id===pid); const pp=(p.pets||[]).find(x=>x.petId===pid); const lvl=pp? (pp.level||1):1; const img=pd?petImageForLevel(pd,lvl):''; const name=pd?petDisplayName(pd,lvl):pid; return `<span class="pet-icon" data-img="${escapeHtml(img)}" title="${escapeHtml(name)} Lv ${lvl}" style="width:1.4rem;height:1.4rem;display:inline-block;border:1px solid var(--glass-line);border-radius:50%;background:var(--glass-2);background-size:cover;background-position:center;vertical-align:middle;margin:0 2px;"></span>`; }).join("")}</span>
+        <span class="fighter-pets">${(p.activePetIds|| (p.activePetId?[p.activePetId]:[])).map(pid=>{ const pd=(CATALOG.pets||[]).find(x=>x.id===pid); const pp=(p.pets||[]).find(x=>x.petId===pid); const lvl=pp? (pp.level||1):1; const img=pd?petImageForLevel(pd,lvl):''; const name=pd?petDisplayName(pd,lvl):pid; return `<span class="pet-icon" data-img="${escapeHtml(img)}" title="${escapeHtml(petTitleText(pd, pp, lvl))}" style="width:1.4rem;height:1.4rem;display:inline-block;border:1px solid var(--glass-line);border-radius:50%;background:var(--glass-2);background-size:cover;background-position:center;vertical-align:middle;margin:0 2px;"></span>`; }).join("")}</span>
         ${buffBadges(d, "player", p.id)}
         </span>
       </button>`;
@@ -2306,7 +2339,7 @@ function renderPvpView(room){
     <span class="hpbar"><span class="hpbar-fill" style="width:${Math.round(opp.hp/opp.maxHp*100)}%"></span></span><span class="hpnum">${opp.hp}/${opp.maxHp}</span>
     ${opp.shield>0?`<span class="hpbar shieldbar"><span class="hpbar-fill shieldbar-fill" style="width:${Math.round(opp.shield/(opp.maxShield||opp.shield)*100)}%"></span></span><span class="hpnum shieldnum">🛡️ ${opp.shield}</span>`:``}
     <span class="fighter-mana">Mana ${opp.mana}/${opp.maxMana}</span>
-    <span class="fighter-pets">${(opp.activePetIds|| (opp.activePetId?[opp.activePetId]:[])).map(pid=>{ const pd=(CATALOG.pets||[]).find(x=>x.id===pid); const pp=(opp.pets||[]).find(x=>x.petId===pid); const lvl=pp?(pp.level||1):1; const img=pd?petImageForLevel(pd,lvl):''; const name=pd?petDisplayName(pd,lvl):pid; return `<span class="pet-icon" data-img="${escapeHtml(img)}" title="${escapeHtml(name)} Lv ${lvl}" style="width:1.4rem;height:1.4rem;display:inline-block;border:1px solid var(--glass-line);border-radius:50%;background:var(--glass-2);background-size:cover;background-position:center;vertical-align:middle;margin:0 2px;"></span>`; }).join("")}</span>
+    <span class="fighter-pets">${(opp.activePetIds|| (opp.activePetId?[opp.activePetId]:[])).map(pid=>{ const pd=(CATALOG.pets||[]).find(x=>x.id===pid); const pp=(opp.pets||[]).find(x=>x.petId===pid); const lvl=pp?(pp.level||1):1; const img=pd?petImageForLevel(pd,lvl):''; const name=pd?petDisplayName(pd,lvl):pid; return `<span class="pet-icon" data-img="${escapeHtml(img)}" title="${escapeHtml(petTitleText(pd, pp, lvl))}" style="width:1.4rem;height:1.4rem;display:inline-block;border:1px solid var(--glass-line);border-radius:50%;background:var(--glass-2);background-size:cover;background-position:center;vertical-align:middle;margin:0 2px;"></span>`; }).join("")}</span>
     ${buffBadges(d,"player",opp.id)}
     </span>
   </div>` : '<div class="muted">Waiting for opponent...</div>';
@@ -2318,7 +2351,7 @@ function renderPvpView(room){
     <span class="hpbar"><span class="hpbar-fill hpbar-fill--party" style="width:${Math.round(me.hp/me.maxHp*100)}%"></span></span><span class="hpnum">${me.hp}/${me.maxHp}</span>
     ${me.shield>0?`<span class="hpbar shieldbar"><span class="hpbar-fill shieldbar-fill" style="width:${Math.round(me.shield/(me.maxShield||me.shield)*100)}%"></span></span><span class="hpnum shieldnum">🛡️ ${me.shield}</span>`:``}
     <span class="fighter-mana">Mana ${me.mana}/${me.maxMana}</span>
-    <span class="fighter-pets">${(me.activePetIds|| (me.activePetId?[me.activePetId]:[])).map(pid=>{ const pd=(CATALOG.pets||[]).find(x=>x.id===pid); const pp=(me.pets||[]).find(x=>x.petId===pid); const lvl=pp?(pp.level||1):1; const img=pd?petImageForLevel(pd,lvl):''; const name=pd?petDisplayName(pd,lvl):pid; return `<span class="pet-icon" data-img="${escapeHtml(img)}" title="${escapeHtml(name)} Lv ${lvl}" style="width:1.4rem;height:1.4rem;display:inline-block;border:1px solid var(--glass-line);border-radius:50%;background:var(--glass-2);background-size:cover;background-position:center;vertical-align:middle;margin:0 2px;"></span>`; }).join("")}</span>
+    <span class="fighter-pets">${(me.activePetIds|| (me.activePetId?[me.activePetId]:[])).map(pid=>{ const pd=(CATALOG.pets||[]).find(x=>x.id===pid); const pp=(me.pets||[]).find(x=>x.petId===pid); const lvl=pp?(pp.level||1):1; const img=pd?petImageForLevel(pd,lvl):''; const name=pd?petDisplayName(pd,lvl):pid; return `<span class="pet-icon" data-img="${escapeHtml(img)}" title="${escapeHtml(petTitleText(pd, pp, lvl))}" style="width:1.4rem;height:1.4rem;display:inline-block;border:1px solid var(--glass-line);border-radius:50%;background:var(--glass-2);background-size:cover;background-position:center;vertical-align:middle;margin:0 2px;"></span>`; }).join("")}</span>
     ${buffBadges(d,"player",me.id)}
     </span>
   </div>`;
@@ -2985,7 +3018,7 @@ function renderPetsView(room){
     const displayName = pd ? petDisplayName(pd, lvl) : "Empty";
     const img = pd ? petImageForLevel(pd, lvl) : "";
     const stage = petStage(lvl);
-    slots.push(`<div class="pet-slot ${pid?"pet-slot--filled":"pet-slot--empty"} ${isMiddle?"pet-slot--middle":""}" data-pet-slot="${i}" title="${pd ? escapeHtml(displayName) + " — Lv " + lvl + " " + stage : "Empty slot"}">
+    slots.push(`<div class="pet-slot ${pid?"pet-slot--filled":"pet-slot--empty"} ${isMiddle?"pet-slot--middle":""}" data-pet-slot="${i}" title="${pd ? escapeHtml(petTitleText(pd, pp, lvl)) : "Empty slot"}">
       <span class="pet-slot-label">${isMiddle && maxPets===3 ? "Middle" : "Slot "+(i+1)}</span>
       ${pid ? `<span class="pet-socket"><span class="pet-slot-icon" data-img="${escapeHtml(img)}" data-variant="${escapeHtml(pid)}"></span></span><span class="pet-slot-name">${escapeHtml(displayName)}</span><span class="pet-slot-level">Lv ${lvl} · ${stage}</span><button type="button" class="btn btn--mini" data-pet-unequip="${pid}">Unequip</button>` : `<span class="pet-socket pet-socket--empty"><span class="pet-slot-empty">?</span></span><span class="muted" style="font-size:0.68rem">Empty slot</span>`}
     </div>`);
@@ -2997,7 +3030,7 @@ function renderPetsView(room){
     const stage = petStage(lvl);
     const displayName = pd ? petDisplayName(pd, lvl) : pp.petId;
     const img = pd ? petImageForLevel(pd, lvl) : "";
-    const statChips = pd && pd.stats ? Object.entries(pd.stats).map(([k,v])=> `<span class="stat-chip"><em>${escapeHtml(k)}</em><b>${escapeHtml(String(v + (pp.bonusAttack||0) + (pp.bonusMagic||0)))}</b></span>`).join("") : "";
+    const statChips = pd && pd.stats ? Object.entries(pd.stats).map(([k,v])=>{ const b = k === "attack" ? (pp.bonusAttack || 0) : k === "magicPower" ? (pp.bonusMagic || 0) : k === "resistance" ? (pp.bonusResist || 0) : 0; return `<span class="stat-chip"><em>${escapeHtml(k)}</em><b>${v + b}</b></span>`; }).join("") : "";
     const petSkills = pd && pd.petSkills ? pd.petSkills.map(s=> `${s.kind} ${s.value}${s.kind==="attack"||s.kind==="heal"||s.kind==="shield"?"":"%"} /${s.interval}t`).join(" · ") : (pd && pd.buffKind ? `${pd.buffKind} (${pd.element})` : "auto");
     const tip = `${escapeHtml(displayName)} — Lv ${lvl} ${stage}${pd && pd.description ? " — " + escapeHtml(stripPetOrigin(pd.description)) : ""}`;
     return `<div class="bag-row pet-card" title="${tip}">

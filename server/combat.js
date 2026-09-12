@@ -1235,10 +1235,11 @@ function petActForPlayer(room, d, player){
     const mult = isTamer ? 2 : 1;
     const lvlScale = 1 + petLevel * 0.04;
     // Pet'in KENDİ statları kendi çıktısını etkiler (oyuncuya stat vermez):
+    // taban + level atlarken kazanılan instance bonusları.
     const pStats = petDef.stats || {};
-    const pAtk = pStats.attack || 0;
-    const pMag = pStats.magicPower || 0;
-    const pRes = pStats.resistance || 0;
+    const pAtk = (pStats.attack || 0) + (petInst ? (petInst.bonusAttack || 0) : 0);
+    const pMag = (pStats.magicPower || 0) + (petInst ? (petInst.bonusMagic || 0) : 0);
+    const pRes = (pStats.resistance || 0) + (petInst ? (petInst.bonusResist || 0) : 0);
     const skills = petDef.petSkills || (petDef.buffKind ? [{kind: petDef.buffKind, value:0.15, interval:2, element: petDef.element}] : []);
     // if no petSkills, fallback to random as before
     let toUse = [];

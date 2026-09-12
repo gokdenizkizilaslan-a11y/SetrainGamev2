@@ -269,9 +269,9 @@ function advanceTurn(room,d){
           const mult=isTamer?2:1;
           const lvlScale=1+petLevel*0.04;
           const pStats=petDef? (petDef.stats||{}) : {};
-          const pAtk=pStats.attack||0;
-          const pMag=pStats.magicPower||0;
-          const pRes=pStats.resistance||0;
+          const pAtk=(pStats.attack||0)+(petInst?(petInst.bonusAttack||0):0);
+          const pMag=(pStats.magicPower||0)+(petInst?(petInst.bonusMagic||0):0);
+          const pRes=(pStats.resistance||0)+(petInst?(petInst.bonusResist||0):0);
           if(petDef && petDef.buffKind && ["attack","magicBoost","defense"].includes(petDef.buffKind)){
             const bv=0.15*mult + (petDef.buffKind==="attack"?pAtk : petDef.buffKind==="magicBoost"?pMag : pRes)*0.01;
             d.buffId=(d.buffId||0)+1;
