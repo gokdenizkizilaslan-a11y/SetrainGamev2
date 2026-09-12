@@ -151,7 +151,7 @@ function act(room, player, skillId){
   used.add(skillId); d.usedSkills[player.id]=used;
   setCooldown(d,player.id,skillId,skill.cooldown);
   if(skill.mana) addFx(d,{type:"mana", actor:player.id, amount:skill.mana, skill:skill.id});
-  if(skill.power || skill.baseDamage){
+  if(skill.power || skill.baseDamage || (skill.secondHit && Number(skill.secondHit.mult) > 0)){
     const isPhysical = !skill.element || skill.element==="physical";
     const base = isPhysical? player.attack : player.magicPower;
     let skillBase = 0;
@@ -190,6 +190,16 @@ function act(room, player, skillId){
     }
     dmg -= Math.max(0, Math.round(opponent.resistance * (CONTENT.combat.resistanceMitigation || 0.25) - passives.pierceFlat(player.character)));
     dmg=Math.max(1,dmg);
+    // İkinci vuruş (bölünmüş hasar): ayrı stat + element.
+    if (skill.secondHit && Number(skill.secondHit.mult) > 0) {
+      const s2elem = skill.secondHit.element || "arcane";
+      const s2stat = skill.secondHit.stat || "magicPower";
+      let s2 = Math.max(0, Math.round((player[s2stat] || 0) * Number(skill.secondHit.mult)));
+      if (!skill.trueDamage) {
+        s2 = Math.max(0, Math.round(s2 * (1 + Math.random() * 0.4 - 0.2)));
+      }
+      dmg = Math.max(1, dmg + s2);
+    }
     dmg = Math.max(1, Math.round(dmg * passives.damageTakenMult(opponent.character)));
     // shield vs hp
     if(skill.element==="dark" && CONTENT.darkTrait) dmg=Math.round(dmg* (CONTENT.darkTrait.deal||1.3));

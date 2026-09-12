@@ -926,6 +926,7 @@ function skillShort(s) {
   const tags = [];
   if (s.hitsAll) tags.push("AoE");
   else if (s.splash && Number(s.splash.extraTargets) > 0) tags.push("+" + Math.floor(s.splash.extraTargets));
+  if (s.secondHit && Number(s.secondHit.mult) > 0) tags.push("SPLIT");
   if (s.execute) {
     if (s.execute.belowHpPct != null) tags.push("EXE<" + Math.round(Number(s.execute.belowHpPct) * 100) + "%");
     else if (s.execute.finishBelowHpPct != null) tags.push("EXE" + Math.round(Number(s.execute.finishBelowHpPct) * 100) + "%");
@@ -945,6 +946,7 @@ function skillMechanicsLine(s) {
   }
   if (s.hitsAll) parts.push("Hits ALL enemies");
   else if (s.splash && Number(s.splash.extraTargets) > 0) parts.push("Also hits " + Math.floor(s.splash.extraTargets) + " random enem" + (Math.floor(s.splash.extraTargets) === 1 ? "y" : "ies"));
+  if (s.secondHit && Number(s.secondHit.mult) > 0) parts.push("Plus " + (Number(s.secondHit.mult) || 0) + "×" + (s.secondHit.stat || "?") + " as " + (s.secondHit.element || "?"));
   if (s.execute) {
     if (s.execute.belowHpPct != null) parts.push("Usable below " + Math.round(Number(s.execute.belowHpPct) * 100) + "% HP — executes");
     else if (s.execute.finishBelowHpPct != null) parts.push("Kills targets dropped to " + Math.round(Number(s.execute.finishBelowHpPct) * 100) + "% HP or less");

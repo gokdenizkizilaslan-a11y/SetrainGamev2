@@ -258,6 +258,7 @@ const collections = [
       { key: "hitsAll", label: "Hit ALL living enemies (true/false)", type: "bool" },
       { key: "splash", label: "Splash extra random targets (e.g. {extraTargets:1})", type: "string" },
       { key: "echo", label: "Echo second strike (e.g. {chance:0.2,mult:0.3})", type: "string" },
+      { key: "secondHit", label: "Split damage 2nd hit (e.g. {stat:'magicPower',mult:1,element:'arcane'})", type: "string" },
       { key: "description", label: "Description", type: "string" },
       { key: "image", label: "Image path", ...img("skills") },
     ],

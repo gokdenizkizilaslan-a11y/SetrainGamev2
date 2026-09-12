@@ -593,7 +593,7 @@ function act(room, player, skillId, targetId) {
     const pexec = passives.executeFor(player.character);
     const echoCfg = skill.echo || null;
     const pEcho = !skill.echo ? passives.echoFor(player.character) : null;
-    if (skillPower > 0 || skillBase > 0 || trueFormula) {
+    if (skillPower > 0 || skillBase > 0 || trueFormula || (skill.secondHit && Number(skill.secondHit.mult) > 0)) {
       const isPhysical = !skill.element || skill.element === "physical";
       const baseStat = isPhysical ? player.attack : player.magicPower;
       const rawBase = skillBase + baseStat * skillPower;
@@ -675,6 +675,37 @@ function act(room, player, skillId, targetId) {
           dmg = Math.max(1, dmg - Math.round(monRes * (CONTENT.combat.resistanceMitigation || 0)));
         }
         } // end non-true-damage path
+        // İkinci vuruş (bölünmüş hasar): ayrı stat + element, kendi
+        // affinity/kombo/rezistansıyla hesaplanır, toplama eklenir.
+        // Örn. 1×atk fiziksel + 1×magic arcane tek skillde.
+        let secondDmg = 0;
+        if (skill.secondHit && Number(skill.secondHit.mult) > 0) {
+          const s2elem = skill.secondHit.element || "arcane";
+          const s2stat = skill.secondHit.stat || "magicPower";
+          let s2 = Math.max(0, Math.round((player[s2stat] || 0) * Number(skill.secondHit.mult)));
+          if (!skill.trueDamage) {
+            s2 = Math.max(0, Math.round(s2 * randVariance(CONTENT.combat.damageVariance)));
+            const mDef2 = getMonster(tgt.kind);
+            const dElem2 = (mDef2 && mDef2.element) || tgt.element || "physical";
+            const aff2 = CONTENT.affinity && CONTENT.affinity[dElem2] && CONTENT.affinity[dElem2][s2elem];
+            if (aff2) s2 = Math.round(s2 * aff2);
+            if (s2elem === "dark" && CONTENT.darkTrait) s2 = Math.round(s2 * (CONTENT.darkTrait.deal || 1.3));
+            if (dElem2 === "dark" && CONTENT.darkTrait) s2 = Math.round(s2 * (CONTENT.darkTrait.taken || 1.5));
+            if (Array.isArray(CONTENT.combos)) {
+              for (const c of CONTENT.combos) {
+                if (!c || !c.when || !c.mult) continue;
+                if (c.ifElement && c.ifElement !== s2elem) continue;
+                if (hasStatus(d, "monster", tidx, c.when)) s2 = Math.round(s2 * c.mult);
+              }
+            }
+            if (skill.bonusVsStatus && hasStatus(d, "monster", tidx, skill.bonusVsStatus.status)) {
+              s2 = Math.round(s2 * (1 + (skill.bonusVsStatus.mult || 0)));
+            }
+            const monRes2 = (tgt && tgt.resistance) || 0;
+            if (monRes2 > 0) s2 = Math.max(0, s2 - Math.round(monRes2 * (CONTENT.combat.resistanceMitigation || 0)));
+          }
+          secondDmg = s2;
+        }
         // Karışık tür: formülün gerçek-hasar kısmı hedef başına exact eklenir.
         let truePart = 0;
         if (trueFormula) {
@@ -683,7 +714,7 @@ function act(room, player, skillId, targetId) {
             : (player[trueFormula.stat] || 0);
           truePart = Math.max(0, Math.round(tb * Number(trueFormula.mult || 0)));
         }
-        const totalDmg = dmg + truePart;
+        const totalDmg = dmg + truePart + secondDmg;
         const hpBefore = tgt.hp;
         dealDamage(tgt, totalDmg);
         addFx(d, { type: "damage", actor: player.id, target: "enemy", targetId: tidx, amount: totalDmg, skill: skill.id, elem: skill.element || "physical", effect: skill.effect || defaultEffectFor(skill.element), sound: skill.sound || "", crit });
