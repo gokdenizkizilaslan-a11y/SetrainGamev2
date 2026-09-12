@@ -934,6 +934,23 @@ input:focus {
 .profile-card::-webkit-scrollbar { width: 6px; }
 .profile-card::-webkit-scrollbar-thumb { background: rgba(232,183,108,0.25); border-radius: 3px; }
 
+.profile-avatar {
+  position: relative;
+  width: 88px;
+  height: 88px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  padding: 4px;
+  background: conic-gradient(from 210deg, var(--gold), #8a5a24, var(--gold-bright), #7c4e1e, var(--gold));
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+}
+
+.profile-portrait {
+  width: 80px;
+  height: 80px;
+  border-width: 3px;
+}
+
 .profile-name,
 .profile-class,
 .profile-trait {

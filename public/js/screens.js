@@ -1081,6 +1081,9 @@ function renderProfileCard(room, selfId) {
   const maxLives = (CATALOG.starting && CATALOG.starting.lives) || 3;
   const isDead = me.lives <= 0;
   el.innerHTML = `
+    <div class="profile-avatar">
+      <span class="portrait profile-portrait" data-img="${imgFor(me.character, "class")}" data-variant="${me.character}"></span>
+    </div>
     <div class="profile-name">${escapeHtml(me.name)}${me.isHost ? ' <span class="badge badge--host">Host</span>' : ""}${isDead ? ' <span class="badge badge--offline">Fallen</span>' : ""}</div>
     <div class="profile-class">${classLabel(me.character)} · Lv ${me.level}</div>
     <div class="profile-lives ${isDead ? "profile-lives--dead" : ""}" title="Lives — when 0 you must be revived">
