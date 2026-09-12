@@ -869,6 +869,29 @@ function skillShort(s) {
   }
   return f;
 }
+// Panel arka planı: resim + perde, ikisi de panelin KENDİSİNDE.
+// (İçteki absolute span kayan içerikte alta ulaşamıyordu — dipte boşluk
+// bırakıyordu. Element background'ı scroll dahil her yeri kaplar.)
+function setPreviewBg(panel, url) {
+  const safe = String(url || "").replace(/["']/g, "");
+  if (panel._bgUrl === safe) return;
+  panel._bgUrl = safe;
+  panel.classList.remove("cp-has-bg");
+  panel.style.removeProperty("--cp-img");
+  if (!safe) return;
+  const im = new Image();
+  im.onload = () => {
+    if (panel._bgUrl !== safe) return;
+    panel.style.setProperty("--cp-img", `url("${safe}")`);
+    panel.classList.add("cp-has-bg");
+  };
+  im.onerror = () => {
+    if (panel._bgUrl !== safe) return;
+    panel._bgUrl = "";
+  };
+  im.src = safe;
+}
+
 function renderClassPreview(selected) {
   const panel = $("class-preview");
   if (!panel) return;
@@ -887,8 +910,6 @@ function renderClassPreview(selected) {
   const tagline = cls.tagline || classLabel(cls.slug);
   const lore = cls.lore || texts.defaultLore;
   panel.innerHTML = `
-    <span class="cp-bg" data-img="${escapeHtml(cls.image || "")}" data-variant="${cls.slug}"></span>
-    <span class="class-card-shade cp-shade" aria-hidden="true"></span>
     <div class="cp-title">
       <strong>${escapeHtml(cls.label)}</strong>
       <em>${escapeHtml(tagline)}</em>
@@ -906,6 +927,7 @@ function renderClassPreview(selected) {
       <div class="cp-skill"><span>${escapeHtml(basic.name || "Strike")}</span><em>${escapeHtml(skillShort({ ...basic, target: "enemy" }))}</em></div>
       ${kit.map((s) => `<div class="cp-skill"><span>${escapeHtml(s.name)}</span><em>${escapeHtml(skillShort(s))}</em></div>`).join("")}
     </div>`;
+  setPreviewBg(panel, cls.image || "");
   initImages(panel);
 }
 
