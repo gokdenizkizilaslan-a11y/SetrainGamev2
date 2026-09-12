@@ -99,7 +99,7 @@
 
     <section id="screen-setup" class="screen hidden">
       <div class="menu menu--wide">
-        <p class="menu-title">Create Character</p>
+        <p class="menu-title" id="setup-title">Create Character</p>
         <label class="field">
           <span>Name</span>
           <input
@@ -110,12 +110,12 @@
             placeholder="Your name"
           />
         </label>
-        <p class="menu-subhead">Choose a class</p>
+        <p class="menu-subhead" id="setup-sub">Choose a class</p>
         <div class="setup-layout">
           <div id="class-grid" class="class-grid"></div>
           <aside id="class-preview" class="class-preview" aria-live="polite"></aside>
         </div>
-        <p class="hint">Attributes are forged when the quest begins.</p>
+        <p class="hint" id="setup-hint">Attributes are forged when the quest begins.</p>
         <div class="menu-actions">
           <button type="button" class="btn btn--menu btn--ghost" id="btn-back-mode">
             Back
@@ -377,6 +377,16 @@
         <div class="settings-row settings-row--toggles">
           <button type="button" id="settings-music-toggle" class="btn btn--ghost">Music: On</button>
           <button type="button" id="settings-sfx-toggle" class="btn btn--ghost">SFX: On</button>
+        </div>
+
+        <div class="settings-row">
+          <span class="settings-label">Secret class password</span>
+          <input id="settings-class-secret" class="settings-text" type="text" autocomplete="off" placeholder="Empty = no secret classes" />
+        </div>
+
+        <div class="settings-row settings-row--toggles">
+          <button type="button" id="settings-class-secret-save" class="btn btn--ghost">Save password</button>
+          <button type="button" id="settings-class-secret-clear" class="btn btn--ghost">Clear</button>
         </div>
 
         <div class="settings-actions">

@@ -471,24 +471,48 @@ input:focus {
 }
 
 .class-card {
+  position: relative;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.4rem;
+  align-items: flex-end;
+  justify-content: stretch;
+  min-height: 11.5rem;
+  padding: 0;
+  overflow: hidden;
   background: var(--glass-2);
+  background-size: cover;
+  background-position: center top;
   border: 1px solid var(--glass-line);
   border-radius: 14px;
   color: var(--ink);
   font-family: "Cinzel", serif;
-  padding: 0.7rem 0.4rem;
   cursor: pointer;
   text-align: center;
   transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
 }
 
-.class-card .portrait {
-  width: 2.6rem;
-  height: 2.6rem;
+/* Resim yoksa / yüklenemezse degrade zemin üstünde durur (oyun kırılmaz). */
+.class-card.portrait--missing {
+  background: linear-gradient(160deg, #3a2c1c, #1c130a);
+}
+
+.class-card-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top,
+    rgba(0, 0, 0, 0.88) 0%,
+    rgba(0, 0, 0, 0.45) 52%,
+    rgba(0, 0, 0, 0.02) 82%);
+  pointer-events: none;
+}
+
+.class-card-body {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.22rem;
+  padding: 0.55rem 0.4rem;
 }
 
 .class-card:hover,
@@ -502,7 +526,34 @@ input:focus {
 }
 
 .class-card-name {
-  font-size: 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 8px #000;
+}
+
+.class-card-stats {
+  font-size: 0.68rem;
+  color: #f3d894;
+  text-shadow: 0 1px 5px #000;
+}
+
+.class-card-skills {
+  display: flex;
+  gap: 0.25rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.class-card-skills em {
+  font-style: normal;
+  font-size: 0.6rem;
+  color: #e8b76c;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid var(--glass-line);
+  border-radius: 6px;
+  padding: 0.08rem 0.35rem;
+  white-space: nowrap;
 }
 
 /* Karakter seçim ekranı tek bakışta sığsın (10 class = 2 satır) */
@@ -764,6 +815,7 @@ input:focus {
   height: 3.4rem;
   border-radius: 50%;
   border: 2px solid rgba(232, 183, 108, 0.6);
+  background: linear-gradient(135deg, #4a3b28, #241a10);
   background-size: cover;
   background-position: center;
   box-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.15);
@@ -3691,6 +3743,20 @@ input:focus {
   width: 100%;
   accent-color: var(--gold);
   cursor: pointer;
+}
+.settings-text {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--glass-line);
+  border-radius: 8px;
+  color: var(--ink);
+  padding: 0.45rem 0.6rem;
+  font: inherit;
+  font-size: 0.85rem;
+}
+.settings-text:focus {
+  outline: none;
+  border-color: rgba(232, 183, 108, 0.55);
 }
 .settings-row--toggles {
   flex-direction: row;

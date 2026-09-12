@@ -615,11 +615,20 @@ function imgFor(slug, kind) {
 function initImages(root) {
   root.querySelectorAll("[data-img]").forEach((el) => {
     const path = el.getAttribute("data-img");
-    if (!path) return;
+    if (!path) {
+      el.classList.add("portrait--missing");
+      return;
+    }
     const img = new Image();
     img.onload = () => {
       el.style.backgroundImage = `url('${path}')`;
       el.classList.add("portrait--img");
+      el.classList.remove("portrait--missing");
+    };
+    img.onerror = () => {
+      el.style.backgroundImage = "";
+      el.classList.remove("portrait--img");
+      el.classList.add("portrait--missing");
     };
     img.src = path;
   });
@@ -760,55 +769,77 @@ function stopCombatTimer() {
   }
 }
 
+// ---- Class-select texts (editable in the editor via content.ui.classSelect) ----
+function classSelectTexts() {
+  const u = (typeof CATALOG !== "undefined" && CATALOG && CATALOG.ui && CATALOG.ui.classSelect) || {};
+  return {
+    title: u.title || "Create Character",
+    subtitle: u.subtitle || "Choose a class",
+    hint: u.hint || "Attributes are forged when the quest begins.",
+    starterKitHead: u.starterKitHead || "Starter kit",
+    defaultLore: u.defaultLore || "A wandering soul answering the call of Setra. Their legend is yet unwritten.",
+  };
+}
+
+function applySetupTexts() {
+  const t = classSelectTexts();
+  const title = $("setup-title");
+  if (title) title.textContent = t.title;
+  const sub = $("setup-sub");
+  if (sub) sub.textContent = t.subtitle;
+  const hint = $("setup-hint");
+  if (hint) hint.textContent = t.hint;
+}
+
+// Server sends starting-skill ids as `skills`; local content uses
+// `startingSkills`. Accept both so the kit never renders empty.
+function classSkillIds(cls) {
+  if (cls && Array.isArray(cls.startingSkills)) return cls.startingSkills;
+  if (cls && Array.isArray(cls.skills)) return cls.skills;
+  return [];
+}
+
+function skillListFor(cls) {
+  return classSkillIds(cls)
+    .map((id) => ((CATALOG && CATALOG.skills) || []).find((s) => s && s.id === id))
+    .filter(Boolean);
+}
+
 function renderClassGrid(selected, onSelect) {
+  applySetupTexts();
   const grid = $("class-grid");
   grid.innerHTML = "";
-  // Secret (password-locked) classes stay hidden until the user enters a
-  // password. The password itself is NEVER checked here — the server decides.
+  // Secret (password-locked) classes stay hidden until a password is saved.
+  // The password itself is NEVER checked here — the server decides.
+  // The password is managed in the settings menu, not on this screen.
   let storedSecret = "";
   try { storedSecret = localStorage.getItem("setra_class_secret") || ""; } catch (e) {}
+  // Leftover from older builds: remove the inline password row if present.
+  const legacyRow = $("class-secret-row");
+  if (legacyRow && legacyRow.parentNode) legacyRow.parentNode.removeChild(legacyRow);
   CATALOG.classes.filter((c) => !c.baseClass && (!c.secret || storedSecret)).forEach((cls) => {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "class-card" + (selected === cls.slug ? " is-selected" : "");
-    const portrait = document.createElement("span");
-    portrait.className = "portrait portrait--" + cls.slug;
-    portrait.setAttribute("data-img", cls.image);
-    portrait.setAttribute("data-variant", cls.slug);
-    const name = document.createElement("span");
-    name.className = "class-card-name";
-    name.textContent = (cls.secret ? "🔒 " : "") + cls.label;
-    btn.appendChild(portrait);
-    btn.appendChild(name);
+    // Full-bleed card art: the character image IS the card background.
+    btn.setAttribute("data-img", cls.image || "");
+    btn.setAttribute("data-variant", cls.slug);
+    btn.setAttribute("aria-label", cls.label);
+    const hp = classAvg(cls.hp), atk = classAvg(cls.attack), spd = cls.speed || 0;
+    const firstSkills = skillListFor(cls).slice(0, 2);
+    btn.innerHTML =
+      `<span class="class-card-shade" aria-hidden="true"></span>` +
+      `<span class="class-card-body">` +
+        `<span class="class-card-name">${escapeHtml((cls.secret ? "🔒 " : "") + cls.label)}</span>` +
+        `<span class="class-card-stats">❤️ ${hp} · ⚔️ ${atk} · 👟 ${spd}</span>` +
+        (firstSkills.length
+          ? `<span class="class-card-skills">${firstSkills.map((s) => `<em>${escapeHtml(s.name)}</em>`).join("")}</span>`
+          : "") +
+      `</span>`;
     btn.addEventListener("click", () => onSelect(cls.slug));
     grid.appendChild(btn);
   });
   initImages(grid);
-  // Password row lives next to the grid so it survives re-renders.
-  let row = $("class-secret-row");
-  if (!row) {
-    row = document.createElement("div");
-    row.id = "class-secret-row";
-    row.style.cssText = "margin-top:0.6rem;display:flex;gap:0.5rem;align-items:center;justify-content:center;";
-    grid.parentNode.insertBefore(row, grid.nextSibling);
-  }
-  row.innerHTML = "";
-  const toggle = document.createElement("button");
-  toggle.type = "button";
-  toggle.className = "btn btn--ghost";
-  toggle.textContent = storedSecret ? "🔑 Clear password" : "🔑 Secret class password";
-  toggle.addEventListener("click", () => {
-    if (storedSecret) {
-      try { localStorage.removeItem("setra_class_secret"); } catch (e) {}
-      renderClassGrid(selected, onSelect);
-      return;
-    }
-    const pw = window.prompt("Secret class password:");
-    if (!pw) return;
-    try { localStorage.setItem("setra_class_secret", pw); } catch (e) {}
-    renderClassGrid(selected, onSelect);
-  });
-  row.appendChild(toggle);
   renderClassPreview(selected);
 }
 
@@ -851,9 +882,10 @@ function renderClassPreview(selected) {
   const res = classAvg(cls.resistance), spd = cls.speed || 0;
   const bar = (v, max) => `<span class="cp-bar"><span class="cp-fill" style="width:${Math.max(4, Math.min(100, Math.round((v / max) * 100)))}%"></span></span>`;
   const basic = cls.basicAttack || {};
-  const kit = (cls.startingSkills || []).map((id) => CATALOG.skills.find((s) => s.id === id)).filter(Boolean);
+  const kit = skillListFor(cls);
+  const texts = classSelectTexts();
   const tagline = cls.tagline || classLabel(cls.slug);
-  const lore = cls.lore || "A wandering soul answering the call of Setra. Their legend is yet unwritten.";
+  const lore = cls.lore || texts.defaultLore;
   panel.innerHTML = `
     <div class="cp-portrait-wrap">
       <span class="portrait portrait--${cls.slug} cp-portrait" data-img="${escapeHtml(cls.image || "")}" data-variant="${cls.slug}"></span>
@@ -871,7 +903,7 @@ function renderClassPreview(selected) {
       <div class="cp-stat"><span>👟 SPD ${spd}</span>${bar(spd, 15)}</div>
     </div>
     <div class="cp-kit">
-      <p class="cp-kit-head">Starter kit</p>
+      <p class="cp-kit-head">${escapeHtml(texts.starterKitHead)}</p>
       <div class="cp-skill"><span>${escapeHtml(basic.name || "Strike")}</span><em>${escapeHtml(skillShort({ ...basic, target: "enemy" }))}</em></div>
       ${kit.map((s) => `<div class="cp-skill"><span>${escapeHtml(s.name)}</span><em>${escapeHtml(skillShort(s))}</em></div>`).join("")}
     </div>`;

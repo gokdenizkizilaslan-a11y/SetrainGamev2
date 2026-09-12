@@ -997,6 +997,15 @@ const CONTENT = {
     ],
     "cta": "Set Forth"
   },
+  "ui": {
+    "classSelect": {
+      "title": "Create Character",
+      "subtitle": "Choose a class",
+      "hint": "Attributes are forged when the quest begins.",
+      "starterKitHead": "Starter kit",
+      "defaultLore": "A wandering soul answering the call of Setra. Their legend is yet unwritten."
+    }
+  },
   "food": {
     "healBase": 10,
     "healPct": 0.02
@@ -1083,7 +1092,7 @@ const CONTENT = {
     {
       "slug": "warrior",
       "label": "Warrior",
-      "image": "/images/characters/warrior.png",
+      "image": "/images/characters/warrior.webp",
       "basicAttack": {
         "id": "slash",
         "name": "Slash",
@@ -11452,6 +11461,8 @@ function publicCatalog() {
     classes: CONTENT.classes.map((c) => ({
       slug: c.slug,
       label: c.label,
+      tagline: c.tagline || "",
+      lore: c.lore || "",
       image: c.image,
       baseClass: c.baseClass || null,
       // Secret flag only (boolean) — the password itself NEVER leaves the server.
@@ -11460,7 +11471,16 @@ function publicCatalog() {
       basicAttack: c.basicAttack,
       skills: c.startingSkills || [],
       manaRegen: c.manaRegen || 0,
+      // Stat ranges drive the class-select detail panel (HP/ATK/MAG/RES/SPD bars).
+      speed: c.speed || 0,
+      hp: c.hp || null,
+      attack: c.attack || null,
+      mana: c.mana || null,
+      resistance: c.resistance || null,
+      magicPower: c.magicPower || null,
+      healPower: c.healPower || null,
     })),
+    ui: CONTENT.ui || {},
     images: CONTENT.images,
     town: {
       search: { stamina: CONTENT.town.search.stamina },

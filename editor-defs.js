@@ -128,6 +128,7 @@ const collections = [
       { key: "label", label: "Name", type: "string" },
       { key: "tagline", label: "Tagline (shown on class select, e.g. Beginner Mage)", type: "string" },
       { key: "lore", label: "Lore (2-3 sentences for class select detail)", type: "string" },
+      { key: "image", label: "Class card image (full-bleed on the card, round in game)", ...img("characters") },
       { key: "speed", label: "Speed", type: "number" },
       { key: "hp.min", label: "Base HP (min)", type: "number" },
       { key: "hp.max", label: "Base HP (max)", type: "number" },
@@ -387,6 +388,18 @@ const pages = [
     titlePath: "story.title",
     paragraphsPath: "story.paragraphs",
     ctaPath: "story.cta",
+  },
+  {
+    id: "classSelect",
+    label: "Class Select Text",
+    kind: "form",
+    fields: [
+      { path: "ui.classSelect.title", label: "Screen title (e.g. Create Character)", type: "string" },
+      { path: "ui.classSelect.subtitle", label: "Subtitle (e.g. Choose a class)", type: "string" },
+      { path: "ui.classSelect.hint", label: "Hint line under the grid", type: "string" },
+      { path: "ui.classSelect.starterKitHead", label: "Starter kit heading", type: "string" },
+      { path: "ui.classSelect.defaultLore", label: "Default lore (when a class has no lore)", type: "string" },
+    ],
   },
 ];
 

@@ -384,10 +384,17 @@ function updateSettingsToggles() {
   if (st) st.textContent = sfxEnabled ? "SFX: On" : "SFX: Off";
 }
 
+function refreshClassSecretInput() {
+  const inp = $("settings-class-secret");
+  if (!inp) return;
+  try { inp.value = localStorage.getItem("setra_class_secret") || ""; } catch (e) { inp.value = ""; }
+}
+
 function openSettings() {
   $("settings-music-volume").value = Math.round(($("music-audio").volume || 0.7) * 100);
   $("settings-sfx-volume").value = sfxVolume;
   updateSettingsToggles();
+  refreshClassSecretInput();
   stopCombatTimer();
   $("settings-overlay").classList.remove("hidden");
 }
@@ -434,6 +441,35 @@ $("settings-sfx-toggle").addEventListener("click", () => {
   updateSoundButton(sfxEnabled);
   updateSettingsToggles();
   if (sfxEnabled) playSfx("coin");
+});
+
+function rerenderSetupGrid() {
+  // Settings can open from any screen; only re-render the class grid
+  // when the setup screen is actually visible.
+  const setup = $("screen-setup");
+  if (setup && !setup.classList.contains("hidden") && typeof renderClassGrid === "function") {
+    renderClassGrid(state.selectedClass, selectClass);
+  }
+}
+
+const secretSaveBtn = $("settings-class-secret-save");
+if (secretSaveBtn) secretSaveBtn.addEventListener("click", () => {
+  const inp = $("settings-class-secret");
+  const v = inp ? inp.value.trim() : "";
+  try {
+    if (v) localStorage.setItem("setra_class_secret", v);
+    else localStorage.removeItem("setra_class_secret");
+  } catch (e) {}
+  showToast(v ? "Secret class password saved." : "Secret class password cleared.");
+  rerenderSetupGrid();
+});
+
+const secretClearBtn = $("settings-class-secret-clear");
+if (secretClearBtn) secretClearBtn.addEventListener("click", () => {
+  try { localStorage.removeItem("setra_class_secret"); } catch (e) {}
+  refreshClassSecretInput();
+  showToast("Secret class password cleared.");
+  rerenderSetupGrid();
 });
 
 $("btn-sound").addEventListener("click", () => {
