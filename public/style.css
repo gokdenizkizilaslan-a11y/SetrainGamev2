@@ -626,6 +626,14 @@ input:focus {
 }
 .cp-shade {
   border-radius: inherit;
+  background: linear-gradient(to top,
+    rgba(0, 0, 0, 0.62) 0%,
+    rgba(0, 0, 0, 0.34) 55%,
+    rgba(0, 0, 0, 0.10) 100%);
+}
+.class-preview .cp-lore,
+.class-preview .cp-stat {
+  text-shadow: 0 1px 5px #000;
 }
 .class-preview .cp-title,
 .class-preview .cp-lore,
