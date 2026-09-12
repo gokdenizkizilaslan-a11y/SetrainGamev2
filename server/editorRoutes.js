@@ -15,7 +15,7 @@ const fs = require("fs");
 const { execFileSync } = require("child_process");
 
 const { CONTENT } = require("../content.js");
-const { writeContent } = require("../editor-save.js");
+const { writeContent, CONTENT_FILE } = require("../editor-save.js");
 const defs = require("../editor-defs.js");
 
 const router = express.Router();
@@ -129,6 +129,62 @@ const IMG_FOLDERS = new Set([
 ]);
 const IMG_EXT_RE = /^\.(png|jpe?g|webp|gif|svg)$/i;
 const MAX_IMG_BYTES = 12 * 1024 * 1024; // ~12MB (base64 ~16MB)<express.json 50mb
+const GAME_IMG_RE = /^\/images\/([a-z0-9_-]+)\/([a-z0-9][a-z0-9_-]*\.[a-z0-9]+)$/i;
+
+// Biten .png/.jpg uzantısız dosya adı (query ?v= damgası temizlenir).
+function splitGameImgUrl(url) {
+  const clean = String(url || "").split("?")[0];
+  const m = GAME_IMG_RE.exec(clean);
+  if (!m) return null;
+  return { folder: m[1].toLowerCase(), filename: m[2].toLowerCase() };
+}
+
+// Dosya adı + yol güvenliği (upload ve delete ortak).
+function resolveImageTarget(folder, filename) {
+  if (!IMG_FOLDERS.has(folder)) return { error: "Bilinmeyen resim klasörü: " + folder };
+  const nameMatch = /^([a-z0-9][a-z0-9_-]*)\.([a-z0-9]+)$/.exec(filename);
+  if (!nameMatch) return { error: "Geçersiz dosya adı." };
+  const ext = nameMatch[2];
+  const ALLOWED_EXT = ["png", "jpg", "jpeg", "webp", "gif", "svg"];
+  if (!ALLOWED_EXT.includes(ext)) return { error: "Desteklenen uzantılar: " + ALLOWED_EXT.join(", ") };
+  const dir = path.resolve(IMG_ROOT, folder);
+  const target = path.resolve(dir, nameMatch[1] + "." + ext);
+  if (!target.startsWith(path.resolve(IMG_ROOT) + path.sep)) return { error: "Geçersiz hedef yol." };
+  return { dir, target, safeName: nameMatch[1] + "." + ext };
+}
+
+// Bu oyun dosyası content.js'te kaç yerde geçiyor? (paylaşım koruması)
+function countContentRefs(urlPath) {
+  try {
+    const src = fs.readFileSync(CONTENT_FILE, "utf8");
+    return src.split(urlPath).length - 1;
+  } catch (e) {
+    return 99; // okunamazsa silme (güvenli taraf)
+  }
+}
+
+// Kaydetme sonrası emekli temizliği: oturum içinde değiştirilen (retire)
+// eski dosyalar, YENİ kaydedilmiş veride hiç geçmiyorsa silinir.
+// Geçiyorsa (hâlâ kullanılıyor/paylaşılıyor) dokunulmaz. Birikim bitirir.
+function retireOldFiles(data, retire) {
+  const retired = [];
+  if (!Array.isArray(retire)) return retired;
+  let haystack = "";
+  try { haystack = JSON.stringify(data); } catch (e) { return retired; }
+  const seen = new Set();
+  for (const raw of retire) {
+    const urlPath = String(raw || "").split("?")[0];
+    if (!urlPath || seen.has(urlPath)) continue;
+    seen.add(urlPath);
+    if (haystack.split(urlPath).length - 1 > 0) continue; // hâlâ kullanımda
+    const parsed = splitGameImgUrl(urlPath);
+    if (!parsed) continue;
+    const rt = resolveImageTarget(parsed.folder, parsed.filename);
+    if (rt.error || !fs.existsSync(rt.target)) continue;
+    try { fs.unlinkSync(rt.target); retired.push(parsed.folder + "/" + parsed.filename); } catch (e) {}
+  }
+  return retired;
+}
 
 router.get("/api/images", auth, (req, res) => {
   const folder = String(req.query.folder || "").toLowerCase();
@@ -205,9 +261,57 @@ router.post("/api/upload", auth, (req, res) => {
         try { fs.unlinkSync(path.join(dir, f)); } catch (e) {}
       }
     } catch (e) {}
-    res.json({ ok: true, url: "/images/" + folder + "/" + safeName, file: folder + "/" + safeName, overwritten: existed });
+    // Farklı isimli ESKİ dosya da temizlensin (editör oldUrl gönderir):
+    // SADECE content.js'te hiç geçmiyorsa (gerçek öksüz) sil. 1+ kez geçiyorsa
+    // paylaşılıyor/kullanılıyor olabilir → asla dokunma (güvenlik).
+    let removedOld = false;
+    let oldKept = null;
+    const oldUrl = String((req.body && req.body.oldUrl) || "").split("?")[0];
+    if (oldUrl && oldUrl !== ("/images/" + folder + "/" + safeName)) {
+      const old = splitGameImgUrl(oldUrl);
+      if (old) {
+        const rt = resolveImageTarget(old.folder, old.filename);
+        if (!rt.error && rt.target !== target && fs.existsSync(rt.target)) {
+          const refs = countContentRefs(oldUrl);
+          if (refs === 0) {
+            try { fs.unlinkSync(rt.target); removedOld = true; } catch (e) {}
+          } else {
+            oldKept = `Eski dosya content.js'te ${refs} yerde geçiyor, silinmedi.`;
+          }
+        }
+      }
+    }
+    res.json({ ok: true, url: "/images/" + folder + "/" + safeName, file: folder + "/" + safeName, overwritten: existed, removedOld, oldKept });
   } catch (e) {
     res.status(500).json({ ok: false, error: "Dosya yazılamadı: " + String(e.message).slice(0, 300) });
+  }
+});
+
+// Editörün çöp kutusu: oyun dosyasını gerçekten siler.
+// Paylaşım korumalı: dosya content.js'te geçiyorsa forcesuz silinmez.
+router.post("/api/delete", auth, (req, res) => {
+  const folder = String((req.body && req.body.folder) || "").toLowerCase();
+  const filename = String((req.body && req.body.filename) || "").toLowerCase();
+  const force = !!(req.body && req.body.force);
+  const rt = resolveImageTarget(folder, filename);
+  if (rt.error) return res.status(400).json({ ok: false, error: rt.error });
+  if (!fs.existsSync(rt.target)) {
+    return res.json({ ok: true, file: folder + "/" + rt.safeName, note: "Dosya zaten yoktu." });
+  }
+  const urlPath = "/images/" + folder + "/" + rt.safeName;
+  const refs = countContentRefs(urlPath);
+  if (refs > 0 && !force) {
+    return res.status(409).json({
+      ok: false,
+      error: `Bu dosya content.js'te ${refs} yerde kullanılıyor. Yine de silinsin mi?`,
+      refs,
+    });
+  }
+  try {
+    fs.unlinkSync(rt.target);
+    res.json({ ok: true, file: folder + "/" + rt.safeName });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: "Dosya silinemedi: " + String(e.message).slice(0, 200) });
   }
 });
 
@@ -223,9 +327,11 @@ router.post("/api/editor/save", auth, (req, res) => {
   try {
     const result = writeContent(data, { backup: true });
     editorData = data;
+    const retired = retireOldFiles(data, req.body && req.body.retire);
     res.json({
       ok: true,
       backup: result.backup,
+      retired,
       note: "content.js güncellendi. Sunucuyu yeniden başlat (Ctrl+C, sonra npm start) — oyun restart'tan sonra kullanır. Yedek: " + (result.backup || "—") + ".",
     });
   } catch (e) {
@@ -243,6 +349,7 @@ router.post("/api/editor/save-and-push", auth, (req, res) => {
     // 1) save content.js
     const result = writeContent(data, { backup: true });
     editorData = data;
+    const retired = retireOldFiles(data, req.body && req.body.retire);
 
     // 2) git add + commit + push (best-effort via execFileSync: no shell, no injection)
     const cwd = path.join(__dirname, "..");
@@ -259,6 +366,7 @@ router.post("/api/editor/save-and-push", auth, (req, res) => {
     res.json({
       ok: true,
       backup: result.backup,
+      retired,
       note: "Saved + committed. " + gitLines.filter(Boolean).join(" | ").slice(0, 500),
     });
   } catch (e) {
