@@ -53,11 +53,13 @@ function openChest(room, player, itemId) {
 
   const tier = TIER_ORDER.includes(chest.chestTier) ? chest.chestTier : "f";
   const tierIndex = TIER_ORDER.indexOf(tier);
-  // 2-6 pulls per chest (f:2 … a/s/ss/ssplus:6). Each pull rolls rarity, then
-  // category (craftables vs gear), then a random item of that rarity.
-  const rollCount = Math.min(6, 2 + tierIndex);
+  // Normal chests: 2-6 pulls (f:2 … a/s/ss/ssplus:6). Boss chests: 8-10
+  // (ember:8 … storm/world:10). Every pull ALWAYS yields an item — the
+  // dropChance gate is for monster loot, not chests (it used to trash ~80%
+  // of pulls, leaving a single pity item).
+  const isBossChest = /^boss_chest_/.test(itemId);
+  const rollCount = isBossChest ? Math.min(10, 4 + tierIndex) : Math.min(6, 2 + tierIndex);
   const gradeWeights = ((CONTENT.loot || {}).gradeWeights || {})[tier] || CONTENT.loot.gradeWeights.f;
-  const dropChance = (CONTENT.loot && CONTENT.loot.dropChance) || {};
   const catW = ((CONTENT.loot || {}).categoryWeights) || { material: 60, gear: 40 };
 
   // Materials (slime, hides, essences…) — blueprints NEVER drop from chests.
@@ -80,7 +82,6 @@ function openChest(room, player, itemId) {
   for (let i = 0; i < rollCount; i++) {
     const rarity = weightedPick(gradeWeights);
     if (!rarity) continue;
-    if (Math.random() >= (dropChance[rarity] || 0)) continue;
     const item = pickOne(rarity);
     if (!item) continue;
     addItem(player, item.id, 1);
