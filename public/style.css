@@ -1187,6 +1187,12 @@ input:focus {
   height: 22px;
 }
 
+.action-icon--img {
+  background-size: cover;
+  background-position: center;
+  padding: 0;
+}
+
 .action-body {
   flex: 1;
   min-width: 0;
@@ -2682,6 +2688,22 @@ input:focus {
   max-height: none;
   overflow: visible;
   padding-right: 2px;
+}
+.shop-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.shop-npc {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  border: 1px solid var(--glass-line);
+  background-size: cover;
+  background-position: center top;
+  vertical-align: middle;
+  flex: none;
 }
 .shop-grid::-webkit-scrollbar { width: 6px; }
 .shop-grid::-webkit-scrollbar-thumb { background: rgba(232,183,108,0.25); border-radius: 3px; }

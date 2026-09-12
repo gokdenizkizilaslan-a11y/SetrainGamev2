@@ -1249,15 +1249,24 @@ function renderActionCards(room, selfId) {
     if (a.id === "search") a.sub = `${searchCost} stamina · Explore the wilds`;
     if (a.id === "rest") a.sub = `+${restAmt} stamina · Wait for your party`;
   });
-  el.innerHTML = ACTIONS.map((a) => `
+  el.innerHTML = ACTIONS.map((a) => {
+    // Editördeki kasaba buton görselleri (images.ui.*) varsa ikon kutusunda
+    // gösterilir; yoksa SVG ikon (eski görünüm, oyun kırılmaz).
+    const uiKey = { blacksmith: "blacksmithButton", tavern: "tavernButton", merchant: "merchantButton", temple: "templeButton", dungeon: "dungeonButton" }[a.id] || "";
+    const uiImg = uiKey && CATALOG.images && CATALOG.images.ui ? CATALOG.images.ui[uiKey] : "";
+    const iconHtml = uiImg
+      ? `<span class="action-icon action-icon--img" data-img="${escapeHtml(uiImg)}" data-variant="${escapeHtml(a.id)}"></span>`
+      : `<span class="action-icon">${icon(a.icon)}</span>`;
+    return `
     <button type="button" class="action-card${a.id === "dungeon" ? " action-card--hero" : ""}${canAct ? "" : " action-card--locked"}" data-action="${a.id}">
-      <span class="action-icon">${icon(a.icon)}</span>
+      ${iconHtml}
       <span class="action-body">
         <span class="action-title-text">${escapeHtml(a.title)}</span>
         <span class="action-sub">${escapeHtml(a.sub)}</span>
       </span>
       <span class="action-arrow">${icon("chevron")}</span>
-    </button>`).join("");
+    </button>`; }).join("");
+  initImages(el);
   el.querySelectorAll("[data-action]").forEach((b) => {
     b.addEventListener("click", () => {
       if (isDead) {
@@ -2637,18 +2646,44 @@ function renderTempleView(room) {
   const maxLives = (CATALOG.temple && CATALOG.temple.maxLives) || 3;
   const baseCls = CATALOG.classes.find((c) => c.slug === me.character);
   const evos = (temple.evolutions || []).filter((e) => e.from === me.character);
-  const canEvolve = (ev) => staminaOk && me.level >= (ev ? ev.level : 20) && itemOwnedQty(me, "ancient_relic") >= 1;
-  const relicQty = itemOwnedQty(me, "ancient_relic");
+  // Tapınak şartları sunucuyla birebir aynı mantık (temple.js evolve):
+  // legacy = seviye + relic, level_only = sadece seviye, item_only = sadece
+  // eşya, level_and_item = ikisi, level_or_item = seviye ya da eşya.
+  const evoReq = (ev) => {
+    const t = (ev && ev.requirementType) || "legacy";
+    const item = (ev && ev.requiredItem) || "ancient_relic";
+    const n = Math.max(1, (ev && ev.requiredItemCount) || 1);
+    const lvl = (ev && ev.level) || 20;
+    const levelOk = me.level >= lvl;
+    const needItem = t === "legacy" || t === "item_only" || t === "level_and_item" || (t === "level_or_item" && !levelOk);
+    const def = (CATALOG.items || []).find((x) => x.id === item);
+    return { t, item, n, lvl, levelOk, needItem, itemName: def ? def.name : item, owned: itemOwnedQty(me, item) };
+  };
+  const canEvolve = (ev) => {
+    if (!staminaOk || !baseCls) return false;
+    const r = evoReq(ev);
+    if (!r.levelOk && r.t !== "level_or_item" && r.t !== "item_only") return false;
+    if (r.needItem && r.owned < r.n) return false;
+    return true;
+  };
   const restoreItem = temple.restore || {};
   const canRestore = staminaOk && me.lives < maxLives && itemOwnedQty(me, restoreItem.item) >= 1;
   const heartQty = itemOwnedQty(me, restoreItem.item);
   const recipes = temple.recipes || [];
+  const evoReqText = (ev) => {
+    const r = evoReq(ev);
+    const parts = [];
+    if (r.t !== "item_only") parts.push(`Requires level ${r.lvl}+`);
+    if (r.needItem) parts.push(`${r.n > 1 ? r.n + "× " : ""}${r.itemName} (${r.owned} owned)`);
+    else if (r.t === "level_or_item" && r.levelOk) parts.push(`or ${r.n > 1 ? r.n + "× " : ""}${r.itemName} instead`);
+    return parts.join(" · ") || `Requires level ${r.lvl}+`;
+  };
 
   const evoCard = (ev) => `<div class="temple-card temple-card--ascend">
     <p class="subhead">✦ Ascension</p>
     ${baseCls ? `
       <p class="ascend-line"><span>${escapeHtml(baseCls.label)}</span><span class="ascend-arrow">➤</span><strong>${escapeHtml(ev.to.label)}</strong></p>
-      <p class="temple-req">Requires level ${ev.level}+ · Ancient Relic (${relicQty} owned)</p>
+      <p class="temple-req">${evoReqText(ev)}</p>
       ${ev.skill ? `<p class="temple-skill">Unlocks <strong>${escapeHtml(ev.skill.name)}</strong><span class="muted"> — ${escapeHtml(ev.skill.description)}</span></p>` : ""}
       ${ev.bonusText ? `<p class="temple-bonus">${escapeHtml(ev.bonusText)}</p>` : ""}
     ` : `<p>Your class holds no further form.</p>`}
@@ -2775,6 +2810,14 @@ function shopResources(me) {
     </div>`;
 }
 
+// Editördeki NPC görseli (images.ui.blacksmithNpc) varsa dükkan başlığında
+// gösterilir; yoksa hiçbir şey çizilmez (eski görünüm).
+function shopVendorPortrait(uiKey, label) {
+  const url = CATALOG.images && CATALOG.images.ui ? CATALOG.images.ui[uiKey] : "";
+  if (!url) return "";
+  return ` <span class="shop-npc" data-img="${escapeHtml(url)}" data-variant="${escapeHtml(uiKey)}" title="${escapeHtml(label)}"></span>`;
+}
+
 function renderBlacksmithView(room) {
   const me = room.players.find((p) => p.id === state.playerId);
   const root = $("blacksmith-content");
@@ -2798,7 +2841,7 @@ function renderBlacksmithView(room) {
 
   root.innerHTML = `
     ${shopResources(me)}
-    <p class="subhead">Armor & Weapons — Week ${room.shopStock ? room.shopStock.week : 1} · ${rotGear.length} items (7 days rotation)</p>
+    <p class="subhead shop-head">Armor & Weapons — Week ${room.shopStock ? room.shopStock.week : 1} · ${rotGear.length} items (7 days rotation)${shopVendorPortrait("blacksmithNpc", "Blacksmith")}</p>
     ${pinned.length ? `<p class="subhead">📐 Always in stock — Blueprints</p><div class="shop-grid shop-grid--pinned">${pinned.map((i) => shopCardHtml(me, staminaOk, i, "blacksmith:buy", soldSet.includes(i.id))).join("")}</div>` : ""}
     <div class="shop-grid">${rotGear.map((i) => shopCardHtml(me, staminaOk, i, "blacksmith:buy", soldSet.includes(i.id))).join("") || '<div class="muted">Nothing for sale today.</div>'}</div>
     <div class="btn-row">

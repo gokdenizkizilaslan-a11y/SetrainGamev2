@@ -1003,6 +1003,8 @@ function victory(room, d) {
   }
   // fallback if somehow killed 0
   if (xp <= 0) xp = Math.round(randInt(xpMin, xpMax) * (size.xpScale || 1));
+  // Editördeki zindan tamamlama ödülü (dungeons[].xpReward) — kill XP'sine eklenir.
+  xp += Math.max(0, Math.floor(def.xpReward || 0));
   // Per-monster bonus rewards (data-driven: monster.goldReward/woodReward/xpReward).
   // Zero/undefined = no bonus, so old content behaves exactly as before.
   // Earlier floors were banked at each transition; this wave is counted here.

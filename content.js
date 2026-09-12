@@ -11544,6 +11544,9 @@ function publicCatalog() {
         from: c.slug,
         to: { slug: evolved ? evolved.slug : route.to, label: evolved ? evolved.label : route.to, image: evolved ? evolved.image : "" },
         level: route.level || 20,
+        requirementType: route.requirementType || null,
+        requiredItem: route.requiredItem || null,
+        requiredItemCount: route.requiredItemCount || null,
         skill: skill ? { name: skill.name, description: skill.description || "", mana: skill.mana, image: skill.image } : null,
         bonusText,
         ascend: {

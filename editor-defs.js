@@ -334,8 +334,6 @@ const pages = [
       { path: "town.tavern.stamina", label: "Tavern stamina cost", type: "number" },
       { path: "town.rest.stamina", label: "Rest stamina cost", type: "number" },
       { path: "town.temple.stamina", label: "Temple stamina cost", type: "number" },
-      { path: "town.dungeon.rankedStamina", label: "Ranked dungeon stamina cost", type: "number" },
-      { path: "town.dungeon.fastStamina", label: "Fast dungeon stamina cost", type: "number" },
     ],
   },
   {
