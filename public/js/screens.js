@@ -887,8 +887,8 @@ function renderClassPreview(selected) {
   const tagline = cls.tagline || classLabel(cls.slug);
   const lore = cls.lore || texts.defaultLore;
   panel.innerHTML = `
-    <div class="cp-portrait-wrap">
-      <span class="portrait portrait--${cls.slug} cp-portrait" data-img="${escapeHtml(cls.image || "")}" data-variant="${cls.slug}"></span>
+    <div class="cp-art" data-img="${escapeHtml(cls.image || "")}" data-variant="${cls.slug}">
+      <span class="class-card-shade" aria-hidden="true"></span>
       <div class="cp-title">
         <strong>${escapeHtml(cls.label)}</strong>
         <em>${escapeHtml(tagline)}</em>

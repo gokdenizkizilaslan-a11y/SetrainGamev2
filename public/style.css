@@ -610,18 +610,26 @@ input:focus {
     0 12px 28px rgba(0, 0, 0, 0.4),
     0 0 24px rgba(216, 156, 74, 0.12);
 }
-.cp-portrait-wrap {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-}
-.cp-portrait {
-  width: 5.2rem;
-  height: 5.2rem;
-  flex: none;
-  border-radius: 16px;
-  border-width: 2px;
+/* Preview üstü: kocaman karakter banner'ı (yuvarlak yok). */
+.cp-art {
+  position: relative;
+  height: 11rem;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(232, 183, 108, 0.35);
+  background-size: cover;
+  background-position: center top;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+}
+.cp-art.portrait--missing {
+  background: linear-gradient(160deg, #3a2c1c, #1c130a);
+}
+.cp-art .cp-title {
+  position: absolute;
+  left: 0.7rem;
+  right: 0.7rem;
+  bottom: 0.6rem;
+  text-shadow: 0 2px 8px #000;
 }
 .cp-title {
   display: flex;
