@@ -193,6 +193,18 @@ router.post("/api/upload", auth, (req, res) => {
     fs.mkdirSync(dir, { recursive: true });
     const existed = fs.existsSync(target);
     fs.writeFileSync(target, buf);
+    // Değişimde önceki foto silinsin: aynı isimde farklı uzantıyla kalmış
+    // artık dosyaları temizle (örn. mage.png dururken mage.webp yüklendiyse
+    // mage.png silinir). Sadece bu klasör + resim uzantıları, hepsi bu.
+    try {
+      const base = safeName.slice(0, safeName.lastIndexOf("."));
+      for (const f of fs.readdirSync(dir)) {
+        if (f === safeName) continue;
+        if (!f.startsWith(base + ".")) continue;
+        if (!IMG_EXT_RE.test(path.extname(f))) continue;
+        try { fs.unlinkSync(path.join(dir, f)); } catch (e) {}
+      }
+    } catch (e) {}
     res.json({ ok: true, url: "/images/" + folder + "/" + safeName, file: folder + "/" + safeName, overwritten: existed });
   } catch (e) {
     res.status(500).json({ ok: false, error: "Dosya yazılamadı: " + String(e.message).slice(0, 300) });

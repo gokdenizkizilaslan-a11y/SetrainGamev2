@@ -895,7 +895,8 @@ function renderClassPreview(selected) {
       </div>
     </div>
     <p class="cp-lore">${escapeHtml(lore)}</p>
-    <div class="cp-stats">
+    <div class="cp-stats cp-stats--bg" data-img="${escapeHtml(cls.image || "")}" data-variant="${cls.slug}">
+      <span class="class-card-shade" aria-hidden="true"></span>
       <div class="cp-stat"><span>❤️ HP ${hp}</span>${bar(hp, 750)}</div>
       <div class="cp-stat"><span>⚔️ ATK ${atk}</span>${bar(atk, 64)}</div>
       <div class="cp-stat"><span>🔮 MAG ${mag}</span>${bar(mag, 62)}</div>
@@ -1059,9 +1060,7 @@ function renderProfileCard(room, selfId) {
   const maxLives = (CATALOG.starting && CATALOG.starting.lives) || 3;
   const isDead = me.lives <= 0;
   el.innerHTML = `
-    <div class="profile-avatar">
-      <span class="portrait portrait--${me.character} profile-portrait" data-img="${imgFor(me.character, "class")}" data-variant="${me.character}"${frame}></span>
-    </div>
+    <span class="profile-art" data-img="${imgFor(me.character, "class")}" data-variant="${me.character}"${frame}></span>
     <div class="profile-name">${escapeHtml(me.name)}${me.isHost ? ' <span class="badge badge--host">Host</span>' : ""}${isDead ? ' <span class="badge badge--offline">Fallen</span>' : ""}</div>
     <div class="profile-class">${classLabel(me.character)} · Lv ${me.level}</div>
     <div class="profile-lives ${isDead ? "profile-lives--dead" : ""}" title="Lives — when 0 you must be revived">
@@ -2019,9 +2018,10 @@ function renderCombat(room, root) {
       const frame = p.anomaly ? ` style="--frame:${p.anomaly.frameColor}"` : "";
       const targetable = canAct && state.selectedSkill && state.selectedSkill.target === "ally" && p.hp > 0;
       const isCurrent = d.phase === "players" && d.currentTurnId === p.id;
-      return `<button type="button" class="fighter${p.hp <= 0 ? " fighter--down" : ""}${isCurrent ? " fighter--turn" : ""}${targetable ? " fighter--targetable" : ""}" data-fighter="${p.id}">
+      return `<button type="button" class="fighter${p.hp <= 0 ? " fighter--down" : ""}${isCurrent ? " fighter--turn" : ""}${targetable ? " fighter--targetable" : ""}" data-fighter="${p.id}"${frame}>
         ${targetable ? `<span class="tgtkey">${members.slice(0, fi + 1).filter((x) => x.hp > 0).length}</span>` : ""}
-        <span class="portrait portrait--${p.character} fighter-portrait" data-img="${imgFor(p.character, "class")}" data-variant="${p.character}"${frame}></span>
+        <span class="fighter-art" data-img="${imgFor(p.character, "class")}" data-variant="${p.character}"></span>
+        <span class="fighter-meta">
         <span class="fighter-name">${escapeHtml(p.name)}${p.id === d.leaderId ? " ★" : ""}${isCurrent ? ' <span class="turn-tag">turn</span>' : ""}</span>
         <span class="hpbar"><span class="hpbar-fill hpbar-fill--party" style="width:${Math.round((p.hp / p.maxHp) * 100)}%"></span></span>
         <span class="hpnum">${p.hp}/${p.maxHp}</span>
@@ -2030,6 +2030,7 @@ function renderCombat(room, root) {
         <span class="fighter-mana">Mana ${p.mana}/${p.maxMana}</span>
         <span class="fighter-pets">${(p.activePetIds|| (p.activePetId?[p.activePetId]:[])).map(pid=>{ const pd=(CATALOG.pets||[]).find(x=>x.id===pid); const pp=(p.pets||[]).find(x=>x.petId===pid); const lvl=pp? (pp.level||1):1; const img=pd?petImageForLevel(pd,lvl):''; const name=pd?petDisplayName(pd,lvl):pid; return `<span class="pet-icon" data-img="${escapeHtml(img)}" title="${escapeHtml(name)} Lv ${lvl}" style="width:1.4rem;height:1.4rem;display:inline-block;border:1px solid var(--glass-line);border-radius:50%;background:var(--glass-2);background-size:cover;background-position:center;vertical-align:middle;margin:0 2px;"></span>`; }).join("")}</span>
         ${buffBadges(d, "player", p.id)}
+        </span>
       </button>`;
     })
     .join("");
@@ -2272,23 +2273,27 @@ function renderPvpView(room){
   }).join("");
   const oppFrame=opp && opp.anomaly?` style="--frame:${opp.anomaly.frameColor}"`:"";
   const meFrame=me && me.anomaly?` style="--frame:${me.anomaly.frameColor}"`:"";
-  const oppHtml = opp? `<div class="fighter ${opp.hp<=0?"fighter--down":""} ${d.currentTurnId===opp.id?"fighter--turn":""}" style="margin:0 auto;">
-    <span class="portrait portrait--${opp.character} fighter-portrait" data-img="${imgFor(opp.character,"class")}" data-variant="${opp.character}"${oppFrame}></span>
+  const oppHtml = opp? `<div class="fighter ${opp.hp<=0?"fighter--down":""} ${d.currentTurnId===opp.id?"fighter--turn":""}" style="margin:0 auto;"${oppFrame}>
+    <span class="fighter-art" data-img="${imgFor(opp.character,"class")}" data-variant="${opp.character}"></span>
+    <span class="fighter-meta">
     <span class="fighter-name">${escapeHtml(opp.name)} ${d.currentTurnId===opp.id?'<span class="turn-tag">turn</span>':''}</span>
     <span class="hpbar"><span class="hpbar-fill" style="width:${Math.round(opp.hp/opp.maxHp*100)}%"></span></span><span class="hpnum">${opp.hp}/${opp.maxHp}</span>
     ${opp.shield>0?`<span class="hpbar shieldbar"><span class="hpbar-fill shieldbar-fill" style="width:${Math.round(opp.shield/(opp.maxShield||opp.shield)*100)}%"></span></span><span class="hpnum shieldnum">🛡️ ${opp.shield}</span>`:``}
     <span class="fighter-mana">Mana ${opp.mana}/${opp.maxMana}</span>
     <span class="fighter-pets">${(opp.activePetIds|| (opp.activePetId?[opp.activePetId]:[])).map(pid=>{ const pd=(CATALOG.pets||[]).find(x=>x.id===pid); const pp=(opp.pets||[]).find(x=>x.petId===pid); const lvl=pp?(pp.level||1):1; const img=pd?petImageForLevel(pd,lvl):''; const name=pd?petDisplayName(pd,lvl):pid; return `<span class="pet-icon" data-img="${escapeHtml(img)}" title="${escapeHtml(name)} Lv ${lvl}" style="width:1.4rem;height:1.4rem;display:inline-block;border:1px solid var(--glass-line);border-radius:50%;background:var(--glass-2);background-size:cover;background-position:center;vertical-align:middle;margin:0 2px;"></span>`; }).join("")}</span>
     ${buffBadges(d,"player",opp.id)}
+    </span>
   </div>` : '<div class="muted">Waiting for opponent...</div>';
-  const meHtml = `<div class="fighter ${me.hp<=0?"fighter--down":""} ${d.currentTurnId===me.id?"fighter--turn":""}" style="margin:0 auto;">
-    <span class="portrait portrait--${me.character} fighter-portrait" data-img="${imgFor(me.character,"class")}" data-variant="${me.character}"${meFrame}></span>
+  const meHtml = `<div class="fighter ${me.hp<=0?"fighter--down":""} ${d.currentTurnId===me.id?"fighter--turn":""}" style="margin:0 auto;"${meFrame}>
+    <span class="fighter-art" data-img="${imgFor(me.character,"class")}" data-variant="${me.character}"></span>
+    <span class="fighter-meta">
     <span class="fighter-name">${escapeHtml(me.name)} ${d.currentTurnId===me.id?'<span class="turn-tag">turn</span>':''}</span>
     <span class="hpbar"><span class="hpbar-fill hpbar-fill--party" style="width:${Math.round(me.hp/me.maxHp*100)}%"></span></span><span class="hpnum">${me.hp}/${me.maxHp}</span>
     ${me.shield>0?`<span class="hpbar shieldbar"><span class="hpbar-fill shieldbar-fill" style="width:${Math.round(me.shield/(me.maxShield||me.shield)*100)}%"></span></span><span class="hpnum shieldnum">🛡️ ${me.shield}</span>`:``}
     <span class="fighter-mana">Mana ${me.mana}/${me.maxMana}</span>
     <span class="fighter-pets">${(me.activePetIds|| (me.activePetId?[me.activePetId]:[])).map(pid=>{ const pd=(CATALOG.pets||[]).find(x=>x.id===pid); const pp=(me.pets||[]).find(x=>x.petId===pid); const lvl=pp?(pp.level||1):1; const img=pd?petImageForLevel(pd,lvl):''; const name=pd?petDisplayName(pd,lvl):pid; return `<span class="pet-icon" data-img="${escapeHtml(img)}" title="${escapeHtml(name)} Lv ${lvl}" style="width:1.4rem;height:1.4rem;display:inline-block;border:1px solid var(--glass-line);border-radius:50%;background:var(--glass-2);background-size:cover;background-position:center;vertical-align:middle;margin:0 2px;"></span>`; }).join("")}</span>
     ${buffBadges(d,"player",me.id)}
+    </span>
   </div>`;
   const hint = d.status==="done"? (d.result?d.result.text:"") : isMyTurn? "Your turn — pick a skill." : `Waiting for ${opp?opp.name:"opponent"}...`;
   root.innerHTML=`<div class="combat-wrap">

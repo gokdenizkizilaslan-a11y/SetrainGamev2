@@ -212,7 +212,7 @@ body[data-screen="screen-town"] {
 .right-player:hover { border-color: var(--gold-bright); }
 .right-player--dead { opacity: 0.5; filter: grayscale(0.3); }
 .right-player--me { border-color: var(--gold-bright); background: var(--gold-soft); }
-.right-player-portrait { width: 2rem; height: 2rem; border-width: 1px; }
+.right-player-portrait { width: 2rem; height: 2rem; border-width: 1px; border-radius: 8px; }
 .right-player-info { flex: 1; min-width: 0; }
 .right-player-name { font-family: "Cinzel", serif; font-size: 0.82rem; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .right-player-hp { font-size: 0.7rem; color: var(--muted); }
@@ -619,6 +619,7 @@ input:focus {
   width: 5.2rem;
   height: 5.2rem;
   flex: none;
+  border-radius: 16px;
   border-width: 2px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
 }
@@ -647,6 +648,23 @@ input:focus {
   display: flex;
   flex-direction: column;
   gap: 0.28rem;
+}
+/* Preview: karakter resmi statların arkasında. */
+.cp-stats--bg {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 1px solid var(--glass-line);
+  background-size: cover;
+  background-position: center top;
+  padding: 0.55rem 0.6rem;
+}
+.cp-stats--bg.portrait--missing {
+  background: linear-gradient(160deg, #3a2c1c, #1c130a);
+}
+.cp-stats--bg .cp-stat {
+  position: relative;
+  text-shadow: 0 1px 5px #000;
 }
 .cp-stat {
   display: grid;
@@ -935,6 +953,25 @@ input:focus {
   width: 80px;
   height: 80px;
   border-width: 3px;
+}
+
+/* Town profili: yuvarlak yerine kartın üstünde geniş karakter resmi. */
+.profile-art {
+  display: block;
+  width: calc(100% + 2.2rem);
+  height: 7rem;
+  margin: -1.2rem -1.1rem 0;
+  background-size: cover;
+  background-position: center top;
+  border-bottom: 1px solid var(--glass-line);
+}
+
+.profile-art.portrait--missing {
+  background: linear-gradient(160deg, #3a2c1c, #1c130a);
+}
+
+.profile-art[style*="--frame"] {
+  box-shadow: inset 0 0 0 2px var(--frame);
 }
 
 .profile-name {
@@ -1592,6 +1629,7 @@ input:focus {
   width: 1.8rem;
   height: 1.8rem;
   border-width: 1px;
+  border-radius: 8px;
 }
 
 .party-chip--done {
@@ -1966,6 +2004,7 @@ input:focus {
   width: 1.5rem;
   height: 1.5rem;
   border-width: 1px;
+  border-radius: 7px;
 }
 .party-chip--leader {
   border-color: var(--gold-bright) !important;
@@ -2050,11 +2089,9 @@ input:focus {
 }
 .combat-wrap--many .fighter {
   min-width: 110px;
-  padding: 0.4rem;
 }
-.combat-wrap--many .fighter-portrait {
-  width: 2.8rem;
-  height: 2.8rem;
+.combat-wrap--many .fighter-art {
+  height: 4rem;
 }
 
 .enemy,
@@ -2065,7 +2102,8 @@ input:focus {
   align-items: center;
   gap: 0.25rem;
   min-width: 120px;
-  padding: 0.5rem;
+  padding: 0;
+  overflow: hidden;
   border: 1px solid var(--glass-line);
   border-radius: 13px;
   background: var(--glass-2);
@@ -2073,6 +2111,32 @@ input:focus {
   font-family: "Cinzel", serif;
   cursor: pointer;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.fighter[style*="--frame"] {
+  border-color: var(--frame);
+}
+
+/* Fighter kartının içindeki karakter resmi (yuvarlak portrait yok). */
+.fighter-art {
+  display: block;
+  width: 100%;
+  height: 5.5rem;
+  background-size: cover;
+  background-position: center top;
+}
+
+.fighter-art.portrait--missing {
+  background: linear-gradient(160deg, #3a2c1c, #1c130a);
+}
+
+.fighter-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  width: 100%;
+  padding: 0.5rem 0.5rem 0.6rem;
 }
 
 .monster-portrait,
