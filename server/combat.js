@@ -942,9 +942,11 @@ function victory(room, d) {
   if (isBossParty(d)) {
     const bossDef = (CONTENT.bosses||[]).find(b=>b.id===d.bossId);
     const members = allMembers(room, d);
-    const gold = 150 + Math.floor(Math.random()*80);
+    // Editördeki özel ödüller (rewards) varsa uygulanır; yoksa klasik değerler.
+    const rw = (bossDef && bossDef.rewards) || {};
+    const gold = Math.round((150 + Math.floor(Math.random()*80)) * (Number(rw.goldMultiplier) > 0 ? Number(rw.goldMultiplier) : 1));
     const wood = 40 + Math.floor(Math.random()*20);
-    const xp = 400 + Math.floor(Math.random()*200);
+    const xp = Math.round((400 + Math.floor(Math.random()*200)) * (Number(rw.xpMultiplier) > 0 ? Number(rw.xpMultiplier) : 1));
     for (const p of members) {
       p.gold += gold; p.wood+=wood; addXp(p,xp);
       if (!p.bossKills) p.bossKills=[];
@@ -959,6 +961,15 @@ function victory(room, d) {
         const recv = members[Math.floor(Math.random()*members.length)];
         addItem(recv, w.id,1);
         lootNotes.push(`${recv.name} found ${w.name}!`);
+      }
+    }
+    // Garantili ödül (editör: rewards.guaranteedDrop) — varsa rastgele üyeye.
+    if (rw.guaranteedDrop) {
+      const g = getItem(rw.guaranteedDrop);
+      if (g && members.length) {
+        const recv = members[Math.floor(Math.random()*members.length)];
+        addItem(recv, g.id, 1);
+        lootNotes.push(`${recv.name} claimed ${g.name}!`);
       }
     }
     // Boss chest (good rates, rare+ guaranteed)

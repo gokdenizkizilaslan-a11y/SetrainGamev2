@@ -111,10 +111,21 @@ function startBoss(room, player) {
   // For boss, use 6 skills: already defined as boss_xxx_skill1..6
   const { getSkill } = require("../content");
   const skills = [];
+  // 1) Editörde yazılan faz yetenekleri (phaseSkills) önce gelir — varsa boss
+  // gerçekten onları kullanır. Yoksa/geçersizse sessizce atlanır (oyun kırılmaz).
+  try {
+    const ps = bossDef.phaseSkills || {};
+    for (const key of Object.keys(ps)) {
+      for (const sid of ps[key] || []) {
+        const s = typeof sid === "string" ? getSkill(sid) : null;
+        if (s && !skills.some((x) => x.id === s.id)) skills.push(s);
+      }
+    }
+  } catch (e) {}
   for (let i=1;i<=6;i++) {
     const sid = `boss_${bossDef.id.replace('boss_','')}_skill${i}`;
     const s = getSkill(sid);
-    if (s) skills.push(s);
+    if (s && !skills.some((x) => x.id === s.id)) skills.push(s);
   }
   if (!skills.length) {
     // fallback: generic 3 skills via monsterSkills

@@ -5096,11 +5096,17 @@ const CONTENT = {
       "speed": 6,
       "element": "fire",
       "rarity": "mythic",
-      "weaponId": "boss_weapon_ember",
-      "chestId": "boss_chest_ember",
-      "unlockAfter": null,
-      "resistance": 20
-    },
+  "weaponId": "boss_weapon_ember",
+  "chestId": "boss_chest_ember",
+  "unlockAfter": null,
+  "resistance": 20,
+  "phases": 3,
+  "phaseSkills": {
+    "1": ["boss_ember_skill1", "boss_ember_skill2"],
+    "2": ["boss_ember_skill3", "boss_ember_skill4", "boss_ember_skill5"],
+    "3": ["boss_ember_skill2", "boss_ember_skill5", "boss_ember_skill6"]
+  }
+ },
     {
       "id": "boss_frost_titan",
       "label": "Frost Titan",
@@ -5110,11 +5116,17 @@ const CONTENT = {
       "speed": 5,
       "element": "frost",
       "rarity": "mythic",
-      "weaponId": "boss_weapon_frost",
-      "chestId": "boss_chest_frost",
-      "unlockAfter": "boss_ember_king",
-      "resistance": 25
-    },
+  "weaponId": "boss_weapon_frost",
+  "chestId": "boss_chest_frost",
+  "unlockAfter": "boss_ember_king",
+  "resistance": 25,
+  "phases": 3,
+  "phaseSkills": {
+    "1": ["boss_frost_skill1", "boss_frost_skill2"],
+    "2": ["boss_frost_skill3", "boss_frost_skill4", "boss_frost_skill5"],
+    "3": ["boss_frost_skill2", "boss_frost_skill5", "boss_frost_skill6"]
+  }
+ },
     {
       "id": "boss_void_herald",
       "label": "Void Herald",
@@ -5124,11 +5136,17 @@ const CONTENT = {
       "speed": 7,
       "element": "shadow",
       "rarity": "mythic",
-      "weaponId": "boss_weapon_void",
-      "chestId": "boss_chest_void",
-      "unlockAfter": "boss_frost_titan",
-      "resistance": 30
-    },
+  "weaponId": "boss_weapon_void",
+  "chestId": "boss_chest_void",
+  "unlockAfter": "boss_frost_titan",
+  "resistance": 30,
+  "phases": 3,
+  "phaseSkills": {
+    "1": ["boss_void_skill1", "boss_void_skill2"],
+    "2": ["boss_void_skill3", "boss_void_skill4", "boss_void_skill5"],
+    "3": ["boss_void_skill2", "boss_void_skill5", "boss_void_skill6"]
+  }
+ },
     {
       "id": "boss_storm_colossus",
       "label": "Storm Colossus",
@@ -5138,11 +5156,17 @@ const CONTENT = {
       "speed": 6,
       "element": "arcane",
       "rarity": "mythic",
-      "weaponId": "boss_weapon_storm",
-      "chestId": "boss_chest_storm",
-      "unlockAfter": "boss_void_herald",
-      "resistance": 35
-    },
+  "weaponId": "boss_weapon_storm",
+  "chestId": "boss_chest_storm",
+  "unlockAfter": "boss_void_herald",
+  "resistance": 35,
+  "phases": 3,
+  "phaseSkills": {
+    "1": ["boss_storm_skill1", "boss_storm_skill2"],
+    "2": ["boss_storm_skill3", "boss_storm_skill4", "boss_storm_skill5"],
+    "3": ["boss_storm_skill2", "boss_storm_skill5", "boss_storm_skill6"]
+  }
+ },
     {
       "id": "boss_world_eater",
       "label": "World Eater",
@@ -5155,7 +5179,13 @@ const CONTENT = {
       "weaponId": "boss_weapon_world",
       "chestId": "boss_chest_world",
       "unlockAfter": "boss_storm_colossus",
-      "resistance": 45
+      "resistance": 45,
+      "phases": 3,
+      "phaseSkills": {
+        "1": ["boss_world_skill1", "boss_world_skill2"],
+        "2": ["boss_world_skill3", "boss_world_skill4", "boss_world_skill5"],
+        "3": ["boss_world_skill2", "boss_world_skill5", "boss_world_skill6"]
+      }
     }
   ],
   "pets": [
