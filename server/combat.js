@@ -570,7 +570,18 @@ function act(room, player, skillId, targetId) {
       }
     }
     const mon = d.wave[primaryIdx];
-    const skillBase = Math.max(0, Math.round(Number(skill.baseDamage) || 0));
+    // Taban hasar: sayıysa sabit, {stat,mult} ise formül. Hedef-canı istatistikleri
+    // (targetMaxHp/targetHp) de seçilebilir — sonuç normal boru hattından geçer
+    // (varyans/krit/affinity/resistance işletilir, trueDamage hariç).
+    let skillBase = 0;
+    if (skill.baseDamage != null && typeof skill.baseDamage === "object") {
+      const bst = skill.baseDamage.stat || "attack";
+      const bm = Number(skill.baseDamage.mult) || 0;
+      const bval = bst === "targetMaxHp" ? mon.maxHp : bst === "targetHp" ? mon.hp : (player[bst] || 0);
+      skillBase = Math.max(0, Math.round(bval * bm));
+    } else {
+      skillBase = Math.max(0, Math.round(Number(skill.baseDamage) || 0));
+    }
     const skillPower = Math.max(0, Number(skill.power) || 0);
     const selfHpPct = player.maxHp > 0 ? player.hp / player.maxHp : 1;
     const pexec = passives.executeFor(player.character);

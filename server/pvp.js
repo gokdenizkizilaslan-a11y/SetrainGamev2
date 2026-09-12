@@ -151,9 +151,18 @@ function act(room, player, skillId){
   used.add(skillId); d.usedSkills[player.id]=used;
   setCooldown(d,player.id,skillId,skill.cooldown);
   if(skill.mana) addFx(d,{type:"mana", actor:player.id, amount:skill.mana, skill:skill.id});
-  if(skill.power){
+  if(skill.power || skill.baseDamage){
     const isPhysical = !skill.element || skill.element==="physical";
     const base = isPhysical? player.attack : player.magicPower;
+    let skillBase = 0;
+    if (skill.baseDamage != null && typeof skill.baseDamage === "object") {
+      const bst = skill.baseDamage.stat || "attack";
+      const bm = Number(skill.baseDamage.mult) || 0;
+      const bval = bst === "targetMaxHp" ? opponent.maxHp : bst === "targetHp" ? opponent.hp : (player[bst] || 0);
+      skillBase = Math.max(0, Math.round(bval * bm));
+    } else {
+      skillBase = Math.max(0, Math.round(Number(skill.baseDamage) || 0));
+    }
     const pCrit = passives.critBonus(player.character);
     const critChance = (player.critChance + pCrit.chance)/100 || 0.12;
     const crit = Math.random()<critChance;
@@ -165,7 +174,7 @@ function act(room, player, skillId){
     const pExp = buffSum(d,"player",oppId,"expose");
     const oppHpPct = opponent.maxHp > 0 ? opponent.hp / opponent.maxHp : 1;
     const selfHpPct = player.maxHp > 0 ? player.hp / player.maxHp : 1;
-    let dmg = Math.max(1, Math.round(base*skill.power*(1+Math.random()*0.4-0.2)*critMult*(1+pBoost)*(1-pDef+pExp)));
+    let dmg = Math.max(1, Math.round((skillBase + base * (skill.power || 0))*(1+Math.random()*0.4-0.2)*critMult*(1+pBoost)*(1-pDef+pExp)));
     dmg = Math.max(1, Math.round(dmg * passives.damageOutMult(player.character, {
       targetHpPct: oppHpPct, selfHpPct, isFirst: !player._struckThisCombat,
       element: skill.element, targetTags: [],

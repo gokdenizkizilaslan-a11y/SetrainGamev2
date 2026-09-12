@@ -897,11 +897,19 @@ function classAvg(range) {
   if (!range) return 0;
   return Math.round(((Number(range.min) || 0) + (Number(range.max) || 0)) / 2);
 }
+function baseShort(s) {
+  const b = s.baseDamage;
+  if (b != null && typeof b === "object") {
+    const st = b.stat === "targetMaxHp" ? "tgtHP" : b.stat === "targetHp" ? "curHP" : b.stat || "?";
+    return (Number(b.mult) || 0) + "×" + st + "+";
+  }
+  return Number(b) > 0 ? b + "+" : "";
+}
 function skillShort(s) {
   if (!s) return "";
   let f = "";
-  if (s.target === "enemy" && (Number(s.power) > 0 || Number(s.baseDamage) > 0)) {
-    f = (Number(s.baseDamage) > 0 ? s.baseDamage + "+" : "") + (Number(s.power) > 0 ? s.power + "×" : "") + (s.trueDamage ? " ✦" : "");
+  if (s.target === "enemy" && (Number(s.power) > 0 || Number(s.baseDamage) > 0 || (s.baseDamage != null && typeof s.baseDamage === "object"))) {
+    f = baseShort(s) + (Number(s.power) > 0 ? s.power + "×" : "") + (s.trueDamage ? " ✦" : "");
   } else if (s.target === "self" && s.defense) {
     f = "🛡 " + Math.round(s.defense * 100) + "%";
   } else if (s.heal != null && typeof s.heal !== "object") {
@@ -931,6 +939,10 @@ function skillShort(s) {
 function skillMechanicsLine(s) {
   if (!s) return "";
   const parts = [];
+  if (s.baseDamage != null && typeof s.baseDamage === "object") {
+    const st = s.baseDamage.stat === "targetMaxHp" ? "target max HP" : s.baseDamage.stat === "targetHp" ? "target current HP" : s.baseDamage.stat;
+    parts.push(Math.round(Number(s.baseDamage.mult || 0) * 100) + "% of " + st + " as base");
+  }
   if (s.hitsAll) parts.push("Hits ALL enemies");
   else if (s.splash && Number(s.splash.extraTargets) > 0) parts.push("Also hits " + Math.floor(s.splash.extraTargets) + " random enem" + (Math.floor(s.splash.extraTargets) === 1 ? "y" : "ies"));
   if (s.execute) {
