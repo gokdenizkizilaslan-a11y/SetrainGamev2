@@ -521,7 +521,7 @@ function drainCombatFx(root) {
       const r = fxRecipe(ev.effect, ev.elem);
       // Gerçek hasar (true damage) her zaman bembeyaz vurur; fiziksel ise
       // paletin ikinci rengiyle (altın) görünür, beyazla karışmaz.
-      const isTrue = !!(_sk0 && _sk0.trueDamage);
+      const isTrue = !!(_sk0 && (_sk0.trueDamage || (_sk0.baseDamage != null && typeof _sk0.baseDamage === "object" && _sk0.baseDamage.true)));
       const elemId = _elem || ev.elem;
       const dmgColor = isTrue ? "#ffffff" : elemId === "physical" ? "#fde047" : r.color;
       if (ev.crit) {
@@ -901,7 +901,7 @@ function baseShort(s) {
   const b = s.baseDamage;
   if (b != null && typeof b === "object") {
     const st = b.stat === "targetMaxHp" ? "tgtHP" : b.stat === "targetHp" ? "curHP" : b.stat || "?";
-    return (Number(b.mult) || 0) + "×" + st + "+";
+    return (Number(b.mult) || 0) + "×" + st + (b.true ? "✦+" : "+");
   }
   return Number(b) > 0 ? b + "+" : "";
 }

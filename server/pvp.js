@@ -155,11 +155,16 @@ function act(room, player, skillId){
     const isPhysical = !skill.element || skill.element==="physical";
     const base = isPhysical? player.attack : player.magicPower;
     let skillBase = 0;
+    let pvpTrueFormula = null;
     if (skill.baseDamage != null && typeof skill.baseDamage === "object") {
       const bst = skill.baseDamage.stat || "attack";
       const bm = Number(skill.baseDamage.mult) || 0;
-      const bval = bst === "targetMaxHp" ? opponent.maxHp : bst === "targetHp" ? opponent.hp : (player[bst] || 0);
-      skillBase = Math.max(0, Math.round(bval * bm));
+      if (skill.baseDamage.true) {
+        pvpTrueFormula = { stat: bst, mult: bm };
+      } else {
+        const bval = bst === "targetMaxHp" ? opponent.maxHp : bst === "targetHp" ? opponent.hp : (player[bst] || 0);
+        skillBase = Math.max(0, Math.round(bval * bm));
+      }
     } else {
       skillBase = Math.max(0, Math.round(Number(skill.baseDamage) || 0));
     }
@@ -200,6 +205,16 @@ function act(room, player, skillId){
     }
     dealDamage(opponent,dmg);
     player._struckThisCombat = true;
+    if (pvpTrueFormula) {
+      const tb = pvpTrueFormula.stat === "targetMaxHp" ? opponent.maxHp
+        : pvpTrueFormula.stat === "targetHp" ? opponent.hp
+        : (player[pvpTrueFormula.stat] || 0);
+      const truePart = Math.max(0, Math.round(tb * Number(pvpTrueFormula.mult || 0)));
+      if (truePart > 0) {
+        dealDamage(opponent, truePart);
+        dmg += truePart;
+      }
+    }
     // Bitirici + yankı (PvP dahil)
     const finTh = (skill.execute && skill.execute.finishBelowHpPct != null)
       ? Number(skill.execute.finishBelowHpPct)

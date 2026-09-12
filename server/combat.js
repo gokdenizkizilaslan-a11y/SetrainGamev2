@@ -571,14 +571,20 @@ function act(room, player, skillId, targetId) {
     }
     const mon = d.wave[primaryIdx];
     // Taban hasar: sayıysa sabit, {stat,mult} ise formül. Hedef-canı istatistikleri
-    // (targetMaxHp/targetHp) de seçilebilir — sonuç normal boru hattından geçer
-    // (varyans/krit/affinity/resistance işletilir, trueDamage hariç).
+    // (targetMaxHp/targetHp) de seçilebilir. Formülde true:true varsa o kısım
+    // GERÇEK hasardır (exact, indirimsiz) — kalan power kısmı normal boru hattından
+    // geçer. Böylece türler karışır: örn. %10 gerçek + normal vuruş.
     let skillBase = 0;
+    let trueFormula = null;
     if (skill.baseDamage != null && typeof skill.baseDamage === "object") {
       const bst = skill.baseDamage.stat || "attack";
       const bm = Number(skill.baseDamage.mult) || 0;
-      const bval = bst === "targetMaxHp" ? mon.maxHp : bst === "targetHp" ? mon.hp : (player[bst] || 0);
-      skillBase = Math.max(0, Math.round(bval * bm));
+      if (skill.baseDamage.true) {
+        trueFormula = { stat: bst, mult: bm };
+      } else {
+        const bval = bst === "targetMaxHp" ? mon.maxHp : bst === "targetHp" ? mon.hp : (player[bst] || 0);
+        skillBase = Math.max(0, Math.round(bval * bm));
+      }
     } else {
       skillBase = Math.max(0, Math.round(Number(skill.baseDamage) || 0));
     }
@@ -587,7 +593,7 @@ function act(room, player, skillId, targetId) {
     const pexec = passives.executeFor(player.character);
     const echoCfg = skill.echo || null;
     const pEcho = !skill.echo ? passives.echoFor(player.character) : null;
-    if (skillPower > 0 || skillBase > 0) {
+    if (skillPower > 0 || skillBase > 0 || trueFormula) {
       const isPhysical = !skill.element || skill.element === "physical";
       const baseStat = isPhysical ? player.attack : player.magicPower;
       const rawBase = skillBase + baseStat * skillPower;
@@ -669,9 +675,18 @@ function act(room, player, skillId, targetId) {
           dmg = Math.max(1, dmg - Math.round(monRes * (CONTENT.combat.resistanceMitigation || 0)));
         }
         } // end non-true-damage path
+        // Karışık tür: formülün gerçek-hasar kısmı hedef başına exact eklenir.
+        let truePart = 0;
+        if (trueFormula) {
+          const tb = trueFormula.stat === "targetMaxHp" ? tgt.maxHp
+            : trueFormula.stat === "targetHp" ? tgt.hp
+            : (player[trueFormula.stat] || 0);
+          truePart = Math.max(0, Math.round(tb * Number(trueFormula.mult || 0)));
+        }
+        const totalDmg = dmg + truePart;
         const hpBefore = tgt.hp;
-        dealDamage(tgt, dmg);
-        addFx(d, { type: "damage", actor: player.id, target: "enemy", targetId: tidx, amount: dmg, skill: skill.id, elem: skill.element || "physical", effect: skill.effect || defaultEffectFor(skill.element), sound: skill.sound || "", crit });
+        dealDamage(tgt, totalDmg);
+        addFx(d, { type: "damage", actor: player.id, target: "enemy", targetId: tidx, amount: totalDmg, skill: skill.id, elem: skill.element || "physical", effect: skill.effect || defaultEffectFor(skill.element), sound: skill.sound || "", crit });
         // Bitirici: senin vuruşun hedefi eşiğe indirirse kalkanı delip öldürür.
         // Sadece saldıranın vuruşu tetikler (çalınma yok).
         const finThresh = (skill.execute && skill.execute.finishBelowHpPct != null)
@@ -687,13 +702,13 @@ function act(room, player, skillId, targetId) {
         // Yankı (echo): şansla aynı hedefe ikinci vuruş (özyineleme yok).
         const echoSrc = echoCfg || pEcho;
         if (echoSrc && Number(echoSrc.chance) > 0 && Math.random() < Number(echoSrc.chance) && tgt.hp > 0) {
-          const echoDmg = Math.max(1, Math.round(dmg * Number(echoSrc.mult || 0.3)));
+          const echoDmg = Math.max(1, Math.round(totalDmg * Number(echoSrc.mult || 0.3)));
           dealDamage(tgt, echoDmg);
           addFx(d, { type: "damage", actor: player.id, target: "enemy", targetId: tidx, amount: echoDmg, skill: skill.id, elem: skill.element || "physical", effect: skill.effect || defaultEffectFor(skill.element), sound: skill.sound || "", crit: false });
         }
         // Taşma (overkill): fazlası rastgele yaşayan düşmana.
         if (passives.hasOverkill(player.character) && tgt.hp <= 0) {
-          const excess = Math.max(0, dmg - hpBefore);
+          const excess = Math.max(0, totalDmg - hpBefore);
           if (excess > 0) {
             const aliveOthers = d.wave.map((m, i) => i).filter((i) => d.wave[i] && d.wave[i].hp > 0);
             if (aliveOthers.length) {
@@ -726,7 +741,7 @@ function act(room, player, skillId, targetId) {
             }
           }
         }
-        if (tidx === primaryIdx) primaryDmg = dmg;
+        if (tidx === primaryIdx) primaryDmg = totalDmg;
       }
       player._struckThisCombat = true;
       // Tek seferlik proclar (birincil hedef üzerinden, eski davranış):
