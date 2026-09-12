@@ -583,20 +583,26 @@ function showAscendCinematic(ascend, fallbackText) {
   const color = typeof a.color === "string" && /^#[0-9a-fA-F]{6}$/.test(a.color) ? a.color : "#e8c547";
   const title = a.title || fallbackText || "You have ascended!";
   const label = a.label || "";
-  el.innerHTML = `<div class="ascend-overlay" style="--ascend:${color}">
-    <div class="ascend-rays"></div>
-    <div class="ascend-card">
-      <div class="ascend-kicker">✦ ASCENSION ✦</div>
-      <h2>${escapeHtml(title)}</h2>
-      ${label ? `<p class="ascend-class">${escapeHtml(label)}</p>` : ""}
-      <button type="button" class="btn btn--gold" id="btn-notice-ok">Continue</button>
-    </div>
-  </div>`;
+  // 1) Önce 2 sn fullscreen ışık patlaması (class renginde), sonra kart.
+  const token = (el._ascendToken = (el._ascendToken || 0) + 1);
+  el.innerHTML = `<div class="ascend-overlay ascend-burst" style="--ascend:${color}"><div class="ascend-flash"></div></div>`;
   el.classList.remove("hidden");
   if (a.sound) sfxPlay(a.sound);
   else sfxPlay("neutralascension");
-  const ok = el.querySelector("#btn-notice-ok");
-  if (ok) ok.addEventListener("click", () => el.classList.add("hidden"));
+  setTimeout(() => {
+    if (el._ascendToken !== token || !el.querySelector(".ascend-burst")) return;
+    el.innerHTML = `<div class="ascend-overlay" style="--ascend:${color}">
+      <div class="ascend-rays"></div>
+      <div class="ascend-card">
+        <div class="ascend-kicker">✦ ASCENSION ✦</div>
+        <h2>${escapeHtml(title)}</h2>
+        ${label ? `<p class="ascend-class">${escapeHtml(label)}</p>` : ""}
+        <button type="button" class="btn btn--gold" id="btn-notice-ok">Continue</button>
+      </div>
+    </div>`;
+    const ok = el.querySelector("#btn-notice-ok");
+    if (ok) ok.addEventListener("click", () => el.classList.add("hidden"));
+  }, 2000);
 }
 
 function showStoryIntro() {

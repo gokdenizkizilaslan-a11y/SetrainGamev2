@@ -3673,6 +3673,29 @@ input:focus {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+/* Ascend öncesi 2 sn: ortadan büyüyen ışık tüm ekranı class rengine boyar. */
+.ascend-burst {
+  background: radial-gradient(circle at center, #ffffff 0%, var(--ascend) 32%, color-mix(in srgb, var(--ascend) 55%, black) 100%);
+  animation: ascend-burst-in 2s ease-out;
+  cursor: wait;
+}
+.ascend-flash {
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.95) 0%, color-mix(in srgb, var(--ascend) 65%, white) 30%, transparent 62%);
+  animation: ascend-flash-grow 2s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes ascend-burst-in {
+  0% { opacity: 0; }
+  22% { opacity: 1; }
+  100% { opacity: 1; }
+}
+@keyframes ascend-flash-grow {
+  0% { opacity: 0; transform: scale(0.15); }
+  30% { opacity: 1; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1.5); }
+}
 @keyframes ascend-card-in {
   0% { transform: scale(0.7); opacity: 0; }
   60% { transform: scale(1.04); opacity: 1; }
