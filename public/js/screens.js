@@ -887,16 +887,14 @@ function renderClassPreview(selected) {
   const tagline = cls.tagline || classLabel(cls.slug);
   const lore = cls.lore || texts.defaultLore;
   panel.innerHTML = `
-    <div class="cp-art" data-img="${escapeHtml(cls.image || "")}" data-variant="${cls.slug}">
-      <span class="class-card-shade" aria-hidden="true"></span>
-      <div class="cp-title">
-        <strong>${escapeHtml(cls.label)}</strong>
-        <em>${escapeHtml(tagline)}</em>
-      </div>
+    <span class="cp-bg" data-img="${escapeHtml(cls.image || "")}" data-variant="${cls.slug}"></span>
+    <span class="class-card-shade cp-shade" aria-hidden="true"></span>
+    <div class="cp-title">
+      <strong>${escapeHtml(cls.label)}</strong>
+      <em>${escapeHtml(tagline)}</em>
     </div>
     <p class="cp-lore">${escapeHtml(lore)}</p>
-    <div class="cp-stats cp-stats--bg" data-img="${escapeHtml(cls.image || "")}" data-variant="${cls.slug}">
-      <span class="class-card-shade" aria-hidden="true"></span>
+    <div class="cp-stats">
       <div class="cp-stat"><span>❤️ HP ${hp}</span>${bar(hp, 750)}</div>
       <div class="cp-stat"><span>⚔️ ATK ${atk}</span>${bar(atk, 64)}</div>
       <div class="cp-stat"><span>🔮 MAG ${mag}</span>${bar(mag, 62)}</div>

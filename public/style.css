@@ -610,31 +610,34 @@ input:focus {
     0 12px 28px rgba(0, 0, 0, 0.4),
     0 0 24px rgba(216, 156, 74, 0.12);
 }
-/* Preview üstü: kocaman karakter banner'ı (yuvarlak yok). */
-.cp-art {
+/* Preview: resim panelin EN ARKASINDA, tüm içeriğin arkasında (karttaki gibi cover). */
+.class-preview {
   position: relative;
-  height: 11rem;
-  border-radius: 14px;
-  overflow: hidden;
-  border: 1px solid rgba(232, 183, 108, 0.35);
+}
+.cp-bg {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
   background-size: cover;
   background-position: center top;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
 }
-.cp-art.portrait--missing {
+.cp-bg.portrait--missing {
   background: linear-gradient(160deg, #3a2c1c, #1c130a);
 }
-.cp-art .cp-title {
-  position: absolute;
-  left: 0.7rem;
-  right: 0.7rem;
-  bottom: 0.6rem;
-  text-shadow: 0 2px 8px #000;
+.cp-shade {
+  border-radius: inherit;
+}
+.class-preview .cp-title,
+.class-preview .cp-lore,
+.class-preview .cp-stats,
+.class-preview .cp-kit {
+  position: relative;
 }
 .cp-title {
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
+  text-shadow: 0 2px 8px #000;
 }
 .cp-title strong {
   font-family: "Cinzel", serif;
@@ -656,23 +659,6 @@ input:focus {
   display: flex;
   flex-direction: column;
   gap: 0.28rem;
-}
-/* Preview: karakter resmi statların arkasında. */
-.cp-stats--bg {
-  position: relative;
-  overflow: hidden;
-  border-radius: 10px;
-  border: 1px solid var(--glass-line);
-  background-size: cover;
-  background-position: center top;
-  padding: 0.55rem 0.6rem;
-}
-.cp-stats--bg.portrait--missing {
-  background: linear-gradient(160deg, #3a2c1c, #1c130a);
-}
-.cp-stats--bg .cp-stat {
-  position: relative;
-  text-shadow: 0 1px 5px #000;
 }
 .cp-stat {
   display: grid;
