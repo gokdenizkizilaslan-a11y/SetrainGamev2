@@ -869,25 +869,26 @@ function skillShort(s) {
   }
   return f;
 }
-// Panel arka planı: resim + perde, ikisi de panelin KENDİSİNDE.
+// Kart zemini: resim + perde, ikisi de elementin KENDİSİNDE.
 // (İçteki absolute span kayan içerikte alta ulaşamıyordu — dipte boşluk
 // bırakıyordu. Element background'ı scroll dahil her yeri kaplar.)
-function setPreviewBg(panel, url) {
+function setCardBg(el, url) {
+  if (!el) return;
   const safe = String(url || "").replace(/["']/g, "");
-  if (panel._bgUrl === safe) return;
-  panel._bgUrl = safe;
-  panel.classList.remove("cp-has-bg");
-  panel.style.removeProperty("--cp-img");
+  if (el._bgUrl === safe) return;
+  el._bgUrl = safe;
+  el.classList.remove("has-card-bg");
+  el.style.removeProperty("--cp-img");
   if (!safe) return;
   const im = new Image();
   im.onload = () => {
-    if (panel._bgUrl !== safe) return;
-    panel.style.setProperty("--cp-img", `url("${safe}")`);
-    panel.classList.add("cp-has-bg");
+    if (el._bgUrl !== safe) return;
+    el.style.setProperty("--cp-img", `url("${safe}")`);
+    el.classList.add("has-card-bg");
   };
   im.onerror = () => {
-    if (panel._bgUrl !== safe) return;
-    panel._bgUrl = "";
+    if (el._bgUrl !== safe) return;
+    el._bgUrl = "";
   };
   im.src = safe;
 }
@@ -927,7 +928,7 @@ function renderClassPreview(selected) {
       <div class="cp-skill"><span>${escapeHtml(basic.name || "Strike")}</span><em>${escapeHtml(skillShort({ ...basic, target: "enemy" }))}</em></div>
       ${kit.map((s) => `<div class="cp-skill"><span>${escapeHtml(s.name)}</span><em>${escapeHtml(skillShort(s))}</em></div>`).join("")}
     </div>`;
-  setPreviewBg(panel, cls.image || "");
+  setCardBg(panel, cls.image || "");
   initImages(panel);
 }
 
@@ -1070,17 +1071,16 @@ function renderProfileCard(room, selfId) {
   const me = room.players.find((p) => p.id === selfId);
   if (!me) {
     el.innerHTML = "";
+    setCardBg(el, "");
     return;
   }
   const trait = me.anomaly;
-  const frame = trait ? ` style="--frame:${trait.frameColor}"` : "";
   const traitHtml = trait
     ? `<span style="color:${trait.frameColor};font-weight:700">${escapeHtml(trait.name)}</span> — ${escapeHtml(trait.description)}`
     : `<span class="muted">No anomaly</span>`;
   const maxLives = (CATALOG.starting && CATALOG.starting.lives) || 3;
   const isDead = me.lives <= 0;
   el.innerHTML = `
-    <span class="profile-art" data-img="${imgFor(me.character, "class")}" data-variant="${me.character}"${frame}></span>
     <div class="profile-name">${escapeHtml(me.name)}${me.isHost ? ' <span class="badge badge--host">Host</span>' : ""}${isDead ? ' <span class="badge badge--offline">Fallen</span>' : ""}</div>
     <div class="profile-class">${classLabel(me.character)} · Lv ${me.level}</div>
     <div class="profile-lives ${isDead ? "profile-lives--dead" : ""}" title="Lives — when 0 you must be revived">
@@ -1132,6 +1132,7 @@ function renderProfileCard(room, selfId) {
       renderTown(state.room);
     });
   }
+  setCardBg(el, imgFor(me.character, "class"));
   initImages(el);
 }
 
@@ -2040,7 +2041,8 @@ function renderCombat(room, root) {
       const isCurrent = d.phase === "players" && d.currentTurnId === p.id;
       return `<button type="button" class="fighter${p.hp <= 0 ? " fighter--down" : ""}${isCurrent ? " fighter--turn" : ""}${targetable ? " fighter--targetable" : ""}" data-fighter="${p.id}"${frame}>
         ${targetable ? `<span class="tgtkey">${members.slice(0, fi + 1).filter((x) => x.hp > 0).length}</span>` : ""}
-        <span class="fighter-art" data-img="${imgFor(p.character, "class")}" data-variant="${p.character}"></span>
+        <span class="fighter-bg" data-img="${imgFor(p.character, "class")}" data-variant="${p.character}"></span>
+        <span class="fighter-shade" aria-hidden="true"></span>
         <span class="fighter-meta">
         <span class="fighter-name">${escapeHtml(p.name)}${p.id === d.leaderId ? " ★" : ""}${isCurrent ? ' <span class="turn-tag">turn</span>' : ""}</span>
         <span class="hpbar"><span class="hpbar-fill hpbar-fill--party" style="width:${Math.round((p.hp / p.maxHp) * 100)}%"></span></span>
@@ -2294,7 +2296,8 @@ function renderPvpView(room){
   const oppFrame=opp && opp.anomaly?` style="--frame:${opp.anomaly.frameColor}"`:"";
   const meFrame=me && me.anomaly?` style="--frame:${me.anomaly.frameColor}"`:"";
   const oppHtml = opp? `<div class="fighter ${opp.hp<=0?"fighter--down":""} ${d.currentTurnId===opp.id?"fighter--turn":""}" style="margin:0 auto;"${oppFrame}>
-    <span class="fighter-art" data-img="${imgFor(opp.character,"class")}" data-variant="${opp.character}"></span>
+    <span class="fighter-bg" data-img="${imgFor(opp.character,"class")}" data-variant="${opp.character}"></span>
+    <span class="fighter-shade" aria-hidden="true"></span>
     <span class="fighter-meta">
     <span class="fighter-name">${escapeHtml(opp.name)} ${d.currentTurnId===opp.id?'<span class="turn-tag">turn</span>':''}</span>
     <span class="hpbar"><span class="hpbar-fill" style="width:${Math.round(opp.hp/opp.maxHp*100)}%"></span></span><span class="hpnum">${opp.hp}/${opp.maxHp}</span>
@@ -2305,7 +2308,8 @@ function renderPvpView(room){
     </span>
   </div>` : '<div class="muted">Waiting for opponent...</div>';
   const meHtml = `<div class="fighter ${me.hp<=0?"fighter--down":""} ${d.currentTurnId===me.id?"fighter--turn":""}" style="margin:0 auto;"${meFrame}>
-    <span class="fighter-art" data-img="${imgFor(me.character,"class")}" data-variant="${me.character}"></span>
+    <span class="fighter-bg" data-img="${imgFor(me.character,"class")}" data-variant="${me.character}"></span>
+    <span class="fighter-shade" aria-hidden="true"></span>
     <span class="fighter-meta">
     <span class="fighter-name">${escapeHtml(me.name)} ${d.currentTurnId===me.id?'<span class="turn-tag">turn</span>':''}</span>
     <span class="hpbar"><span class="hpbar-fill hpbar-fill--party" style="width:${Math.round(me.hp/me.maxHp*100)}%"></span></span><span class="hpnum">${me.hp}/${me.maxHp}</span>
