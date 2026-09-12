@@ -1169,7 +1169,7 @@ const CONTENT = {
     {
       "slug": "ranger",
       "label": "Ranger",
-      "image": "/images/characters/ranger.png",
+      "image": "/images/characters/ranger.webp?v=mtyntcmp",
       "basicAttack": {
         "id": "quick_shot",
         "name": "Quick Shot",
