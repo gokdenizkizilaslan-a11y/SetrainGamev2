@@ -519,13 +519,18 @@ function drainCombatFx(root) {
     }
     if (ev.type === "damage") {
       const r = fxRecipe(ev.effect, ev.elem);
+      // Gerçek hasar (true damage) her zaman bembeyaz vurur; fiziksel ise
+      // paletin ikinci rengiyle (altın) görünür, beyazla karışmaz.
+      const isTrue = !!(_sk0 && _sk0.trueDamage);
+      const elemId = _elem || ev.elem;
+      const dmgColor = isTrue ? "#ffffff" : elemId === "physical" ? "#fde047" : r.color;
       if (ev.crit) {
-        spawnPopup(el, "CRIT " + ev.amount, "crit", r.color);
+        spawnPopup(el, "CRIT " + ev.amount, "crit", isTrue ? "#ffffff" : r.color);
         const critSnd = ev.sound || "skull_crush";
         sfxPlay(critSnd);
         shakeCombat(root);
       } else {
-        spawnPopup(el, "-" + ev.amount, "damage", r.color);
+        spawnPopup(el, "-" + ev.amount, "damage", dmgColor);
         const monsterDefault = ev.source === "monster" && (!ev.elem || ev.elem === "physical");
         const snd = ev.sound || (monsterDefault ? ELEMENT_SOUNDS.monster : null) || elemSound(ev.elem) || r.sound;
         if (snd) sfxPlay(snd);
