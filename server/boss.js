@@ -19,24 +19,24 @@ function createBossParty(room, player, bossId) {
   // Check unlock
   if (bossDef.unlockAfter) {
     const kills = player.bossKills || [];
-    if (!kills.includes(bossDef.unlockAfter)) throw new Error("Önceki boss öldürülmeli.");
+    if (!kills.includes(bossDef.unlockAfter)) throw new Error("Defeat the previous boss first.");
   }
   // Check if boss already has a fighting party
   const existing = getBossParty(room, bossId);
   if (existing) {
-    if (existing.status==="fighting") throw new Error("Bu boss'ta başka bir savaş yapılıyor.");
+    if (existing.status==="fighting") throw new Error("Another fight is already running on this boss.");
     if (existing.status==="waiting" && existing.memberIds.length < room.maxPlayers) {
       // join existing waiting party
-      if (existing.memberIds.includes(player.id)) throw new Error("Zaten bu boss'tasın.");
+      if (existing.memberIds.includes(player.id)) throw new Error("You are already in this boss fight.");
       existing.memberIds.push(player.id);
       player.bossId = existing.id;
       return existing;
     }
     // if existing is waiting and full, create new? But spec says only 1 party per boss at a time, so if waiting exists, join it, not create new
-    throw new Error("Bu boss için zaten bir bekleme odası var.");
+    throw new Error("A waiting room already exists for this boss.");
   }
   // Check if player already in any boss party
-  if (bossFor(room, player)) throw new Error("Zaten bir boss'tasın. Önce çık.");
+  if (bossFor(room, player)) throw new Error("You are already in a boss fight. Leave it first.");
   if (!room.bossParties) room.bossParties=[];
   const party = {
     id: genId(),
@@ -79,7 +79,7 @@ function createBossParty(room, player, bossId) {
 function leaveBoss(room, player) {
   const b = bossFor(room, player);
   if (!b) return null;
-  if (b.status==="fighting") throw new Error("Savaş bitmeden çıkamazsın.");
+  if (b.status==="fighting") throw new Error("You cannot leave while the fight is ongoing.");
   b.memberIds = b.memberIds.filter(id=> id!==player.id);
   player.bossId=null;
   if (b.memberIds.length===0) {
@@ -92,7 +92,7 @@ function leaveBoss(room, player) {
 
 function startBoss(room, player) {
   const b = bossFor(room, player);
-  if (!b || b.status!=="waiting") throw new Error("Bekleme odasında değilsin.");
+  if (!b || b.status!=="waiting") throw new Error("You are not in the waiting room.");
   if (b.leaderId!==player.id) throw new Error("Only leader can start.");
   const members = b.memberIds.map(id=> room.players.find(p=>p.id===id)).filter(Boolean);
   for (const m of members) {

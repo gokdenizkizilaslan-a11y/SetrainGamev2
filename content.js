@@ -1154,8 +1154,8 @@ const CONTENT = {
         "min": 40,
         "max": 80
       },
-      "tagline": "Ön Saf Kılıç Ustası",
-      "lore": "Başlangıç seviyesi bir savaşçı. Ağır zırhı ve sadık kılıcıyla ön safta durur. Dengeli ve affedici — yeni başlayanlar için ideal."
+      "tagline": "Frontline Swordmaster",
+      "lore": "A veteran of the front line. Heavy armor and a loyal blade. Balanced and forgiving — ideal for beginners."
     },
     {
       "slug": "ranger",
@@ -1221,8 +1221,8 @@ const CONTENT = {
         "min": 40,
         "max": 80
       },
-      "tagline": "Uzak Menzil Avcısı",
-      "lore": "Başlangıç seviyesi bir avcı. Okları uzaktan ölümcül isabetle yağar. Hızlıdır, önce vurur ama yakın dövüşte kırılgandır."
+      "tagline": "Long-Range Hunter",
+      "lore": "A deadly archer striking from afar. Fast and first to shoot, but fragile up close."
     },
     {
       "slug": "mage",
@@ -1289,8 +1289,8 @@ const CONTENT = {
         "min": 40,
         "max": 80
       },
-      "tagline": "Başlangıç Seviyesi Büyücü",
-      "lore": "Arcane enerjiyi yeni bükmeye başlayan bir büyücü. Canı az, mana havuzu geniştir. Patlama hasarı yüksek ama korunmaya muhtaç."
+      "tagline": "Apprentice Mage",
+      "lore": "A novice bending arcane energy. Low health, deep mana pool. Huge burst damage, but needs protection."
     },
     {
       "slug": "rogue",
@@ -1356,8 +1356,8 @@ const CONTENT = {
         "min": 40,
         "max": 80
       },
-      "tagline": "Gölge Hırsızı",
-      "lore": "Gölgelerde yaşayan bir haydut. Vampirik vuruşlarıyla vurdukça can çalar. Hızlı ve sinsi, sabrı az olanlara göre."
+      "tagline": "Shadow Thief",
+      "lore": "A cutpurse living in the shadows. Vampiric strikes steal life with every hit. Fast and cunning — for the impatient."
     },
     {
       "slug": "paladin",
@@ -1423,8 +1423,8 @@ const CONTENT = {
         "min": 40,
         "max": 80
       },
-      "tagline": "Kutsal Muhafız",
-      "lore": "Işığa yeminli bir şövalye. Kılıcıyla vurur, duasıyla iyileştirir. Yavaş ama yıkılması zor bir kaya."
+      "tagline": "Holy Guardian",
+      "lore": "A knight sworn to the light. Strikes with steel, heals with prayer. Slow, but a rock that refuses to fall."
     },
     {
       "slug": "assassin",
@@ -1490,8 +1490,8 @@ const CONTENT = {
         "min": 40,
         "max": 80
       },
-      "tagline": "Suikastçı Çırağı",
-      "lore": "Ölümcül sanatın çırağı. Execute tek hedefe mutlak son verir — GERÇEK hasar, zırh tanımaz. Cam top: ya o ya sen."
+      "tagline": "Apprentice Assassin",
+      "lore": "A student of the deadly arts. Execute ends a single target — TRUE damage that ignores armor. Glass cannon: them or you."
     },
     {
       "slug": "support",
@@ -1559,8 +1559,8 @@ const CONTENT = {
         "min": 40,
         "max": 80
       },
-      "tagline": "Şifacı Adept",
-      "lore": "Partinin kalbi bir şifacı. Tek başına avlanamaz — dostlarıyla parlar. Takım oyunu sevenlere."
+      "tagline": "Healer Adept",
+      "lore": "The heart of the party. Cannot hunt alone — shines with friends. For team players."
     },
     {
       "slug": "tank",
@@ -1627,8 +1627,8 @@ const CONTENT = {
         "min": 40,
         "max": 80
       },
-      "tagline": "Yaşayan Duvar",
-      "lore": "Kalenin ta kendisi. Hasarı düşük ama onu devirmek bir sefer sürer. Parti onsuz eksik kalır."
+      "tagline": "Living Wall",
+      "lore": "A fortress incarnate. Low damage, but felling them takes a siege. A party without one is incomplete."
     },
     {
       "slug": "tamer",
@@ -1695,8 +1695,8 @@ const CONTENT = {
         "min": 40,
         "max": 80
       },
-      "tagline": "Canavar Terbiyecisi",
-      "lore": "Vahşi dostlarıyla savaşan bir terbiyeci. Beast Bite ile avlanır, War Heal ile yaşatır. Yalnız kurtlara göre değil, sürüyle güçlenir."
+      "tagline": "Beast Tamer",
+      "lore": "A tamer fighting beside wild companions. Hunts with Beast Bite, endures with War Heal. Strength in the pack, never alone."
     },
     {
       "slug": "beastmaster",
@@ -1890,8 +1890,8 @@ const CONTENT = {
         "min": 40,
         "max": 80
       },
-      "tagline": "Doğa Filizi",
-      "lore": "Ormanın fısıltısını duyan bir bahçıvan. Asma ve dikenleri onun silahı. Sabırlı oyuncuların seçimidir."
+      "tagline": "Nature Sprout",
+      "lore": "A gardener who hears the forest whisper. Vines and thorns are their weapons. A patient player's pick."
     },
     {
       "slug": "rootbinder",
