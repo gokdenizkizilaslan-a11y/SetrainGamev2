@@ -4,7 +4,7 @@ const { spendStamina } = require("./town");
 function validBet(bet) {
   const n = Number(bet);
   if (!CONTENT.town.tavern.bets.includes(n)) {
-    throw new Error("Choose a wager of 5, 10, or 25 gold.");
+    throw new Error(`Choose a wager of ${CONTENT.town.tavern.bets.join(", ")} gold.`);
   }
   return n;
 }

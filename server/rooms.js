@@ -103,7 +103,7 @@ function createRoom({ socketId, name, character, mode, roomName }) {
     id,
     name: isSingle
       ? "Solo Quest"
-      : String(roomName || "").trim() || `${name}'s Hall`,
+      : String(roomName || "").trim().slice(0, 40) || `${name}'s Hall`,
     code: generateCode(),
     mode: isSingle ? "single" : "multi",
     status: "lobby",

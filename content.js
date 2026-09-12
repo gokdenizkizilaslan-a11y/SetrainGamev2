@@ -11605,6 +11605,9 @@ function publicCatalog() {
     affinity: CONTENT.affinity || {},
     combos: CONTENT.combos || [],
     darkTrait: CONTENT.darkTrait || { deal: 1.3, taken: 1.5 },
+    combat: {
+      turnTimeoutMs: (CONTENT.combat && CONTENT.combat.turnTimeoutMs) || 15000,
+    },
     skillTree: {
       pointsPerLevel: (CONTENT.skillTree && CONTENT.skillTree.pointsPerLevel) || 3,
       startingPoints: (CONTENT.skillTree && CONTENT.skillTree.startingPoints) || 3,

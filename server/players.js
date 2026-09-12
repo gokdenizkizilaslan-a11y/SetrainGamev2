@@ -545,6 +545,10 @@ function equipItem(player, itemId) {
   if (item.slot === "consumable" || item.slot === "chest") {
     throw new Error("That cannot be equipped.");
   }
+  const EQUIPPABLE = ["weapon", "head", "armor", "legs", "boots", "amulet", "ring", "book", "stone"];
+  if (!EQUIPPABLE.includes(item.slot)) {
+    throw new Error("That cannot be equipped.");
+  }
   const owned = player.inventory.find((i) => i.itemId === itemId);
   if (!owned || owned.qty < 1) {
     throw new Error("You do not own that item.");

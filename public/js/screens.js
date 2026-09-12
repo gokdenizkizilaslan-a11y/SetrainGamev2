@@ -777,6 +777,10 @@ function applyCombatZones(root, rank) {
 }
 
 let combatTimerInterval = null;
+// Sunucuyla aynı süre (content.js combat.turnTimeoutMs) — katalog yoksa 15sn.
+function turnTimeoutMs() {
+  return (typeof CATALOG !== "undefined" && CATALOG && CATALOG.combat && CATALOG.combat.turnTimeoutMs) || 15000;
+}
 function startCombatTimer() {
   if (combatTimerInterval) return;
   combatTimerInterval = setInterval(() => {
@@ -790,7 +794,7 @@ function startCombatTimer() {
       if (bar) bar.style.width = "0%";
       return;
     }
-    const total = 10000;
+    const total = turnTimeoutMs();
     const remaining = state.timerDeadline - Date.now();
     const pct = Math.max(0, Math.min(100, (remaining / total) * 100));
     if (bar) bar.style.width = pct + "%";
@@ -2033,7 +2037,7 @@ function renderCombat(room, root) {
 
   if (canAct) {
     if (state.timerReset || state.timerDeadline == null) {
-      state.timerDeadline = Date.now() + 10000;
+      state.timerDeadline = Date.now() + turnTimeoutMs();
       state.timerFired = false;
       state.timerReset = false;
     }
@@ -2081,7 +2085,8 @@ function renderCombat(room, root) {
       const frame = p.anomaly ? ` style="--frame:${p.anomaly.frameColor}"` : "";
       const targetable = canAct && state.selectedSkill && state.selectedSkill.target === "ally" && p.hp > 0;
       const isCurrent = d.phase === "players" && d.currentTurnId === p.id;
-      return `<button type="button" class="fighter${p.hp <= 0 ? " fighter--down" : ""}${isCurrent ? " fighter--turn" : ""}${targetable ? " fighter--targetable" : ""}" data-fighter="${p.id}"${frame}>
+      const isMe = p.id === state.playerId;
+      return `<button type="button" class="fighter${p.hp <= 0 ? " fighter--down" : ""}${isCurrent ? " fighter--turn" : ""}${targetable ? " fighter--targetable" : ""}${isMe ? " fighter--me" : ""}" data-fighter="${p.id}"${frame}>
         ${targetable ? `<span class="tgtkey">${members.slice(0, fi + 1).filter((x) => x.hp > 0).length}</span>` : ""}
         <span class="fighter-bg" data-img="${imgFor(p.character, "class")}" data-variant="${p.character}"></span>
         <span class="fighter-shade" aria-hidden="true"></span>
@@ -2162,7 +2167,7 @@ function renderCombat(room, root) {
   const timerHtml = `<div class="turn-timer turn-timer--top${canAct ? "" : " turn-timer--idle"}"><div class="turn-timer-fill" id="turn-timer-fill"></div></div>`;
   const logHtml = `<div class="combat-log">${d.log.slice(-8).map((l) => `<div class="log-line">${escapeHtml(l)}</div>`).join("")}</div>`;
 
-  const isMany = (d.wave && d.wave.length > 3) || (d.totalFloors && d.totalFloors > 1);
+  const isMany = (d.wave && d.wave.length > 3) || (d.totalFloors && d.totalFloors > 1) || (members && members.length > 3);
   const floorInfo = d.totalFloors ? ` · Floor ${d.floor || 1}/${d.totalFloors}` : "";
   root.innerHTML = `
     <div class="combat-wrap ${isMany ? "combat-wrap--many" : ""}">

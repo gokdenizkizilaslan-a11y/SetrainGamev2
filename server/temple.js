@@ -82,13 +82,16 @@ function restoreHeart(room, player) {
   if (player.lives >= CONTENT.starting.lives) {
     throw new Error("Your hearts are already full.");
   }
-  if (!hasItem(player, CONTENT.temple.restore.item, 1)) {
-    throw new Error("You need a Heart of Golem to mend a heart.");
+  const restore = CONTENT.temple.restore || {};
+  const needId = restore.item || "golem_heart";
+  const needName = restore.itemName || (getItem(needId) || {}).name || "Heart of Golem";
+  if (!hasItem(player, needId, 1)) {
+    throw new Error(`You need a ${needName} to mend a heart.`);
   }
   spendStamina(player, CONTENT.town.temple.stamina);
-  removeItem(player, CONTENT.temple.restore.item, 1);
+  removeItem(player, needId, 1);
   player.lives += 1;
-  return { type: "temple", text: "You mend a lost heart. A life returns." };
+  return { type: "temple", text: restore.text || "You mend a lost heart. A life returns." };
 }
 
 function craft(room, player, recipeId) {

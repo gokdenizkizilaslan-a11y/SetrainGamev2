@@ -2073,6 +2073,26 @@ input:focus {
 .combat-wrap--many .fighter {
   min-width: 110px;
 }
+/* Çok oyunculu odak: herkes kendi ekranında kendini büyük, diğerlerini
+   kompakt görür (fighter--me izleyiciye göre atanır). */
+.combat-wrap--many .fighter--me {
+  flex: 1 1 190px;
+  max-width: 260px;
+  min-width: 170px;
+  border-color: rgba(232, 183, 108, 0.5);
+}
+.combat-wrap--many .fighter:not(.fighter--me) {
+  flex: 0 1 118px;
+  min-width: 100px;
+  max-width: 140px;
+}
+.combat-wrap--many .fighter:not(.fighter--me) .fighter-stats,
+.combat-wrap--many .fighter:not(.fighter--me) .fighter-mana {
+  font-size: 0.6rem;
+}
+.combat-wrap--many .fighter:not(.fighter--me) .fighter-pets {
+  display: none;
+}
 
 .enemy,
 .fighter {
