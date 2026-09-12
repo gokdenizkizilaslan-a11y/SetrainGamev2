@@ -303,7 +303,7 @@ function startGame(socketId) {
     p.dungeonId = null;
     p.bossId = null;
     p.pvpId = null;
-    p.shield = 0; p.maxShield = 0;
+    p.shield = 0; p.maxShield = 0; p.shields = [];
     if (!p.bossKills) p.bossKills = [];
   }
   return room;

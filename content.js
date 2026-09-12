@@ -851,7 +851,7 @@ const CONTENT = {
         ]
       },
       "support": {
-        "label": "Support Path",
+        "label": "Healer Path",
         "nodes": [
           {
             "id": "s_mend",
@@ -1155,7 +1155,16 @@ const CONTENT = {
         "max": 80
       },
       "tagline": "Frontline Swordmaster",
-      "lore": "A veteran of the front line. Heavy armor and a loyal blade. Balanced and forgiving — ideal for beginners."
+      "lore": "A veteran of the front line. Heavy armor and a loyal blade. Balanced and forgiving — ideal for beginners.",
+      "passives": [
+        {
+          "id": "warrior_battle_fervor",
+          "kind": "damageBonus",
+          "name": "Battle Fervor",
+          "desc": "+10% damage.",
+          "mult": 0.1
+        }
+      ]
     },
     {
       "slug": "ranger",
@@ -1222,7 +1231,17 @@ const CONTENT = {
         "max": 80
       },
       "tagline": "Long-Range Hunter",
-      "lore": "A deadly archer striking from afar. Fast and first to shoot, but fragile up close."
+      "lore": "A deadly archer striking from afar. Fast and first to shoot, but fragile up close.",
+      "passives": [
+        {
+          "id": "ranger_hunters_instinct",
+          "kind": "damageBonus",
+          "name": "Hunter's Instinct",
+          "desc": "+20% damage vs targets above 60% HP.",
+          "aboveHpPct": 0.6,
+          "mult": 0.2
+        }
+      ]
     },
     {
       "slug": "mage",
@@ -1290,7 +1309,17 @@ const CONTENT = {
         "max": 80
       },
       "tagline": "Apprentice Mage",
-      "lore": "A novice bending arcane energy. Low health, deep mana pool. Huge burst damage, but needs protection."
+      "lore": "A novice bending arcane energy. Low health, deep mana pool. Huge burst damage, but needs protection.",
+      "passives": [
+        {
+          "id": "mage_arcane_intellect",
+          "kind": "statBonus",
+          "name": "Arcane Intellect",
+          "desc": "+10% magic power.",
+          "stat": "magicPower",
+          "pct": 0.1
+        }
+      ]
     },
     {
       "slug": "rogue",
@@ -1357,7 +1386,17 @@ const CONTENT = {
         "max": 80
       },
       "tagline": "Shadow Thief",
-      "lore": "A cutpurse living in the shadows. Vampiric strikes steal life with every hit. Fast and cunning — for the impatient."
+      "lore": "A cutpurse living in the shadows. Vampiric strikes steal life with every hit. Fast and cunning — for the impatient.",
+      "passives": [
+        {
+          "id": "rogue_opportunist",
+          "kind": "damageBonus",
+          "name": "Opportunist",
+          "desc": "+25% damage vs targets below 50% HP.",
+          "belowHpPct": 0.5,
+          "mult": 0.25
+        }
+      ]
     },
     {
       "slug": "paladin",
@@ -1424,7 +1463,24 @@ const CONTENT = {
         "max": 80
       },
       "tagline": "Holy Guardian",
-      "lore": "A knight sworn to the light. Strikes with steel, heals with prayer. Slow, but a rock that refuses to fall."
+      "lore": "A knight sworn to the light. Strikes with steel, heals with prayer. Slow, but a rock that refuses to fall.",
+      "passives": [
+        {
+          "id": "paladin_holy_aegis",
+          "kind": "damageTaken",
+          "name": "Holy Aegis",
+          "desc": "Take 30% less damage (true damage excluded).",
+          "mult": -0.3
+        },
+        {
+          "id": "paladin_dawn_ward",
+          "kind": "shieldStart",
+          "name": "Dawn Ward",
+          "desc": "Start combat with a shield equal to 20% max HP (4 turns).",
+          "pct": 0.2,
+          "turns": 4
+        }
+      ]
     },
     {
       "slug": "assassin",
@@ -1491,11 +1547,20 @@ const CONTENT = {
         "max": 80
       },
       "tagline": "Apprentice Assassin",
-      "lore": "A student of the deadly arts. Execute ends a single target — TRUE damage that ignores armor. Glass cannon: them or you."
+      "lore": "A student of the deadly arts. Execute ends a single target — TRUE damage that ignores armor. Glass cannon: them or you.",
+      "passives": [
+        {
+          "id": "assassin_final_curtain",
+          "kind": "execute",
+          "name": "Final Curtain",
+          "desc": "Your hits execute targets at or below 10% HP.",
+          "finishBelowHpPct": 0.1
+        }
+      ]
     },
     {
       "slug": "support",
-      "label": "Support Mage",
+      "label": "Healer",
       "image": "/images/characters/support.png",
       "basicAttack": {
         "id": "sanct_bolt",
@@ -1560,7 +1625,16 @@ const CONTENT = {
         "max": 80
       },
       "tagline": "Healer Adept",
-      "lore": "The heart of the party. Cannot hunt alone — shines with friends. For team players."
+      "lore": "The heart of the party. Cannot hunt alone — shines with friends. For team players.",
+      "passives": [
+        {
+          "id": "healer_merciful_hand",
+          "kind": "healBonus",
+          "name": "Merciful Hand",
+          "desc": "+20% healing.",
+          "mult": 0.2
+        }
+      ]
     },
     {
       "slug": "tank",
@@ -1628,7 +1702,23 @@ const CONTENT = {
         "max": 80
       },
       "tagline": "Living Wall",
-      "lore": "A fortress incarnate. Low damage, but felling them takes a siege. A party without one is incomplete."
+      "lore": "A fortress incarnate. Low damage, but felling them takes a siege. A party without one is incomplete.",
+      "passives": [
+        {
+          "id": "tank_spiked_wall",
+          "kind": "thorns",
+          "name": "Spiked Wall",
+          "desc": "Reflect 15% of damage taken.",
+          "mult": 0.15
+        },
+        {
+          "id": "tank_iron_hide",
+          "kind": "damageTaken",
+          "name": "Iron Hide",
+          "desc": "Take 10% less damage (true damage excluded).",
+          "mult": -0.1
+        }
+      ]
     },
     {
       "slug": "tamer",
@@ -1891,7 +1981,17 @@ const CONTENT = {
         "max": 80
       },
       "tagline": "Nature Sprout",
-      "lore": "A gardener who hears the forest whisper. Vines and thorns are their weapons. A patient player's pick."
+      "lore": "A gardener who hears the forest whisper. Vines and thorns are their weapons. A patient player's pick.",
+      "passives": [
+        {
+          "id": "gardener_living_bark",
+          "kind": "shieldStart",
+          "name": "Living Bark",
+          "desc": "Start combat with a shield equal to 50% max HP (3 turns).",
+          "pct": 0.5,
+          "turns": 3
+        }
+      ]
     },
     {
       "slug": "rootbinder",
@@ -5096,17 +5196,31 @@ const CONTENT = {
       "speed": 6,
       "element": "fire",
       "rarity": "mythic",
-  "weaponId": "boss_weapon_ember",
-  "chestId": "boss_chest_ember",
-  "unlockAfter": null,
-  "resistance": 20,
-  "phases": 3,
-  "phaseSkills": {
-    "1": ["boss_ember_skill1", "boss_ember_skill2"],
-    "2": ["boss_ember_skill3", "boss_ember_skill4", "boss_ember_skill5"],
-    "3": ["boss_ember_skill2", "boss_ember_skill5", "boss_ember_skill6"]
-  }
- },
+      "weaponId": "boss_weapon_ember",
+      "chestId": "boss_chest_ember",
+      "unlockAfter": null,
+      "resistance": 20,
+      "phases": 3,
+      "phaseSkills": {
+        "1": [
+          "boss_ember_skill1",
+          "boss_ember_skill2"
+        ],
+        "2": [
+          "boss_ember_skill3",
+          "boss_ember_skill4",
+          "boss_ember_skill5"
+        ],
+        "3": [
+          "boss_ember_skill2",
+          "boss_ember_skill5",
+          "boss_ember_skill6"
+        ]
+      },
+      "tags": [
+        "elemental"
+      ]
+    },
     {
       "id": "boss_frost_titan",
       "label": "Frost Titan",
@@ -5116,17 +5230,31 @@ const CONTENT = {
       "speed": 5,
       "element": "frost",
       "rarity": "mythic",
-  "weaponId": "boss_weapon_frost",
-  "chestId": "boss_chest_frost",
-  "unlockAfter": "boss_ember_king",
-  "resistance": 25,
-  "phases": 3,
-  "phaseSkills": {
-    "1": ["boss_frost_skill1", "boss_frost_skill2"],
-    "2": ["boss_frost_skill3", "boss_frost_skill4", "boss_frost_skill5"],
-    "3": ["boss_frost_skill2", "boss_frost_skill5", "boss_frost_skill6"]
-  }
- },
+      "weaponId": "boss_weapon_frost",
+      "chestId": "boss_chest_frost",
+      "unlockAfter": "boss_ember_king",
+      "resistance": 25,
+      "phases": 3,
+      "phaseSkills": {
+        "1": [
+          "boss_frost_skill1",
+          "boss_frost_skill2"
+        ],
+        "2": [
+          "boss_frost_skill3",
+          "boss_frost_skill4",
+          "boss_frost_skill5"
+        ],
+        "3": [
+          "boss_frost_skill2",
+          "boss_frost_skill5",
+          "boss_frost_skill6"
+        ]
+      },
+      "tags": [
+        "elemental"
+      ]
+    },
     {
       "id": "boss_void_herald",
       "label": "Void Herald",
@@ -5136,17 +5264,31 @@ const CONTENT = {
       "speed": 7,
       "element": "shadow",
       "rarity": "mythic",
-  "weaponId": "boss_weapon_void",
-  "chestId": "boss_chest_void",
-  "unlockAfter": "boss_frost_titan",
-  "resistance": 30,
-  "phases": 3,
-  "phaseSkills": {
-    "1": ["boss_void_skill1", "boss_void_skill2"],
-    "2": ["boss_void_skill3", "boss_void_skill4", "boss_void_skill5"],
-    "3": ["boss_void_skill2", "boss_void_skill5", "boss_void_skill6"]
-  }
- },
+      "weaponId": "boss_weapon_void",
+      "chestId": "boss_chest_void",
+      "unlockAfter": "boss_frost_titan",
+      "resistance": 30,
+      "phases": 3,
+      "phaseSkills": {
+        "1": [
+          "boss_void_skill1",
+          "boss_void_skill2"
+        ],
+        "2": [
+          "boss_void_skill3",
+          "boss_void_skill4",
+          "boss_void_skill5"
+        ],
+        "3": [
+          "boss_void_skill2",
+          "boss_void_skill5",
+          "boss_void_skill6"
+        ]
+      },
+      "tags": [
+        "demon"
+      ]
+    },
     {
       "id": "boss_storm_colossus",
       "label": "Storm Colossus",
@@ -5156,17 +5298,31 @@ const CONTENT = {
       "speed": 6,
       "element": "arcane",
       "rarity": "mythic",
-  "weaponId": "boss_weapon_storm",
-  "chestId": "boss_chest_storm",
-  "unlockAfter": "boss_void_herald",
-  "resistance": 35,
-  "phases": 3,
-  "phaseSkills": {
-    "1": ["boss_storm_skill1", "boss_storm_skill2"],
-    "2": ["boss_storm_skill3", "boss_storm_skill4", "boss_storm_skill5"],
-    "3": ["boss_storm_skill2", "boss_storm_skill5", "boss_storm_skill6"]
-  }
- },
+      "weaponId": "boss_weapon_storm",
+      "chestId": "boss_chest_storm",
+      "unlockAfter": "boss_void_herald",
+      "resistance": 35,
+      "phases": 3,
+      "phaseSkills": {
+        "1": [
+          "boss_storm_skill1",
+          "boss_storm_skill2"
+        ],
+        "2": [
+          "boss_storm_skill3",
+          "boss_storm_skill4",
+          "boss_storm_skill5"
+        ],
+        "3": [
+          "boss_storm_skill2",
+          "boss_storm_skill5",
+          "boss_storm_skill6"
+        ]
+      },
+      "tags": [
+        "elemental"
+      ]
+    },
     {
       "id": "boss_world_eater",
       "label": "World Eater",
@@ -5182,10 +5338,24 @@ const CONTENT = {
       "resistance": 45,
       "phases": 3,
       "phaseSkills": {
-        "1": ["boss_world_skill1", "boss_world_skill2"],
-        "2": ["boss_world_skill3", "boss_world_skill4", "boss_world_skill5"],
-        "3": ["boss_world_skill2", "boss_world_skill5", "boss_world_skill6"]
-      }
+        "1": [
+          "boss_world_skill1",
+          "boss_world_skill2"
+        ],
+        "2": [
+          "boss_world_skill3",
+          "boss_world_skill4",
+          "boss_world_skill5"
+        ],
+        "3": [
+          "boss_world_skill2",
+          "boss_world_skill5",
+          "boss_world_skill6"
+        ]
+      },
+      "tags": [
+        "dragon"
+      ]
     }
   ],
   "pets": [
@@ -5217,8 +5387,7 @@ const CONTENT = {
       "image": "/images/pets/pet_direwolf.png",
       "element": "fire",
       "stats": {
-        "attack": 4,
-        "magicPower": 7
+        "attack": 4
       },
       "description": "Direwolf from Red Egg",
       "egg": "egg_red"
@@ -5229,8 +5398,7 @@ const CONTENT = {
       "image": "/images/pets/pet_ember_pup.png",
       "element": "fire",
       "stats": {
-        "attack": 7,
-        "magicPower": 5
+        "attack": 7
       },
       "description": "Ember Pup from Red Egg",
       "egg": "egg_red"
@@ -5241,8 +5409,7 @@ const CONTENT = {
       "image": "/images/pets/pet_cinder_cub.png",
       "element": "fire",
       "stats": {
-        "attack": 6,
-        "magicPower": 5
+        "attack": 6
       },
       "description": "Cinder Cub from Red Egg",
       "egg": "egg_red"
@@ -5253,8 +5420,7 @@ const CONTENT = {
       "image": "/images/pets/pet_slime.png",
       "element": "fire",
       "stats": {
-        "attack": 3,
-        "magicPower": 7
+        "attack": 3
       },
       "description": "Slime from Red Egg",
       "egg": "egg_red"
@@ -5265,8 +5431,7 @@ const CONTENT = {
       "image": "/images/pets/pet_sprout.png",
       "element": "nature",
       "stats": {
-        "attack": 3,
-        "magicPower": 7
+        "attack": 3
       },
       "description": "Sprout from Red Egg",
       "egg": "egg_red"
@@ -5277,8 +5442,7 @@ const CONTENT = {
       "image": "/images/pets/pet_flame_sprite.png",
       "element": "fire",
       "stats": {
-        "attack": 3,
-        "magicPower": 4
+        "attack": 3
       },
       "description": "Flame Sprite from Red Egg",
       "egg": "egg_red"
@@ -5289,8 +5453,7 @@ const CONTENT = {
       "image": "/images/pets/pet_mossling.png",
       "element": "earth",
       "stats": {
-        "attack": 4,
-        "magicPower": 6
+        "attack": 4
       },
       "description": "Mossling from Green Egg",
       "egg": "egg_green"
@@ -5301,8 +5464,7 @@ const CONTENT = {
       "image": "/images/pets/pet_vine_pup.png",
       "element": "earth",
       "stats": {
-        "attack": 5,
-        "magicPower": 5
+        "attack": 5
       },
       "description": "Vine Pup from Green Egg",
       "egg": "egg_green"
@@ -5313,8 +5475,7 @@ const CONTENT = {
       "image": "/images/pets/pet_thorn_whelp.png",
       "element": "earth",
       "stats": {
-        "attack": 4,
-        "magicPower": 3
+        "attack": 4
       },
       "description": "Thorn Whelp from Green Egg",
       "egg": "egg_green"
@@ -5325,8 +5486,7 @@ const CONTENT = {
       "image": "/images/pets/pet_grove_sprite.png",
       "element": "earth",
       "stats": {
-        "attack": 4,
-        "magicPower": 3
+        "attack": 4
       },
       "description": "Grove Sprite from Green Egg",
       "egg": "egg_green"
@@ -5337,8 +5497,7 @@ const CONTENT = {
       "image": "/images/pets/pet_slime_king.png",
       "element": "earth",
       "stats": {
-        "attack": 6,
-        "magicPower": 6
+        "attack": 6
       },
       "description": "Slime King from Green Egg",
       "egg": "egg_green"
@@ -5349,8 +5508,7 @@ const CONTENT = {
       "image": "/images/pets/pet_forest_cub.png",
       "element": "earth",
       "stats": {
-        "attack": 5,
-        "magicPower": 3
+        "attack": 5
       },
       "description": "Forest Cub from Green Egg",
       "egg": "egg_green"
@@ -5361,8 +5519,7 @@ const CONTENT = {
       "image": "/images/pets/pet_natureling.png",
       "element": "nature",
       "stats": {
-        "attack": 3,
-        "magicPower": 7
+        "attack": 3
       },
       "description": "A budding nature spirit from the Green Egg.",
       "egg": "egg_green"
@@ -5377,7 +5534,8 @@ const CONTENT = {
         "magicPower": 3
       },
       "description": "Frost Pup from Blue Egg",
-      "egg": "egg_blue"
+      "egg": "egg_blue",
+      "buffKind": "magicBoost"
     },
     {
       "id": "pet_ice_whelp",
@@ -5389,7 +5547,8 @@ const CONTENT = {
         "magicPower": 3
       },
       "description": "Ice Whelp from Blue Egg",
-      "egg": "egg_blue"
+      "egg": "egg_blue",
+      "buffKind": "magicBoost"
     },
     {
       "id": "pet_snow_cub",
@@ -5401,7 +5560,8 @@ const CONTENT = {
         "magicPower": 7
       },
       "description": "Snow Cub from Blue Egg",
-      "egg": "egg_blue"
+      "egg": "egg_blue",
+      "buffKind": "magicBoost"
     },
     {
       "id": "pet_glacierling",
@@ -5413,7 +5573,8 @@ const CONTENT = {
         "magicPower": 6
       },
       "description": "Glacierling from Blue Egg",
-      "egg": "egg_blue"
+      "egg": "egg_blue",
+      "buffKind": "magicBoost"
     },
     {
       "id": "pet_chill_sprite",
@@ -5425,7 +5586,8 @@ const CONTENT = {
         "magicPower": 7
       },
       "description": "Chill Sprite from Blue Egg",
-      "egg": "egg_blue"
+      "egg": "egg_blue",
+      "buffKind": "magicBoost"
     },
     {
       "id": "pet_frost_drake",
@@ -5437,7 +5599,8 @@ const CONTENT = {
         "magicPower": 7
       },
       "description": "Frost Drake from Blue Egg",
-      "egg": "egg_blue"
+      "egg": "egg_blue",
+      "buffKind": "magicBoost"
     },
     {
       "id": "pet_stone_pup",
@@ -5446,10 +5609,12 @@ const CONTENT = {
       "element": "earth",
       "stats": {
         "attack": 5,
-        "magicPower": 7
+        "magicPower": 7,
+        "resistance": 3
       },
       "description": "Stone Pup from Brown Egg",
-      "egg": "egg_brown"
+      "egg": "egg_brown",
+      "buffKind": "attack"
     },
     {
       "id": "pet_rockling",
@@ -5458,10 +5623,12 @@ const CONTENT = {
       "element": "earth",
       "stats": {
         "attack": 4,
-        "magicPower": 6
+        "magicPower": 6,
+        "resistance": 3
       },
       "description": "Rockling from Brown Egg",
-      "egg": "egg_brown"
+      "egg": "egg_brown",
+      "buffKind": "attack"
     },
     {
       "id": "pet_boulder_cub",
@@ -5470,10 +5637,12 @@ const CONTENT = {
       "element": "earth",
       "stats": {
         "attack": 7,
-        "magicPower": 6
+        "magicPower": 6,
+        "resistance": 3
       },
       "description": "Boulder Cub from Brown Egg",
-      "egg": "egg_brown"
+      "egg": "egg_brown",
+      "buffKind": "attack"
     },
     {
       "id": "pet_crystal_sprite",
@@ -5482,10 +5651,12 @@ const CONTENT = {
       "element": "earth",
       "stats": {
         "attack": 5,
-        "magicPower": 4
+        "magicPower": 4,
+        "resistance": 3
       },
       "description": "Crystal Sprite from Brown Egg",
-      "egg": "egg_brown"
+      "egg": "egg_brown",
+      "buffKind": "attack"
     },
     {
       "id": "pet_golem_whelp",
@@ -5494,10 +5665,12 @@ const CONTENT = {
       "element": "earth",
       "stats": {
         "attack": 6,
-        "magicPower": 6
+        "magicPower": 6,
+        "resistance": 3
       },
       "description": "Golem Whelp from Brown Egg",
-      "egg": "egg_brown"
+      "egg": "egg_brown",
+      "buffKind": "attack"
     },
     {
       "id": "pet_granite_pup",
@@ -5506,10 +5679,12 @@ const CONTENT = {
       "element": "earth",
       "stats": {
         "attack": 7,
-        "magicPower": 3
+        "magicPower": 3,
+        "resistance": 3
       },
       "description": "Granite Pup from Brown Egg",
-      "egg": "egg_brown"
+      "egg": "egg_brown",
+      "buffKind": "attack"
     },
     {
       "id": "pet_storm_pup",
@@ -5521,7 +5696,8 @@ const CONTENT = {
         "magicPower": 4
       },
       "description": "Storm Pup from Yellow Egg",
-      "egg": "egg_yellow"
+      "egg": "egg_yellow",
+      "buffKind": "magicBoost"
     },
     {
       "id": "pet_thunder_cub",
@@ -5533,7 +5709,8 @@ const CONTENT = {
         "magicPower": 4
       },
       "description": "Thunder Cub from Yellow Egg",
-      "egg": "egg_yellow"
+      "egg": "egg_yellow",
+      "buffKind": "magicBoost"
     },
     {
       "id": "pet_lightning_drake",
@@ -5545,7 +5722,8 @@ const CONTENT = {
         "magicPower": 4
       },
       "description": "Lightning Drake from Yellow Egg",
-      "egg": "egg_yellow"
+      "egg": "egg_yellow",
+      "buffKind": "magicBoost"
     },
     {
       "id": "pet_wind_sprite",
@@ -5557,7 +5735,8 @@ const CONTENT = {
         "magicPower": 3
       },
       "description": "Wind Sprite from Yellow Egg",
-      "egg": "egg_yellow"
+      "egg": "egg_yellow",
+      "buffKind": "magicBoost"
     },
     {
       "id": "pet_gale_whelp",
@@ -5569,7 +5748,8 @@ const CONTENT = {
         "magicPower": 6
       },
       "description": "Gale Whelp from Yellow Egg",
-      "egg": "egg_yellow"
+      "egg": "egg_yellow",
+      "buffKind": "magicBoost"
     },
     {
       "id": "pet_storm_hatchling",
@@ -5581,7 +5761,8 @@ const CONTENT = {
         "magicPower": 5
       },
       "description": "Storm Hatchling from Yellow Egg",
-      "egg": "egg_yellow"
+      "egg": "egg_yellow",
+      "buffKind": "magicBoost"
     },
     {
       "id": "pet_shadow_pup",
@@ -5593,7 +5774,15 @@ const CONTENT = {
         "magicPower": 3
       },
       "description": "Shadow Pup from Purple Egg",
-      "egg": "egg_purple"
+      "egg": "egg_purple",
+      "petSkills": [
+        {
+          "kind": "weaken",
+          "value": 0.55,
+          "interval": 2,
+          "element": "dark"
+        }
+      ]
     },
     {
       "id": "pet_voidling",
@@ -5605,7 +5794,15 @@ const CONTENT = {
         "magicPower": 3
       },
       "description": "Voidling from Purple Egg",
-      "egg": "egg_purple"
+      "egg": "egg_purple",
+      "petSkills": [
+        {
+          "kind": "weaken",
+          "value": 0.55,
+          "interval": 2,
+          "element": "dark"
+        }
+      ]
     },
     {
       "id": "pet_dusk_whelp",
@@ -5617,7 +5814,15 @@ const CONTENT = {
         "magicPower": 5
       },
       "description": "Dusk Whelp from Purple Egg",
-      "egg": "egg_purple"
+      "egg": "egg_purple",
+      "petSkills": [
+        {
+          "kind": "weaken",
+          "value": 0.55,
+          "interval": 2,
+          "element": "dark"
+        }
+      ]
     },
     {
       "id": "pet_night_cub",
@@ -5629,7 +5834,15 @@ const CONTENT = {
         "magicPower": 7
       },
       "description": "Night Cub from Purple Egg",
-      "egg": "egg_purple"
+      "egg": "egg_purple",
+      "petSkills": [
+        {
+          "kind": "weaken",
+          "value": 0.55,
+          "interval": 2,
+          "element": "dark"
+        }
+      ]
     },
     {
       "id": "pet_shade_sprite",
@@ -5641,7 +5854,15 @@ const CONTENT = {
         "magicPower": 4
       },
       "description": "Shade Sprite from Purple Egg",
-      "egg": "egg_purple"
+      "egg": "egg_purple",
+      "petSkills": [
+        {
+          "kind": "weaken",
+          "value": 0.55,
+          "interval": 2,
+          "element": "dark"
+        }
+      ]
     },
     {
       "id": "pet_umbra_drake",
@@ -5653,7 +5874,15 @@ const CONTENT = {
         "magicPower": 3
       },
       "description": "Umbra Drake from Purple Egg",
-      "egg": "egg_purple"
+      "egg": "egg_purple",
+      "petSkills": [
+        {
+          "kind": "weaken",
+          "value": 0.55,
+          "interval": 2,
+          "element": "dark"
+        }
+      ]
     },
     {
       "id": "pet_crystal_drake",
@@ -5665,7 +5894,15 @@ const CONTENT = {
         "magicPower": 4
       },
       "description": "Crystal Drake from Cyan Egg",
-      "egg": "egg_cyan"
+      "egg": "egg_cyan",
+      "petSkills": [
+        {
+          "kind": "heal",
+          "value": 0.55,
+          "interval": 2,
+          "element": "water"
+        }
+      ]
     },
     {
       "id": "pet_arcane_pup",
@@ -5677,7 +5914,15 @@ const CONTENT = {
         "magicPower": 6
       },
       "description": "Arcane Pup from Cyan Egg",
-      "egg": "egg_cyan"
+      "egg": "egg_cyan",
+      "petSkills": [
+        {
+          "kind": "heal",
+          "value": 0.55,
+          "interval": 2,
+          "element": "water"
+        }
+      ]
     },
     {
       "id": "pet_mana_sprite",
@@ -5689,7 +5934,15 @@ const CONTENT = {
         "magicPower": 7
       },
       "description": "Mana Sprite from Cyan Egg",
-      "egg": "egg_cyan"
+      "egg": "egg_cyan",
+      "petSkills": [
+        {
+          "kind": "heal",
+          "value": 0.55,
+          "interval": 2,
+          "element": "water"
+        }
+      ]
     },
     {
       "id": "pet_spell_whelp",
@@ -5701,7 +5954,15 @@ const CONTENT = {
         "magicPower": 7
       },
       "description": "Spell Whelp from Cyan Egg",
-      "egg": "egg_cyan"
+      "egg": "egg_cyan",
+      "petSkills": [
+        {
+          "kind": "heal",
+          "value": 0.55,
+          "interval": 2,
+          "element": "water"
+        }
+      ]
     },
     {
       "id": "pet_runeling",
@@ -5713,7 +5974,15 @@ const CONTENT = {
         "magicPower": 4
       },
       "description": "Runeling from Cyan Egg",
-      "egg": "egg_cyan"
+      "egg": "egg_cyan",
+      "petSkills": [
+        {
+          "kind": "heal",
+          "value": 0.55,
+          "interval": 2,
+          "element": "water"
+        }
+      ]
     },
     {
       "id": "pet_crystal_hound",
@@ -5725,7 +5994,15 @@ const CONTENT = {
         "magicPower": 6
       },
       "description": "Crystal Hound from Cyan Egg",
-      "egg": "egg_cyan"
+      "egg": "egg_cyan",
+      "petSkills": [
+        {
+          "kind": "heal",
+          "value": 0.55,
+          "interval": 2,
+          "element": "water"
+        }
+      ]
     },
     {
       "id": "pet_void_pup",
@@ -5737,7 +6014,15 @@ const CONTENT = {
         "magicPower": 7
       },
       "description": "Void Pup from Dark Egg",
-      "egg": "egg_dark"
+      "egg": "egg_dark",
+      "petSkills": [
+        {
+          "kind": "weaken",
+          "value": 0.55,
+          "interval": 2,
+          "element": "dark"
+        }
+      ]
     },
     {
       "id": "pet_abyssling",
@@ -5749,7 +6034,15 @@ const CONTENT = {
         "magicPower": 3
       },
       "description": "Abyssling from Dark Egg",
-      "egg": "egg_dark"
+      "egg": "egg_dark",
+      "petSkills": [
+        {
+          "kind": "weaken",
+          "value": 0.55,
+          "interval": 2,
+          "element": "dark"
+        }
+      ]
     },
     {
       "id": "pet_nether_cub",
@@ -5761,7 +6054,15 @@ const CONTENT = {
         "magicPower": 4
       },
       "description": "Nether Cub from Dark Egg",
-      "egg": "egg_dark"
+      "egg": "egg_dark",
+      "petSkills": [
+        {
+          "kind": "weaken",
+          "value": 0.55,
+          "interval": 2,
+          "element": "dark"
+        }
+      ]
     },
     {
       "id": "pet_shadow_drake",
@@ -5773,7 +6074,15 @@ const CONTENT = {
         "magicPower": 4
       },
       "description": "Shadow Drake from Dark Egg",
-      "egg": "egg_dark"
+      "egg": "egg_dark",
+      "petSkills": [
+        {
+          "kind": "weaken",
+          "value": 0.55,
+          "interval": 2,
+          "element": "dark"
+        }
+      ]
     },
     {
       "id": "pet_dark_hound",
@@ -5785,7 +6094,15 @@ const CONTENT = {
         "magicPower": 6
       },
       "description": "Dark Hound from Dark Egg",
-      "egg": "egg_dark"
+      "egg": "egg_dark",
+      "petSkills": [
+        {
+          "kind": "weaken",
+          "value": 0.55,
+          "interval": 2,
+          "element": "dark"
+        }
+      ]
     },
     {
       "id": "pet_void_sprite",
@@ -5797,7 +6114,15 @@ const CONTENT = {
         "magicPower": 5
       },
       "description": "Void Sprite from Dark Egg",
-      "egg": "egg_dark"
+      "egg": "egg_dark",
+      "petSkills": [
+        {
+          "kind": "weaken",
+          "value": 0.55,
+          "interval": 2,
+          "element": "dark"
+        }
+      ]
     },
     {
       "id": "pet_phoenix_hatchling",
@@ -5809,7 +6134,21 @@ const CONTENT = {
         "magicPower": 7
       },
       "description": "Phoenix Hatchling from Orange Egg",
-      "egg": "egg_orange"
+      "egg": "egg_orange",
+      "petSkills": [
+        {
+          "kind": "attack",
+          "value": 0.65,
+          "interval": 2,
+          "element": "fire"
+        },
+        {
+          "kind": "shield",
+          "value": 0.4,
+          "interval": 3,
+          "element": "fire"
+        }
+      ]
     },
     {
       "id": "pet_ember_drake",
@@ -5821,7 +6160,21 @@ const CONTENT = {
         "magicPower": 4
       },
       "description": "Ember Drake from Orange Egg",
-      "egg": "egg_orange"
+      "egg": "egg_orange",
+      "petSkills": [
+        {
+          "kind": "attack",
+          "value": 0.65,
+          "interval": 2,
+          "element": "fire"
+        },
+        {
+          "kind": "shield",
+          "value": 0.4,
+          "interval": 3,
+          "element": "fire"
+        }
+      ]
     },
     {
       "id": "pet_flame_hound",
@@ -5833,7 +6186,21 @@ const CONTENT = {
         "magicPower": 7
       },
       "description": "Flame Hound from Orange Egg",
-      "egg": "egg_orange"
+      "egg": "egg_orange",
+      "petSkills": [
+        {
+          "kind": "attack",
+          "value": 0.65,
+          "interval": 2,
+          "element": "fire"
+        },
+        {
+          "kind": "shield",
+          "value": 0.4,
+          "interval": 3,
+          "element": "fire"
+        }
+      ]
     },
     {
       "id": "pet_inferno_pup",
@@ -5845,7 +6212,21 @@ const CONTENT = {
         "magicPower": 3
       },
       "description": "Inferno Pup from Orange Egg",
-      "egg": "egg_orange"
+      "egg": "egg_orange",
+      "petSkills": [
+        {
+          "kind": "attack",
+          "value": 0.65,
+          "interval": 2,
+          "element": "fire"
+        },
+        {
+          "kind": "shield",
+          "value": 0.4,
+          "interval": 3,
+          "element": "fire"
+        }
+      ]
     },
     {
       "id": "pet_blaze_drake",
@@ -5857,7 +6238,21 @@ const CONTENT = {
         "magicPower": 3
       },
       "description": "Blaze Drake from Orange Egg",
-      "egg": "egg_orange"
+      "egg": "egg_orange",
+      "petSkills": [
+        {
+          "kind": "attack",
+          "value": 0.65,
+          "interval": 2,
+          "element": "fire"
+        },
+        {
+          "kind": "shield",
+          "value": 0.4,
+          "interval": 3,
+          "element": "fire"
+        }
+      ]
     },
     {
       "id": "pet_phoenix_chick",
@@ -5869,7 +6264,21 @@ const CONTENT = {
         "magicPower": 5
       },
       "description": "Phoenix Chick from Orange Egg",
-      "egg": "egg_orange"
+      "egg": "egg_orange",
+      "petSkills": [
+        {
+          "kind": "attack",
+          "value": 0.65,
+          "interval": 2,
+          "element": "fire"
+        },
+        {
+          "kind": "shield",
+          "value": 0.4,
+          "interval": 3,
+          "element": "fire"
+        }
+      ]
     },
     {
       "id": "pet_mythic_drake",
@@ -5881,7 +6290,21 @@ const CONTENT = {
         "magicPower": 7
       },
       "description": "Mythic Drake from Gold Egg",
-      "egg": "egg_gold"
+      "egg": "egg_gold",
+      "petSkills": [
+        {
+          "kind": "attack",
+          "value": 0.65,
+          "interval": 2,
+          "element": "physical"
+        },
+        {
+          "kind": "shield",
+          "value": 0.4,
+          "interval": 3,
+          "element": "physical"
+        }
+      ]
     },
     {
       "id": "pet_gold_pup",
@@ -5893,7 +6316,21 @@ const CONTENT = {
         "magicPower": 7
       },
       "description": "Gold Pup from Gold Egg",
-      "egg": "egg_gold"
+      "egg": "egg_gold",
+      "petSkills": [
+        {
+          "kind": "attack",
+          "value": 0.65,
+          "interval": 2,
+          "element": "physical"
+        },
+        {
+          "kind": "shield",
+          "value": 0.4,
+          "interval": 3,
+          "element": "physical"
+        }
+      ]
     },
     {
       "id": "pet_radiant_cub",
@@ -5905,7 +6342,21 @@ const CONTENT = {
         "magicPower": 6
       },
       "description": "Radiant Cub from Gold Egg",
-      "egg": "egg_gold"
+      "egg": "egg_gold",
+      "petSkills": [
+        {
+          "kind": "attack",
+          "value": 0.65,
+          "interval": 2,
+          "element": "physical"
+        },
+        {
+          "kind": "shield",
+          "value": 0.4,
+          "interval": 3,
+          "element": "physical"
+        }
+      ]
     },
     {
       "id": "pet_divine_whelp",
@@ -5917,7 +6368,21 @@ const CONTENT = {
         "magicPower": 5
       },
       "description": "Divine Whelp from Gold Egg",
-      "egg": "egg_gold"
+      "egg": "egg_gold",
+      "petSkills": [
+        {
+          "kind": "attack",
+          "value": 0.65,
+          "interval": 2,
+          "element": "physical"
+        },
+        {
+          "kind": "shield",
+          "value": 0.4,
+          "interval": 3,
+          "element": "physical"
+        }
+      ]
     },
     {
       "id": "pet_light_sprite",
@@ -5929,7 +6394,21 @@ const CONTENT = {
         "magicPower": 7
       },
       "description": "Light Sprite from Gold Egg",
-      "egg": "egg_gold"
+      "egg": "egg_gold",
+      "petSkills": [
+        {
+          "kind": "attack",
+          "value": 0.65,
+          "interval": 2,
+          "element": "physical"
+        },
+        {
+          "kind": "shield",
+          "value": 0.4,
+          "interval": 3,
+          "element": "physical"
+        }
+      ]
     },
     {
       "id": "pet_mythic_hound",
@@ -5941,7 +6420,21 @@ const CONTENT = {
         "magicPower": 5
       },
       "description": "Mythic Hound from Gold Egg",
-      "egg": "egg_gold"
+      "egg": "egg_gold",
+      "petSkills": [
+        {
+          "kind": "attack",
+          "value": 0.65,
+          "interval": 2,
+          "element": "physical"
+        },
+        {
+          "kind": "shield",
+          "value": 0.4,
+          "interval": 3,
+          "element": "physical"
+        }
+      ]
     },
     {
       "id": "pet_rage_pup_100",
@@ -6398,6 +6891,80 @@ const CONTENT = {
       "description": "Void Pup - grants magicBoost buff. From egg_dark",
       "egg": "egg_dark",
       "buffKind": "magicBoost"
+    }
+  ],
+  "petSkillPresets": [
+    {
+      "id": "preset_flame_bite",
+      "name": "Flame Bite",
+      "kind": "attack",
+      "value": 0.6,
+      "interval": 2,
+      "element": "fire",
+      "desc": "Fire attack every 2 turns."
+    },
+    {
+      "id": "preset_aqua_mend",
+      "name": "Aqua Mend",
+      "kind": "heal",
+      "value": 0.15,
+      "interval": 2,
+      "element": "water",
+      "desc": "Heal 15% max HP every 2 turns."
+    },
+    {
+      "id": "preset_stone_ward",
+      "name": "Stone Ward",
+      "kind": "shield",
+      "value": 35,
+      "interval": 3,
+      "element": "earth",
+      "desc": "35 shield every 3 turns (1 turn)."
+    },
+    {
+      "id": "preset_frostbite",
+      "name": "Frostbite",
+      "kind": "frozen",
+      "value": 0,
+      "interval": 3,
+      "element": "frost",
+      "desc": "Freeze the foe every 3 turns."
+    },
+    {
+      "id": "preset_volt_zap",
+      "name": "Volt Zap",
+      "kind": "attack",
+      "value": 0.5,
+      "interval": 1,
+      "element": "lightning",
+      "desc": "Fast lightning attack every turn."
+    },
+    {
+      "id": "preset_vine_leech",
+      "name": "Vine Leech",
+      "kind": "weaken",
+      "value": 0.15,
+      "interval": 2,
+      "element": "nature",
+      "desc": "Weaken the foe every 2 turns."
+    },
+    {
+      "id": "preset_dusk_curse",
+      "name": "Dusk Curse",
+      "kind": "weaken",
+      "value": 0.2,
+      "interval": 3,
+      "element": "dark",
+      "desc": "Heavy weaken every 3 turns."
+    },
+    {
+      "id": "preset_bloom",
+      "name": "Bloom",
+      "kind": "heal",
+      "value": 0.12,
+      "interval": 1,
+      "element": "nature",
+      "desc": "Small heal every turn."
     }
   ],
   "eggs": [
@@ -9241,7 +9808,10 @@ const CONTENT = {
       "rarity": "common",
       "element": "physical",
       "image": "/images/monsters/slime.png",
-      "resistance": 4
+      "resistance": 4,
+      "tags": [
+        "slime"
+      ]
     },
     {
       "id": "goblin",
@@ -9252,7 +9822,10 @@ const CONTENT = {
       "rarity": "common",
       "element": "physical",
       "image": "/images/monsters/goblin.png",
-      "resistance": 5
+      "resistance": 5,
+      "tags": [
+        "humanoid"
+      ]
     },
     {
       "id": "giant_rat",
@@ -9263,7 +9836,10 @@ const CONTENT = {
       "rarity": "common",
       "element": "physical",
       "image": "/images/monsters/giant_rat.png",
-      "resistance": 5
+      "resistance": 5,
+      "tags": [
+        "beast"
+      ]
     },
     {
       "id": "cave_bat",
@@ -9274,7 +9850,10 @@ const CONTENT = {
       "rarity": "common",
       "element": "physical",
       "image": "/images/monsters/cave_bat.png",
-      "resistance": 1
+      "resistance": 1,
+      "tags": [
+        "beast"
+      ]
     },
     {
       "id": "wolf",
@@ -9285,7 +9864,10 @@ const CONTENT = {
       "rarity": "common",
       "element": "physical",
       "image": "/images/monsters/wolf.png",
-      "resistance": 2
+      "resistance": 2,
+      "tags": [
+        "beast"
+      ]
     },
     {
       "id": "bandit",
@@ -9296,7 +9878,10 @@ const CONTENT = {
       "rarity": "common",
       "element": "physical",
       "image": "/images/monsters/bandit.png",
-      "resistance": 2
+      "resistance": 2,
+      "tags": [
+        "humanoid"
+      ]
     },
     {
       "id": "spider",
@@ -9307,7 +9892,10 @@ const CONTENT = {
       "rarity": "common",
       "element": "shadow",
       "image": "/images/monsters/spider.png",
-      "resistance": 5
+      "resistance": 5,
+      "tags": [
+        "beast"
+      ]
     },
     {
       "id": "wild_boar",
@@ -9318,7 +9906,10 @@ const CONTENT = {
       "rarity": "common",
       "element": "physical",
       "image": "/images/monsters/wild_boar.png",
-      "resistance": 3
+      "resistance": 3,
+      "tags": [
+        "beast"
+      ]
     },
     {
       "id": "goblin_archer",
@@ -9329,7 +9920,10 @@ const CONTENT = {
       "rarity": "common",
       "element": "physical",
       "image": "/images/monsters/goblin_archer.png",
-      "resistance": 5
+      "resistance": 5,
+      "tags": [
+        "humanoid"
+      ]
     },
     {
       "id": "rat_king",
@@ -9340,7 +9934,10 @@ const CONTENT = {
       "rarity": "common",
       "element": "physical",
       "image": "/images/monsters/rat_king.png",
-      "resistance": 3
+      "resistance": 3,
+      "tags": [
+        "beast"
+      ]
     },
     {
       "id": "grove_sprite",
@@ -9351,7 +9948,10 @@ const CONTENT = {
       "rarity": "uncommon",
       "element": "arcane",
       "image": "/images/monsters/grove_sprite.png",
-      "resistance": 6
+      "resistance": 6,
+      "tags": [
+        "plant"
+      ]
     },
     {
       "id": "goblin_warrior",
@@ -9362,7 +9962,10 @@ const CONTENT = {
       "rarity": "uncommon",
       "element": "physical",
       "image": "/images/monsters/goblin_warrior.png",
-      "resistance": 7
+      "resistance": 7,
+      "tags": [
+        "humanoid"
+      ]
     },
     {
       "id": "skeleton",
@@ -9373,7 +9976,10 @@ const CONTENT = {
       "rarity": "uncommon",
       "element": "shadow",
       "image": "/images/monsters/skeleton.png",
-      "resistance": 10
+      "resistance": 10,
+      "tags": [
+        "undead"
+      ]
     },
     {
       "id": "dire_wolf",
@@ -9384,7 +9990,10 @@ const CONTENT = {
       "rarity": "uncommon",
       "element": "physical",
       "image": "/images/monsters/dire_wolf.png",
-      "resistance": 6
+      "resistance": 6,
+      "tags": [
+        "beast"
+      ]
     },
     {
       "id": "harpy",
@@ -9395,7 +10004,10 @@ const CONTENT = {
       "rarity": "uncommon",
       "element": "physical",
       "image": "/images/monsters/harpy.png",
-      "resistance": 7
+      "resistance": 7,
+      "tags": [
+        "beast"
+      ]
     },
     {
       "id": "orc",
@@ -9406,7 +10018,10 @@ const CONTENT = {
       "rarity": "uncommon",
       "element": "physical",
       "image": "/images/monsters/orc.png",
-      "resistance": 5
+      "resistance": 5,
+      "tags": [
+        "humanoid"
+      ]
     },
     {
       "id": "thorn_viper",
@@ -9417,7 +10032,10 @@ const CONTENT = {
       "rarity": "uncommon",
       "element": "shadow",
       "image": "/images/monsters/thorn_viper.png",
-      "resistance": 7
+      "resistance": 7,
+      "tags": [
+        "beast"
+      ]
     },
     {
       "id": "swamp_troll",
@@ -9428,7 +10046,10 @@ const CONTENT = {
       "rarity": "uncommon",
       "element": "physical",
       "image": "/images/monsters/swamp_troll.png",
-      "resistance": 7
+      "resistance": 7,
+      "tags": [
+        "beast"
+      ]
     },
     {
       "id": "griffin",
@@ -9439,7 +10060,10 @@ const CONTENT = {
       "rarity": "uncommon",
       "element": "physical",
       "image": "/images/monsters/griffin.png",
-      "resistance": 8
+      "resistance": 8,
+      "tags": [
+        "beast"
+      ]
     },
     {
       "id": "golem",
@@ -9450,7 +10074,10 @@ const CONTENT = {
       "rarity": "rare",
       "element": "physical",
       "image": "/images/monsters/golem.png",
-      "resistance": 38
+      "resistance": 38,
+      "tags": [
+        "construct"
+      ]
     },
     {
       "id": "stone_warden",
@@ -9461,7 +10088,10 @@ const CONTENT = {
       "rarity": "rare",
       "element": "physical",
       "image": "/images/monsters/stone_warden.png",
-      "resistance": 30
+      "resistance": 30,
+      "tags": [
+        "construct"
+      ]
     },
     {
       "id": "wraith",
@@ -9472,7 +10102,10 @@ const CONTENT = {
       "rarity": "rare",
       "element": "shadow",
       "image": "/images/monsters/wraith.png",
-      "resistance": 25
+      "resistance": 25,
+      "tags": [
+        "undead"
+      ]
     },
     {
       "id": "manticore",
@@ -9483,7 +10116,10 @@ const CONTENT = {
       "rarity": "rare",
       "element": "physical",
       "image": "/images/monsters/manticore.png",
-      "resistance": 12
+      "resistance": 12,
+      "tags": [
+        "beast"
+      ]
     },
     {
       "id": "ogre",
@@ -9494,7 +10130,10 @@ const CONTENT = {
       "rarity": "rare",
       "element": "physical",
       "image": "/images/monsters/ogre.png",
-      "resistance": 25
+      "resistance": 25,
+      "tags": [
+        "beast"
+      ]
     },
     {
       "id": "dark_knight",
@@ -9505,7 +10144,10 @@ const CONTENT = {
       "rarity": "rare",
       "element": "shadow",
       "image": "/images/monsters/dark_knight.png",
-      "resistance": 20
+      "resistance": 20,
+      "tags": [
+        "humanoid"
+      ]
     },
     {
       "id": "witch",
@@ -9516,7 +10158,10 @@ const CONTENT = {
       "rarity": "rare",
       "element": "arcane",
       "image": "/images/monsters/witch.png",
-      "resistance": 15
+      "resistance": 15,
+      "tags": [
+        "humanoid"
+      ]
     },
     {
       "id": "wyvern",
@@ -9527,7 +10172,10 @@ const CONTENT = {
       "rarity": "epic",
       "element": "arcane",
       "image": "/images/monsters/wyvern.png",
-      "resistance": 25
+      "resistance": 25,
+      "tags": [
+        "dragon"
+      ]
     },
     {
       "id": "ancient_golem",
@@ -9538,7 +10186,10 @@ const CONTENT = {
       "rarity": "epic",
       "element": "physical",
       "image": "/images/monsters/ancient_golem.png",
-      "resistance": 46
+      "resistance": 46,
+      "tags": [
+        "construct"
+      ]
     },
     {
       "id": "lich",
@@ -9549,7 +10200,10 @@ const CONTENT = {
       "rarity": "legendary",
       "element": "shadow",
       "image": "/images/monsters/lich.png",
-      "resistance": 45
+      "resistance": 45,
+      "tags": [
+        "undead"
+      ]
     },
     {
       "id": "hydra",
@@ -9560,7 +10214,10 @@ const CONTENT = {
       "rarity": "mythic",
       "element": "physical",
       "image": "/images/monsters/hydra.png",
-      "resistance": 47
+      "resistance": 47,
+      "tags": [
+        "dragon"
+      ]
     },
     {
       "id": "kobold",
@@ -9571,7 +10228,10 @@ const CONTENT = {
       "rarity": "common",
       "element": "physical",
       "image": "/images/monsters/kobold.png",
-      "resistance": 5
+      "resistance": 5,
+      "tags": [
+        "humanoid"
+      ]
     },
     {
       "id": "scavenger",
@@ -9582,7 +10242,10 @@ const CONTENT = {
       "rarity": "common",
       "element": "physical",
       "image": "/images/monsters/scavenger.png",
-      "resistance": 0
+      "resistance": 0,
+      "tags": [
+        "humanoid"
+      ]
     },
     {
       "id": "cave_crawler",
@@ -9593,7 +10256,10 @@ const CONTENT = {
       "rarity": "common",
       "element": "physical",
       "image": "/images/monsters/cave_crawler.png",
-      "resistance": 0
+      "resistance": 0,
+      "tags": [
+        "plant"
+      ]
     },
     {
       "id": "forest_mite",
@@ -9604,7 +10270,10 @@ const CONTENT = {
       "rarity": "common",
       "element": "physical",
       "image": "/images/monsters/forest_mite.png",
-      "resistance": 1
+      "resistance": 1,
+      "tags": [
+        "plant"
+      ]
     },
     {
       "id": "sludge",
@@ -9615,7 +10284,10 @@ const CONTENT = {
       "rarity": "common",
       "element": "physical",
       "image": "/images/monsters/sludge.png",
-      "resistance": 2
+      "resistance": 2,
+      "tags": [
+        "slime"
+      ]
     },
     {
       "id": "thug",
@@ -9626,7 +10298,10 @@ const CONTENT = {
       "rarity": "common",
       "element": "physical",
       "image": "/images/monsters/thug.png",
-      "resistance": 2
+      "resistance": 2,
+      "tags": [
+        "humanoid"
+      ]
     },
     {
       "id": "dusk_bat",
@@ -9637,7 +10312,10 @@ const CONTENT = {
       "rarity": "common",
       "element": "physical",
       "image": "/images/monsters/dusk_bat.png",
-      "resistance": 3
+      "resistance": 3,
+      "tags": [
+        "beast"
+      ]
     },
     {
       "id": "ember_slime",
@@ -9648,7 +10326,10 @@ const CONTENT = {
       "rarity": "common",
       "element": "physical",
       "image": "/images/monsters/ember_slime.png",
-      "resistance": 4
+      "resistance": 4,
+      "tags": [
+        "slime"
+      ]
     },
     {
       "id": "iron_goblin",
@@ -9659,7 +10340,10 @@ const CONTENT = {
       "rarity": "uncommon",
       "element": "physical",
       "image": "/images/monsters/iron_goblin.png",
-      "resistance": 11
+      "resistance": 11,
+      "tags": [
+        "humanoid"
+      ]
     },
     {
       "id": "bone_archer",
@@ -9670,7 +10354,10 @@ const CONTENT = {
       "rarity": "uncommon",
       "element": "physical",
       "image": "/images/monsters/bone_archer.png",
-      "resistance": 11
+      "resistance": 11,
+      "tags": [
+        "undead"
+      ]
     },
     {
       "id": "frost_wolf",
@@ -9681,7 +10368,10 @@ const CONTENT = {
       "rarity": "uncommon",
       "element": "physical",
       "image": "/images/monsters/frost_wolf.png",
-      "resistance": 10
+      "resistance": 10,
+      "tags": [
+        "beast"
+      ]
     },
     {
       "id": "vine_lurker",
@@ -9692,7 +10382,10 @@ const CONTENT = {
       "rarity": "uncommon",
       "element": "arcane",
       "image": "/images/monsters/vine_lurker.png",
-      "resistance": 9
+      "resistance": 9,
+      "tags": [
+        "plant"
+      ]
     },
     {
       "id": "ash_spider",
@@ -9703,7 +10396,10 @@ const CONTENT = {
       "rarity": "uncommon",
       "element": "shadow",
       "image": "/images/monsters/ash_spider.png",
-      "resistance": 11
+      "resistance": 11,
+      "tags": [
+        "beast"
+      ]
     },
     {
       "id": "brigand_captain",
@@ -9714,7 +10410,10 @@ const CONTENT = {
       "rarity": "uncommon",
       "element": "physical",
       "image": "/images/monsters/brigand_captain.png",
-      "resistance": 11
+      "resistance": 11,
+      "tags": [
+        "humanoid"
+      ]
     },
     {
       "id": "marsh_crawler",
@@ -9725,7 +10424,10 @@ const CONTENT = {
       "rarity": "uncommon",
       "element": "physical",
       "image": "/images/monsters/marsh_crawler.png",
-      "resistance": 5
+      "resistance": 5,
+      "tags": [
+        "plant"
+      ]
     },
     {
       "id": "ember_sprite",
@@ -9736,7 +10438,10 @@ const CONTENT = {
       "rarity": "uncommon",
       "element": "arcane",
       "image": "/images/monsters/ember_sprite.png",
-      "resistance": 10
+      "resistance": 10,
+      "tags": [
+        "plant"
+      ]
     },
     {
       "id": "crystal_golem",
@@ -9747,7 +10452,10 @@ const CONTENT = {
       "rarity": "rare",
       "element": "physical",
       "image": "/images/monsters/crystal_golem.png",
-      "resistance": 45
+      "resistance": 45,
+      "tags": [
+        "construct"
+      ]
     },
     {
       "id": "abyss_wraith",
@@ -9758,7 +10466,10 @@ const CONTENT = {
       "rarity": "rare",
       "element": "shadow",
       "image": "/images/monsters/abyss_wraith.png",
-      "resistance": 14
+      "resistance": 14,
+      "tags": [
+        "undead"
+      ]
     },
     {
       "id": "storm_harpy",
@@ -9769,7 +10480,10 @@ const CONTENT = {
       "rarity": "rare",
       "element": "physical",
       "image": "/images/monsters/storm_harpy.png",
-      "resistance": 16
+      "resistance": 16,
+      "tags": [
+        "beast"
+      ]
     },
     {
       "id": "iron_ogre",
@@ -9780,7 +10494,10 @@ const CONTENT = {
       "rarity": "rare",
       "element": "physical",
       "image": "/images/monsters/iron_ogre.png",
-      "resistance": 32
+      "resistance": 32,
+      "tags": [
+        "beast"
+      ]
     },
     {
       "id": "cursed_knight",
@@ -9791,7 +10508,10 @@ const CONTENT = {
       "rarity": "rare",
       "element": "shadow",
       "image": "/images/monsters/cursed_knight.png",
-      "resistance": 20
+      "resistance": 20,
+      "tags": [
+        "humanoid"
+      ]
     },
     {
       "id": "flame_witch",
@@ -9802,7 +10522,10 @@ const CONTENT = {
       "rarity": "rare",
       "element": "arcane",
       "image": "/images/monsters/flame_witch.png",
-      "resistance": 17
+      "resistance": 17,
+      "tags": [
+        "humanoid"
+      ]
     },
     {
       "id": "stone_titan",
@@ -9813,7 +10536,10 @@ const CONTENT = {
       "rarity": "rare",
       "element": "physical",
       "image": "/images/monsters/stone_titan.png",
-      "resistance": 42
+      "resistance": 42,
+      "tags": [
+        "construct"
+      ]
     },
     {
       "id": "dusk_manticore",
@@ -9824,7 +10550,10 @@ const CONTENT = {
       "rarity": "rare",
       "element": "physical",
       "image": "/images/monsters/dusk_manticore.png",
-      "resistance": 24
+      "resistance": 24,
+      "tags": [
+        "beast"
+      ]
     },
     {
       "id": "frost_wyvern",
@@ -9835,7 +10564,10 @@ const CONTENT = {
       "rarity": "epic",
       "element": "arcane",
       "image": "/images/monsters/frost_wyvern.png",
-      "resistance": 36
+      "resistance": 36,
+      "tags": [
+        "dragon"
+      ]
     },
     {
       "id": "void_golem",
@@ -9846,7 +10578,10 @@ const CONTENT = {
       "rarity": "epic",
       "element": "physical",
       "image": "/images/monsters/void_golem.png",
-      "resistance": 44
+      "resistance": 44,
+      "tags": [
+        "construct"
+      ]
     },
     {
       "id": "storm_lich",
@@ -9857,7 +10592,10 @@ const CONTENT = {
       "rarity": "epic",
       "element": "shadow",
       "image": "/images/monsters/storm_lich.png",
-      "resistance": 23
+      "resistance": 23,
+      "tags": [
+        "undead"
+      ]
     },
     {
       "id": "nether_hydra",
@@ -9868,7 +10606,10 @@ const CONTENT = {
       "rarity": "epic",
       "element": "physical",
       "image": "/images/monsters/nether_hydra.png",
-      "resistance": 40
+      "resistance": 40,
+      "tags": [
+        "dragon"
+      ]
     },
     {
       "id": "doom_lord",
@@ -9879,7 +10620,10 @@ const CONTENT = {
       "rarity": "legendary",
       "element": "shadow",
       "image": "/images/monsters/doom_lord.png",
-      "resistance": 30
+      "resistance": 30,
+      "tags": [
+        "demon"
+      ]
     },
     {
       "id": "molten_behemoth",
@@ -9890,7 +10634,10 @@ const CONTENT = {
       "rarity": "epic",
       "element": "physical",
       "image": "/images/monsters/molten_behemoth.png",
-      "resistance": 40
+      "resistance": 40,
+      "tags": [
+        "demon"
+      ]
     },
     {
       "id": "frost_titan",
@@ -9901,7 +10648,10 @@ const CONTENT = {
       "rarity": "epic",
       "element": "physical",
       "image": "/images/monsters/frost_titan.png",
-      "resistance": 38
+      "resistance": 38,
+      "tags": [
+        "construct"
+      ]
     },
     {
       "id": "void_herald",
@@ -9912,7 +10662,10 @@ const CONTENT = {
       "rarity": "epic",
       "element": "shadow",
       "image": "/images/monsters/void_herald.png",
-      "resistance": 21
+      "resistance": 21,
+      "tags": [
+        "demon"
+      ]
     },
     {
       "id": "storm_colossus",
@@ -9923,7 +10676,10 @@ const CONTENT = {
       "rarity": "epic",
       "element": "arcane",
       "image": "/images/monsters/storm_colossus.png",
-      "resistance": 37
+      "resistance": 37,
+      "tags": [
+        "construct"
+      ]
     },
     {
       "id": "phoenix_canary",
@@ -9934,10 +10690,16 @@ const CONTENT = {
       "rarity": "epic",
       "element": "holy",
       "image": "/images/monsters/phoenix_canary.png",
-      "resistance": 36
+      "resistance": 36,
+      "tags": [
+        "beast"
+      ]
     },
     {
       "id": "world_eater",
+      "tags": [
+        "dragon"
+      ],
       "name": "World Eater",
       "hp": 360,
       "attack": 38,
@@ -9956,7 +10718,10 @@ const CONTENT = {
       "rarity": "uncommon",
       "element": "nature",
       "image": "/images/monsters/vine_wraith.png",
-      "resistance": 9
+      "resistance": 9,
+      "tags": [
+        "undead"
+      ]
     },
     {
       "id": "thornback_boar",
@@ -9967,7 +10732,10 @@ const CONTENT = {
       "rarity": "uncommon",
       "element": "nature",
       "image": "/images/monsters/thornback_boar.png",
-      "resistance": 12
+      "resistance": 12,
+      "tags": [
+        "beast"
+      ]
     },
     {
       "id": "elder_treant",
@@ -9978,7 +10746,10 @@ const CONTENT = {
       "rarity": "rare",
       "element": "nature",
       "image": "/images/monsters/elder_treant.png",
-      "resistance": 19
+      "resistance": 19,
+      "tags": [
+        "plant"
+      ]
     }
   ],
   "skills": [
@@ -11516,6 +12287,18 @@ const CONTENT = {
       "image": "/images/skills/beast_bite.png",
       "description": "Deals 25 + 1.3× attack damage. Your companion tears into the foe."
     }
+  ],
+  "monsterTags": [
+    "beast",
+    "undead",
+    "humanoid",
+    "elemental",
+    "construct",
+    "dragon",
+    "demon",
+    "plant",
+    "slime",
+    "spirit"
   ]
 };
 
@@ -11582,6 +12365,8 @@ function publicCatalog() {
       resistance: c.resistance || null,
       magicPower: c.magicPower || null,
       healPower: c.healPower || null,
+      // Passives shown on the class panel (name + desc only).
+      passives: (c.passives || []).map((p) => ({ kind: p.kind, name: p.name || p.kind, desc: p.desc || "" })),
     })),
     ui: CONTENT.ui || {},
     images: CONTENT.images,

@@ -7,7 +7,8 @@ const {
   getMonster,
   getClassBasicAttack,
 } = require("../content");
-const { dealDamage, addShield, heal, loseLife, addXp, addPetXp, removeItem, healForFood, addItem } = require("./players");
+const { dealDamage, addShield, removeShieldInstance, heal, loseLife, addXp, addPetXp, removeItem, healForFood, addItem } = require("./players");
+const passives = require("./passives");
 const chest = require("./chest");
 
 function randVariance(variance) {
@@ -178,14 +179,22 @@ function applyBuffs(room, d, actor, actorName, skill, targetType, targetIds, act
       if (!allowed.has(e.kind)) continue;
       // physical never leaves wet/frozen
       if (actorIsPlayer && skill.element === "physical" && (e.kind === "wet" || e.kind === "frozen")) continue;
-      // shield is flat HP, apply immediately
+      // shield is flat HP, apply immediately as a timed instance linked to
+      // this buff entry (süre bitince kalan miktar silinir).
       if (e.kind === "shield") {
+        d.buffId = (d.buffId || 0) + 1;
+        const shieldUid = d.buffId;
         if (targetType === "player") {
           const target = room.players.find((p) => p.id === tid);
-          if (target) addShield(target, e.value);
+          if (target) addShield(target, Math.round(e.value * passives.shieldGainMult(target.character)), turns, shieldUid);
         } else {
           const mon = d.wave[tid];
-          if (mon) { mon.shield = (mon.shield || 0) + e.value; mon.maxShield = Math.max(mon.maxShield || 0, mon.shield); }
+          if (mon) {
+            if (!Array.isArray(mon.shields)) mon.shields = [];
+            mon.shields.push({ amount: Math.max(0, Math.round(e.value)), max: Math.max(0, Math.round(e.value)), turns: Math.max(1, turns), uid: shieldUid });
+            mon.shield = mon.shields.reduce((s, x) => s + Math.max(0, x.amount), 0);
+            mon.maxShield = mon.shields.reduce((s, x) => s + Math.max(0, x.max), 0);
+          }
         }
       }
       d.buffId = (d.buffId || 0) + 1;
@@ -199,6 +208,7 @@ function applyBuffs(room, d, actor, actorName, skill, targetType, targetIds, act
         skillId: skill.id,
         sourceId: actor.id,
         name: skill.name,
+        shieldUid: e.kind === "shield" ? d.buffId - 1 : undefined,
       });
       addFx(d, {
         type: "buff",
@@ -278,7 +288,7 @@ function tickBuffs(room, d) {
         const p = room.players.find((q) => q.id === b.targetId);
         if (p && p.hp > 0 && p.hp < p.maxHp) {
           const before = p.hp;
-          heal(p, Math.max(1, Math.round(p.maxHp * b.value)));
+          heal(p, Math.max(1, Math.round(p.maxHp * b.value * passives.regenBonusMult(p.character))));
           const healed = p.hp - before;
           if (healed > 0) addFx(d, { type: "heal", actor: p.id, target: "player", targetId: p.id, amount: healed, source: "regen", effect: "heal" });
         }
@@ -288,6 +298,22 @@ function tickBuffs(room, d) {
           const healed = Math.min(mon.maxHp - mon.hp, Math.max(1, Math.round(mon.maxHp * b.value)));
           mon.hp += healed;
           addFx(d, { type: "heal", actor: b.targetId, target: "enemy", targetId: b.targetId, amount: healed, source: "regen", effect: "heal" });
+        }
+      }
+    }
+  }
+  // Süresi biten kalkan paketlerini düşür (kalan miktar silinir).
+  for (const b of d.buffs || []) {
+    if (b && b.kind === "shield" && b.turns <= 1 && b.shieldUid != null) {
+      if (b.targetType === "player") {
+        const p = room.players.find((q) => q.id === b.targetId);
+        if (p) removeShieldInstance(p, b.shieldUid);
+      } else {
+        const mon = d.wave[b.targetId];
+        if (mon && Array.isArray(mon.shields)) {
+          mon.shields = mon.shields.filter((s) => s && s.uid !== b.shieldUid);
+          mon.shield = mon.shields.reduce((s, x) => s + Math.max(0, x.amount), 0);
+          mon.maxShield = mon.shields.reduce((s, x) => s + Math.max(0, x.max), 0);
         }
       }
     }
@@ -366,6 +392,9 @@ function buildWaveForFloor(def, size, power, floor, totalFloors, totalCount) {
       attack: Math.max(1, Math.round(m.attack * power)),
       speed: m.speed,
       resistance: Math.max(0, Math.round(m.resistance || 0)),
+      shield: 0,
+      maxShield: 0,
+      shields: [],
       skills: monsterSkills(m),
     });
   }
@@ -408,6 +437,11 @@ function spawnWave(room, d) {
   for (const p of allMembers(room, d)) {
     p.hp = p.maxHp;
     p.mana = p.maxMana;
+    p._struckThisCombat = false;
+    p._secondWindUsed = false;
+    for (const s of passives.shieldStartFor(p.character, p.maxHp)) {
+      addShield(p, s.amount, s.turns);
+    }
   }
   d.log = [`${def.label} ${size.label} — Floor 1/${totalFloors} — ${wave.length} foe${wave.length === 1 ? "" : "s"} bar the way.`];
   buildTurnOrder(room, d);
@@ -499,6 +533,16 @@ function act(room, player, skillId, targetId) {
     if (!mon || mon.hp <= 0) {
       throw new Error("Choose a living monster.");
     }
+    // Execute önden baraj (mana yanmadan): hedef zayıf değilse atılamaz.
+    if (skill.execute && skill.execute.belowHpPct != null && mon.maxHp > 0
+        && mon.hp / mon.maxHp > Number(skill.execute.belowHpPct)) {
+      throw new Error(`Execute fells only the weak — target must be below ${Math.round(Number(skill.execute.belowHpPct) * 100)}% HP.`);
+    }
+    const pexec = passives.executeFor(player.character);
+    if (pexec && pexec.belowHpPct != null && mon.maxHp > 0
+        && mon.hp / mon.maxHp > Number(pexec.belowHpPct)) {
+      throw new Error(`Your passive execution needs the target below ${Math.round(Number(pexec.belowHpPct) * 100)}% HP.`);
+    }
   } else if (skill.target === "ally") {
     const target = room.players.find((p) => p.id === targetId);
     if (!target) {
@@ -512,86 +556,198 @@ function act(room, player, skillId, targetId) {
   setCooldown(d, player.id, skillId, skill.cooldown);
   if (mana > 0) addFx(d, { type: "mana", actor: player.id, amount: mana, skill: skill.id });
   if (skill.target === "enemy") {
-    const mon = d.wave[Number(targetId)];
+    const primaryIdx = Number(targetId);
+    // ---- hedef listesi: tekli / tümü / seçili + rastgele ekler ----
+    let tids = [primaryIdx];
+    if (skill.hitsAll) {
+      tids = d.wave.map((m, i) => i).filter((i) => d.wave[i] && d.wave[i].hp > 0);
+      if (!tids.length) tids = [primaryIdx];
+    } else if (skill.splash && Number(skill.splash.extraTargets) > 0) {
+      const others = d.wave.map((m, i) => i).filter((i) => i !== primaryIdx && d.wave[i] && d.wave[i].hp > 0);
+      const n = Math.min(Math.max(0, Math.floor(skill.splash.extraTargets)), others.length);
+      for (let k = 0; k < n; k++) {
+        tids.push(others.splice(Math.floor(Math.random() * others.length), 1)[0]);
+      }
+    }
+    const mon = d.wave[primaryIdx];
     const skillBase = Math.max(0, Math.round(Number(skill.baseDamage) || 0));
     const skillPower = Math.max(0, Number(skill.power) || 0);
+    const selfHpPct = player.maxHp > 0 ? player.hp / player.maxHp : 1;
+    const pexec = passives.executeFor(player.character);
+    const echoCfg = skill.echo || null;
+    const pEcho = !skill.echo ? passives.echoFor(player.character) : null;
     if (skillPower > 0 || skillBase > 0) {
       const isPhysical = !skill.element || skill.element === "physical";
       const baseStat = isPhysical ? player.attack : player.magicPower;
       const rawBase = skillBase + baseStat * skillPower;
-      let dmg;
-      let crit = false;
-      if (skill.trueDamage) {
-        // LoL-style true damage: exact number. No variance, no crit, no buffs,
-        // no affinity/combo/bonus, no resistance. Shield still absorbs via dealDamage.
-        dmg = Math.max(1, Math.round(rawBase));
-      } else {
-      const critChance = player.critChance != null ? player.critChance / 100 : (CONTENT.combat.critChance || 0);
-      const critBonus = player.critDamage != null ? player.critDamage : Math.round(((CONTENT.combat.critMult || 1.5) - 1) * 100);
-      crit = Math.random() < critChance;
-      const critMult = crit ? 1 + critBonus / 100 : 1;
       const pAtk = buffSum(d, "player", player.id, "attack") + buffSum(d, "player", player.id, "pet_attack") - buffSum(d, "player", player.id, "weaken") - buffSum(d, "player", player.id, "pet_weaken");
       const pMagic = buffSum(d, "player", player.id, "magicBoost") + buffSum(d, "player", player.id, "pet_magic") - buffSum(d, "player", player.id, "weaken") - buffSum(d, "player", player.id, "pet_weaken");
-      const mDef = buffSum(d, "monster", Number(targetId), "defense") + buffSum(d, "monster", Number(targetId), "pet_defense");
-      const mExp = buffSum(d, "monster", Number(targetId), "expose") + buffSum(d, "monster", Number(targetId), "pet_expose");
       const pBoost = isPhysical ? pAtk : pMagic;
-      dmg = Math.max(
-        1,
-        Math.round(rawBase * randVariance(CONTENT.combat.damageVariance) * critMult * (1 + pBoost) * (1 - mDef + mExp))
-      );
-      // affinity: defender element vs attacker element
-      const monDefForAff = getMonster(mon.kind);
-      const defenderElem = (monDefForAff && monDefForAff.element) || mon.element || "physical";
-      const affinity = CONTENT.affinity && CONTENT.affinity[defenderElem] && CONTENT.affinity[defenderElem][skill.element];
-      if (affinity) dmg = Math.round(dmg * affinity);
-      // dark trait: dark deals 30% more, dark takes 50% more
-      if (skill.element === "dark" && CONTENT.darkTrait) dmg = Math.round(dmg * (CONTENT.darkTrait.deal || 1.3));
-      if (defenderElem === "dark" && CONTENT.darkTrait) dmg = Math.round(dmg * (CONTENT.darkTrait.taken || 1.5));
-      // combos: data-driven element-matchup bonuses (see CONTENT.combos),
-      // e.g. lightning vs wet ("Overcharge"), physical vs frozen ("Shatter")
-      if (Array.isArray(CONTENT.combos)) {
-        for (const c of CONTENT.combos) {
-          if (!c || !c.when || !c.mult) continue;
-          if (c.ifElement && c.ifElement !== skill.element) continue;
-          if (hasStatus(d, "monster", Number(targetId), c.when)) {
-            dmg = Math.round(dmg * c.mult);
+      const pCrit = passives.critBonus(player.character);
+      const pierce = passives.pierceFlat(player.character);
+      const wasFirst = !player._struckThisCombat;
+      let primaryDmg = 0;
+      for (const tidx of tids) {
+        const tgt = d.wave[tidx];
+        if (!tgt || tgt.hp <= 0) continue;
+        const hpPct = tgt.maxHp > 0 ? tgt.hp / tgt.maxHp : 1;
+        const mDef = buffSum(d, "monster", tidx, "defense") + buffSum(d, "monster", tidx, "pet_defense");
+        const mExp = buffSum(d, "monster", tidx, "expose") + buffSum(d, "monster", tidx, "pet_expose");
+        let dmg;
+        let crit = false;
+        if (skill.trueDamage) {
+          // LoL-style true damage: exact number. No variance, no crit, no buffs,
+          // no affinity/combo/bonus, no resistance. Shield still absorbs via dealDamage.
+          dmg = Math.max(1, Math.round(rawBase));
+        } else {
+        const critChance = (player.critChance != null ? player.critChance + pCrit.chance : 0) / 100 || (CONTENT.combat.critChance || 0);
+        const critBonus = (player.critDamage != null ? player.critDamage + pCrit.damage : Math.round(((CONTENT.combat.critMult || 1.5) - 1) * 100));
+        crit = Math.random() < critChance;
+        const critMult = crit ? 1 + critBonus / 100 : 1;
+        dmg = Math.max(
+          1,
+          Math.round(rawBase * randVariance(CONTENT.combat.damageVariance) * critMult * (1 + pBoost) * (1 - mDef + mExp))
+        );
+        // affinity: defender element vs attacker element
+        const monDefForAff = getMonster(tgt.kind);
+        const defenderElem = (monDefForAff && monDefForAff.element) || tgt.element || "physical";
+        const defenderTags = (monDefForAff && monDefForAff.tags) || tgt.tags || [];
+        const affinity = CONTENT.affinity && CONTENT.affinity[defenderElem] && CONTENT.affinity[defenderElem][skill.element];
+        if (affinity) dmg = Math.round(dmg * affinity);
+        // dark trait: dark deals 30% more, dark takes 50% more
+        if (skill.element === "dark" && CONTENT.darkTrait) dmg = Math.round(dmg * (CONTENT.darkTrait.deal || 1.3));
+        if (defenderElem === "dark" && CONTENT.darkTrait) dmg = Math.round(dmg * (CONTENT.darkTrait.taken || 1.5));
+        // combos: data-driven element-matchup bonuses (see CONTENT.combos),
+        // e.g. lightning vs wet ("Overcharge"), physical vs frozen ("Shatter")
+        if (Array.isArray(CONTENT.combos)) {
+          for (const c of CONTENT.combos) {
+            if (!c || !c.when || !c.mult) continue;
+            if (c.ifElement && c.ifElement !== skill.element) continue;
+            if (hasStatus(d, "monster", tidx, c.when)) {
+              dmg = Math.round(dmg * c.mult);
+            }
           }
         }
+        // bonus vs frozen etc (generic)
+        if (skill.bonusVsStatus && hasStatus(d, "monster", tidx, skill.bonusVsStatus.status)) {
+          dmg = Math.round(dmg * (1 + (skill.bonusVsStatus.mult || 0)));
+        }
+        // bonus vs high-HP targets (skill field)
+        if (skill.bonusVsHighHp && skill.bonusVsHighHp.aboveHpPct != null
+            && hpPct > Number(skill.bonusVsHighHp.aboveHpPct)) {
+          dmg = Math.round(dmg * (1 + (Number(skill.bonusVsHighHp.mult) || 0)));
+        }
+        // bonus vs monster tags (skill field)
+        if (skill.bonusVsTags && Array.isArray(skill.bonusVsTags.tags) && skill.bonusVsTags.tags.length
+            && skill.bonusVsTags.tags.some((t) => defenderTags.includes(t))) {
+          dmg = Math.round(dmg * (1 + (Number(skill.bonusVsTags.mult) || 0)));
+        }
+        // class passives: conditional damage
+        dmg = Math.max(1, Math.round(dmg * passives.damageOutMult(player.character, {
+          targetHpPct: hpPct,
+          selfHpPct,
+          isFirst: wasFirst,
+          element: skill.element,
+          targetTags: defenderTags,
+        })));
+        // Monster/boss resistance — mirrors the monster-vs-player formula.
+        // resistance 0 (old content) = no change. Pierce ignores part of it.
+        // True damage skips all of the above (exact number).
+        const monRes = Math.max(0, ((tgt && tgt.resistance) || 0) - pierce);
+        if (!skill.trueDamage && monRes > 0) {
+          dmg = Math.max(1, dmg - Math.round(monRes * (CONTENT.combat.resistanceMitigation || 0)));
+        }
+        } // end non-true-damage path
+        const hpBefore = tgt.hp;
+        dealDamage(tgt, dmg);
+        addFx(d, { type: "damage", actor: player.id, target: "enemy", targetId: tidx, amount: dmg, skill: skill.id, elem: skill.element || "physical", effect: skill.effect || defaultEffectFor(skill.element), sound: skill.sound || "", crit });
+        // Bitirici: senin vuruşun hedefi eşiğe indirirse kalkanı delip öldürür.
+        // Sadece saldıranın vuruşu tetikler (çalınma yok).
+        const finThresh = (skill.execute && skill.execute.finishBelowHpPct != null)
+          ? Number(skill.execute.finishBelowHpPct)
+          : (pexec && pexec.finishBelowHpPct != null ? Number(pexec.finishBelowHpPct) : null);
+        if (finThresh != null && tgt.hp > 0 && tgt.maxHp > 0 && tgt.hp / tgt.maxHp <= finThresh) {
+          tgt.hp = 0;
+          tgt.shield = 0;
+          if (Array.isArray(tgt.shields)) tgt.shields = [];
+          d.log.push(`${player.name} executed ${tgt.name}!`);
+          addFx(d, { type: "damage", actor: player.id, target: "enemy", targetId: tidx, amount: 0, skill: skill.id, elem: skill.element || "physical", effect: skill.effect || defaultEffectFor(skill.element), sound: skill.sound || "", crit: false });
+        }
+        // Yankı (echo): şansla aynı hedefe ikinci vuruş (özyineleme yok).
+        const echoSrc = echoCfg || pEcho;
+        if (echoSrc && Number(echoSrc.chance) > 0 && Math.random() < Number(echoSrc.chance) && tgt.hp > 0) {
+          const echoDmg = Math.max(1, Math.round(dmg * Number(echoSrc.mult || 0.3)));
+          dealDamage(tgt, echoDmg);
+          addFx(d, { type: "damage", actor: player.id, target: "enemy", targetId: tidx, amount: echoDmg, skill: skill.id, elem: skill.element || "physical", effect: skill.effect || defaultEffectFor(skill.element), sound: skill.sound || "", crit: false });
+        }
+        // Taşma (overkill): fazlası rastgele yaşayan düşmana.
+        if (passives.hasOverkill(player.character) && tgt.hp <= 0) {
+          const excess = Math.max(0, dmg - hpBefore);
+          if (excess > 0) {
+            const aliveOthers = d.wave.map((m, i) => i).filter((i) => d.wave[i] && d.wave[i].hp > 0);
+            if (aliveOthers.length) {
+              const oi = aliveOthers[Math.floor(Math.random() * aliveOthers.length)];
+              const om = d.wave[oi];
+              dealDamage(om, excess);
+              addFx(d, { type: "damage", actor: player.id, target: "enemy", targetId: oi, amount: excess, skill: skill.id, elem: skill.element || "physical", effect: skill.effect || defaultEffectFor(skill.element), sound: skill.sound || "", crit: false });
+              d.log.push(`Overkill crashes into ${om.name}!`);
+              if (om.hp <= 0) {
+                d.buffs = (d.buffs || []).filter((b) => !(b.targetType === "monster" && Number(b.targetId) === oi));
+              }
+            }
+          }
+        }
+        if (tgt.hp <= 0) {
+          d.buffs = (d.buffs || []).filter((b) => !(b.targetType === "monster" && Number(b.targetId) === tidx));
+          const hb = passives.healOnKillPct(player.character);
+          if (hb > 0) {
+            const amt = Math.max(1, Math.round(player.maxHp * hb));
+            const before = player.hp;
+            heal(player, amt);
+            if (player.hp > before) addFx(d, { type: "heal", actor: player.id, target: player.id, amount: player.hp - before, source: "passive", skill: skill.id, effect: "heal" });
+          }
+          const mk = passives.manaOnKill(player.character);
+          if (mk > 0 && player.mana < player.maxMana) {
+            const gained = Math.min(player.maxMana, player.mana + mk) - player.mana;
+            if (gained > 0) {
+              player.mana += gained;
+              addFx(d, { type: "mana", actor: player.id, amount: gained, skill: skill.id, restore: true });
+            }
+          }
+        }
+        if (tidx === primaryIdx) primaryDmg = dmg;
       }
-      // bonus vs frozen etc (generic)
-      if (skill.bonusVsStatus && hasStatus(d, "monster", Number(targetId), skill.bonusVsStatus.status)) {
-        dmg = Math.round(dmg * (1 + (skill.bonusVsStatus.mult || 0)));
-      }
-      // Monster/boss resistance — mirrors the monster-vs-player formula.
-      // resistance 0 (old content) = no change.
-      // True damage skips all of the above (exact number).
-      const monRes = (mon && mon.resistance) || 0;
-      if (!skill.trueDamage && monRes > 0) {
-        dmg = Math.max(1, dmg - Math.round(monRes * (CONTENT.combat.resistanceMitigation || 0)));
-      }
-      } // end non-true-damage path
-      dealDamage(mon, dmg);
-      addFx(d, { type: "damage", actor: player.id, target: "enemy", targetId: Number(targetId), amount: dmg, skill: skill.id, elem: skill.element || "physical", effect: skill.effect || defaultEffectFor(skill.element), sound: skill.sound || "", crit });
+      player._struckThisCombat = true;
+      // Tek seferlik proclar (birincil hedef üzerinden, eski davranış):
+      const mon0 = d.wave[primaryIdx];
       if (skill.lifesteal) {
         const before = player.hp;
-        const amt = Math.max(1, Math.round(dmg * skill.lifesteal));
+        const amt = Math.max(1, Math.round(primaryDmg * skill.lifesteal));
         heal(player, amt);
         const healed = player.hp - before;
         if (healed > 0) addFx(d, { type: "heal", actor: player.id, target: player.id, amount: healed, source: "lifesteal", skill: skill.id, effect: "heal" });
       }
+      const plife = passives.lifestealPct(player.character);
+      if (plife > 0 && primaryDmg > 0) {
+        const before = player.hp;
+        const amt = Math.max(1, Math.round(primaryDmg * plife));
+        heal(player, amt);
+        const healed = player.hp - before;
+        if (healed > 0) addFx(d, { type: "heal", actor: player.id, target: player.id, amount: healed, source: "passive", skill: skill.id, effect: "heal" });
+      }
       if (skill.healSelfPct) {
         const before = player.hp;
-        const amt = Math.max(1, Math.round(player.maxHp * skill.healSelfPct));
+        const amt = Math.max(1, Math.round(player.maxHp * skill.healSelfPct * passives.healBonusMult(player.character)));
         heal(player, amt);
         const healed = player.hp - before;
         if (healed > 0) addFx(d, { type: "heal", actor: player.id, target: player.id, amount: healed, source: "skill", skill: skill.id, effect: "heal" });
       }
       // Omnivamp: heals % of all damage dealt, stacks (e.g., 5% ring +10% stone =15%)
-      if (player.omnivamp && dmg > 0) {
+      if (player.omnivamp && primaryDmg > 0) {
         const pct = (player.omnivamp || 0) / 100;
         if (pct > 0) {
           const before = player.hp;
-          const omniAmt = Math.max(1, Math.round(dmg * pct));
+          const omniAmt = Math.max(1, Math.round(primaryDmg * pct));
           heal(player, omniAmt);
           const healedOmni = player.hp - before;
           if (healedOmni > 0) addFx(d, { type: "heal", actor: player.id, target: player.id, amount: healedOmni, source: "omnivamp", skill: skill.id, effect: "heal" });
@@ -599,22 +755,22 @@ function act(room, player, skillId, targetId) {
       }
       // Anomaly trait lifesteal (e.g. Sanguine Thirst): heals % of all damage dealt
       const traitFx = player.anomaly && player.anomaly.effect;
-      if (traitFx && traitFx.type === "lifesteal" && traitFx.percent > 0 && dmg > 0) {
+      if (traitFx && traitFx.type === "lifesteal" && traitFx.percent > 0 && primaryDmg > 0) {
         const before = player.hp;
-        const traitAmt = Math.max(1, Math.round(dmg * traitFx.percent));
+        const traitAmt = Math.max(1, Math.round(primaryDmg * traitFx.percent));
         heal(player, traitAmt);
         const healedTrait = player.hp - before;
         if (healedTrait > 0) addFx(d, { type: "heal", actor: player.id, target: player.id, amount: healedTrait, source: "trait_lifesteal", skill: skill.id, effect: "heal" });
       }
     }
-    applyBuffs(room, d, player, player.name, skill, "monster", [Number(targetId)], true);
+    applyBuffs(room, d, player, player.name, skill, "monster", tids, true);
   } else if (skill.target === "self") {
     applyBuffs(room, d, player, player.name, skill, "player", [player.id], true);
   } else if (skill.target === "ally") {
     const target = room.players.find((p) => p.id === targetId);
     if (target) {
       if (target.hp > 0 && skill.heal != null) {
-        const healMult = 1 + (player.healPower || 0) / 50;
+        const healMult = (1 + (player.healPower || 0) / 50) * passives.healBonusMult(player.character);
         let baseHeal;
         if (typeof skill.heal === "object") {
           const stat = skill.heal.stat || "maxHp";
@@ -630,9 +786,10 @@ function act(room, player, skillId, targetId) {
       applyBuffs(room, d, player, player.name, skill, "player", [target.id], true);
     }
   } else if (skill.target === "party") {
+    const partyHealMult = passives.healBonusMult(player.character);
     for (const p of livingMembers(room, d)) {
       if (skill.heal != null) {
-        const healMult = 1 + (player.healPower || 0) / 50;
+        const healMult = (1 + (player.healPower || 0) / 50) * partyHealMult;
         let baseHeal;
         if (typeof skill.heal === "object") {
           const stat = skill.heal.stat || "maxHp";
@@ -811,6 +968,12 @@ function runNextMonster(room, d) {
         }
       } else {
         if (target) {
+          const dodge = passives.dodgeChance(target.character);
+          if (dodge > 0 && Math.random() < dodge) {
+            d.log.push(`${target.name} dodged ${mon.name}'s attack!`);
+            if (typeof room.broadcast === "function") room.broadcast();
+            else if (room._emitCombat) room._emitCombat();
+          } else {
           const crit = Math.random() < (combat.critChance || 0);
           const critMult = crit ? combat.critMult || 1.5 : 1;
           const mAtk = buffSum(d, "monster", index, "attack") - buffSum(d, "monster", index, "weaken");
@@ -822,8 +985,38 @@ function runNextMonster(room, d) {
           dmg -= Math.round(target.resistance * combat.resistanceMitigation);
           dmg = Math.max(1, dmg);
           const eff = skill.effect || defaultEffectFor(skill.element || mon.element);
-          dealDamage(target, dmg);
-          addFx(d, { type: "damage", actor: target.id, target: "player", targetId: target.id, amount: dmg, source: "monster", monster: mon.kind, elem: skill.element || mon.element || "physical", effect: eff, sound: skill.sound || "", crit });
+          // Monster AoE: skill cooked with hitsAll/splash hits the whole party.
+          let victims = [target];
+          if (skill.hitsAll) {
+            victims = livingMembers(room, d);
+          } else if (skill.splash && Number(skill.splash.extraTargets) > 0) {
+            const others = livingMembers(room, d).filter((p) => p.id !== target.id);
+            const n = Math.min(Math.max(0, Math.floor(skill.splash.extraTargets)), others.length);
+            for (let k = 0; k < n; k++) {
+              victims.push(others.splice(Math.floor(Math.random() * others.length), 1)[0]);
+            }
+          }
+          for (const victim of victims) {
+            if (!victim || victim.hp <= 0) continue;
+            const vdmg = Math.max(1, Math.round(dmg * passives.damageTakenMult(victim.character)));
+            dealDamage(victim, vdmg);
+            addFx(d, { type: "damage", actor: victim.id, target: "player", targetId: victim.id, amount: vdmg, source: "monster", monster: mon.kind, elem: skill.element || mon.element || "physical", effect: eff, sound: skill.sound || "", crit });
+            const thorns = passives.thornsMult(victim.character);
+            if (thorns > 0 && mon.hp > 0) {
+              const reflected = Math.max(1, Math.round(vdmg * thorns));
+              dealDamage(mon, reflected);
+              addFx(d, { type: "damage", actor: victim.id, target: "enemy", targetId: index, amount: reflected, source: "thorns", elem: "physical", effect: "blood_curse_mist", sound: "", crit: false });
+              d.log.push(`${victim.name}'s thorns bite ${mon.name}!`);
+              if (mon.hp <= 0) {
+                d.buffs = (d.buffs || []).filter((b) => !(b.targetType === "monster" && Number(b.targetId) === Number(index)));
+              }
+            }
+            if (victim.hp <= 0 && passives.maybeSecondWind(victim)) {
+              d.log.push(`${victim.name} refuses to fall!`);
+              addFx(d, { type: "heal", actor: victim.id, target: "player", targetId: victim.id, amount: 1, source: "passive", effect: "heal" });
+            }
+          }
+          }
         }
       }
       // ensure fx/broadcast even if room.broadcast not set (fallback)
@@ -1012,6 +1205,18 @@ function victory(room, d) {
   gold += banked.gold || 0;
   wood += banked.wood || 0;
   xp += banked.xp || 0;
+  // Class passives: victory spoils (best mult among members wins).
+  try {
+    let vx = 1;
+    let vg = 1;
+    for (const m of members) {
+      const vm = passives.victoryMults(m.character);
+      if (vm.xp > vx) vx = vm.xp;
+      if (vm.gold > vg) vg = vm.gold;
+    }
+    if (vx !== 1) xp = Math.round(xp * vx);
+    if (vg !== 1) gold = Math.round(gold * vg);
+  } catch (e) {}
   for (const mon of d.wave) {
     if (mon.hp > 0) continue;
     const mdef = getMonster(mon.kind);
@@ -1228,7 +1433,9 @@ function petActForPlayer(room, d, player){
   if(!player || player.hp<=0) return;
   const activeIds = (player.activePetIds && player.activePetIds.length ? player.activePetIds : (player.activePetId ? [player.activePetId] : []));
   const maxPets = player.character === "tamer" ? 3 : 2;
-  for(const activePetId of activeIds.slice(0, maxPets)){
+  const petIds = activeIds.slice(0, maxPets);
+  for (let pi = 0; pi < petIds.length; pi++) {
+    const activePetId = petIds[pi];
     const petDef = (CONTENT.pets || []).find(p=>p.id===activePetId);
     if(!petDef) continue;
     const petInst = (player.pets||[]).find(p=>p.petId===activePetId);
@@ -1261,7 +1468,8 @@ function petActForPlayer(room, d, player){
       else if(roll<0.85) toUse.push({kind:"weaken", value:0.15, interval:2});
       else toUse.push({kind:"attack", value:0.6, interval:1});
     }
-    // execute each skill with 400ms gap
+    // execute each skill with gaps; pets cast one after another (sırayla)
+    const petDelayBase = pi * 500;
     toUse.forEach((sk, idx)=>{
       setTimeout(()=>{
         if(d.status!=="fighting" || d.phase!=="players") return;
@@ -1271,19 +1479,20 @@ function petActForPlayer(room, d, player){
           const before=player.hp; heal(player, amt); const healed=player.hp-before;
           if(healed>0){ addFx(d,{type:"heal", actor:pid, target:pid, amount:healed, source:"pet", petId:petDef.id, effect:"heal"}); d.log.push(`${petDef.name} heals ${player.name} for ${healed} HP!`); if(typeof room.broadcast==="function") room.broadcast(); else if(room._emitCombat) room._emitCombat(); }
         } else if(sk.kind==="shield"){
-          const amt=Math.round(((sk.value||30) + pMag*1.2) * lvlScale * mult);
-          addShield(player, amt); addFx(d,{type:"shield", actor:pid, target:pid, amount:amt, petId:petDef.id}); d.log.push(`${petDef.name} shields ${player.name} for ${amt}!`); if(typeof room.broadcast==="function") room.broadcast(); else if(room._emitCombat) room._emitCombat();
+          const amt=Math.round(((sk.value||30) + pMag*1.2) * lvlScale * mult * passives.shieldGainMult(player.character));
+          addShield(player, amt, 1); addFx(d,{type:"shield", actor:pid, target:pid, amount:amt, petId:petDef.id, effect:"radiant_halo_shield", vfxId:"radiant_halo_shield", sound:"shield"}); d.log.push(`${petDef.name} shields ${player.name} for ${amt}!`); if(typeof room.broadcast==="function") room.broadcast(); else if(room._emitCombat) room._emitCombat();
         } else if(sk.kind==="attack"){
           const alive=d.wave.map((m,i)=>({m,i})).filter(x=>x.m.hp>0);
           if(!alive.length) return;
           const pick=alive[Math.floor(Math.random()*alive.length)];
           const base=player.magicPower > player.attack ? player.magicPower : player.attack;
           const dmg=Math.max(1, Math.round((base * (sk.value||0.6) + Math.max(pAtk, pMag)*2) * lvlScale * mult * randVariance(CONTENT.combat.damageVariance)));
-          // vfx
+          // vfx + sound (karakter skilleri gibi: element efekti + sesi)
           const _pElem = sk.element || petDef.element || "physical";
           const _pEl = (CONTENT.elements || []).find((e) => e.id === _pElem);
           const vfxId = (_pEl && _pEl.effect) || "element_" + _pElem;
-          dealDamage(pick.m, dmg); addFx(d,{type:"damage", actor:pid, target:"enemy", targetId:pick.i, amount:dmg, source:"pet", petId:petDef.id, elem: sk.element||petDef.element||"physical", effect:sk.element||petDef.element||"slash", vfxId}); d.log.push(`${petDef.name} hits ${pick.m.name} for ${dmg}!`); if(pick.m.hp<=0){ d.buffs=(d.buffs||[]).filter(b=> !(b.targetType==="monster" && Number(b.targetId)===Number(pick.i))); checkEnd(room,d); } if(typeof room.broadcast==="function") room.broadcast(); else if(room._emitCombat) room._emitCombat();
+          const sndId = (_pEl && _pEl.sound) || "";
+          dealDamage(pick.m, dmg); addFx(d,{type:"damage", actor:pid, target:"enemy", targetId:pick.i, amount:dmg, source:"pet", petId:petDef.id, elem: sk.element||petDef.element||"physical", effect:sk.element||petDef.element||"slash", vfxId, sound:sndId}); d.log.push(`${petDef.name} hits ${pick.m.name} for ${dmg}!`); if(pick.m.hp<=0){ d.buffs=(d.buffs||[]).filter(b=> !(b.targetType==="monster" && Number(b.targetId)===Number(pick.i))); checkEnd(room,d); } if(typeof room.broadcast==="function") room.broadcast(); else if(room._emitCombat) room._emitCombat();
         } else if(sk.kind==="weaken" || sk.kind==="frozen" || sk.kind==="wet"){
           const alive=d.wave.map((m,i)=>({m,i})).filter(x=>x.m.hp>0);
           if(!alive.length) return;
@@ -1300,7 +1509,7 @@ function petActForPlayer(room, d, player){
           addFx(d,{type:"buff", actor:pid, target:"player", targetId:pid, kind:petKind, value:bv, turns:2, petId:petDef.id, vfxId: petKind==="pet_attack"?"cross_cut_x_slash": petKind==="pet_magic"?"frost_crystal_spear":"radiant_halo_shield"});
           d.log.push(`${petDef.name} buffs ${player.name} ${petKind} +${Math.round(bv*100)}%!`); if(typeof room.broadcast==="function") room.broadcast(); else if(room._emitCombat) room._emitCombat();
         }
-      }, idx*400);
+      }, petDelayBase + idx*350);
     });
   }
 }
@@ -1321,9 +1530,9 @@ function petAct(room, d) {
       const isTamer = player.character === "tamer";
       const mult = isTamer ? 2 : 1;
       const pStats = petDef.stats || {};
-      const pAtk = pStats.attack || 0;
-      const pMag = pStats.magicPower || 0;
-      const pRes = pStats.resistance || 0;
+      const pAtk = (pStats.attack || 0) + (petInst ? (petInst.bonusAttack || 0) : 0);
+      const pMag = (pStats.magicPower || 0) + (petInst ? (petInst.bonusMagic || 0) : 0);
+      const pRes = (pStats.resistance || 0) + (petInst ? (petInst.bonusResist || 0) : 0);
       if (petDef.buffKind && ["attack","magicBoost","defense"].includes(petDef.buffKind)) {
         const petKind = petDef.buffKind === "attack" ? "pet_attack" : petDef.buffKind === "magicBoost" ? "pet_magic" : "pet_defense";
         const buffVal = 0.15 * mult + (petKind === "pet_attack" ? pAtk : petKind === "pet_magic" ? pMag : pRes) * 0.01;
@@ -1347,9 +1556,9 @@ function petAct(room, d) {
           d.log.push(`${petDef.name} heals ${player.name} for ${healed} HP!`);
         }
       } else if (roll < 0.6) {
-        const amt = Math.round(((30 + Math.floor(Math.random() * 20)) + pMag * 1.2) * lvlScale * mult);
-        addShield(targetAlly, amt);
-        addFx(d, { type: "shield", actor: pid, target: pid, amount: amt, petId: petDef.id });
+        const amt = Math.round(((30 + Math.floor(Math.random() * 20)) + pMag * 1.2) * lvlScale * mult * passives.shieldGainMult(player.character));
+        addShield(targetAlly, amt, 1);
+        addFx(d, { type: "shield", actor: pid, target: pid, amount: amt, petId: petDef.id, effect: "radiant_halo_shield", vfxId: "radiant_halo_shield", sound: "shield" });
         d.log.push(`${petDef.name} shields ${player.name} for ${amt}!`);
       } else if (roll < 0.85) {
         const alive = d.wave.map((m, i) => ({ m, i })).filter((x) => x.m.hp > 0);
@@ -1371,8 +1580,10 @@ function petAct(room, d) {
         const pick = alive[Math.floor(Math.random() * alive.length)];
         const base = player.magicPower > player.attack ? player.magicPower : player.attack;
         const dmg = Math.max(1, Math.round((base * 0.6 + Math.max(pAtk, pMag) * 2) * lvlScale * mult * randVariance(CONTENT.combat.damageVariance)));
+      const _fEl = (CONTENT.elements || []).find((e) => e.id === (petDef.element || "physical"));
+      const _fVfx = (_fEl && _fEl.effect) || "element_" + (petDef.element || "physical");
       dealDamage(pick.m, dmg);
-      addFx(d, { type: "damage", actor: pid, target: "enemy", targetId: pick.i, amount: dmg, source: "pet", petId: petDef.id, elem: petDef.element || "physical", effect: petDef.element || "slash" });
+      addFx(d, { type: "damage", actor: pid, target: "enemy", targetId: pick.i, amount: dmg, source: "pet", petId: petDef.id, elem: petDef.element || "physical", effect: petDef.element || "slash", vfxId: _fVfx, sound: (_fEl && _fEl.sound) || "" });
       d.log.push(`${petDef.name} hits ${pick.m.name} for ${dmg}!`);
       if (pick.m.hp <= 0) {
         d.buffs = (d.buffs || []).filter((b) => !(b.targetType === "monster" && Number(b.targetId) === Number(pick.i)));

@@ -44,6 +44,34 @@ function applyAnomalyStatBonus(player) {
   }
 }
 
+function applyPassiveStatBonus(player, growth) {
+  // statBonus pasifi: yaratılışta (growth=null) tabana %, level-up'ta büyümeye %.
+  // speed/manaRegen baştan hesaplanır (tekrar çağrıda birikmez).
+  try {
+    const passives = require("./passives");
+    const cls = getClass(player.character);
+    const g = growth || null;
+    const beforeMaxHp = player.maxHp;
+    const grant = (field, base) => {
+      const pct = passives.statBonusPct(player.character, field);
+      if (pct > 0 && base > 0) player[field] += Math.max(1, Math.round(base * pct));
+    };
+    grant("attack", g ? g.attack || 0 : player.attack);
+    grant("resistance", g ? g.resistance || 0 : player.resistance);
+    grant("magicPower", g ? g.magicPower || 0 : player.magicPower);
+    grant("healPower", g ? g.healPower || 0 : player.healPower);
+    grant("maxHp", g ? g.hp || 0 : player.maxHp);
+    grant("maxMana", g ? g.mana || 0 : player.maxMana);
+    if (!g && cls) {
+      player.speed = (cls.speed || 0) + passives.speedBonus(player.character);
+      player.manaRegen = ((CONTENT.combat && CONTENT.combat.manaRegenPerRound) || 3)
+        + (cls.manaRegen || 0) + passives.manaRegenBonus(player.character);
+      // maxHp bonusu canı da beraberinde getirir (günlük reset şifası yok).
+      if (player.maxHp > beforeMaxHp) player.hp = Math.min(player.maxHp, player.hp + (player.maxHp - beforeMaxHp));
+    }
+  } catch (e) {}
+}
+
 function rollStats(player) {
   const cls = getClass(player.character);
   if (!cls) {
@@ -62,6 +90,7 @@ function rollStats(player) {
   player.critChance = cls.critChance ? rollRange(cls.critChance) : (CONTENT.combat.critChance || 0) * 100;
   player.critDamage = cls.critDamage ? rollRange(cls.critDamage) : Math.round(((CONTENT.combat.critMult || 1.5) - 1) * 100);
   applyAnomalyStatBonus(player);
+  applyPassiveStatBonus(player, null);
   return player;
 }
 
@@ -90,6 +119,7 @@ function applyClassGrowth(player) {
   player.healPower += gain(g.healPower || 0);
   player.critChance = (player.critChance || 0) + (g.critChance || 0);
   player.critDamage = (player.critDamage || 0) + (g.critDamage || 0);
+  applyPassiveStatBonus(player, g);
 }
 
 function addXp(player, amount) {
@@ -305,6 +335,7 @@ function createPlayer({ id, name, character, isHost = false }) {
     pvpId: null,
     shield: 0,
     maxShield: 0,
+    shields: [],
     pets: [],
     activePetId: null,
     activePetIds: [],
@@ -440,21 +471,63 @@ function onNewDay(player) {
 
 function dealDamage(entity, amount) {
   let n = Math.max(0, Math.round(amount));
-  // shield absorbs first (separate from defense %)
-  if (entity.shield && entity.shield > 0) {
+  // Kalkan paketleri: önce uygulanan önce yer (FIFO). Toplamlar senkron tutulur.
+  if (Array.isArray(entity.shields) && entity.shields.length && n > 0) {
+    for (const s of entity.shields) {
+      if (n <= 0) break;
+      if (!s || s.amount <= 0) continue;
+      const absorbed = Math.min(s.amount, n);
+      s.amount -= absorbed;
+      n -= absorbed;
+    }
+    entity.shields = entity.shields.filter((s) => s && s.amount > 0);
+  } else if (entity.shield && entity.shield > 0) {
+    // Eski kayıtlar (shields dizisi yoksa): tek havuzdan düş.
     const absorbed = Math.min(entity.shield, n);
     entity.shield -= absorbed;
     n -= absorbed;
     if (entity.maxShield && entity.shield <= 0) entity.maxShield = 0;
   }
+  syncShieldTotals(entity);
   if (n > 0) entity.hp = Math.max(0, entity.hp - n);
   return entity.hp;
 }
-function addShield(entity, amount) {
+// Kalkan toplamlarını paketlerden hesapla (UI barları için).
+function syncShieldTotals(entity) {
+  if (!entity) return;
+  if (Array.isArray(entity.shields)) {
+    entity.shield = entity.shields.reduce((s, x) => s + Math.max(0, (x && x.amount) || 0), 0);
+    entity.maxShield = entity.shields.reduce((s, x) => s + Math.max(0, (x && x.max) || 0), 0);
+  }
+}
+// turns verilmezse 3 tur (kalıcı kalkan yok; kalkanların çoğu geçicidir).
+function addShield(entity, amount, turns, uid) {
   const n = Math.max(0, Math.round(amount));
-  entity.shield = (entity.shield || 0) + n;
-  entity.maxShield = Math.max(entity.maxShield || 0, entity.shield);
+  if (n <= 0) return (entity && entity.shield) || 0;
+  if (!Array.isArray(entity.shields)) {
+    // Eski nesne: önce mevcut flat kalkanı pakete taşı.
+    entity.shields = [];
+    if (entity.shield > 0) entity.shields.push({ amount: entity.shield, max: entity.maxShield || entity.shield, turns: 9999, uid: "legacy" });
+  }
+  const t = turns == null ? 3 : Math.max(1, Math.round(turns));
+  entity.shields.push({ amount: n, max: n, turns: t, uid: uid == null ? null : uid });
+  syncShieldTotals(entity);
   return entity.shield;
+}
+// Süresi biten paketleri düşür (tur sonu çağrılır). Kalan miktar silinir.
+function tickShields(entity) {
+  if (!Array.isArray(entity.shields) || !entity.shields.length) return;
+  for (const s of entity.shields) {
+    if (s && s.turns < 9999) s.turns -= 1;
+  }
+  entity.shields = entity.shields.filter((s) => s && s.amount > 0 && s.turns > 0);
+  syncShieldTotals(entity);
+}
+// Belirli uid'li paketi düşür (buff süresi bitince).
+function removeShieldInstance(entity, uid) {
+  if (!entity || !Array.isArray(entity.shields)) return;
+  entity.shields = entity.shields.filter((s) => s && s.uid !== uid);
+  syncShieldTotals(entity);
 }
 
 function heal(entity, amount) {
@@ -616,6 +689,9 @@ module.exports = {
   randomInt,
   dealDamage,
   addShield,
+  syncShieldTotals,
+  tickShields,
+  removeShieldInstance,
   heal,
   loseLife,
   addItem,

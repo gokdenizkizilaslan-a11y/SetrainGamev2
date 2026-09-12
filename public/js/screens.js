@@ -915,7 +915,33 @@ function skillShort(s) {
   } else {
     f = s.target || "";
   }
+  const tags = [];
+  if (s.hitsAll) tags.push("AoE");
+  else if (s.splash && Number(s.splash.extraTargets) > 0) tags.push("+" + Math.floor(s.splash.extraTargets));
+  if (s.execute) {
+    if (s.execute.belowHpPct != null) tags.push("EXE<" + Math.round(Number(s.execute.belowHpPct) * 100) + "%");
+    else if (s.execute.finishBelowHpPct != null) tags.push("EXE" + Math.round(Number(s.execute.finishBelowHpPct) * 100) + "%");
+    else tags.push("EXE");
+  }
+  if (s.bonusVsHighHp && s.bonusVsHighHp.aboveHpPct != null) tags.push("HIGH+");
+  if (s.echo && Number(s.echo.chance) > 0) tags.push("ECHO");
+  if (tags.length) f += (f ? " " : "") + "[" + tags.join(" ") + "]";
   return f;
+}
+function skillMechanicsLine(s) {
+  if (!s) return "";
+  const parts = [];
+  if (s.hitsAll) parts.push("Hits ALL enemies");
+  else if (s.splash && Number(s.splash.extraTargets) > 0) parts.push("Also hits " + Math.floor(s.splash.extraTargets) + " random enem" + (Math.floor(s.splash.extraTargets) === 1 ? "y" : "ies"));
+  if (s.execute) {
+    if (s.execute.belowHpPct != null) parts.push("Usable below " + Math.round(Number(s.execute.belowHpPct) * 100) + "% HP — executes");
+    else if (s.execute.finishBelowHpPct != null) parts.push("Kills targets dropped to " + Math.round(Number(s.execute.finishBelowHpPct) * 100) + "% HP or less");
+    else parts.push("Executes the target");
+  }
+  if (s.bonusVsHighHp && s.bonusVsHighHp.aboveHpPct != null) parts.push("+" + Math.round(Number(s.bonusVsHighHp.mult || 0) * 100) + "% vs targets above " + Math.round(Number(s.bonusVsHighHp.aboveHpPct) * 100) + "% HP");
+  if (s.bonusVsTags && Array.isArray(s.bonusVsTags.tags) && s.bonusVsTags.tags.length) parts.push("+" + Math.round(Number(s.bonusVsTags.mult || 0) * 100) + "% vs " + s.bonusVsTags.tags.join("/"));
+  if (s.echo && Number(s.echo.chance) > 0) parts.push(Math.round(Number(s.echo.chance) * 100) + "% chance to strike again at " + Math.round(Number(s.echo.mult || 0.3) * 100) + "% power");
+  return parts.join(" · ");
 }
 // Kart zemini: resim + perde, ikisi de elementin KENDİSİNDE.
 // (İçteki absolute span kayan içerikte alta ulaşamıyordu — dipte boşluk
@@ -964,6 +990,7 @@ function renderClassPreview(selected) {
       <em>${escapeHtml(tagline)}</em>
     </div>
     <p class="cp-lore">${escapeHtml(lore)}</p>
+    ${(cls.passives && cls.passives.length) ? `<div class="cp-passives">${cls.passives.map((p) => `<div class="cp-passive" title="${escapeHtml(p.desc || p.name)}"><strong>${escapeHtml(p.name || p.kind)}</strong>${p.desc ? `<span>${escapeHtml(p.desc)}</span>` : ""}</div>`).join("")}</div>` : ""}
     <div class="cp-stats">
       <div class="cp-stat"><span>❤️ HP ${hp}</span>${bar(hp, 750)}</div>
       <div class="cp-stat"><span>⚔️ ATK ${atk}</span>${bar(atk, 64)}</div>
@@ -2032,9 +2059,11 @@ function combatLoadout(me) {
 
 function skillTipEl(s) {
   const desc = s.description || "";
+  const mech = skillMechanicsLine(s);
   return `<span class="skill-tip">
     <strong>${escapeHtml(s.name)}</strong>
     <span>${escapeHtml(desc)}</span>
+    ${mech ? `<span class="skill-mech">${escapeHtml(mech)}</span>` : ""}
     <em>${s.mana ? s.mana + " mana" : "Free"}</em>
   </span>`;
 }

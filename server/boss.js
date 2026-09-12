@@ -104,6 +104,15 @@ function startBoss(room, player) {
     const { spendStamina } = require("./town");
     spendStamina(m, 4);
     m.hp=m.maxHp; m.mana=m.maxMana;
+    m._struckThisCombat = false;
+    m._secondWindUsed = false;
+    try {
+      const passives = require("./passives");
+      const { addShield } = require("./players");
+      for (const s of passives.shieldStartFor(m.character, m.maxHp)) {
+        addShield(m, s.amount, s.turns);
+      }
+    } catch (e) {}
   }
   // Build boss wave single floor with 1 boss (max 5 but for boss it's 1)
   const bossDef = (require("../content").CONTENT.bosses||[]).find(x=>x.id===b.bossId);
@@ -146,6 +155,9 @@ function startBoss(room, player) {
     attack: bossDef.attack,
     speed: bossDef.speed,
     resistance: Math.max(0, Math.round(bossDef.resistance || 0)),
+    shield: 0,
+    maxShield: 0,
+    shields: [],
     skills: skills.length? skills : [{id:"auto_attack", name:"Strike", power:1, element:"physical"}]
   }];
   b.status="fighting";
