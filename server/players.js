@@ -312,6 +312,29 @@ function createPlayer({ id, name, character, isHost = false }) {
   if (character === "tamer") {
     player.inventory.push({ itemId: "egg_red", qty: 1 }, { itemId: "egg_green", qty: 1 });
   }
+  // Tester (secret test class): starts with every chest, every egg and every
+  // evolution-required item so ascension and systems can be tried instantly.
+  // Fully data-driven — new chests/eggs/requirements are picked up automatically.
+  if (character === "tester") {
+    const seen = new Set(player.inventory.map((i) => i.itemId));
+    const grant = (itemId, qty) => {
+      if (!itemId || seen.has(itemId)) return;
+      seen.add(itemId);
+      player.inventory.push({ itemId, qty: qty || 1 });
+    };
+    for (const it of CONTENT.items || []) {
+      if (it.slot === "chest") grant(it.id, 1);
+    }
+    for (const e of CONTENT.eggs || []) {
+      if (e && e.id) grant(e.id, 1);
+    }
+    for (const cl of CONTENT.classes || []) {
+      const routes = [...(cl.evolutions || []), ...(cl.evolution ? [cl.evolution] : [])];
+      for (const r of routes) {
+        if (r && r.requiredItem) grant(r.requiredItem, Math.max(1, r.requiredItemCount || 1));
+      }
+    }
+  }
   // Secret (test) classes may start above level 1: apply per-level growth so
   // stats match a naturally leveled character. Normal classes skip this.
   const startLevel = Math.min(CONTENT.leveling.maxLevel, Math.max(1, Math.floor((cls && cls.startLevel) || 1)));

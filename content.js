@@ -2191,6 +2191,76 @@ const CONTENT = {
       }
     },
     {
+      "slug": "tester",
+      "label": "Tester",
+      "secret": "test123",
+      "startLevel": 20,
+      "tagline": "Ascension Test Dummy",
+      "lore": "A test vessel for trying ascension. Starts at level 20 with every chest, every egg and every evolution item in its pack.",
+      "image": "/images/characters/warrior.webp",
+      "basicAttack": {
+        "id": "slash",
+        "name": "Slash",
+        "power": 1,
+        "element": "physical",
+        "image": "/images/skills/slash.png",
+        "description": "Deals 8 + 1× attack damage.",
+        "baseDamage": 8
+      },
+      "startingSkills": [
+        "heavy_strike",
+        "defend",
+        "battle_fury"
+      ],
+      "evolution": {
+        "level": 20,
+        "to": "warlord"
+      },
+      "speed": 8,
+      "hp": {
+        "min": 520,
+        "max": 600
+      },
+      "attack": {
+        "min": 42,
+        "max": 52
+      },
+      "mana": {
+        "min": 20,
+        "max": 35
+      },
+      "resistance": {
+        "min": 28,
+        "max": 38
+      },
+      "magicPower": {
+        "min": 8,
+        "max": 16
+      },
+      "healPower": {
+        "min": 2,
+        "max": 6
+      },
+      "growth": {
+        "hp": 18,
+        "attack": 4,
+        "mana": 1,
+        "resistance": 3,
+        "magicPower": 1,
+        "healPower": 0,
+        "critChance": 1,
+        "critDamage": 2
+      },
+      "critChance": {
+        "min": 8,
+        "max": 14
+      },
+      "critDamage": {
+        "min": 40,
+        "max": 80
+      }
+    },
+    {
       "slug": "warlord",
       "label": "War Lord",
       "baseClass": "warrior",
