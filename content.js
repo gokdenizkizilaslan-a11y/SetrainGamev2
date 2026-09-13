@@ -2037,7 +2037,7 @@ const CONTENT = {
         "level": 40,
         "to": "anima_lorde"
       },
-      "image": "/images/characters/beastmaster.png",
+      "image": "/images/characters/beastmaster.webp?v=mu0f2njo",
       "basicAttack": {
         "id": "beast_strike",
         "name": "Beast Strike",
@@ -2245,7 +2245,7 @@ const CONTENT = {
         "ascendColor": "#bef264",
         "ascendSound": "holy-ascensionsound"
       },
-      "image": "/images/characters/rootbinder.png",
+      "image": "/images/characters/rootbinder.webp?v=mu0fc3zv",
       "basicAttack": {
         "id": "root_lash",
         "name": "Root Lash",
@@ -2315,7 +2315,7 @@ const CONTENT = {
       "slug": "lifeweaver",
       "label": "Lifeweaver",
       "baseClass": "rootbinder",
-      "image": "/images/characters/lifeweaver.png",
+      "image": "/images/characters/lifeweaver.webp?v=mu0fbhy5",
       "basicAttack": {
         "id": "bloom_burst",
         "name": "Bloom Burst",
@@ -3061,7 +3061,7 @@ const CONTENT = {
         "level": 40,
         "to": "colossus"
       },
-      "image": "/images/characters/juggernaut.png",
+      "image": "/images/characters/juggernaut.webp?v=mu0fnmks",
       "basicAttack": {
         "id": "adamant_bash",
         "name": "Adamant Bash",
@@ -3546,7 +3546,7 @@ const CONTENT = {
       "slug": "colossus",
       "label": "Colossus",
       "baseClass": "juggernaut",
-      "image": "/images/characters/colossus.png",
+      "image": "/images/characters/colossus.webp?v=mu0ft8go",
       "basicAttack": {
         "id": "titan_slam",
         "name": "Titan Slam",
