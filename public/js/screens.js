@@ -1210,7 +1210,8 @@ function renderProfileCard(room, selfId) {
       <button type="button" class="btn btn--bronze btn--mini" style="flex:1" id="btn-open-inventory">Equipments</button>
       <button type="button" class="btn btn--ghost btn--mini" style="flex:1" id="btn-open-pets">Pets</button>
     </div>`;
-  setCardBg(el, "");
+  // Profil kartı arka planı (editör: UI → profileBg). Yoksa cam zemin.
+  setCardBg(el, (CATALOG.images && CATALOG.images.ui && CATALOG.images.ui.profileBg) || "");
   initImages(el);
   const avatarBtn = el.querySelector("[data-char-modal]");
   if (avatarBtn) {

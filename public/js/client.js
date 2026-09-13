@@ -87,6 +87,13 @@ function renderLobby(room) {
 function renderTown(room) {
   showScreen("screen-town");
 
+  // Kasaba paneli arka planı (editör: UI → townPanelBg). Yoksa varsayılan zemin.
+  try {
+    const panelEl = document.querySelector("#screen-town .panel--dashboard");
+    const panelBg = CATALOG.images && CATALOG.images.ui ? CATALOG.images.ui.townPanelBg : "";
+    if (panelEl && typeof setCardBg === "function") setCardBg(panelEl, panelBg || "");
+  } catch (e) {}
+
   const me = room.players.find((p) => p.id === state.playerId);
   const myD = me && me.dungeonId && (room.dungeons || []).find((d) => d.id === me.dungeonId);
   const inCombat = myD && (myD.status === "fighting" || myD.status === "done");

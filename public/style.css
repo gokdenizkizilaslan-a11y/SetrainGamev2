@@ -610,11 +610,12 @@ input:focus {
     0 12px 28px rgba(0, 0, 0, 0.4),
     0 0 24px rgba(216, 156, 74, 0.12);
 }
-/* Kart zemini (preview, profil): resim + perde elementin KENDİSİNDE —
-   scroll dahil, köşeler dahil her yeri kaplar. Çift sınıf = kartın kendi
-   background kısaltmasını ezer (sıralamadan bağımsız). */
+/* Kart zemini (preview, profil, kasaba paneli): resim + perde elementin
+   KENDİSİNDE — scroll dahil, köşeler dahil her yeri kaplar. Çift sınıf =
+   kartın kendi background kısaltmasını ezer (sıralamadan bağımsız). */
 .class-preview.has-card-bg,
-.profile-card.has-card-bg {
+.profile-card.has-card-bg,
+.panel--dashboard.has-card-bg {
   background-image:
     linear-gradient(to top,
       rgba(0, 0, 0, 0.62) 0%,
@@ -623,6 +624,15 @@ input:focus {
     var(--cp-img);
   background-size: cover;
   background-position: center top;
+}
+/* Kasaba paneli çok yazı içerir — perdesi daha açık tutulur. */
+.panel--dashboard.has-card-bg {
+  background-image:
+    linear-gradient(to top,
+      rgba(0, 0, 0, 0.45) 0%,
+      rgba(0, 0, 0, 0.22) 55%,
+      rgba(0, 0, 0, 0.05) 100%),
+    var(--cp-img);
 }
 .class-preview .cp-lore,
 .class-preview .cp-stat {
