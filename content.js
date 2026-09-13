@@ -949,7 +949,7 @@ const CONTENT = {
           {
             "id": "tm_war_cry",
             "skillId": "war_cry",
-            "ownerClass": "alpha_tamer",
+            "ownerClass": "anima_lorde",
             "cost": 8,
             "minLevel": 40
           }
@@ -1333,7 +1333,7 @@ const CONTENT = {
     {
       "slug": "warrior",
       "label": "Warrior",
-      "image": "/images/characters/warrior.webp",
+      "image": "/images/characters/warrior.webp?v=mu04hrh8",
       "basicAttack": {
         "id": "slash",
         "name": "Slash",
@@ -1487,7 +1487,7 @@ const CONTENT = {
     {
       "slug": "mage",
       "label": "Mage",
-      "image": "/images/characters/mage.png",
+      "image": "/images/characters/mage.webp?v=mu04i2ic",
       "basicAttack": {
         "id": "arcane_bolt",
         "name": "Arcane Bolt",
@@ -1565,7 +1565,7 @@ const CONTENT = {
     {
       "slug": "rogue",
       "label": "Rogue",
-      "image": "/images/characters/rogue.png",
+      "image": "/images/characters/rogue.webp?v=mu04i9dw",
       "basicAttack": {
         "id": "stab",
         "name": "Stab",
@@ -1642,7 +1642,7 @@ const CONTENT = {
     {
       "slug": "paladin",
       "label": "Paladin",
-      "image": "/images/characters/paladin.png",
+      "image": "/images/characters/paladin.webp?v=mu04ieje",
       "basicAttack": {
         "id": "smite",
         "name": "Smite",
@@ -1726,7 +1726,7 @@ const CONTENT = {
     {
       "slug": "assassin",
       "label": "Assassin",
-      "image": "/images/characters/assassin.png",
+      "image": "/images/characters/assassin.webp?v=mu04ixgb",
       "basicAttack": {
         "id": "lunge",
         "name": "Lunge",
@@ -1802,7 +1802,7 @@ const CONTENT = {
     {
       "slug": "support",
       "label": "Healer",
-      "image": "/images/characters/support.png",
+      "image": "/images/characters/support.webp?v=mu0egvxe",
       "basicAttack": {
         "id": "sanct_bolt",
         "name": "Sanct Bolt",
@@ -1880,7 +1880,7 @@ const CONTENT = {
     {
       "slug": "tank",
       "label": "Tank",
-      "image": "/images/characters/tank.png",
+      "image": "/images/characters/tank.webp?v=mu0eg6ml",
       "basicAttack": {
         "id": "shield_bash",
         "name": "Shield Bash",
@@ -1964,7 +1964,7 @@ const CONTENT = {
     {
       "slug": "tamer",
       "label": "Tamer",
-      "image": "/images/characters/tamer.png",
+      "image": "/images/characters/tamer.webp?v=mu0eiwtr",
       "basicAttack": {
         "id": "tame_hit",
         "name": "Tame Hit",
@@ -2035,7 +2035,7 @@ const CONTENT = {
       "baseClass": "tamer",
       "evolution": {
         "level": 40,
-        "to": "alpha_tamer"
+        "to": "anima_lorde"
       },
       "image": "/images/characters/beastmaster.png",
       "basicAttack": {
@@ -2094,10 +2094,10 @@ const CONTENT = {
       }
     },
     {
-      "slug": "alpha_tamer",
-      "label": "Alpha Tamer",
+      "slug": "anima_lorde",
+      "label": "anima_lorde",
       "baseClass": "beastmaster",
-      "image": "/images/characters/alpha_tamer.png",
+      "image": "/images/characters/anima_lorde.webp?v=mu0er997",
       "basicAttack": {
         "id": "alpha_strike",
         "name": "Alpha Strike",
@@ -2147,7 +2147,7 @@ const CONTENT = {
       },
       "evolveBonus": {
         "hp": 50,
-        "attack": 8,
+        "attack": 9,
         "mana": 10,
         "resistance": 5,
         "magicPower": 5
@@ -2156,7 +2156,7 @@ const CONTENT = {
     {
       "slug": "gardener",
       "label": "Gardener",
-      "image": "/images/characters/gardener.png",
+      "image": "/images/characters/gardener.webp?v=mu0eic48",
       "basicAttack": {
         "id": "garden_swipe",
         "name": "Garden Swipe",
@@ -2386,7 +2386,7 @@ const CONTENT = {
       "label": "Moderator",
       "secret": "xx0mod0xx",
       "startLevel": 45,
-      "image": "/images/characters/moderator.png",
+      "image": "/images/characters/moderator.webp?v=mu0ehrbi",
       "basicAttack": {
         "id": "mod_strike",
         "name": "Mod Strike",
@@ -2538,7 +2538,7 @@ const CONTENT = {
       "startLevel": 20,
       "tagline": "Ascension Test Dummy",
       "lore": "A test vessel for trying ascension. Starts at level 20 with every chest, every egg and every evolution item in its pack.",
-      "image": "/images/characters/warrior.webp",
+      "image": "/images/characters/tester.webp?v=mu0ehjel",
       "basicAttack": {
         "id": "slash",
         "name": "Slash",
@@ -3609,7 +3609,7 @@ const CONTENT = {
       "menu": "/images/backgrounds/menu.webp",
       "setup": "/images/backgrounds/setup.png",
       "lobby": "/images/backgrounds/lobby.png",
-      "town": "/images/backgrounds/town.webp?v=mtz9ebcj",
+      "town": "",
       "dungeon": "/images/backgrounds/dungeon.png",
       "tavern": "/images/backgrounds/tavern.png",
       "blacksmith": "/images/backgrounds/blacksmith.png",
@@ -3621,7 +3621,8 @@ const CONTENT = {
       "party": ""
     },
     "ui": {
-      "panel": "/images/ui/panel.png"
+      "panel": "/images/ui/panel.png",
+      "townPanelBg": "/images/ui/townpanelbg.webp?v=mtzteh8n"
     }
   },
   "town": {
