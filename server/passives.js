@@ -6,10 +6,18 @@
 
 const { getClass } = require("../content");
 
-function getPassives(character) {
-  const cls = typeof character === "string" ? getClass(character) : character;
+function getPassives(who) {
+  // who: class slug string OR player/class object (race passives merged in).
+  let cls = null;
+  let racePassives = [];
+  if (typeof who === "string") {
+    cls = getClass(who);
+  } else if (who && typeof who === "object") {
+    cls = who.slug ? who : getClass(who.character);
+    if (who.race && Array.isArray(who.race.passives)) racePassives = who.race.passives;
+  }
   const list = cls && Array.isArray(cls.passives) ? cls.passives : [];
-  return list.filter((p) => p && typeof p.kind === "string");
+  return [...list, ...racePassives].filter((p) => p && typeof p.kind === "string");
 }
 
 function num(v, d) {
@@ -53,10 +61,13 @@ function executeFor(character) {
 }
 
 // ---- Incoming damage multiplier (true damage excluded by callers) ----
-function damageTakenMult(character) {
+// ctx.fromElement: attacker element (weaknesses like "takes +30% holy").
+function damageTakenMult(character, ctx) {
   let mult = 1;
+  const fromEl = ctx && ctx.fromElement;
   for (const p of getPassives(character)) {
     if (p.kind !== "damageTaken") continue;
+    if (p.fromElement && p.fromElement !== fromEl) continue;
     mult *= 1 + num(p.mult, 0);
   }
   return Math.max(0, mult);

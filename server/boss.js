@@ -109,7 +109,7 @@ function startBoss(room, player) {
     try {
       const passives = require("./passives");
       const { addShield } = require("./players");
-      for (const s of passives.shieldStartFor(m.character, m.maxHp)) {
+      for (const s of passives.shieldStartFor(m, m.maxHp)) {
         addShield(m, s.amount, s.turns);
       }
     } catch (e) {}

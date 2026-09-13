@@ -34,6 +34,41 @@ function pickAnomaly() {
   };
 }
 
+// Irk zarı: ağırlıklı, her zaman bir ırk verir (liste boşsa null — oyun kırılmaz).
+function pickRace() {
+  const races = (CONTENT.races || []).filter((r) => r && r.id);
+  if (!races.length) return null;
+  let total = 0;
+  for (const r of races) total += Math.max(0, Number(r.chance) || 0);
+  if (!(total > 0)) return null;
+  let roll = Math.random() * total;
+  for (const r of races) {
+    roll -= Math.max(0, Number(r.chance) || 0);
+    if (roll <= 0) {
+      return {
+        id: r.id,
+        name: r.name || r.id,
+        description: r.description || r.desc || "",
+        stats: r.stats || {},
+        passives: Array.isArray(r.passives) ? r.passives : [],
+      };
+    }
+  }
+  const last = races[races.length - 1];
+  return { id: last.id, name: last.name || last.id, description: last.description || last.desc || "", stats: last.stats || {}, passives: [] };
+}
+
+function applyRaceStatBonus(player) {
+  const st = (player.race && player.race.stats) || {};
+  const fields = ["attack", "resistance", "magicPower", "healPower", "maxHp", "maxMana", "speed", "manaRegen", "critChance", "critDamage"];
+  for (const f of fields) {
+    const v = Number(st[f]) || 0;
+    if (v !== 0) player[f] = (player[f] || 0) + v;
+  }
+  if (st.maxHp) player.hp = Math.min(player.maxHp, player.hp + st.maxHp);
+  if (st.maxMana) player.mana = Math.min(player.maxMana, (player.mana || 0) + st.maxMana);
+}
+
 function applyAnomalyStatBonus(player) {
   if (!player.anomaly || !player.anomaly.effect) return;
   const e = player.anomaly.effect;
@@ -53,7 +88,7 @@ function applyPassiveStatBonus(player, growth) {
     const g = growth || null;
     const beforeMaxHp = player.maxHp;
     const grant = (field, base) => {
-      const pct = passives.statBonusPct(player.character, field);
+      const pct = passives.statBonusPct(player, field);
       if (pct > 0 && base > 0) player[field] += Math.max(1, Math.round(base * pct));
     };
     grant("attack", g ? g.attack || 0 : player.attack);
@@ -63,9 +98,10 @@ function applyPassiveStatBonus(player, growth) {
     grant("maxHp", g ? g.hp || 0 : player.maxHp);
     grant("maxMana", g ? g.mana || 0 : player.maxMana);
     if (!g && cls) {
-      player.speed = (cls.speed || 0) + passives.speedBonus(player.character);
+      const raceStats = (player.race && player.race.stats) || {};
+      player.speed = (cls.speed || 0) + passives.speedBonus(player) + (Number(raceStats.speed) || 0);
       player.manaRegen = ((CONTENT.combat && CONTENT.combat.manaRegenPerRound) || 3)
-        + (cls.manaRegen || 0) + passives.manaRegenBonus(player.character);
+        + (cls.manaRegen || 0) + passives.manaRegenBonus(player) + (Number(raceStats.manaRegen) || 0);
       // maxHp bonusu canı da beraberinde getirir (günlük reset şifası yok).
       if (player.maxHp > beforeMaxHp) player.hp = Math.min(player.maxHp, player.hp + (player.maxHp - beforeMaxHp));
     }
@@ -90,6 +126,7 @@ function rollStats(player) {
   player.critChance = cls.critChance ? rollRange(cls.critChance) : (CONTENT.combat.critChance || 0) * 100;
   player.critDamage = cls.critDamage ? rollRange(cls.critDamage) : Math.round(((CONTENT.combat.critMult || 1.5) - 1) * 100);
   applyAnomalyStatBonus(player);
+  applyRaceStatBonus(player);
   applyPassiveStatBonus(player, null);
   return player;
 }
@@ -278,6 +315,7 @@ function addPetXp(player, petId, amount){
 
 function createPlayer({ id, name, character, isHost = false }) {
   const anomaly = pickAnomaly();
+  const race = pickRace();
   const cls = getClass(character);
   // Secret (test) classes may carry more than the normal 5-skill loadout.
   const loadoutCap = cls && cls.secret ? 8 : ((CONTENT.skillTree && CONTENT.skillTree.maxLoadout) || 5);
@@ -330,6 +368,7 @@ function createPlayer({ id, name, character, isHost = false }) {
     isHost,
     connected: true,
     anomaly,
+    race,
     tavern: null,
     dungeonId: null,
     pvpId: null,
@@ -437,6 +476,19 @@ function publicPlayer(player) {
           pureBlood: player.anomaly.pureBlood,
           rarity: player.anomaly.rarity,
           frameColor: player.anomaly.frameColor,
+        }
+      : null,
+    race: player.race
+      ? {
+          id: player.race.id,
+          name: player.race.name,
+          description: player.race.description,
+          stats: player.race.stats || {},
+          passives: (player.race.passives || []).map((p) => ({
+            kind: p.kind,
+            name: p.name || p.kind,
+            desc: p.desc || "",
+          })),
         }
       : null,
     tavern: player.tavern

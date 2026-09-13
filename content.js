@@ -1010,6 +1010,247 @@ const CONTENT = {
     "healBase": 10,
     "healPct": 0.02
   },
+  "races": [
+    {
+      "id": "human",
+      "name": "Human",
+      "desc": "Adaptable and ambitious. +10% gold from victories.",
+      "chance": 10,
+      "stats": {},
+      "passives": [
+        {
+          "kind": "victoryGold",
+          "name": "Ambitious",
+          "desc": "+10% gold from victories.",
+          "mult": 0.10
+        }
+      ]
+    },
+    {
+      "id": "elf",
+      "name": "Elf",
+      "desc": "Graceful and attuned. +12 mana, +1 speed.",
+      "chance": 10,
+      "stats": {
+        "mana": 12,
+        "speed": 1
+      },
+      "passives": []
+    },
+    {
+      "id": "dwarf",
+      "name": "Dwarf",
+      "desc": "Stout and enduring. +30 max HP, +6 resistance.",
+      "chance": 10,
+      "stats": {
+        "maxHp": 30,
+        "resistance": 6
+      },
+      "passives": []
+    },
+    {
+      "id": "orc",
+      "name": "Orc",
+      "desc": "Brutal and strong. +6 attack.",
+      "chance": 10,
+      "stats": {
+        "attack": 6
+      },
+      "passives": []
+    },
+    {
+      "id": "beastkin",
+      "name": "Beastkin",
+      "desc": "Wild instincts. +2 speed, +3 attack.",
+      "chance": 8.75,
+      "stats": {
+        "speed": 2,
+        "attack": 3
+      },
+      "passives": []
+    },
+    {
+      "id": "wyvernkin",
+      "name": "Wyvernkin",
+      "desc": "Sky hunters. 5% dodge chance.",
+      "chance": 8.75,
+      "stats": {},
+      "passives": [
+        {
+          "kind": "dodge",
+          "name": "Sky Dancer",
+          "desc": "5% chance to dodge attacks.",
+          "chance": 0.05
+        }
+      ]
+    },
+    {
+      "id": "high_elf",
+      "name": "High Elf",
+      "desc": "Ancient magic in the blood. +8 magic power.",
+      "chance": 8.75,
+      "stats": {
+        "magicPower": 8
+      },
+      "passives": []
+    },
+    {
+      "id": "gorgon",
+      "name": "Gorgon",
+      "desc": "A gaze of stone. Reflects 10% damage, +4 resistance.",
+      "chance": 8.75,
+      "stats": {
+        "resistance": 4
+      },
+      "passives": [
+        {
+          "kind": "thorns",
+          "name": "Petrifying Gaze",
+          "desc": "Reflect 10% of damage taken.",
+          "mult": 0.10
+        }
+      ]
+    },
+    {
+      "id": "demonblood",
+      "name": "Demonblood",
+      "desc": "Burning heritage. +15% damage, but takes 30% more holy damage.",
+      "chance": 7,
+      "stats": {},
+      "passives": [
+        {
+          "kind": "damageBonus",
+          "name": "Demonic Fury",
+          "desc": "+15% damage.",
+          "mult": 0.15
+        },
+        {
+          "kind": "damageTaken",
+          "name": "Unholy Weakness",
+          "desc": "Takes 30% more holy damage.",
+          "mult": 0.30,
+          "fromElement": "holy"
+        }
+      ]
+    },
+    {
+      "id": "lightborn",
+      "name": "Lightborn",
+      "desc": "Blessed radiance. +15% healing, but takes 30% more shadow damage.",
+      "chance": 7,
+      "stats": {},
+      "passives": [
+        {
+          "kind": "healBonus",
+          "name": "Radiant Touch",
+          "desc": "+15% healing.",
+          "mult": 0.15
+        },
+        {
+          "kind": "damageTaken",
+          "name": "Shadow Frailty",
+          "desc": "Takes 30% more shadow damage.",
+          "mult": 0.30,
+          "fromElement": "shadow"
+        }
+      ]
+    },
+    {
+      "id": "voidborn",
+      "name": "Voidborn",
+      "desc": "Touched by the void. 8% dodge, but takes 20% more holy damage.",
+      "chance": 7,
+      "stats": {},
+      "passives": [
+        {
+          "kind": "dodge",
+          "name": "Void Step",
+          "desc": "8% chance to dodge attacks.",
+          "chance": 0.08
+        },
+        {
+          "kind": "damageTaken",
+          "name": "Light Frailty",
+          "desc": "Takes 20% more holy damage.",
+          "mult": 0.20,
+          "fromElement": "holy"
+        }
+      ]
+    },
+    {
+      "id": "daemonkin",
+      "name": "Daemonkin",
+      "desc": "Pure demon royalty. +20% damage and +10% lifesteal.",
+      "chance": 1,
+      "stats": {},
+      "passives": [
+        {
+          "kind": "damageBonus",
+          "name": "Royal Wrath",
+          "desc": "+20% damage.",
+          "mult": 0.20
+        },
+        {
+          "kind": "lifesteal",
+          "name": "Soul Siphon",
+          "desc": "Heal 10% of all damage dealt.",
+          "pct": 0.10
+        }
+      ]
+    },
+    {
+      "id": "dragonborn",
+      "name": "Dragonborn",
+      "desc": "Scales of the wyrms. Take 15% less damage.",
+      "chance": 1,
+      "stats": {},
+      "passives": [
+        {
+          "kind": "damageTaken",
+          "name": "Dragonscales",
+          "desc": "Take 15% less damage (true damage excluded).",
+          "mult": -0.15
+        }
+      ]
+    },
+    {
+      "id": "arch_vampyr",
+      "name": "Arch-Vampyr",
+      "desc": "Ancient predator. Heal 12% of all damage dealt.",
+      "chance": 1,
+      "stats": {},
+      "passives": [
+        {
+          "kind": "lifesteal",
+          "name": "Crimson Thirst",
+          "desc": "Heal 12% of all damage dealt.",
+          "pct": 0.12
+        }
+      ]
+    },
+    {
+      "id": "archangel",
+      "name": "Archangel",
+      "desc": "Celestial guardian. +25% healing and start combat with a 10% shield (3 turns).",
+      "chance": 1,
+      "stats": {},
+      "passives": [
+        {
+          "kind": "healBonus",
+          "name": "Celestial Grace",
+          "desc": "+25% healing.",
+          "mult": 0.25
+        },
+        {
+          "kind": "shieldStart",
+          "name": "Aegis of Dawn",
+          "desc": "Start combat with a shield equal to 10% max HP (3 turns).",
+          "pct": 0.10,
+          "turns": 3
+        }
+      ]
+    }
+  ],
   "anomalies": {
     "anomalyChance": 0.06,
     "pureBloodChance": 0.02,

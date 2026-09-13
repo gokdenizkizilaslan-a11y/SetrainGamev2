@@ -186,7 +186,7 @@ function applyBuffs(room, d, actor, actorName, skill, targetType, targetIds, act
         const shieldUid = d.buffId;
         if (targetType === "player") {
           const target = room.players.find((p) => p.id === tid);
-          if (target) addShield(target, Math.round(e.value * passives.shieldGainMult(target.character)), turns, shieldUid);
+          if (target) addShield(target, Math.round(e.value * passives.shieldGainMult(target)), turns, shieldUid);
         } else {
           const mon = d.wave[tid];
           if (mon) {
@@ -288,7 +288,7 @@ function tickBuffs(room, d) {
         const p = room.players.find((q) => q.id === b.targetId);
         if (p && p.hp > 0 && p.hp < p.maxHp) {
           const before = p.hp;
-          heal(p, Math.max(1, Math.round(p.maxHp * b.value * passives.regenBonusMult(p.character))));
+          heal(p, Math.max(1, Math.round(p.maxHp * b.value * passives.regenBonusMult(p))));
           const healed = p.hp - before;
           if (healed > 0) addFx(d, { type: "heal", actor: p.id, target: "player", targetId: p.id, amount: healed, source: "regen", effect: "heal" });
         }
@@ -439,7 +439,7 @@ function spawnWave(room, d) {
     p.mana = p.maxMana;
     p._struckThisCombat = false;
     p._secondWindUsed = false;
-    for (const s of passives.shieldStartFor(p.character, p.maxHp)) {
+    for (const s of passives.shieldStartFor(p, p.maxHp)) {
       addShield(p, s.amount, s.turns);
     }
   }
@@ -538,7 +538,7 @@ function act(room, player, skillId, targetId) {
         && mon.hp / mon.maxHp > Number(skill.execute.belowHpPct)) {
       throw new Error(`Execute fells only the weak — target must be below ${Math.round(Number(skill.execute.belowHpPct) * 100)}% HP.`);
     }
-    const pexec = passives.executeFor(player.character);
+    const pexec = passives.executeFor(player);
     if (pexec && pexec.belowHpPct != null && mon.maxHp > 0
         && mon.hp / mon.maxHp > Number(pexec.belowHpPct)) {
       throw new Error(`Your passive execution needs the target below ${Math.round(Number(pexec.belowHpPct) * 100)}% HP.`);
@@ -590,9 +590,9 @@ function act(room, player, skillId, targetId) {
     }
     const skillPower = Math.max(0, Number(skill.power) || 0);
     const selfHpPct = player.maxHp > 0 ? player.hp / player.maxHp : 1;
-    const pexec = passives.executeFor(player.character);
+    const pexec = passives.executeFor(player);
     const echoCfg = skill.echo || null;
-    const pEcho = !skill.echo ? passives.echoFor(player.character) : null;
+    const pEcho = !skill.echo ? passives.echoFor(player) : null;
     if (skillPower > 0 || skillBase > 0 || trueFormula || (skill.secondHit && Number(skill.secondHit.mult) > 0)) {
       const isPhysical = !skill.element || skill.element === "physical";
       const baseStat = isPhysical ? player.attack : player.magicPower;
@@ -600,8 +600,8 @@ function act(room, player, skillId, targetId) {
       const pAtk = buffSum(d, "player", player.id, "attack") + buffSum(d, "player", player.id, "pet_attack") - buffSum(d, "player", player.id, "weaken") - buffSum(d, "player", player.id, "pet_weaken");
       const pMagic = buffSum(d, "player", player.id, "magicBoost") + buffSum(d, "player", player.id, "pet_magic") - buffSum(d, "player", player.id, "weaken") - buffSum(d, "player", player.id, "pet_weaken");
       const pBoost = isPhysical ? pAtk : pMagic;
-      const pCrit = passives.critBonus(player.character);
-      const pierce = passives.pierceFlat(player.character);
+      const pCrit = passives.critBonus(player);
+      const pierce = passives.pierceFlat(player);
       const wasFirst = !player._struckThisCombat;
       let primaryDmg = 0;
       for (const tidx of tids) {
@@ -660,7 +660,7 @@ function act(room, player, skillId, targetId) {
           dmg = Math.round(dmg * (1 + (Number(skill.bonusVsTags.mult) || 0)));
         }
         // class passives: conditional damage
-        dmg = Math.max(1, Math.round(dmg * passives.damageOutMult(player.character, {
+        dmg = Math.max(1, Math.round(dmg * passives.damageOutMult(player, {
           targetHpPct: hpPct,
           selfHpPct,
           isFirst: wasFirst,
@@ -738,7 +738,7 @@ function act(room, player, skillId, targetId) {
           addFx(d, { type: "damage", actor: player.id, target: "enemy", targetId: tidx, amount: echoDmg, skill: skill.id, elem: skill.element || "physical", effect: skill.effect || defaultEffectFor(skill.element), sound: skill.sound || "", crit: false });
         }
         // Taşma (overkill): fazlası rastgele yaşayan düşmana.
-        if (passives.hasOverkill(player.character) && tgt.hp <= 0) {
+        if (passives.hasOverkill(player) && tgt.hp <= 0) {
           const excess = Math.max(0, totalDmg - hpBefore);
           if (excess > 0) {
             const aliveOthers = d.wave.map((m, i) => i).filter((i) => d.wave[i] && d.wave[i].hp > 0);
@@ -756,14 +756,14 @@ function act(room, player, skillId, targetId) {
         }
         if (tgt.hp <= 0) {
           d.buffs = (d.buffs || []).filter((b) => !(b.targetType === "monster" && Number(b.targetId) === tidx));
-          const hb = passives.healOnKillPct(player.character);
+          const hb = passives.healOnKillPct(player);
           if (hb > 0) {
             const amt = Math.max(1, Math.round(player.maxHp * hb));
             const before = player.hp;
             heal(player, amt);
             if (player.hp > before) addFx(d, { type: "heal", actor: player.id, target: player.id, amount: player.hp - before, source: "passive", skill: skill.id, effect: "heal" });
           }
-          const mk = passives.manaOnKill(player.character);
+          const mk = passives.manaOnKill(player);
           if (mk > 0 && player.mana < player.maxMana) {
             const gained = Math.min(player.maxMana, player.mana + mk) - player.mana;
             if (gained > 0) {
@@ -784,7 +784,7 @@ function act(room, player, skillId, targetId) {
         const healed = player.hp - before;
         if (healed > 0) addFx(d, { type: "heal", actor: player.id, target: player.id, amount: healed, source: "lifesteal", skill: skill.id, effect: "heal" });
       }
-      const plife = passives.lifestealPct(player.character);
+      const plife = passives.lifestealPct(player);
       if (plife > 0 && primaryDmg > 0) {
         const before = player.hp;
         const amt = Math.max(1, Math.round(primaryDmg * plife));
@@ -794,7 +794,7 @@ function act(room, player, skillId, targetId) {
       }
       if (skill.healSelfPct) {
         const before = player.hp;
-        const amt = Math.max(1, Math.round(player.maxHp * skill.healSelfPct * passives.healBonusMult(player.character)));
+        const amt = Math.max(1, Math.round(player.maxHp * skill.healSelfPct * passives.healBonusMult(player)));
         heal(player, amt);
         const healed = player.hp - before;
         if (healed > 0) addFx(d, { type: "heal", actor: player.id, target: player.id, amount: healed, source: "skill", skill: skill.id, effect: "heal" });
@@ -827,7 +827,7 @@ function act(room, player, skillId, targetId) {
     const target = room.players.find((p) => p.id === targetId);
     if (target) {
       if (target.hp > 0 && skill.heal != null) {
-        const healMult = (1 + (player.healPower || 0) / 50) * passives.healBonusMult(player.character);
+        const healMult = (1 + (player.healPower || 0) / 50) * passives.healBonusMult(player);
         let baseHeal;
         if (typeof skill.heal === "object") {
           const stat = skill.heal.stat || "maxHp";
@@ -843,7 +843,7 @@ function act(room, player, skillId, targetId) {
       applyBuffs(room, d, player, player.name, skill, "player", [target.id], true);
     }
   } else if (skill.target === "party") {
-    const partyHealMult = passives.healBonusMult(player.character);
+    const partyHealMult = passives.healBonusMult(player);
     for (const p of livingMembers(room, d)) {
       if (skill.heal != null) {
         const healMult = (1 + (player.healPower || 0) / 50) * partyHealMult;
@@ -1025,7 +1025,7 @@ function runNextMonster(room, d) {
         }
       } else {
         if (target) {
-          const dodge = passives.dodgeChance(target.character);
+          const dodge = passives.dodgeChance(target);
           if (dodge > 0 && Math.random() < dodge) {
             d.log.push(`${target.name} dodged ${mon.name}'s attack!`);
             if (typeof room.broadcast === "function") room.broadcast();
@@ -1055,10 +1055,28 @@ function runNextMonster(room, d) {
           }
           for (const victim of victims) {
             if (!victim || victim.hp <= 0) continue;
-            const vdmg = Math.max(1, Math.round(dmg * passives.damageTakenMult(victim.character)));
+            // fromElement: saldıranın elementi (ırk zayıflıkları burada işler).
+            const atkElem = skill.element || mon.element || "physical";
+            let vdmg = Math.max(1, Math.round(dmg * passives.damageTakenMult(victim, { fromElement: atkElem })));
+            // Kombo: canavar skill elementi + oyuncudaki statü (örn. su ıslak+yanan hedefe).
+            if (Array.isArray(CONTENT.combos)) {
+              for (const c of CONTENT.combos) {
+                if (!c || !c.when || !c.mult) continue;
+                if (c.ifElement && c.ifElement !== atkElem) continue;
+                if (hasStatus(d, "player", victim.id, c.when)) {
+                  vdmg = Math.round(vdmg * c.mult);
+                  if (c.cleanse) {
+                    d.buffs = (d.buffs || []).filter((b) => !(b.targetType === "player" && String(b.targetId) === String(victim.id) && b.kind === c.when));
+                    d.log.push(`${victim.name} is cleansed of ${c.when}!`);
+                  }
+                }
+              }
+            }
+            if (atkElem === "dark" && CONTENT.darkTrait) vdmg = Math.round(vdmg * (CONTENT.darkTrait.deal || 1.3));
+            vdmg = Math.max(1, vdmg);
             dealDamage(victim, vdmg);
             addFx(d, { type: "damage", actor: victim.id, target: "player", targetId: victim.id, amount: vdmg, source: "monster", monster: mon.kind, elem: skill.element || mon.element || "physical", effect: eff, sound: skill.sound || "", crit });
-            const thorns = passives.thornsMult(victim.character);
+            const thorns = passives.thornsMult(victim);
             if (thorns > 0 && mon.hp > 0) {
               const reflected = Math.max(1, Math.round(vdmg * thorns));
               dealDamage(mon, reflected);
@@ -1267,7 +1285,7 @@ function victory(room, d) {
     let vx = 1;
     let vg = 1;
     for (const m of members) {
-      const vm = passives.victoryMults(m.character);
+      const vm = passives.victoryMults(m);
       if (vm.xp > vx) vx = vm.xp;
       if (vm.gold > vg) vg = vm.gold;
     }
@@ -1536,7 +1554,7 @@ function petActForPlayer(room, d, player){
           const before=player.hp; heal(player, amt); const healed=player.hp-before;
           if(healed>0){ addFx(d,{type:"heal", actor:pid, target:pid, amount:healed, source:"pet", petId:petDef.id, effect:"heal"}); d.log.push(`${petDef.name} heals ${player.name} for ${healed} HP!`); if(typeof room.broadcast==="function") room.broadcast(); else if(room._emitCombat) room._emitCombat(); }
         } else if(sk.kind==="shield"){
-          const amt=Math.round(((sk.value||30) + pMag*1.2) * lvlScale * mult * passives.shieldGainMult(player.character));
+          const amt=Math.round(((sk.value||30) + pMag*1.2) * lvlScale * mult * passives.shieldGainMult(player));
           addShield(player, amt, 1); addFx(d,{type:"shield", actor:pid, target:pid, amount:amt, petId:petDef.id, effect:"radiant_halo_shield", vfxId:"radiant_halo_shield", sound:"shield"}); d.log.push(`${petDef.name} shields ${player.name} for ${amt}!`); if(typeof room.broadcast==="function") room.broadcast(); else if(room._emitCombat) room._emitCombat();
         } else if(sk.kind==="attack"){
           const alive=d.wave.map((m,i)=>({m,i})).filter(x=>x.m.hp>0);
@@ -1613,7 +1631,7 @@ function petAct(room, d) {
           d.log.push(`${petDef.name} heals ${player.name} for ${healed} HP!`);
         }
       } else if (roll < 0.6) {
-        const amt = Math.round(((30 + Math.floor(Math.random() * 20)) + pMag * 1.2) * lvlScale * mult * passives.shieldGainMult(player.character));
+        const amt = Math.round(((30 + Math.floor(Math.random() * 20)) + pMag * 1.2) * lvlScale * mult * passives.shieldGainMult(player));
         addShield(targetAlly, amt, 1);
         addFx(d, { type: "shield", actor: pid, target: pid, amount: amt, petId: petDef.id, effect: "radiant_halo_shield", vfxId: "radiant_halo_shield", sound: "shield" });
         d.log.push(`${petDef.name} shields ${player.name} for ${amt}!`);

@@ -918,11 +918,11 @@ input:focus {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.45rem;
   background: var(--glass-2);
   border: 1px solid var(--glass-line);
   border-radius: 16px;
-  padding: 1.2rem 1.1rem 1rem;
+  padding: 0.85rem 0.9rem 0.8rem;
   text-align: center;
   min-height: 0;
   max-height: 100%;
@@ -950,6 +950,109 @@ input:focus {
   width: 80px;
   height: 80px;
   border-width: 3px;
+}
+
+/* Büyük tıklanabilir avatar (detay penceresi açar) */
+.profile-avatar--lg {
+  width: 104px;
+  height: 104px;
+  cursor: pointer;
+}
+
+.profile-avatar--lg .profile-portrait {
+  width: 96px;
+  height: 96px;
+}
+
+.profile-race {
+  color: #9fd4ff;
+}
+
+.profile-btn-row {
+  display: flex;
+  gap: 0.4rem;
+  width: 100%;
+  margin-top: 0.4rem;
+}
+
+/* Karakter detay penceresi */
+.char-modal-card {
+  position: relative;
+  width: min(560px, 92vw);
+  max-height: 88vh;
+  overflow-y: auto;
+  margin: auto;
+  background: var(--glass-2);
+  border: 1px solid rgba(232, 183, 108, 0.4);
+  border-radius: 18px;
+  padding: 1.2rem 1.2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.char-modal-close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.8rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 1px solid var(--glass-line);
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--ink);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.char-modal-tag {
+  color: #e8b76c;
+  font-size: 0.82rem;
+  margin: 0;
+}
+
+.char-modal-race {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--glass-line);
+  border-radius: 10px;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.8rem;
+}
+
+.char-modal-race strong {
+  color: #9fd4ff;
+}
+
+.char-modal-race p {
+  margin: 0.3rem 0 0;
+  color: var(--ink-dim, #cfc6b4);
+  line-height: 1.45;
+}
+
+.char-modal-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  justify-content: center;
+  margin-top: 0.4rem;
+}
+
+.char-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.3rem 0.8rem;
+  width: 100%;
+  font-size: 0.8rem;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--glass-line);
+  border-radius: 10px;
+  padding: 0.5rem 0.7rem;
+  text-align: left;
 }
 
 .profile-name,

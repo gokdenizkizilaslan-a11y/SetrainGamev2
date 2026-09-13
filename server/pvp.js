@@ -67,7 +67,7 @@ function createPvp(room, challenger, targetId){
       try {
         const passives = require("./passives");
         const { addShield } = require("./players");
-        for (const s of passives.shieldStartFor(p.character, p.maxHp)) addShield(p, s.amount, s.turns);
+        for (const s of passives.shieldStartFor(p, p.maxHp)) addShield(p, s.amount, s.turns);
       } catch (e) {}
     }
   }
@@ -142,7 +142,7 @@ function act(room, player, skillId){
       && opponent.hp / opponent.maxHp > Number(skill.execute.belowHpPct)) {
     throw new Error(`Execute fells only the weak — target must be below ${Math.round(Number(skill.execute.belowHpPct) * 100)}% HP.`);
   }
-  const pvpExec = passives.executeFor(player.character);
+  const pvpExec = passives.executeFor(player);
   if(pvpExec && pvpExec.belowHpPct != null && opponent.maxHp > 0
       && opponent.hp / opponent.maxHp > Number(pvpExec.belowHpPct)) {
     throw new Error(`Your passive execution needs the target below ${Math.round(Number(pvpExec.belowHpPct) * 100)}% HP.`);
@@ -168,7 +168,7 @@ function act(room, player, skillId){
     } else {
       skillBase = Math.max(0, Math.round(Number(skill.baseDamage) || 0));
     }
-    const pCrit = passives.critBonus(player.character);
+    const pCrit = passives.critBonus(player);
     const critChance = (player.critChance + pCrit.chance)/100 || 0.12;
     const crit = Math.random()<critChance;
     const critMult = crit? 1+ ((player.critDamage||40) + pCrit.damage)/100 :1;
@@ -180,7 +180,7 @@ function act(room, player, skillId){
     const oppHpPct = opponent.maxHp > 0 ? opponent.hp / opponent.maxHp : 1;
     const selfHpPct = player.maxHp > 0 ? player.hp / player.maxHp : 1;
     let dmg = Math.max(1, Math.round((skillBase + base * (skill.power || 0))*(1+Math.random()*0.4-0.2)*critMult*(1+pBoost)*(1-pDef+pExp)));
-    dmg = Math.max(1, Math.round(dmg * passives.damageOutMult(player.character, {
+    dmg = Math.max(1, Math.round(dmg * passives.damageOutMult(player, {
       targetHpPct: oppHpPct, selfHpPct, isFirst: !player._struckThisCombat,
       element: skill.element, targetTags: [],
     })));
@@ -188,7 +188,7 @@ function act(room, player, skillId){
         && oppHpPct > Number(skill.bonusVsHighHp.aboveHpPct)) {
       dmg = Math.max(1, Math.round(dmg * (1 + (Number(skill.bonusVsHighHp.mult) || 0))));
     }
-    dmg -= Math.max(0, Math.round(opponent.resistance * (CONTENT.combat.resistanceMitigation || 0.25) - passives.pierceFlat(player.character)));
+    dmg -= Math.max(0, Math.round(opponent.resistance * (CONTENT.combat.resistanceMitigation || 0.25) - passives.pierceFlat(player)));
     dmg=Math.max(1,dmg);
     // İkinci vuruş (bölünmüş hasar): ayrı stat + element.
     if (skill.secondHit && Number(skill.secondHit.mult) > 0) {
@@ -200,7 +200,7 @@ function act(room, player, skillId){
       }
       dmg = Math.max(1, dmg + s2);
     }
-    dmg = Math.max(1, Math.round(dmg * passives.damageTakenMult(opponent.character)));
+    dmg = Math.max(1, Math.round(dmg * passives.damageTakenMult(opponent, { fromElement: skill.element || "physical" })));
     // shield vs hp
     if(skill.element==="dark" && CONTENT.darkTrait) dmg=Math.round(dmg* (CONTENT.darkTrait.deal||1.3));
     // combos: data-driven element matchups (e.g. lightning vs wet)
@@ -235,7 +235,7 @@ function act(room, player, skillId){
       if (Array.isArray(opponent.shields)) opponent.shields = [];
       d.log.push(`${player.name} executed ${opponent.name}!`);
     }
-    const echoSrc = skill.echo || passives.echoFor(player.character);
+    const echoSrc = skill.echo || passives.echoFor(player);
     if (echoSrc && Number(echoSrc.chance) > 0 && Math.random() < Number(echoSrc.chance) && opponent.hp > 0) {
       const echoDmg = Math.max(1, Math.round(dmg * Number(echoSrc.mult || 0.3)));
       dealDamage(opponent, echoDmg);
@@ -244,7 +244,7 @@ function act(room, player, skillId){
     if(opponent.hp<=0 && passives.maybeSecondWind(opponent)){
       d.log.push(`${opponent.name} refuses to fall!`);
     }
-    const thorns = passives.thornsMult(opponent.character);
+    const thorns = passives.thornsMult(opponent);
     if (thorns > 0 && player.hp > 0) {
       const reflected = Math.max(1, Math.round(dmg * thorns));
       dealDamage(player, reflected);
@@ -296,7 +296,7 @@ function act(room, player, skillId){
     for(const e of skill.buffs){
       if(e.kind==="shield"){
         const _tgt = room.players.find(p=>p.id===targetId);
-        addShield(_tgt, Math.round(e.value * passives.shieldGainMult(_tgt ? _tgt.character : null)));
+        addShield(_tgt, Math.round(e.value * passives.shieldGainMult(_tgt)));
       }
       d.buffId=(d.buffId||0)+1;
       d.buffs.push({uid:d.buffId, targetType, targetId, kind:e.kind, value:e.value, turns, skillId:skill.id});

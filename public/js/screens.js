@@ -1169,12 +1169,13 @@ function renderProfileCard(room, selfId) {
     : `<span class="muted">No anomaly</span>`;
   const maxLives = (CATALOG.starting && CATALOG.starting.lives) || 3;
   const isDead = me.lives <= 0;
+  const raceName = me.race ? me.race.name : "";
   el.innerHTML = `
-    <div class="profile-avatar">
+    <div class="profile-avatar profile-avatar--lg" data-char-modal="${me.id}" title="Character details">
       <span class="portrait profile-portrait" data-img="${imgFor(me.character, "class")}" data-variant="${me.character}"></span>
     </div>
     <div class="profile-name">${escapeHtml(me.name)}${me.isHost ? ' <span class="badge badge--host">Host</span>' : ""}${isDead ? ' <span class="badge badge--offline">Fallen</span>' : ""}</div>
-    <div class="profile-class">${classLabel(me.character)} · Lv ${me.level}</div>
+    <div class="profile-class">${classLabel(me.character)} · Lv ${me.level}${raceName ? ` · <span class="profile-race">${escapeHtml(raceName)}</span>` : ""}</div>
     <div class="profile-lives ${isDead ? "profile-lives--dead" : ""}" title="Lives — when 0 you must be revived">
       <span class="lives-icon">${icon("lives")}</span>
       <span class="lives-count">${me.lives}/${maxLives}</span>
@@ -1202,10 +1203,27 @@ function renderProfileCard(room, selfId) {
       ${chip(icon("crit"), `Crit ${me.critChance}%`)}
       ${chip(icon("crit"), `Crit Dmg +${me.critDamage}%`)}
     </div>
-    <div style="display:flex;gap:0.4rem;width:100%;margin-top:0.4rem">
+    <div class="profile-btn-row">
       <button type="button" class="btn btn--bronze btn--mini" style="flex:1" id="btn-open-inventory">Equipments</button>
       <button type="button" class="btn btn--ghost btn--mini" style="flex:1" id="btn-open-pets">Pets</button>
+      <button type="button" class="btn btn--ghost btn--mini" style="flex:1" id="btn-open-details">Details</button>
     </div>`;
+  setCardBg(el, "");
+  initImages(el);
+  const avatarBtn = el.querySelector("[data-char-modal]");
+  if (avatarBtn) {
+    avatarBtn.addEventListener("click", () => {
+      sfxPlay("clicksound");
+      openCharModal(state.room, state.playerId);
+    });
+  }
+  const detailsBtn = el.querySelector("#btn-open-details");
+  if (detailsBtn) {
+    detailsBtn.addEventListener("click", () => {
+      sfxPlay("clicksound");
+      openCharModal(state.room, state.playerId);
+    });
+  }
   const invBtn = el.querySelector("#btn-open-inventory");
   if (invBtn) {
     invBtn.addEventListener("click", () => {
@@ -1224,8 +1242,49 @@ function renderProfileCard(room, selfId) {
       renderTown(state.room);
     });
   }
-  setCardBg(el, imgFor(me.character, "class"));
-  initImages(el);
+}
+
+// ---- Character detail modal (portrait click / Details button) ----
+function openCharModal(room, selfId) {
+  const ov = $("char-modal");
+  if (!ov) return;
+  const me = room.players.find((p) => p.id === selfId);
+  if (!me) return;
+  const cls = (CATALOG.classes || []).find((c) => c.slug === me.character) || {};
+  const basics = cls.basicAttack ? [{ ...cls.basicAttack, target: "enemy", mana: 0 }] : [];
+  const kit = [...basics, ...((cls.skills || []).map((id) => (CATALOG.skills || []).find((s) => s && s.id === id)).filter(Boolean))];
+  const raceStats = me.race && me.race.stats
+    ? Object.entries(me.race.stats).filter(([, v]) => Number(v)).map(([k, v]) => `<span class="stat-chip"><em>${escapeHtml(statLabel(k))}</em><b>+${escapeHtml(String(v))}</b></span>`).join("")
+    : "";
+  const racePass = me.race && me.race.passives ? me.race.passives : [];
+  const classPass = cls.passives || [];
+  ov.innerHTML = `
+    <div class="char-modal-card" role="dialog" aria-modal="true">
+      <button type="button" class="char-modal-close" id="btn-char-close" aria-label="Close">×</button>
+      <div class="profile-avatar profile-avatar--lg">
+        <span class="portrait profile-portrait" data-img="${imgFor(me.character, "class")}" data-variant="${me.character}"></span>
+      </div>
+      <div class="profile-name">${escapeHtml(me.name)}${me.isHost ? ' <span class="badge badge--host">Host</span>' : ""}</div>
+      <div class="profile-class">${escapeHtml(cls.label || me.character)} · Lv ${me.level}</div>
+      ${cls.tagline ? `<p class="char-modal-tag">${escapeHtml(cls.tagline)}</p>` : ""}
+      ${me.race ? `<div class="char-modal-race"><strong>Race: ${escapeHtml(me.race.name)}</strong>${me.race.description ? `<p>${escapeHtml(me.race.description)}</p>` : ""}${raceStats ? `<div class="char-modal-chips">${raceStats}</div>` : ""}</div>` : ""}
+      ${cls.lore ? `<p class="cp-lore">${escapeHtml(cls.lore)}</p>` : ""}
+      <div class="char-modal-grid">
+        <span>❤️ ${me.hp}/${me.maxHp}</span><span>⚔️ ${me.attack}</span>
+        <span>🔮 ${me.magicPower}</span><span>🛡️ ${me.resistance}</span>
+        <span>💚 ${me.healPower}</span><span>👟 ${me.speed}</span>
+        <span>💧 ${me.mana}/${me.maxMana}</span><span>✦ ${me.critChance}% / +${me.critDamage}%</span>
+      </div>
+      ${classPass.length ? `<p class="cp-kit-head">Passives</p><div class="cp-passives">${classPass.map((p) => `<div class="cp-passive"><strong>${escapeHtml(p.name || p.kind)}</strong>${p.desc ? `<span>${escapeHtml(p.desc)}</span>` : ""}</div>`).join("")}</div>` : ""}
+      ${racePass.length ? `<p class="cp-kit-head">Racial traits</p><div class="cp-passives">${racePass.map((p) => `<div class="cp-passive"><strong>${escapeHtml(p.name || p.kind)}</strong>${p.desc ? `<span>${escapeHtml(p.desc)}</span>` : ""}</div>`).join("")}</div>` : ""}
+      ${kit.length ? `<p class="cp-kit-head">Skills</p><div class="cp-kit">${kit.map((s) => `<div class="cp-skill"><span>${escapeHtml(s.name)}</span><em>${escapeHtml(skillShort(s))}</em></div>`).join("")}</div>` : ""}
+    </div>`;
+  ov.classList.remove("hidden");
+  initImages(ov);
+  const close = () => ov.classList.add("hidden");
+  const btn = ov.querySelector("#btn-char-close");
+  if (btn) btn.addEventListener("click", close);
+  ov.onclick = (e) => { if (e.target === ov) close(); };
 }
 
 function renderRightPlayers(room) {
