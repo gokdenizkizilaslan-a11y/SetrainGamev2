@@ -73,6 +73,7 @@ function evolve(room, player, targetTo) {
       title: evo.ascendTitle || `You have ascended to ${evolvedCls.label}!`,
       color: evo.ascendColor || "#e8c547",
       sound: evo.ascendSound || "",
+      sound2: evo.ascendSound2 || "",
     },
   };
 }

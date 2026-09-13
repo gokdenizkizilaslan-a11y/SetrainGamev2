@@ -12577,6 +12577,7 @@ function publicCatalog() {
           title: route.ascendTitle || null,
           color: route.ascendColor || "#e8c547",
           sound: route.ascendSound || "",
+          sound2: route.ascendSound2 || "",
         },
       });
     }

@@ -595,6 +595,8 @@ function showAscendCinematic(ascend, fallbackText) {
   el.classList.remove("hidden");
   if (a.sound) sfxPlay(a.sound);
   else sfxPlay("neutralascension");
+  // İkinci ses varsa kısa gecikmeyle katmanlanır (aynı anda üst üste biner).
+  if (a.sound2) setTimeout(() => { if (el._ascendToken === token) sfxPlay(a.sound2); }, 300);
   setTimeout(() => {
     if (el._ascendToken !== token || !el.querySelector(".ascend-burst")) return;
     el.innerHTML = `<div class="ascend-overlay" style="--ascend:${color}">
