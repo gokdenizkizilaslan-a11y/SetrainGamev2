@@ -1022,7 +1022,7 @@ const CONTENT = {
           "kind": "victoryGold",
           "name": "Ambitious",
           "desc": "+10% gold from victories.",
-          "mult": 0.10
+          "mult": 0.1
         }
       ]
     },
@@ -1107,7 +1107,7 @@ const CONTENT = {
           "kind": "thorns",
           "name": "Petrifying Gaze",
           "desc": "Reflect 10% of damage taken.",
-          "mult": 0.10
+          "mult": 0.1
         }
       ]
     },
@@ -1128,7 +1128,7 @@ const CONTENT = {
           "kind": "damageTaken",
           "name": "Unholy Weakness",
           "desc": "Takes 30% more holy damage.",
-          "mult": 0.30,
+          "mult": 0.3,
           "fromElement": "holy"
         }
       ]
@@ -1150,7 +1150,7 @@ const CONTENT = {
           "kind": "damageTaken",
           "name": "Shadow Frailty",
           "desc": "Takes 30% more shadow damage.",
-          "mult": 0.30,
+          "mult": 0.3,
           "fromElement": "shadow"
         }
       ]
@@ -1172,7 +1172,7 @@ const CONTENT = {
           "kind": "damageTaken",
           "name": "Light Frailty",
           "desc": "Takes 20% more holy damage.",
-          "mult": 0.20,
+          "mult": 0.2,
           "fromElement": "holy"
         }
       ]
@@ -1188,13 +1188,13 @@ const CONTENT = {
           "kind": "damageBonus",
           "name": "Royal Wrath",
           "desc": "+20% damage.",
-          "mult": 0.20
+          "mult": 0.2
         },
         {
           "kind": "lifesteal",
           "name": "Soul Siphon",
           "desc": "Heal 10% of all damage dealt.",
-          "pct": 0.10
+          "pct": 0.1
         }
       ]
     },
@@ -1245,7 +1245,7 @@ const CONTENT = {
           "kind": "shieldStart",
           "name": "Aegis of Dawn",
           "desc": "Start combat with a shield equal to 10% max HP (3 turns).",
-          "pct": 0.10,
+          "pct": 0.1,
           "turns": 3
         }
       ]
@@ -3609,7 +3609,7 @@ const CONTENT = {
       "menu": "/images/backgrounds/menu.webp",
       "setup": "/images/backgrounds/setup.png",
       "lobby": "/images/backgrounds/lobby.png",
-      "town": "/images/backgrounds/town.png",
+      "town": "/images/backgrounds/town.webp?v=mtz9ebcj",
       "dungeon": "/images/backgrounds/dungeon.png",
       "tavern": "/images/backgrounds/tavern.png",
       "blacksmith": "/images/backgrounds/blacksmith.png",
