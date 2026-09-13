@@ -1224,8 +1224,8 @@ input:focus {
 
 .action-cards {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.6rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
 }
 @media (max-width: 900px) {
   .action-cards { grid-template-columns: repeat(2, 1fr); }
@@ -1741,6 +1741,90 @@ input:focus {
   border-top: 1px dashed rgba(232, 183, 108, 0.22);
   padding-top: 0.6rem;
   min-height: 2.6rem;
+}
+
+/* ---- Adventurer's Guide ---- */
+.guide-layout {
+  display: grid;
+  grid-template-columns: 150px 170px 1fr;
+  gap: 0.6rem;
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.guide-side,
+.guide-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  overflow-y: auto;
+  min-height: 0;
+  padding-right: 2px;
+}
+
+.guide-section,
+.guide-item {
+  text-align: left;
+  padding: 0.5rem 0.65rem;
+  border-radius: 10px;
+  border: 1px solid var(--glass-line);
+  background: var(--glass-2);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.guide-section {
+  font-family: "Cinzel", serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+.guide-section.is-active,
+.guide-item.is-active {
+  border-color: rgba(232, 183, 108, 0.55);
+  background: rgba(216, 156, 74, 0.14);
+}
+
+.guide-detail {
+  overflow-y: auto;
+  min-height: 0;
+  background: var(--glass-2);
+  border: 1px solid var(--glass-line);
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+  line-height: 1.55;
+  font-size: 0.85rem;
+}
+
+.guide-detail h3 {
+  margin: 0 0 0.4rem;
+  font-family: "Cinzel", serif;
+  color: var(--gold-bright);
+  font-size: 1.05rem;
+}
+
+.guide-detail p {
+  margin: 0.35rem 0;
+}
+
+@media (max-width: 760px) {
+  .guide-layout {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+  .guide-side {
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+  .guide-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow: visible;
+  }
 }
 
 .log-line {

@@ -16,6 +16,7 @@ const state = {
   pvpOpen: false,
   petsOpen: false,
   skillTreeOpen: false,
+  guideOpen: false,
   skillTreeTab: "global",
   timerDeadline: null,
   timerReset: false,
@@ -146,9 +147,11 @@ function renderTown(room) {
     state._deadShown = false;
   }
 
-  const inOverlay = state.dungeonOpen || state.tavernOpen || state.blacksmithOpen || state.merchantOpen || state.templeOpen || state.inventoryOpen || state.pvpOpen || state.petsOpen || state.skillTreeOpen;
+  const inOverlay = state.dungeonOpen || state.tavernOpen || state.blacksmithOpen || state.merchantOpen || state.templeOpen || state.inventoryOpen || state.pvpOpen || state.petsOpen || state.skillTreeOpen || state.guideOpen;
   $("town-main").classList.toggle("hidden", inOverlay);
   $("skilltree-view").classList.toggle("hidden", !state.skillTreeOpen);
+  const guideEl = $("guide-view");
+  if (guideEl) guideEl.classList.toggle("hidden", !state.guideOpen);
   $("dungeon-view").classList.toggle("hidden", !state.dungeonOpen);
   $("tavern-view").classList.toggle("hidden", !state.tavernOpen);
   $("blacksmith-view").classList.toggle("hidden", !state.blacksmithOpen);
@@ -171,6 +174,8 @@ function renderTown(room) {
     renderTownLog(room);
   } else if (state.skillTreeOpen) {
     renderSkillTreeView(room);
+  } else if (state.guideOpen) {
+    renderGuideView();
   } else if (state.dungeonOpen) {
     renderDungeonView(room);
   } else if (state.tavernOpen) {
@@ -311,7 +316,17 @@ $("btn-skilltree").addEventListener("click", () => {
 });
 
 $("btn-skilltree-close").addEventListener("click", () => {
-  state.skillTreeOpen = false;
+  state.skillTreeOpen = false; state.guideOpen = false;
+  renderTown(state.room);
+});
+
+$("btn-guide").addEventListener("click", () => {
+  state.guideOpen = true;
+  renderTown(state.room);
+});
+
+$("btn-guide-close").addEventListener("click", () => {
+  state.guideOpen = false;
   renderTown(state.room);
 });
 
@@ -368,7 +383,7 @@ function leaveToMainMenu() {
   state.merchantOpen = false;
   state.templeOpen = false;
   state.inventoryOpen = false;
-  state.skillTreeOpen = false;
+  state.skillTreeOpen = false; state.guideOpen = false;
   state.pendingFx = [];
   stopCombatTimer();
   $("settings-overlay").classList.add("hidden");
@@ -530,7 +545,7 @@ socket.on("room:left", () => {
   state.merchantOpen = false;
   state.templeOpen = false;
   state.inventoryOpen = false;
-  state.skillTreeOpen = false;
+  state.skillTreeOpen = false; state.guideOpen = false;
   state.pendingFx = [];
   stopCombatTimer();
   $("chat").classList.add("hidden");
@@ -605,7 +620,7 @@ socket.on("session:expired", () => {
   state.merchantOpen = false;
   state.templeOpen = false;
   state.inventoryOpen = false;
-  state.skillTreeOpen = false;
+  state.skillTreeOpen = false; state.guideOpen = false;
   state.pendingFx = [];
   stopCombatTimer();
   $("chat").classList.add("hidden");

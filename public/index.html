@@ -14,7 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/style.css?v=20260912g" />
+    <link rel="stylesheet" href="/style.css?v=20260912h" />
   </head>
   <body>
 <!-- ============================================================
@@ -200,6 +200,7 @@
                   <h2>Setra Village</h2>
                 </div>
                 <div class="town-day" style="display:flex;align-items:center;gap:0.5rem">
+                  <button type="button" id="btn-guide" class="btn btn--ghost" style="padding:0.4rem 0.7rem;font-size:0.85rem" title="How to play">📖 Guide</button>
                   <button type="button" id="btn-skilltree" class="btn btn--ghost" style="padding:0.4rem 0.7rem;font-size:0.85rem" title="Open Skill Tree">✦ Skill Tree</button>
                   <div style="text-align:center">
                     <span class="day-label">Day</span>
@@ -224,6 +225,14 @@
             <button type="button" class="btn btn--ghost" id="btn-skilltree-close">Back to Town</button>
           </div>
           <div id="skilltree-content"></div>
+        </div>
+
+        <div id="guide-view" class="overlay-view hidden">
+          <div class="overlay-head">
+            <p class="eyebrow">Adventurer's Guide</p>
+            <button type="button" class="btn btn--ghost" id="btn-guide-close">Back to Town</button>
+          </div>
+          <div id="guide-content"></div>
         </div>
 
         <div id="dungeon-view" class="overlay-view hidden">
@@ -403,9 +412,9 @@
     <script src="/effects.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/egg_animation.js"></script>
-    <script src="/js/screens.js?v=20260912g"></script>
-    <script src="/js/bgfx.js?v=20260912g"></script>
-    <script src="/js/client.js?v=20260912g"></script>
+    <script src="/js/screens.js?v=20260912h"></script>
+    <script src="/js/bgfx.js?v=20260912h"></script>
+    <script src="/js/client.js?v=20260912h"></script>
 
 <!-- ============================================================
   THE SETRA GAME - DUNGEON CHEST & 3D LOOT OPENING MODULE

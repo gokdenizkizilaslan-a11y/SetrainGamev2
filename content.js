@@ -12634,6 +12634,13 @@ function publicCatalog() {
     affinity: CONTENT.affinity || {},
     combos: CONTENT.combos || [],
     darkTrait: CONTENT.darkTrait || { deal: 1.3, taken: 1.5 },
+    races: (CONTENT.races || []).map((r) => ({
+      id: r.id,
+      name: r.name || r.id,
+      description: r.description || r.desc || "",
+      stats: r.stats || {},
+      passives: (r.passives || []).map((p) => ({ kind: p.kind, name: p.name || p.kind, desc: p.desc || "" })),
+    })),
     combat: {
       turnTimeoutMs: (CONTENT.combat && CONTENT.combat.turnTimeoutMs) || 15000,
     },

@@ -5,6 +5,7 @@ const CATALOG = {
   monsters: [],
   dungeons: [],
   elements: [],
+  races: [],
   town: { tavern: { bets: [5, 10, 25] } },
 };
 
@@ -1426,6 +1427,140 @@ function renderTownLog(room) {
   el.innerHTML = room.log && room.log.text
     ? `<div class="log-line">${escapeHtml(room.log.text)}</div>`
     : `<div class="log-line muted">The town is quiet. Spend stamina, then end the day.</div>`;
+}
+
+function renderTownLog(room) {
+  const el = $("town-log");
+  el.innerHTML = room.log && room.log.text
+    ? `<div class="log-line">${escapeHtml(room.log.text)}</div>`
+    : `<div class="log-line muted">The town is quiet. Spend stamina, then end the day.</div>`;
+}
+
+// ---- Adventurer's Guide (how-to-play codex) ----
+
+function guideSections() {
+  return [
+    { id: "races", label: "Races" },
+    { id: "elements", label: "Elements" },
+    { id: "combos", label: "Combos" },
+    { id: "basics", label: "Battle Basics" },
+    { id: "town", label: "Town & Days" },
+    { id: "loot", label: "Chests & Loot" },
+    { id: "ascend", label: "Ascension" },
+    { id: "pets", label: "Pets & Eggs" },
+  ];
+}
+
+function guideItems(section) {
+  if (section === "races") {
+    return (CATALOG.races || []).map((r) => ({ id: r.id, label: r.name }));
+  }
+  if (section === "elements") {
+    return (CATALOG.elements || []).map((e) => ({ id: e.id, label: e.name }));
+  }
+  if (section === "combos") {
+    return (CATALOG.combos || []).map((c) => ({ id: c.id, label: c.name }));
+  }
+  if (section === "basics") {
+    return [
+      { id: "turns", label: "Turns & Mana" },
+      { id: "damage", label: "Damage Types" },
+      { id: "shields", label: "Shields & Healing" },
+    ];
+  }
+  if (section === "town") {
+    return [
+      { id: "stamina", label: "Stamina & Days" },
+      { id: "pvp", label: "Parties & PvP" },
+    ];
+  }
+  if (section === "loot") {
+    return [
+      { id: "chests", label: "Chests" },
+      { id: "drops", label: "Drops" },
+    ];
+  }
+  if (section === "ascend") {
+    return [{ id: "ascend", label: "How Ascension Works" }];
+  }
+  if (section === "pets") {
+    return [
+      { id: "eggs", label: "Eggs & Hatching" },
+      { id: "battle", label: "Pets in Battle" },
+    ];
+  }
+  return [];
+}
+
+function guideDetail(section, itemId) {
+  const esc = escapeHtml;
+  if (section === "races") {
+    const r = (CATALOG.races || []).find((x) => x.id === itemId) || (CATALOG.races || [])[0];
+    if (!r) return "<p class='muted'>No races in this world yet.</p>";
+    const stats = Object.entries(r.stats || {}).filter(([, v]) => Number(v)).map(([k, v]) => `<span class="stat-chip"><em>${esc(statLabel(k))}</em><b>+${esc(String(v))}</b></span>`).join("");
+    const pass = (r.passives || []).map((p) => `<div class="cp-passive"><strong>${esc(p.name || p.kind)}</strong>${p.desc ? `<span>${esc(p.desc)}</span>` : ""}</div>`).join("");
+    return `<h3>${esc(r.name)}</h3>${r.description ? `<p>${esc(r.description)}</p>` : ""}${stats ? `<div class="char-modal-chips">${stats}</div>` : ""}${pass ? `<div class="cp-passives">${pass}</div>` : ""}`;
+  }
+  if (section === "elements") {
+    const list = CATALOG.elements || [];
+    const e = list.find((x) => x.id === itemId) || list[0];
+    if (!e) return "<p class='muted'>No elements yet.</p>";
+    const aff = CATALOG.affinity || {};
+    const strong = list.filter((d) => aff[d.id] && aff[d.id][e.id] > 1).map((d) => d.name);
+    const weak = list.filter((a) => aff[e.id] && aff[e.id][a.id] > 1).map((a) => a.name);
+    return `<h3>${esc(e.name)}</h3>${e.description ? `<p>${esc(e.description)}</p>` : ""}`
+      + (strong.length ? `<p><strong>Strong against:</strong> ${esc(strong.join(", "))}</p>` : "")
+      + (weak.length ? `<p><strong>Weak against:</strong> ${esc(weak.join(", "))}</p>` : "");
+  }
+  if (section === "combos") {
+    const c = (CATALOG.combos || []).find((x) => x.id === itemId) || (CATALOG.combos || [])[0];
+    if (!c) return "<p class='muted'>No combos yet.</p>";
+    return `<h3>${esc(c.name)}</h3><p>${esc(c.desc || "")}</p><p class="muted">Trigger: ${esc(c.when || "")} + ${esc(c.ifElement || "")} · ×${esc(String(c.mult || 1))}</p>`;
+  }
+  const staticTexts = {
+    turns: ["<h3>Turns & Mana</h3>", "<p>Each round you get one turn per hero. Skills cost mana; mana refills a little every round and fully in town at dawn.</p><p>If your timer runs out, your turn ends automatically — pick fast or hit End Turn.</p>"],
+    damage: ["<h3>Damage Types</h3>", "<p><strong>Physical & elemental</strong> damage is reduced by resistance and shields, boosted by crits, buffs and elemental matchups.</p><p><strong>True damage (white numbers)</strong> always deals the exact amount — nothing reduces it except shields.</p><p><strong>Execute</strong> skills instantly slay weakened foes below their threshold.</p>"],
+    shields: ["<h3>Shields & Healing</h3>", "<p>Shields absorb damage first and come in separate timed packs — oldest absorbs first, expired packs vanish with leftovers.</p><p>Healing restores HP up to max. Lifesteal heals you for a share of damage dealt.</p>"],
+    stamina: ["<h3>Stamina & Days</h3>", "<p>Almost everything in town costs stamina. When the party is spent, Sleep to end the day — stamina returns at dawn and monsters grow no stronger.</p><p>Fallen heroes (0 lives) need The Essence of Life at the Ancient Temple.</p>"],
+    pvp: ["<h3>Parties & PvP</h3>", "<p>Create or join a party to delve dungeons together — everyone gets their own chest and full XP.</p><p>In town you can challenge another hero to a 1v1 duel from the player list or the map.</p>"],
+    chests: ["<h3>Chests</h3>", "<p>Every dungeon victory grants each party member a chest. Click it once to break the seal, then reveal loot tap by tap.</p><p>Higher ranks drop more items; boss chests drop the most (up to 10).</p>"],
+    drops: ["<h3>Drops</h3>", "<p>Slain monsters drop gold, crafting materials and gear by rarity. Eggs hatch into pets. Bosses always drop their chest and often their weapon.</p>"],
+    ascend: ["<h3>How Ascension Works</h3>", "<p>At the Ancient Temple, heroes of sufficient level ascend into a stronger class — keep your level, gain bonus stats and a full heal.</p><p>Some ascensions also demand a special item. Watch the requirements on the temple card.</p>"],
+    eggs: ["<h3>Eggs & Hatching</h3>", "<p>Eggs drop from dungeons by rarity. Hatch them in the Pets panel — rarer eggs hold stronger pets with more skills.</p><p>Pets level up beside you (up to 20) and evolve through Baby → Young → Adult looks.</p>"],
+    battle: ["<h3>Pets in Battle</h3>", "<p>Equipped pets act on your turn in order: heals, shields, attacks, weakens. Tamers field 3 pets, others 2 — with double strength for Tamers.</p>"],
+  };
+  const t = staticTexts[itemId];
+  if (!t) return "<p class='muted'>Pick a topic on the left.</p>";
+  return t.join("");
+}
+
+function renderGuideView() {
+  const root = $("guide-content");
+  if (!root) return;
+  if (!state.guideSel || !state.guideSel.section) state.guideSel = { section: "races", item: null };
+  const sel = state.guideSel;
+  const sections = guideSections();
+  if (!sections.some((s) => s.id === sel.section)) sel.section = "races";
+  const items = guideItems(sel.section);
+  if (!items.some((i) => i.id === sel.item)) sel.item = items.length ? items[0].id : null;
+  root.innerHTML = `
+    <div class="guide-layout">
+      <div class="guide-side">
+        ${sections.map((s) => `<button type="button" class="guide-section${s.id === sel.section ? " is-active" : ""}" data-guide-section="${escapeHtml(s.id)}">${escapeHtml(s.label)}</button>`).join("")}
+      </div>
+      <div class="guide-list">
+        ${items.map((i) => `<button type="button" class="guide-item${i.id === sel.item ? " is-active" : ""}" data-guide-item="${escapeHtml(i.id)}">${escapeHtml(i.label)}</button>`).join("") || '<p class="muted">Nothing here yet.</p>'}
+      </div>
+      <div class="guide-detail">${guideDetail(sel.section, sel.item)}</div>
+    </div>`;
+  root.querySelectorAll("[data-guide-section]").forEach((b) => b.addEventListener("click", () => {
+    state.guideSel = { section: b.getAttribute("data-guide-section"), item: null };
+    renderGuideView();
+  }));
+  root.querySelectorAll("[data-guide-item]").forEach((b) => b.addEventListener("click", () => {
+    state.guideSel.item = b.getAttribute("data-guide-item");
+    renderGuideView();
+  }));
 }
 
 // ---- Skill Tree ----
