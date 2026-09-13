@@ -1209,20 +1209,12 @@ function renderProfileCard(room, selfId) {
     <div class="profile-btn-row">
       <button type="button" class="btn btn--bronze btn--mini" style="flex:1" id="btn-open-inventory">Equipments</button>
       <button type="button" class="btn btn--ghost btn--mini" style="flex:1" id="btn-open-pets">Pets</button>
-      <button type="button" class="btn btn--ghost btn--mini" style="flex:1" id="btn-open-details">Details</button>
     </div>`;
   setCardBg(el, "");
   initImages(el);
   const avatarBtn = el.querySelector("[data-char-modal]");
   if (avatarBtn) {
     avatarBtn.addEventListener("click", () => {
-      sfxPlay("clicksound");
-      openCharModal(state.room, state.playerId);
-    });
-  }
-  const detailsBtn = el.querySelector("#btn-open-details");
-  if (detailsBtn) {
-    detailsBtn.addEventListener("click", () => {
       sfxPlay("clicksound");
       openCharModal(state.room, state.playerId);
     });
