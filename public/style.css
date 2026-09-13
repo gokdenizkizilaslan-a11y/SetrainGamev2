@@ -888,9 +888,12 @@ input:focus {
 }
 .action-panel > .town-header,
 .action-panel > .action-title,
-.action-panel > .action-cards,
 .action-panel > .town-party {
   flex: none;
+}
+/* Kart ızgarası büyüyebilir (log çizgisine kadar uzar) */
+.action-panel > .action-cards {
+  flex: 1 0 auto;
 }
 .town-log .log-line {
   white-space: nowrap;
