@@ -195,7 +195,12 @@
 
     ctx.clearRect(0, 0, W, H);
 
+    // Town da artik gun isigi + huzme + parilti alir (ic acici meydan).
+    // Canvas #bg-photo'nun USTUNDE oldugu icin fotografi da aydinlatir.
+    // Yazi okunabilirligi kartlarin opak zeminine emanet (style.css).
     if (inTown()) {
+      drawDaylight();
+      drawMotes(dt);
       drawSparks(dt);
     } else {
       drawDaylight();

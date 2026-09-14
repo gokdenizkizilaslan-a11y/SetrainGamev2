@@ -46,6 +46,10 @@ body {
   box-shadow: inset 0 0 160px 40px rgba(0, 0, 0, 0.55);
   z-index: 0;
 }
+/* Town ic acici olsun: kenar karartma daha hafif, manzara nefes alir. */
+body[data-screen="screen-town"] .parchment-vignette {
+  box-shadow: inset 0 0 120px 20px rgba(0, 0, 0, 0.35);
+}
 
 #bg-fx {
   position: fixed;
@@ -77,7 +81,7 @@ body {
    ============================================================ */
 :root {
   --bg-photo-opacity: 0.55;
-  --bg-photo-town-opacity: 0.35;
+  --bg-photo-town-opacity: 0.6;
   --bg-photo-blur: 0px;
   --action-card-bg: rgba(20, 13, 8, 0.88);
   --action-card-opacity: 1;
@@ -98,9 +102,9 @@ body {
 #bg-photo.has-photo {
   opacity: var(--bg-photo-opacity);
 }
-/* TOWN ekraninda panel opak oldugu icin resmi daha silik goster (editor: bgPhotoTownOpacity) */
+/* TOWN manzarasi panelin etrafinda canli gorunsun (editor: bgPhotoTownOpacity) */
 body[data-screen="screen-town"] #bg-photo.has-photo {
-  opacity: var(--bg-photo-town-opacity, 0.35);
+  opacity: var(--bg-photo-town-opacity, 0.6);
 }
 
 .screen {
@@ -1345,13 +1349,18 @@ input:focus {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-color: rgba(0, 0, 0, 0.5);
+  /* Saydam PNG'lerin arkasi bos kalmasin: inline background-image koyu
+     gradient'i ezer, alttan kartin karanligi gorunur ve img "saydam"
+     durur. Acik parsomem zemin img'nin altinda kalir, opak gosterir. */
+  background-color: #ecd9ac;
   min-width: 42px;
   padding: 0;
+  border-color: rgba(232, 183, 108, 0.5);
 }
 
 .action-icon--img.portrait--missing {
-  background-image: none !important;
+  background-image: linear-gradient(135deg, rgba(216, 156, 74, 0.5), rgba(124, 78, 30, 0.5)) !important;
+  background-color: rgba(60, 42, 18, 0.9);
 }
 
 .action-body {
