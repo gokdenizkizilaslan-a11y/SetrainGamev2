@@ -417,6 +417,26 @@ const pages = [
       { path: "ui.classSelect.defaultLore", label: "Default lore (when a class has no lore)", type: "string" },
     ],
   },
+  {
+    id: "themeUi",
+    label: "Theme UI (Buttons & Opacity)",
+    kind: "form",
+    fields: [
+      { path: "images.ui.townPanelBg", label: "Town panel bg (blank = default)", type: "image", folder: "ui" },
+      { path: "images.ui.profileBg", label: "Profile card bg (blank = glass)", type: "image", folder: "ui" },
+      { path: "images.ui.blacksmithButton", label: "Blacksmith button icon (blank = SVG)", type: "image", folder: "ui" },
+      { path: "images.ui.tavernButton", label: "Tavern button icon (blank = SVG)", type: "image", folder: "ui" },
+      { path: "images.ui.merchantButton", label: "Merchant button icon (blank = SVG)", type: "image", folder: "ui" },
+      { path: "images.ui.templeButton", label: "Temple button icon (blank = SVG)", type: "image", folder: "ui" },
+      { path: "images.ui.dungeonButton", label: "Dungeon button icon (blank = SVG)", type: "image", folder: "ui" },
+      { path: "images.ui.searchButton", label: "Search button icon (blank = SVG)", type: "image", folder: "ui" },
+      { path: "images.ui.restButton", label: "Rest button icon (blank = SVG)", type: "image", folder: "ui" },
+      { path: "images.ui.sleepButton", label: "Sleep button icon (blank = SVG)", type: "image", folder: "ui" },
+      { path: "images.ui.actionCardOpacity", label: "Action card opacity 0..1 (blank = default)", type: "string" },
+      { path: "images.ui.bgPhotoOpacity", label: "Background photo opacity 0..1 (blank = default)", type: "string" },
+      { path: "images.ui.bgPhotoTownOpacity", label: "Town background photo opacity 0..1 (blank = default)", type: "string" },
+    ],
+  },
 ];
 
 module.exports = { statLabels, formatLabel, collections, pages, SOUND_IDS, VFX_IDS };

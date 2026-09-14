@@ -77,7 +77,11 @@ body {
    ============================================================ */
 :root {
   --bg-photo-opacity: 0.55;
+  --bg-photo-town-opacity: 0.35;
   --bg-photo-blur: 0px;
+  --action-card-bg: rgba(20, 13, 8, 0.88);
+  --action-card-opacity: 1;
+  --town-scrim-opacity: 1;
 }
 #bg-photo {
   position: fixed;
@@ -94,9 +98,9 @@ body {
 #bg-photo.has-photo {
   opacity: var(--bg-photo-opacity);
 }
-/* TOWN ekraninda panel cam gibi oldugu icin resmi biraz daha silik goster */
+/* TOWN ekraninda panel opak oldugu icin resmi daha silik goster (editor: bgPhotoTownOpacity) */
 body[data-screen="screen-town"] #bg-photo.has-photo {
-  opacity: 0.45;
+  opacity: var(--bg-photo-town-opacity, 0.35);
 }
 
 .screen {
@@ -625,14 +629,21 @@ input:focus {
   background-size: cover;
   background-position: center top;
 }
-/* Kasaba paneli çok yazı içerir — perdesi daha açık tutulur. */
+/* Kasaba paneli: parlak town bg uzerinde okunurluk icin perde koyu (editor: townPanelOpacity ile carpilir). */
 .panel--dashboard.has-card-bg {
   background-image:
     linear-gradient(to top,
-      rgba(0, 0, 0, 0.45) 0%,
-      rgba(0, 0, 0, 0.22) 55%,
-      rgba(0, 0, 0, 0.05) 100%),
+      rgba(0, 0, 0, 0.62) 0%,
+      rgba(0, 0, 0, 0.38) 55%,
+      rgba(0, 0, 0, 0.14) 100%),
     var(--cp-img);
+  background-color: rgba(20, 13, 8, 0.9);
+}
+/* Town basliklari her bg'de okunsun */
+#screen-town h2,
+#screen-town .eyebrow,
+#screen-town .action-title {
+  text-shadow: 0 2px 8px #000, 0 0 2px #000;
 }
 .class-preview .cp-lore,
 .class-preview .cp-stat {
@@ -1274,8 +1285,12 @@ input:focus {
   width: 100%;
   text-align: left;
   padding: 0.85rem 1rem;
-  background: var(--glass-2);
-  border: 1px solid rgba(232, 183, 108, 0.16);
+  /* Opak zemin + ic karartma: parlak town bg uzerinde yazi hep okunur (editor: actionCardOpacity) */
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.25)),
+    var(--action-card-bg, rgba(20, 13, 8, 0.88));
+  opacity: var(--action-card-opacity, 1);
+  border: 1px solid rgba(232, 183, 108, 0.35);
   border-radius: 12px;
   color: var(--ink);
   cursor: pointer;
@@ -1297,8 +1312,10 @@ input:focus {
 }
 
 .action-card--hero {
-  background: linear-gradient(135deg, rgba(216, 156, 74, 0.22), rgba(216, 156, 74, 0.06));
-  border-color: rgba(232, 183, 108, 0.4);
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.18)),
+    linear-gradient(135deg, rgba(216, 156, 74, 0.32), rgba(216, 156, 74, 0.12));
+  border-color: rgba(232, 183, 108, 0.55);
 }
 
 .action-card--locked {
@@ -1327,7 +1344,14 @@ input:focus {
 .action-icon--img {
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
+  background-color: rgba(0, 0, 0, 0.5);
+  min-width: 42px;
   padding: 0;
+}
+
+.action-icon--img.portrait--missing {
+  background-image: none !important;
 }
 
 .action-body {
@@ -1350,13 +1374,15 @@ input:focus {
   overflow: hidden;
   text-overflow: ellipsis;
   line-height: 1.2;
+  text-shadow: 0 1px 6px #000, 0 0 2px #000;
   font-size: clamp(0.75rem, 6.4cqi, 1.05rem);
 }
 
 .action-sub {
   display: block;
   font-size: 0.8rem;
-  color: var(--muted);
+  color: #e6d6b8;
+  text-shadow: 0 1px 5px #000;
   margin-top: 0.15rem;
   white-space: nowrap;
   overflow: hidden;
@@ -1892,6 +1918,23 @@ input:focus {
   top: 0;
   z-index: 5;
   background: transparent;
+}
+/* Overlay "Back to Town" + town ust bar butonlari: transparent ghost parlak bg'de
+   kayboluyordu — opak hap yap, her merchant/dungeon/tavern'da okunur. */
+.overlay-head .btn--ghost,
+.town-header .btn--ghost,
+.town-day .btn--ghost {
+  background: rgba(20, 13, 8, 0.88);
+  border: 1px solid rgba(232, 183, 108, 0.55);
+  color: #f3e7d2;
+  text-shadow: 0 1px 4px #000;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+}
+.overlay-head .btn--ghost:hover,
+.town-header .btn--ghost:hover {
+  background: rgba(60, 42, 18, 0.95);
+  border-color: var(--gold-bright);
+  color: #fff;
 }
 /* Overlay içerikleri: başlık sabit, gövde kendi içinde kayar */
 #skilltree-content,

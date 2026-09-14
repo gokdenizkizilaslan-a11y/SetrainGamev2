@@ -88,10 +88,28 @@ function renderTown(room) {
   showScreen("screen-town");
 
   // Kasaba paneli arka planı (editör: UI → townPanelBg). Yoksa varsayılan zemin.
+  // Opacity alanları (0..1, boş = varsayılan): townPanelOpacity, actionCardOpacity,
+  // bgPhotoOpacity, bgPhotoTownOpacity. Hepsi opsiyonel — bozuk değer oyunu kırmaz.
   try {
     const panelEl = document.querySelector("#screen-town .panel--dashboard");
-    const panelBg = CATALOG.images && CATALOG.images.ui ? CATALOG.images.ui.townPanelBg : "";
+    const ui = (CATALOG.images && CATALOG.images.ui) || {};
+    const panelBg = ui.townPanelBg || "";
     if (panelEl && typeof setCardBg === "function") setCardBg(panelEl, panelBg || "");
+    const clamp01 = (v) => {
+      const n = parseFloat(v);
+      if (!isFinite(n)) return null;
+      return Math.min(1, Math.max(0, n));
+    };
+    const root = document.documentElement;
+    const oCard = clamp01(ui.actionCardOpacity);
+    if (oCard !== null) root.style.setProperty("--action-card-opacity", String(oCard));
+    else root.style.removeProperty("--action-card-opacity");
+    const oBg = clamp01(ui.bgPhotoOpacity);
+    if (oBg !== null) root.style.setProperty("--bg-photo-opacity", String(oBg));
+    else root.style.removeProperty("--bg-photo-opacity");
+    const oBgTown = clamp01(ui.bgPhotoTownOpacity);
+    if (oBgTown !== null) root.style.setProperty("--bg-photo-town-opacity", String(oBgTown));
+    else root.style.removeProperty("--bg-photo-town-opacity");
   } catch (e) {}
 
   const me = room.players.find((p) => p.id === state.playerId);

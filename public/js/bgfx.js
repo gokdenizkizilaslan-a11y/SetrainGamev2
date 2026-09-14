@@ -275,6 +275,20 @@
   function applyPhoto() {
     const box = el();
     if (!box) return;
+    // Editor opacity (images.ui.bgPhotoOpacity / bgPhotoTownOpacity, 0..1, bos = varsayilan).
+    // Bozuk deger CSS default'a duser, oyun kirilmaz.
+    try {
+      const ui = (typeof CATALOG !== "undefined" && CATALOG && CATALOG.images && CATALOG.images.ui) || {};
+      const c01 = (v) => {
+        const n = parseFloat(v);
+        return isFinite(n) ? Math.min(1, Math.max(0, n)) : null;
+      };
+      const o1 = c01(ui.bgPhotoOpacity);
+      const o2 = c01(ui.bgPhotoTownOpacity);
+      const root = document.documentElement;
+      if (o1 !== null) root.style.setProperty("--bg-photo-opacity", String(o1));
+      if (o2 !== null) root.style.setProperty("--bg-photo-town-opacity", String(o2));
+    } catch (e) {}
     // savas/taverna/demirci/tuccar/tapinak overlay'i aciksa onun resmini tercih et
     let key = SCREEN_TO_PHOTO[document.body.dataset.screen] || "menu";
     if (document.body.dataset.screen === "screen-town") {

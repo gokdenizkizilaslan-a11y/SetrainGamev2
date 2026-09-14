@@ -1351,10 +1351,12 @@ function renderActionCards(room, selfId) {
     if (a.id === "rest") a.sub = `+${restAmt} stamina · Wait for your party`;
   });
   el.innerHTML = ACTIONS.map((a) => {
-    // Editördeki kasaba buton görselleri (images.ui.*) varsa ikon kutusunda
-    // gösterilir; yoksa SVG ikon (eski görünüm, oyun kırılmaz).
-    const uiKey = { blacksmith: "blacksmithButton", tavern: "tavernButton", merchant: "merchantButton", temple: "templeButton", dungeon: "dungeonButton" }[a.id] || "";
-    const uiImg = uiKey && CATALOG.images && CATALOG.images.ui ? CATALOG.images.ui[uiKey] : "";
+    // Editördeki kasaba buton görselleri (images.ui.*Button) varsa IKON KUTUSUNDA
+    // gösterilir; yok/bozuksa SVG ikon (eski görünüm, oyun kırılmaz).
+    // Bos string + trim kontrolu: " " gibi degerler img denemez.
+    const uiKey = { blacksmith: "blacksmithButton", tavern: "tavernButton", merchant: "merchantButton", temple: "templeButton", dungeon: "dungeonButton", search: "searchButton", rest: "restButton", sleep: "sleepButton" }[a.id] || "";
+    const rawImg = uiKey && CATALOG.images && CATALOG.images.ui ? CATALOG.images.ui[uiKey] : "";
+    const uiImg = typeof rawImg === "string" ? rawImg.trim() : "";
     const iconHtml = uiImg
       ? `<span class="action-icon action-icon--img" data-img="${escapeHtml(uiImg)}" data-variant="${escapeHtml(a.id)}"></span>`
       : `<span class="action-icon">${icon(a.icon)}</span>`;

@@ -3628,7 +3628,18 @@ const CONTENT = {
     },
     "ui": {
       "panel": "/images/ui/panel.png",
-      "townPanelBg": "/images/ui/townpanelbg.webp?v=mtzteh8n"
+      "townPanelBg": "/images/ui/townpanelbg.webp?v=mtzteh8n",
+      "blacksmithButton": "",
+      "tavernButton": "",
+      "merchantButton": "",
+      "templeButton": "",
+      "dungeonButton": "",
+      "searchButton": "",
+      "restButton": "",
+      "sleepButton": "",
+      "actionCardOpacity": "",
+      "bgPhotoOpacity": "",
+      "bgPhotoTownOpacity": ""
     }
   },
   "town": {
