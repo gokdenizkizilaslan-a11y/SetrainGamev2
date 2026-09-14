@@ -6,6 +6,9 @@ const {
   getItem,
   getMonster,
   getClassBasicAttack,
+  getPetSlots,
+  getPetPowerMult,
+  resolveDamageStat,
 } = require("../content");
 const { dealDamage, addShield, removeShieldInstance, heal, loseLife, addXp, addPetXp, removeItem, healForFood, addItem } = require("./players");
 const passives = require("./passives");
@@ -594,8 +597,9 @@ function act(room, player, skillId, targetId) {
     const echoCfg = skill.echo || null;
     const pEcho = !skill.echo ? passives.echoFor(player) : null;
     if (skillPower > 0 || skillBase > 0 || trueFormula || (skill.secondHit && Number(skill.secondHit.mult) > 0)) {
-      const isPhysical = !skill.element || skill.element === "physical";
-      const baseStat = isPhysical ? player.attack : player.magicPower;
+      const statKey = resolveDamageStat(skill);
+      const isPhysical = statKey === "attack";
+      const baseStat = player[statKey] || 0;
       const rawBase = skillBase + baseStat * skillPower;
       const pAtk = buffSum(d, "player", player.id, "attack") + buffSum(d, "player", player.id, "pet_attack") - buffSum(d, "player", player.id, "weaken") - buffSum(d, "player", player.id, "pet_weaken");
       const pMagic = buffSum(d, "player", player.id, "magicBoost") + buffSum(d, "player", player.id, "pet_magic") - buffSum(d, "player", player.id, "weaken") - buffSum(d, "player", player.id, "pet_weaken");
@@ -1507,7 +1511,7 @@ function flee(room, player) {
 function petActForPlayer(room, d, player){
   if(!player || player.hp<=0) return;
   const activeIds = (player.activePetIds && player.activePetIds.length ? player.activePetIds : (player.activePetId ? [player.activePetId] : []));
-  const maxPets = player.character === "tamer" ? 3 : 2;
+  const maxPets = getPetSlots(player.character);
   const petIds = activeIds.slice(0, maxPets);
   for (let pi = 0; pi < petIds.length; pi++) {
     const activePetId = petIds[pi];
@@ -1515,8 +1519,7 @@ function petActForPlayer(room, d, player){
     if(!petDef) continue;
     const petInst = (player.pets||[]).find(p=>p.petId===activePetId);
     const petLevel = petInst ? (petInst.level||1) : 1;
-    const isTamer = player.character === "tamer";
-    const mult = isTamer ? 2 : 1;
+    const mult = getPetPowerMult(player.character);
     const lvlScale = 1 + petLevel * 0.04;
     // Pet'in KENDİ statları kendi çıktısını etkiler (oyuncuya stat vermez):
     // taban + level atlarken kazanılan instance bonusları.
@@ -1595,15 +1598,14 @@ function petAct(room, d) {
     const player = room.players.find((p) => p.id === pid);
     if (!player || player.hp <= 0) continue;
     const activeIds = (player.activePetIds && player.activePetIds.length ? player.activePetIds : (player.activePetId ? [player.activePetId] : []));
-    const maxPets = player.character === "tamer" ? 3 : 2;
+    const maxPets = getPetSlots(player.character);
     if (!activeIds.length) continue;
     for (const activePetId of activeIds.slice(0, maxPets)) {
       const petDef = (CONTENT.pets || []).find((p) => p.id === activePetId);
       if (!petDef) continue;
       const petInst = (player.pets||[]).find(p=>p.petId===activePetId);
       const petLevel = petInst ? (petInst.level||1) : 1;
-      const isTamer = player.character === "tamer";
-      const mult = isTamer ? 2 : 1;
+      const mult = getPetPowerMult(player.character);
       const pStats = petDef.stats || {};
       const pAtk = (pStats.attack || 0) + (petInst ? (petInst.bonusAttack || 0) : 0);
       const pMag = (pStats.magicPower || 0) + (petInst ? (petInst.bonusMagic || 0) : 0);

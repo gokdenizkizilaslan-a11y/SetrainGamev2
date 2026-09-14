@@ -2027,7 +2027,9 @@ const CONTENT = {
         "max": 80
       },
       "tagline": "Beast Tamer",
-      "lore": "A tamer fighting beside wild companions. Hunts with Beast Bite, endures with War Heal. Strength in the pack, never alone."
+      "lore": "A tamer fighting beside wild companions. Hunts with Beast Bite, endures with War Heal. Strength in the pack, never alone.",
+      "petSlots": 3,
+      "petPowerMult": 2
     },
     {
       "slug": "beastmaster",
@@ -2091,11 +2093,13 @@ const CONTENT = {
         "mana": 8,
         "resistance": 4,
         "magicPower": 4
-      }
+      },
+      "petSlots": 3,
+      "petPowerMult": 2
     },
     {
       "slug": "anima_lorde",
-      "label": "anima_lorde",
+      "label": "Alpha Tamer",
       "baseClass": "beastmaster",
       "image": "/images/characters/anima_lorde.webp?v=mu0er997",
       "basicAttack": {
@@ -2151,7 +2155,9 @@ const CONTENT = {
         "mana": 10,
         "resistance": 5,
         "magicPower": 5
-      }
+      },
+      "petSlots": 4,
+      "petPowerMult": 2
     },
     {
       "slug": "gardener",
@@ -4177,7 +4183,8 @@ const CONTENT = {
       "color": "#dc2626",
       "particles": "slash",
       "sound": [
-        "blood_scythe"
+        "bloodmagic1",
+        "bloodmagic2"
       ]
     },
     "blood_splatter": {
@@ -4185,7 +4192,8 @@ const CONTENT = {
       "color": "#b91c1c",
       "particles": "burst",
       "sound": [
-        "blood_splatter"
+        "bloodmagic1",
+        "bloodmagic2"
       ]
     },
     "blood_eruption": {
@@ -4193,7 +4201,8 @@ const CONTENT = {
       "color": "#e11d48",
       "particles": "burst",
       "sound": [
-        "blood_eruption"
+        "bloodmagic1",
+        "bloodmagic2"
       ]
     },
     "blood_vortex": {
@@ -4201,7 +4210,8 @@ const CONTENT = {
       "color": "#ef4444",
       "particles": "vortex",
       "sound": [
-        "blood_vortex"
+        "bloodmagic1",
+        "bloodmagic2"
       ]
     },
     "blood_needles": {
@@ -4209,7 +4219,8 @@ const CONTENT = {
       "color": "#f43f5e",
       "particles": "slash",
       "sound": [
-        "blood_needles"
+        "bloodmagic1",
+        "bloodmagic2"
       ]
     },
     "blood_drain": {
@@ -4217,7 +4228,8 @@ const CONTENT = {
       "color": "#be123c",
       "particles": "slash",
       "sound": [
-        "blood_drain"
+        "bloodmagic1",
+        "bloodmagic2"
       ]
     },
     "blood_scythe_cross": {
@@ -4225,7 +4237,8 @@ const CONTENT = {
       "color": "#991b1b",
       "particles": "slash",
       "sound": [
-        "blood_scythe_cross"
+        "bloodmagic1",
+        "bloodmagic2"
       ]
     },
     "blood_curse_mist": {
@@ -4233,7 +4246,8 @@ const CONTENT = {
       "color": "#881337",
       "particles": "burst",
       "sound": [
-        "blood_curse_mist"
+        "bloodmagic1",
+        "bloodmagic2"
       ]
     },
     "blood_cleave": {
@@ -4241,7 +4255,8 @@ const CONTENT = {
       "color": "#b91c1c",
       "particles": "slash",
       "sound": [
-        "blood_cleave"
+        "bloodmagic1",
+        "bloodmagic2"
       ]
     },
     "blood_nova": {
@@ -4249,7 +4264,8 @@ const CONTENT = {
       "color": "#dc2626",
       "particles": "burst",
       "sound": [
-        "blood_nova"
+        "bloodmagic1",
+        "bloodmagic2"
       ]
     },
     "shadow_scythe_reap": {
@@ -4257,7 +4273,7 @@ const CONTENT = {
       "color": "#9333ea",
       "particles": "slash",
       "sound": [
-        "shadow_scythe_reap"
+        "bloodmagic2"
       ]
     },
     "void_rift_tear": {
@@ -4265,7 +4281,7 @@ const CONTENT = {
       "color": "#7e22ce",
       "particles": "burst",
       "sound": [
-        "void_rift_tear"
+        "bloodmagic2"
       ]
     },
     "shadow_spikes_rise": {
@@ -4273,7 +4289,7 @@ const CONTENT = {
       "color": "#581c87",
       "particles": "burst",
       "sound": [
-        "shadow_spikes_rise"
+        "bloodmagic2"
       ]
     },
     "dark_matter_orb": {
@@ -4281,7 +4297,7 @@ const CONTENT = {
       "color": "#a855f7",
       "particles": "orb",
       "sound": [
-        "dark_matter_orb"
+        "bloodmagic2"
       ]
     },
     "soul_harvest_wisps": {
@@ -4289,7 +4305,7 @@ const CONTENT = {
       "color": "#c084fc",
       "particles": "burst",
       "sound": [
-        "soul_harvest_wisps"
+        "bloodmagic2"
       ]
     },
     "dark_cross_execution": {
@@ -4297,7 +4313,7 @@ const CONTENT = {
       "color": "#6b21a8",
       "particles": "slash",
       "sound": [
-        "dark_cross_execution"
+        "bloodmagic2"
       ]
     },
     "eclipse_wave": {
@@ -4305,7 +4321,7 @@ const CONTENT = {
       "color": "#4c1d95",
       "particles": "burst",
       "sound": [
-        "eclipse_wave"
+        "bloodmagic2"
       ]
     },
     "shadow_tendrils": {
@@ -4313,7 +4329,7 @@ const CONTENT = {
       "color": "#3b0764",
       "particles": "vortex",
       "sound": [
-        "shadow_tendrils"
+        "bloodmagic2"
       ]
     },
     "phantom_dagger_barrage": {
@@ -4321,7 +4337,7 @@ const CONTENT = {
       "color": "#7c3aed",
       "particles": "slash",
       "sound": [
-        "phantom_dagger_barrage"
+        "bloodmagic2"
       ]
     },
     "black_hole_implosion": {
@@ -4329,7 +4345,7 @@ const CONTENT = {
       "color": "#2e1065",
       "particles": "burst",
       "sound": [
-        "black_hole_implosion"
+        "bloodmagic2"
       ]
     },
     "fire_meteor_crash": {
@@ -4337,7 +4353,7 @@ const CONTENT = {
       "color": "#ea580c",
       "particles": "burst",
       "sound": [
-        "fire_meteor_crash"
+        "firemagic"
       ]
     },
     "flame_pillar_inferno": {
@@ -4345,7 +4361,7 @@ const CONTENT = {
       "color": "#f97316",
       "particles": "burst",
       "sound": [
-        "flame_pillar_inferno"
+        "firemagic"
       ]
     },
     "fire_slash_arc": {
@@ -4353,7 +4369,7 @@ const CONTENT = {
       "color": "#ff5722",
       "particles": "slash",
       "sound": [
-        "fire_slash_arc"
+        "firemagic"
       ]
     },
     "dragon_breath_cone": {
@@ -4361,7 +4377,7 @@ const CONTENT = {
       "color": "#dc2626",
       "particles": "burst",
       "sound": [
-        "dragon_breath_cone"
+        "firemagic"
       ]
     },
     "magma_eruption_burst": {
@@ -4369,7 +4385,7 @@ const CONTENT = {
       "color": "#c2410c",
       "particles": "burst",
       "sound": [
-        "magma_eruption_burst"
+        "firemagic"
       ]
     },
     "phoenix_wings_sweep": {
@@ -4377,7 +4393,7 @@ const CONTENT = {
       "color": "#f97316",
       "particles": "burst",
       "sound": [
-        "phoenix_wings_sweep"
+        "firemagic"
       ]
     },
     "ember_whirlwind": {
@@ -4385,7 +4401,7 @@ const CONTENT = {
       "color": "#fb923c",
       "particles": "vortex",
       "sound": [
-        "ember_whirlwind"
+        "firemagic"
       ]
     },
     "scorch_wave_ring": {
@@ -4393,7 +4409,7 @@ const CONTENT = {
       "color": "#ef4444",
       "particles": "burst",
       "sound": [
-        "scorch_wave_ring"
+        "firemagic"
       ]
     },
     "fireball_streak": {
@@ -4401,7 +4417,7 @@ const CONTENT = {
       "color": "#ea580c",
       "particles": "slash",
       "sound": [
-        "fireball_streak"
+        "firemagic"
       ]
     },
     "supernova_blast": {
@@ -4409,7 +4425,7 @@ const CONTENT = {
       "color": "#f59e0b",
       "particles": "burst",
       "sound": [
-        "supernova_blast"
+        "firemagic"
       ]
     },
     "earth_fissure_rupture": {
@@ -4417,7 +4433,7 @@ const CONTENT = {
       "color": "#854d0e",
       "particles": "burst",
       "sound": [
-        "earth_fissure_rupture"
+        "battleaxe"
       ]
     },
     "boulder_crush_drop": {
@@ -4425,7 +4441,7 @@ const CONTENT = {
       "color": "#713f12",
       "particles": "burst",
       "sound": [
-        "boulder_crush_drop"
+        "battleaxe"
       ]
     },
     "seismic_shockwave_ring": {
@@ -4433,7 +4449,7 @@ const CONTENT = {
       "color": "#a16207",
       "particles": "burst",
       "sound": [
-        "seismic_shockwave_ring"
+        "battleaxe"
       ]
     },
     "sandstorm_vortex_spin": {
@@ -4441,7 +4457,7 @@ const CONTENT = {
       "color": "#d97706",
       "particles": "vortex",
       "sound": [
-        "sandstorm_vortex_spin"
+        "battleaxe"
       ]
     },
     "stone_spikes_impale": {
@@ -4449,7 +4465,7 @@ const CONTENT = {
       "color": "#65a30d",
       "particles": "burst",
       "sound": [
-        "stone_spikes_impale"
+        "battleaxe"
       ]
     },
     "rock_avalanche_barrage": {
@@ -4457,7 +4473,7 @@ const CONTENT = {
       "color": "#78716c",
       "particles": "slash",
       "sound": [
-        "rock_avalanche_barrage"
+        "battleaxe"
       ]
     },
     "earth_hammer_quake": {
@@ -4465,7 +4481,7 @@ const CONTENT = {
       "color": "#b45309",
       "particles": "slash",
       "sound": [
-        "earth_hammer_quake"
+        "battleaxe"
       ]
     },
     "crystal_earth_shards": {
@@ -4473,7 +4489,7 @@ const CONTENT = {
       "color": "#65a30d",
       "particles": "burst",
       "sound": [
-        "crystal_earth_shards"
+        "battleaxe"
       ]
     },
     "mud_splash_entangle": {
@@ -4481,7 +4497,7 @@ const CONTENT = {
       "color": "#451a03",
       "particles": "burst",
       "sound": [
-        "mud_splash_entangle"
+        "battleaxe"
       ]
     },
     "granite_armor_shatter": {
@@ -4489,7 +4505,7 @@ const CONTENT = {
       "color": "#57534e",
       "particles": "burst",
       "sound": [
-        "granite_armor_shatter"
+        "battleaxe"
       ]
     },
     "frost_crystal_spear": {
@@ -4497,7 +4513,7 @@ const CONTENT = {
       "color": "#38bdf8",
       "particles": "slash",
       "sound": [
-        "frost_crystal_spear"
+        "frostmagic"
       ]
     },
     "frost_nova_freeze": {
@@ -4505,7 +4521,7 @@ const CONTENT = {
       "color": "#0284c7",
       "particles": "burst",
       "sound": [
-        "frost_nova_freeze"
+        "frostmagic"
       ]
     },
     "ice_sword_uppercut": {
@@ -4513,7 +4529,7 @@ const CONTENT = {
       "color": "#7dd3fc",
       "particles": "slash",
       "sound": [
-        "ice_sword_uppercut"
+        "frostmagic"
       ]
     },
     "blizzard_cyclone_vortex": {
@@ -4521,7 +4537,7 @@ const CONTENT = {
       "color": "#0ea5e9",
       "particles": "vortex",
       "sound": [
-        "blizzard_cyclone_vortex"
+        "frostmagic"
       ]
     },
     "ice_spikes_ground": {
@@ -4529,7 +4545,7 @@ const CONTENT = {
       "color": "#38bdf8",
       "particles": "burst",
       "sound": [
-        "ice_spikes_ground"
+        "frostmagic"
       ]
     },
     "tidal_wave_water": {
@@ -4537,7 +4553,7 @@ const CONTENT = {
       "color": "#2563eb",
       "particles": "burst",
       "sound": [
-        "tidal_wave_water"
+        "frostmagic"
       ]
     },
     "frozen_orb_shatter": {
@@ -4545,7 +4561,7 @@ const CONTENT = {
       "color": "#06b6d4",
       "particles": "burst",
       "sound": [
-        "frozen_orb_shatter"
+        "frostmagic"
       ]
     },
     "icicle_rain_barrage": {
@@ -4553,7 +4569,7 @@ const CONTENT = {
       "color": "#0284c7",
       "particles": "burst",
       "sound": [
-        "icicle_rain_barrage"
+        "frostmagic"
       ]
     },
     "water_whip_lash": {
@@ -4561,7 +4577,7 @@ const CONTENT = {
       "color": "#3b82f6",
       "particles": "slash",
       "sound": [
-        "water_whip_lash"
+        "frostmagic"
       ]
     },
     "frost_prison_dome": {
@@ -4569,7 +4585,7 @@ const CONTENT = {
       "color": "#0369a1",
       "particles": "burst",
       "sound": [
-        "frost_prison_dome"
+        "frostmagic"
       ]
     },
     "lightning_strike_heavy": {
@@ -4577,7 +4593,7 @@ const CONTENT = {
       "color": "#facc15",
       "particles": "slash",
       "sound": [
-        "lightning_strike_heavy"
+        "normalmagic"
       ]
     },
     "chain_lightning_arc": {
@@ -4585,7 +4601,7 @@ const CONTENT = {
       "color": "#eab308",
       "particles": "slash",
       "sound": [
-        "chain_lightning_arc"
+        "normalmagic"
       ]
     },
     "ball_lightning_plasma": {
@@ -4593,7 +4609,7 @@ const CONTENT = {
       "color": "#ca8a04",
       "particles": "burst",
       "sound": [
-        "ball_lightning_plasma"
+        "normalmagic"
       ]
     },
     "lightning_slash_blade": {
@@ -4601,7 +4617,7 @@ const CONTENT = {
       "color": "#fde047",
       "particles": "slash",
       "sound": [
-        "lightning_slash_blade"
+        "normalmagic"
       ]
     },
     "electric_field_discharge": {
@@ -4609,7 +4625,7 @@ const CONTENT = {
       "color": "#eab308",
       "particles": "burst",
       "sound": [
-        "electric_field_discharge"
+        "normalmagic"
       ]
     },
     "storm_tornado_vortex": {
@@ -4617,7 +4633,7 @@ const CONTENT = {
       "color": "#fbbf24",
       "particles": "vortex",
       "sound": [
-        "storm_tornado_vortex"
+        "normalmagic"
       ]
     },
     "emp_shockwave_ring": {
@@ -4625,7 +4641,7 @@ const CONTENT = {
       "color": "#facc15",
       "particles": "burst",
       "sound": [
-        "emp_shockwave_ring"
+        "normalmagic"
       ]
     },
     "triple_thunder_judgement": {
@@ -4633,7 +4649,7 @@ const CONTENT = {
       "color": "#fef08a",
       "particles": "burst",
       "sound": [
-        "triple_thunder_judgement"
+        "normalmagic"
       ]
     },
     "electric_sparks_shower": {
@@ -4641,7 +4657,7 @@ const CONTENT = {
       "color": "#fde047",
       "particles": "burst",
       "sound": [
-        "electric_sparks_shower"
+        "normalmagic"
       ]
     },
     "storm_spear_throw": {
@@ -4649,7 +4665,7 @@ const CONTENT = {
       "color": "#eab308",
       "particles": "slash",
       "sound": [
-        "storm_spear_throw"
+        "normalmagic"
       ]
     },
     "holy_pillar_smite": {
@@ -4657,7 +4673,7 @@ const CONTENT = {
       "color": "#facc15",
       "particles": "burst",
       "sound": [
-        "holy_pillar_smite"
+        "healingmagic"
       ]
     },
     "radiance_sword_slash": {
@@ -4665,7 +4681,7 @@ const CONTENT = {
       "color": "#fef08a",
       "particles": "slash",
       "sound": [
-        "radiance_sword_slash"
+        "healingmagic"
       ]
     },
     "holy_cross_burst": {
@@ -4673,7 +4689,7 @@ const CONTENT = {
       "color": "#fde047",
       "particles": "burst",
       "sound": [
-        "holy_cross_burst"
+        "healingmagic"
       ]
     },
     "heal_aura_fountain": {
@@ -4681,7 +4697,7 @@ const CONTENT = {
       "color": "#4ade80",
       "particles": "glow",
       "sound": [
-        "heal_aura_fountain"
+        "healingmagic"
       ]
     },
     "radiant_halo_shield": {
@@ -4689,7 +4705,10 @@ const CONTENT = {
       "color": "#f59e0b",
       "particles": "ring",
       "sound": [
-        "radiant_halo_shield"
+        "slash1",
+        "slash2",
+        "slash3",
+        "slash4"
       ]
     },
     "angel_feathers_scatter": {
@@ -4697,7 +4716,7 @@ const CONTENT = {
       "color": "#ffffff",
       "particles": "burst",
       "sound": [
-        "angel_feathers_scatter"
+        "healingmagic"
       ]
     },
     "judgement_solar_flare": {
@@ -4705,7 +4724,7 @@ const CONTENT = {
       "color": "#facc15",
       "particles": "burst",
       "sound": [
-        "judgement_solar_flare"
+        "healingmagic"
       ]
     },
     "holy_lance_projectile": {
@@ -4713,7 +4732,7 @@ const CONTENT = {
       "color": "#fef08a",
       "particles": "slash",
       "sound": [
-        "holy_lance_projectile"
+        "healingmagic"
       ]
     },
     "divine_retribution_ring": {
@@ -4721,7 +4740,7 @@ const CONTENT = {
       "color": "#eab308",
       "particles": "burst",
       "sound": [
-        "divine_retribution_ring"
+        "healingmagic"
       ]
     },
     "dawn_star_explosion": {
@@ -4729,7 +4748,7 @@ const CONTENT = {
       "color": "#ffffff",
       "particles": "burst",
       "sound": [
-        "dawn_star_explosion"
+        "healingmagic"
       ]
     },
     "rising_katana_slash": {
@@ -4753,7 +4772,10 @@ const CONTENT = {
       "color": "#fb923c",
       "particles": "slash",
       "sound": [
-        "heavy_hammer_slam"
+        "slash1",
+        "slash2",
+        "slash3",
+        "slash4"
       ]
     },
     "whirlwind_blade_spin": {
@@ -4761,7 +4783,10 @@ const CONTENT = {
       "color": "#cbd5e1",
       "particles": "vortex",
       "sound": [
-        "whirlwind_blade_spin"
+        "slash1",
+        "slash2",
+        "slash3",
+        "slash4"
       ]
     },
     "piercing_rapier_thrust": {
@@ -4769,7 +4794,10 @@ const CONTENT = {
       "color": "#ffffff",
       "particles": "slash",
       "sound": [
-        "piercing_rapier_thrust"
+        "slash1",
+        "slash2",
+        "slash3",
+        "slash4"
       ]
     },
     "axe_cleave_horizontal": {
@@ -4777,7 +4805,10 @@ const CONTENT = {
       "color": "#ea580c",
       "particles": "slash",
       "sound": [
-        "axe_cleave_horizontal"
+        "slash1",
+        "slash2",
+        "slash3",
+        "slash4"
       ]
     },
     "sonic_air_blade": {
@@ -4785,7 +4816,10 @@ const CONTENT = {
       "color": "#94a3b8",
       "particles": "slash",
       "sound": [
-        "sonic_air_blade"
+        "slash1",
+        "slash2",
+        "slash3",
+        "slash4"
       ]
     },
     "shield_bash_shock": {
@@ -4793,7 +4827,10 @@ const CONTENT = {
       "color": "#64748b",
       "particles": "burst",
       "sound": [
-        "shield_bash_shock"
+        "slash1",
+        "slash2",
+        "slash3",
+        "slash4"
       ]
     },
     "triple_dagger_slash": {
@@ -4801,7 +4838,10 @@ const CONTENT = {
       "color": "#e2e8f0",
       "particles": "slash",
       "sound": [
-        "triple_dagger_slash"
+        "slash1",
+        "slash2",
+        "slash3",
+        "slash4"
       ]
     },
     "guillotine_fall": {
@@ -4809,7 +4849,10 @@ const CONTENT = {
       "color": "#dc2626",
       "particles": "slash",
       "sound": [
-        "guillotine_fall"
+        "slash1",
+        "slash2",
+        "slash3",
+        "slash4"
       ]
     }
   },
@@ -12600,6 +12643,8 @@ function publicCatalog() {
       basicAttack: c.basicAttack,
       skills: c.startingSkills || [],
       manaRegen: c.manaRegen || 0,
+      petSlots: c.petSlots != null ? c.petSlots : null,
+      petPowerMult: c.petPowerMult != null ? c.petPowerMult : null,
       // Stat ranges drive the class-select detail panel (HP/ATK/MAG/RES/SPD bars).
       speed: c.speed || 0,
       hp: c.hp || null,
@@ -12691,6 +12736,9 @@ function publicCatalog() {
       monster: s.monster || false,
       bonusVsStatus: s.bonusVsStatus || null,
       effect: s.effect || null,
+      sound: s.sound || null,
+      scaling: s.scaling || null,
+      baseDamage: s.baseDamage != null ? s.baseDamage : null,
     })),
     items: CONTENT.items.map((i) => ({
       id: i.id,
@@ -12732,6 +12780,34 @@ function getClassBasicAttack(slug) {
   return (c && c.basicAttack) || null;
 }
 
+// How many pets a class can field. Falls back to legacy behavior
+// (tamer 3, everyone else 2) so old content keeps working.
+function getPetSlots(slug) {
+  const c = typeof slug === "string" ? getClass(slug) : slug;
+  if (c && c.petSlots != null) return Math.max(0, Math.min(6, Math.floor(Number(c.petSlots) || 0)));
+  const id = c ? c.slug : slug;
+  return id === "tamer" ? 3 : 2;
+}
+
+function getPetPowerMult(slug) {
+  const c = typeof slug === "string" ? getClass(slug) : slug;
+  if (c && c.petPowerMult != null) return Math.max(1, Number(c.petPowerMult) || 1);
+  const id = c ? c.slug : slug;
+  return id === "tamer" ? 2 : 1;
+}
+
+// Which stat a damage skill scales from. Explicit `scaling` wins
+// ("attack" | "magicPower" | "healPower"); otherwise legacy rule:
+// physical -> attack, everything else -> magicPower.
+function resolveDamageStat(skill) {
+  const s = skill && skill.scaling;
+  if (s === "attack" || s === "magicPower" || s === "healPower") return s;
+  if (s === "magic" || s === "mag") return "magicPower";
+  if (s === "atk") return "attack";
+  const el = skill && skill.element;
+  return (!el || el === "physical") ? "attack" : "magicPower";
+}
+
 function getMonster(id) {
   return CONTENT.monsters.find((m) => m.id === id) || (CONTENT.bosses||[]).find((m) => m.id === id) || null;
 }
@@ -12744,6 +12820,9 @@ module.exports = {
   CONTENT,
   getClass,
   getClassBasicAttack,
+  getPetSlots,
+  getPetPowerMult,
+  resolveDamageStat,
   getDungeon,
   getDungeonSize,
   getSkill,

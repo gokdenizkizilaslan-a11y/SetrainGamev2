@@ -1522,7 +1522,7 @@ function guideDetail(section, itemId) {
     drops: ["<h3>Drops</h3>", "<p>Slain monsters drop gold, crafting materials and gear by rarity. Eggs hatch into pets. Bosses always drop their chest and often their weapon.</p>"],
     ascend: ["<h3>How Ascension Works</h3>", "<p>At the Ancient Temple, heroes of sufficient level ascend into a stronger class — keep your level, gain bonus stats and a full heal.</p><p>Some ascensions also demand a special item. Watch the requirements on the temple card.</p>"],
     eggs: ["<h3>Eggs & Hatching</h3>", "<p>Eggs drop from dungeons by rarity. Hatch them in the Pets panel — rarer eggs hold stronger pets with more skills.</p><p>Pets level up beside you (up to 20) and evolve through Baby → Young → Adult looks.</p>"],
-    battle: ["<h3>Pets in Battle</h3>", "<p>Equipped pets act on your turn in order: heals, shields, attacks, weakens. Tamers field 3 pets, others 2 — with double strength for Tamers.</p>"],
+    battle: ["<h3>Pets in Battle</h3>", "<p>Equipped pets act on your turn in order: heals, shields, attacks, weakens. Pet slots & strength bonus come from your class (see Pets panel).</p>"],
   };
   const t = staticTexts[itemId];
   if (!t) return "<p class='muted'>Pick a topic on the left.</p>";
@@ -3296,7 +3296,9 @@ function renderPetsView(room){
   const root=$("pets-content");
   if(!me){ root.innerHTML=""; return; }
   const activeIds = me.activePetIds || (me.activePetId ? [me.activePetId] : []);
-  const maxPets = me.character==="tamer" ? 3 : 2;
+  const clsInfo = (CATALOG.classes || []).find((c) => c.slug === me.character) || {};
+  const maxPets = clsInfo.petSlots != null ? clsInfo.petSlots : (me.character === "tamer" ? 3 : 2);
+  const petMult = clsInfo.petPowerMult != null ? clsInfo.petPowerMult : (me.character === "tamer" ? 2 : 1);
   const pets = me.pets || [];
   // top slots
   const slots = [];
@@ -3353,7 +3355,7 @@ function renderPetsView(room){
   }).join("");
   root.innerHTML = `
     <section class="inv-section">
-      <div class="inv-section-head"><span class="subhead" style="margin:0">Equipped Pets (${activeIds.length}/${maxPets}) ${me.character==="tamer"?"— Tamer 2× bonus!":""}</span></div>
+      <div class="inv-section-head"><span class="subhead" style="margin:0">Equipped Pets (${activeIds.length}/${maxPets}) ${petMult > 1 ? `— ${maxPets} slots ${petMult}× bonus!` : ""}</span></div>
       <div class="pets-top">
         <div class="pet-slots ${maxPets===3?"pet-slots--3":""}">${slots.join("")}</div>
       </div>
@@ -3365,7 +3367,7 @@ function renderPetsView(room){
     <section class="inv-section">
       <div class="inv-section-head"><span class="subhead" style="margin:0">Collection</span><span class="inv-count">${pets.length} pets</span></div>
       <div class="bag-list">${petsList || '<div class="muted">No pets yet. Hatch eggs above!</div>'}</div>
-      <p class="hint">Baby Lv 1-7 · Young Lv 8+ · Adult Lv 15+. Tamers hold 3, others 2.</p>
+      <p class="hint">Baby Lv 1-7 · Young Lv 8+ · Adult Lv 15+. Pet slots & bonus come from your class.</p>
     </section>
   `;
   initImages(root);

@@ -1,4 +1,4 @@
-const { CONTENT, getItem } = require("../content");
+const { CONTENT, getItem, getPetSlots } = require("../content");
 const { removeItem, addItem } = require("./players");
 
 function hatchEgg(room, player, eggId) {
@@ -29,7 +29,7 @@ function setActivePet(room, player, petId) {
   }
   const owned = (player.pets || []).find((p) => p.petId === petId);
   if (!owned) throw new Error("You don't own that pet.");
-  const maxPets = player.character === "tamer" ? 3 : 2;
+  const maxPets = getPetSlots(player.character);
   const idx = player.activePetIds.indexOf(petId);
   if (idx !== -1) {
     player.activePetIds.splice(idx, 1);

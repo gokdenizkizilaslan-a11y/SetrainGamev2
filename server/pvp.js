@@ -1,4 +1,4 @@
-const { CONTENT, getSkill, getClassBasicAttack } = require("../content");
+const { CONTENT, getSkill, getClassBasicAttack, getPetSlots, getPetPowerMult, resolveDamageStat } = require("../content");
 const { dealDamage, addShield, heal } = require("./players");
 const passives = require("./passives");
 
@@ -152,8 +152,9 @@ function act(room, player, skillId){
   setCooldown(d,player.id,skillId,skill.cooldown);
   if(skill.mana) addFx(d,{type:"mana", actor:player.id, amount:skill.mana, skill:skill.id});
   if(skill.power || skill.baseDamage || (skill.secondHit && Number(skill.secondHit.mult) > 0)){
-    const isPhysical = !skill.element || skill.element==="physical";
-    const base = isPhysical? player.attack : player.magicPower;
+    const statKey = resolveDamageStat(skill);
+    const isPhysical = statKey === "attack";
+    const base = player[statKey] || 0;
     let skillBase = 0;
     let pvpTrueFormula = null;
     if (skill.baseDamage != null && typeof skill.baseDamage === "object") {
@@ -352,13 +353,12 @@ function advanceTurn(room,d){
         const pl=room.players.find(x=>x.id===pid);
         if(!pl) continue;
         const activeIds = (pl.activePetIds && pl.activePetIds.length ? pl.activePetIds : (pl.activePetId?[pl.activePetId]:[]));
-        const maxPets = pl.character==="tamer"?3:2;
+        const maxPets = getPetSlots(pl.character);
         for(const petId of activeIds.slice(0,maxPets)){
           const petDef=(CONTENT.pets||[]).find(x=>x.id===petId);
           const petInst=(pl.pets||[]).find(x=>x.petId===petId);
           const petLevel=petInst?(petInst.level||1):1;
-          const isTamer=pl.character==="tamer";
-          const mult=isTamer?2:1;
+          const mult=getPetPowerMult(pl.character);
           const lvlScale=1+petLevel*0.04;
           const pStats=petDef? (petDef.stats||{}) : {};
           const pAtk=(pStats.attack||0)+(petInst?(petInst.bonusAttack||0):0);

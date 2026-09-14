@@ -1,4 +1,4 @@
-const { CONTENT, getClass, getSkill, getItem } = require("../content");
+const { CONTENT, getClass, getSkill, getItem, getPetSlots } = require("../content");
 
 function randomInt(min, max) {
   const lo = Math.ceil(min);
@@ -467,7 +467,7 @@ function publicPlayer(player) {
     maxShield: player.maxShield || 0,
     pets: (player.pets || []).map((p) => ({ petId: p.petId, hatched: p.hatched, level: p.level||1, xp: p.xp||0, xpToNext: petXpToNext(p.level||1), bonusAttack: p.bonusAttack||0, bonusMagic: p.bonusMagic||0, bonusResist: p.bonusResist||0 })),
     activePetId: player.activePetId || (player.activePetIds && player.activePetIds[0]) || null,
-    activePetIds: (player.activePetIds && player.activePetIds.length ? player.activePetIds : (player.activePetId ? [player.activePetId] : [])).slice(0, player.character==="tamer" ? 3 : 2),
+    activePetIds: (player.activePetIds && player.activePetIds.length ? player.activePetIds : (player.activePetId ? [player.activePetId] : [])).slice(0, getPetSlots(player.character)),
     anomaly: player.anomaly
       ? {
           id: player.anomaly.id,

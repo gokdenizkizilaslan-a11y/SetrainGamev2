@@ -14,6 +14,16 @@ const AUDIO_EXT = [".mp3", ".ogg", ".wav", ".m4a", ".flac"];
 const app = express();
 app.use(express.json({ limit: "50mb" }));
 
+// GameCraft editörü (farklı port, örn. 3054) ses/asset listesini ve
+// önizlemeyi doğrudan çekebilsin diye salt-okunur GET'lere CORS.
+// Oyun mantığına dokunmaz, sadece header ekler.
+app.use((req, res, next) => {
+  if (req.method === "GET" && (req.path === "/api/sounds" || req.path === "/api/music" || req.path.startsWith("/sounds/") || req.path.startsWith("/images/"))) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+  }
+  next();
+});
+
 // Ana sayfayi hicbir zaman tarayicida tutma: her acilista yeni surum yuklenir,
 // boylece eski cached bir build'den kaynakli 404 / bos ekran yasanmaz.
 app.get("/", (req, res, next) => {
