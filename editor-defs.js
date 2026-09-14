@@ -146,7 +146,7 @@ const collections = [
       { key: "petSlots", label: "Pet slots (0-6, blank = auto: tamer 3, others 2)", type: "number" },
       { key: "petPowerMult", label: "Pet power multiplier (1 = normal, 2 = double)", type: "number" },
       { key: "basicAttack.power", label: "Basic attack power (e.g. 1.0)", type: "number" },
-      { key: "basicAttack.baseDamage", label: "Basic attack base damage (flat)", type: "number" },
+      { key: "basicAttack.baseDamage", label: "Basic attack base damage (number — target-HP formulas via GameCraft)", type: "number" },
       { key: "basicAttack.element", label: "Basic attack element", type: "choice", options: ELEMENTS },
       { key: "basicAttack.scaling", label: "Basic attack scales from (blank = auto: physical->attack, else magic)", type: "choice", options: ["attack", "magicPower", "healPower"], allowBlank: true },
       { key: "basicAttack.effect", label: "Basic attack VFX (blank = auto)", type: "choice", options: VFX_IDS, allowBlank: true },
