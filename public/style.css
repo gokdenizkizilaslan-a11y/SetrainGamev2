@@ -2522,6 +2522,36 @@ input:focus {
   margin-bottom: 0.5rem;
   padding-right: 2px;
 }
+/* PvP arena: iki dövüşçü yan yana karşılıklı (dar ekranda alt alta düşer). */
+.pvp-arena {
+  display: flex;
+  gap: 0.6rem;
+  align-items: stretch;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+.pvp-side { flex: 1 1 0; display: flex; }
+.pvp-side .fighter { width: 100%; margin: 0; }
+.pvp-mid {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  padding: 0 0.4rem;
+}
+.pvp-vs {
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  color: var(--gold-bright, #e8b76c);
+  letter-spacing: 0.1em;
+}
+.pvp-round { font-size: 0.7rem; color: var(--muted); }
+@media (max-width: 640px) {
+  .pvp-arena { flex-direction: column; }
+  .pvp-mid { flex-direction: row; gap: 0.6rem; }
+}
 /* Data-driven combat zone backgrounds (GameCraft: savaş zeminleri) */
 .enemy-wave.has-zone-bg,
 .party-row.has-zone-bg {
@@ -2713,6 +2743,69 @@ input:focus {
   margin-top: 0.25rem;
   color: #f3d894;
   font-size: 0.68rem;
+}
+
+.skill-nums {
+  display: block;
+  margin-top: 0.25rem;
+  color: #ffd23e;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.skill-combo {
+  display: block;
+  margin-top: 0.2rem;
+  color: #9fd4ff;
+  font-size: 0.66rem;
+}
+
+.skill-extra {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--ready, #8cc05a);
+  font-size: 0.66rem;
+}
+
+.skill-tip-elem {
+  display: inline-block;
+  margin-bottom: 0.25rem;
+  padding: 0.05rem 0.45rem;
+  border: 1px solid rgba(232, 183, 108, 0.5);
+  border-radius: 20px;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+}
+
+/* İmleci takip eden tekil skill tooltip'i (skill tree + loadout). */
+.skill-float-tip {
+  position: fixed;
+  z-index: 10000;
+  width: max-content;
+  max-width: 250px;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid rgba(232, 183, 108, 0.55);
+  border-radius: 10px;
+  background: rgba(18, 12, 7, 0.97);
+  color: var(--ink);
+  font-size: 0.72rem;
+  line-height: 1.45;
+  text-align: center;
+  pointer-events: none;
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.55);
+}
+.skill-float-tip .skill-tip {
+  position: static;
+  transform: none;
+  width: auto;
+  max-width: none;
+  padding: 0;
+  border: none;
+  background: none;
+  opacity: 1;
+  visibility: visible;
 }
 
 .cp-passives {
@@ -4046,6 +4139,23 @@ input:focus {
   0% { transform: scale(0.7); opacity: 0; }
   60% { transform: scale(1.04); opacity: 1; }
   100% { transform: scale(1); opacity: 1; }
+}
+
+/* Rebirth kartı: küçük takdim cümlesi + ırk renginde büyük ırk adı. */
+.rebirth-card {
+  border-width: 2px;
+}
+.rebirth-sub {
+  margin: 0 0 0.4rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.rebirth-name {
+  margin: 0 0 1.4rem !important;
+  font-size: 2.6rem !important;
+  letter-spacing: 0.06em;
 }
 
 /* ---- Edge buttons (main menu / sound) ---- */

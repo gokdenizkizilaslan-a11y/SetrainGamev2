@@ -45,6 +45,7 @@ function publicRoomSummary(room) {
 function publicRoomState(room) {
   const boss = (() => { try{ const b=require("./boss"); return (room.bossParties||[]).map(b.publicBoss); } catch(e){ return []; }})();
   const pvp = (() => { try{ const p=require("./pvp"); return (room.pvpDuels||[]).map(d=> p.publicPvp(d, room)); } catch(e){ return []; }})();
+  const pvpInvites = (() => { try{ const p=require("./pvp"); return p.publicPvpInvites(room); } catch(e){ return []; }})();
   return {
     id: room.id,
     name: room.name,
@@ -59,6 +60,7 @@ function publicRoomState(room) {
     dungeons: (room.dungeons || []).map(publicDungeon),
     bossParties: boss,
     pvpDuels: pvp,
+    pvpInvites,
     players: room.players.map(publicPlayer),
   };
 }
@@ -114,6 +116,7 @@ function createRoom({ socketId, name, character, mode, roomName }) {
     dungeons: [],
     bossParties: [],
     pvpDuels: [],
+    pvpInvites: [],
     chat: [],
     players: [host],
   };
@@ -239,6 +242,7 @@ function leaveRoom(socketId) {
       }
     }
   }
+  try { require("./pvp").cleanupInvitesFor(room, socketId); } catch (e) {}
 
   room.players = room.players.filter((p) => p.id !== socketId);
   socketToRoom.delete(socketId);
@@ -295,6 +299,7 @@ function startGame(socketId) {
   room.dungeons = [];
   room.bossParties = [];
   room.pvpDuels = [];
+  room.pvpInvites = [];
   stock.init(room);
   room.log = { type: "day", text: "Day 1 — the town stirs. Spend your stamina wisely." };
   for (const p of room.players) {
@@ -334,6 +339,10 @@ function rebindSocket(oldSocketId, newSocketId) {
     pvp.memberIds = pvp.memberIds.map((id) => (id === oldSocketId ? newSocketId : id));
     pvp.turnOrder = (pvp.turnOrder || []).map((id) => (id === oldSocketId ? newSocketId : id));
     if (pvp.currentTurnId === oldSocketId) pvp.currentTurnId = newSocketId;
+  }
+  for (const inv of room.pvpInvites || []) {
+    if (inv.fromId === oldSocketId) inv.fromId = newSocketId;
+    if (inv.toId === oldSocketId) inv.toId = newSocketId;
   }
   return room;
 }

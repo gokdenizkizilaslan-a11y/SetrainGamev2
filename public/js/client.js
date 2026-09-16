@@ -140,6 +140,8 @@ function renderTown(room) {
     state.templeNoticeKey = room.log.ts;
     if (room.log.ascend) {
       showAscendCinematic(room.log.ascend, room.log.text);
+    } else if (room.log.rebirth) {
+      showRebirthCinematic(room.log.rebirth, room.log.text);
     } else {
       sfxPlay("neutralascension");
       showNotice("temple", "Ascension", room.log.text);
@@ -237,7 +239,12 @@ function onRoomState(room) {
     const inBoss = myD && myD.bossId;
     if (inCombat || inBoss) state.dungeonOpen = true;
     const myPvp = (room.pvpDuels||[]).find(d=> d.memberIds.includes(state.playerId));
-    if (myPvp && myPvp.status==="fighting") state.pvpOpen = true;
+    if (myPvp && (myPvp.status==="fighting" || myPvp.status==="done")) {
+      // Düelloya girince zindan lobisi kapanır — iki overlay aynı anda açılmaz.
+      state.dungeonOpen = false;
+      state.pvpOpen = true;
+    }
+    renderPvpInviteBanner(room);
     // ensure pets/dungeon not auto-open on fresh game start
     if (!inCombat && !inBoss && !myPvp && state.petsOpen && !state.inventoryOpen) {
       // keep petsOpen as is only if user explicitly opened it; don't auto-open
@@ -253,6 +260,49 @@ function onRoomState(room) {
   } else {
     renderLobby(room);
   }
+}
+
+// ---- PvP invites (kabul/red banner — overlay'lerin üstünde sabit durur) ----
+function renderPvpInviteBanner(room) {
+  let bar = document.getElementById("pvp-invite-bar");
+  if (!bar) {
+    bar = document.createElement("div");
+    bar.id = "pvp-invite-bar";
+    bar.style.cssText = "position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;";
+    document.body.appendChild(bar);
+  }
+  bar.innerHTML = "";
+  if (!room || room.status !== "playing" || !state.playerId) return;
+  const invites = (room.pvpInvites || []).filter((x) => x.toId === state.playerId || x.fromId === state.playerId);
+  if (!invites.length) return;
+  const nameOf = (id) => {
+    const p = (room.players || []).find((x) => x.id === id);
+    return p ? p.name : "Unknown";
+  };
+  for (const inv of invites) {
+    const card = document.createElement("div");
+    card.style.cssText = "pointer-events:auto;display:flex;align-items:center;gap:10px;background:rgba(12,8,4,.95);border:1px solid var(--gold-bright,#e8b76c);border-radius:10px;padding:8px 12px;box-shadow:0 4px 24px rgba(0,0,0,.5);font-family:Cinzel,serif;";
+    if (inv.toId === state.playerId) {
+      card.innerHTML = `<span>⚔️ <strong>${escapeHtmlName(nameOf(inv.fromId))}</strong> seni düelloya çağırdı!</span>`;
+      const acc = document.createElement("button");
+      acc.type = "button"; acc.className = "btn btn--gold btn--mini"; acc.textContent = "Kabul Et";
+      acc.addEventListener("click", () => socket.emit("pvp:respond", { inviteId: inv.id, accept: true }));
+      const dec = document.createElement("button");
+      dec.type = "button"; dec.className = "btn btn--ghost btn--mini"; dec.textContent = "Reddet";
+      dec.addEventListener("click", () => socket.emit("pvp:respond", { inviteId: inv.id, accept: false }));
+      card.appendChild(acc); card.appendChild(dec);
+    } else {
+      card.innerHTML = `<span>⚔️ <strong>${escapeHtmlName(nameOf(inv.toId))}</strong> bekleniyor…</span>`;
+      const cancel = document.createElement("button");
+      cancel.type = "button"; cancel.className = "btn btn--ghost btn--mini"; cancel.textContent = "Vazgeç";
+      cancel.addEventListener("click", () => socket.emit("pvp:cancel", { inviteId: inv.id }));
+      card.appendChild(cancel);
+    }
+    bar.appendChild(card);
+  }
+}
+function escapeHtmlName(v) {
+  return String(v == null ? "" : v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
 // ---- Chat ----
@@ -549,8 +599,8 @@ socket.on("combat:fx", (payload) => {
   if (payload.dungeonId) {
     const me = (state.room && state.room.players.find((p) => p.id === state.playerId)) || null;
     if (!me) return;
-    // dungeon fights use dungeonId; boss fights use bossId — both are emitted as payload.dungeonId
-    if (me.dungeonId !== payload.dungeonId && me.bossId !== payload.dungeonId) return;
+    // dungeon fights use dungeonId; boss fights use bossId; pvp duels use pvpId — all emitted as payload.dungeonId
+    if (me.dungeonId !== payload.dungeonId && me.bossId !== payload.dungeonId && me.pvpId !== payload.dungeonId) return;
   }
   state.pendingFx.push(...payload.fx);
 });
@@ -559,6 +609,8 @@ socket.on("chat:history", (msgs) => renderChatHistory(msgs));
 socket.on("chat:message", (msg) => addChatMessage(msg));
 
 socket.on("room:left", () => {
+  const bar = document.getElementById("pvp-invite-bar");
+  if (bar) bar.innerHTML = "";
   if (state.leavingToMenu) {
     state.leavingToMenu = false;
     return;

@@ -49,13 +49,15 @@ function pickRace() {
         id: r.id,
         name: r.name || r.id,
         description: r.description || r.desc || "",
+        color: r.color || "",
+        glow: r.glow || "",
         stats: r.stats || {},
         passives: Array.isArray(r.passives) ? r.passives : [],
       };
     }
   }
   const last = races[races.length - 1];
-  return { id: last.id, name: last.name || last.id, description: last.description || last.desc || "", stats: last.stats || {}, passives: [] };
+  return { id: last.id, name: last.name || last.id, description: last.description || last.desc || "", color: last.color || "", glow: last.glow || "", stats: last.stats || {}, passives: [] };
 }
 
 function applyRaceStatBonus(player) {
@@ -77,6 +79,45 @@ function applyAnomalyStatBonus(player) {
   } else if (e.type === "manaRegenBonus") {
     player.manaRegen += e.amount;
   }
+}
+
+// applyRaceStatBonus'un tersi: eski ırkın düz bonus katmanını geri alır.
+// (Level growth, ekipman, evolve bonuslarına dokunmaz — onlar ayrı katman.)
+function removeRaceStatBonus(player) {
+  const st = (player.race && player.race.stats) || {};
+  const fields = ["attack", "resistance", "magicPower", "healPower", "maxHp", "maxMana", "speed", "manaRegen", "critChance", "critDamage"];
+  for (const f of fields) {
+    const v = Number(st[f]) || 0;
+    if (v !== 0) player[f] = (player[f] || 0) - v;
+  }
+  if (st.maxHp) player.hp = Math.min(player.hp, player.maxHp);
+  if (st.maxMana) player.mana = Math.min(player.mana, player.maxMana);
+}
+
+// Irkı aynı şanslarla yeniden zarlar (pickRace), eski bonusu söküp yeniyi
+// takar, türetilmiş değerleri (speed/manaRegen) sıfırdan hesaplar.
+// Seviye, ekipman, evolve, anomaly aynen korunur.
+function rerollRace(player) {
+  const oldRace = player.race ? { id: player.race.id, name: player.race.name } : null;
+  removeRaceStatBonus(player);
+  const race = pickRace();
+  player.race = race;
+  applyRaceStatBonus(player);
+  // Türetilmiş değerler sıfırdan hesaplanır (applyPassiveStatBonus'taki grant
+  // satırları TEKRAR çağrılmaz — yoksa class statBonus pasifleri iki kez biner).
+  try {
+    const passives = require("./passives");
+    const cls = getClass(player.character);
+    if (cls) {
+      const raceStats = (player.race && player.race.stats) || {};
+      player.speed = (cls.speed || 0) + passives.speedBonus(player) + (Number(raceStats.speed) || 0);
+      player.manaRegen = ((CONTENT.combat && CONTENT.combat.manaRegenPerRound) || 3)
+        + (cls.manaRegen || 0) + passives.manaRegenBonus(player) + (Number(raceStats.manaRegen) || 0);
+    }
+  } catch (e) {}
+  player.hp = Math.min(Math.max(0, player.hp), player.maxHp);
+  player.mana = Math.min(Math.max(0, player.mana), player.maxMana);
+  return { oldRace, newRace: race ? { id: race.id, name: race.name } : null };
 }
 
 function applyPassiveStatBonus(player, growth) {
@@ -382,6 +423,11 @@ function createPlayer({ id, name, character, isHost = false }) {
   if (character === "tamer") {
     player.inventory.push({ itemId: "egg_red", qty: 1 }, { itemId: "egg_green", qty: 1 });
   }
+  // Herkes 5 Origin Stone ile başlar (Ancient Temple'da ırk reroll hakkı).
+  try {
+    const startQty = Math.max(0, Math.floor((CONTENT.temple && CONTENT.temple.origin && CONTENT.temple.origin.startQty) ?? 5));
+    if (startQty > 0) player.inventory.push({ itemId: "origin_stone", qty: startQty });
+  } catch (e) {}
   // Tester (secret test class): starts with every chest, every egg and every
   // evolution-required item so ascension and systems can be tried instantly.
   // Fully data-driven — new chests/eggs/requirements are picked up automatically.
@@ -483,6 +529,8 @@ function publicPlayer(player) {
           id: player.race.id,
           name: player.race.name,
           description: player.race.description,
+          color: player.race.color || "",
+          glow: player.race.glow || "",
           stats: player.race.stats || {},
           passives: (player.race.passives || []).map((p) => ({
             kind: p.kind,
@@ -732,6 +780,7 @@ function setSkillLoadout(player, ids) {
 module.exports = {
   createPlayer,
   rollStats,
+  rerollRace,
   publicPlayer,
   addXp,
   xpToNext,

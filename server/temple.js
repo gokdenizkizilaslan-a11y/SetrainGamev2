@@ -1,6 +1,65 @@
 const { CONTENT, getClass, getItem } = require("../content");
 const { requirePlaying, spendStamina } = require("./town");
-const { hasItem, removeItem, addItem, applyStatDelta } = require("./players");
+const { hasItem, removeItem, addItem, applyStatDelta, rerollRace } = require("./players");
+
+function originCfg() {
+  return CONTENT.temple.origin || { item: "origin_stone", price: 250, startQty: 5 };
+}
+// Savaşın ortasında ırk değişmez (canlı stat'larla dövüş bozulur).
+function requireNoActiveBattle(room, player) {
+  const d = (room.dungeons || []).find((x) => (x.memberIds || []).includes(player.id));
+  if (d && (d.status === "fighting" || d.status === "done")) {
+    throw new Error("Finish your battle first.");
+  }
+  const b = (room.bossParties || []).find((x) => (x.memberIds || []).includes(player.id));
+  if (b && b.status === "fighting") {
+    throw new Error("Finish your battle first.");
+  }
+  const pvp = (room.pvpDuels || []).find((x) => (x.memberIds || []).includes(player.id));
+  if (pvp && pvp.status === "fighting") {
+    throw new Error("Finish your duel first.");
+  }
+}
+
+function rerollOrigin(room, player) {
+  requirePlaying(room, player);
+  requireNoActiveBattle(room, player);
+  const cfg = originCfg();
+  const stoneDef = getItem(cfg.item);
+  if (!hasItem(player, cfg.item, 1)) {
+    throw new Error(`You need ${(stoneDef && stoneDef.name) || "an Origin Stone"} to be reborn.`);
+  }
+  spendStamina(player, CONTENT.town.temple.stamina);
+  removeItem(player, cfg.item, 1);
+  const { oldRace, newRace } = rerollRace(player);
+  player.hp = player.maxHp;
+  player.mana = player.maxMana;
+  const same = oldRace && newRace && oldRace.id === newRace.id;
+  return {
+    type: "temple",
+    text: same
+      ? `The stone burns, but your blood holds — you remain ${newRace.name}.`
+      : `You are reborn: ${oldRace ? oldRace.name : "unknown blood"} → ${newRace ? newRace.name : "unknown blood"}!`,
+    rebirth: {
+      name: (newRace && newRace.name) || "Unknown Blood",
+      color: (player.race && player.race.color) || "",
+      glow: (player.race && player.race.glow) || "",
+    },
+  };
+}
+
+function buyOriginStone(room, player) {
+  requirePlaying(room, player);
+  const cfg = originCfg();
+  const price = Math.max(0, Math.floor(cfg.price || 0));
+  if (player.gold < price) {
+    throw new Error(`An Origin Stone costs ${price} gold.`);
+  }
+  player.gold -= price;
+  addItem(player, cfg.item, 1);
+  const stoneDef = getItem(cfg.item);
+  return { type: "temple", text: `You buy ${(stoneDef && stoneDef.name) || "an Origin Stone"} for ${price} gold.` };
+}
 
 function evolve(room, player, targetTo) {
   requirePlaying(room, player);
@@ -141,4 +200,4 @@ function revive(room, player, targetId) {
   return { type: "temple", text: `${player.name} revives ${target.name} with The Essence of Life!` };
 }
 
-module.exports = { evolve, restoreHeart, craft, revive };
+module.exports = { evolve, restoreHeart, craft, revive, rerollOrigin, buyOriginStone };

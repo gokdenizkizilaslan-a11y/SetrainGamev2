@@ -506,6 +506,28 @@ function registerSocketHandlers(io) {
         emitError(socket, err);
       }
     });
+    socket.on("temple:reroll", () => {
+      try {
+        const { room, player } = gameContext(socket);
+        requireAlive(player);
+        const res = temple.rerollOrigin(room, player);
+        room.log = { ...res, name: player.name, ts: Date.now() };
+        emitRoomState(io, room);
+      } catch (err) {
+        emitError(socket, err);
+      }
+    });
+    socket.on("temple:buyOrigin", () => {
+      try {
+        const { room, player } = gameContext(socket);
+        requireAlive(player);
+        const res = temple.buyOriginStone(room, player);
+        room.log = { ...res, name: player.name, ts: Date.now() };
+        emitRoomState(io, room);
+      } catch (err) {
+        emitError(socket, err);
+      }
+    });
 
     // ---- Inventory ----
 
@@ -791,8 +813,30 @@ function registerSocketHandlers(io) {
         requireAlive(player);
         const targetId = payload.targetId;
         room.broadcast=()=>{ emitPvpFx(io,room); emitRoomState(io,room); };
-        const duel=pvp.createPvp(room,player,targetId);
+        const inv=pvp.invitePvp(room,player,targetId);
         room.log={type:"pvp", text:`${player.name} challenges ${room.players.find(p=>p.id===targetId)?.name} to PvP!`, ts:Date.now()};
+        emitRoomState(io,room);
+      }catch(err){ emitError(socket,err); }
+    });
+    socket.on("pvp:respond", (payload={})=>{
+      try{
+        const {room,player}=gameContext(socket);
+        requireAlive(player);
+        room.broadcast=()=>{ emitPvpFx(io,room); emitRoomState(io,room); };
+        const res=pvp.respondPvp(room,player,payload.inviteId,Boolean(payload.accept));
+        if (res && res.declined) {
+          room.log={type:"pvp", text:`${player.name} declines the duel.`, ts:Date.now()};
+        } else if (res && res.duel) {
+          const otherId = res.duel.memberIds.find(id=>id!==player.id);
+          room.log={type:"pvp", text:`${player.name} accepts ${room.players.find(p=>p.id===otherId)?.name}'s duel!`, ts:Date.now()};
+        }
+        emitRoomState(io,room);
+      }catch(err){ emitError(socket,err); }
+    });
+    socket.on("pvp:cancel", (payload={})=>{
+      try{
+        const {room,player}=gameContext(socket);
+        pvp.cancelInvite(room,player,payload.inviteId);
         emitRoomState(io,room);
       }catch(err){ emitError(socket,err); }
     });

@@ -3169,6 +3169,7 @@ const CONTENT = {
     },
     {
       "id": "arcane_barrage",
+      "cooldown": 2,
       "name": "Arcane Barrage",
       "target": "enemy",
       "mana": 8,
@@ -3189,6 +3190,7 @@ const CONTENT = {
     },
     {
       "id": "aimed_shot",
+      "cooldown": 2,
       "name": "Aimed Shot",
       "target": "enemy",
       "mana": 10,
@@ -3211,6 +3213,7 @@ const CONTENT = {
     },
     {
       "id": "vampiric_strike",
+      "cooldown": 3,
       "name": "Vampiric Strike",
       "target": "enemy",
       "mana": 9,
@@ -3253,6 +3256,7 @@ const CONTENT = {
     },
     {
       "id": "execute",
+      "cooldown": 3,
       "name": "Execute",
       "target": "enemy",
       "mana": 12,
@@ -3275,6 +3279,7 @@ const CONTENT = {
     },
     {
       "id": "mend",
+      "cooldown": 2,
       "name": "Mend",
       "target": "ally",
       "mana": 8,
@@ -3284,6 +3289,7 @@ const CONTENT = {
     },
     {
       "id": "greater_mend",
+      "cooldown": 3,
       "name": "Greater Mend",
       "target": "ally",
       "mana": 14,
@@ -3323,6 +3329,7 @@ const CONTENT = {
     },
     {
       "id": "shield_wall",
+      "cooldown": 2,
       "name": "Shield Wall",
       "target": "self",
       "mana": 7,
@@ -3332,6 +3339,7 @@ const CONTENT = {
     },
     {
       "id": "spirit_surge",
+      "cooldown": 3,
       "name": "Spirit Surge",
       "target": "party",
       "mana": 6,
@@ -3341,6 +3349,7 @@ const CONTENT = {
     },
     {
       "id": "war_cry",
+      "cooldown": 3,
       "name": "War Cry",
       "target": "enemy",
       "mana": 10,
@@ -3353,6 +3362,7 @@ const CONTENT = {
     },
     {
       "id": "volley",
+      "cooldown": 3,
       "name": "Volley",
       "target": "enemy",
       "mana": 12,
@@ -3364,6 +3374,7 @@ const CONTENT = {
     },
     {
       "id": "meteor",
+      "cooldown": 4,
       "name": "Meteor",
       "target": "enemy",
       "mana": 14,
@@ -3376,6 +3387,7 @@ const CONTENT = {
     },
     {
       "id": "shadow_veil",
+      "cooldown": 3,
       "name": "Shadow Veil",
       "target": "enemy",
       "mana": 10,
@@ -3389,6 +3401,7 @@ const CONTENT = {
     },
     {
       "id": "holy_judgement",
+      "cooldown": 3,
       "name": "Holy Judgement",
       "target": "enemy",
       "mana": 10,
@@ -3401,6 +3414,7 @@ const CONTENT = {
     },
     {
       "id": "death_mark",
+      "cooldown": 4,
       "name": "Death Mark",
       "target": "enemy",
       "mana": 14,
@@ -3413,6 +3427,7 @@ const CONTENT = {
     },
     {
       "id": "divine_blessing",
+      "cooldown": 4,
       "name": "Divine Blessing",
       "target": "party",
       "mana": 16,
@@ -3422,6 +3437,7 @@ const CONTENT = {
     },
     {
       "id": "bastion",
+      "cooldown": 3,
       "name": "Bastion",
       "target": "self",
       "mana": 8,
@@ -3431,6 +3447,7 @@ const CONTENT = {
     },
     {
       "id": "cataclysm",
+      "cooldown": 4,
       "name": "Cataclysm",
       "target": "enemy",
       "mana": 16,
@@ -3443,6 +3460,7 @@ const CONTENT = {
     },
     {
       "id": "storm_barrage",
+      "cooldown": 4,
       "name": "Storm Barrage",
       "target": "enemy",
       "mana": 15,
@@ -3454,6 +3472,7 @@ const CONTENT = {
     },
     {
       "id": "comet",
+      "cooldown": 4,
       "name": "Comet",
       "target": "enemy",
       "mana": 18,
@@ -3466,6 +3485,7 @@ const CONTENT = {
     },
     {
       "id": "soul_thief",
+      "cooldown": 4,
       "name": "Soul Thief",
       "target": "enemy",
       "mana": 14,
@@ -3479,6 +3499,7 @@ const CONTENT = {
     },
     {
       "id": "radiance",
+      "cooldown": 3,
       "name": "Radiance",
       "target": "enemy",
       "mana": 14,
@@ -3491,6 +3512,7 @@ const CONTENT = {
     },
     {
       "id": "soul_reap",
+      "cooldown": 5,
       "name": "Soul Reap",
       "target": "enemy",
       "mana": 18,
@@ -3503,6 +3525,7 @@ const CONTENT = {
     },
     {
       "id": "resurgence",
+      "cooldown": 5,
       "name": "Resurgence",
       "target": "party",
       "mana": 20,
@@ -3513,6 +3536,7 @@ const CONTENT = {
     },
     {
       "id": "immovable",
+      "cooldown": 4,
       "name": "Immovable",
       "target": "self",
       "mana": 10,
@@ -3522,6 +3546,7 @@ const CONTENT = {
     },
     {
       "id": "battle_fury",
+      "cooldown": 3,
       "name": "Battle Fury",
       "target": "self",
       "mana": 8,
@@ -3537,6 +3562,7 @@ const CONTENT = {
     },
     {
       "id": "iron_wall",
+      "cooldown": 3,
       "name": "Iron Wall",
       "target": "self",
       "mana": 8,
@@ -3552,6 +3578,7 @@ const CONTENT = {
     },
     {
       "id": "group_guard",
+      "cooldown": 3,
       "name": "Group Guard",
       "target": "party",
       "mana": 10,
@@ -3567,6 +3594,7 @@ const CONTENT = {
     },
     {
       "id": "cripple",
+      "cooldown": 3,
       "name": "Cripple",
       "target": "enemy",
       "mana": 8,
@@ -3790,6 +3818,7 @@ const CONTENT = {
     },
     {
       "id": "barrier",
+      "cooldown": 3,
       "name": "Barrier",
       "target": "party",
       "mana": 10,
@@ -3805,6 +3834,7 @@ const CONTENT = {
     },
     {
       "id": "stone_skin",
+      "cooldown": 3,
       "name": "Stone Skin",
       "target": "self",
       "mana": 7,
@@ -3824,6 +3854,7 @@ const CONTENT = {
     },
     {
       "id": "holy_ward",
+      "cooldown": 2,
       "name": "Holy Ward",
       "target": "ally",
       "mana": 8,
@@ -3839,6 +3870,7 @@ const CONTENT = {
     },
     {
       "id": "dark_veil",
+      "cooldown": 2,
       "name": "Dark Veil",
       "target": "self",
       "mana": 8,
@@ -3867,6 +3899,7 @@ const CONTENT = {
     },
     {
       "id": "frost_bolt",
+      "cooldown": 2,
       "name": "Frost Bolt",
       "target": "enemy",
       "mana": 8,
@@ -3878,6 +3911,7 @@ const CONTENT = {
     },
     {
       "id": "frost_nova",
+      "cooldown": 2,
       "name": "Frost Nova",
       "target": "enemy",
       "mana": 10,
@@ -3914,6 +3948,7 @@ const CONTENT = {
     },
     {
       "id": "lightning_bolt",
+      "cooldown": 2,
       "name": "Lightning Bolt",
       "target": "enemy",
       "mana": 9,
@@ -3968,6 +4003,7 @@ const CONTENT = {
     },
     {
       "id": "ember_storm",
+      "cooldown": 2,
       "name": "Ember Storm",
       "target": "enemy",
       "mana": 10,
@@ -3987,6 +4023,7 @@ const CONTENT = {
     },
     {
       "id": "blaze_rupture",
+      "cooldown": 3,
       "name": "Blaze Rupture",
       "target": "enemy",
       "mana": 12,
@@ -3999,6 +4036,7 @@ const CONTENT = {
     },
     {
       "id": "cold_snap",
+      "cooldown": 2,
       "name": "Cold Snap",
       "target": "enemy",
       "mana": 7,
@@ -4018,6 +4056,7 @@ const CONTENT = {
     },
     {
       "id": "glacial_shatter",
+      "cooldown": 3,
       "name": "Glacial Shatter",
       "target": "enemy",
       "mana": 11,
@@ -4049,6 +4088,7 @@ const CONTENT = {
     },
     {
       "id": "static_overload",
+      "cooldown": 2,
       "name": "Static Overload",
       "target": "enemy",
       "mana": 11,
@@ -4080,6 +4120,7 @@ const CONTENT = {
     },
     {
       "id": "venom_burst",
+      "cooldown": 2,
       "name": "Venom Burst",
       "target": "enemy",
       "mana": 11,
@@ -4092,6 +4133,7 @@ const CONTENT = {
     },
     {
       "id": "broken_guard",
+      "cooldown": 2,
       "name": "Broken Guard",
       "target": "enemy",
       "mana": 7,
@@ -4127,6 +4169,7 @@ const CONTENT = {
     },
     {
       "id": "devastate",
+      "cooldown": 3,
       "name": "Devastate",
       "target": "enemy",
       "mana": 12,
@@ -4151,6 +4194,7 @@ const CONTENT = {
     },
     {
       "id": "thorn_volley",
+      "cooldown": 2,
       "name": "Thorn Volley",
       "target": "enemy",
       "mana": 9,
@@ -4803,6 +4847,18 @@ const CONTENT = {
       },
       "image": "/images/items/golem_heart.png",
       "description": "Offer it at the Ancient Temple to mend a lost heart."
+    },
+    {
+      "id": "origin_stone",
+      "name": "Origin Stone",
+      "slot": "material",
+      "rarity": "epic",
+      "price": {
+        "gold": 250,
+        "wood": 0
+      },
+      "image": "",
+      "description": "Offer it at the Ancient Temple to be reborn into a new race."
     },
     {
       "id": "ancient_relic",
@@ -8469,6 +8525,11 @@ const CONTENT = {
       "item": "golem_heart",
       "itemName": "Heart of Golem",
       "text": "Offer a Heart of Golem to mend a lost heart."
+    },
+    "origin": {
+      "item": "origin_stone",
+      "price": 250,
+      "startQty": 5
     },
     "recipes": [
       {
@@ -12456,6 +12517,7 @@ const CONTENT = {
   "races": [
     {
       "id": "human",
+      "color": "#c0b283",
       "name": "Human",
       "desc": "Adaptable and ambitious. +10% gold from victories.",
       "chance": 10,
@@ -12471,6 +12533,7 @@ const CONTENT = {
     },
     {
       "id": "elf",
+      "color": "#6fa287",
       "name": "Elf",
       "desc": "Graceful and attuned. +12 mana, +1 speed.",
       "chance": 10,
@@ -12482,6 +12545,7 @@ const CONTENT = {
     },
     {
       "id": "dwarf",
+      "color": "#b3814d",
       "name": "Dwarf",
       "desc": "Stout and enduring. +30 max HP, +6 resistance.",
       "chance": 10,
@@ -12493,6 +12557,7 @@ const CONTENT = {
     },
     {
       "id": "orc",
+      "color": "#7a8b4f",
       "name": "Orc",
       "desc": "Brutal and strong. +6 attack.",
       "chance": 10,
@@ -12503,6 +12568,7 @@ const CONTENT = {
     },
     {
       "id": "beastkin",
+      "color": "#c98f4e",
       "name": "Beastkin",
       "desc": "Wild instincts. +2 speed, +3 attack.",
       "chance": 8.75,
@@ -12514,6 +12580,7 @@ const CONTENT = {
     },
     {
       "id": "wyvernkin",
+      "color": "#6fa8b8",
       "name": "Wyvernkin",
       "desc": "Sky hunters. 5% dodge chance.",
       "chance": 8.75,
@@ -12529,6 +12596,7 @@ const CONTENT = {
     },
     {
       "id": "high_elf",
+      "color": "#93a9d6",
       "name": "High Elf",
       "desc": "Ancient magic in the blood. +8 magic power.",
       "chance": 8.75,
@@ -12539,6 +12607,7 @@ const CONTENT = {
     },
     {
       "id": "gorgon",
+      "color": "#69a377",
       "name": "Gorgon",
       "desc": "A gaze of stone. Reflects 10% damage, +4 resistance.",
       "chance": 8.75,
@@ -12556,6 +12625,7 @@ const CONTENT = {
     },
     {
       "id": "demonblood",
+      "color": "#b0503c",
       "name": "Demonblood",
       "desc": "Burning heritage. +15% damage, but takes 30% more holy damage.",
       "chance": 7,
@@ -12578,6 +12648,7 @@ const CONTENT = {
     },
     {
       "id": "lightborn",
+      "color": "#d8c56a",
       "name": "Lightborn",
       "desc": "Blessed radiance. +15% healing, but takes 30% more shadow damage.",
       "chance": 7,
@@ -12600,6 +12671,7 @@ const CONTENT = {
     },
     {
       "id": "voidborn",
+      "color": "#7f74b8",
       "name": "Voidborn",
       "desc": "Touched by the void. 8% dodge, but takes 20% more holy damage.",
       "chance": 7,
@@ -12622,6 +12694,8 @@ const CONTENT = {
     },
     {
       "id": "daemonkin",
+      "color": "#0b0b12",
+      "glow": "#ff5a36",
       "name": "Daemonkin",
       "desc": "Pure demon royalty. +20% damage and +10% lifesteal.",
       "chance": 1,
@@ -12643,6 +12717,8 @@ const CONTENT = {
     },
     {
       "id": "dragonborn",
+      "color": "#0b0b12",
+      "glow": "#4d9fff",
       "name": "Dragonborn",
       "desc": "Scales of the wyrms. Take 15% less damage.",
       "chance": 1,
@@ -12658,6 +12734,8 @@ const CONTENT = {
     },
     {
       "id": "arch_vampyr",
+      "color": "#0b0b12",
+      "glow": "#e0244a",
       "name": "Arch-Vampyr",
       "desc": "Ancient predator. Heal 12% of all damage dealt.",
       "chance": 1,
@@ -12673,6 +12751,8 @@ const CONTENT = {
     },
     {
       "id": "archangel",
+      "color": "#0b0b12",
+      "glow": "#e8d98a",
       "name": "Archangel",
       "desc": "Celestial guardian. +25% healing and start combat with a 10% shield (3 turns).",
       "chance": 1,
@@ -12867,6 +12947,7 @@ function publicCatalog() {
     },
     temple: {
       restore: CONTENT.temple.restore,
+      origin: CONTENT.temple.origin || { item: "origin_stone", price: 250, startQty: 5 },
       recipes: CONTENT.temple.recipes,
       evolutions,
       maxLives: CONTENT.starting.lives,
@@ -12880,6 +12961,8 @@ function publicCatalog() {
       id: r.id,
       name: r.name || r.id,
       description: r.description || r.desc || "",
+      color: r.color || "",
+      glow: r.glow || "",
       stats: r.stats || {},
       passives: (r.passives || []).map((p) => ({ kind: p.kind, name: p.name || p.kind, desc: p.desc || "" })),
     })),
@@ -12934,6 +13017,7 @@ function publicCatalog() {
       sound: s.sound || null,
       scaling: s.scaling || null,
       baseDamage: s.baseDamage != null ? s.baseDamage : null,
+      cooldown: s.cooldown || null,
     })),
     items: CONTENT.items.map((i) => ({
       id: i.id,

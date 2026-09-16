@@ -146,6 +146,28 @@ function hasStatus(d, targetType, targetId, kind) {
   return d.buffs.some((b) => b.targetType === targetType && String(b.targetId) === String(targetId) && b.kind === kind);
 }
 
+// Mortal Wounds: hedefin üzerindeki healblock, ALACAĞI tüm iyileşmeyi kısar.
+function healKept(d, targetType, targetId, amount) {
+  const m = passives.healTakenMultFromBuffs(d.buffs, targetType, targetId);
+  return m >= 1 ? amount : Math.max(0, Math.round(amount * m));
+}
+// Wounds pasifi (class/ırk): vuranın hasarı hedefe healblock bulaştırır.
+function maybeApplyWounds(room, d, attacker, skill, targetType, targetId, dealt) {
+  if (!(dealt > 0)) return;
+  let wnd = null;
+  try { wnd = passives.woundsOnHit(attacker); } catch (e) {}
+  if (!wnd || !(wnd.value > 0) || Math.random() >= wnd.chance) return;
+  const alive = targetType === "monster"
+    ? (d.wave[targetId] && d.wave[targetId].hp > 0)
+    : (room.players.find((p) => p.id === targetId) || {}).hp > 0;
+  if (!alive) return;
+  d.buffId = (d.buffId || 0) + 1;
+  d.buffs.push({ uid: d.buffId, targetType, targetId, kind: "healblock", value: wnd.value, turns: wnd.duration, skillId: skill && skill.id, sourceId: attacker.id, name: (skill && skill.name) || "Wounds" });
+  addFx(d, { type: "buff", actor: attacker.id, target: targetType === "monster" ? "enemy" : "player", targetId, kind: "healblock", value: wnd.value, turns: wnd.duration });
+  const tName = targetType === "monster" ? (d.wave[targetId] || {}).name : (room.players.find((p) => p.id === targetId) || {}).name;
+  d.log.push(`${attacker.name}'s wounds fester on ${tName || "the foe"}!`);
+}
+
 // Skill cooldowns: optional `cooldown: N` on a skill means "usable every N rounds"
 // (N=2 → usable on rounds 1,3,5…). Stored as rounds-left per player per skill.
 // Skills without the field behave exactly as before.
@@ -173,8 +195,8 @@ function applyBuffs(room, d, actor, actorName, skill, targetType, targetIds, act
   if (!entries || !entries.length) return;
   // Players may only debuff enemies — never buff them.
   const allowed = targetType === "monster" && actorIsPlayer
-    ? new Set(["weaken", "expose", "dot", "wet", "frozen"])
-    : new Set(["attack", "defense", "regen", "weaken", "expose", "dot", "wet", "frozen", "shield", "magicBoost"]);
+    ? new Set(["weaken", "expose", "dot", "wet", "frozen", "healblock"])
+    : new Set(["attack", "defense", "regen", "weaken", "expose", "dot", "wet", "frozen", "shield", "magicBoost", "healblock"]);
   const turns = Math.max(1, Math.round(skill.duration || 1));
   let applied = false;
   for (const tid of targetIds) {
@@ -291,14 +313,14 @@ function tickBuffs(room, d) {
         const p = room.players.find((q) => q.id === b.targetId);
         if (p && p.hp > 0 && p.hp < p.maxHp) {
           const before = p.hp;
-          heal(p, Math.max(1, Math.round(p.maxHp * b.value * passives.regenBonusMult(p))));
+          heal(p, healKept(d, "player", p.id, Math.max(1, Math.round(p.maxHp * b.value * passives.regenBonusMult(p)))));
           const healed = p.hp - before;
           if (healed > 0) addFx(d, { type: "heal", actor: p.id, target: "player", targetId: p.id, amount: healed, source: "regen", effect: "heal" });
         }
       } else {
         const mon = d.wave[b.targetId];
         if (mon && mon.hp > 0 && mon.hp < mon.maxHp) {
-          const healed = Math.min(mon.maxHp - mon.hp, Math.max(1, Math.round(mon.maxHp * b.value)));
+          const healed = Math.min(mon.maxHp - mon.hp, healKept(d, "monster", b.targetId, Math.max(1, Math.round(mon.maxHp * b.value))));
           mon.hp += healed;
           addFx(d, { type: "heal", actor: b.targetId, target: "enemy", targetId: b.targetId, amount: healed, source: "regen", effect: "heal" });
         }
@@ -762,7 +784,7 @@ function act(room, player, skillId, targetId) {
           d.buffs = (d.buffs || []).filter((b) => !(b.targetType === "monster" && Number(b.targetId) === tidx));
           const hb = passives.healOnKillPct(player);
           if (hb > 0) {
-            const amt = Math.max(1, Math.round(player.maxHp * hb));
+            const amt = healKept(d, "player", player.id, Math.max(1, Math.round(player.maxHp * hb)));
             const before = player.hp;
             heal(player, amt);
             if (player.hp > before) addFx(d, { type: "heal", actor: player.id, target: player.id, amount: player.hp - before, source: "passive", skill: skill.id, effect: "heal" });
@@ -779,11 +801,12 @@ function act(room, player, skillId, targetId) {
         if (tidx === primaryIdx) primaryDmg = totalDmg;
       }
       player._struckThisCombat = true;
+      maybeApplyWounds(room, d, player, skill, "monster", primaryIdx, primaryDmg);
       // Tek seferlik proclar (birincil hedef üzerinden, eski davranış):
       const mon0 = d.wave[primaryIdx];
       if (skill.lifesteal) {
         const before = player.hp;
-        const amt = Math.max(1, Math.round(primaryDmg * skill.lifesteal));
+        const amt = healKept(d, "player", player.id, Math.max(1, Math.round(primaryDmg * skill.lifesteal)));
         heal(player, amt);
         const healed = player.hp - before;
         if (healed > 0) addFx(d, { type: "heal", actor: player.id, target: player.id, amount: healed, source: "lifesteal", skill: skill.id, effect: "heal" });
@@ -791,14 +814,14 @@ function act(room, player, skillId, targetId) {
       const plife = passives.lifestealPct(player);
       if (plife > 0 && primaryDmg > 0) {
         const before = player.hp;
-        const amt = Math.max(1, Math.round(primaryDmg * plife));
+        const amt = healKept(d, "player", player.id, Math.max(1, Math.round(primaryDmg * plife)));
         heal(player, amt);
         const healed = player.hp - before;
         if (healed > 0) addFx(d, { type: "heal", actor: player.id, target: player.id, amount: healed, source: "passive", skill: skill.id, effect: "heal" });
       }
       if (skill.healSelfPct) {
         const before = player.hp;
-        const amt = Math.max(1, Math.round(player.maxHp * skill.healSelfPct * passives.healBonusMult(player)));
+        const amt = healKept(d, "player", player.id, Math.max(1, Math.round(player.maxHp * skill.healSelfPct * passives.healBonusMult(player))));
         heal(player, amt);
         const healed = player.hp - before;
         if (healed > 0) addFx(d, { type: "heal", actor: player.id, target: player.id, amount: healed, source: "skill", skill: skill.id, effect: "heal" });
@@ -808,7 +831,7 @@ function act(room, player, skillId, targetId) {
         const pct = (player.omnivamp || 0) / 100;
         if (pct > 0) {
           const before = player.hp;
-          const omniAmt = Math.max(1, Math.round(primaryDmg * pct));
+          const omniAmt = healKept(d, "player", player.id, Math.max(1, Math.round(primaryDmg * pct)));
           heal(player, omniAmt);
           const healedOmni = player.hp - before;
           if (healedOmni > 0) addFx(d, { type: "heal", actor: player.id, target: player.id, amount: healedOmni, source: "omnivamp", skill: skill.id, effect: "heal" });
@@ -818,7 +841,7 @@ function act(room, player, skillId, targetId) {
       const traitFx = player.anomaly && player.anomaly.effect;
       if (traitFx && traitFx.type === "lifesteal" && traitFx.percent > 0 && primaryDmg > 0) {
         const before = player.hp;
-        const traitAmt = Math.max(1, Math.round(primaryDmg * traitFx.percent));
+        const traitAmt = healKept(d, "player", player.id, Math.max(1, Math.round(primaryDmg * traitFx.percent)));
         heal(player, traitAmt);
         const healedTrait = player.hp - before;
         if (healedTrait > 0) addFx(d, { type: "heal", actor: player.id, target: player.id, amount: healedTrait, source: "trait_lifesteal", skill: skill.id, effect: "heal" });
@@ -841,7 +864,7 @@ function act(room, player, skillId, targetId) {
         } else {
           baseHeal = target.maxHp * skill.heal;
         }
-        const healed = heal(target, Math.max(1, Math.round(baseHeal * healMult)));
+        const healed = heal(target, healKept(d, "player", target.id, Math.max(1, Math.round(baseHeal * healMult))));
         addFx(d, { type: "heal", actor: player.id, target: target.id, amount: healed, source: "skill", skill: skill.id, effect: "heal" });
       }
       applyBuffs(room, d, player, player.name, skill, "player", [target.id], true);
@@ -860,7 +883,7 @@ function act(room, player, skillId, targetId) {
         } else {
           baseHeal = p.maxHp * skill.heal;
         }
-        const healed = heal(p, Math.max(1, Math.round(baseHeal * healMult)));
+        const healed = heal(p, healKept(d, "player", p.id, Math.max(1, Math.round(baseHeal * healMult))));
         addFx(d, { type: "heal", actor: player.id, target: p.id, amount: healed, source: "skill", skill: skill.id, effect: "heal" });
       }
     }
@@ -914,7 +937,7 @@ function useItem(room, player, itemId) {
       throw new Error("You have no food.");
     }
     player.food -= 1;
-    const healed = heal(player, healForFood(player));
+    const healed = heal(player, healKept(d, "player", player.id, healForFood(player)));
     addFx(d, { type: "heal", actor: player.id, target: player.id, amount: healed, source: "food", effect: "heal" });
   } else {
     const item = getItem(itemId);
@@ -922,7 +945,7 @@ function useItem(room, player, itemId) {
       throw new Error("Unknown consumable.");
     }
     removeItem(player, itemId, 1);
-    const healed = heal(player, item.heal || 0);
+    const healed = heal(player, healKept(d, "player", player.id, item.heal || 0));
     addFx(d, { type: "heal", actor: player.id, target: player.id, amount: healed, source: "item", item: item.id, effect: "heal" });
   }
   checkEnd(room, d);
@@ -1016,7 +1039,10 @@ function runNextMonster(room, d) {
       const target = targets[Math.floor(Math.random() * targets.length)];
       const combat = CONTENT.combat;
       if (skill.kind === "heal") {
-        const healed = healMonster(mon, skill.amount);
+        const hpBefore = mon.hp;
+        const keptHeal = healKept(d, "monster", index, Math.max(1, Math.round(mon.maxHp * (skill.amount || 0.1))));
+        mon.hp = Math.min(mon.maxHp, mon.hp + keptHeal);
+        const healed = mon.hp - hpBefore;
         if (healed > 0) {
           addFx(d, { type: "heal", actor: index, target: "enemy", targetId: index, amount: healed, source: "monster", effect: "heal" });
           d.log.push(`${mon.name} uses ${skill.name} and recovers ${healed} HP.`);
@@ -1553,7 +1579,7 @@ function petActForPlayer(room, d, player){
         if(d.status!=="fighting" || d.phase!=="players") return;
         const pid = player.id;
         if(sk.kind==="heal"){
-          const amt=Math.max(1, Math.round((player.maxHp * (sk.value||0.12) * (1 + (player.healPower||0)/50) + pMag*3) * lvlScale * mult));
+          const amt=healKept(d, "player", player.id, Math.max(1, Math.round((player.maxHp * (sk.value||0.12) * (1 + (player.healPower||0)/50) + pMag*3) * lvlScale * mult)));
           const before=player.hp; heal(player, amt); const healed=player.hp-before;
           if(healed>0){ addFx(d,{type:"heal", actor:pid, target:pid, amount:healed, source:"pet", petId:petDef.id, effect:"heal"}); d.log.push(`${petDef.name} heals ${player.name} for ${healed} HP!`); if(typeof room.broadcast==="function") room.broadcast(); else if(room._emitCombat) room._emitCombat(); }
         } else if(sk.kind==="shield"){
@@ -1625,7 +1651,7 @@ function petAct(room, d) {
       const lvlScale = 1 + petLevel * 0.04;
       if (roll < 0.35) {
         const before = targetAlly.hp;
-        const amt = Math.max(1, Math.round((targetAlly.maxHp * 0.12 * (1 + (player.healPower || 0) / 50) + pMag * 3) * lvlScale * mult));
+        const amt = healKept(d, "player", targetAlly.id, Math.max(1, Math.round((targetAlly.maxHp * 0.12 * (1 + (player.healPower || 0) / 50) + pMag * 3) * lvlScale * mult)));
         heal(targetAlly, amt);
         const healed = targetAlly.hp - before;
         if (healed > 0) {

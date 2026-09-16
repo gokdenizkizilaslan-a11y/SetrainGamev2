@@ -114,6 +114,34 @@ function lifestealPct(character) {
   return Math.max(0, t);
 }
 
+// ---- Healing taken (Mortal Wounds): buff kind "healblock" on the target
+// reduces ALL healing it receives (lifesteal, skills, regen, food, pets).
+// value 0.5 = 50% less healing. Stacks additively, capped at 90% so healing
+// never fully nulls. Works in PvE (targetType monster/player) and PvP.
+function healTakenMultFromBuffs(buffs, targetType, targetId) {
+  let blocked = 0;
+  for (const b of buffs || []) {
+    if (b && b.kind === "healblock" && b.targetType === targetType && String(b.targetId) === String(targetId)) {
+      blocked += num(b.value, 0);
+    }
+  }
+  if (!(blocked > 0)) return 1;
+  return Math.max(0.1, 1 - blocked);
+}
+// Wounds passive (class OR race — getPassives merges both): your damaging
+// hits inflict healblock on the target. {kind:"wounds", chance:1, value:0.35, duration:3}
+function woundsOnHit(character) {
+  for (const p of getPassives(character)) {
+    if (p.kind !== "wounds") continue;
+    return {
+      chance: Math.min(1, Math.max(0, num(p.chance, 1))),
+      value: Math.max(0, num(p.value != null ? p.value : p.mult, 0.35)),
+      duration: Math.max(1, Math.round(num(p.duration, 3))),
+    };
+  }
+  return null;
+}
+
 function healOnKillPct(character) {
   let t = 0;
   for (const p of getPassives(character)) {
@@ -243,6 +271,8 @@ module.exports = {
   healBonusMult,
   regenBonusMult,
   lifestealPct,
+  healTakenMultFromBuffs,
+  woundsOnHit,
   healOnKillPct,
   shieldStartFor,
   shieldGainMult,

@@ -333,6 +333,7 @@ const BUFF_META = {
   pet_magic: { label: "Pet Mgc+", color: "#ff9b4a" },
   pet_defense: { label: "Pet Def+", color: "#7fb4ff" },
   pet_weaken: { label: "Pet Weak", color: "#ff9d7a" },
+  healblock: { label: "🩸 Wounds", color: "#c084fc" },
 };
 function petStage(level){
   const lv = level||1;
@@ -613,6 +614,36 @@ function showAscendCinematic(ascend, fallbackText) {
   }, 2000);
 }
 
+function showRebirthCinematic(rb, fallbackText) {
+  const el = $("notice");
+  if (!el) return;
+  const r = rb || {};
+  const isHex = (v) => typeof v === "string" && /^#[0-9a-fA-F]{6}$/.test(v);
+  const color = isHex(r.color) ? r.color : "#c0b283";
+  // Vitrin rengi: glow varsa o (nadir ırklarda glowing black hissi), yoksa ırk rengi.
+  const display = isHex(r.glow) ? r.glow : color;
+  const name = r.name || fallbackText || "Unknown Blood";
+  const token = (el._ascendToken = (el._ascendToken || 0) + 1);
+  // 1) Önce 2 sn fullscreen ışık patlaması (ırk renginde), sonra kart.
+  el.innerHTML = `<div class="ascend-overlay ascend-burst" style="--ascend:${display}"><div class="ascend-flash"></div></div>`;
+  el.classList.remove("hidden");
+  sfxPlay("neutralascension");
+  setTimeout(() => {
+    if (el._ascendToken !== token || !el.querySelector(".ascend-burst")) return;
+    el.innerHTML = `<div class="ascend-overlay" style="--ascend:${display}">
+      <div class="ascend-rays"></div>
+      <div class="ascend-card rebirth-card">
+        <div class="ascend-kicker">✦ REBIRTH ✦</div>
+        <p class="rebirth-sub">You are reborn in the flesh of</p>
+        <h2 class="rebirth-name" style="color:${display};text-shadow:0 0 18px ${display}, 0 0 52px ${display}">${escapeHtml(name)}</h2>
+        <button type="button" class="btn btn--gold" id="btn-notice-ok">Continue</button>
+      </div>
+    </div>`;
+    const ok = el.querySelector("#btn-notice-ok");
+    if (ok) ok.addEventListener("click", () => el.classList.add("hidden"));
+  }, 2000);
+}
+
 function showStoryIntro() {
   const el = $("story-overlay");
   if (!el) return;
@@ -794,7 +825,9 @@ function startCombatTimer() {
   combatTimerInterval = setInterval(() => {
     const bar = $("turn-timer-fill");
     const d = myDungeon(state.room);
-    if (!d || d.status !== "fighting") {
+    const pv = (typeof myPvp === "function") ? myPvp(state.room) : null;
+    const active = (d && d.status === "fighting") ? d : (pv && pv.status === "fighting" ? pv : null);
+    if (!active) {
       stopCombatTimer();
       return;
     }
@@ -809,7 +842,9 @@ function startCombatTimer() {
     if (remaining <= 0 && !state.timerFired) {
       state.timerFired = true;
       state.timerDeadline = null;
-      socket.emit("combat:endTurn");
+      const dd = myDungeon(state.room);
+      if (dd && dd.status === "fighting") socket.emit("combat:endTurn");
+      else socket.emit("pvp:endTurn");
     }
   }, 100);
 }
@@ -958,6 +993,7 @@ function skillMechanicsLine(s) {
   if (s.bonusVsHighHp && s.bonusVsHighHp.aboveHpPct != null) parts.push("+" + Math.round(Number(s.bonusVsHighHp.mult || 0) * 100) + "% vs targets above " + Math.round(Number(s.bonusVsHighHp.aboveHpPct) * 100) + "% HP");
   if (s.bonusVsTags && Array.isArray(s.bonusVsTags.tags) && s.bonusVsTags.tags.length) parts.push("+" + Math.round(Number(s.bonusVsTags.mult || 0) * 100) + "% vs " + s.bonusVsTags.tags.join("/"));
   if (s.echo && Number(s.echo.chance) > 0) parts.push(Math.round(Number(s.echo.chance) * 100) + "% chance to strike again at " + Math.round(Number(s.echo.mult || 0.3) * 100) + "% power");
+  if (s.cooldown > 0) parts.push("Usable every " + Math.floor(s.cooldown) + " rounds");
   return parts.join(" · ");
 }
 // Kart zemini: resim + perde, ikisi de elementin KENDİSİNDE.
@@ -1173,12 +1209,14 @@ function renderProfileCard(room, selfId) {
   const maxLives = (CATALOG.starting && CATALOG.starting.lives) || 3;
   const isDead = me.lives <= 0;
   const raceName = me.race ? me.race.name : "";
+  const raceColor = me.race ? (me.race.glow || me.race.color || "") : "";
+  const raceStyle = /^#[0-9a-fA-F]{6}$/.test(raceColor) ? ` style="color:${raceColor}"` : "";
   el.innerHTML = `
     <div class="profile-avatar profile-avatar--lg" data-char-modal="${me.id}" title="Character details">
       <span class="portrait profile-portrait" data-img="${imgFor(me.character, "class")}" data-variant="${me.character}"></span>
     </div>
     <div class="profile-name">${escapeHtml(me.name)}${me.isHost ? ' <span class="badge badge--host">Host</span>' : ""}${isDead ? ' <span class="badge badge--offline">Fallen</span>' : ""}</div>
-    <div class="profile-class">${classLabel(me.character)} · Lv ${me.level}${raceName ? ` · <span class="profile-race">${escapeHtml(raceName)}</span>` : ""}</div>
+    <div class="profile-class">${classLabel(me.character)} · Lv ${me.level}${raceName ? ` · <span class="profile-race"${raceStyle}>${escapeHtml(raceName)}</span>` : ""}</div>
     <div class="profile-lives ${isDead ? "profile-lives--dead" : ""}" title="Lives — when 0 you must be revived">
       <span class="lives-icon">${icon("lives")}</span>
       <span class="lives-count">${me.lives}/${maxLives}</span>
@@ -1297,14 +1335,19 @@ function renderRightPlayers(room) {
     const dead = p.lives <= 0;
     const frame = p.anomaly ? ` style="--frame:${p.anomaly.frameColor}"` : "";
     const inPvp = (room.pvpDuels||[]).some(d=> d.memberIds.includes(p.id));
+    const inBattle = (room.dungeons||[]).some(d=> (d.memberIds||[]).includes(p.id) && (d.status==="fighting"||d.status==="done"))
+      || (room.bossParties||[]).some(b=> (b.memberIds||[]).includes(p.id) && b.status==="fighting");
+    const meInBattle = (room.dungeons||[]).some(d=> (d.memberIds||[]).includes(state.playerId) && (d.status==="fighting"||d.status==="done"))
+      || (room.bossParties||[]).some(b=> (b.memberIds||[]).includes(state.playerId) && b.status==="fighting");
+    const busy = inPvp || inBattle || meInBattle;
     return `<div class="right-player ${dead ? "right-player--dead" : ""}" data-player="${p.id}">
       <span class="portrait portrait--${p.character} right-player-portrait" data-img="${imgFor(p.character, "class")}" data-variant="${p.character}"${frame}></span>
       <span class="right-player-info">
-        <span class="right-player-name">${escapeHtml(p.name)}${dead ? " 💀" : ""}${inPvp?' ⚔️':''}</span>
+        <span class="right-player-name">${escapeHtml(p.name)}${dead ? " 💀" : ""}${inPvp?' ⚔️':''}${inBattle?' 🔥':''}</span>
         <span class="right-player-hp">${p.hp}/${p.maxHp} HP · ${p.mana}/${p.maxMana} Mana</span>
         <span class="right-player-lives">♥ ${p.lives} · Lv ${p.level}</span>
       </span>
-      <button type="button" class="btn btn--mini" data-pvp-challenge="${p.id}" ${dead||inPvp?'disabled':''}>Duel</button>
+      <button type="button" class="btn btn--mini" data-pvp-challenge="${p.id}" ${dead||busy?'disabled':''} title="${inBattle?"In battle":meInBattle?"Finish your battle first":"Challenge to duel"}">Duel</button>
     </div>`;
   }).join("");
   initImages(el);
@@ -1334,7 +1377,7 @@ const ACTIONS = [
   { id: "blacksmith", icon: "smith", title: "Blacksmith", sub: "Armor, weapons & gear", kind: "open" },
   { id: "merchant", icon: "merchant", title: "Merchant", sub: "Chests, potions & materials", kind: "open" },
   { id: "tavern", icon: "tavern", title: "Tavern", sub: "Bet gold · Coin flip, blackjack & food", kind: "open" },
-  { id: "temple", icon: "temple", title: "Ancient Temple", sub: "Ascend, mend hearts & craft", kind: "open" },
+    { id: "temple", icon: "temple", title: "Ancient Temple", sub: "Ascend, mend hearts, craft & rebirth", kind: "open" },
   { id: "rest", icon: "rest", title: "Rest", sub: null, kind: "emit", event: "town:rest" },
   { id: "sleep", icon: "rest", title: "Sleep", sub: "End the day · Stamina returns at dawn", kind: "emit", event: "town:endDay" },
 ];
@@ -1478,7 +1521,7 @@ function guideItems(section) {
     ];
   }
   if (section === "ascend") {
-    return [{ id: "ascend", label: "How Ascension Works" }];
+    return [{ id: "ascend", label: "How Ascension Works" }, { id: "rebirth", label: "Rebirth (Race Reroll)" }];
   }
   if (section === "pets") {
     return [
@@ -1516,13 +1559,14 @@ function guideDetail(section, itemId) {
   }
   const staticTexts = {
     turns: ["<h3>Turns & Mana</h3>", "<p>Each round you get one turn per hero. Skills cost mana; mana refills a little every round and fully in town at dawn.</p><p>If your timer runs out, your turn ends automatically — pick fast or hit End Turn.</p>"],
-    damage: ["<h3>Damage Types</h3>", "<p><strong>Physical & elemental</strong> damage is reduced by resistance and shields, boosted by crits, buffs and elemental matchups.</p><p><strong>True damage (white numbers)</strong> always deals the exact amount — nothing reduces it except shields.</p><p><strong>Execute</strong> skills instantly slay weakened foes below their threshold.</p>"],
+      damage: ["<h3>Damage Types</h3>", "<p><strong>Physical & elemental</strong> damage is reduced by resistance and shields, boosted by crits, buffs and elemental matchups.</p><p><strong>True damage (white numbers)</strong> always deals the exact amount — nothing reduces it except shields.</p><p><strong>Execute</strong> skills instantly slay weakened foes below their threshold.</p><p><strong>🩸 Wounds</strong> reduce all healing the afflicted takes (up to 90%) until they expire.</p>"],
     shields: ["<h3>Shields & Healing</h3>", "<p>Shields absorb damage first and come in separate timed packs — oldest absorbs first, expired packs vanish with leftovers.</p><p>Healing restores HP up to max. Lifesteal heals you for a share of damage dealt.</p>"],
     stamina: ["<h3>Stamina & Days</h3>", "<p>Almost everything in town costs stamina. When the party is spent, Sleep to end the day — stamina returns at dawn and monsters grow no stronger.</p><p>Fallen heroes (0 lives) need The Essence of Life at the Ancient Temple.</p>"],
     pvp: ["<h3>Parties & PvP</h3>", "<p>Create or join a party to delve dungeons together — everyone gets their own chest and full XP.</p><p>In town you can challenge another hero to a 1v1 duel from the player list or the map.</p>"],
     chests: ["<h3>Chests</h3>", "<p>Every dungeon victory grants each party member a chest. Click it once to break the seal, then reveal loot tap by tap.</p><p>Higher ranks drop more items; boss chests drop the most (up to 10).</p>"],
     drops: ["<h3>Drops</h3>", "<p>Slain monsters drop gold, crafting materials and gear by rarity. Eggs hatch into pets. Bosses always drop their chest and often their weapon.</p>"],
-    ascend: ["<h3>How Ascension Works</h3>", "<p>At the Ancient Temple, heroes of sufficient level ascend into a stronger class — keep your level, gain bonus stats and a full heal.</p><p>Some ascensions also demand a special item. Watch the requirements on the temple card.</p>"],
+      ascend: ["<h3>How Ascension Works</h3>", "<p>At the Ancient Temple, heroes of sufficient level ascend into a stronger class — keep your level, gain bonus stats and a full heal.</p><p>Some ascensions also demand a special item. Watch the requirements on the temple card.</p>"],
+      rebirth: ["<h3>Rebirth (Race Reroll)</h3>", "<p>Offer an <strong>Origin Stone</strong> at the Ancient Temple to be reborn into a new race — rolled with the same odds as birth. Your old racial stats are removed cleanly, the new ones applied, and your level, gear, class and anomaly are kept. You start with 5 stones; more cost 250 gold at the temple.</p>"],
     eggs: ["<h3>Eggs & Hatching</h3>", "<p>Eggs drop from dungeons by rarity. Hatch them in the Pets panel — rarer eggs hold stronger pets with more skills.</p><p>Pets level up beside you (up to 20) and evolve through Baby → Young → Adult looks.</p>"],
     battle: ["<h3>Pets in Battle</h3>", "<p>Equipped pets act on your turn in order: heals, shields, attacks, weakens. Pet slots & strength bonus come from your class (see Pets panel).</p>"],
   };
@@ -1562,7 +1606,7 @@ function renderGuideView() {
 
 // ---- Skill Tree ----
 
-const ST_STATUS = { wet: "Wet", frozen: "Frozen", dot: "Poisoned", expose: "Exposed", weaken: "Weakened" };
+const ST_STATUS = { wet: "Wet", frozen: "Frozen", dot: "Poisoned", expose: "Exposed", weaken: "Weakened", healblock: "Wounded" };
 
 function classLineageFor(slug) {
   const list = CATALOG.classes || [];
@@ -1735,15 +1779,13 @@ function renderTreeMap(nodes, ts, me) {
       const p = L.pos[n.id];
       const sk = skillById(n.skillId);
       const stt = treeNodeState(n, ts, me);
-      const titleParts = [((sk && sk.name) || n.skillId)];
-      if (sk && sk.description) titleParts.push(sk.description);
-      if (n.desc) titleParts.push(n.desc);
-      titleParts.push("Cost: " + (n.cost || 1) + " skill point" + ((n.cost || 1) === 1 ? "" : "s"));
-      if (stt.s === "locked" || stt.s === "noPts") titleParts.push(stt.reason);
-      const hints = comboHintsFor(sk);
-      if (hints.length) titleParts.push("Combo: " + hints.join(" · "));
       const cost = n.cost || 1;
-      return `<button type="button" class="st-node st-node--${stt.s}" data-node="${n.id}" data-state="${stt.s}" data-reason="${escapeHtml(stt.reason)}" style="left:${p.x}px;top:${p.y}px;width:${L.NODE_W}px;height:${L.NODE_H}px" title="${escapeHtml(titleParts.join(" — "))}">
+      const extraParts = ["Cost: " + cost + " skill point" + (cost === 1 ? "" : "s")];
+      if (n.desc) extraParts.push(n.desc);
+      if (stt.s === "locked" || stt.s === "noPts") extraParts.push(stt.reason);
+      else if (stt.s === "learned") extraParts.push("✓ Learned");
+      else extraParts.push("Click to learn");
+      return `<button type="button" class="st-node st-node--${stt.s}" data-node="${n.id}" data-state="${stt.s}" data-reason="${escapeHtml(stt.reason)}" data-skilltip="${escapeHtml(n.skillId || "")}" data-tip-extra="${escapeHtml(extraParts.join(" · "))}" style="left:${p.x}px;top:${p.y}px;width:${L.NODE_W}px;height:${L.NODE_H}px">
         <span class="portrait st-node-ico st-node-ico--${escapeHtml(((sk && sk.element) || "physical"))}" data-img="${escapeHtml((sk && sk.image) || "")}" data-variant="${escapeHtml((sk && sk.element) || "physical")}"></span>
         <span class="st-node-body">
           <span class="st-node-name">${escapeHtml((sk && sk.name) || n.skillId)}</span>
@@ -1872,7 +1914,7 @@ function renderTreeLoadout(me, max) {
     .map((sid) => {
       const sk = skillById(sid);
       const on = loadout.includes(sid);
-      return `<button type="button" class="st-loadout-chip${on ? " st-loadout-chip--on" : ""}" data-skill="${sid}" title="${escapeHtml((sk && sk.description) || "")}">
+      return `<button type="button" class="st-loadout-chip${on ? " st-loadout-chip--on" : ""}" data-skill="${sid}" data-skilltip="${escapeHtml(sid)}" data-tip-extra="${on ? "Equipped — click to unequip" : "Click to equip"}">
         <span class="portrait st-loadout-ico st-node-ico--${escapeHtml(((sk && sk.element) || "physical"))}" data-img="${escapeHtml((sk && sk.image) || "")}" data-variant="${escapeHtml((sk && sk.element) || "physical")}"></span>
         <span class="st-loadout-chip-name">${escapeHtml((sk && sk.name) || sid)}</span>
       </button>`;
@@ -2262,15 +2304,192 @@ function combatLoadout(me) {
   return skills.slice(0, maxLoadout + 1);
 }
 
-function skillTipEl(s) {
+function skillStatLabel(stat) {
+  if (stat === "attack") return "Attack";
+  if (stat === "magicPower") return "Magic";
+  if (stat === "healPower") return "Heal";
+  if (stat === "maxHp") return "Max HP";
+  if (stat === "targetMaxHp") return "target Max HP";
+  if (stat === "targetHp") return "target current HP";
+  return stat || "Attack";
+}
+// Server'daki resolveDamageStat'in client aynası: hasar hangi stat'tan büyür?
+function skillDamageStat(s) {
+  const sc = s && s.scaling;
+  if (sc === "attack" || sc === "magicPower" || sc === "healPower") return sc;
+  if (sc === "magic" || sc === "mag") return "magicPower";
+  if (sc === "atk") return "attack";
+  const el = s && s.element;
+  return (!el || el === "physical") ? "attack" : "magicPower";
+}
+function elemLabel(id) {
+  const s = String(id || "physical");
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+// "1.6× Attack + 30 frost damage (~120–180)" — oyuncunun stat'ıyla tahmin.
+// me yoksa formül kısmı yine yazılır, aralık yazılmaz.
+function skillNumsLine(s, me) {
+  if (!s) return "";
+  const lines = [];
+  const power = Number(s.power) || 0;
+  const second = s.secondHit && Number(s.secondHit.mult) > 0 ? s.secondHit : null;
+  if (power > 0 || s.baseDamage != null || second) {
+    const stat = skillDamageStat(s);
+    const statVal = me ? (me[stat] || 0) : 0;
+    let baseTxt = "";
+    let baseNum = 0;
+    let targetBased = false;
+    if (s.baseDamage != null && typeof s.baseDamage === "object") {
+      const bst = s.baseDamage.stat || "attack";
+      const bm = Number(s.baseDamage.mult) || 0;
+      if (bst === "targetMaxHp" || bst === "targetHp") {
+        baseTxt = Math.round(bm * 100) + "% of " + skillStatLabel(bst);
+        targetBased = true;
+      } else {
+        baseNum = me ? Math.round((me[bst] || 0) * bm) : 0;
+        baseTxt = me ? String(baseNum) : (bm + "× " + skillStatLabel(bst));
+      }
+    } else {
+      baseNum = Math.max(0, Math.round(Number(s.baseDamage) || 0));
+      baseTxt = String(baseNum);
+    }
+    let dmg = `⚔ ${power > 0 ? power + "× " + skillStatLabel(stat) + " + " : ""}${baseTxt} ${elemLabel(s.element)} damage`;
+    if (s.trueDamage) dmg += " (exact)";
+    if (second) dmg += ` + ${second.mult}× ${skillStatLabel(second.stat || "magicPower")} as ${elemLabel(second.element || "arcane")}`;
+    if (me && !targetBased) {
+      const statPart = power > 0 ? statVal * power : 0;
+      const s2 = second ? (me[second.stat || "magicPower"] || 0) * Number(second.mult) : 0;
+      const mid = Math.max(1, Math.round(baseNum + statPart + s2));
+      dmg += ` (~${Math.max(1, Math.round(mid * 0.8))}–${Math.round(mid * 1.2)})`;
+    }
+    lines.push(dmg);
+  }
+  if (s.heal != null) {
+    if (typeof s.heal === "object") lines.push(`💚 Heals ${(s.heal.mult || 0)}× ${skillStatLabel(s.heal.stat || "maxHp")}`);
+    else lines.push(`💚 Restores ${Math.round(Number(s.heal) * 100)}% of Max HP`);
+  }
+  if (s.healSelfPct) lines.push(`💚 +${Math.round(Number(s.healSelfPct) * 100)}% self heal on hit`);
+  if (s.lifesteal) lines.push(`🩸 Lifesteal ${Math.round(Number(s.lifesteal) * 100)}% of damage`);
+  if (s.defense) lines.push(`🛡 Blocks ${Math.round(Number(s.defense) * 100)}% this round`);
+  if (s.manaRestore || s.manaRestorePct) {
+    const parts = [];
+    if (s.manaRestorePct) parts.push(Math.round(Number(s.manaRestorePct) * 100) + "% max");
+    if (s.manaRestore) parts.push("+" + Math.round(Number(s.manaRestore)));
+    lines.push(`🔷 Restores ${parts.join(" + ")} mana`);
+  }
+  for (const b of s.buffs || []) {
+    const turns = Math.max(1, Math.round(s.duration || 1));
+    const v = Number(b.value) || 0;
+    if (b.kind === "shield") lines.push(`🛡 +${Math.round(v)} shield (${turns}r)`);
+    else if (b.kind === "attack" || b.kind === "magicBoost") lines.push(`✨ +${Math.round(v * 100)}% ${b.kind === "attack" ? "damage" : "magic"} (${turns}r)`);
+    else if (b.kind === "defense") lines.push(`✨ +${Math.round(v * 100)}% defense (${turns}r)`);
+    else if (b.kind === "weaken") lines.push(`💀 Foe deals ${Math.round(v * 100)}% less (${turns}r)`);
+    else if (b.kind === "expose") lines.push(`💀 Foe takes ${Math.round(v * 100)}% more (${turns}r)`);
+    else if (b.kind === "dot") lines.push(`☠ ${Math.round(v * 100)}%/round poison (${turns}r)`);
+    else if (b.kind === "regen") lines.push(`💚 ${Math.round(v * 100)}%/round regen (${turns}r)`);
+    else if (b.kind === "wet") lines.push(`💧 Soaks the foe (${turns}r)`);
+    else if (b.kind === "frozen") lines.push(`❄ Freezes the foe (${turns}r)`);
+    else if (b.kind === "healblock") lines.push(`🩸 Foe healing -${Math.round(v * 100)}% (${turns}r)`);
+    else lines.push(`✨ ${escapeHtml(b.kind)} (${turns}r)`);
+  }
+  if (!lines.length) return "";
+  return lines.map((l) => `<span class="skill-nums">${escapeHtml(l)}</span>`).join("");
+}
+function skillTargetLabel(t) {
+  if (t === "enemy") return "→ enemy";
+  if (t === "ally") return "→ ally";
+  if (t === "party") return "→ whole party";
+  if (t === "self") return "→ self";
+  return t ? "→ " + t : "";
+}
+// Tüm skill görünümlerinin kullandığı zengin tooltip içeriği.
+function skillCardTip(s, me, extra) {
+  if (!s) return "";
   const desc = s.description || "";
   const mech = skillMechanicsLine(s);
+  const nums = skillNumsLine(s, me);
+  const hints = comboHintsFor(s);
+  const meta = [
+    s.mana ? s.mana + " mana" : "Free",
+    skillTargetLabel(s.target),
+    s.cooldown > 0 ? "⏳ every " + Math.floor(s.cooldown) + " rounds" : "",
+  ].filter(Boolean).join(" · ");
   return `<span class="skill-tip">
     <strong>${escapeHtml(s.name)}</strong>
+    <span class="skill-tip-elem">${escapeHtml(elemLabel(s.element))}</span>
     <span>${escapeHtml(desc)}</span>
+    ${nums}
     ${mech ? `<span class="skill-mech">${escapeHtml(mech)}</span>` : ""}
-    <em>${s.mana ? s.mana + " mana" : "Free"}</em>
+    ${hints.length ? `<span class="skill-combo">⚡ ${escapeHtml(hints.join(" · "))}</span>` : ""}
+    <em>${escapeHtml(meta)}</em>
+    ${extra ? `<span class="skill-extra">${escapeHtml(extra)}</span>` : ""}
   </span>`;
+}
+function skillTipEl(s, me) {
+  return skillCardTip(s, me || null, null);
+}
+// Hover ile gezen tekil tooltip (skill tree + loadout): harita pan/zoom'da
+// taşmayı önlemek için imleci takip eden sabit kutu kullanır.
+function ensureSkillFloatTip() {
+  let el = document.getElementById("skill-float-tip");
+  if (!el) {
+    el = document.createElement("div");
+    el.id = "skill-float-tip";
+    el.className = "skill-float-tip hidden";
+    document.body.appendChild(el);
+  }
+  return el;
+}
+function hideSkillFloatTip() {
+  const el = document.getElementById("skill-float-tip");
+  if (el) el.classList.add("hidden");
+}
+function moveSkillFloatTip(x, y) {
+  const el = document.getElementById("skill-float-tip");
+  if (!el || el.classList.contains("hidden")) return;
+  const w = el.offsetWidth || 240;
+  const h = el.offsetHeight || 120;
+  let lx = x + 16;
+  let ly = y + 14;
+  if (lx + w > window.innerWidth - 8) lx = x - w - 12;
+  if (ly + h > window.innerHeight - 8) ly = y - h - 10;
+  el.style.left = Math.max(8, lx) + "px";
+  el.style.top = Math.max(8, ly) + "px";
+}
+function showSkillFloatTip(skillId, extra, x, y) {
+  const sk = skillById(skillId);
+  if (!sk) return;
+  const me = (typeof state !== "undefined" && state.room)
+    ? state.room.players.find((p) => p.id === state.playerId) : null;
+  const el = ensureSkillFloatTip();
+  el.innerHTML = skillCardTip(sk, me, extra || null);
+  el.classList.remove("hidden");
+  moveSkillFloatTip(x, y);
+}
+if (typeof document !== "undefined" && !document._skillFloatBound) {
+  document._skillFloatBound = true;
+  document.addEventListener("mousemove", (e) => {
+    const t = e.target && e.target.closest ? e.target.closest("[data-skilltip]") : null;
+    if (!t) { hideSkillFloatTip(); return; }
+    const box = document.getElementById("skill-float-tip");
+    if (!box || box.classList.contains("hidden") || box._for !== t) {
+      const el = ensureSkillFloatTip();
+      el._for = t;
+      showSkillFloatTip(t.getAttribute("data-skilltip"), t.getAttribute("data-tip-extra") || null, e.clientX, e.clientY);
+    } else {
+      moveSkillFloatTip(e.clientX, e.clientY);
+    }
+  });
+  document.addEventListener("mouseout", (e) => {
+    const t = e.target && e.target.closest ? e.target.closest("[data-skilltip]") : null;
+    const to = e.relatedTarget && e.relatedTarget.closest ? e.relatedTarget.closest("[data-skilltip]") : null;
+    if (t && t !== to) {
+      const el = document.getElementById("skill-float-tip");
+      if (el) el._for = null;
+      hideSkillFloatTip();
+    }
+  });
+  document.addEventListener("click", hideSkillFloatTip, true);
 }
 
 function renderCombat(room, root) {
@@ -2371,7 +2590,7 @@ function renderCombat(room, root) {
       const disabled = !canAct || !affordable || usedNow || cdLeft > 0;
       return `<button type="button" class="skill-slot${disabled ? " skill-slot--disabled" : ""}${picked ? " skill-slot--picked" : ""}${usedNow ? " skill-slot--used" : ""}" data-skill="${s.id}" data-target="${s.target}">
         ${"QWERTY"[si] ? `<span class="hotkey">${"QWERTY"[si]}</span>` : ""}
-        ${skillTipEl(s)}
+        ${skillTipEl(s, me)}
         ${skillIconEl(s)}
         <span class="skill-name">${escapeHtml(s.name)}</span>
         <span class="skill-mana">${s.mana || 0} mana</span>
@@ -2415,7 +2634,8 @@ function renderCombat(room, root) {
   const timerHtml = `<div class="turn-timer turn-timer--top${canAct ? "" : " turn-timer--idle"}"><div class="turn-timer-fill" id="turn-timer-fill"></div></div>`;
   const logHtml = `<div class="combat-log">${d.log.slice(-8).map((l) => `<div class="log-line">${escapeHtml(l)}</div>`).join("")}</div>`;
 
-  const isMany = (d.wave && d.wave.length > 3) || (d.totalFloors && d.totalFloors > 1) || (members && members.length > 3);
+  // 5 kişiye kadar tam boy yan yana; 6+ kişide "kendini büyük, diğerleri kompakt" modu.
+  const isMany = (d.wave && d.wave.length > 5) || (d.totalFloors && d.totalFloors > 1) || (members && members.length > 5);
   const floorInfo = d.totalFloors ? ` · Floor ${d.floor || 1}/${d.totalFloors}` : "";
   root.innerHTML = `
     <div class="combat-wrap ${isMany ? "combat-wrap--many" : ""}">
@@ -2574,11 +2794,33 @@ function renderPvpView(room){
   const root=$("pvp-content");
   if(!d){ root.innerHTML='<div class="muted">No duel. Challenge someone from town!</div>'; return; }
   const me=room.players.find(p=>p.id===state.playerId);
+  if(!me){ root.innerHTML='<div class="muted">No duel.</div>'; return; }
   const oppId=d.memberIds.find(id=>id!==state.playerId);
   const opp=room.players.find(p=>p.id===oppId);
   const isMyTurn=d.status==="fighting" && d.currentTurnId===state.playerId;
   const canAct=isMyTurn && me && me.hp>0;
-  const usedIds = (d.usedSkills && d.usedSkills[me.id])||[];
+  // PvE ile aynı timer dili: sıra sende ise bar dolar, bitince otomatik endTurn.
+  if (canAct) {
+    if (state.timerReset || state.timerDeadline == null) {
+      state.timerDeadline = Date.now() + turnTimeoutMs();
+      state.timerFired = false;
+      state.timerReset = false;
+    }
+  } else {
+    state.timerDeadline = null;
+    state.timerFired = false;
+  }
+  startCombatTimer();
+  if (state.lastPvpTurnId !== d.currentTurnId) {
+    if (d.currentTurnId === state.playerId && me && me.hp > 0 && d.status === "fighting") playSfx("turn");
+    state.lastPvpTurnId = d.currentTurnId;
+    if (state.pendingUsedSkills) state.pendingUsedSkills.clear();
+  }
+  if (d.status === "done" && state.pendingUsedSkills) state.pendingUsedSkills.clear();
+  const usedIdsRaw = (d.usedSkills && d.usedSkills[me.id])||[];
+  const pending = state.pendingUsedSkills || new Set();
+  for (const pid of [...pending]) { if (usedIdsRaw.includes(pid)) pending.delete(pid); }
+  const usedIds = [...usedIdsRaw, ...pending];
   const cdMap = (d.cooldowns && d.cooldowns[me.id])||{};
   const skillsHtml = combatLoadout(me).map((s, si)=>{
     if(!s) return `<div class="skill-slot skill-slot--empty"></div>`;
@@ -2586,11 +2828,13 @@ function renderPvpView(room){
     const usedNow=usedIds.includes(s.id);
     const cdLeft=cdMap[s.id]||0;
     const disabled=!canAct||!affordable||usedNow||cdLeft>0;
-    return `<button type="button" class="skill-slot${disabled?" skill-slot--disabled":""}${usedNow?" skill-slot--used":""}" data-pskill="${s.id}">${"QWERTY"[si] ? `<span class="hotkey">${"QWERTY"[si]}</span>` : ""}${skillTipEl(s)}${skillIconEl(s)}<span class="skill-name">${escapeHtml(s.name)}</span><span class="skill-mana">${s.mana||0} mana</span>${usedNow?'<span class="skill-used-tag">Used</span>':""}${!usedNow&&cdLeft>0?`<span class="skill-used-tag">⏳${cdLeft}</span>`:""}</button>`;
+    return `<button type="button" class="skill-slot${disabled?" skill-slot--disabled":""}${usedNow?" skill-slot--used":""}" data-pskill="${s.id}">${"QWERTY"[si] ? `<span class="hotkey">${"QWERTY"[si]}</span>` : ""}${skillTipEl(s, me)}${skillIconEl(s)}<span class="skill-name">${escapeHtml(s.name)}</span><span class="skill-mana">${s.mana||0} mana</span>${usedNow?'<span class="skill-used-tag">Used</span>':""}${!usedNow&&cdLeft>0?`<span class="skill-used-tag">⏳${cdLeft}</span>`:""}</button>`;
   }).join("");
   const oppFrame=opp && opp.anomaly?` style="--frame:${opp.anomaly.frameColor}"`:"";
   const meFrame=me && me.anomaly?` style="--frame:${me.anomaly.frameColor}"`:"";
-  const oppHtml = opp? `<div class="fighter ${opp.hp<=0?"fighter--down":""} ${d.currentTurnId===opp.id?"fighter--turn":""}" style="margin:0 auto;"${oppFrame}>
+  const turnName = d.status==="fighting" ? ((room.players.find(p=>p.id===d.currentTurnId)||{}).name || "…") : "";
+  // data-fighter şart: drainCombatFx popup/vfx hedefi buradan bulunur (PvE ile aynı).
+  const oppHtml = opp? `<div class="fighter fighter--opp ${opp.hp<=0?"fighter--down":""} ${d.currentTurnId===opp.id?"fighter--turn":""}" data-fighter="${opp.id}" data-enemy="pvp"${oppFrame}>
     <span class="fighter-bg" data-img="${imgFor(opp.character,"class")}" data-variant="${opp.character}"></span>
     <span class="fighter-shade" aria-hidden="true"></span>
     <span class="fighter-meta">
@@ -2598,27 +2842,29 @@ function renderPvpView(room){
     <span class="hpbar"><span class="hpbar-fill" style="width:${Math.round(opp.hp/opp.maxHp*100)}%"></span></span><span class="hpnum">${opp.hp}/${opp.maxHp}</span>
     ${opp.shield>0?`<span class="hpbar shieldbar"><span class="hpbar-fill shieldbar-fill" style="width:${Math.round(opp.shield/(opp.maxShield||opp.shield)*100)}%"></span></span><span class="hpnum shieldnum">🛡️ ${opp.shield}</span>`:``}
     <span class="fighter-mana">Mana ${opp.mana}/${opp.maxMana}</span>
-    <span class="fighter-pets">${(opp.activePetIds|| (opp.activePetId?[opp.activePetId]:[])).map(pid=>{ const pd=(CATALOG.pets||[]).find(x=>x.id===pid); const pp=(opp.pets||[]).find(x=>x.petId===pid); const lvl=pp?(pp.level||1):1; const img=pd?petImageForLevel(pd,lvl):''; const name=pd?petDisplayName(pd,lvl):pid; return `<span class="pet-icon" data-img="${escapeHtml(img)}" title="${escapeHtml(petTitleText(pd, pp, lvl))}" style="width:1.4rem;height:1.4rem;display:inline-block;border:1px solid var(--glass-line);border-radius:50%;background:var(--glass-2);background-size:cover;background-position:center;vertical-align:middle;margin:0 2px;"></span>`; }).join("")}</span>
+    <span class="fighter-stats">Atk ${opp.attack} · Res ${opp.resistance} · Mgc ${opp.magicPower} · Spd ${opp.speed}</span>
     ${buffBadges(d,"player",opp.id)}
     </span>
   </div>` : '<div class="muted">Waiting for opponent...</div>';
-  const meHtml = `<div class="fighter ${me.hp<=0?"fighter--down":""} ${d.currentTurnId===me.id?"fighter--turn":""}" style="margin:0 auto;"${meFrame}>
+  const meHtml = `<div class="fighter fighter--me ${me.hp<=0?"fighter--down":""} ${d.currentTurnId===me.id?"fighter--turn":""}" data-fighter="${me.id}"${meFrame}>
     <span class="fighter-bg" data-img="${imgFor(me.character,"class")}" data-variant="${me.character}"></span>
     <span class="fighter-shade" aria-hidden="true"></span>
     <span class="fighter-meta">
-    <span class="fighter-name">${escapeHtml(me.name)} ${d.currentTurnId===me.id?'<span class="turn-tag">turn</span>':''}</span>
+    <span class="fighter-name">${escapeHtml(me.name)} (You) ${d.currentTurnId===me.id?'<span class="turn-tag">turn</span>':''}</span>
     <span class="hpbar"><span class="hpbar-fill hpbar-fill--party" style="width:${Math.round(me.hp/me.maxHp*100)}%"></span></span><span class="hpnum">${me.hp}/${me.maxHp}</span>
     ${me.shield>0?`<span class="hpbar shieldbar"><span class="hpbar-fill shieldbar-fill" style="width:${Math.round(me.shield/(me.maxShield||me.shield)*100)}%"></span></span><span class="hpnum shieldnum">🛡️ ${me.shield}</span>`:``}
-    <span class="fighter-mana">Mana ${me.mana}/${me.maxMana}</span>
-    <span class="fighter-pets">${(me.activePetIds|| (me.activePetId?[me.activePetId]:[])).map(pid=>{ const pd=(CATALOG.pets||[]).find(x=>x.id===pid); const pp=(me.pets||[]).find(x=>x.petId===pid); const lvl=pp?(pp.level||1):1; const img=pd?petImageForLevel(pd,lvl):''; const name=pd?petDisplayName(pd,lvl):pid; return `<span class="pet-icon" data-img="${escapeHtml(img)}" title="${escapeHtml(petTitleText(pd, pp, lvl))}" style="width:1.4rem;height:1.4rem;display:inline-block;border:1px solid var(--glass-line);border-radius:50%;background:var(--glass-2);background-size:cover;background-position:center;vertical-align:middle;margin:0 2px;"></span>`; }).join("")}</span>
+    <span class="fighter-mana">Mana ${me.mana}/${me.maxMana} · Regen ${me.manaRegen||3}/round</span>
+    <span class="fighter-stats">Atk ${me.attack} · Res ${me.resistance} · Mgc ${me.magicPower} · Spd ${me.speed}</span>
     ${buffBadges(d,"player",me.id)}
     </span>
   </div>`;
   const hint = d.status==="done"? (d.result?d.result.text:"") : isMyTurn? "Your turn — pick a skill." : `Waiting for ${opp?opp.name:"opponent"}...`;
+  const timerHtml = `<div class="turn-timer turn-timer--top${canAct ? "" : " turn-timer--idle"}"><div class="turn-timer-fill" id="turn-timer-fill"></div></div>`;
+  const endTurnBtn = canAct ? `<button type="button" class="btn btn--gold" id="btn-pvp-end">End Turn</button>` : "";
+  const leaveBtnHtml = `<button type="button" class="btn btn--danger" id="btn-pvp-leave">Leave Duel</button>`;
   root.innerHTML=`<div class="combat-wrap">
-    <div class="combat-top"><p class="subhead">Duel — Round ${d.round}</p><div class="combat-actions"><button type="button" class="btn btn--ghost" id="btn-pvp-end">End Turn</button><button type="button" class="btn btn--ghost" id="btn-pvp-leave">Leave Duel</button></div></div>
-    <div class="enemy-wave" style="flex-direction:column;gap:0.5rem;">${oppHtml}</div>
-    <div class="party-row" style="margin-top:0.5rem;">${meHtml}</div>
+    <div class="combat-top"><p class="subhead">Duel — Round ${d.round}${d.status==="fighting" ? ` · ${escapeHtml(turnName)}'s turn` : ""}</p>${timerHtml}<div class="combat-actions combat-actions--top">${endTurnBtn}${leaveBtnHtml}</div></div>
+    <div class="pvp-arena"><div class="pvp-side pvp-side--opp">${oppHtml}</div><div class="pvp-mid"><span class="pvp-vs">VS</span><span class="pvp-round">R${d.round}</span></div><div class="pvp-side pvp-side--me">${meHtml}</div></div>
     <div class="skill-bar">${skillsHtml}</div>
     <div class="combat-hint">${escapeHtml(hint)}${canAct ? ' <span class="muted">[Q-T] skills · [O] end · [P] leave</span>' : ""}</div>
     <div class="combat-log">${d.log.slice(-6).map(l=>`<div class="log-line">${escapeHtml(l)}</div>`).join("")}</div>
@@ -2631,11 +2877,15 @@ function renderPvpView(room){
     b.addEventListener("click",()=>{
       const sid=b.getAttribute("data-pskill");
       if(!canAct) return;
+      if (!state.pendingUsedSkills) state.pendingUsedSkills = new Set();
+      state.pendingUsedSkills.add(sid);
       socket.emit("pvp:act",{skillId:sid});
+      state.timerReset = true;
+      renderPvpView(room);
     });
   });
   const endBtn=root.querySelector("#btn-pvp-end");
-  if(endBtn) endBtn.addEventListener("click",()=> socket.emit("pvp:endTurn"));
+  if(endBtn) endBtn.addEventListener("click",()=>{ state.timerDeadline = null; socket.emit("pvp:endTurn"); });
   const leaveBtn=root.querySelector("#btn-pvp-leave");
   if(leaveBtn) leaveBtn.addEventListener("click",()=>{ socket.emit("pvp:leave"); state.pvpOpen=false; renderTown(state.room); });
   const ret=root.querySelector("#btn-pvp-return");
@@ -2962,6 +3212,22 @@ function renderTempleView(room) {
     }).join("")}</div>
   </div>`;
 
+  const origin = temple.origin || { item: "origin_stone", price: 250 };
+  const stoneQty = itemOwnedQty(me, origin.item);
+  const stoneDef = (CATALOG.items || []).find((x) => x.id === origin.item);
+  const stoneName = stoneDef ? stoneDef.name : "Origin Stone";
+  const canReroll = staminaOk && stoneQty >= 1;
+  const canBuyStone = me.gold >= (origin.price || 0);
+  const originHtml = `<div class="temple-card temple-card--origin">
+    <p class="subhead">🩸 Rebirth of Blood</p>
+    <p>Offer an <strong>${escapeHtml(stoneName)}</strong> to be reborn into a new race — same odds as birth. Current blood: <strong>${escapeHtml((me.race && me.race.name) || "Unknown")}</strong>.</p>
+    <p class="temple-req">${escapeHtml(stoneName)} owned: ${stoneQty} · Stamina ${st} needed</p>
+    <div class="btn-row">
+      <button type="button" class="btn btn--gold${canReroll ? "" : " btn--mini-disabled"}" id="btn-temple-reroll">Be Reborn</button>
+      <button type="button" class="btn btn--bronze${canBuyStone ? "" : " btn--mini-disabled"}" id="btn-temple-buyorigin">Buy ${escapeHtml(stoneName)} (${origin.price || 0} gold)</button>
+    </div>
+  </div>`;
+
   const deadAllies = room.players.filter((p) => p.lives <= 0 && p.id !== me.id);
   const essenceQty = itemOwnedQty(me, "the_essence_of_life");
   const canRevive = staminaOk && essenceQty >= 1;
@@ -2980,7 +3246,7 @@ function renderTempleView(room) {
       ${chip(icon("stamina"), `Stamina ${me.stamina}`)}
     </div>
     <p class="subhead">The Ancient Temple remembers a purpose older than the kingdom.</p>
-    <div class="temple-grid">${evolveHtml}${restoreHtml}${craftHtml}${reviveHtml}</div>`;
+    <div class="temple-grid">${evolveHtml}${restoreHtml}${originHtml}${craftHtml}${reviveHtml}</div>`;
 
   root.querySelectorAll("[data-evolve-to]").forEach((b) =>
     b.addEventListener("click", () => socket.emit("temple:evolve", { to: b.getAttribute("data-evolve-to") }))
@@ -2994,6 +3260,10 @@ function renderTempleView(room) {
   });
   const rsBtn = root.querySelector("#btn-temple-restore");
   if (rsBtn) rsBtn.addEventListener("click", () => socket.emit("temple:restore"));
+  const rerollBtn = root.querySelector("#btn-temple-reroll");
+  if (rerollBtn) rerollBtn.addEventListener("click", () => socket.emit("temple:reroll"));
+  const buyBtn = root.querySelector("#btn-temple-buyorigin");
+  if (buyBtn) buyBtn.addEventListener("click", () => socket.emit("temple:buyOrigin"));
   root.querySelectorAll("[data-craft]").forEach((b) =>
     b.addEventListener("click", () => socket.emit("temple:craft", { recipeId: b.getAttribute("data-craft") }))
   );
