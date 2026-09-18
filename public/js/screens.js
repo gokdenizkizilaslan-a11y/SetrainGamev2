@@ -378,13 +378,34 @@ function petStatText(pd, pp) {
   return parts.join(" · ");
 }
 function petSkillText(pd) {
+  // Explicit, human-readable schedule: WHAT it does, HOW MUCH, HOW OFTEN.
+  // Matches server/combat.js pet execution (interval = every Nth pet turn).
+  const every = (n) => (n <= 1 ? "every turn" : `every ${n} turns`);
   if (pd && Array.isArray(pd.petSkills) && pd.petSkills.length) {
     return pd.petSkills
-      .map((s) => `${s.kind} ${s.value}${s.kind === "attack" || s.kind === "heal" || s.kind === "shield" ? "" : "%"} /${s.interval || 2}t`)
+      .map((s) => {
+        const n = s.interval || 2;
+        const v = s.value || 0;
+        if (s.kind === "attack") return `Strikes a random foe for ~${Math.round(v * 100)}% of your best stat, ${every(n)}`;
+        if (s.kind === "heal") return `Heals you for ~${Math.round(v * 100)}% of max HP, ${every(n)}`;
+        if (s.kind === "shield") return `Shields you for ~${v} (+magic), ${every(n)}`;
+        if (s.kind === "weaken") return `Weakens a random foe by ~${Math.round(v * 100)}% for 2 turns, ${every(n)}`;
+        if (s.kind === "frozen") return `Freezes a random foe for 2 turns, ${every(n)}`;
+        if (s.kind === "wet") return `Soaks a random foe for 2 turns, ${every(n)}`;
+        return `${s.kind} ${v}, ${every(n)}`;
+      })
       .join(" · ");
   }
-  if (pd && pd.buffKind) return `${pd.buffKind} (${pd.element || "physical"})`;
-  return "auto";
+  // Legacy buffKind pets (server default: value 0.15, every 2 turns, 2-turn buff).
+  if (pd && pd.buffKind) {
+    const what =
+      pd.buffKind === "attack" ? "your damage +15% for 2 turns" :
+      pd.buffKind === "magicBoost" ? "your magic +15% for 2 turns" :
+      pd.buffKind === "defense" ? "your defense +15% for 2 turns" :
+      `${pd.buffKind} +15% for 2 turns`;
+    return `Boosts ${what}, every 2 turns`;
+  }
+  return "Fights beside you with random tricks (heal, shield or bite), every few turns";
 }
 function petTitleText(pd, pp, lvl) {
   if (!pd) return "Pet";
@@ -2996,6 +3017,8 @@ function renderTavernView(room) {
   const canSleep = me.gold >= sleepPrice;
   root.innerHTML = `
     ${vendorHead("tavern", "The Tavern", "The keeper wipes a mug. “Warm beds upstairs — safe sleep till dawn.”")}
+    ${talkLaunchHtml("tavernkeeper")}
+    ${talkActiveHtml("tavernkeeper")}
     <p class="subhead">Wagering</p>
     <p class="lead">Pick a wager, then a game. A winning coin flip doubles it; blackjack pays 2.5&times; on a natural.</p>
     ${result}
@@ -3018,6 +3041,7 @@ function renderTavernView(room) {
       <button type="button" class="btn btn--gold btn--mini${canSleep ? "" : " btn--mini-disabled"}" id="btn-tavern-sleep">Sleep</button>
     </div>`;
   root.querySelector("#btn-tavern-sleep").addEventListener("click", () => socket.emit("tavern:sleep"));
+  wireTalk(root, () => renderTavernView(room));
   root.querySelectorAll("[data-bet]").forEach((b) =>
     b.addEventListener("click", () => {
       state.bet = Number(b.getAttribute("data-bet"));
@@ -3435,6 +3459,8 @@ function renderBlacksmithView(room) {
 
   root.innerHTML = `
     ${vendorHead("blacksmith", "Blacksmith", "")}
+    ${talkLaunchHtml("blacksmith")}
+    ${talkActiveHtml("blacksmith")}
     ${shopResources(me)}
     <p class="subhead shop-head">Armor & Weapons — Week ${room.shopStock ? room.shopStock.week : 1} · ${rotGear.length} items (7 days rotation)${shopVendorPortrait("blacksmithNpc", "Blacksmith")}</p>
     ${pinned.length ? `<div class="temple-card temple-card--schematics"><p class="subhead">📐 Schematics — always in stock · 200 gold each</p><div class="shop-grid shop-grid--pinned">${pinned.map((i) => shopCardHtml(me, staminaOk, i, "blacksmith:buy", soldSet.includes(i.id))).join("")}</div></div>` : ""}
@@ -3462,6 +3488,7 @@ function renderBlacksmithView(room) {
   root.querySelectorAll("[data-craft]").forEach((b) =>
     b.addEventListener("click", () => socket.emit("temple:craft", { recipeId: b.getAttribute("data-craft") }))
   );
+  wireTalk(root, () => renderBlacksmithView(room));
   root.querySelectorAll("[data-equip]").forEach((b) =>
     b.addEventListener("click", () => {
       sfxPlay("inventorysound");
@@ -3496,6 +3523,8 @@ function renderMerchantView(room) {
 
   root.innerHTML = `
     ${vendorHead("merchant", "Merchant", "The merchant spreads empty hands wide. “Chests, potions, curiosities — everything has a price.”")}
+    ${talkLaunchHtml("merchant")}
+    ${talkActiveHtml("merchant")}
     ${shopResources(me)}
     <p class="subhead">Chests, Potions & Materials — Week ${room.shopStock ? room.shopStock.week : 1} · ${stockArr.length} items (7 days rotation)</p>
     <div class="shop-grid">${goods.map((i) => shopCardHtml(me, staminaOk, i, "merchant:buy", soldSetM.includes(i.id))).join("") || '<div class="muted">Nothing for sale today.</div>'}</div>
@@ -3519,6 +3548,7 @@ function renderMerchantView(room) {
     state.inventoryOpen = true;
     renderTown(state.room);
   });
+  wireTalk(root, () => renderMerchantView(room));
 }
 
 // ---- Town Center: NPC meeting hub + dialogue engine ----
@@ -3530,6 +3560,72 @@ function talkNpc(npcId) {
 function talkNode(npc, nodeId) {
   if (!npc || !Array.isArray(npc.nodes)) return null;
   return npc.nodes.find((n) => n.id === (nodeId || "start")) || npc.nodes[0] || null;
+}
+
+// Dükkan içi konuşma rozeti (sağ üstte): portre + isim, tıklayınca diyalog açılır.
+function talkLaunchHtml(npcId) {
+  const npc = talkNpc(npcId);
+  if (!npc) return "";
+  return `<div class="talk-launch"><button type="button" class="talk-launch-btn" data-talk="${escapeHtml(npc.id)}"><span class="talk-launch-portrait" data-img="${escapeHtml(npc.image || "")}" data-variant="${escapeHtml(npc.id)}"></span><span>Talk — ${escapeHtml(npc.name || npc.id)}</span></button></div>`;
+}
+
+// Ortak diyalog paneli: metin solda, portre sağda, seçenekler altta sabit.
+function talkPanelHtml(npc, node, withClose) {
+  return `<div class="talk-panel talk-fade" key="${escapeHtml(npc.id + ":" + node.id)}">
+    <div class="talk-main">
+      <p class="talk-name">${escapeHtml(npc.name || npc.id)}</p>
+      <p class="talk-text">${escapeHtml(node.text || "")}</p>
+      <div class="talk-options">
+        ${(node.options || []).map((o, i) => `<button type="button" class="btn btn--bronze btn--mini" data-opt="${i}">${escapeHtml(o.label)}</button>`).join("")}
+      </div>
+    </div>
+    <span class="talk-portrait" data-img="${escapeHtml(npc.image || "")}" data-variant="${escapeHtml(npc.id)}" title="${escapeHtml(npc.name || npc.id)}"></span>
+  </div>
+  ${withClose ? `<div class="talk-close-row"><button type="button" class="btn btn--ghost btn--mini" data-talk-close>Close talk</button></div>` : ""}`;
+}
+
+// Konuşma durumunda dükkan görünümü için panel HTML'i (yanlış NPC ise boş).
+function talkActiveHtml(npcId) {
+  const npc = state.talkNpcId ? talkNpc(state.talkNpcId) : null;
+  if (!npc || (npcId && npc.id !== npcId)) return "";
+  const node = talkNode(npc, state.talkNodeId);
+  if (!node) return "";
+  return talkPanelHtml(npc, node, true);
+}
+
+// Rozet + seçenek + kapatma tıklamaları; renderFn ilgili görünümü tazeler.
+function wireTalk(root, renderFn) {
+  root.querySelectorAll("[data-talk]").forEach((b) =>
+    b.addEventListener("click", () => {
+      state.talkNpcId = b.getAttribute("data-talk");
+      state.talkNodeId = "start";
+      sfxPlay("clicksound");
+      renderFn();
+    })
+  );
+  root.querySelectorAll("[data-opt]").forEach((b) =>
+    b.addEventListener("click", () => {
+      const npc = state.talkNpcId ? talkNpc(state.talkNpcId) : null;
+      const node = npc ? talkNode(npc, state.talkNodeId) : null;
+      const opt = node ? (node.options || [])[Number(b.getAttribute("data-opt"))] : null;
+      if (!opt) return;
+      sfxPlay("clicksound");
+      if (opt.end || !opt.to) {
+        state.talkNpcId = null;
+        state.talkNodeId = null;
+      } else {
+        state.talkNodeId = opt.to;
+      }
+      renderFn();
+    })
+  );
+  root.querySelectorAll("[data-talk-close]").forEach((b) =>
+    b.addEventListener("click", () => {
+      state.talkNpcId = null;
+      state.talkNodeId = null;
+      renderFn();
+    })
+  );
 }
 
 function renderPlazaView(room) {
@@ -3566,36 +3662,14 @@ function renderPlazaView(room) {
   }
   root.innerHTML = `
     <div class="btn-row"><button type="button" class="btn btn--ghost" id="btn-talk-back">← Town Center</button></div>
-    <div class="talk-panel talk-fade" key="${escapeHtml(npc.id + ":" + node.id)}">
-      <div class="talk-main">
-        <p class="talk-name">${escapeHtml(npc.name || npc.id)}</p>
-        <p class="talk-text">${escapeHtml(node.text || "")}</p>
-        <div class="talk-options">
-          ${(node.options || []).map((o, i) => `<button type="button" class="btn btn--bronze btn--mini" data-opt="${i}">${escapeHtml(o.label)}</button>`).join("")}
-        </div>
-      </div>
-      <span class="talk-portrait" data-img="${escapeHtml(npc.image || "")}" data-variant="${escapeHtml(npc.id)}" title="${escapeHtml(npc.name || npc.id)}"></span>
-    </div>`;
+    ${talkPanelHtml(npc, node, false)}`;
   initImages(root);
   root.querySelector("#btn-talk-back").addEventListener("click", () => {
     state.talkNpcId = null;
     state.talkNodeId = null;
     renderPlazaView(room);
   });
-  root.querySelectorAll("[data-opt]").forEach((b) =>
-    b.addEventListener("click", () => {
-      const opt = (node.options || [])[Number(b.getAttribute("data-opt"))];
-      if (!opt) return;
-      sfxPlay("clicksound");
-      if (opt.end || !opt.to) {
-        state.talkNpcId = null;
-        state.talkNodeId = null;
-      } else {
-        state.talkNodeId = opt.to;
-      }
-      renderPlazaView(room);
-    })
-  );
+  wireTalk(root, () => renderPlazaView(room));
 }
 
 function renderInventory(room) {

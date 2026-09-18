@@ -1,0 +1,153 @@
+================================================================
+SETRA GAME - PET IMAGE PROMPTS (KREA2)
+================================================================
+HOW TO USE:
+- 1 prompt = 1 GRID image (SQUARE 1:1). Generate, cut top-left to
+  bottom-right, save each cell to its file path.
+- Files go to public/images/pets/<id>.png (young/adult variants reuse
+  the same art style).
+- Pets show as ROUND portraits in game, so keep the beast centered
+  with breathing room around it.
+----------------------------------------------------------------
+BASE STYLE (paint into every grid prompt):
+"painterly storybook-realism creature portraits, one companion beast
+per cell in a clean GRID with thin dark gaps on a dark slate
+background, beast centered and front-facing with expressive eyes,
+soft round vignette backdrop tinted by element (fire ember orange,
+water deep blue, earth moss brown, lightning yellow white, dark
+violet black, physical steel grey, frost ice blue, arcane violet,
+holy gold white, shadow purple grey, nature leaf green), purely
+visual wordless emblems"
+================================================================
+
+--- GRID P1 (3x3, starter pack) ---
+9 painterly pet portraits. Cell 1 (fire_wolf.png): small ember-red wolf
+pup with flame-tipped tail. Cell 2 (water_sprite.png): giggling blue
+water blob sprite with droplet crown. Cell 3 (pet_direwolf.png): scarred
+big grey direwolf with amber eyes. Cell 4 (pet_ember_pup.png): tiny
+black pup sneezing a spark. Cell 5 (pet_cinder_cub.png): ash-grey bear
+cub with glowing cracks. Cell 6 (pet_slime.png): cheerful orange jelly
+slime. Cell 7 (pet_sprout.png): walking seedling with leaf arms.
+Cell 8 (pet_flame_sprite.png): dancing living flame girl. Cell 9
+(pet_mossling.png): round moss ball with pebble eyes.
+
+--- GRID P2 (3x3, grove + frost pups) ---
+9 painterly pet portraits. Cell 1 (pet_vine_pup.png): puppy tangled in
+flowering vines. Cell 2 (pet_thorn_whelp.png): spiky thorn dragon
+hatchling. Cell 3 (pet_grove_sprite.png): bark-skinned dryad child.
+Cell 4 (pet_slime_king.png): fat mossy slime with twig crown. Cell 5
+(pet_forest_cub.png): green tiger cub with leaf stripes. Cell 6
+(pet_natureling.png): glowing acorn spirit. Cell 7 (pet_frost_pup.png):
+white-blue husky pup with snowflake markings. Cell 8 (pet_ice_whelp.png):
+shivering ice-scale baby drake. Cell 9 (pet_snow_cub.png): fluffy snow
+leopard cub.
+
+--- GRID P3 (3x3, frost drakes + stone pack) ---
+9 painterly pet portraits. Cell 1 (pet_glacierling.png): tiny living
+glacier with bright eyes. Cell 2 (pet_chill_sprite.png): frosty breath
+wisp girl. Cell 3 (pet_frost_drake.png): pale blue drake hatchling on
+an icicle. Cell 4 (pet_stone_pup.png): grey cobble puppy. Cell 5
+(pet_rockling.png): round boulder with stubby legs. Cell 6
+(pet_boulder_cub.png): mossy rock bear cub. Cell 7 (pet_crystal_sprite.png):
+floating amethyst crystal sprite. Cell 8 (pet_golem_whelp.png): baby
+stone golem with kind eyes. Cell 9 (pet_granite_pup.png): speckled
+granite mastiff pup.
+
+--- GRID P4 (3x3, storm + first darks) ---
+9 painterly pet portraits. Cell 1 (pet_storm_pup.png): grey pup with
+static-furred tail. Cell 2 (pet_thunder_cub.png): cub roaring a tiny
+thundercloud. Cell 3 (pet_lightning_drake.png): yellow spark drake
+hatchling. Cell 4 (pet_wind_sprite.png): breezy scarf-like air spirit.
+Cell 5 (pet_gale_whelp.png): swift teal griffon chick. Cell 6
+(pet_storm_hatchling.png): storm-egg chick with lightning down. Cell 7
+(pet_shadow_pup.png): black mist puppy with violet eyes. Cell 8
+(pet_voidling.png): small floating void orb with tentacles. Cell 9
+(pet_dusk_whelp.png): twilight-purple baby drake.
+
+--- GRID P5 (3x3, dark + crystal waters) ---
+9 painterly pet portraits. Cell 1 (pet_night_cub.png): midnight panther
+cub. Cell 2 (pet_shade_sprite.png): shy living shadow girl. Cell 3
+(pet_umbra_drake.png): black-violet eclipse drake. Cell 4
+(pet_crystal_drake.png): translucent blue crystal drake. Cell 5
+(pet_arcane_pup.png): starry-furred puppy with rune collar. Cell 6
+(pet_mana_sprite.png): glowing blue mana wisp. Cell 7 (pet_spell_whelp.png):
+baby drake with scroll wings. Cell 8 (pet_runeling.png): walking rune
+stone with legs. Cell 9 (pet_crystal_hound.png): glass-blue crystal
+hound.
+
+--- GRID P6 (3x3, deep void + phoenix rise) ---
+9 painterly pet portraits. Cell 1 (pet_void_pup.png): dark-hole puppy
+with starry belly. Cell 2 (pet_abyssling.png): deep-sea abyss tadpole
+with lantern. Cell 3 (pet_nether_cub.png): ember-eyed nether fox cub.
+Cell 4 (pet_shadow_drake.png): smoke-winged shadow drake. Cell 5
+(pet_dark_hound.png): sleek black hound with red eyes. Cell 6
+(pet_void_sprite.png): giggling dark nebula sprite. Cell 7
+(pet_phoenix_hatchling.png): golden chick bursting from ash egg. Cell 8
+(pet_ember_drake.png): red-scaled fire drake hatchling. Cell 9
+(pet_flame_hound.png): muscular hound with mane of fire.
+
+--- GRID P7 (3x3, inferno + mythic lights) ---
+9 painterly pet portraits. Cell 1 (pet_inferno_pup.png): lava-pawed
+inferno puppy. Cell 2 (pet_blaze_drake.png): white-hot blaze drake.
+Cell 3 (pet_phoenix_chick.png): downy sunrise phoenix chick. Cell 4
+(pet_mythic_drake.png): silver mythic drake with star wings. Cell 5
+(pet_gold_pup.png): golden retriever pup with coin collar. Cell 6
+(pet_radiant_cub.png): glowing white lion cub. Cell 7 (pet_divine_whelp.png):
+baby kirin with halo nub. Cell 8 (pet_light_sprite.png): warm lantern
+light sprite. Cell 9 (pet_mythic_hound.png): noble silver hound with
+constellation coat.
+
+--- GRID P8 (3x3, numbered I) ---
+9 painterly pet portraits. Cell 1 (pet_rage_pup_100.png): snarling red
+rage puppy. Cell 2 (pet_fury_cub_101.png): foaming blue fury bear cub.
+Cell 3 (pet_berserk_whelp_102.png): wild-eyed brown berserk drake.
+Cell 4 (pet_war_hound_103.png): armored yellow war hound. Cell 5
+(pet_battle_pup_104.png): scarved purple battle pup. Cell 6
+(pet_might_cub_105.png): boulder-shouldered grey might cub. Cell 7
+(pet_arcane_pup_106.png): frost-blue arcane puppy with snow runes.
+Cell 8 (pet_mana_sprite_107.png): violet mana sprite with staff.
+Cell 9 (pet_spell_whelp_108.png): holy-gold spellbook drake.
+
+--- GRID P9 (3x3, numbered II) ---
+9 painterly pet portraits. Cell 1 (pet_mystic_cub_109.png): third-eyed
+shadow mystic cub. Cell 2 (pet_rune_pup_110.png): fire-rune etched
+puppy. Cell 3 (pet_gale_sprite_111.png): waterfall-blue gale sprite.
+Cell 4 (pet_stone_guardian_112.png): ancient mossy guardian pup.
+Cell 5 (pet_iron_pup_113.png): riveted iron puppy. Cell 6
+(pet_granite_whelp_114.png): dark granite drake whelp. Cell 7
+(pet_crystal_pup_115.png): clear quartz crystal pup. Cell 8
+(pet_boulder_cub_116.png): frost-dusted boulder cub. Cell 9
+(pet_rock_sprite_117.png): arcane-glyph rock sprite.
+
+--- GRID P10 (3x3, frost lynxes + ember darks) ---
+9 painterly pet portraits. Cell 1 (pet_frost_lynx_118.png): holy-white
+frost lynx with snow tufts. Cell 2 (pet_glacier_pup_119.png): shadow-blue
+glacier pup. Cell 3 (pet_snow_hound_120.png): flame-tongued snow hound
+(odd warm heart). Cell 4 (pet_ice_cub_121.png): blue ice bear cub.
+Cell 5 (pet_chill_whelp_122.png): moss-green chill drake. Cell 6
+(pet_frost_kit_123.png): tiny electric-blue frost fox kit. Cell 7
+(pet_ember_lynx_124.png): dark ember lynx with cinder spots. Cell 8
+(pet_flame_hound_125.png): steel-grey flame hound. Cell 9
+(pet_cinder_pup_126.png): frost-pale cinder puppy.
+
+--- GRID P11 (3x3, blaze + storm riders) ---
+9 painterly pet portraits. Cell 1 (pet_blaze_cub_127.png): violet blaze
+bear cub. Cell 2 (pet_inferno_whelp_128.png): golden inferno drake
+whelp. Cell 3 (pet_fire_sprite_129.png): shadow-purple fire sprite.
+Cell 4 (pet_storm_hawk_130.png): red-eyed fire storm hawk. Cell 5
+(pet_thunder_pup_131.png): blue thunder puppy with drum belly. Cell 6
+(pet_gale_cub_132.png): earth-brown gale lion cub. Cell 7
+(pet_wind_sprite_133.png): laughing lightning wind sprite. Cell 8
+(pet_lightning_pup_134.png): dark storm puppy with spark collar. Cell 9
+(pet_tempest_whelp_135.png): grey tempest drake whelp.
+
+--- GRID P12 (1x2 strip, last two) ---
+1x2 horizontal strip, 2 painterly pet portraits with thin dark gap on
+dark slate, same style. Cell 1 (pet_shadow_cat_136.png): frost-blue
+shadow cat with moon eyes. Cell 2 (pet_void_pup_137.png): arcane-violet
+void puppy with galaxy swirl.
+
+================================================================
+COVERAGE: 101/101 pets (P1-P11 = 99 + P12 = 2). Base file is
+public/images/pets/<id>.png; young/adult variants reuse the style.
+================================================================

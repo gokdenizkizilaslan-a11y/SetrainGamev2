@@ -410,26 +410,32 @@ input:focus {
   font-family: "Cinzel", serif;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  font-size: 0.88rem;
-  padding: 0.85rem 1.3rem;
-  border: 1px solid rgba(255, 235, 190, 0.35);
-  border-radius: 11px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0.7rem 1.15rem;
+  border: 1px solid rgba(255, 225, 170, 0.5);
+  border-radius: 10px;
   cursor: pointer;
-  color: #2a1a08;
-  background: linear-gradient(180deg, #e8b45c, #c9933f);
+  color: #241503;
+  background: linear-gradient(180deg, #d9a050, #96631f 60%, #7a4d15);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.4),
-    0 4px 14px rgba(0, 0, 0, 0.3);
+    inset 0 1px 0 rgba(255, 240, 210, 0.5),
+    inset 0 -2px 4px rgba(60, 35, 5, 0.35),
+    0 4px 14px rgba(0, 0, 0, 0.35);
   transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+  max-width: 100%;
+  white-space: normal;
+  line-height: 1.35;
 }
 
 .btn:hover:not(:disabled) {
-  filter: brightness(1.08);
+  filter: brightness(1.07);
   transform: translateY(-1px);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 1px 0 rgba(255, 240, 210, 0.5),
+    inset 0 -2px 4px rgba(60, 35, 5, 0.35),
     0 8px 22px rgba(0, 0, 0, 0.4),
-    0 0 18px rgba(232, 183, 108, 0.3);
+    0 0 18px rgba(217, 164, 80, 0.35);
 }
 
 .btn:active:not(:disabled) {
@@ -442,9 +448,10 @@ input:focus {
 }
 
 .btn--bronze {
-  background: linear-gradient(180deg, #b9833f, #7c4e1e);
-  border-color: rgba(255, 220, 170, 0.3);
-  color: #fbeed6;
+  background: linear-gradient(180deg, #a97c3c, #6f4219 60%, #593414);
+  border-color: rgba(255, 220, 170, 0.35);
+  color: #f7e8cf;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .btn--ghost {
@@ -3116,14 +3123,21 @@ input:focus {
   border-radius: 14px;
   background-size: cover;
   background-position: center;
-  min-height: 7.5rem;
+  min-height: 9rem;
   display: flex;
   align-items: flex-end;
   margin-bottom: 0.9rem;
 }
 .vendor-head--plain {
-  background: linear-gradient(150deg, #3a2a18, #191007 70%);
-  min-height: 5.5rem;
+  background: linear-gradient(150deg, #43321c, #1c1207 70%);
+  min-height: 4.4rem;
+  align-items: center;
+}
+.vendor-head--plain .vendor-meta {
+  padding: 0.7rem 1rem;
+}
+.vendor-head--plain .vendor-greet {
+  display: none;
 }
 .vendor-shade {
   position: absolute;
@@ -4361,8 +4375,20 @@ input:focus {
   line-height: 1.55;
 }
 .story-talk {
-  max-width: min(94vw, 640px);
+  max-width: min(94vw, 700px);
   text-align: left;
+  padding: 1.8rem 2rem;
+}
+.story-talk h2 {
+  text-align: center;
+}
+.story-talk .talk-text {
+  font-size: 1.05rem;
+  min-height: 7.5rem;
+}
+.story-talk .talk-portrait {
+  width: 9.5rem;
+  height: 12rem;
 }
 
 /* ---- Town Center + dialogue ---- */
@@ -4403,50 +4429,99 @@ input:focus {
 }
 .talk-panel {
   display: flex;
-  gap: 1rem;
-  align-items: flex-start;
-  padding: 1rem;
+  gap: 1.1rem;
+  align-items: stretch;
+  padding: 1.1rem 1.2rem;
   border: 1px solid var(--glass-line);
   border-radius: 14px;
   background: var(--glass-2);
   margin-top: 0.6rem;
+  min-height: 13rem;
 }
 .talk-main {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.55rem;
 }
 .talk-name {
   margin: 0;
   font-family: "Cinzel", serif;
   font-weight: 700;
+  font-size: 1.02rem;
   letter-spacing: 0.06em;
   color: var(--gold-bright);
 }
 .talk-text {
   margin: 0;
-  font-size: 0.92rem;
-  line-height: 1.6;
+  font-size: 1rem;
+  line-height: 1.65;
   color: var(--ink-soft);
+  min-height: 7rem;
+  flex: 1;
 }
 .talk-options {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-top: 0.3rem;
+  margin-top: auto;
+  padding-top: 0.4rem;
+  min-height: 2.6rem;
+  align-items: flex-end;
 }
 .talk-portrait {
-  width: 7rem;
-  height: 8.5rem;
+  width: 8.5rem;
+  height: 10.5rem;
   flex: none;
+  align-self: flex-start;
   border-radius: 12px;
   border: 1px solid rgba(232, 183, 108, 0.55);
   background: linear-gradient(160deg, #3a2c1c, #1c130a);
   background-size: cover;
   background-position: center top;
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
+}
+/* Dükkan içi konuşma başlatma (sağ üstte NPC rozeti) */
+.talk-launch {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0.1rem 0 0.5rem;
+}
+.talk-launch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.35rem 0.8rem 0.35rem 0.35rem;
+  border-radius: 999px;
+  border: 1px solid rgba(232, 183, 108, 0.5);
+  background: rgba(20, 13, 8, 0.85);
+  color: #f3e7d2;
+  font-family: "Cinzel", serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.talk-launch-btn:hover {
+  border-color: var(--gold-bright);
+  transform: translateY(-1px);
+}
+.talk-launch-portrait {
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  border: 1px solid rgba(232, 183, 108, 0.6);
+  background: linear-gradient(135deg, #4a3b28, #241a10);
+  background-size: cover;
+  background-position: center top;
+  flex: none;
+}
+.talk-close-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.4rem;
 }
 .talk-fade {
   animation: talk-in 0.28s ease-out;
