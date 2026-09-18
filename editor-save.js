@@ -95,6 +95,30 @@ function validateReferences(data) {
       errors.push(`Class "${c.slug}" is unreachable: it never appears in class select and no evolution leads to it. Delete it or wire an evolution to it.`);
     }
   }
+  // NPC dialogue graph: broken links land on an empty panel.
+  if (Array.isArray(data.npcs)) {
+    const npcIds = new Set();
+    for (const n of data.npcs) {
+      if (!n || typeof n.id !== "string" || !n.id.trim()) {
+        errors.push("An NPC has an empty id.");
+        continue;
+      }
+      if (npcIds.has(n.id)) errors.push(`Duplicate NPC id "${n.id}".`);
+      npcIds.add(n.id);
+      if (!n.name) errors.push(`NPC "${n.id}" has an empty name.`);
+      const nodes = Array.isArray(n.nodes) ? n.nodes : [];
+      const nodeIds = new Set(nodes.map((x) => x && x.id));
+      if (!nodeIds.has("start")) errors.push(`NPC "${n.id}" has no "start" node — talk cannot begin.`);
+      for (const x of nodes) {
+        for (const o of (x && x.options) || []) {
+          if (!o || !o.label) errors.push(`NPC "${n.id}" node "${x && x.id}" has an option without a label.`);
+          if (o && !o.end && o.to && !nodeIds.has(o.to)) {
+            errors.push(`NPC "${n.id}" node "${x && x.id}" points to missing node "${o.to}".`);
+          }
+        }
+      }
+    }
+  }
   if (errors.length) {
     throw new Error("Content validation failed:\n- " + errors.slice(0, 12).join("\n- ") + (errors.length > 12 ? `\n- ... +${errors.length - 12} more` : ""));
   }

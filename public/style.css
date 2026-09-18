@@ -1949,6 +1949,7 @@ input:focus {
 #skilltree-content,
 #dungeon-content,
 #tavern-content,
+#plaza-content,
 #blacksmith-content,
 #merchant-content,
 #inventory-content,
@@ -3175,6 +3176,24 @@ input:focus {
   gap: 0.3rem;
   align-items: baseline;
   font-size: 0.85rem;
+  flex: 1;
+  min-width: 0;
+}
+.sleep-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  flex: none;
+  border-radius: 9px;
+  border: 1px solid var(--glass-line);
+  background: linear-gradient(150deg, rgba(232, 183, 108, 0.25), rgba(0, 0, 0, 0.3));
+  color: var(--gold-bright);
+}
+.sleep-ico svg {
+  width: 1.2rem;
+  height: 1.2rem;
 }
 
 /* ---- Forge card inside the blacksmith ---- */
@@ -3182,6 +3201,14 @@ input:focus {
 .temple-card--forge {
   margin-top: 0.4rem;
   border-color: rgba(232, 183, 108, 0.35);
+}
+
+.temple-card--schematics {
+  margin-bottom: 0.9rem;
+  border-color: rgba(143, 201, 122, 0.35);
+}
+.temple-card--schematics .shop-grid {
+  margin-bottom: 0;
 }
 
 /* ---- Button standard: no runaway widths, labels never overflow ---- */
@@ -4332,6 +4359,109 @@ input:focus {
 }
 .story-card p {
   line-height: 1.55;
+}
+.story-talk {
+  max-width: min(94vw, 640px);
+  text-align: left;
+}
+
+/* ---- Town Center + dialogue ---- */
+
+.npc-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 1rem 0.7rem;
+  border: 1px solid var(--glass-line);
+  border-radius: 14px;
+  background: var(--glass-2);
+  color: var(--ink);
+  font-family: "Cinzel", serif;
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.npc-card:hover {
+  border-color: rgba(232, 183, 108, 0.55);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+}
+.npc-portrait {
+  width: 4.2rem;
+  height: 4.2rem;
+  border-radius: 50%;
+  border: 2px solid rgba(232, 183, 108, 0.6);
+  background: linear-gradient(135deg, #4a3b28, #241a10);
+  background-size: cover;
+  background-position: center top;
+  box-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.15);
+}
+.npc-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.03em;
+}
+.talk-panel {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1rem;
+  border: 1px solid var(--glass-line);
+  border-radius: 14px;
+  background: var(--glass-2);
+  margin-top: 0.6rem;
+}
+.talk-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.talk-name {
+  margin: 0;
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--gold-bright);
+}
+.talk-text {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+.talk-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.3rem;
+}
+.talk-portrait {
+  width: 7rem;
+  height: 8.5rem;
+  flex: none;
+  border-radius: 12px;
+  border: 1px solid rgba(232, 183, 108, 0.55);
+  background: linear-gradient(160deg, #3a2c1c, #1c130a);
+  background-size: cover;
+  background-position: center top;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
+}
+.talk-fade {
+  animation: talk-in 0.28s ease-out;
+}
+@keyframes talk-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* Gentle entrance for every overlay panel */
+.overlay-view:not(.hidden) > div {
+  animation: overlay-in 0.25s ease-out;
+}
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* ---- Settings / pause overlay ---- */

@@ -369,7 +369,7 @@ function createPlayer({ id, name, character, isHost = false }) {
     lives: CONTENT.starting.lives,
     wood: CONTENT.starting.wood,
     gold: CONTENT.starting.gold,
-    food: 0,
+    food: CONTENT.starting.food || 0,
     inventory: [],
     equipment: {
       weapon: null,

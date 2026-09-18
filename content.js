@@ -15,6 +15,7 @@ const CONTENT = {
     "lives": 3,
     "wood": 0,
     "gold": 50,
+    "food": 10,
     "stamina": 10,
     "maxStamina": 10
   },
@@ -27,12 +28,175 @@ const CONTENT = {
   "story": {
     "title": "The Setra Game",
     "paragraphs": [
-      "The realm of Setra stirs. Old roads vanish into mist, and the town square hums with whispered tales of the fallen.",
-      "Gather what you can, delve the ruins, and grow strong enough to face what waits beyond the hills.",
-      "They say the Ancient Temple remembers a purpose older than the kingdom. If you find its relic, it may remember you too."
+      "The world is Krein. It has turned for five billion years, and for five billion years it has carried the tread of men.",
+      "In the green kingdom of Palendio, among warring crowns and old banners, lies a quiet village named Setra.",
+      "You wake in the grass of a valley you do not know, with a name you chose and a past you cannot recall."
     ],
-    "cta": "Set Forth"
+    "cta": "Wake Up",
+    "intro": {
+      "speaker": "Mira",
+      "image": "/images/npcs/mira.png",
+      "lines": [
+        {
+          "who": "narrator",
+          "text": "Cold grass. Birdsong. A shadow falls across your face, and a woman kneels beside you."
+        },
+        {
+          "who": "npc",
+          "text": "Easy. You are breathing, that is the important part. I found you in the hollow with empty hands and emptier eyes. What is your name, wanderer?"
+        },
+        {
+          "who": "you",
+          "text": "I... cannot remember. Only the road, and then nothing."
+        },
+        {
+          "who": "npc",
+          "text": "Then Setra Village will have to do as a beginning. I am Mira. I keep a small house and a smaller purse. Take this — fifty gold and ten days of food. It is nearly all I have, so spend it like it matters."
+        },
+        {
+          "who": "you",
+          "text": "Why help a stranger with no past?"
+        },
+        {
+          "who": "npc",
+          "text": "Because someone once did the same for me. And because Palendio has little kindness left to spare these days — the crowns quarrel, the roads grow unsafe. Grow strong, find work at the forge or the market, and sleep with a roof when you can afford it. Now stand. The village waits."
+        }
+      ],
+      "rewardNote": "Mira presses 50 gold and 10 food into your hands."
+    }
   },
+  "npcs": [
+    {
+      "id": "blacksmith",
+      "name": "Blacksmith",
+      "title": "Blacksmith of Setra Village",
+      "image": "/images/npcs/blacksmith.png",
+      "location": "blacksmith",
+      "nodes": [
+        {
+          "id": "start",
+          "text": "Mind the sparks. State your business — the forge waits for no one.",
+          "options": [
+            { "label": "How does your craft work?", "to": "work" },
+            { "label": "What news of the wars?", "to": "wars" },
+            { "label": "What do you know of the Temple?", "to": "temple" },
+            { "label": "Farewell.", "end": true }
+          ]
+        },
+        {
+          "id": "work",
+          "text": "Bring me a pattern and the materials, and I will beat them into shape. Patterns — schematics, the traders call them — are always here for two hundred gold. Steel itself you must earn: the wilds beyond the palisade, or the deep places. Nothing in my shop is given.",
+          "options": [
+            { "label": "What news of the wars?", "to": "wars" },
+            { "label": "Back.", "to": "start" }
+          ]
+        },
+        {
+          "id": "wars",
+          "text": "Palendio quarrels with its neighbors as old men quarrel over fences — only with more widows. The crown buys every blade I can finish. If you mean to sell your sword-arm, the dungeons past the hills pay better than any king. Mind you come back breathing.",
+          "options": [
+            { "label": "How does your craft work?", "to": "work" },
+            { "label": "Back.", "to": "start" }
+          ]
+        },
+        {
+          "id": "temple",
+          "text": "The Ancient Temple stood before any crown of Palendio was minted — five billion years this world has turned, and the priests say the stones remember all of them. Bring relics there if you find any. I shape metal. They shape people. Both trades leave marks.",
+          "options": [
+            { "label": "Back.", "to": "start" }
+          ]
+        }
+      ],
+      "offers": []
+    },
+    {
+      "id": "merchant",
+      "name": "Merchant",
+      "title": "Merchant of Setra Village",
+      "image": "/images/npcs/merchant.png",
+      "location": "merchant",
+      "nodes": [
+        {
+          "id": "start",
+          "text": "Welcome, welcome. Coin first, sentiment after — but for a new face in Setra, the first counsel is free. What do you seek?",
+          "options": [
+            { "label": "Why are times hard?", "to": "times" },
+            { "label": "What comes down the valley road?", "to": "road" },
+            { "label": "Do you buy relics?", "to": "relics" },
+            { "label": "Farewell.", "end": true }
+          ]
+        },
+        {
+          "id": "times",
+          "text": "War taxes, war prices. The caravans from the lowlands charge double and smile while doing it. I sell chests, salves and materials at honest rates — honest for wartime, that is. Spend your first fifty wisely. There will not be a second fifty for free.",
+          "options": [
+            { "label": "What comes down the valley road?", "to": "road" },
+            { "label": "Back.", "to": "start" }
+          ]
+        },
+        {
+          "id": "road",
+          "text": "Refugees, mostly. And sellswords going the other way, toward the border forts. A keeper's girl — Mira, you may know her — pulled some half-dead wanderer out of the hollow last week. The road gives, and the road takes. Usually it takes.",
+          "options": [
+            { "label": "Why are times hard?", "to": "times" },
+            { "label": "Back.", "to": "start" }
+          ]
+        },
+        {
+          "id": "relics",
+          "text": "Ancient relics? I deal in honest goods, friend. Whatever the dungeons cough up — essences, hearts, strange metals — the Temple pays in transformations, and I pay in gold for what honest folk carry. Bring me materials and we will both eat.",
+          "options": [
+            { "label": "Back.", "to": "start" }
+          ]
+        }
+      ],
+      "offers": []
+    },
+    {
+      "id": "tavernkeeper",
+      "name": "Tavernkeeper",
+      "title": "Keeper of the Village Tavern",
+      "image": "/images/npcs/tavernkeeper.png",
+      "location": "tavern",
+      "nodes": [
+        {
+          "id": "start",
+          "text": "Sit, sit. You look like the road chewed you and thought better of swallowing. Ale is honest here, the beds upstairs are warm, and my ears are warmer still. What will it be?",
+          "options": [
+            { "label": "Tell me about the beds.", "to": "beds" },
+            { "label": "Who was found in the hollow?", "to": "stranger" },
+            { "label": "Any strange guests lately?", "to": "guest" },
+            { "label": "Farewell.", "end": true }
+          ]
+        },
+        {
+          "id": "beds",
+          "text": "Fifteen gold buys a bed, a bolted door and a morning without a knife in your ribs. Sleep in the fields if your purse is light — many do — but the cold takes its toll, and I have seen men wake with one fewer heartbeat in them. Your coin, your choice.",
+          "options": [
+            { "label": "Any strange guests lately?", "to": "guest" },
+            { "label": "Back.", "to": "start" }
+          ]
+        },
+        {
+          "id": "stranger",
+          "text": "Aye, Mira's stray. Found senseless in the grass with no memory and no shoes, or so the tale goes. She fed him from her own pot — poor as a church mouse, that girl, but proud. If you see him, tell him the Tavernkeeper says the first ale is on the house. Beginnings should be toasted.",
+          "options": [
+            { "label": "Tell me about the beds.", "to": "beds" },
+            { "label": "Back.", "to": "start" }
+          ]
+        },
+        {
+          "id": "guest",
+          "text": "Lower your voice. A pale gentleman came through at dusk — old coin, older manners, eyes like winter ponds. Asked after newcomers to the village. Asked twice. Then he smiled, paid in gold minted before my grandfather was born, and walked into the dark like it owed him passage. Whatever he is looking for... I hope it is not you.",
+          "options": [
+            { "label": "Who was found in the hollow?", "to": "stranger" },
+            { "label": "Back.", "to": "start" }
+          ]
+        }
+      ],
+      "offers": []
+    }
+  ],
   "food": {
     "healBase": 10,
     "healPct": 0.02
@@ -4683,6 +4847,7 @@ const CONTENT = {
       "name": "Stone Ash Sword",
       "slot": "weapon",
       "rarity": "common",
+      "dungeonOnly": true,
       "price": {
         "gold": 60,
         "wood": 10
@@ -6753,7 +6918,7 @@ const CONTENT = {
       "image": "/images/items/sword_blueprint.png",
       "blueprint": true,
       "price": {
-        "gold": 300,
+        "gold": 200,
         "wood": 0
       }
     },
@@ -6766,7 +6931,7 @@ const CONTENT = {
       "image": "/images/items/armor_blueprint.png",
       "blueprint": true,
       "price": {
-        "gold": 450,
+        "gold": 200,
         "wood": 0
       }
     },
@@ -6779,7 +6944,7 @@ const CONTENT = {
       "image": "/images/items/staff_blueprint.png",
       "blueprint": true,
       "price": {
-        "gold": 600,
+        "gold": 200,
         "wood": 0
       }
     },
@@ -12855,6 +13020,7 @@ function publicCatalog() {
   return {
     baseSkills: CONTENT.baseSkills,
     story: CONTENT.story,
+    npcs: CONTENT.npcs || [],
     classes: CONTENT.classes.map((c) => ({
       slug: c.slug,
       label: c.label,

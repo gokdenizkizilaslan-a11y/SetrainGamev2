@@ -8,6 +8,7 @@ const state = {
   selectedSkill: null,
   bet: 5,
   dungeonOpen: false,
+  plazaOpen: false,
   tavernOpen: false,
   blacksmithOpen: false,
   merchantOpen: false,
@@ -174,12 +175,14 @@ function renderTown(room) {
     state._deadShown = false;
   }
 
-  const inOverlay = state.dungeonOpen || state.tavernOpen || state.blacksmithOpen || state.merchantOpen || state.templeOpen || state.inventoryOpen || state.pvpOpen || state.petsOpen || state.skillTreeOpen || state.guideOpen;
+  const inOverlay = state.dungeonOpen || state.plazaOpen || state.tavernOpen || state.blacksmithOpen || state.merchantOpen || state.templeOpen || state.inventoryOpen || state.pvpOpen || state.petsOpen || state.skillTreeOpen || state.guideOpen;
   $("town-main").classList.toggle("hidden", inOverlay);
   $("skilltree-view").classList.toggle("hidden", !state.skillTreeOpen);
   const guideEl = $("guide-view");
   if (guideEl) guideEl.classList.toggle("hidden", !state.guideOpen);
   $("dungeon-view").classList.toggle("hidden", !state.dungeonOpen);
+  const plazaEl = $("plaza-view");
+  if (plazaEl) plazaEl.classList.toggle("hidden", !state.plazaOpen);
   $("tavern-view").classList.toggle("hidden", !state.tavernOpen);
   $("blacksmith-view").classList.toggle("hidden", !state.blacksmithOpen);
   $("merchant-view").classList.toggle("hidden", !state.merchantOpen);
@@ -205,6 +208,8 @@ function renderTown(room) {
     renderGuideView();
   } else if (state.dungeonOpen) {
     renderDungeonView(room);
+  } else if (state.plazaOpen) {
+    if (typeof renderPlazaView === "function") renderPlazaView(room);
   } else if (state.tavernOpen) {
     renderTavernView(room);
   } else if (state.blacksmithOpen) {
@@ -410,6 +415,14 @@ $("btn-tavern-close").addEventListener("click", () => {
   renderTown(state.room);
 });
 
+const plazaCloseBtn = $("btn-plaza-close");
+if (plazaCloseBtn) plazaCloseBtn.addEventListener("click", () => {
+  state.plazaOpen = false;
+  state.talkNpcId = null;
+  state.talkNodeId = null;
+  renderTown(state.room);
+});
+
 $("btn-blacksmith-close").addEventListener("click", () => {
   state.blacksmithOpen = false;
   renderTown(state.room);
@@ -453,6 +466,7 @@ function leaveToMainMenu() {
   localStorage.setItem(ACTIVE_KEY, "0");
   state.room = null;
   state.dungeonOpen = false;
+  state.plazaOpen = false;
   state.tavernOpen = false;
   state.blacksmithOpen = false;
   state.merchantOpen = false;
@@ -692,6 +706,7 @@ socket.on("session:expired", () => {
   localStorage.setItem(ACTIVE_KEY, "0");
   state.room = null;
   state.dungeonOpen = false;
+  state.plazaOpen = false;
   state.tavernOpen = false;
   state.blacksmithOpen = false;
   state.merchantOpen = false;

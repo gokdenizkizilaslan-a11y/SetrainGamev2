@@ -1522,8 +1522,8 @@ function victory(room, d) {
       const weights = ((CONTENT.loot || {}).gradeWeights || {})[d.rank] || CONTENT.loot.gradeWeights.f;
       const rarity = weightedPick(weights);
       if (!rarity) continue;
-      // Exclude craft-only, chests, materials, bossWeapons — craftables/boss only via temple/boss
-      const pool = CONTENT.items.filter((i) => i.rarity === rarity && i.slot !== "consumable" && i.slot !== "chest" && i.slot !== "material" && !i.craftOnly && !i.bossWeapon);
+      // Exclude craft-only (unless dungeon-only drops), chests, materials, bossWeapons.
+      const pool = CONTENT.items.filter((i) => i.rarity === rarity && i.slot !== "consumable" && i.slot !== "chest" && i.slot !== "material" && (!i.craftOnly || i.dungeonOnly) && !i.bossWeapon);
       if (!pool.length) continue;
       const item = pool[Math.floor(Math.random() * pool.length)];
       const receivers = livingMembers(room, d).length ? livingMembers(room, d) : members;

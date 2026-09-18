@@ -655,14 +655,50 @@ function showStoryIntro() {
   const title = story.title || "The Setra Game";
   const paragraphs = Array.isArray(story.paragraphs) ? story.paragraphs : [];
   const cta = story.cta || "Set Forth";
-  el.innerHTML = `<div class="notice-card story-card">
-    <h2>${escapeHtml(title)}</h2>
-    ${paragraphs.map((p) => `<p>${escapeHtml(p)}</p>`).join("")}
-    <button type="button" class="btn btn--gold" id="btn-story-go">${escapeHtml(cta)}</button>
-  </div>`;
+  const intro = story.intro || null;
+  const lines = intro && Array.isArray(intro.lines) ? intro.lines : [];
   el.classList.remove("hidden");
-  const ok = el.querySelector("#btn-story-go");
-  if (ok) ok.addEventListener("click", () => el.classList.add("hidden"));
+
+  const showParagraphs = () => {
+    el.innerHTML = `<div class="notice-card story-card">
+      <h2>${escapeHtml(title)}</h2>
+      ${paragraphs.map((p) => `<p>${escapeHtml(p)}</p>`).join("")}
+      <button type="button" class="btn btn--gold" id="btn-story-go">${lines.length ? "Wake Up" : escapeHtml(cta)}</button>
+    </div>`;
+    el.querySelector("#btn-story-go").addEventListener("click", () => {
+      if (lines.length) showLine(0);
+      else el.classList.add("hidden");
+    });
+  };
+  const showLine = (idx) => {
+    const ln = lines[idx];
+    const tag = ln.who === "npc" ? escapeHtml(intro.speaker || "Stranger") : ln.who === "you" ? "You" : "";
+    el.innerHTML = `<div class="notice-card story-card story-talk talk-fade" key="intro-${idx}">
+      <h2>${escapeHtml(title)}</h2>
+      <div class="talk-panel">
+        <div class="talk-main">
+          ${tag ? `<p class="talk-name">${tag}</p>` : ""}
+          <p class="talk-text">${escapeHtml(ln.text || "")}</p>
+          <div class="talk-options"><button type="button" class="btn btn--bronze btn--mini" id="btn-story-next">${idx < lines.length - 1 ? "Continue" : escapeHtml(cta)}</button></div>
+        </div>
+        ${ln.who === "npc" ? `<span class="talk-portrait" data-img="${escapeHtml(intro.image || "")}" data-variant="intro"></span>` : ""}
+      </div>
+    </div>`;
+    initImages(el);
+    el.querySelector("#btn-story-next").addEventListener("click", () => {
+      if (idx < lines.length - 1) showLine(idx + 1);
+      else showReward();
+    });
+  };
+  const showReward = () => {
+    el.innerHTML = `<div class="notice-card story-card">
+      <h2>${escapeHtml(title)}</h2>
+      ${intro.rewardNote ? `<p><em>${escapeHtml(intro.rewardNote)}</em></p>` : ""}
+      <button type="button" class="btn btn--gold" id="btn-story-go">${escapeHtml(cta)}</button>
+    </div>`;
+    el.querySelector("#btn-story-go").addEventListener("click", () => el.classList.add("hidden"));
+  };
+  showParagraphs();
 }
 
 function escapeHtml(value) {
@@ -1145,6 +1181,8 @@ function icon(name) {
     crit: '<path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z"/>',
     chest: '<rect x="3" y="9" width="18" height="12" rx="2"/><path d="M3 9l9-6 9 6"/><path d="M12 3v6"/><path d="M12 9v6"/><path d="M9 13h6"/>',
     merchant: '<rect x="3" y="8" width="18" height="13" rx="1"/><path d="M3 8l2-4h14l2 4"/><path d="M8 8a4 4 0 0 0 8 0"/><path d="M9 15h6"/>',
+    bed: '<path d="M3 18v-7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v7"/><path d="M3 18h18"/><path d="M5 9V6h14v3"/><path d="M7 9V7"/>',
+    plaza: '<path d="M4 21v-8l2-2V8h3v2l3-1V7h4v2l3 2v9H4z"/><path d="M10 21v-4h4v4"/>',
   };
   return `<svg viewBox="0 0 24 24" ${common} aria-hidden="true">${paths[name] || ""}</svg>`;
 }
@@ -1330,7 +1368,7 @@ function renderRightPlayers(room) {
   if (!el) return;
   if (!room || room.mode !== "multi" || room.status !== "playing") { el.classList.add("hidden"); return; }
   // show in town only, not in dungeon/combat overlays
-  const inOverlay = state.dungeonOpen || state.tavernOpen || state.blacksmithOpen || state.merchantOpen || state.templeOpen || state.inventoryOpen || state.pvpOpen;
+  const inOverlay = state.dungeonOpen || state.plazaOpen || state.tavernOpen || state.blacksmithOpen || state.merchantOpen || state.templeOpen || state.inventoryOpen || state.pvpOpen;
   if (inOverlay) { el.classList.add("hidden"); return; }
   const others = room.players.filter((p) => p.id !== state.playerId);
   if (!others.length) { el.classList.add("hidden"); return; }
@@ -1377,11 +1415,11 @@ function renderRightPlayers(room) {
 
 const ACTIONS = [
   { id: "dungeon", icon: "dungeon", title: "Dungeon", sub: "Ranked delve · High risk", kind: "open" },
-  { id: "search", icon: "search", title: "Search", sub: null, kind: "emit", event: "town:search" },
+  { id: "plaza", icon: "plaza", title: "Town Center", sub: "Meet the folk of Setra", kind: "open" },
   { id: "blacksmith", icon: "smith", title: "Blacksmith", sub: "Armor, weapons & gear", kind: "open" },
   { id: "merchant", icon: "merchant", title: "Merchant", sub: "Chests, potions & materials", kind: "open" },
   { id: "tavern", icon: "tavern", title: "Tavern", sub: "Bet gold · Coin flip, blackjack & food", kind: "open" },
-    { id: "temple", icon: "temple", title: "Ancient Temple", sub: "Ascend, mend hearts, craft & rebirth", kind: "open" },
+    { id: "temple", icon: "temple", title: "Ancient Temple", sub: "Ascend, mend hearts & rebirth", kind: "open" },
   { id: "rest", icon: "rest", title: "Rest", sub: null, kind: "emit", event: "town:rest" },
   { id: "sleep", icon: "rest", title: "Sleep Outside", sub: "End the day · Cold stars, small risk", kind: "emit", event: "town:sleepOutside" },
 ];
@@ -1391,19 +1429,17 @@ function renderActionCards(room, selfId) {
   const me = room.players.find((p) => p.id === selfId);
   const isDead = me && me.lives <= 0;
   const canAct = me && !me.endedDay && !isDead;
-  const searchCost = (CATALOG.town && CATALOG.town.search && CATALOG.town.search.stamina) || 1;
   const restAmt = (CATALOG.town && CATALOG.town.rest && CATALOG.town.rest.stamina) || 4;
   const restMax = (CATALOG.town && CATALOG.town.rest && CATALOG.town.rest.maxPerDay) || 3;
   const restLeft = Math.max(0, restMax - (me.restCount || 0));
   ACTIONS.forEach((a) => {
-    if (a.id === "search") a.sub = `${searchCost} stamina · Explore the wilds`;
     if (a.id === "rest") a.sub = restLeft > 0 ? `+${restAmt} stamina · ${restLeft}/${restMax} left today` : `No rests left today`;
   });
   el.innerHTML = ACTIONS.map((a) => {
     // Editördeki kasaba buton görselleri (images.ui.*Button) varsa IKON KUTUSUNDA
     // gösterilir; yok/bozuksa SVG ikon (eski görünüm, oyun kırılmaz).
     // Bos string + trim kontrolu: " " gibi degerler img denemez.
-    const uiKey = { blacksmith: "blacksmithButton", tavern: "tavernButton", merchant: "merchantButton", temple: "templeButton", dungeon: "dungeonButton", search: "searchButton", rest: "restButton", sleep: "sleepButton" }[a.id] || "";
+    const uiKey = { blacksmith: "blacksmithButton", tavern: "tavernButton", merchant: "merchantButton", temple: "templeButton", dungeon: "dungeonButton", plaza: "plazaButton", rest: "restButton", sleep: "sleepButton" }[a.id] || "";
     const rawImg = uiKey && CATALOG.images && CATALOG.images.ui ? CATALOG.images.ui[uiKey] : "";
     const uiImg = typeof rawImg === "string" ? rawImg.trim() : "";
     const iconHtml = uiImg
@@ -1433,6 +1469,7 @@ function renderActionCards(room, selfId) {
       if (a.kind === "open") {
         state.skillTreeOpen = false;
         state.dungeonOpen = a.id === "dungeon";
+        state.plazaOpen = a.id === "plaza";
         state.tavernOpen = a.id === "tavern";
         state.blacksmithOpen = a.id === "blacksmith";
         state.merchantOpen = a.id === "merchant";
@@ -2976,8 +3013,9 @@ function renderTavernView(room) {
       <button type="button" class="btn btn--bronze btn--mini" id="btn-buy-food">Buy (${prov.foodPrice} gold)</button>
     </div>
     <div class="sleep-card">
-      <span class="sleep-text"><strong>A warm bed</strong><span class="muted"> — sleep safe till dawn (${sleepPrice} gold)</span></span>
-      <button type="button" class="btn btn--gold btn--mini${canSleep ? "" : " btn--mini-disabled"}" id="btn-tavern-sleep">Sleep (${sleepPrice} gold)</button>
+      <span class="sleep-ico">${icon("bed")}</span>
+      <span class="sleep-text"><strong>Warm bed</strong><span class="muted">safe sleep · ${sleepPrice} gold</span></span>
+      <button type="button" class="btn btn--gold btn--mini${canSleep ? "" : " btn--mini-disabled"}" id="btn-tavern-sleep">Sleep</button>
     </div>`;
   root.querySelector("#btn-tavern-sleep").addEventListener("click", () => socket.emit("tavern:sleep"));
   root.querySelectorAll("[data-bet]").forEach((b) =>
@@ -3341,11 +3379,12 @@ function vendorHead(bgKey, title, greeting) {
   const bgs = CATALOG.images && CATALOG.images.backgrounds ? CATALOG.images.backgrounds : {};
   const raw = bgs[bgKey] || "";
   const url = typeof raw === "string" ? raw.trim() : "";
+  const greet = typeof greeting === "string" ? greeting.trim() : "";
   return `<div class="vendor-head${url ? "" : " vendor-head--plain"}"${url ? ` data-img="${escapeHtml(url)}" data-variant="${escapeHtml(bgKey)}"` : ""}>
     <div class="vendor-shade"></div>
     <div class="vendor-meta">
       <p class="vendor-title">${escapeHtml(title)}</p>
-      <p class="vendor-greet">${escapeHtml(greeting)}</p>
+      ${greet ? `<p class="vendor-greet">${escapeHtml(greet)}</p>` : ""}
     </div>
   </div>`;
 }
@@ -3369,7 +3408,7 @@ function renderBlacksmithView(room) {
   const gear = stockArr.length
     ? stockArr.map((id) => (CATALOG.items || []).find((x) => x.id === id)).filter(Boolean)
     : (CATALOG.items || []).filter(
-        (i) => i.slot !== "consumable" && i.slot !== "material" && i.slot !== "chest" && buyable.includes(i.rarity) && !i.craftOnly
+        (i) => i.slot !== "consumable" && i.slot !== "material" && i.slot !== "chest" && buyable.includes(i.rarity) && !i.craftOnly && !i.dungeonOnly
       );
   // Pinned wares (blueprints): always available, shown first in their own row.
   const pinned = (CATALOG.items || []).filter((i) => i.blueprint && i.price && i.price.gold);
@@ -3395,10 +3434,10 @@ function renderBlacksmithView(room) {
   }).join("");
 
   root.innerHTML = `
-    ${vendorHead("blacksmith", "Blacksmith", "The forge roars. “Bring me materials and I will hammer them into legend.”")}
+    ${vendorHead("blacksmith", "Blacksmith", "")}
     ${shopResources(me)}
     <p class="subhead shop-head">Armor & Weapons — Week ${room.shopStock ? room.shopStock.week : 1} · ${rotGear.length} items (7 days rotation)${shopVendorPortrait("blacksmithNpc", "Blacksmith")}</p>
-    ${pinned.length ? `<p class="subhead">📐 Always in stock — Blueprints</p><div class="shop-grid shop-grid--pinned">${pinned.map((i) => shopCardHtml(me, staminaOk, i, "blacksmith:buy", soldSet.includes(i.id))).join("")}</div>` : ""}
+    ${pinned.length ? `<div class="temple-card temple-card--schematics"><p class="subhead">📐 Schematics — always in stock · 200 gold each</p><div class="shop-grid shop-grid--pinned">${pinned.map((i) => shopCardHtml(me, staminaOk, i, "blacksmith:buy", soldSet.includes(i.id))).join("")}</div></div>` : ""}
     <div class="shop-grid">${rotGear.map((i) => shopCardHtml(me, staminaOk, i, "blacksmith:buy", soldSet.includes(i.id))).join("") || '<div class="muted">Nothing for sale today.</div>'}</div>
     <div class="temple-card temple-card--forge">
       <p class="subhead">Forge — Crafting (${recipes.length} recipes)</p>
@@ -3452,7 +3491,7 @@ function renderMerchantView(room) {
   const goods = stockArr.length
     ? stockArr.map((id) => (CATALOG.items || []).find((x) => x.id === id)).filter(Boolean)
     : (CATALOG.items || []).filter(
-        (i) => (i.slot === "consumable" || i.slot === "material" || i.slot === "chest") && buyable.includes(i.rarity) && !i.craftOnly
+        (i) => (i.slot === "consumable" || i.slot === "material" || i.slot === "chest") && buyable.includes(i.rarity) && !i.craftOnly && !i.dungeonOnly
       );
 
   root.innerHTML = `
@@ -3480,6 +3519,83 @@ function renderMerchantView(room) {
     state.inventoryOpen = true;
     renderTown(state.room);
   });
+}
+
+// ---- Town Center: NPC meeting hub + dialogue engine ----
+
+function talkNpc(npcId) {
+  return (CATALOG.npcs || []).find((n) => n.id === npcId) || null;
+}
+
+function talkNode(npc, nodeId) {
+  if (!npc || !Array.isArray(npc.nodes)) return null;
+  return npc.nodes.find((n) => n.id === (nodeId || "start")) || npc.nodes[0] || null;
+}
+
+function renderPlazaView(room) {
+  const root = $("plaza-content");
+  if (!root) return;
+  const npcs = CATALOG.npcs || [];
+  const npc = state.talkNpcId ? talkNpc(state.talkNpcId) : null;
+  if (!npc) {
+    root.innerHTML = `
+      ${vendorHead("town", "Town Center", "Setra Village goes about its day. Its folk have time to talk.")}
+      <div class="shop-grid">${npcs.map((n) => `
+        <button type="button" class="npc-card" data-npc="${escapeHtml(n.id)}">
+          <span class="npc-portrait" data-img="${escapeHtml(n.image || "")}" data-variant="${escapeHtml(n.id)}"></span>
+          <span class="npc-name">${escapeHtml(n.name || n.id)}</span>
+          <span class="muted">${escapeHtml(n.title || "")}</span>
+        </button>`).join("") || '<div class="muted">The square is empty.</div>'}
+      </div>`;
+    initImages(root);
+    root.querySelectorAll("[data-npc]").forEach((b) =>
+      b.addEventListener("click", () => {
+        state.talkNpcId = b.getAttribute("data-npc");
+        state.talkNodeId = "start";
+        sfxPlay("clicksound");
+        renderPlazaView(room);
+      })
+    );
+    return;
+  }
+  const node = talkNode(npc, state.talkNodeId);
+  if (!node) {
+    state.talkNpcId = null;
+    renderPlazaView(room);
+    return;
+  }
+  root.innerHTML = `
+    <div class="btn-row"><button type="button" class="btn btn--ghost" id="btn-talk-back">← Town Center</button></div>
+    <div class="talk-panel talk-fade" key="${escapeHtml(npc.id + ":" + node.id)}">
+      <div class="talk-main">
+        <p class="talk-name">${escapeHtml(npc.name || npc.id)}</p>
+        <p class="talk-text">${escapeHtml(node.text || "")}</p>
+        <div class="talk-options">
+          ${(node.options || []).map((o, i) => `<button type="button" class="btn btn--bronze btn--mini" data-opt="${i}">${escapeHtml(o.label)}</button>`).join("")}
+        </div>
+      </div>
+      <span class="talk-portrait" data-img="${escapeHtml(npc.image || "")}" data-variant="${escapeHtml(npc.id)}" title="${escapeHtml(npc.name || npc.id)}"></span>
+    </div>`;
+  initImages(root);
+  root.querySelector("#btn-talk-back").addEventListener("click", () => {
+    state.talkNpcId = null;
+    state.talkNodeId = null;
+    renderPlazaView(room);
+  });
+  root.querySelectorAll("[data-opt]").forEach((b) =>
+    b.addEventListener("click", () => {
+      const opt = (node.options || [])[Number(b.getAttribute("data-opt"))];
+      if (!opt) return;
+      sfxPlay("clicksound");
+      if (opt.end || !opt.to) {
+        state.talkNpcId = null;
+        state.talkNodeId = null;
+      } else {
+        state.talkNodeId = opt.to;
+      }
+      renderPlazaView(room);
+    })
+  );
 }
 
 function renderInventory(room) {

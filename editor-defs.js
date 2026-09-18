@@ -439,6 +439,22 @@ const pages = [
     ctaPath: "story.cta",
   },
   {
+    id: "npcs",
+    label: "NPCs & Dialogue",
+    kind: "collection",
+    path: "npcs",
+    idField: "id",
+    idLabel: "id",
+    nameField: "name",
+    itemLabelTemplate: "{name} ({id})",
+    fields: [
+      { key: "name", label: "Display name (title is fine, e.g. Blacksmith)", type: "string" },
+      { key: "title", label: "Title (e.g. Blacksmith of Setra Village)", type: "string" },
+      { key: "image", label: "Portrait image", ...img("npcs") },
+      { key: "location", label: "Home shop (blacksmith, merchant, tavern)", type: "string" },
+    ],
+  },
+  {
     id: "classSelect",
     label: "Class Select Text",
     kind: "form",

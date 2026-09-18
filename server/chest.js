@@ -67,7 +67,7 @@ function openChest(room, player, itemId) {
     CONTENT.items.filter((it) => it.rarity === rarity && it.slot === "material" && !it.blueprint);
   // Gear (weapons/armor/stones…) — craftOnly joins ONLY when flagged chestDrop.
   const poolForGear = (rarity) =>
-    CONTENT.items.filter((it) => it.rarity === rarity && it.slot !== "chest" && it.slot !== "material" && !it.blueprint && (!it.craftOnly || it.chestDrop) && !it.bossWeapon);
+    CONTENT.items.filter((it) => it.rarity === rarity && it.slot !== "chest" && it.slot !== "material" && !it.blueprint && (!it.craftOnly || it.chestDrop || it.dungeonOnly) && !it.bossWeapon);
   const pickOne = (rarity) => {
     const matW = (catW.material || 0);
     const gearW = (catW.gear || 0);
