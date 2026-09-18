@@ -454,6 +454,21 @@ input:focus {
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
+/* Dialogue option buttons: transparent smoke-grey, not yellow. */
+.btn--smoke {
+  background: rgba(160, 160, 170, 0.12);
+  border-color: rgba(200, 200, 210, 0.35);
+  color: #e8e6e1;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  box-shadow: none;
+}
+.btn--smoke:hover:not(:disabled) {
+  background: rgba(170, 170, 180, 0.22);
+  border-color: rgba(220, 220, 230, 0.55);
+  color: #fff;
+  box-shadow: none;
+}
+
 .btn--ghost {
   background: transparent;
   color: var(--gold-bright);
@@ -4378,6 +4393,7 @@ input:focus {
   max-width: min(94vw, 700px);
   text-align: left;
   padding: 1.8rem 2rem;
+  border-radius: 10px;
 }
 .story-talk h2 {
   text-align: center;
@@ -4385,6 +4401,12 @@ input:focus {
 .story-talk .talk-text {
   font-size: 1.05rem;
   min-height: 7.5rem;
+}
+.story-talk .talk-panel {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
 }
 .story-talk .talk-portrait {
   width: 9.5rem;
@@ -4433,7 +4455,7 @@ input:focus {
   align-items: stretch;
   padding: 1.1rem 1.2rem;
   border: 1px solid var(--glass-line);
-  border-radius: 14px;
+  border-radius: 8px;
   background: var(--glass-2);
   margin-top: 0.6rem;
   min-height: 13rem;
@@ -4475,7 +4497,7 @@ input:focus {
   height: 10.5rem;
   flex: none;
   align-self: flex-start;
-  border-radius: 12px;
+  border-radius: 8px;
   border: 1px solid rgba(232, 183, 108, 0.55);
   background: linear-gradient(160deg, #3a2c1c, #1c130a);
   background-size: cover;

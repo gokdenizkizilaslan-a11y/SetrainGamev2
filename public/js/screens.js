@@ -695,12 +695,11 @@ function showStoryIntro() {
     const ln = lines[idx];
     const tag = ln.who === "npc" ? escapeHtml(intro.speaker || "Stranger") : ln.who === "you" ? "You" : "";
     el.innerHTML = `<div class="notice-card story-card story-talk talk-fade" key="intro-${idx}">
-      <h2>${escapeHtml(title)}</h2>
       <div class="talk-panel">
         <div class="talk-main">
           ${tag ? `<p class="talk-name">${tag}</p>` : ""}
           <p class="talk-text">${escapeHtml(ln.text || "")}</p>
-          <div class="talk-options"><button type="button" class="btn btn--bronze btn--mini" id="btn-story-next">${idx < lines.length - 1 ? "Continue" : escapeHtml(cta)}</button></div>
+          <div class="talk-options"><button type="button" class="btn btn--smoke btn--mini" id="btn-story-next">${idx < lines.length - 1 ? "Continue" : escapeHtml(cta)}</button></div>
         </div>
         ${ln.who === "npc" ? `<span class="talk-portrait" data-img="${escapeHtml(intro.image || "")}" data-variant="intro"></span>` : ""}
       </div>
@@ -3576,7 +3575,7 @@ function talkPanelHtml(npc, node, withClose) {
       <p class="talk-name">${escapeHtml(npc.name || npc.id)}</p>
       <p class="talk-text">${escapeHtml(node.text || "")}</p>
       <div class="talk-options">
-        ${(node.options || []).map((o, i) => `<button type="button" class="btn btn--bronze btn--mini" data-opt="${i}">${escapeHtml(o.label)}</button>`).join("")}
+        ${(node.options || []).map((o, i) => `<button type="button" class="btn btn--smoke btn--mini" data-opt="${i}">${escapeHtml(o.label)}</button>`).join("")}
       </div>
     </div>
     <span class="talk-portrait" data-img="${escapeHtml(npc.image || "")}" data-variant="${escapeHtml(npc.id)}" title="${escapeHtml(npc.name || npc.id)}"></span>
