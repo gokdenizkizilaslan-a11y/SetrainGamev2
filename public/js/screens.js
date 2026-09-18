@@ -334,6 +334,7 @@ const BUFF_META = {
   pet_defense: { label: "Pet Def+", color: "#7fb4ff" },
   pet_weaken: { label: "Pet Weak", color: "#ff9d7a" },
   healblock: { label: "🩸 Wounds", color: "#c084fc" },
+  stack: { label: "⛰ Stack", color: "#f0abfc" },
 };
 function petStage(level){
   const lv = level||1;
@@ -404,8 +405,11 @@ function buffBadges(d, targetType, targetId) {
   return `<span class="buff-badges">${list
     .map((b) => {
       const meta = BUFF_META[b.kind] || { label: b.kind || "?", color: "#ffffff" };
-      const name = escapeHtml(b.name || meta.label);
-      return `<span class="buff-badge" style="--bc:${meta.color}" title="${name} · ${b.turns} turn${b.turns === 1 ? "" : "s"}" data-buff="${escapeHtml(b.kind)}"><em>${escapeHtml(meta.label)}</em><i>${b.turns}</i></span>`;
+      const name = escapeHtml(b.name || b.stackId || meta.label);
+      const isStack = b.kind === "stack" && b.maxStacks > 0;
+      const sub = isStack ? `${b.stacks || 0}/${b.maxStacks}` : `${b.turns}`;
+      const title = isStack ? `${name} — stack ${b.stacks || 0}/${b.maxStacks}` : `${name} · ${b.turns} turn${b.turns === 1 ? "" : "s"}`;
+      return `<span class="buff-badge" style="--bc:${meta.color}" title="${title}" data-buff="${escapeHtml(b.kind)}"><em>${escapeHtml(isStack ? (b.stackId || meta.label) : meta.label)}</em><i>${sub}</i></span>`;
     })
     .join("")}</span>`;
 }
@@ -1379,7 +1383,7 @@ const ACTIONS = [
   { id: "tavern", icon: "tavern", title: "Tavern", sub: "Bet gold · Coin flip, blackjack & food", kind: "open" },
     { id: "temple", icon: "temple", title: "Ancient Temple", sub: "Ascend, mend hearts, craft & rebirth", kind: "open" },
   { id: "rest", icon: "rest", title: "Rest", sub: null, kind: "emit", event: "town:rest" },
-  { id: "sleep", icon: "rest", title: "Sleep", sub: "End the day · Stamina returns at dawn", kind: "emit", event: "town:endDay" },
+  { id: "sleep", icon: "rest", title: "Sleep Outside", sub: "End the day · Cold stars, small risk", kind: "emit", event: "town:sleepOutside" },
 ];
 
 function renderActionCards(room, selfId) {
@@ -1387,11 +1391,13 @@ function renderActionCards(room, selfId) {
   const me = room.players.find((p) => p.id === selfId);
   const isDead = me && me.lives <= 0;
   const canAct = me && !me.endedDay && !isDead;
-  const searchCost = (CATALOG.town && CATALOG.town.search && CATALOG.town.search.stamina) || 2;
-  const restAmt = (CATALOG.town && CATALOG.town.rest && CATALOG.town.rest.stamina) || 6;
+  const searchCost = (CATALOG.town && CATALOG.town.search && CATALOG.town.search.stamina) || 1;
+  const restAmt = (CATALOG.town && CATALOG.town.rest && CATALOG.town.rest.stamina) || 4;
+  const restMax = (CATALOG.town && CATALOG.town.rest && CATALOG.town.rest.maxPerDay) || 3;
+  const restLeft = Math.max(0, restMax - (me.restCount || 0));
   ACTIONS.forEach((a) => {
     if (a.id === "search") a.sub = `${searchCost} stamina · Explore the wilds`;
-    if (a.id === "rest") a.sub = `+${restAmt} stamina · Wait for your party`;
+    if (a.id === "rest") a.sub = restLeft > 0 ? `+${restAmt} stamina · ${restLeft}/${restMax} left today` : `No rests left today`;
   });
   el.innerHTML = ACTIONS.map((a) => {
     // Editördeki kasaba buton görselleri (images.ui.*Button) varsa IKON KUTUSUNDA
@@ -1506,6 +1512,7 @@ function guideItems(section) {
       { id: "turns", label: "Turns & Mana" },
       { id: "damage", label: "Damage Types" },
       { id: "shields", label: "Shields & Healing" },
+      { id: "stacks", label: "Stacks" },
     ];
   }
   if (section === "town") {
@@ -1560,7 +1567,8 @@ function guideDetail(section, itemId) {
   const staticTexts = {
     turns: ["<h3>Turns & Mana</h3>", "<p>Each round you get one turn per hero. Skills cost mana; mana refills a little every round and fully in town at dawn.</p><p>If your timer runs out, your turn ends automatically — pick fast or hit End Turn.</p>"],
       damage: ["<h3>Damage Types</h3>", "<p><strong>Physical & elemental</strong> damage is reduced by resistance and shields, boosted by crits, buffs and elemental matchups.</p><p><strong>True damage (white numbers)</strong> always deals the exact amount — nothing reduces it except shields.</p><p><strong>Execute</strong> skills instantly slay weakened foes below their threshold.</p><p><strong>🩸 Wounds</strong> reduce all healing the afflicted takes (up to 90%) until they expire.</p>"],
-    shields: ["<h3>Shields & Healing</h3>", "<p>Shields absorb damage first and come in separate timed packs — oldest absorbs first, expired packs vanish with leftovers.</p><p>Healing restores HP up to max. Lifesteal heals you for a share of damage dealt.</p>"],
+      shields: ["<h3>Shields & Healing</h3>", "<p>Shields absorb damage first and come in separate timed packs — oldest absorbs first, expired packs vanish with leftovers.</p><p>Healing restores HP up to max. Lifesteal heals you for a share of damage dealt.</p>"],
+      stacks: ["<h3>Stacks</h3>", "<p>Some skills and passives stack up on a target — at max stacks a <strong>burst</strong> fires (damage, exact damage, heal or shield) and the counter resets, LoL-style.</p><p><strong>Self stacks</strong> (persist) stay until the match ends and grant a growing aura, e.g. +1% damage per stack.</p>"],
     stamina: ["<h3>Stamina & Days</h3>", "<p>Almost everything in town costs stamina. When the party is spent, Sleep to end the day — stamina returns at dawn and monsters grow no stronger.</p><p>Fallen heroes (0 lives) need The Essence of Life at the Ancient Temple.</p>"],
     pvp: ["<h3>Parties & PvP</h3>", "<p>Create or join a party to delve dungeons together — everyone gets their own chest and full XP.</p><p>In town you can challenge another hero to a 1v1 duel from the player list or the map.</p>"],
     chests: ["<h3>Chests</h3>", "<p>Every dungeon victory grants each party member a chest. Click it once to break the seal, then reveal loot tap by tap.</p><p>Higher ranks drop more items; boss chests drop the most (up to 10).</p>"],
@@ -2390,6 +2398,23 @@ function skillNumsLine(s, me) {
     else if (b.kind === "wet") lines.push(`💧 Soaks the foe (${turns}r)`);
     else if (b.kind === "frozen") lines.push(`❄ Freezes the foe (${turns}r)`);
     else if (b.kind === "healblock") lines.push(`🩸 Foe healing -${Math.round(v * 100)}% (${turns}r)`);
+    else if (b.kind === "stack") {
+      const sid = b.stackId || "stack";
+      const mx = Math.max(1, Math.round(Number(b.maxStacks) || 5));
+      if (b.forKind) {
+        const per = Math.round(Number(b.value || 0) * 100);
+        lines.push(`⛰ ${sid}: +${per}% ${b.forKind} per stack (max ${mx}, ${b.persist ? "until match end" : turns + "r"})`);
+      } else if (b.burst) {
+        const bt = b.burst.type || "damage";
+        const bdesc = bt === "heal" ? `${Math.round(Number(b.burst.pct || 0) * 100) || b.burst.amount || ""} heal`
+          : bt === "shield" ? `${b.burst.amount || ""} shield`
+          : bt === "true" ? "exact damage"
+          : `${b.burst.power || 1}× burst`;
+        lines.push(`⛰ ${sid}: ${mx} stacks → ${bdesc}${b.consume === false ? " (kept)" : ""}`);
+      } else {
+        lines.push(`⛰ ${sid}: stacks to ${mx}`);
+      }
+    }
     else lines.push(`✨ ${escapeHtml(b.kind)} (${turns}r)`);
   }
   if (!lines.length) return "";
@@ -2930,7 +2955,10 @@ function renderTavernView(room) {
 
   const result = t && t.status === "done" ? `<div class="log-line">${escapeHtml(t.message || "")}</div>` : "";
   const prov = (CATALOG.town && CATALOG.town.tavern && CATALOG.town.tavern.provisions) || { foodPrice: 10, foodAmount: 2 };
+  const sleepPrice = (CATALOG.town && CATALOG.town.tavern && CATALOG.town.tavern.sleep && CATALOG.town.tavern.sleep.price) || 15;
+  const canSleep = me.gold >= sleepPrice;
   root.innerHTML = `
+    ${vendorHead("tavern", "The Tavern", "The keeper wipes a mug. “Warm beds upstairs — safe sleep till dawn.”")}
     <p class="subhead">Wagering</p>
     <p class="lead">Pick a wager, then a game. A winning coin flip doubles it; blackjack pays 2.5&times; on a natural.</p>
     ${result}
@@ -2946,7 +2974,12 @@ function renderTavernView(room) {
     <div class="provisions-row">
       <span class="muted">Field Rations — ${prov.foodAmount} food</span>
       <button type="button" class="btn btn--bronze btn--mini" id="btn-buy-food">Buy (${prov.foodPrice} gold)</button>
+    </div>
+    <div class="sleep-card">
+      <span class="sleep-text"><strong>A warm bed</strong><span class="muted"> — sleep safe till dawn (${sleepPrice} gold)</span></span>
+      <button type="button" class="btn btn--gold btn--mini${canSleep ? "" : " btn--mini-disabled"}" id="btn-tavern-sleep">Sleep (${sleepPrice} gold)</button>
     </div>`;
+  root.querySelector("#btn-tavern-sleep").addEventListener("click", () => socket.emit("tavern:sleep"));
   root.querySelectorAll("[data-bet]").forEach((b) =>
     b.addEventListener("click", () => {
       state.bet = Number(b.getAttribute("data-bet"));
@@ -3020,7 +3053,7 @@ function matchBenchRecipe(recipes) {
   return null;
 }
 
-function renderCraftBench(room, me, root) {
+function renderCraftBench(room, me, root, backTo) {
   if (!state.craftSlots) {
     state.craftSlots = [null, null, null];
     state.craftSel = 0;
@@ -3066,7 +3099,7 @@ function renderCraftBench(room, me, root) {
   }).join("");
 
   root.innerHTML = `
-    <div class="btn-row"><button type="button" class="btn btn--ghost" id="btn-craft-back">← Temple</button></div>
+    <div class="btn-row"><button type="button" class="btn btn--ghost" id="btn-craft-back">← ${backTo === "blacksmith" ? "Forge" : "Temple"}</button></div>
     <p class="subhead">Crafting Bench — 3 slots</p>
     <div class="craft-slots">${slotsHtml}</div>
     ${resultHtml}
@@ -3075,20 +3108,22 @@ function renderCraftBench(room, me, root) {
 
   root.querySelector("#btn-craft-back").addEventListener("click", () => {
     state.craftOpen = false;
-    renderTempleView(room);
+    state.craftSlots = [null, null, null];
+    if (backTo === "blacksmith" && typeof renderBlacksmithView === "function") renderBlacksmithView(room);
+    else renderTempleView(room);
   });
   root.querySelectorAll("[data-cslot]").forEach((el) =>
     el.addEventListener("click", (ev) => {
       if (ev.target.closest("[data-cslot-clear]")) return;
       state.craftSel = Number(el.getAttribute("data-cslot"));
-      renderCraftBench(room, me, root);
+      renderCraftBench(room, me, root, backTo);
     })
   );
   root.querySelectorAll("[data-cslot-clear]").forEach((el) =>
     el.addEventListener("click", (ev) => {
       ev.stopPropagation();
       state.craftSlots[Number(el.getAttribute("data-cslot-clear"))] = null;
-      renderCraftBench(room, me, root);
+      renderCraftBench(room, me, root, backTo);
     })
   );
   root.querySelectorAll("[data-craft-add]").forEach((el) =>
@@ -3107,7 +3142,7 @@ function renderCraftBench(room, me, root) {
       }
       state.craftSlots[idx] = { itemId: id, qty: (cur ? cur.qty : 0) + 1 };
       sfxPlay("clicksound");
-      renderCraftBench(room, me, root);
+      renderCraftBench(room, me, root, backTo);
     })
   );
   const take = root.querySelector("[data-craft-take]");
@@ -3126,8 +3161,7 @@ function renderTempleView(room) {
     return;
   }
   if (state.craftOpen) {
-    renderCraftBench(room, me, root);
-    return;
+    state.craftOpen = false;
   }
   const temple = CATALOG.temple || {};
   const st = (CATALOG.town && CATALOG.town.temple && CATALOG.town.temple.stamina) || 2;
@@ -3158,7 +3192,6 @@ function renderTempleView(room) {
   const restoreItem = temple.restore || {};
   const canRestore = staminaOk && me.lives < maxLives && itemOwnedQty(me, restoreItem.item) >= 1;
   const heartQty = itemOwnedQty(me, restoreItem.item);
-  const recipes = temple.recipes || [];
   const evoReqText = (ev) => {
     const r = evoReq(ev);
     const parts = [];
@@ -3192,26 +3225,6 @@ function renderTempleView(room) {
     <button type="button" class="btn btn--bronze${canRestore ? "" : " btn--mini-disabled"}" id="btn-temple-restore">Restore a Heart</button>
   </div>`;
 
-  const craftHtml = `<div class="temple-card">
-    <p class="subhead">Craft</p>
-    <button type="button" class="btn btn--gold" id="btn-open-bench">⚒️ Open Workbench (${recipes.length} recipes)</button>
-    <div class="craft-grid">${recipes.map((r) => {
-      const owned = (r.inputs || []).every((inp) => itemOwnedQty(me, inp.item) >= inp.qty);
-      const can = staminaOk && owned && me.gold >= (r.cost.gold || 0) && me.wood >= (r.cost.wood || 0);
-      const inputNames = (r.inputs || []).map((inp) => {
-        const it = CATALOG.items.find((x) => x.id === inp.item);
-        return `${it ? escapeHtml(it.name) : escapeHtml(inp.item)} ×${inp.qty} (${itemOwnedQty(me, inp.item)})`;
-      }).join(" + ");
-      const out = CATALOG.items.find((x) => x.id === r.output.item);
-      return `<div class="craft-row">
-        <span class="craft-out">${out ? escapeHtml(out.name) : escapeHtml(r.output.item)} ${out ? rarityBadge(out) : ""}</span>
-        <span class="craft-in">${inputNames}</span>
-        <span class="craft-cost">${icon("gold")} ${r.cost.gold || 0}${r.cost.wood ? ` ${icon("wood")} ${r.cost.wood}` : ""} · ${escapeHtml(r.description || "")}</span>
-        <button type="button" class="btn btn--mini${can ? "" : " btn--mini-disabled"}" data-craft="${escapeHtml(r.id)}">Craft</button>
-      </div>`;
-    }).join("")}</div>
-  </div>`;
-
   const origin = temple.origin || { item: "origin_stone", price: 250 };
   const stoneQty = itemOwnedQty(me, origin.item);
   const stoneDef = (CATALOG.items || []).find((x) => x.id === origin.item);
@@ -3239,6 +3252,7 @@ function renderTempleView(room) {
   </div>`;
 
   root.innerHTML = `
+    ${vendorHead("temple", "Ancient Temple", "The stones hum. “The Temple remembers a purpose older than the kingdom.”")}
     <div class="shop-resources">
       ${chip(icon("gold"), `Gold ${me.gold}`)}
       ${chip(icon("wood"), `Wood ${me.wood}`)}
@@ -3246,18 +3260,11 @@ function renderTempleView(room) {
       ${chip(icon("stamina"), `Stamina ${me.stamina}`)}
     </div>
     <p class="subhead">The Ancient Temple remembers a purpose older than the kingdom.</p>
-    <div class="temple-grid">${evolveHtml}${restoreHtml}${originHtml}${craftHtml}${reviveHtml}</div>`;
+    <div class="temple-grid">${evolveHtml}${restoreHtml}${originHtml}${reviveHtml}</div>`;
 
   root.querySelectorAll("[data-evolve-to]").forEach((b) =>
     b.addEventListener("click", () => socket.emit("temple:evolve", { to: b.getAttribute("data-evolve-to") }))
   );
-  const benchBtn = root.querySelector("#btn-open-bench");
-  if (benchBtn) benchBtn.addEventListener("click", () => {
-    state.craftOpen = true;
-    state.craftSlots = [null, null, null];
-    state.craftSel = 0;
-    renderTempleView(room);
-  });
   const rsBtn = root.querySelector("#btn-temple-restore");
   if (rsBtn) rsBtn.addEventListener("click", () => socket.emit("temple:restore"));
   const rerollBtn = root.querySelector("#btn-temple-reroll");
@@ -3327,11 +3334,31 @@ function shopVendorPortrait(uiKey, label) {
   return ` <span class="shop-npc" data-img="${escapeHtml(url)}" data-variant="${escapeHtml(uiKey)}" title="${escapeHtml(label)}"></span>`;
 }
 
+// Vendor header: NPC title + greeting over an optional photo backdrop
+// (images.backgrounds.<key>, e.g. tavern.png). Photo missing or broken =>
+// warm gradient, same layout (initImages handles both, old look kept).
+function vendorHead(bgKey, title, greeting) {
+  const bgs = CATALOG.images && CATALOG.images.backgrounds ? CATALOG.images.backgrounds : {};
+  const raw = bgs[bgKey] || "";
+  const url = typeof raw === "string" ? raw.trim() : "";
+  return `<div class="vendor-head${url ? "" : " vendor-head--plain"}"${url ? ` data-img="${escapeHtml(url)}" data-variant="${escapeHtml(bgKey)}"` : ""}>
+    <div class="vendor-shade"></div>
+    <div class="vendor-meta">
+      <p class="vendor-title">${escapeHtml(title)}</p>
+      <p class="vendor-greet">${escapeHtml(greeting)}</p>
+    </div>
+  </div>`;
+}
+
 function renderBlacksmithView(room) {
   const me = room.players.find((p) => p.id === state.playerId);
   const root = $("blacksmith-content");
   if (!me) {
     root.innerHTML = "";
+    return;
+  }
+  if (state.craftOpen) {
+    renderCraftBench(room, me, root, "blacksmith");
     return;
   }
   const st = (CATALOG.town && CATALOG.town.blacksmith && CATALOG.town.blacksmith.stamina) || 2;
@@ -3347,12 +3374,37 @@ function renderBlacksmithView(room) {
   // Pinned wares (blueprints): always available, shown first in their own row.
   const pinned = (CATALOG.items || []).filter((i) => i.blueprint && i.price && i.price.gold);
   const rotGear = gear.filter((i) => !(i.blueprint && i.price && i.price.gold));
+  // Forge (moved from the temple): recipe quick-craft + workbench.
+  // Server still charges town.temple.stamina per craft (temple:craft).
+  const recipes = (CATALOG.temple && CATALOG.temple.recipes) || [];
+  const craftSt = (CATALOG.town && CATALOG.town.temple && CATALOG.town.temple.stamina) || 1;
+  const forgeRows = recipes.map((r) => {
+    const owned = (r.inputs || []).every((inp) => itemOwnedQty(me, inp.item) >= inp.qty);
+    const can = me.stamina >= craftSt && owned && me.gold >= ((r.cost && r.cost.gold) || 0) && me.wood >= ((r.cost && r.cost.wood) || 0);
+    const inputNames = (r.inputs || []).map((inp) => {
+      const it = CATALOG.items.find((x) => x.id === inp.item);
+      return `${it ? escapeHtml(it.name) : escapeHtml(inp.item)} ×${inp.qty} (${itemOwnedQty(me, inp.item)})`;
+    }).join(" + ");
+    const out = CATALOG.items.find((x) => x.id === r.output.item);
+    return `<div class="craft-row">
+      <span class="craft-out">${out ? escapeHtml(out.name) : escapeHtml(r.output.item)} ${out ? rarityBadge(out) : ""}</span>
+      <span class="craft-in">${inputNames}</span>
+      <span class="craft-cost">${icon("gold")} ${(r.cost && r.cost.gold) || 0}${r.cost && r.cost.wood ? ` ${icon("wood")} ${r.cost.wood}` : ""} · ${escapeHtml(r.description || "")}</span>
+      <button type="button" class="btn btn--mini${can ? "" : " btn--mini-disabled"}" data-craft="${escapeHtml(r.id)}">Craft</button>
+    </div>`;
+  }).join("");
 
   root.innerHTML = `
+    ${vendorHead("blacksmith", "Blacksmith", "The forge roars. “Bring me materials and I will hammer them into legend.”")}
     ${shopResources(me)}
     <p class="subhead shop-head">Armor & Weapons — Week ${room.shopStock ? room.shopStock.week : 1} · ${rotGear.length} items (7 days rotation)${shopVendorPortrait("blacksmithNpc", "Blacksmith")}</p>
     ${pinned.length ? `<p class="subhead">📐 Always in stock — Blueprints</p><div class="shop-grid shop-grid--pinned">${pinned.map((i) => shopCardHtml(me, staminaOk, i, "blacksmith:buy", soldSet.includes(i.id))).join("")}</div>` : ""}
     <div class="shop-grid">${rotGear.map((i) => shopCardHtml(me, staminaOk, i, "blacksmith:buy", soldSet.includes(i.id))).join("") || '<div class="muted">Nothing for sale today.</div>'}</div>
+    <div class="temple-card temple-card--forge">
+      <p class="subhead">Forge — Crafting (${recipes.length} recipes)</p>
+      <div class="btn-row"><button type="button" class="btn btn--gold" id="btn-open-bench">Workbench</button></div>
+      <div class="craft-grid">${forgeRows}</div>
+    </div>
     <div class="btn-row">
       <button type="button" class="btn btn--bronze" id="btn-shop-inventory">Open Inventory</button>
     </div>`;
@@ -3360,6 +3412,16 @@ function renderBlacksmithView(room) {
 
   root.querySelectorAll("[data-buy]").forEach((b) =>
     b.addEventListener("click", () => socket.emit("blacksmith:buy", { itemId: b.getAttribute("data-buy") }))
+  );
+  const benchBtn = root.querySelector("#btn-open-bench");
+  if (benchBtn) benchBtn.addEventListener("click", () => {
+    state.craftOpen = true;
+    state.craftSlots = [null, null, null];
+    state.craftSel = 0;
+    renderBlacksmithView(room);
+  });
+  root.querySelectorAll("[data-craft]").forEach((b) =>
+    b.addEventListener("click", () => socket.emit("temple:craft", { recipeId: b.getAttribute("data-craft") }))
   );
   root.querySelectorAll("[data-equip]").forEach((b) =>
     b.addEventListener("click", () => {
@@ -3394,6 +3456,7 @@ function renderMerchantView(room) {
       );
 
   root.innerHTML = `
+    ${vendorHead("merchant", "Merchant", "The merchant spreads empty hands wide. “Chests, potions, curiosities — everything has a price.”")}
     ${shopResources(me)}
     <p class="subhead">Chests, Potions & Materials — Week ${room.shopStock ? room.shopStock.week : 1} · ${stockArr.length} items (7 days rotation)</p>
     <div class="shop-grid">${goods.map((i) => shopCardHtml(me, staminaOk, i, "merchant:buy", soldSetM.includes(i.id))).join("") || '<div class="muted">Nothing for sale today.</div>'}</div>

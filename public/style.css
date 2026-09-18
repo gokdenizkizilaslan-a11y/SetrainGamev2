@@ -3106,6 +3106,100 @@ input:focus {
 .shop-grid::-webkit-scrollbar-thumb { background: rgba(232,183,108,0.25); border-radius: 3px; }
 .shop-card--sold { opacity: 0.55; filter: grayscale(0.2); }
 
+/* ---- Vendor header (NPC title + greeting over optional photo) ---- */
+
+.vendor-head {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--glass-line);
+  border-radius: 14px;
+  background-size: cover;
+  background-position: center;
+  min-height: 7.5rem;
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 0.9rem;
+}
+.vendor-head--plain {
+  background: linear-gradient(150deg, #3a2a18, #191007 70%);
+  min-height: 5.5rem;
+}
+.vendor-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top,
+    rgba(0, 0, 0, 0.82) 0%,
+    rgba(0, 0, 0, 0.35) 55%,
+    rgba(0, 0, 0, 0.05) 100%);
+  pointer-events: none;
+}
+.vendor-meta {
+  position: relative;
+  padding: 0.8rem 1rem;
+}
+.vendor-title {
+  margin: 0 0 0.15rem;
+  font-family: "Cinzel", serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+  text-shadow: 0 2px 8px #000;
+}
+.vendor-greet {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: #f3e7d2;
+  text-shadow: 0 1px 5px #000;
+  font-style: italic;
+}
+
+/* ---- Tavern sleep card (same row pattern as provisions) ---- */
+
+.sleep-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-top: 0.7rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--glass-line);
+  border-radius: 12px;
+  background: var(--glass-2);
+}
+.sleep-text {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  align-items: baseline;
+  font-size: 0.85rem;
+}
+
+/* ---- Forge card inside the blacksmith ---- */
+
+.temple-card--forge {
+  margin-top: 0.4rem;
+  border-color: rgba(232, 183, 108, 0.35);
+}
+
+/* ---- Button standard: no runaway widths, labels never overflow ---- */
+
+.btn {
+  max-width: 100%;
+  white-space: normal;
+  line-height: 1.35;
+}
+.btn--mini {
+  padding: 0.45rem 0.8rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .shop-card {
   display: flex;
   flex-direction: column;

@@ -405,6 +405,7 @@ function createPlayer({ id, name, character, isHost = false }) {
     stamina: CONTENT.starting.stamina,
     maxStamina: CONTENT.starting.maxStamina,
     endedDay: false,
+    restCount: 0,
     ready: false,
     isHost,
     connected: true,
@@ -504,6 +505,7 @@ function publicPlayer(player) {
     stamina: player.stamina,
     maxStamina: player.maxStamina,
     endedDay: player.endedDay,
+    restCount: player.restCount || 0,
     ready: player.ready,
     isHost: player.isHost,
     dungeonId: player.dungeonId || null,
@@ -558,6 +560,7 @@ function publicPlayer(player) {
 function onNewDay(player) {
   player.stamina = player.maxStamina;
   player.endedDay = false;
+  player.restCount = 0;
   if (player.anomaly && player.anomaly.effect) {
     const e = player.anomaly.effect;
     if (e.type === "staminaOnDay") {

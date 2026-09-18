@@ -1,6 +1,7 @@
 const { CONTENT, getSkill, getClassBasicAttack, getPetSlots, getPetPowerMult, resolveDamageStat } = require("../content");
 const { dealDamage, addShield, heal, tickShields, removeShieldInstance } = require("./players");
 const passives = require("./passives");
+const stacks = require("./stacks");
 
 // Tur sonu: DoT/regen tick + süresi biten buff/kalkanları düşür (PvE tickBuffs'un PvP karşılığı).
 // Olmazsa buff'lar sonsuz birikir, combo'lar perma-proc yer.
@@ -34,7 +35,8 @@ function tickPvpBuffs(room, d) {
     const pl = room.players.find(x => x.id === pid);
     if (pl) { try { tickShields(pl); } catch (e) {} }
   }
-  d.buffs = d.buffs.filter(b => --b.turns > 0);
+  // persist stackler (maç sonuna kadar kalan self-stack'ler) tur eritmez.
+  d.buffs = d.buffs.filter(b => (b && b.persist ? true : --b.turns > 0));
 }
 
 let pvpCounter = 0;
@@ -345,6 +347,82 @@ function healKept(d, targetType, targetId, amount) {
   const m = passives.healTakenMultFromBuffs(d.buffs, targetType, targetId);
   return m >= 1 ? amount : Math.max(0, Math.round(amount * m));
 }
+// Stack burst: damage/true rakibe, heal/shield vurana. Özyineleme yok.
+function fireStackBurst(room, d, attacker, skill, entry) {
+  if (!entry || !entry.burst) return;
+  const holder = room.players.find(p => p.id === entry.targetId);
+  if (!holder) return;
+  const r = stacks.burstAmount(entry.burst, attacker, holder);
+  if (r.type === "heal") {
+    if (!attacker || attacker.hp <= 0) return;
+    const before = attacker.hp;
+    heal(attacker, r.amount);
+    const h = attacker.hp - before;
+    if (h > 0) addFx(d, { type: "heal", actor: attacker.id, target: "player", targetId: attacker.id, amount: h, source: "stack", effect: "heal" });
+    d.log.push(`${attacker.name}'s stacks burst — ${h} HP restored!`);
+  } else if (r.type === "shield") {
+    if (!attacker || attacker.hp <= 0) return;
+    addShield(attacker, r.amount, 2);
+    addFx(d, { type: "shield", actor: attacker.id, target: "player", targetId: attacker.id, amount: r.amount, source: "stack" });
+    d.log.push(`${attacker.name}'s stacks burst — shield up!`);
+  } else {
+    if (holder.hp <= 0) return;
+    dealDamage(holder, r.amount);
+    addFx(d, { type: "damage", actor: attacker.id, target: "player", targetId: holder.id, amount: r.amount, elem: (skill && skill.element) || "physical", effect: (skill && skill.effect) || "slash", sound: (skill && skill.sound) || "", crit: false });
+    d.log.push(`${attacker.name}'s stacks burst for ${r.amount}!`);
+    if (holder.hp <= 0) {
+      if (passives.maybeSecondWind(holder)) d.log.push(`${holder.name} refuses to fall!`);
+      else {
+        d.status = "done";
+        d.result = { outcome: "victory", text: `${attacker.name} wins the duel!` };
+        addFx(d, { type: "result", outcome: "victory" });
+        d.log.push(d.result.text);
+        clearTimer(d);
+      }
+    }
+  }
+  if (typeof room.broadcast === "function") room.broadcast();
+}
+// stackOnHit pasifi (class/ırk): hasarlı vuruş rakibe stack bırakır.
+function maybeApplyStackOnHit(room, d, attacker, skill, oppId, dealt) {
+  let defs = [];
+  try { defs = passives.stackOnHit(attacker) || []; } catch (e) {}
+  if (!defs.length || !(dealt > 0)) return;
+  const opp = room.players.find(p => p.id === oppId);
+  if (!opp || opp.hp <= 0) return;
+  for (const sd of defs) {
+    if (Math.random() >= sd.chance) continue;
+    const { entry, fired } = stacks.addStack(d, {
+      targetType: "player", targetId: oppId,
+      stackId: sd.stackId, count: sd.count, maxStacks: sd.maxStacks,
+      duration: sd.duration, burst: sd.burst, consume: sd.consume,
+      name: skill && skill.name, skillId: skill && skill.id, sourceId: attacker.id,
+    });
+    if (!entry) continue;
+    addFx(d, { type: "buff", actor: attacker.id, target: "player", targetId: oppId, kind: "stack", value: entry.stacks, turns: entry.turns });
+    if (fired) fireStackBurst(room, d, attacker, skill, entry);
+  }
+}
+// hpBurn pasifi (class/ırk): vuruştan sonra hedef max canının %X'i exact ek hasar.
+function maybeApplyHpBurn(room, d, attacker, skill, oppId) {
+  let hb = null;
+  try { hb = passives.hpBurnOnHit(attacker); } catch (e) {}
+  if (!hb || !(hb.pct > 0)) return;
+  const opp = room.players.find(p => p.id === oppId);
+  if (!opp || opp.hp <= 0 || opp.maxHp <= 0) return;
+  const amt = Math.max(1, Math.min(Math.round(opp.maxHp * hb.pct), hb.cap));
+  if (!(amt > 0)) return;
+  dealDamage(opp, amt);
+  addFx(d, { type: "damage", actor: attacker.id, target: "player", targetId: oppId, amount: amt, elem: (skill && skill.element) || "physical", effect: "blood_needles", sound: "", crit: false });
+  d.log.push(`${attacker.name}'s burn sears ${opp.name} for ${amt}!`);
+  if (opp.hp <= 0 && !passives.maybeSecondWind(opp)) {
+    d.status = "done";
+    d.result = { outcome: "victory", text: `${attacker.name} wins the duel!` };
+    addFx(d, { type: "result", outcome: "victory" });
+    d.log.push(d.result.text);
+    clearTimer(d);
+  }
+}
 // Wounds pasifi (class/ırk): vuranın hasarı hedefe healblock bulaştırır.
 function maybeApplyWounds(room, d, attacker, skill, oppId, dealt) {
   if (!(dealt > 0)) return;
@@ -431,10 +509,10 @@ function act(room, player, skillId){
     const crit = skill.trueDamage ? false : Math.random()<critChance;
     const critMult = crit? 1+ ((player.critDamage||40) + pCrit.damage)/100 :1;
     // PvE ile aynı: pet buff/debuff'ları (pet_attack/pet_magic/pet_weaken/...) hesaba katılır.
-    const pAtk = buffSum(d,"player",player.id,"attack") + buffSum(d,"player",player.id,"pet_attack") - buffSum(d,"player",player.id,"weaken") - buffSum(d,"player",player.id,"pet_weaken");
-    const pMagic = buffSum(d,"player",player.id,"magicBoost") + buffSum(d,"player",player.id,"pet_magic") - buffSum(d,"player",player.id,"weaken") - buffSum(d,"player",player.id,"pet_weaken");
+    const pAtk = buffSum(d,"player",player.id,"attack") + buffSum(d,"player",player.id,"pet_attack") + passives.stackAuraSum(d.buffs,"player",player.id,"attack") - buffSum(d,"player",player.id,"weaken") - buffSum(d,"player",player.id,"pet_weaken");
+    const pMagic = buffSum(d,"player",player.id,"magicBoost") + buffSum(d,"player",player.id,"pet_magic") + passives.stackAuraSum(d.buffs,"player",player.id,"magicBoost") - buffSum(d,"player",player.id,"weaken") - buffSum(d,"player",player.id,"pet_weaken");
     const pBoost = isPhysical ? pAtk : pMagic;
-    const pDef = buffSum(d,"player",oppId,"defense") + buffSum(d,"player",oppId,"pet_defense");
+    const pDef = buffSum(d,"player",oppId,"defense") + buffSum(d,"player",oppId,"pet_defense") + passives.stackAuraSum(d.buffs,"player",oppId,"defense");
     const pExp = buffSum(d,"player",oppId,"expose") + buffSum(d,"player",oppId,"pet_expose");
     const oppHpPct = opponent.maxHp > 0 ? opponent.hp / opponent.maxHp : 1;
     const selfHpPct = player.maxHp > 0 ? player.hp / player.maxHp : 1;
@@ -492,6 +570,10 @@ function act(room, player, skillId){
     dealDamage(opponent,dmg);
     player._struckThisCombat = true;
     maybeApplyWounds(room, d, player, skill, oppId, dmg);
+    if (d.status === "fighting") {
+      maybeApplyStackOnHit(room, d, player, skill, oppId, dmg);
+      if (d.status === "fighting") maybeApplyHpBurn(room, d, player, skill, oppId);
+    }
     if (pvpTrueFormula) {
       const tb = pvpTrueFormula.stat === "targetMaxHp" ? opponent.maxHp
         : pvpTrueFormula.stat === "targetHp" ? opponent.hp
@@ -596,10 +678,36 @@ function act(room, player, skillId){
     }
   }
   // buffs — her giriş kendi hedefine gider (debuff rakibe, buff kendine).
+  // Stack girişleri kendini yönlendirir: forKind varsa kendine, yoksa rakibe.
   if(skill.buffs){
     const targetType="player";
     const turns = skill.duration||1;
     for(const e of skill.buffs){
+      if(e.kind==="stack"){
+        const targetId = e.forKind ? player.id : oppId;
+        const { entry, fired } = stacks.addStack(d, {
+          targetType, targetId,
+          stackId: e.stackId || skill.id,
+          count: e.count,
+          value: e.value,
+          maxStacks: e.maxStacks || 5,
+          duration: skill.duration || 3,
+          burst: e.burst || null,
+          consume: e.consume,
+          persist: e.persist,
+          forKind: e.forKind || null,
+          name: skill.name,
+          skillId: skill.id,
+          sourceId: player.id,
+        });
+        if(entry){
+          addFx(d,{type:"buff", actor:player.id, target:"player", targetId, kind:"stack", value:entry.stacks, turns:entry.turns});
+          const holder = room.players.find(p=>p.id===targetId);
+          d.log.push(`${player.name} stacks ${entry.stackId} on ${(holder||{}).name || "the foe"} (${entry.stacks}/${entry.maxStacks})!`);
+          if(fired) fireStackBurst(room, d, player, skill, entry);
+        }
+        continue;
+      }
       const isDebuff = ["weaken","expose","dot","wet","frozen","healblock"].includes(e.kind);
       const targetId = isDebuff? oppId : player.id;
       if(e.kind==="shield"){

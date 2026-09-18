@@ -12,6 +12,7 @@ const {
 } = require("../content");
 const { dealDamage, addShield, removeShieldInstance, heal, loseLife, addXp, addPetXp, removeItem, healForFood, addItem } = require("./players");
 const passives = require("./passives");
+const stacks = require("./stacks");
 const chest = require("./chest");
 
 function randVariance(variance) {
@@ -201,6 +202,13 @@ function applyBuffs(room, d, actor, actorName, skill, targetType, targetIds, act
   let applied = false;
   for (const tid of targetIds) {
     for (const e of entries) {
+      // Stack entries route themselves: self-auras (forKind) to the caster,
+      // bursts to the skill's target. Kind whitelist never blocks stacks.
+      if (e.kind === "stack") {
+        applyStackEntry(room, d, actor, actorName, skill, targetType, tid, e, actorIsPlayer);
+        applied = true;
+        continue;
+      }
       if (!allowed.has(e.kind)) continue;
       // physical never leaves wet/frozen
       if (actorIsPlayer && skill.element === "physical" && (e.kind === "wet" || e.kind === "frozen")) continue;
@@ -249,6 +257,143 @@ function applyBuffs(room, d, actor, actorName, skill, targetType, targetIds, act
     }
   }
   if (applied && d.log) d.log.push(`${actorName} uses ${skill.name}.`);
+}
+
+// Stack buff routing + burst execution (server/stacks.js holds the counters).
+function applyStackEntry(room, d, actor, actorName, skill, targetType, tid, e, actorIsPlayer) {
+  let tt = targetType;
+  let targetId = tid;
+  if (e.forKind) {
+    // Self aura: goes to the caster (player or monster).
+    const m = /^monster_(\d+)$/.exec(String(actor.id || ""));
+    if (m) { tt = "monster"; targetId = Number(m[1]); }
+    else { tt = "player"; targetId = actor.id; }
+  }
+  const { entry, fired } = stacks.addStack(d, {
+    targetType: tt,
+    targetId,
+    stackId: e.stackId || skill.id,
+    count: e.count,
+    value: e.value,
+    maxStacks: e.maxStacks || 5,
+    duration: skill.duration || 3,
+    burst: e.burst || null,
+    consume: e.consume,
+    persist: e.persist,
+    forKind: e.forKind || null,
+    name: skill.name,
+    skillId: skill.id,
+    sourceId: actor.id,
+  });
+  if (!entry) return;
+  addFx(d, {
+    type: "buff",
+    actor: actor.id,
+    target: tt === "player" ? "player" : "enemy",
+    targetId: tt === "player" ? targetId : Number(targetId),
+    kind: "stack",
+    value: entry.stacks,
+    turns: entry.turns,
+    skill: skill.id,
+  });
+  const holder = tt === "monster" ? (d.wave[targetId] || {}).name : ((room.players.find((p) => p.id === targetId) || {}).name);
+  d.log.push(`${actorName} stacks ${entry.stackId} on ${holder || "the foe"} (${entry.stacks}/${entry.maxStacks})!`);
+  if (fired) fireStackBurst(room, d, actor, actorIsPlayer, skill, entry);
+}
+
+// stackOnHit pasifi (class/ırk): hasarlı vuruşlar hedefe stack bırakır.
+function maybeApplyStackOnHit(room, d, attacker, skill, tids, primaryIdx, primaryDmg) {
+  let defs = [];
+  try { defs = passives.stackOnHit(attacker) || []; } catch (e) {}
+  if (!defs.length || !(primaryDmg > 0)) return;
+  for (const tidx of tids || []) {
+    const tgt = d.wave[tidx];
+    if (!tgt || tgt.hp <= 0) continue;
+    for (const sd of defs) {
+      if (Math.random() >= sd.chance) continue;
+      const { entry, fired } = stacks.addStack(d, {
+        targetType: "monster", targetId: tidx,
+        stackId: sd.stackId, count: sd.count, maxStacks: sd.maxStacks,
+        duration: sd.duration, burst: sd.burst, consume: sd.consume,
+        name: skill && skill.name, skillId: skill && skill.id, sourceId: attacker.id,
+      });
+      if (!entry) continue;
+      addFx(d, { type: "buff", actor: attacker.id, target: "enemy", targetId: Number(tidx), kind: "stack", value: entry.stacks, turns: entry.turns, skill: skill && skill.id });
+      if (fired) fireStackBurst(room, d, attacker, true, skill, entry);
+    }
+  }
+}
+// hpBurn pasifi (class/ırk): vuruştan sonra hedef max canının %X'i exact ek hasar.
+function maybeApplyHpBurn(room, d, attacker, skill, primaryIdx) {
+  let hb = null;
+  try { hb = passives.hpBurnOnHit(attacker); } catch (e) {}
+  if (!hb || !(hb.pct > 0)) return;
+  const tgt = d.wave[primaryIdx];
+  if (!tgt || tgt.hp <= 0 || tgt.maxHp <= 0) return;
+  const amt = Math.max(1, Math.min(Math.round(tgt.maxHp * hb.pct), hb.cap));
+  if (!(amt > 0)) return;
+  dealDamage(tgt, amt);
+  addFx(d, { type: "damage", actor: attacker.id, target: "enemy", targetId: Number(primaryIdx), amount: amt, elem: (skill && skill.element) || "physical", effect: "blood_needles", sound: "", crit: false });
+  d.log.push(`${attacker.name}'s burn sears ${tgt.name} for ${amt}!`);
+  if (tgt.hp <= 0) {
+    d.buffs = (d.buffs || []).filter((b) => !(b.targetType === "monster" && Number(b.targetId) === Number(primaryIdx)));
+    checkEnd(room, d);
+  }
+}
+
+// Burst payoff: damage/true hits the stack holder, heal/shield go to attacker.
+// Never recurses (no echo/wounds/stacks from a burst).
+function fireStackBurst(room, d, actor, actorIsPlayer, skill, entry) {
+  if (!entry || !entry.burst) return;
+  const actorName = actorIsPlayer
+    ? ((room.players.find((p) => p.id === actor.id) || {}).name || "The warrior")
+    : (d.wave[Number(String(actor.id || "").split("_")[1])] || {}).name || "The monster";
+  const holder = entry.targetType === "monster"
+    ? d.wave[entry.targetId]
+    : room.players.find((p) => p.id === entry.targetId);
+  const attacker = actorIsPlayer
+    ? room.players.find((p) => p.id === actor.id)
+    : (() => { const m = /^monster_(\d+)$/.exec(String(actor.id || "")); return m ? d.wave[Number(m[1])] : null; })();
+  if (!holder) return;
+  const r = stacks.burstAmount(entry.burst, attacker || actor, holder);
+  const fxTarget = entry.targetType === "monster" ? "enemy" : "player";
+  if (r.type === "heal") {
+    if (!attacker || attacker.hp <= 0) return;
+    const before = attacker.hp;
+    heal(attacker, r.amount);
+    const h = attacker.hp - before;
+    if (h > 0) {
+      const atkIsMon = /^monster_\d+$/.test(String(actor.id || ""));
+      addFx(d, { type: "heal", actor: actor.id, target: atkIsMon ? "enemy" : "player", targetId: atkIsMon ? Number(String(actor.id).split("_")[1]) : attacker.id, amount: h, source: "stack", effect: "heal" });
+    }
+    d.log.push(`${actorName || "The stack"} bursts — ${h} HP restored!`);
+  } else if (r.type === "shield") {
+    if (!attacker || attacker.hp <= 0) return;
+    if (entry.targetType === "monster" && attacker === holder) {
+      if (!Array.isArray(holder.shields)) holder.shields = [];
+      holder.shields.push({ amount: r.amount, max: r.amount, turns: 2, uid: null });
+      holder.shield = holder.shields.reduce((s, x) => s + Math.max(0, x.amount), 0);
+      holder.maxShield = holder.shields.reduce((s, x) => s + Math.max(0, x.max), 0);
+    } else if (attacker && typeof attacker.maxHp === "number") {
+      addShield(attacker, r.amount, 2);
+    }
+    {
+      const atkIsMon = /^monster_\d+$/.test(String(actor.id || ""));
+      addFx(d, { type: "shield", actor: actor.id, target: atkIsMon ? "enemy" : "player", targetId: atkIsMon ? Number(String(actor.id).split("_")[1]) : attacker.id, amount: r.amount, source: "stack" });
+    }
+    d.log.push(`${actorName || "The stack"} bursts — shield up!`);
+  } else {
+    if (holder.hp <= 0) return;
+    dealDamage(holder, r.amount);
+    addFx(d, { type: "damage", actor: actor.id, target: fxTarget, targetId: entry.targetType === "monster" ? Number(entry.targetId) : entry.targetId, amount: r.amount, elem: (skill && skill.element) || "physical", effect: (skill && skill.effect) || "slash", sound: (skill && skill.sound) || "", crit: false });
+    d.log.push(`${actorName || "The stack"} bursts for ${r.amount}!`);
+    if (holder.hp <= 0) {
+      d.buffs = (d.buffs || []).filter((b) => !(b.targetType === entry.targetType && String(b.targetId) === String(entry.targetId)));
+      checkEnd(room, d);
+    }
+  }
+  if (typeof room.broadcast === "function") room.broadcast();
+  else if (room._emitCombat) room._emitCombat();
 }
 
 function monsterSkills(mdef) {
@@ -343,7 +488,8 @@ function tickBuffs(room, d) {
       }
     }
   }
-  d.buffs = d.buffs.filter((b) => --b.turns > 0);
+  // persist stackler (maç sonuna kadar kalan self-stack'ler) tur eritmez.
+  d.buffs = d.buffs.filter((b) => (b && b.persist ? true : --b.turns > 0));
 }
 
 function resetUsedSkills(d, playerId) {
@@ -623,8 +769,8 @@ function act(room, player, skillId, targetId) {
       const isPhysical = statKey === "attack";
       const baseStat = player[statKey] || 0;
       const rawBase = skillBase + baseStat * skillPower;
-      const pAtk = buffSum(d, "player", player.id, "attack") + buffSum(d, "player", player.id, "pet_attack") - buffSum(d, "player", player.id, "weaken") - buffSum(d, "player", player.id, "pet_weaken");
-      const pMagic = buffSum(d, "player", player.id, "magicBoost") + buffSum(d, "player", player.id, "pet_magic") - buffSum(d, "player", player.id, "weaken") - buffSum(d, "player", player.id, "pet_weaken");
+      const pAtk = buffSum(d, "player", player.id, "attack") + buffSum(d, "player", player.id, "pet_attack") + passives.stackAuraSum(d.buffs, "player", player.id, "attack") - buffSum(d, "player", player.id, "weaken") - buffSum(d, "player", player.id, "pet_weaken");
+      const pMagic = buffSum(d, "player", player.id, "magicBoost") + buffSum(d, "player", player.id, "pet_magic") + passives.stackAuraSum(d.buffs, "player", player.id, "magicBoost") - buffSum(d, "player", player.id, "weaken") - buffSum(d, "player", player.id, "pet_weaken");
       const pBoost = isPhysical ? pAtk : pMagic;
       const pCrit = passives.critBonus(player);
       const pierce = passives.pierceFlat(player);
@@ -634,7 +780,7 @@ function act(room, player, skillId, targetId) {
         const tgt = d.wave[tidx];
         if (!tgt || tgt.hp <= 0) continue;
         const hpPct = tgt.maxHp > 0 ? tgt.hp / tgt.maxHp : 1;
-        const mDef = buffSum(d, "monster", tidx, "defense") + buffSum(d, "monster", tidx, "pet_defense");
+        const mDef = buffSum(d, "monster", tidx, "defense") + buffSum(d, "monster", tidx, "pet_defense") + passives.stackAuraSum(d.buffs, "monster", tidx, "defense");
         const mExp = buffSum(d, "monster", tidx, "expose") + buffSum(d, "monster", tidx, "pet_expose");
         let dmg;
         let crit = false;
@@ -802,6 +948,8 @@ function act(room, player, skillId, targetId) {
       }
       player._struckThisCombat = true;
       maybeApplyWounds(room, d, player, skill, "monster", primaryIdx, primaryDmg);
+      maybeApplyStackOnHit(room, d, player, skill, tids, primaryIdx, primaryDmg);
+      maybeApplyHpBurn(room, d, player, skill, primaryIdx);
       // Tek seferlik proclar (birincil hedef üzerinden, eski davranış):
       const mon0 = d.wave[primaryIdx];
       if (skill.lifesteal) {
@@ -1063,8 +1211,8 @@ function runNextMonster(room, d) {
           } else {
           const crit = Math.random() < (combat.critChance || 0);
           const critMult = crit ? combat.critMult || 1.5 : 1;
-          const mAtk = buffSum(d, "monster", index, "attack") - buffSum(d, "monster", index, "weaken");
-          const pDef = buffSum(d, "player", target.id, "defense");
+          const mAtk = buffSum(d, "monster", index, "attack") + passives.stackAuraSum(d.buffs, "monster", index, "attack") - buffSum(d, "monster", index, "weaken");
+          const pDef = buffSum(d, "player", target.id, "defense") + passives.stackAuraSum(d.buffs, "player", target.id, "defense");
           const pExp = buffSum(d, "player", target.id, "expose");
           let dmg = Math.round(
             mon.attack * (skill.power || 1) * randVariance(combat.damageVariance) * critMult * (1 + mAtk) * (1 - pDef + pExp)

@@ -71,11 +71,40 @@ function rest(player) {
   if (player.endedDay) {
     throw new Error("You have already ended the day.");
   }
-  const amt = (CONTENT.town.rest && CONTENT.town.rest.stamina) || 6;
+  const max = (CONTENT.town.rest && CONTENT.town.rest.maxPerDay) || 3;
+  const used = player.restCount || 0;
+  if (used >= max) {
+    throw new Error("You have rested enough today.");
+  }
+  const amt = (CONTENT.town.rest && CONTENT.town.rest.stamina) || 4;
   const before = player.stamina;
   player.stamina = Math.min(player.maxStamina, player.stamina + amt);
+  player.restCount = used + 1;
   const gained = player.stamina - before;
-  return { type: "rest", text: `You rest, regaining ${gained} stamina.` };
+  const left = max - player.restCount;
+  return { type: "rest", text: `You rest, regaining ${gained} stamina. (${left} rest${left === 1 ? "" : "s"} left today.)` };
 }
 
-module.exports = { requirePlaying, spendStamina, search, endDay, rest };
+function sleepOutside(player) {
+  if (player.endedDay) {
+    throw new Error("You have already ended the day.");
+  }
+  const chance = (CONTENT.town.sleepOutside && CONTENT.town.sleepOutside.lifeLossChance) || 0.04;
+  let lostHeart = false;
+  if (Math.random() < chance && player.lives > 0) {
+    player.lives = Math.max(0, player.lives - 1);
+    lostHeart = true;
+  }
+  player.endedDay = true;
+  player.stamina = 0;
+  player.tavern = null;
+  return {
+    type: "endDay",
+    text: lostHeart
+      ? "You sleep under the cold stars. Something gnaws at you in the dark — you lose 1 heart."
+      : "You sleep under the cold stars and rest until dawn.",
+    lostHeart,
+  };
+}
+
+module.exports = { requirePlaying, spendStamina, search, endDay, rest, sleepOutside };

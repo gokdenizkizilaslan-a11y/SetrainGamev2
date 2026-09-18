@@ -151,4 +151,22 @@ function buyProvisions(player) {
   };
 }
 
-module.exports = { startCoinFlip, startBlackjack, blackjackMove, handTotal, buyProvisions };
+function sleep(player) {
+  const price = (CONTENT.town.tavern.sleep && CONTENT.town.tavern.sleep.price) || 15;
+  if (player.endedDay) {
+    throw new Error("You have already ended the day.");
+  }
+  if (player.gold < price) {
+    throw new Error(`A warm bed costs ${price} gold. Sleep outside instead.`);
+  }
+  player.gold -= price;
+  player.endedDay = true;
+  player.stamina = 0;
+  player.tavern = null;
+  return {
+    type: "endDay",
+    text: "The keeper shows you to a warm room. You sleep safe until dawn.",
+  };
+}
+
+module.exports = { startCoinFlip, startBlackjack, blackjackMove, handTotal, buyProvisions, sleep };

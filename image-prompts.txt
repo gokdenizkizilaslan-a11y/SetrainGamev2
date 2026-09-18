@@ -1,0 +1,672 @@
+================================================================
+SETRA GAME - IMAGE PROMPTS (KREA2)
+================================================================
+HOW TO USE:
+- Characters: 1 prompt = 1 image. Save to the file path shown.
+  Recommended KREA2: PORTRAIT aspect (3:4 or 2:3, like existing art),
+  painterly splash-art style.
+  GAME FRAMING (important): the card shows the image full-bleed with
+  the name text over the BOTTOM, and the in-game portrait crops a
+  CIRCLE from the center. So paint the FACE slightly above center,
+  fully lit and fully in frame.
+- Skill icons: 1 prompt = 1 GRID image. Generate, then cut in order
+  (top-left to bottom-right) and save each cell to its file path.
+  Recommended KREA2: SQUARE 1:1 aspect, wordless emblem-style icons.
+- Only image files are added, then the game restarts.
+----------------------------------------------------------------
+CHARACTER STYLE (same world as warrior.webp, painted as LoL SPLASH ART):
+painterly splash art with visible brushwork, dynamic cinematic light
+with a warm key light and a cool rim light, rich yet muted
+oil-paint colors, vertical half-body composition showing head,
+shoulders and torso, face painted slightly above image center.
+COHESION (hepsi benzer): same painterly medium, same medieval-town
+world, same muted gold-grey palette family, soft daylight base.
+VARIETY (hepsi farklı): every portrait owns its pose, gaze direction,
+lighting mood and background corner — 3/4 views, over-shoulder
+glances, gazes to the left, right or sky. Each face carries its own
+expression and story.
+GAME RULES: the full face stays lit, open and inside the frame at
+all times — open helmets or pushed-back hoods only, clear eyes,
+complete head with space around it.
+EVERY hero: attractive aesthetic face with real skin texture, pores
+and small natural flaws, clean-shaven smooth jaw, naturally
+asymmetric features with handmade character.
+CRAFT DETAILS: tangible materials (scarred steel, worn leather,
+frayed cloth, chipped paint), a single directing light source per
+portrait, well-formed hands with correct fingers, clean wordless
+composition. Each prompt states GENDER first, then exact HAIR
+(length + type + color), HEIGHT and BODY TYPE, fully specified in every prompt.
+- Lv20: seasoned fighter energy, detailed worn gear, calm intent.
+- Lv40: EPIC ascended presence, luminous aura and legendary
+  filigreed armor, clearly a full tier above the base form.
+================================================================
+
+
+=================== CHARACTERS (15 missing) ===================
+
+--- [1] warlord -> public/images/characters/warlord.png ---
+Gender male, mid-30s. Splash-art portrait in 3/4 view: a battle-worn
+warlord commander, tall and broad (around 190 cm, heavy shoulders,
+thick neck), short uneven dark hair with a receding hairline, a thin
+scar crossing his left eyebrow, clean-shaven weathered skin, dented
+steel plate worn over a faded crimson cloak with one torn edge
+fluttering, both calloused hands resting on the pommel of a greatsword
+planted before him, brass campaign rings on his fingers. His fully lit
+face sits above center, steady commanding gaze. Dawn light rakes in
+from the right across a blurred town gate arch, dust glowing in the
+air. Painterly splash-art finish, muted steel-and-crimson palette,
+wordless composition.
+
+--- [2] warden -> public/images/characters/warden.png ---
+Gender female, late 20s. Splash-art portrait: a warden archer caught
+mid-draw, tall and athletic (around 175 cm, lean runner's build), long
+chestnut hair in a thick braid whipping sideways with loose strands
+across her cheek, sun-freckled clean skin and a chapped lower lip, a
+small hawk feather braided above her ear, bowstring pulled to her
+cheek as she aims off-frame left, patched green leather with a single
+feathered pauldron and a frayed finger guard. Her fully lit face in
+leaning 3/4 profile, one eye narrowed along the arrow. Low golden sun
+from the left, blurred town wall and dark pine tops behind. Painterly
+splash-art finish, earthy green palette, wordless composition.
+
+--- [3] archmage -> public/images/characters/archmage.png ---
+Gender male, near 40. Splash-art portrait: a gaunt archmage scholar in
+3/4 view, tall and stooped (around 186 cm, thin scholar's frame),
+tousled dark hair with grey streaks tied half-back at shoulder length,
+clean-shaven hollow cheeks, ink-stained fingers raised toward three
+small orbiting crystals catching violet light, deep violet robe with
+mismatched constellation patches, one sleeve cuff singed black, a
+brass astrolabe hanging from his belt. His fully lit face tilts
+up-left in fascinated study, tired intelligent eyes. Violet rune-glow
+falls from above over a blurred tower study of stacked scrolls and
+candle stubs. Painterly splash-art finish, wordless composition.
+
+--- [4] nightblade -> public/images/characters/nightblade.png ---
+Gender male, mid-20s. Splash-art portrait: a pale human nightblade
+duelist glancing back over his shoulder, slim fencer's build (around
+180 cm), slick black hair swept back at medium length with one loose
+strand, clean-shaven sculpted face, a fresh thin cut on his cheekbone,
+one moon-silver dagger spinning between his fingers, dark fitted
+leather with a single silver earring and a high collar worn open. His
+fully lit face carries a roguish half-smile, eyes glinting. Cold
+moonlight enters from the left across a narrow lamplit alley with wet
+cobblestones behind. Painterly splash-art finish, deep blue-silver
+palette, wordless composition.
+
+--- [5] crusader -> public/images/characters/crusader.png ---
+Gender female, late 20s. Splash-art portrait: a crusader lifting a
+battered kite shield toward light breaking from the left, tall and
+strong (around 178 cm, athletic swordswoman's shoulders), golden hair
+in a thick war braid over one shoulder with flyaway strands glowing,
+dented sun-sigil plate beneath a cracked tabard hem, a faint halo
+gliding along her longsword edge, scratches on her vambrace. Her fully
+lit face in 3/4 turns left into the light with a resolute soft
+expression, dust motes drifting through the sunbeam. Worn cathedral
+steps blur behind. Painterly splash-art finish, white-and-gold
+palette, wordless composition.
+
+--- [6] reaper -> public/images/characters/reaper.png ---
+Gender male, early 30s. Splash-art portrait: a pale lean human reaper
+assassin (around 185 cm, wiry) leaning at ease, a scythe shaft slung
+across his shoulders with his arms draped over it, white-streaked
+black hair tied low at the neck with escaping strands, a clean-shaven
+striking face with sharp grey eyes lowered thoughtfully toward the
+lower right, a long dark coat with carved bone clasps and a frayed
+collar lifting in night air. His fully lit face glows in cold
+side-light from the right. A misty town-edge graveyard fence and bare
+branches blur behind. Painterly splash-art finish, ash-grey palette,
+quiet menace, wordless composition.
+
+--- [7] high_priest -> public/images/characters/high_priest.png ---
+Gender female, mid-40s. Splash-art portrait: a high priestess of soft
+matronly build (around 168 cm), copper-streaked auburn hair pinned up
+beneath a slipping veil with curls escaping at the neck, kind laugh
+lines at her eyes, palms open at chest height with soft halo light
+pooling above them, her fully lit face lifted toward the glow in the
+upper right, a simple rope belt over ivory ceremonial robes with one
+carefully darned patch, wooden prayer beads at her wrist. Warm light
+descends from above through a blurred chapel stone arch. Painterly
+splash-art finish, deeply human compassion, wordless composition.
+
+--- [8] ultra_moderator -> public/images/characters/ultra_moderator.png ---
+Gender male, ageless. Splash-art portrait: a cosmic moderator entity
+in elegant human form, tall and slender (around 185 cm), caught
+adjusting a luminous magenta gauntlet, silver-white short hair neatly
+tapered with one pink-lit strand falling over a flawless clean-shaven
+face, a smug sideways smirk aimed to the right, crisp white-and-magenta
+regalia with one crooked collar pin, tiny pink glyph sparks drifting
+off his cuff into the air. His fully lit face shines with quiet
+omnipotence. Magenta rim light plays against daylight over a blurred
+bustling town square. Painterly splash-art finish, wordless
+composition.
+
+--- [9] war_emperor (Lv40 EPIC) -> public/images/characters/war_emperor.png ---
+Gender male, near 60. EPIC splash-art portrait from a slight low
+angle: an aging war emperor staring into the distance right, massive
+warlord bulk (around 200 cm, barrel chest gone slightly to seed),
+close-cropped iron-grey hair beneath a heavy golden crown-band,
+weathered clean-shaven face with a broken nose and an old scar across
+the chin, colossal blacksteel armor veined with molten-gold cracks, a
+scorched fur mantle over one shoulder, embers spiraling upward past a
+torn burning banner. His fully lit face burns with underlit fire-glow
+from below-right. Throne steps blur behind in heat haze. Painterly
+splash-art finish, the unmistakable weight of a conqueror a full tier
+above any warlord, wordless composition.
+
+--- [10] storm_warden (Lv40 EPIC) -> public/images/characters/storm_warden.png ---
+Gender female, early 30s. EPIC splash-art portrait: a storm warden
+huntress leaning into a gale, tall and athletic (around 180 cm, long
+limbs), silver-blonde hair ripped horizontal at back length with fine
+lightning arcs dancing between strands, rain beading on her cheeks, a
+storm bow half-drawn and aimed up-left with one eye squinted along the
+arrow, feathered sky-armor missing a single feather, a glowing storm
+rune pulsing at her collarbone. Her fully lit face burns with focus,
+flash-lit from above-left. Dark rooftops toss under churning storm
+clouds behind. Painterly splash-art finish, electric blue-grey
+palette, wordless composition.
+
+--- [11] archon (Lv40 EPIC) -> public/images/characters/archon.png ---
+Gender male, eternally young. EPIC splash-art portrait: an archon
+ascendant hovering a breath above the ground, tall and slender (around
+188 cm), platinum hair drifting upward weightless at medium length,
+arms half-open, clean-shaven serene face tilted up-left toward a small
+streaking comet, starlight seams glowing through fine cracks in
+flowing white-violet robes, one sleeve torn away by an old battle,
+thin orbit rings of light circling his shoulders. His fully lit face
+bathes in comet light full of quiet awe. A night-blue sky sleeps over
+dark rooftops behind. Painterly splash-art finish, wordless
+composition.
+
+--- [12] shade_king (Lv40 EPIC) -> public/images/characters/shade_king.png ---
+Gender male, ageless. EPIC splash-art portrait: a pale human shade
+king leaning forward with his chin resting near steepled fingers, tall
+and regal (around 190 cm, long slender frame), long black hair falling
+over one side past the shoulders, clean-shaven aristocratic face, a
+crown of solidified darkness worn slightly crooked, black-silver
+eclipse armor with one cracked mirror pauldron, violet soul-flames
+curling upward from his shoulders. His fully lit face in 3/4 turns
+left with cold regal disdain. A dark throne alcove frames a crescent
+eclipse halo behind him. Painterly splash-art finish, majestic and
+hauntingly beautiful, wordless composition.
+
+--- [13] lightbringer (Lv40 EPIC) -> public/images/characters/lightbringer.png ---
+Gender female, timeless. EPIC splash-art portrait: a lightbringer
+queen raising a sunplate sword to catch the sunrise, tall and radiant
+(around 180 cm, statuesque), golden-white hair lifting long and free
+in warm wind, eyes half-lowered against the glare yet fully in frame,
+battle-dented shoulder plate with dawn light bleeding through the
+cracks, translucent wings of morning light half-unfurled, hem of her
+radiant gown stirring. Her luminous face tilts up-right in quiet
+triumph as the overexposed sunrise balances across her features.
+White temple columns blur behind. Painterly splash-art finish,
+wordless composition.
+
+--- [14] death_lord (Lv40 EPIC) -> public/images/characters/death_lord.png ---
+Gender male, ageless. EPIC splash-art portrait: a pale human death
+lord aristocrat in near-profile 3/4 facing right, tall and gaunt
+(around 192 cm), slicked dark hair kept short with one loose strand
+over a clean-shaven imperious face, high black-crimson collar framing
+his jaw, soulsteel armor etched with faint wailing faces visible only
+up close, a single green soul wisp curling from his signet ring, a
+vast spectral scythe arc sweeping the air behind. His fully lit face
+holds bored supremacy in cold side-light. A dark manor window with a
+dead winter garden blurs behind. Painterly splash-art finish, darkly
+elegant, wordless composition.
+
+--- [15] divine_saint (Lv40 EPIC) -> public/images/characters/divine_saint.png ---
+Gender female, timeless. EPIC splash-art portrait: a divine saint
+descending inside a shaft of light, graceful (around 175 cm),
+white-gold hair floating long as if underwater, arms open downward in
+blessing, gentle gaze cast down-right toward someone below the frame, a cracked halo ring mended with glowing gold seams,
+a translucent gown flowing over scarred mithril marked by one old
+sword cut across the breastplate, two doves of living light crossing
+behind her shoulders. Her fully lit face radiates transcendent
+warmth. A white marble sanctuary glows behind. Painterly splash-art
+finish, wordless composition.
+
+=================== CHARACTERS WITH EXISTING ART (18, reference / regen) ===================
+These already have .webp art in game. Use to regenerate or to keep
+new art in the same family. Same splash-art rules: vertical half-body,
+lit face above center, varied pose and gaze per portrait, simple worn
+gear for starters, wordless composition.
+
+--- [R1] warrior -> public/images/characters/warrior.webp ---
+Gender male, late teens. Splash-art portrait: a young frontline
+swordmaster recruit of medium athletic build (around 180 cm), short
+tousled brown hair, clean-shaven earnest face with a training bruise
+on the cheek, shortsword held low across the body, plain steel plate
+with a red cloth wrap at the waist, plain leather strap baldric.
+His fully lit face in 3/4 looks left with beginner resolve. Morning
+light over a blurred village street. Warm humble steel palette,
+painterly splash-art finish, wordless composition.
+
+--- [R2] archer (slug: ranger) -> public/images/characters/ranger.webp ---
+Gender female, mid-20s. Splash-art portrait: a wiry long-range hunter
+woman mid-step, lean (around 172 cm), ash-brown hair tied back at
+shoulder length with a cord, clean-shaven sharp face with a squint
+from years of aiming, light patched leather and a simple recurve bow
+held diagonal across the chest, a quiver strap over one shoulder.
+His fully lit face in 3/4 scans the distance right. Pale daylight,
+blurred pine ridge behind. Painterly splash-art finish, wordless
+composition.
+
+--- [R3] mage -> public/images/characters/mage.webp ---
+Gender female, mid-teens. Splash-art portrait: a teenage apprentice
+mage girl, petite and slim (around 160 cm), long wavy auburn hair past
+her shoulders, wide curious green eyes, soft clean face lit from below
+by a small violet flame cupped in one hand, oversized patched blue
+robe with sleeves rolled unevenly, a cracked wooden wand behind the
+ear.
+His fully lit face tilts up-right in wonder. Candle-warm blur of a
+study room behind. Painterly splash-art finish, wordless composition.
+
+--- [R4] rogue -> public/images/characters/rogue.webp ---
+Gender male, early 20s. Splash-art portrait: a quick-eyed young
+cutpurse leaning on a stone wall and flipping a coin, lean build
+(around 178 cm), medium-length layered black hair falling over one
+eye, clean-shaven sly face with a crooked grin, fingerless gloves, a
+patched cloak over worn dark leathers, crossed baldrics with twin
+sword hilts behind. His fully lit face in 3/4 glances sideways right.
+Torch-warm blur of an old town lane behind. Painterly splash-art
+finish, wordless composition.
+
+--- [R5] paladin -> public/images/characters/paladin.webp ---
+Gender male, early 30s. Splash-art portrait: a broad holy guardian
+standing square, tall and heavy-built (around 190 cm, linebacker
+shoulders), neat short sandy-blond hair, calm clean-shaven face with
+a faded burn scar at the temple, plain steel plate with a white tabard
+bearing a hand-stitched sun, a mace head resting on the shoulder, a
+sun-etched kite shield braced at his side. His fully lit face gazes
+levelly forward-left with quiet patience. Soft chapel light, blurred
+stone courtyard behind. Painterly splash-art finish, wordless
+composition.
+
+--- [R6] assassin -> public/images/characters/assassin.webp ---
+Gender male, late teens. Splash-art portrait: a lean apprentice
+assassin boy (around 175 cm, wiry), straight black hair with bangs
+under a pushed-back hood, sharp dark eyes, clean-shaven intense face,
+unwrapping a cloth from a slender blade, simple black training garb
+with a grey sash and a single throwing needle between the fingers. His fully lit
+face in 3/4 studies the blade down-left. Cold window light, blurred
+dojo wall behind. Painterly splash-art finish, wordless composition.
+
+--- [R7] healer (support) -> public/images/characters/support.webp ---
+Gender female, late teens. Splash-art portrait: a gentle healer adept
+girl, petite (around 165 cm), honey-blonde hair in a loose side braid
+under a pushed-back hood, clean luminous face with a mole near the
+lip, cream robes with herb-pouch belt and rolled bandages, cupped
+hands holding a soft mint-green glow, a tall staff braced at her side. Her fully lit face looks down
+at the light with tenderness. Warm infirmary blur with shelves of
+jars behind. Painterly splash-art finish, wordless composition.
+
+--- [R8] tank -> public/images/characters/tank.webp ---
+Gender male, late 20s. Splash-art portrait: a hulking living-wall man
+planted like a rock (around 195 cm, massive arms and barrel torso),
+buzzed short brown hair, clean-shaven heavy-jawed kind face with a
+flattened nose, massive scratched tower shield braced beside him,
+plain riveted plate with rope repairs. His fully lit face in 3/4 looks
+left, unbothered and steady. Overcast daylight, blurred fortress
+wall behind. Painterly splash-art finish, wordless composition.
+
+--- [R9] tamer -> public/images/characters/tamer.webp ---
+Gender female, late teens. Splash-art portrait: a bright-eyed young
+beast tamer girl, slim (around 168 cm), very long flowing black hair
+loose past her waist, gentle clean face with a soft smile, roughspun
+white tunic with a whistle cord, a small forest fox perched on one
+shoulder and a young wolf pressing against her other side, a leather
+training whip coiled at the hip. Her fully lit face in 3/4 glows
+toward her animals. Sunny meadow blur with town roofs far behind.
+Painterly splash-art finish, wordless composition.
+
+--- [R10] beastmaster -> public/images/characters/beastmaster.webp ---
+Gender male, early 30s. Splash-art portrait: a hardened beastmaster
+mid-command, rugged athletic (around 185 cm), tangled short black hair
+with beads, narrow-eyed clean-shaven face with a claw scar down one
+cheek, layered furs and a bear-claw pauldron, arm flung
+forward-right pointing as two wolf silhouettes blur past at the
+frame edge. His fully lit face shouts direction right. Dusty arena
+light, blurred wooden palisade behind. Painterly splash-art finish,
+wordless composition.
+
+--- [R11] anima_lorde (alpha tamer) -> public/images/characters/anima_lorde.webp ---
+Gender male, late 20s. Splash-art portrait: a radiant alpha tamer
+wreathed in faint animal spirits, tall and athletic (around 188 cm,
+bare tattooed torso), long wild black hair past the shoulders,
+clean-shaven serene face with an amber animal gleam in the eyes, a
+cloak of layered feathers and fur over bark-woven armor, a spirit
+stag skull faintly glowing behind one shoulder. His fully lit face in
+3/4 gazes right in calm command. Deep forest light with drifting
+spores behind. Painterly splash-art finish, wordless composition.
+
+--- [R12] gardener -> public/images/characters/gardener.webp ---
+Gender male, late teens. Splash-art portrait: a soft-spoken young
+gardener boy, slim (around 172 cm), short curly light-brown hair with
+a sprout tucked behind the ear, clean-shaven gentle face with pollen
+on the cheek, a patched apron over mossy greens, pruning shears in one
+hand and a curling vine around the wrist. His fully lit face in 3/4 smiles
+down-left at the vine. Greenhouse morning blur with hanging plants
+behind. Painterly splash-art finish, wordless composition.
+
+--- [R13] rootbinder -> public/images/characters/rootbinder.webp ---
+Gender male elf, ageless. Splash-art portrait: a transformed rootbinder
+half-claimed by the forest, tall and lean (around 190 cm), long mossy
+blond-green hair with root tendrils braided through it, pointed elven
+ears, bark creeping up one side of a clean-shaven calm face, living
+wooden gauntlet blooming with tiny white flowers, thorned vines
+coiling the other arm. His fully lit face in 3/4 looks left with ancient patience.
+Deep loam-green light, blurred giant roots behind. Painterly
+splash-art finish, wordless composition.
+
+--- [R14] lifeweaver -> public/images/characters/lifeweaver.webp ---
+Gender male, ageless. Splash-art portrait: an ascended lifeweaver
+aglow from within, tall and luminous (around 188 cm, slim), cloud-white
+hair floating long with petals and seeds, clean-shaven beatific face
+with blossom-pink light on the cheeks, gown of woven petals and light
+over bark-silk, both hands releasing a swirl of glowing pollen. Her fully lit face tilts up-right in quiet ecstasy.
+Sun-drenched canopy blur with falling petals behind. Painterly
+splash-art finish, wordless composition.
+
+--- [R15] moderator -> public/images/characters/moderator.webp ---
+Gender male, mid-30s. Splash-art portrait: a
+sharp-eyed moderator adjudicator, tall and stern (around 188 cm, slim
+upright posture), steel-grey hair combed severe and short, clean-shaven
+stern face with a monocle glint, tailored violet coat with silver
+clause-stitching and a seal-stamp gauntlet. (NOTE: current file is a
+decorative UI frame — this prompt paints the first real portrait.) His fully
+lit face in 3/4 inspects something right with cool authority. Cold
+hall light, blurred archive pillars behind. Painterly splash-art
+finish, wordless composition.
+
+--- [R16] tester -> public/images/characters/tester.webp ---
+Gender male, early 20s. Splash-art portrait: a
+cheerful test-vessel youth of average build (around 175 cm), messy
+medium brown hair under a tilted pair of testing goggles,
+clean-shaven grin, mismatched gear
+— one warrior pauldron, one mage sleeve, a gardener glove — shrugging
+with a lopsided clean-shaven grin, toolbelt of chests keys, egg
+pouches and crystal vials rattling at the waist, a clipboard
+disintegrating into sparkles. His fully lit face meets the viewer
+sideways in 3/4. Bright neutral workshop blur behind. Painterly
+splash-art finish, playful and scrappy, wordless composition.
+(NOTE: current file is a decorative UI frame — this prompt paints the
+first real portrait.)
+
+--- [R17] juggernaut -> public/images/characters/juggernaut.webp ---
+Gender male, late 30s. Splash-art portrait: a mountainous juggernaut
+mid-breath before a charge (around 205 cm, immensely broad), shaved
+head with ritual scars, clean-shaven brutal face split by a war grin,
+colossal layered plate with dents the size of fists,
+chain-wrapped fists raised, breath fogging in cold air. His fully lit
+face in 3/4 glares left. Iron-grey storm light, blurred siege
+engines behind. Painterly splash-art finish, wordless composition.
+
+--- [R18] colossus -> public/images/characters/colossus.webp ---
+Gender male, ancient. Splash-art portrait: an ancient colossus at rest
+between battles, gigantic (around 210 cm, thick-boned titan frame),
+silver-white hair in a topknot with long loose strands, weathered
+clean-shaven face mapped with old tattoo bands, bare rune-marked torso
+crossed by a single leather strap, ornate bracers the size of shields, one hand
+crushing a broken siege ram. His fully lit face in 3/4 looks down
+with weary pride. Pale sky over ruined walls behind. Painterly
+splash-art finish, wordless composition.
+
+
+=================== BOSS PORTRAITS (5, bonus) ===================
+Single prompts, same splash-art painterly style, save to shown path.
+
+--- [B1] Ember King -> public/images/bosses/ember_king.png ---
+Splash-art boss portrait: a colossal ember demon king leaning
+forward, molten cracks webbing across black obsidian skin, a crown
+of blackened horns wreathed in living flame, embers and ash
+spiraling around his shoulders, throne-room lava glow rising from
+below. Painterly splash-art finish, overwhelming heat and menace,
+wordless composition.
+
+--- [B2] Frost Titan -> public/images/bosses/frost_titan.png ---
+Splash-art boss portrait: a towering frost titan turning into a
+blizzard, pale blue glacial skin plated with ice, a beard of hanging
+icicles, snow blasting sideways off his shoulders, frozen runes
+glowing beneath the frost on his brow. Painterly splash-art finish,
+deep cold dread, wordless composition.
+
+--- [B3] Void Herald -> public/images/bosses/void_herald.png ---
+Splash-art boss portrait: a gaunt void herald entity emerging from
+darkness, deep purple-black starry flesh scattered with tiny dying
+stars, hollow eyes holding pinprick galaxies, shards of shattered
+void glass orbiting its head, faint violet nebulae coiling behind.
+Painterly splash-art finish, cosmic horror and silence, wordless
+composition.
+
+--- [B4] Storm Colossus -> public/images/bosses/storm_colossus.png ---
+Splash-art boss portrait: a gigantic storm colossus golem striding
+through thunderheads, arcane-carved stone plates split by veins of
+living lightning, storm clouds rotating around its fists, rain
+lashing sideways across its glowing eyes. Painterly splash-art
+finish, roaring tempest power, wordless composition.
+
+--- [B5] World Eater -> public/images/bosses/world_eater.png ---
+Splash-art boss portrait: a nightmarish world eater leviathan
+breaching through shattered earth, mountain-sized jaws ringed with
+rows of broken teeth, forests and fortress towers tumbling from its
+back, dust and birds scattering around its rise. Painterly
+splash-art finish, apocalyptic scale, wordless composition.
+
+
+=================== SKILL ICON GRIDS (17 grids, 143 icons) ===================
+Base style for EVERY grid prompt (LoL ability-icon style, painted
+directly into the prompt):
+"League-of-Legends style set of square ability icons arranged in a
+tidy GRID with thin dark gaps between cells over a dark slate
+backdrop, each icon a painterly SPLASH-ART close-up in the manner of
+LoL champion abilities: the subject fills most of its cell, bold
+dynamic angle, strong rim light, rich saturated color, edge-to-edge
+painted art shaped by the game's rounded icon frame, vibrant element
+language (physical molten steel orange, holy radiant gold white,
+shadow deep violet black, arcane bright violet blue, nature living
+leaf green, fire ember red orange, frost glacial ice blue, lightning
+crackling yellow white, water abyssal blue, blessings soft teal
+glow), a single instantly readable subject per icon, purely visual
+wordless emblems"
+CUT ORDER: top-left = cell 1, then left-to-right, row by row.
+
+--- GRID S1 (3x3, warrior steel) ---
+3x3 grid, 9 square skill icons. Cell 1 (heavy_strike.png): crossed
+heavy greatswords slam. Cell 2 (slash.png): single swift steel slash
+arc. Cell 3 (great_slash.png): huge Zweihander mid-swing with wind.
+Cell 4 (colossal_slash.png): titanic flaming-edged slash wave.
+Cell 5 (cleave.png): twin axes splitting a shield. Cell 6
+(war_cry.png): roaring lion-head war horn. Cell 7 (battle_fury.png):
+burning red fist with rage flames. Cell 8 (cataclysm.png): meteor
+shattering a fortress wall. Cell 9 (devastate.png): cracked skull
+under falling hammer.
+
+--- GRID S2 (3x3, archer precision) ---
+3x3 grid, 9 square skill icons. Cell 1 (quick_shot.png): fast arrow
+streak with motion lines. Cell 2 (aimed_shot.png): single arrowhead
+in crosshair. Cell 3 (piercing_shot.png): arrow piercing three
+layered plates. Cell 4 (hunter_shot.png): eagle-eye arrow with feather
+trail. Cell 5 (storm_shot.png): arrow wreathed in storm lightning.
+Cell 6 (volley.png): fan of five arrows raining down. Cell 7
+(storm_barrage.png): storm of lightning arrows spiral. Cell 8
+(shatter_point.png): cracked weak-point target with dagger tip.
+Cell 9 (broken_guard.png): shattered shield with broken sword.
+
+--- GRID S3 (3x3, holy blades) ---
+3x3 grid, 9 square skill icons. Cell 1 (smite.png): golden hammer
+falling with holy rays. Cell 2 (sanct_bolt.png): small white-gold
+light bolt. Cell 3 (hallowed_bolt.png): grand radiant spear of light.
+Cell 4 (blessed_blade.png): sword anointed with glowing holy oil.
+Cell 5 (radiant_edge.png): blade edge made of pure sunrise light.
+Cell 6 (divine_light.png): blinding sunburst with dove silhouette.
+Cell 7 (holy_strike.png): sword strike trailing golden light. Cell 8
+(holy_judgement.png): scales of justice crossed with holy sword.
+Cell 9 (radiance.png): rising sun over healed knight.
+
+--- GRID S4 (3x3, healing light) ---
+3x3 grid, 9 square skill icons. Cell 1 (mend.png): glowing green
+plus over bandaged hand. Cell 2 (greater_mend.png): big golden plus
+with angel wings. Cell 3 (magic_mend.png): blue mana drop mending a
+heart. Cell 4 (war_heal.png): bloodied gauntlet gripping green rune.
+Cell 5 (divine_blessing.png): priest hands blessing party silhouettes.
+Cell 6 (resurgence.png): phoenix rising from party banner. Cell 7
+(rejuvenate.png): leaf sprout over pulsing heart. Cell 8
+(spirit_surge.png): three blue mana wisps spiraling up. Cell 9
+(forest_renewal.png): ancient tree blooming with green light.
+
+--- GRID S5 (3x3, rogue shadow) ---
+3x3 grid, 9 square skill icons. Cell 1 (stab.png): slim dagger quick
+thrust. Cell 2 (lunge.png): rapier lunging with speed lines. Cell 3
+(shadow_stab.png): black-purple dagger in darkness. Cell 4
+(vampiric_strike.png): fanged dagger dripping red into heart.
+Cell 5 (execute.png): black guillotine blade over skull mark. Cell 6
+(shadow_step.png): bootprints fading into shadow portal. Cell 7
+(shadow_meld.png): hooded face dissolving into smoke. Cell 8
+(shadow_veil.png): dark veil curtain with glowing eyes behind.
+Cell 9 (eclipse_strike.png): black sun eclipse split by blade.
+
+--- GRID S6 (3x3, death shadow + monster claws) ---
+3x3 grid, 9 square skill icons. Cell 1 (reap.png): spectral scythe
+sweep arc. Cell 2 (death_mark.png): skull branded with red X.
+Cell 3 (soul_thief.png): ghostly hand stealing glowing soul orb.
+Cell 4 (soul_reap.png): massive scythe harvesting three souls.
+Cell 5 (scythe_sweep.png): wide crescent scythe whirl. Cell 6
+(dark_veil.png): purple-black shroud with shield glint. Cell 7
+(cripple.png): chained broken leg shackle. Cell 8
+(monster_shadow_attack.png): monstrous shadow claw slash. Cell 9
+(monster_shadow_bolt.png): dark violet bolt with skull tip.
+
+--- GRID S7 (3x3, arcane cosmos) ---
+3x3 grid, 9 square skill icons. Cell 1 (arcane_bolt.png): small violet
+missile spark. Cell 2 (arcane_barrage.png): triple violet missiles
+fan. Cell 3 (arcane_blast.png): violet explosion ring. Cell 4
+(primordial_bolt.png): ancient rune-carved star bolt. Cell 5
+(meteor.png): single fireball meteor falling. Cell 6 (comet.png):
+ice-blue comet with long tail. Cell 7 (mana_shield.png): blue
+hexagonal mana barrier. Cell 8 (mod_strike.png): glowing pink admin
+gavel strike. Cell 9 (mod_obliterate.png): pink-black annihilation
+beam erasing square.
+
+--- GRID S8 (3x3, tank iron) ---
+3x3 grid, 9 square skill icons. Cell 1 (shield_bash.png): shield
+smashing with impact star. Cell 2 (adamant_bash.png): diamond-hard
+shield slam. Cell 3 (titan_slam.png): colossal fist cratering ground.
+Cell 4 (defend.png): plain steel shield raised. Cell 5 (fortify.png):
+shield with stone bricks overlay. Cell 6 (shield_wall.png): row of
+interlocked shields. Cell 7 (bastion.png): fortress tower shield
+emblem. Cell 8 (immovable.png): mountain rooted over shield. Cell 9
+(iron_wall.png): riveted iron plate wall.
+
+--- GRID S9 (3x3, wards + monster hide) ---
+3x3 grid, 9 square skill icons. Cell 1 (divine_guard.png): golden
+winged shield. Cell 2 (aegis.png): mirror-bright aegis with medusa
+glint. Cell 3 (barrier.png): translucent dome over three figures.
+Cell 4 (stone_skin.png): grey stone hide plate. Cell 5 (holy_ward.png):
+golden bubble over kneeling ally. Cell 6 (group_guard.png): three
+small shields in triangle. Cell 7 (war_banner.png): crimson war banner
+on spear. Cell 8 (monster_stoneskin.png): rocky monster carapace.
+Cell 9 (monster_heal.png): monster flesh stitching with green glow.
+
+--- GRID S10 (3x3, nature + beasts) ---
+3x3 grid, 9 square skill icons. Cell 1 (garden_swipe.png): thorny
+garden claw swipe. Cell 2 (root_lash.png): thick root whip lash.
+Cell 3 (bloom_burst.png): flower exploding with pollen burst. Cell 4
+(vine_lash.png): green vine whip curl. Cell 5 (thorn_volley.png):
+fan of sharp thorns. Cell 6 (beast_bite.png): wolf jaws bite mark.
+Cell 7 (beast_strike.png): clawed paw strike. Cell 8
+(alpha_strike.png): alpha wolf head with crown scar. Cell 9
+(tame_hit.png): leather whip with paw charm.
+
+--- GRID S11 (3x3, venom + monster ailments) ---
+3x3 grid, 9 square skill icons. Cell 1 (venom_strike.png): dagger with
+green venom drop. Cell 2 (toxin_drench.png): acid flask pouring.
+Cell 3 (venom_burst.png): green poison explosion vial. Cell 4
+(monster_poison.png): bubbling toxic skull cloud. Cell 5
+(monster_regen.png): green regenerating lizard tail. Cell 6
+(monster_frenzy.png): red enraged eyes with foam. Cell 7
+(monster_weaken.png): drooping crushed sword aura. Cell 8
+(monster_vulnerable.png): cracked heart target exposed. Cell 9
+(monster_physical_attack.png): savage beast fang blow.
+
+--- GRID S12 (3x3, storm + sea + monster magic) ---
+3x3 grid, 9 square skill icons. Cell 1 (monster_arcane_attack.png):
+wild violet surge claw. Cell 2 (monster_arcane_storm.png): violet
+storm vortex. Cell 3 (monster_heavy_blow.png): giant club smash.
+Cell 4 (volt_conduit.png): copper coil with spark. Cell 5
+(static_overload.png): overloaded tesla orb bursting. Cell 6
+(lightning_bolt.png): classic yellow lightning fork. Cell 7
+(water_splash.png): blue wave splash drop. Cell 8 (frost_nova.png):
+ice ring explosion. Cell 9 (mana_shield.png): blue hexagonal mana barrier — SHARED, see S7.
+Generate ONCE in S7, reuse the file here, do not regenerate.
+
+--- GRID S13 (3x3, ember boss + fire) ---
+3x3 grid, 9 square skill icons. Cell 1 (boss_ember_skill1.png): flaming
+demon fist strike. Cell 2 (boss_ember_skill2.png): huge magma hammer
+blow. Cell 3 (boss_ember_skill3.png): dimming ash shackles (weaken).
+Cell 4 (boss_ember_skill4.png): lava shield wall (fortify). Cell 5
+(boss_ember_skill5.png): serpent of fire venom. Cell 6
+(boss_ember_skill6.png): phoenix tear healing flame. Cell 7
+(scorch_mark.png): branded burn mark sigil. Cell 8 (ember_storm.png):
+firestorm of falling embers. Cell 9 (blaze_rupture.png): volcano
+fissure eruption.
+
+--- GRID S14 (3x3, frost boss + frost) ---
+3x3 grid, 9 square skill icons. Cell 1 (boss_frost_skill1.png): ice
+titan fist strike. Cell 2 (boss_frost_skill2.png): glacier hammer
+smash. Cell 3 (boss_frost_skill3.png): frostbitten chains (weaken).
+Cell 4 (boss_frost_skill4.png): glacier shield (fortify). Cell 5
+(boss_frost_skill5.png): ice-viper venom fang. Cell 6
+(boss_frost_skill6.png): aurora healing crystal. Cell 7
+(frost_bolt.png): sharp icicle bolt. Cell 8 (cold_snap.png): cracked
+frozen hourglass. Cell 9 (glacial_shatter.png): shattering ice
+monolith.
+
+--- GRID S15 (3x3, void boss + arcane doom) ---
+3x3 grid, 9 square skill icons. Cell 1 (boss_void_skill1.png): void
+tentacle strike. Cell 2 (boss_void_skill2.png): black-hole hammer
+blow. Cell 3 (boss_void_skill3.png): eye of nothingness (expose).
+Cell 4 (boss_void_skill4.png): void shell carapace (fortify). Cell 5
+(boss_void_skill5.png): void leech venom. Cell 6 (boss_void_skill6.png):
+dark rebirth cocoon heal. Cell 7 (arcane_barrage.png): triple violet
+missiles fan — SHARED with S7, reuse file. Cell 8 (meteor.png):
+fireball meteor — SHARED with S7, reuse file. Cell 9 (comet.png):
+star-blue comet — SHARED with S7, reuse file.
+
+--- GRID S16 (3x3, storm boss + world boss) ---
+3x3 grid, 9 square skill icons. Cell 1 (boss_storm_skill1.png):
+lightning colossus punch. Cell 2 (boss_storm_skill2.png): thunderhead
+hammer. Cell 3 (boss_storm_skill3.png): storm chains (weaken+expose).
+Cell 4 (boss_storm_skill4.png): thunderdome shield (fortify). Cell 5
+(boss_storm_skill5.png): electric plague swarm. Cell 6
+(boss_storm_skill6.png): storm freedove heal flash. Cell 7
+(boss_world_skill1.png): world-serpent bite strike. Cell 8
+(boss_world_skill2.png): continent-crusher maw blow. Cell 9
+(boss_world_skill3.png): collapsing mountain chains (weaken).
+
+--- GRID S17 (1x3 strip, world ruin leftovers - LAST 3, nothing left behind) ---
+1x3 horizontal strip, 3 square skill icons with thin dark gaps on dark
+slate background, same painterly LoL splash-art icon finish. Cell 1
+(boss_world_skill4.png): volcano-frenzy rage idol (fortify/frenzy).
+Cell 2 (boss_world_skill5.png): rotting world-root venom fang.
+Cell 3 (boss_world_skill6.png): world-tree seed of rebirth heal.
+
+================================================================
+COVERAGE CHECK (nothing left behind):
+- Characters: 33/33 class prompts (15 missing-PNG + 18 with .webp).
+  Missing: warlord, warden, archmage, nightblade, crusader, reaper,
+  high_priest, ultra_moderator, war_emperor, storm_warden, archon,
+  shade_king, lightbringer, death_lord, divine_saint.
+  (REMOVED 2026-09-18: stale duplicate "alpha_tamer" deleted from
+  content.js — same label/stats as "anima_lorde" but unreachable,
+  imageless and missing pet fields. Canonical: anima_lorde.)
+  With art: warrior, ranger, mage, rogue, paladin, assassin, support,
+  tank, tamer, beastmaster, anima_lorde, gardener, rootbinder,
+  lifeweaver, moderator, tester, juggernaut, colossus.
+- Boss portraits: 5/5 (ember_king, frost_titan, void_herald,
+  storm_colossus, world_eater).
+- Skill icons: 143 unique files in grids S1-S17 (68 player skills +
+  32 basic attacks + 30 boss skills + 13 monster skills).
+  147 cells total, 4 SHARED (generate once, reuse file):
+  mana_shield (S7+S12), arcane_barrage + meteor + comet (S7+S15).
+  Every id from content.js skills table + every basicAttack id is
+  listed. Zero missing, zero remainder.
+================================================================

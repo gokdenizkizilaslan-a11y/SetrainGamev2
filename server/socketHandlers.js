@@ -405,6 +405,39 @@ function registerSocketHandlers(io) {
       }
     });
 
+    socket.on("town:sleepOutside", () => {
+      try {
+        const { room, player } = gameContext(socket);
+        requireAlive(player);
+        town.requirePlaying(room, player);
+        requireAlive(player);
+        const d = dungeon.dungeonFor(room, player);
+        if (d && dungeon.delveUnderway(d)) {
+          throw new Error("Finish or leave the delve first.");
+        }
+        if (d && d.status === "forming") {
+          try { dungeon.leaveDungeon(room, player); } catch (e) {}
+        }
+        const res = town.sleepOutside(player);
+        room.log = { type: "endDay", text: res.text, name: player.name, ts: Date.now() };
+        if (room.players.every((p) => p.endedDay)) {
+          room.day += 1;
+          for (const p of room.players) {
+            onNewDay(p);
+          }
+          dungeon.resetRoomDungeons(room);
+          if (stock.maybeRotate(room)) {
+            room.log = { type: "day", text: `Day ${room.day} dawns. The merchants restock their shelves.`, ts: Date.now() };
+          } else {
+            room.log = { type: "day", text: `Day ${room.day} dawns. Stamina restored.`, ts: Date.now() };
+          }
+        }
+        emitRoomState(io, room);
+      } catch (err) {
+        emitError(socket, err);
+      }
+    });
+
     // ---- Blacksmith / shop ----
 
     socket.on("blacksmith:buy", (payload = {}) => {
@@ -632,6 +665,39 @@ function registerSocketHandlers(io) {
         requireAlive(player);
         const res = tavern.buyProvisions(player);
         room.log = res;
+        emitRoomState(io, room);
+      } catch (err) {
+        emitError(socket, err);
+      }
+    });
+
+    socket.on("tavern:sleep", () => {
+      try {
+        const { room, player } = gameContext(socket);
+        requireAlive(player);
+        town.requirePlaying(room, player);
+        requireAlive(player);
+        const d = dungeon.dungeonFor(room, player);
+        if (d && dungeon.delveUnderway(d)) {
+          throw new Error("Finish or leave the delve first.");
+        }
+        if (d && d.status === "forming") {
+          try { dungeon.leaveDungeon(room, player); } catch (e) {}
+        }
+        const res = tavern.sleep(player);
+        room.log = { type: "endDay", text: res.text, name: player.name, ts: Date.now() };
+        if (room.players.every((p) => p.endedDay)) {
+          room.day += 1;
+          for (const p of room.players) {
+            onNewDay(p);
+          }
+          dungeon.resetRoomDungeons(room);
+          if (stock.maybeRotate(room)) {
+            room.log = { type: "day", text: `Day ${room.day} dawns. The merchants restock their shelves.`, ts: Date.now() };
+          } else {
+            room.log = { type: "day", text: `Day ${room.day} dawns. Stamina restored.`, ts: Date.now() };
+          }
+        }
         emitRoomState(io, room);
       } catch (err) {
         emitError(socket, err);

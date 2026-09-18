@@ -368,7 +368,7 @@ const CONTENT = {
     },
     {
       "slug": "ranger",
-      "label": "Ranger",
+      "label": "Archer",
       "image": "/images/characters/ranger.webp?v=mtyntcmp",
       "basicAttack": {
         "id": "quick_shot",
@@ -2566,63 +2566,6 @@ const CONTENT = {
         "mana": 10,
         "resistance": 11,
         "magicPower": 3
-      }
-    },
-    {
-      "slug": "alpha_tamer",
-      "label": "Alpha Tamer",
-      "baseClass": "beastmaster",
-      "image": "/images/characters/alpha_tamer.png",
-      "basicAttack": {
-        "id": "alpha_strike",
-        "name": "Alpha Strike",
-        "power": 1.25,
-        "element": "physical",
-        "image": "/images/skills/alpha_strike.png",
-        "description": "Deals 1.25× attack damage."
-      },
-      "startingSkills": [
-        "war_cry"
-      ],
-      "speed": 12,
-      "hp": {
-        "min": 500,
-        "max": 580
-      },
-      "attack": {
-        "min": 42,
-        "max": 54
-      },
-      "mana": {
-        "min": 35,
-        "max": 50
-      },
-      "resistance": {
-        "min": 24,
-        "max": 34
-      },
-      "magicPower": {
-        "min": 22,
-        "max": 32
-      },
-      "healPower": {
-        "min": 6,
-        "max": 10
-      },
-      "growth": {
-        "hp": 18,
-        "attack": 5,
-        "mana": 4,
-        "resistance": 3,
-        "magicPower": 4,
-        "healPower": 1
-      },
-      "evolveBonus": {
-        "hp": 50,
-        "attack": 8,
-        "mana": 10,
-        "resistance": 5,
-        "magicPower": 5
       }
     }
   ],
@@ -8421,7 +8364,7 @@ const CONTENT = {
   },
   "town": {
     "search": {
-      "stamina": 2,
+      "stamina": 1,
       "xp": 0,
       "outcomes": [
         {
@@ -8491,7 +8434,7 @@ const CONTENT = {
       ]
     },
     "blacksmith": {
-      "stamina": 2
+      "stamina": 1
     },
     "merchant": {
       "stamina": 1
@@ -8506,13 +8449,20 @@ const CONTENT = {
       "provisions": {
         "foodPrice": 10,
         "foodAmount": 2
+      },
+      "sleep": {
+        "price": 15
       }
     },
     "rest": {
-      "stamina": 6
+      "stamina": 4,
+      "maxPerDay": 3
     },
     "temple": {
-      "stamina": 2
+      "stamina": 1
+    },
+    "sleepOutside": {
+      "lifeLossChance": 0.04
     },
     "endDay": {},
     "dungeon": {
@@ -11989,7 +11939,7 @@ const CONTENT = {
         ]
       },
       "ranger": {
-        "label": "Ranger Path",
+        "label": "Archer Path",
         "nodes": [
           {
             "id": "r_aimed_shot",

@@ -142,6 +142,50 @@ function woundsOnHit(character) {
   return null;
 }
 
+// ---- Stack auras: persist stack buffs contribute stacks × value to a stat kind.
+// e.g. {kind:"stack", stackId:"fury", forKind:"attack", value:0.01} with
+// 5 stacks = +5% attack. Reads the generic duel buff list (PvE + PvP).
+function stackAuraSum(buffs, targetType, targetId, kind) {
+  let s = 0;
+  for (const b of buffs || []) {
+    if (!b || b.kind !== "stack" || !b.forKind || b.forKind !== kind) continue;
+    if (b.targetType !== targetType || String(b.targetId) !== String(targetId)) continue;
+    s += Math.max(0, Number(b.stacks) || 0) * Number(b.value || 0);
+  }
+  return s;
+}
+// ---- hpBurn passive (class OR race): after your damaging hits, deal extra
+// exact damage = targetMaxHp × pct (capped). {kind:"hpBurn", pct:0.02, cap:200}
+function hpBurnOnHit(character) {
+  for (const p of getPassives(character)) {
+    if (p.kind !== "hpBurn") continue;
+    return {
+      pct: Math.max(0, num(p.pct, 0)),
+      cap: p.cap != null ? Math.max(0, num(p.cap, Infinity)) : Infinity,
+    };
+  }
+  return null;
+}
+// ---- stackOnHit passive (class OR race): your damaging hits apply a stack
+// buff to the target. {kind:"stackOnHit", stackId, count:1, maxStacks:5,
+// duration:3, burst:{...}, consume:true, chance:1}
+function stackOnHit(character) {
+  const out = [];
+  for (const p of getPassives(character)) {
+    if (p.kind !== "stackOnHit" || !p.stackId) continue;
+    out.push({
+      stackId: String(p.stackId),
+      count: Math.max(1, Math.round(num(p.count, 1))),
+      maxStacks: Math.max(1, Math.round(num(p.maxStacks, 5))),
+      duration: Math.max(1, Math.round(num(p.duration, 3))),
+      burst: p.burst && typeof p.burst === "object" ? p.burst : null,
+      consume: p.consume !== false,
+      chance: Math.min(1, Math.max(0, num(p.chance, 1))),
+    });
+  }
+  return out;
+}
+
 function healOnKillPct(character) {
   let t = 0;
   for (const p of getPassives(character)) {
@@ -273,6 +317,9 @@ module.exports = {
   lifestealPct,
   healTakenMultFromBuffs,
   woundsOnHit,
+  stackAuraSum,
+  hpBurnOnHit,
+  stackOnHit,
   healOnKillPct,
   shieldStartFor,
   shieldGainMult,

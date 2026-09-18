@@ -22,7 +22,7 @@ Drag picture files into `public/images/...`. If a file is missing, the game stil
 
 ## Change a class (HP, attack, mana, resistance, magic power)
 
-Open `content.js` → `classes`. Find the class (`warrior`, `mage`, …). The setup screen shows the **8 base classes**: Warrior, Ranger, Mage, Rogue, Paladin, Assassin, Tank, Support Mage — each of which evolves into stronger forms at levels 20 and 40 (see the Class evolution section). The `content.js` roster also contains those evolved classes (marked with `baseClass`), which never appear on the setup screen.
+Open `content.js` → `classes`. Find the class (`warrior`, `mage`, …). The setup screen shows the **8 base classes**: Warrior, Archer, Mage, Rogue, Paladin, Assassin, Tank, Support Mage — each of which evolves into stronger forms at levels 20 and 40 (see the Class evolution section). The `content.js` roster also contains those evolved classes (marked with `baseClass`), which never appear on the setup screen.
 
 - `hp.min` / `hp.max` — rolled once at character create (level 1). Tank example: 650–750.
 - Same for `attack`, `mana`, `resistance`, `magicPower`, `healPower`.

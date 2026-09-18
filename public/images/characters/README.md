@@ -13,7 +13,7 @@ public/images/characters/<slug>.png     →  örnek: warrior.png
 | Dosya | Sınıf | Dosya | Sınıf |
 |---|---|---|---|
 | `warrior.png` | Warrior | `warlord.png` | War Lord (Lv20) |
-| `ranger.png` | Ranger | `warden.png` | Warden (Lv20) |
+| `ranger.png` | Archer | `warden.png` | Warden (Lv20) |
 | `mage.png` | Mage | `archmage.png` | Archmage (Lv20) |
 | `rogue.png` | Rogue | `nightblade.png` | Nightblade (Lv20) |
 | `paladin.png` | Paladin | `crusader.png` | Crusader (Lv20) |

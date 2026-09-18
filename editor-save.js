@@ -33,8 +33,76 @@ function validateContentJs(content) {
   }
 }
 
+// Referential integrity: renaming a slug/label in the editor must not orphan
+// references or leave dead duplicate classes behind. Throws on error.
+function validateReferences(data) {
+  const errors = [];
+  const classes = Array.isArray(data.classes) ? data.classes : [];
+  const skills = Array.isArray(data.skills) ? data.skills : [];
+  const skillIds = new Set(skills.map((s) => s && s.id));
+  const slugs = new Set();
+  const labels = new Set();
+  for (const c of classes) {
+    if (!c || typeof c.slug !== "string" || !c.slug.trim()) {
+      errors.push("A class has an empty slug.");
+      continue;
+    }
+    if (slugs.has(c.slug)) errors.push(`Duplicate class slug "${c.slug}".`);
+    slugs.add(c.slug);
+    const lab = String(c.label || "").trim().toLowerCase();
+    if (lab) {
+      if (labels.has(lab)) errors.push(`Duplicate class label "${c.label}" — slugs AND labels must both be unique.`);
+      labels.add(lab);
+    }
+  }
+  const evoTargets = new Set();
+  for (const c of classes) {
+    const routes = [];
+    if (c.evolution) routes.push(c.evolution);
+    if (Array.isArray(c.evolutions)) routes.push(...c.evolutions);
+    for (const r of routes) {
+      if (r && r.to) {
+        evoTargets.add(r.to);
+        if (!slugs.has(r.to)) errors.push(`Class "${c.slug}" evolves to missing class "${r.to}".`);
+      }
+    }
+    if (c.baseClass && !slugs.has(c.baseClass)) {
+      errors.push(`Class "${c.slug}" has missing baseClass "${c.baseClass}".`);
+    }
+    for (const sid of c.startingSkills || []) {
+      if (!skillIds.has(sid)) errors.push(`Class "${c.slug}" lists missing skill "${sid}".`);
+    }
+  }
+  const lineages = (data.skillTree && data.skillTree.lineages) || {};
+  for (const key of Object.keys(lineages)) {
+    if (!slugs.has(key)) errors.push(`Skill tree branch "${key}" has no matching class.`);
+    const nodes = lineages[key] && lineages[key].nodes;
+    if (Array.isArray(nodes)) {
+      for (const n of nodes) {
+        if (n && n.skillId && !skillIds.has(n.skillId)) {
+          errors.push(`Skill tree node "${n.id}" points to missing skill "${n.skillId}".`);
+        }
+        if (n && n.ownerClass && !slugs.has(n.ownerClass)) {
+          errors.push(`Skill tree node "${n.id}" is owned by missing class "${n.ownerClass}".`);
+        }
+      }
+    }
+  }
+  // Dead-copy detector: hidden from class select (has baseClass) yet no
+  // evolution leads to it — exactly how the alpha_tamer orphan happened.
+  for (const c of classes) {
+    if (c.baseClass && !evoTargets.has(c.slug)) {
+      errors.push(`Class "${c.slug}" is unreachable: it never appears in class select and no evolution leads to it. Delete it or wire an evolution to it.`);
+    }
+  }
+  if (errors.length) {
+    throw new Error("Content validation failed:\n- " + errors.slice(0, 12).join("\n- ") + (errors.length > 12 ? `\n- ... +${errors.length - 12} more` : ""));
+  }
+}
+
 // Returns { ok: true, backup?: <name> } or throws on validation failure.
 function writeContent(data, opts = {}) {
+  validateReferences(data);
   const content = buildContentFile(data);
   validateContentJs(content);
   let backupName = null;
@@ -47,4 +115,4 @@ function writeContent(data, opts = {}) {
   return { ok: true, backup: backupName };
 }
 
-module.exports = { CONTENT_FILE, buildContentFile, validateContentJs, writeContent };
+module.exports = { CONTENT_FILE, buildContentFile, validateContentJs, validateReferences, writeContent };
