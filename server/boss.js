@@ -41,7 +41,7 @@ function createBossParty(room, player, bossId) {
   const party = {
     id: genId(),
     bossId,
-    label: bossDef.label,
+    label: bossDef.label || bossDef.name || bossId,
     image: bossDef.image,
     leaderId: player.id,
     memberIds: [player.id],
@@ -116,7 +116,7 @@ function startBoss(room, player) {
   }
   // Build boss wave single floor with 1 boss (max 5 but for boss it's 1)
   const bossDef = (require("../content").CONTENT.bosses||[]).find(x=>x.id===b.bossId);
-  const mon = getMonster(bossDef.id) || {id:bossDef.id, name:bossDef.label, image:bossDef.image, element:bossDef.element, hp:bossDef.hp, attack:bossDef.attack, speed:bossDef.speed};
+  const mon = getMonster(bossDef.id) || {id:bossDef.id, name:bossDef.label || bossDef.name, image:bossDef.image, element:bossDef.element, hp:bossDef.hp, attack:bossDef.attack, speed:bossDef.speed};
   // For boss, use 6 skills: already defined as boss_xxx_skill1..6
   const { getSkill } = require("../content");
   const skills = [];
@@ -147,7 +147,7 @@ function startBoss(room, player) {
   b.wave = [{
     id: `${bossDef.id}_0`,
     kind: bossDef.id,
-    name: bossDef.label,
+    name: bossDef.label || bossDef.name || bossDef.id,
     image: bossDef.image,
     element: bossDef.element,
     hp: bossDef.hp,
@@ -170,7 +170,7 @@ function startBoss(room, player) {
   b.fx=[];
   b.monsterQueue=[];
   b.monsterTimer=null;
-  b.log=[`${bossDef.label} appears! Floor 1/1`];
+  b.log=[`${bossDef.label || bossDef.name || bossDef.id} appears! Floor 1/1`];
   // Build turn order - same as dungeon
   const living = members.filter(p=>p.lives>0 && p.hp>0);
   b.turnOrder = living.sort((a,b)=>b.speed-a.speed).map(p=>p.id);

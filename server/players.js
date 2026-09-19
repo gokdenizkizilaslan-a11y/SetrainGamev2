@@ -219,6 +219,82 @@ function addXp(player, amount) {
 
 // ---- Skill Tree ----
 
+// Bütün evrim rotaları (çoklu dallanma + legacy tekli). Sıra korunur:
+// ilk rota varsayılan, diğerleri tapınakta seçilir.
+function routesOf(slug) {
+  const c = getClass(slug);
+  if (!c) return [];
+  if (Array.isArray(c.evolutions) && c.evolutions.length) return c.evolutions;
+  return c.evolution ? [c.evolution] : [];
+}
+
+// Bir class'ın soy kökü: baseClass zincirinin en tepesi (örn. reaper -> assassin).
+function rootOf(slug) {
+  let c = getClass(slug);
+  const seen = new Set();
+  while (c && c.baseClass && !seen.has(c.slug)) {
+    seen.add(c.slug);
+    const next = getClass(c.baseClass);
+    if (!next) break;
+    c = next;
+  }
+  return c ? c.slug : slug;
+}
+
+// Oyuncunun class geçmişi: yaratılıştan bugüne uğradığı class'lar.
+// Eski kayıtlarda yoksa baseClass zincirinden türetilir (oyun kırılmaz).
+function historyOf(player) {
+  if (player && Array.isArray(player.classHistory) && player.classHistory.length) {
+    return player.classHistory.slice();
+  }
+  const chain = [];
+  const seen = new Set();
+  let c = player ? getClass(player.character) : null;
+  while (c && c.baseClass && !seen.has(c.slug)) {
+    seen.add(c.slug);
+    c = getClass(c.baseClass);
+    if (!c) break;
+    chain.unshift(c.slug);
+  }
+  chain.push(player ? player.character : null);
+  return chain.filter(Boolean);
+}
+
+// Mevcut class'tan ileriye ulaşılabilen üstler (seçilmemiş dallar dahil).
+function reachableUppers(slug) {
+  const out = [];
+  const seen = new Set();
+  let frontier = [slug];
+  while (frontier.length) {
+    const next = [];
+    for (const s of frontier) {
+      if (seen.has(s)) continue;
+      seen.add(s);
+      for (const r of routesOf(s)) {
+        if (r && r.to && !seen.has(r.to)) {
+          out.push(r.to);
+          next.push(r.to);
+        }
+      }
+    }
+    frontier = next;
+  }
+  return out;
+}
+
+// Skill ağacında bu oyuncuya açık olan ownerClass'lar:
+// geçmişte uğranan class'lar + mevcutten ulaşılabilen üstler.
+// Ara class'ın base skilleri (owned starter) bu kümeye girmez.
+function allowedOwners(player) {
+  const hist = historyOf(player);
+  const set = new Set(hist);
+  const cur = player ? player.character : null;
+  if (cur) {
+    for (const s of reachableUppers(cur)) set.add(s);
+  }
+  return set;
+}
+
 function lineageFor(slug) {
   const chain = [];
   const seen = new Set();
@@ -242,6 +318,36 @@ function lineageSkillTree(slug) {
   if (!st || !st.lineages) return null;
   const chain = lineageFor(slug);
   return st.lineages[chain[0]] || null;
+}
+
+// Ağaç node'unu global + TÜM lineage'larda bul (cross-class üstler başka
+// lineage'da yaşar, örn. sanguine_lord nodeları assassin yolunda).
+function findTreeNodeAnywhere(nodeId) {
+  const st = CONTENT.skillTree;
+  if (!st) return { node: null, lineageKey: null };
+  const g = (st.global || []).find((n) => n.id === nodeId);
+  if (g) return { node: g, lineageKey: null };
+  for (const [key, lin] of Object.entries(st.lineages || {})) {
+    const n = (lin.nodes || []).find((x) => x.id === nodeId);
+    if (n) return { node: n, lineageKey: key };
+  }
+  return { node: null, lineageKey: null };
+}
+
+// Node bu oyuncu tarafından öğrenilebilir mi?
+// - global: herkese açık
+// - ownerClass'lı üst node: owner geçmişte veya ulaşılabilir üstlerde olmalı
+// - ownerClass'sız starter (owned): sadece ORİJİN lineage'ına aitse
+//   (cross-class'ta ara class'ın baseleri gelmez, örn. warrior->reaper
+//   execute/shadow_step almaz; kendi warrior starterları kalır)
+function treeNodeAllowed(player, node, lineageKey) {
+  if (!node) return false;
+  if (node.ownerClass) return allowedOwners(player).has(node.ownerClass);
+  const hist = historyOf(player);
+  if (!hist.length) return false;
+  if (node.owned) return lineageKey === rootOf(hist[0]);
+  if (lineageKey == null) return true;
+  return lineageKey === rootOf(hist[0]) || allowedOwners(player).has(lineageKey);
 }
 
 // Ancestors-or-self by baseClass links: [current, base, base-of-base, ...].
@@ -270,8 +376,14 @@ function nodeScope(st, node) {
 }
 
 function seedOwnedTreeNodes(player) {
-  const spec = lineageSkillTree(player.character);
+  const st = CONTENT.skillTree;
+  if (!st || !st.lineages) return;
   player.learnedTreeNodes = player.learnedTreeNodes || [];
+  const hist = historyOf(player);
+  if (!hist.length) return;
+  // Sadece orijin lineage'ının owned starterları (cross-class'ta ara
+  // class'ın baseleri seedlenmez).
+  const spec = st.lineages[rootOf(hist[0])];
   if (!spec) return;
   for (const node of spec.nodes) {
     if (!node.owned) continue;
@@ -284,33 +396,30 @@ function seedOwnedTreeNodes(player) {
 function learnTreeNode(player, nodeId) {
   const st = CONTENT.skillTree;
   if (!st) throw new Error("The skill tree is hidden.");
-  let node = (st.global || []).find((n) => n.id === nodeId) || null;
-  const spec = lineageSkillTree(player.character);
-  if (!node && spec) node = spec.nodes.find((n) => n.id === nodeId) || null;
+  const found = findTreeNodeAnywhere(nodeId);
+  const node = found.node;
   if (!node) throw new Error("That skill cannot be found on the tree.");
   if ((player.learnedTreeNodes || []).includes(nodeId)) throw new Error("You already learned that skill.");
+  // Prereq'ler ağacın her yerinde aranır (cross-class üst zinciri dahil).
   for (const p of node.prereqs || []) {
     if (!(player.learnedTreeNodes || []).includes(p)) {
-      const pre = ((st.global || []).find((n) => n.id === p) || (spec ? spec.nodes.find((n) => n.id === p) : null));
+      const pre = findTreeNodeAnywhere(p).node;
       const name = pre && pre.skillId ? (getSkill(pre.skillId) || {}).name || pre.skillId : p;
       throw new Error("Requires: " + name + ".");
     }
   }
-  if (node.ownerClass) {
-    const chain = lineageFor(player.character);
-    if (!chain.includes(node.ownerClass)) throw new Error("That skill is not part of your class path.");
-  }
-  // Class-gated visibility: a lineage node is learnable only if its class is
-  // the player's own or an ancestor (evolved classes see previous + own).
-  // Global nodes (scope null) stay open to every class.
-  // NOTE: no level requirement — skills open with skill points only.
-  const scope = nodeScope(st, node);
-  if (scope && !ancestorsOf(player.character).includes(scope)) {
+  // Cross-class kapısı: bu node oyuncunun yolunda değilse öğretme.
+  if (!treeNodeAllowed(player, node, found.lineageKey)) {
     throw new Error("That skill is not part of your class path.");
   }
   const cost = node.cost || 1;
   if ((player.skillPoints || 0) < cost) throw new Error("Not enough skill points (" + cost + " needed).");
   const skill = getSkill(node.skillId);
+  // Aynı skill farklı bir node'dan zaten açıksa iki kez puan yedirme
+  // (örn. vampir zincirinde aynı kan büyüsü iki düğümde geçebilir).
+  if (node.skillId && (player.unlockedSkills || []).includes(node.skillId)) {
+    throw new Error("You already know that skill.");
+  }
   player.skillPoints -= cost;
   player.learnedTreeNodes.push(nodeId);
   if (node.skillId && !player.unlockedSkills.includes(node.skillId)) {
@@ -365,6 +474,10 @@ function createPlayer({ id, name, character, isHost = false }) {
     id,
     name,
     character,
+    // Class geçmişi: cross-class ascend'de skill mirası buradan çözülür.
+    // Örn. ["warrior", "reaper"] — warrior starterları kalır, assassin
+    // baseleri gelmez, reaper/death_lord üstleri açılır.
+    classHistory: [character],
     bossKills: [],
     lives: CONTENT.starting.lives,
     wood: CONTENT.starting.wood,
@@ -385,6 +498,9 @@ function createPlayer({ id, name, character, isHost = false }) {
     },
     unlockedSkills: starting,
     skillLoadout: starting.slice(),
+    // Questler: oyuncuya özel sayaçlar { [questId]: { accepted, kills, completed } }.
+    // Başka oyuncunun avı bu sayaçlara asla yazılmaz.
+    quests: {},
     skillPoints: (CONTENT.skillTree && CONTENT.skillTree.startingPoints) || 3,
     learnedTreeNodes: [],
     hp: 0,
@@ -482,6 +598,10 @@ function publicPlayer(player) {
     equipment: { ...player.equipment },
     unlockedSkills: (player.unlockedSkills || []).slice(),
     skillLoadout: (player.skillLoadout || []).slice(),
+    quests: JSON.parse(JSON.stringify(player.quests || {})),
+    classHistory: Array.isArray(player.classHistory) && player.classHistory.length
+      ? player.classHistory.slice()
+      : historyOf(player),
     skillPoints: player.skillPoints || 0,
     learnedTreeNodes: (player.learnedTreeNodes || []).slice(),
     bossKills: (player.bossKills || []).slice(),
@@ -809,4 +929,9 @@ module.exports = {
   setSkillLoadout,
   learnTreeNode,
   ancestorsOf,
+  historyOf,
+  rootOf,
+  routesOf,
+  allowedOwners,
+  treeNodeAllowed,
 };

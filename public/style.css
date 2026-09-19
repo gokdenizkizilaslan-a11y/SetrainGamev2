@@ -2461,6 +2461,30 @@ input:focus {
   padding: 0;
   overflow: hidden;
   width: 160px;
+  min-height: 200px;
+  justify-content: flex-end;
+}
+
+/* Monster/boss kartı: resim oyuncu kartı gibi TAM kutuyu kaplar (üst şerit değil). */
+.enemy-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center top;
+}
+
+.enemy-bg.portrait--missing {
+  background: linear-gradient(160deg, #3a2c1c, #1c130a);
+}
+
+.enemy-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top,
+    rgba(0, 0, 0, 0.66) 0%,
+    rgba(0, 0, 0, 0.30) 60%,
+    rgba(0, 0, 0, 0.08) 100%);
+  pointer-events: none;
 }
 
 .enemy .monster-portrait {
@@ -2479,12 +2503,18 @@ input:focus {
 }
 
 .enemy-meta {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.3rem;
   width: 100%;
   padding: 0.6rem 0.7rem 0.7rem;
+}
+
+.enemy-name,
+.enemy .hpnum {
+  text-shadow: 0 1px 5px #000;
 }
 
 .fighter--turn {
@@ -2717,7 +2747,16 @@ input:focus {
   opacity: 0.4;
   cursor: default;
   border-style: dashed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   min-height: 5.4rem;
+}
+
+.skill-empty-plus {
+  font-size: 1.4rem;
+  color: var(--muted);
+  pointer-events: none;
 }
 
 .skill-tip {
@@ -4482,6 +4521,12 @@ input:focus {
   color: var(--ink-soft);
   min-height: 7rem;
   flex: 1;
+}
+.quest-progress {
+  margin: 0.4rem 0 0;
+  font-size: 0.85rem;
+  color: var(--gold-bright);
+  font-family: monospace;
 }
 .talk-options {
   display: flex;

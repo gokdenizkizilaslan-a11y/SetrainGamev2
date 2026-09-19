@@ -340,14 +340,19 @@ A town location (action card + overlay) offering three rites, each costing `town
 
 Recipe inputs are the `slot: "material"` items (fire/frost/arcane/shadow essences, `heart_of_fire`, etc.). Outputs are real equippable weapons.
 
-## Class evolution (level 20 and 40)
+## Class evolution (level 20 and 40, branching paths)
 
-Every class has **two evolutions**: a stronger mid form at **level 20**, and the **strongest apex form at level 40**. The Ancient Temple performs the transformation (requires the matching level and an Ancient Relic).
+Base classes evolve at **level 20** into a mid form, mids evolve at **level 40** into an apex. Evolution is **branching**: a class can offer several upper classes (similar paths — e.g. Warrior → Warlord, Juggernaut, Crusader or Reaper). The Ancient Temple lists every offered route with its own level + item requirement, and the player picks one.
 
-Each class object that can evolve carries:
+Each class object that can evolve carries the legacy route plus the full list:
 
 ```js
-evolution: { level: 20, to: "warlord" },   // base class → mid form at 20
+evolution: { level: 20, to: "warlord" },   // base class → mid form at 20 (first route, kept for compatibility)
+evolutions: [                              // all offered routes — temple shows each as a card
+  { level: 20, to: "warlord", requiredItem: "war_crest", requiredItemCount: 1, requirementType: "level_and_item" },
+  { level: 20, to: "juggernaut", requiredItem: "war_crest", requiredItemCount: 1, requirementType: "level_and_item" },
+  { level: 20, to: "reaper", requiredItem: "shadow_sigil", requiredItemCount: 1, requirementType: "level_and_item" },
+],
 ```
 
 and the evolved class carries its own:
@@ -368,8 +373,9 @@ and the evolved class carries its own:
 Chain: **base @20 → mid → mid @40 → apex**. The apex class has `baseClass` but **no** `evolution` (it's the strongest form). Evolved classes never appear on the character-creation screen, but the temple shows the current class's next form with its level requirement, the signature skill you can then learn on the Skill Tree, and the stat bonus.
 
 When you evolve:
-- The **Ancient Relic is consumed** and the temple stamina is spent.
-- Your `character` becomes the evolved class (with its new `growth` / `manaRegen`).
+- The required item is consumed (Warlord Crest for the heavy path, Shadow Sigil for the shadow path, Arcane Seal for the arcane path, Drop of Primeval Cruor for the vampires) and the temple stamina is spent. These materials are **epic/legendary loot-only** (never sold): crests/seals drop from their matching special dungeons (Foundry, Sanctum, Bastion), cruor rarely spills from any humanoid foe. The two Lv40 vampire routes (Bloodlord, Sanguine Lord) need level 40 + 5 cruor like any other ascension, but their temple cards only appear while the hero's current class is a vampire.
+- Your `character` becomes the evolved class (with its new `growth` / `manaRegen`), and your `classHistory` gains the new class (e.g. `["warrior", "reaper"]`).
+- Skill inheritance: **old skills stay**, the skipped middle class's base skills are **never granted**, only the new upper's skills open on the Skill Tree (e.g. warrior→reaper keeps Heavy Strike, never gets Execute/Shadow Step, can learn Death Mark).
 - `evolveBonus` stats are applied **once**, and `manaRegen` adjusts by the class's `manaRegen` difference.
 - You're healed to full HP and mana.
 

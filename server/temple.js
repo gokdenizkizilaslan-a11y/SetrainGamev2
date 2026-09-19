@@ -1,6 +1,6 @@
 const { CONTENT, getClass, getItem } = require("../content");
 const { requirePlaying, spendStamina } = require("./town");
-const { hasItem, removeItem, addItem, applyStatDelta, rerollRace } = require("./players");
+const { hasItem, removeItem, addItem, applyStatDelta, rerollRace, historyOf } = require("./players");
 
 function originCfg() {
   return CONTENT.temple.origin || { item: "origin_stone", price: 250, startQty: 5 };
@@ -83,6 +83,15 @@ function evolve(room, player, targetTo) {
     }
     route = picked;
   }
+  // Vampir 40 rotaları (requiresVampire): önceki class vampir değilse
+  // kart hiç görünmez; sunucu da son sözü söyler. Şart sadece
+  // level + item'dır (diğer classlarla aynı).
+  if (route.requiresVampire) {
+    const vamps = { bloodspawn: 1, gloomspawn: 1 };
+    if (!vamps[player.character]) {
+      throw new Error("Only those of vampire blood may walk this path.");
+    }
+  }
   if (player.level < (route.level || 20)) {
     // level_or_item routes may bypass the level gate with the item instead.
     const bypass = route.requirementType === "level_or_item" || route.requirementType === "item_only";
@@ -115,9 +124,19 @@ function evolve(room, player, targetTo) {
   if (needItem) removeItem(player, itemId, itemCount);
   applyStatDelta(player, evolvedCls.evolveBonus || {}, 1);
   player.manaRegen += (evolvedCls.manaRegen || 0) - (baseCls.manaRegen || 0);
+  // Geçmişi KAREKTER DEĞİŞMEDEN ÖNCE yakala (eski kayıtlarda baseClass
+  // zincirinden türetilir). Eski skillar kalır, ara class'ın baseleri
+  // gelmez, yeni üstün skilleri ağaçta açılır (players.js treeNodeAllowed).
+  let prevHist = null;
+  try { prevHist = historyOf(player); } catch (e) { prevHist = null; }
   player.hp = player.maxHp;
   player.mana = player.maxMana;
   player.character = evolvedCls.slug;
+  try {
+    const hist = Array.isArray(prevHist) && prevHist.length ? prevHist : [player.character];
+    if (hist[hist.length - 1] !== evolvedCls.slug) hist.push(evolvedCls.slug);
+    player.classHistory = hist;
+  } catch (e) { player.classHistory = [player.character]; }
   // Evolving no longer grants the ascended skill directly —
   // the Skill Tree is now the path to learning it (after ascending).
   // Ascend cinematic: optional per-evolution presentation (color/sound/title),

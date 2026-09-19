@@ -279,6 +279,141 @@ const CONTENT = {
         }
       ],
       "offers": []
+    },
+    {
+      "id": "mira",
+      "name": "Mira",
+      "title": "Keeper's ward, friend of strays",
+      "image": "/images/npcs/mira.png",
+      "location": "town",
+      "nodes": [
+        {
+          "id": "start",
+          "text": "Oh — hello. Mind the baskets, I just came from the hollow with herbs. You look like someone with somewhere to be. Is there something I can do for you?",
+          "options": [
+            {
+              "label": "Who are you?",
+              "to": "who"
+            },
+            {
+              "label": "The pale gentleman — have you seen him?",
+              "to": "pale"
+            },
+            {
+              "label": "Farewell.",
+              "end": true
+            }
+          ]
+        },
+        {
+          "id": "who",
+          "text": "Nobody important. The Tavernkeeper took me in when the road took my family. I gather herbs, feed strays — the two-legged kind too. If you are hurt, the town will not let you starve. That much I can promise.",
+          "options": [
+            {
+              "label": "The pale gentleman — have you seen him?",
+              "to": "pale"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "pale",
+          "text": "Uncle Vesryn? Heavens, no — he only walks at dusk, and never far. He is... old blood, as he says. If old blood calls to you, you will find him here in the square most evenings. Go gently with him. He means kinder than he sounds.",
+          "options": [
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        }
+      ],
+      "offers": []
+    },
+    {
+      "id": "uncle",
+      "name": "Old Vesryn",
+      "title": "Mira's uncle, of the old blood",
+      "image": "/images/npcs/uncle.png",
+      "location": "town",
+      "nodes": [
+        {
+          "id": "start",
+          "text": "So. Another moth come to my niece's lantern. I can smell the road on you — and underneath it, something older. Speak, then. The night is short and I am shorter with strangers.",
+          "options": [
+            {
+              "label": "Who are you, old man?",
+              "to": "who"
+            },
+            {
+              "label": "Mira said you walk only at dusk. Why?",
+              "to": "dusk"
+            },
+            {
+              "label": "Tell me of the old blood.",
+              "to": "rite"
+            },
+            {
+              "label": "Farewell.",
+              "end": true
+            }
+          ]
+        },
+        {
+          "id": "who",
+          "text": "Vesryn. Uncle to Mira, debtor to no one, drinker of nothing the tavern sells. My coin is older than this village and my thirst older than my coin. That is the whole of me, and more than most get.",
+          "options": [
+            {
+              "label": "Tell me of the old blood.",
+              "to": "rite"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "dusk",
+          "text": "The sun and I have an understanding: it does not look at me, and I do not burn. Dusk is my morning, little moth. If you would walk as I walk, first prove the thirst is in you.",
+          "options": [
+            {
+              "label": "Tell me of the old blood.",
+              "to": "rite"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "rite",
+          "text": "The rite is simple and it is not easy. Slay 50 of the humanoid filth that infest these lands — goblins, bandits, knights, witches, all that walk like men and kill like beasts. And bring me 10 drops of primeval cruor, the first blood, which sometimes spills from their wounds. Do this, and the old blood will know you.",
+          "options": [
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        }
+      ],
+      "offers": []
+    }
+  ],
+  "quests": [
+    {
+      "id": "vampire_rite",
+      "name": "The Progenitor's Thirst",
+      "giver": "uncle",
+      "monsterTag": "humanoid",
+      "requiredKills": 50,
+      "requiredItem": "primeval_cruor",
+      "requiredItemCount": 10,
+      "cruorDropChance": 0.2,
+      "description": "Slay 50 humanoid foes and gather 10 Drops of Primeval Cruor for Old Vesryn. Completing the rite opens the vampire paths: Bloodspawn (physical, assassin Lv20, through Vesryn), Gloomspawn (magic, mage Lv20, through Vesryn), then Bloodlord and Sanguine Lord (Lv40, temple, vampire blood only)."
     }
   ],
   "food": {
@@ -559,6 +694,36 @@ const CONTENT = {
         "level": 20,
         "to": "warlord"
       },
+      "evolutions": [
+        {
+          "level": 20,
+          "to": "warlord",
+          "requiredItem": "war_crest",
+          "requiredItemCount": 1,
+          "requirementType": "level_and_item"
+        },
+        {
+          "level": 20,
+          "to": "juggernaut",
+          "requiredItem": "war_crest",
+          "requiredItemCount": 1,
+          "requirementType": "level_and_item"
+        },
+        {
+          "level": 20,
+          "to": "crusader",
+          "requiredItem": "war_crest",
+          "requiredItemCount": 1,
+          "requirementType": "level_and_item"
+        },
+        {
+          "level": 20,
+          "to": "reaper",
+          "requiredItem": "shadow_sigil",
+          "requiredItemCount": 1,
+          "requirementType": "level_and_item"
+        }
+      ],
       "speed": 8,
       "hp": {
         "min": 520,
@@ -635,6 +800,29 @@ const CONTENT = {
         "level": 20,
         "to": "warden"
       },
+      "evolutions": [
+        {
+          "level": 20,
+          "to": "warden",
+          "requiredItem": "shadow_sigil",
+          "requiredItemCount": 1,
+          "requirementType": "level_and_item"
+        },
+        {
+          "level": 20,
+          "to": "nightblade",
+          "requiredItem": "shadow_sigil",
+          "requiredItemCount": 1,
+          "requirementType": "level_and_item"
+        },
+        {
+          "level": 20,
+          "to": "reaper",
+          "requiredItem": "shadow_sigil",
+          "requiredItemCount": 1,
+          "requirementType": "level_and_item"
+        }
+      ],
       "speed": 12,
       "hp": {
         "min": 430,
@@ -712,6 +900,22 @@ const CONTENT = {
         "level": 20,
         "to": "archmage"
       },
+      "evolutions": [
+        {
+          "level": 20,
+          "to": "archmage",
+          "requiredItem": "arcane_seal",
+          "requiredItemCount": 1,
+          "requirementType": "level_and_item"
+        },
+        {
+          "level": 20,
+          "to": "high_priest",
+          "requiredItem": "arcane_seal",
+          "requiredItemCount": 1,
+          "requirementType": "level_and_item"
+        }
+      ],
       "speed": 7,
       "manaRegen": 2,
       "hp": {
@@ -790,6 +994,29 @@ const CONTENT = {
         "level": 20,
         "to": "nightblade"
       },
+      "evolutions": [
+        {
+          "level": 20,
+          "to": "nightblade",
+          "requiredItem": "shadow_sigil",
+          "requiredItemCount": 1,
+          "requirementType": "level_and_item"
+        },
+        {
+          "level": 20,
+          "to": "reaper",
+          "requiredItem": "shadow_sigil",
+          "requiredItemCount": 1,
+          "requirementType": "level_and_item"
+        },
+        {
+          "level": 20,
+          "to": "warden",
+          "requiredItem": "shadow_sigil",
+          "requiredItemCount": 1,
+          "requirementType": "level_and_item"
+        }
+      ],
       "speed": 14,
       "hp": {
         "min": 380,
@@ -867,6 +1094,29 @@ const CONTENT = {
         "level": 20,
         "to": "crusader"
       },
+      "evolutions": [
+        {
+          "level": 20,
+          "to": "crusader",
+          "requiredItem": "war_crest",
+          "requiredItemCount": 1,
+          "requirementType": "level_and_item"
+        },
+        {
+          "level": 20,
+          "to": "warlord",
+          "requiredItem": "war_crest",
+          "requiredItemCount": 1,
+          "requirementType": "level_and_item"
+        },
+        {
+          "level": 20,
+          "to": "high_priest",
+          "requiredItem": "arcane_seal",
+          "requiredItemCount": 1,
+          "requirementType": "level_and_item"
+        }
+      ],
       "speed": 7,
       "hp": {
         "min": 560,
@@ -951,6 +1201,29 @@ const CONTENT = {
         "level": 20,
         "to": "reaper"
       },
+      "evolutions": [
+        {
+          "level": 20,
+          "to": "reaper",
+          "requiredItem": "shadow_sigil",
+          "requiredItemCount": 1,
+          "requirementType": "level_and_item"
+        },
+        {
+          "level": 20,
+          "to": "nightblade",
+          "requiredItem": "shadow_sigil",
+          "requiredItemCount": 1,
+          "requirementType": "level_and_item"
+        },
+        {
+          "level": 20,
+          "to": "warden",
+          "requiredItem": "shadow_sigil",
+          "requiredItemCount": 1,
+          "requirementType": "level_and_item"
+        }
+      ],
       "speed": 15,
       "hp": {
         "min": 360,
@@ -1028,6 +1301,29 @@ const CONTENT = {
         "level": 20,
         "to": "high_priest"
       },
+      "evolutions": [
+        {
+          "level": 20,
+          "to": "high_priest",
+          "requiredItem": "arcane_seal",
+          "requiredItemCount": 1,
+          "requirementType": "level_and_item"
+        },
+        {
+          "level": 20,
+          "to": "archmage",
+          "requiredItem": "arcane_seal",
+          "requiredItemCount": 1,
+          "requirementType": "level_and_item"
+        },
+        {
+          "level": 20,
+          "to": "crusader",
+          "requiredItem": "war_crest",
+          "requiredItemCount": 1,
+          "requirementType": "level_and_item"
+        }
+      ],
       "speed": 9,
       "manaRegen": 1,
       "hp": {
@@ -1106,6 +1402,29 @@ const CONTENT = {
         "level": 20,
         "to": "juggernaut"
       },
+      "evolutions": [
+        {
+          "level": 20,
+          "to": "juggernaut",
+          "requiredItem": "war_crest",
+          "requiredItemCount": 1,
+          "requirementType": "level_and_item"
+        },
+        {
+          "level": 20,
+          "to": "warlord",
+          "requiredItem": "war_crest",
+          "requiredItemCount": 1,
+          "requirementType": "level_and_item"
+        },
+        {
+          "level": 20,
+          "to": "crusader",
+          "requiredItem": "war_crest",
+          "requiredItemCount": 1,
+          "requirementType": "level_and_item"
+        }
+      ],
       "speed": 6,
       "hp": {
         "min": 650,
@@ -2694,6 +3013,282 @@ const CONTENT = {
       }
     },
     {
+      "slug": "bloodspawn",
+      "label": "Bloodspawn",
+      "baseClass": "assassin",
+      "tagline": "Fledgling of the Old Blood",
+      "lore": "An assassin who knelt before Old Vesryn and rose thirsting. Fast, cruel, and forever barred from any other path.",
+      "image": "/images/characters/bloodspawn.png",
+      "basicAttack": {
+        "id": "vampire_bite",
+        "name": "Vampire Bite",
+        "power": 1.3,
+        "element": "blood",
+        "scaling": "attack",
+        "image": "/images/skills/exsanguinate.png",
+        "description": "Deals 8 + 1.3× attack damage.",
+        "baseDamage": 8
+      },
+      "startingSkills": [
+        "vampiric_strike"
+      ],
+      "speed": 17,
+      "hp": {
+        "min": 380,
+        "max": 450
+      },
+      "attack": {
+        "min": 52,
+        "max": 66
+      },
+      "mana": {
+        "min": 22,
+        "max": 36
+      },
+      "resistance": {
+        "min": 12,
+        "max": 20
+      },
+      "magicPower": {
+        "min": 8,
+        "max": 16
+      },
+      "healPower": {
+        "min": 4,
+        "max": 8
+      },
+      "growth": {
+        "hp": 11,
+        "attack": 8,
+        "mana": 2,
+        "resistance": 1,
+        "magicPower": 2,
+        "healPower": 1,
+        "critChance": 1,
+        "critDamage": 2
+      },
+      "evolveBonus": {
+        "hp": 40,
+        "attack": 14,
+        "mana": 10,
+        "resistance": 3,
+        "magicPower": 4,
+        "healPower": 3
+      },
+      "evolutions": [
+        {
+          "level": 40,
+          "to": "bloodlord",
+          "requiredItem": "primeval_cruor",
+          "requiredItemCount": 5,
+          "requirementType": "level_and_item",
+          "requiresVampire": true
+        }
+      ]
+    },
+    {
+      "slug": "bloodlord",
+      "label": "Bloodlord",
+      "baseClass": "bloodspawn",
+      "tagline": "Tyrant of the Thirst",
+      "lore": "A Bloodspawn that gorged for twenty levels and rose higher. The physical peak of the old blood — nothing else can become this.",
+      "image": "/images/characters/bloodlord.png",
+      "basicAttack": {
+        "id": "tyrant_bite",
+        "name": "Tyrant Bite",
+        "power": 1.4,
+        "element": "blood",
+        "scaling": "attack",
+        "image": "/images/skills/bloodbath.png",
+        "description": "Deals 10 + 1.4× attack damage.",
+        "baseDamage": 10
+      },
+      "startingSkills": [
+        "bloodbath"
+      ],
+      "speed": 17,
+      "hp": {
+        "min": 400,
+        "max": 470
+      },
+      "attack": {
+        "min": 58,
+        "max": 72
+      },
+      "mana": {
+        "min": 26,
+        "max": 40
+      },
+      "resistance": {
+        "min": 14,
+        "max": 22
+      },
+      "magicPower": {
+        "min": 10,
+        "max": 18
+      },
+      "healPower": {
+        "min": 4,
+        "max": 8
+      },
+      "growth": {
+        "hp": 12,
+        "attack": 9,
+        "mana": 2,
+        "resistance": 2,
+        "magicPower": 2,
+        "healPower": 1,
+        "critChance": 1,
+        "critDamage": 2
+      },
+      "evolveBonus": {
+        "hp": 48,
+        "attack": 16,
+        "mana": 12,
+        "resistance": 5,
+        "magicPower": 5,
+        "healPower": 3
+      }
+    },
+    {
+      "slug": "gloomspawn",
+      "label": "Gloomspawn",
+      "baseClass": "mage",
+      "tagline": "Acolyte of the Gloom",
+      "lore": "A mage who knelt before Old Vesryn and bound the cruor into spellcraft. The magical twin of the Bloodspawn — no other path leads here.",
+      "image": "/images/characters/gloomspawn.png",
+      "basicAttack": {
+        "id": "gloom_bolt",
+        "name": "Gloom Bolt",
+        "power": 1.3,
+        "element": "blood",
+        "scaling": "magicPower",
+        "image": "/images/skills/crimson_rebirth.png",
+        "description": "Deals 10 + 1.3× magic damage.",
+        "baseDamage": 10
+      },
+      "startingSkills": [
+        "crimson_rebirth"
+      ],
+      "speed": 13,
+      "hp": {
+        "min": 360,
+        "max": 430
+      },
+      "attack": {
+        "min": 26,
+        "max": 36
+      },
+      "mana": {
+        "min": 44,
+        "max": 58
+      },
+      "resistance": {
+        "min": 10,
+        "max": 16
+      },
+      "magicPower": {
+        "min": 34,
+        "max": 46
+      },
+      "healPower": {
+        "min": 8,
+        "max": 14
+      },
+      "growth": {
+        "hp": 10,
+        "attack": 3,
+        "mana": 5,
+        "resistance": 1,
+        "magicPower": 8,
+        "healPower": 2,
+        "critChance": 1,
+        "critDamage": 2
+      },
+      "evolveBonus": {
+        "hp": 40,
+        "attack": 5,
+        "mana": 22,
+        "resistance": 3,
+        "magicPower": 14,
+        "healPower": 4
+      },
+      "evolutions": [
+        {
+          "level": 40,
+          "to": "sanguine_lord",
+          "requiredItem": "primeval_cruor",
+          "requiredItemCount": 5,
+          "requirementType": "level_and_item",
+          "requiresVampire": true
+        }
+      ]
+    },
+    {
+      "slug": "sanguine_lord",
+      "label": "Sanguine Lord",
+      "baseClass": "gloomspawn",
+      "tagline": "Heir of the First Thirst",
+      "lore": "A mage who completed Vesryn's rite and bound the primeval cruor into spellcraft. Peerless blood magic — open only to those the rite has marked.",
+      "image": "/images/characters/sanguine_lord.png",
+      "basicAttack": {
+        "id": "sanguine_bolt",
+        "name": "Sanguine Bolt",
+        "power": 1.3,
+        "element": "blood",
+        "scaling": "magicPower",
+        "image": "/images/skills/crimson_rebirth.png",
+        "description": "Deals 10 + 1.3× magic damage.",
+        "baseDamage": 10
+      },
+      "startingSkills": [
+        "crimson_rebirth"
+      ],
+      "speed": 14,
+      "hp": {
+        "min": 360,
+        "max": 430
+      },
+      "attack": {
+        "min": 28,
+        "max": 38
+      },
+      "mana": {
+        "min": 42,
+        "max": 56
+      },
+      "resistance": {
+        "min": 10,
+        "max": 16
+      },
+      "magicPower": {
+        "min": 32,
+        "max": 44
+      },
+      "healPower": {
+        "min": 8,
+        "max": 14
+      },
+      "growth": {
+        "hp": 10,
+        "attack": 3,
+        "mana": 5,
+        "resistance": 1,
+        "magicPower": 8,
+        "healPower": 2,
+        "critChance": 1,
+        "critDamage": 2
+      },
+      "evolveBonus": {
+        "hp": 40,
+        "attack": 5,
+        "mana": 22,
+        "resistance": 3,
+        "magicPower": 14,
+        "healPower": 4
+      }
+    },
+    {
       "slug": "divine_saint",
       "label": "Divine Saint",
       "baseClass": "high_priest",
@@ -3724,6 +4319,51 @@ const CONTENT = {
       "manaRestorePct": 0.2,
       "image": "/images/skills/resurgence.png",
       "description": "Restore 60% of each ally's max HP and 20% of their max mana."
+    },
+    {
+      "id": "exsanguinate",
+      "cooldown": 4,
+      "name": "Exsanguinate",
+      "target": "enemy",
+      "mana": 16,
+      "power": 3.2,
+      "lifesteal": 0.6,
+      "element": "blood",
+      "scaling": "attack",
+      "effect": "blood_scythe",
+      "hitShake": 3,
+      "image": "/images/skills/exsanguinate.png",
+      "description": "Deals 90 + 3.2× attack damage. Heals you for 60% of the damage dealt.",
+      "baseDamage": 90
+    },
+    {
+      "id": "bloodbath",
+      "cooldown": 5,
+      "name": "Bloodbath",
+      "target": "enemy",
+      "mana": 20,
+      "power": 3.6,
+      "lifesteal": 0.4,
+      "element": "blood",
+      "scaling": "attack",
+      "effect": "blood_scythe",
+      "hitShake": 3,
+      "image": "/images/skills/bloodbath.png",
+      "description": "Deals 95 + 3.6× attack damage. Heals you for 40% of the damage dealt.",
+      "baseDamage": 95
+    },
+    {
+      "id": "crimson_rebirth",
+      "cooldown": 5,
+      "name": "Crimson Rebirth",
+      "target": "party",
+      "mana": 22,
+      "heal": 0.45,
+      "manaRestorePct": 0.15,
+      "element": "blood",
+      "hitShake": 0,
+      "image": "/images/skills/crimson_rebirth.png",
+      "description": "Restore 45% of each ally's max HP and 15% of their max mana with first blood."
     },
     {
       "id": "immovable",
@@ -5063,6 +5703,54 @@ const CONTENT = {
       },
       "image": "/images/items/ancient_relic.png",
       "description": "An artifact older than the kingdom. The temple remembers."
+    },
+    {
+      "id": "war_crest",
+      "name": "Warlord Crest",
+      "slot": "material",
+      "rarity": "epic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "image": "/images/items/war_crest.png",
+      "description": "A battle-worn crest. The Ancient Temple demands it from those walking the heavy path (Warlord, Juggernaut, Crusader)."
+    },
+    {
+      "id": "shadow_sigil",
+      "name": "Shadow Sigil",
+      "slot": "material",
+      "rarity": "epic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "image": "/images/items/shadow_sigil.png",
+      "description": "A whispering sigil. The Ancient Temple demands it from those walking the shadow path (Nightblade, Reaper, Warden)."
+    },
+    {
+      "id": "arcane_seal",
+      "name": "Arcane Seal",
+      "slot": "material",
+      "rarity": "epic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "image": "/images/items/arcane_seal.png",
+      "description": "A humming seal. The Ancient Temple demands it from those walking the arcane path (Archmage, High Priest)."
+    },
+    {
+      "id": "primeval_cruor",
+      "name": "Drop of Primeval Cruor",
+      "slot": "material",
+      "rarity": "legendary",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "image": "/images/items/primeval_cruor.png",
+      "description": "First blood, still warm. Rarely spills from humanoid wounds. Old Vesryn demands 10 drops for his rite."
     },
     {
       "id": "fire_ash_sword",
@@ -8354,7 +9042,8 @@ const CONTENT = {
       "sizeProfile": "fewerStronger",
       "isSpecial": true,
       "materialPool": [
-        "shadow_essence"
+        "shadow_essence",
+        "shadow_sigil"
       ]
     },
     {
@@ -8377,7 +9066,8 @@ const CONTENT = {
       "sizeProfile": "fewerStronger",
       "isSpecial": true,
       "materialPool": [
-        "arcane_essence"
+        "arcane_essence",
+        "arcane_seal"
       ]
     },
     {
@@ -8426,7 +9116,8 @@ const CONTENT = {
       "materialPool": [
         "golem_heart",
         "fire_essence",
-        "arcane_essence"
+        "arcane_essence",
+        "war_crest"
       ]
     },
     {
@@ -8478,7 +9169,7 @@ const CONTENT = {
     },
     {
       "rank": "boss_frost_titan",
-      "label": "Frost Titan",
+      "label": "Glacier Doomlord",
       "image": "/images/dungeons/boss_frost_titan.png",
       "stamina": 5,
       "xpReward": 400,
@@ -8501,7 +9192,7 @@ const CONTENT = {
     },
     {
       "rank": "boss_void_herald",
-      "label": "Void Herald",
+      "label": "Eternal Abyss Herald",
       "image": "/images/dungeons/boss_void_herald.png",
       "stamina": 5,
       "xpReward": 500,
@@ -8524,7 +9215,7 @@ const CONTENT = {
     },
     {
       "rank": "boss_storm_colossus",
-      "label": "Storm Colossus",
+      "label": "Thunder Tyrant",
       "image": "/images/dungeons/boss_storm_colossus.png",
       "stamina": 6,
       "xpReward": 600,
@@ -8547,7 +9238,7 @@ const CONTENT = {
     },
     {
       "rank": "boss_world_eater",
-      "label": "World Eater",
+      "label": "Oblivion Devourer",
       "image": "/images/dungeons/boss_world_eater.png",
       "stamina": 6,
       "xpReward": 800,
@@ -10025,6 +10716,7 @@ const CONTENT = {
     {
       "id": "boss_ember_king",
       "label": "Ember King",
+      "name": "Ember King",
       "image": "/images/bosses/ember_king.png",
       "hp": 9000,
       "attack": 42,
@@ -10058,7 +10750,8 @@ const CONTENT = {
     },
     {
       "id": "boss_frost_titan",
-      "label": "Frost Titan",
+      "label": "Glacier Doomlord",
+      "name": "Glacier Doomlord",
       "image": "/images/bosses/frost_titan.png",
       "hp": 16000,
       "attack": 52,
@@ -10092,7 +10785,8 @@ const CONTENT = {
     },
     {
       "id": "boss_void_herald",
-      "label": "Void Herald",
+      "label": "Eternal Abyss Herald",
+      "name": "Eternal Abyss Herald",
       "image": "/images/bosses/void_herald.png",
       "hp": 26000,
       "attack": 62,
@@ -10126,7 +10820,8 @@ const CONTENT = {
     },
     {
       "id": "boss_storm_colossus",
-      "label": "Storm Colossus",
+      "label": "Thunder Tyrant",
+      "name": "Thunder Tyrant",
       "image": "/images/bosses/storm_colossus.png",
       "hp": 40000,
       "attack": 72,
@@ -10160,7 +10855,8 @@ const CONTENT = {
     },
     {
       "id": "boss_world_eater",
-      "label": "World Eater",
+      "label": "Oblivion Devourer",
+      "name": "Oblivion Devourer",
       "image": "/images/bosses/world_eater.png",
       "hp": 55000,
       "attack": 85,
@@ -12246,6 +12942,13 @@ const CONTENT = {
             "ownerClass": "archon",
             "cost": 8,
             "minLevel": 40
+          },
+          {
+            "id": "mg_crimson_rebirth",
+            "skillId": "crimson_rebirth",
+            "ownerClass": "gloomspawn",
+            "cost": 4,
+            "minLevel": 20
           }
         ]
       },
@@ -12337,6 +13040,34 @@ const CONTENT = {
             "id": "a_soul_reap",
             "skillId": "soul_reap",
             "ownerClass": "death_lord",
+            "cost": 8,
+            "minLevel": 40
+          },
+          {
+            "id": "a_exsanguinate",
+            "skillId": "exsanguinate",
+            "ownerClass": "bloodspawn",
+            "cost": 4,
+            "minLevel": 20
+          },
+          {
+            "id": "bl_vampiric_strike",
+            "skillId": "vampiric_strike",
+            "ownerClass": "bloodspawn",
+            "cost": 2,
+            "minLevel": 20
+          },
+          {
+            "id": "bl_bloodbath",
+            "skillId": "bloodbath",
+            "ownerClass": "bloodlord",
+            "cost": 8,
+            "minLevel": 40
+          },
+          {
+            "id": "a_crimson_rebirth",
+            "skillId": "crimson_rebirth",
+            "ownerClass": "sanguine_lord",
             "cost": 8,
             "minLevel": 40
           }
@@ -13089,6 +13820,8 @@ function publicCatalog() {
         requirementType: route.requirementType || null,
         requiredItem: route.requiredItem || null,
         requiredItemCount: route.requiredItemCount || null,
+        requiresQuest: route.requiresQuest || null,
+        requiresVampire: !!route.requiresVampire,
         skill: skill ? { name: skill.name, description: skill.description || "", mana: skill.mana, image: skill.image } : null,
         bonusText,
         ascend: {
@@ -13216,6 +13949,7 @@ function publicCatalog() {
       effect: s.effect || null,
       sound: s.sound || null,
       scaling: s.scaling || null,
+      hitShake: s.hitShake != null ? s.hitShake : null,
       baseDamage: s.baseDamage != null ? s.baseDamage : null,
       cooldown: s.cooldown || null,
     })),
@@ -13233,6 +13967,7 @@ function publicCatalog() {
       description: i.description || "",
     })),
     equipmentSlots: CONTENT.equipmentSlots,
+    quests: CONTENT.quests || [],
     bosses: (CONTENT.bosses || []).map((b) => ({ id: b.id, label: b.label, image: b.image, hp: b.hp, attack: b.attack, element: b.element, unlockAfter: b.unlockAfter || null })),
     monsters: CONTENT.monsters.map((m) => ({ id: m.id, name: m.name, image: m.image, rarity: m.rarity || "common", element: m.element || "physical" })),
     anomalyFrameColors: Object.fromEntries(

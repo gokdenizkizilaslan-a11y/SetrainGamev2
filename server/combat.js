@@ -25,6 +25,20 @@ function defaultEffectFor(elem) {
   return (el && el.effect) || "element_" + id;
 }
 
+// Skill vuruşunda hedef kartın ne kadar sallanacağı (0-3).
+// GameCraft/editörden `hitShake` yazılırsa o kullanılır, yoksa power'a göre otomatik.
+function shakeFor(skill) {
+  if (skill && skill.hitShake != null && skill.hitShake !== "") {
+    const n = Math.floor(Number(skill.hitShake));
+    if (Number.isFinite(n)) return Math.max(0, Math.min(3, n));
+  }
+  const p = skill && skill.power != null ? Number(skill.power) : 1;
+  if (!(p > 0)) return 0;
+  if (p >= 2) return 3;
+  if (p >= 1.3) return 2;
+  return 1;
+}
+
 function myDungeon(room, player) {
   // check normal dungeons first, then boss parties
   return (room.dungeons || []).find((d) => d.memberIds.includes(player.id)) || (room.bossParties||[]).find((d)=> d.memberIds.includes(player.id)) || null;
@@ -638,6 +652,12 @@ function spawnNextFloor(room, d) {
     d.bankedBonus.wood += Math.max(0, Math.floor(mdef.woodReward || 0));
     d.bankedBonus.xp += Math.max(0, Math.floor(mdef.xpReward || 0));
   }
+  // Görev sayaçları kat kat işler (sadece son dalga değil): ölen dalga
+  // değişmeden önce her görevli üyenin kendi sayacı artar.
+  try {
+    const questNotes = require("./quests").registerKills(room, d, d.wave.filter((m) => m.hp <= 0));
+    if (questNotes.length) d.log.push(...questNotes);
+  } catch (e) { /* görevler asla dövüşü kırmaz */ }
   const wave = buildWaveForFloor(def, size, d.power, d.floor, d.totalFloors, d.totalCount);
   d.wave = wave;
   d.round = 1;
@@ -889,7 +909,7 @@ function act(room, player, skillId, targetId) {
         const totalDmg = dmg + truePart + secondDmg;
         const hpBefore = tgt.hp;
         dealDamage(tgt, totalDmg);
-        addFx(d, { type: "damage", actor: player.id, target: "enemy", targetId: tidx, amount: totalDmg, skill: skill.id, elem: skill.element || "physical", effect: skill.effect || defaultEffectFor(skill.element), sound: skill.sound || "", crit });
+        addFx(d, { type: "damage", actor: player.id, target: "enemy", targetId: tidx, amount: totalDmg, skill: skill.id, elem: skill.element || "physical", effect: skill.effect || defaultEffectFor(skill.element), sound: skill.sound || "", crit, shake: shakeFor(skill) });
         // Bitirici: senin vuruşun hedefi eşiğe indirirse kalkanı delip öldürür.
         // Sadece saldıranın vuruşu tetikler (çalınma yok).
         const finThresh = (skill.execute && skill.execute.finishBelowHpPct != null)
@@ -900,14 +920,14 @@ function act(room, player, skillId, targetId) {
           tgt.shield = 0;
           if (Array.isArray(tgt.shields)) tgt.shields = [];
           d.log.push(`${player.name} executed ${tgt.name}!`);
-          addFx(d, { type: "damage", actor: player.id, target: "enemy", targetId: tidx, amount: 0, skill: skill.id, elem: skill.element || "physical", effect: skill.effect || defaultEffectFor(skill.element), sound: skill.sound || "", crit: false });
+          addFx(d, { type: "damage", actor: player.id, target: "enemy", targetId: tidx, amount: 0, skill: skill.id, elem: skill.element || "physical", effect: skill.effect || defaultEffectFor(skill.element), sound: skill.sound || "", crit: false, shake: 3 });
         }
         // Yankı (echo): şansla aynı hedefe ikinci vuruş (özyineleme yok).
         const echoSrc = echoCfg || pEcho;
         if (echoSrc && Number(echoSrc.chance) > 0 && Math.random() < Number(echoSrc.chance) && tgt.hp > 0) {
           const echoDmg = Math.max(1, Math.round(totalDmg * Number(echoSrc.mult || 0.3)));
           dealDamage(tgt, echoDmg);
-          addFx(d, { type: "damage", actor: player.id, target: "enemy", targetId: tidx, amount: echoDmg, skill: skill.id, elem: skill.element || "physical", effect: skill.effect || defaultEffectFor(skill.element), sound: skill.sound || "", crit: false });
+          addFx(d, { type: "damage", actor: player.id, target: "enemy", targetId: tidx, amount: echoDmg, skill: skill.id, elem: skill.element || "physical", effect: skill.effect || defaultEffectFor(skill.element), sound: skill.sound || "", crit: false, shake: shakeFor(skill) });
         }
         // Taşma (overkill): fazlası rastgele yaşayan düşmana.
         if (passives.hasOverkill(player) && tgt.hp <= 0) {
@@ -918,7 +938,7 @@ function act(room, player, skillId, targetId) {
               const oi = aliveOthers[Math.floor(Math.random() * aliveOthers.length)];
               const om = d.wave[oi];
               dealDamage(om, excess);
-              addFx(d, { type: "damage", actor: player.id, target: "enemy", targetId: oi, amount: excess, skill: skill.id, elem: skill.element || "physical", effect: skill.effect || defaultEffectFor(skill.element), sound: skill.sound || "", crit: false });
+              addFx(d, { type: "damage", actor: player.id, target: "enemy", targetId: oi, amount: excess, skill: skill.id, elem: skill.element || "physical", effect: skill.effect || defaultEffectFor(skill.element), sound: skill.sound || "", crit: false, shake: shakeFor(skill) });
               d.log.push(`Overkill crashes into ${om.name}!`);
               if (om.hp <= 0) {
                 d.buffs = (d.buffs || []).filter((b) => !(b.targetType === "monster" && Number(b.targetId) === oi));
@@ -1253,7 +1273,7 @@ function runNextMonster(room, d) {
             if (atkElem === "dark" && CONTENT.darkTrait) vdmg = Math.round(vdmg * (CONTENT.darkTrait.deal || 1.3));
             vdmg = Math.max(1, vdmg);
             dealDamage(victim, vdmg);
-            addFx(d, { type: "damage", actor: victim.id, target: "player", targetId: victim.id, amount: vdmg, source: "monster", monster: mon.kind, elem: skill.element || mon.element || "physical", effect: eff, sound: skill.sound || "", crit });
+            addFx(d, { type: "damage", actor: victim.id, target: "player", targetId: victim.id, amount: vdmg, source: "monster", monster: mon.kind, elem: skill.element || mon.element || "physical", effect: eff, sound: skill.sound || "", crit, shake: shakeFor(skill) });
             const thorns = passives.thornsMult(victim);
             if (thorns > 0 && mon.hp > 0) {
               const reflected = Math.max(1, Math.round(vdmg * thorns));
@@ -1497,6 +1517,11 @@ function victory(room, d) {
   }
 
   const lootNotes = [];
+  // Görev sayaçları (son dalga): her görevli üyenin kendi sayacı artar.
+  try {
+    const questNotes = require("./quests").registerKills(room, d, d.wave.filter((m) => m.hp <= 0));
+    if (questNotes.length) lootNotes.push(...questNotes);
+  } catch (e) { /* görevler asla ganimeti kırmaz */ }
   // Special dungeons: drop crafting materials instead of random gear
   if (def.isSpecial && Array.isArray(def.materialPool) && def.materialPool.length) {
     for (const mon of d.wave) {

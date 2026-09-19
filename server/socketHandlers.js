@@ -13,6 +13,7 @@ const merchant = require("./merchant");
 const chest = require("./chest");
 const stock = require("./stock");
 const temple = require("./temple");
+const quests = require("./quests");
 const sessions = require("./sessions");
 const pvp = require("./pvp");
 const pets = require("./pets");
@@ -501,6 +502,28 @@ function registerSocketHandlers(io) {
         const res = temple.evolve(room, player, payload && payload.to);
         room.log = { ...res, name: player.name, ts: Date.now() };
         emitRoomState(io, room);
+      } catch (err) {
+        emitError(socket, err);
+      }
+    });
+
+    // ---- NPC dialogue actions (quest accept, vampire embrace) ----
+    socket.on("npc:action", (payload = {}) => {
+      try {
+        const { room, player } = gameContext(socket);
+        requireAlive(player);
+        const action = payload && payload.action;
+        if (action === "quest_accept") {
+          const res = quests.acceptQuest(room, player, payload.questId || "vampire_rite");
+          room.log = { ...res, name: player.name, ts: Date.now() };
+          emitRoomState(io, room);
+        } else if (action === "vampire_ascend") {
+          const res = quests.vampireAscend(room, player, payload && payload.target);
+          room.log = { ...res, name: player.name, ts: Date.now() };
+          emitRoomState(io, room);
+        } else {
+          throw new Error("Unknown dialogue action.");
+        }
       } catch (err) {
         emitError(socket, err);
       }

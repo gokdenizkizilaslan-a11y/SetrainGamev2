@@ -38,6 +38,9 @@ const state = {
   pendingUsedSkills: new Set(),
   lastRound: null,
   lastPhase: null,
+  prevQuestKills: null,
+  prevQuestHave: null,
+  prevQuestCompleted: false,
 };
 
 const SESSION_KEY = "setra-session";
@@ -229,6 +232,37 @@ function renderTown(room) {
 
 function onRoomState(room) {
   state.room = room;
+  // Kişisel görev bildirimi: SADECE kendi sayaçların artınca yazsın
+  // (15/50 gibi). Başka oyuncunun avı kendi ekranında görünmez.
+  try {
+    const me = room.players ? room.players.find((p) => p.id === state.playerId) : null;
+    const qs = (typeof CATALOG !== "undefined" && CATALOG.quests) || [];
+    const q = qs.find((x) => x.id === "vampire_rite") || qs[0];
+    if (me && q) {
+      const st = (me.quests && me.quests[q.id]) || null;
+      let have = 0;
+      try {
+        const inv = (me.inventory || []).find((i) => i.itemId === q.requiredItem);
+        have = inv ? inv.qty || 0 : 0;
+      } catch (e) {}
+      if (st && st.accepted && !st.completed) {
+        const kills = Math.min(q.requiredKills, st.kills || 0);
+        if (state.prevQuestKills != null && kills > state.prevQuestKills) {
+          showToast(`Rite: ${kills}/${q.requiredKills} slain · ${have}/${q.requiredItemCount} cruor`);
+        }
+        state.prevQuestKills = kills;
+        state.prevQuestHave = have;
+      } else if (st && st.completed && !state.prevQuestCompleted) {
+        showToast(`Rite complete! Old Vesryn will know you now.`);
+      }
+      if (st && st.completed) state.prevQuestCompleted = true;
+      if (!st || !st.accepted) {
+        state.prevQuestKills = null;
+        state.prevQuestHave = null;
+        state.prevQuestCompleted = false;
+      }
+    }
+  } catch (e) { /* bildirim asla oyunu kırmaz */ }
   $("chat").classList.remove("hidden");
   if (state.prevStatus === "lobby" && room.status === "playing" && state.introShownForRoom !== room.id) {
     state.introShownForRoom = room.id;

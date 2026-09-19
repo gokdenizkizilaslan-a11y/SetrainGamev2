@@ -309,6 +309,32 @@ function applyTargetFx(el, kind) {
   setTimeout(() => el.classList.remove(...FX_CLASSES), 600);
 }
 
+function shakeTarget(el, level) {
+  if (!el || !el.animate) return;
+  const n = Math.max(0, Math.min(3, Math.floor(Number(level) || 0)));
+  if (n <= 0) return;
+  const mag = n === 1 ? 4 : n === 2 ? 8 : 14;
+  try {
+    el.animate(
+      [
+        { transform: "translateX(0)" },
+        { transform: `translateX(${-mag}px)` },
+        { transform: `translateX(${mag}px)` },
+        { transform: `translateX(${-Math.round(mag / 2)}px)` },
+        { transform: "translateX(0)" },
+      ],
+      { duration: n === 3 ? 420 : 320, easing: "ease-out" }
+    );
+  } catch (e) { /* görsel fallback: sallanmazsa oyun devam eder */ }
+}
+
+function flashTargetByElement(el, elem) {
+  if (!el) return;
+  const map = { arcane: "hit-arcane", holy: "hit-holy", shadow: "hit-shadow" };
+  const kind = map[elem] || "hit";
+  try { applyTargetFx(el, kind); } catch (e) {}
+}
+
 function shakeCombat(root) {
   const wrap = root.querySelector(".combat-wrap");
   if (!wrap) return;
@@ -546,6 +572,13 @@ function drainCombatFx(root) {
     }
     if (ev.type === "damage") {
       const r = fxRecipe(ev.effect, ev.elem);
+      // Hedef kart: skilin elementine göre parlar + hitShake'e göre sallanır.
+      // Kritik yoksa bile canavar/oyuncu kutusu tek tek tepki verir.
+      try {
+        flashTargetByElement(el, ev.elem);
+        const autoShake = _sk0 && _sk0.power != null ? (_sk0.power >= 2 ? 3 : _sk0.power >= 1.3 ? 2 : 1) : 1;
+        shakeTarget(el, ev.shake != null ? ev.shake : autoShake);
+      } catch (e) {}
       // Gerçek hasar (true damage) her zaman bembeyaz vurur; fiziksel ise
       // paletin ikinci rengiyle (altın) görünür, beyazla karışmaz.
       const isTrue = !!(_sk0 && (_sk0.trueDamage || (_sk0.baseDamage != null && typeof _sk0.baseDamage === "object" && _sk0.baseDamage.true)));
@@ -744,7 +777,7 @@ function imgFor(slug, kind) {
     kind === "class"
       ? CATALOG.classes
       : kind === "monster"
-      ? CATALOG.monsters
+      ? [...(CATALOG.monsters || []), ...(CATALOG.bosses || []).map((b) => ({ id: b.id, slug: b.id, image: b.image }))]
       : CATALOG.dungeons;
   const found = src.find((x) => x.slug === slug || x.id === slug);
   return found ? found.image : "";
@@ -1203,6 +1236,7 @@ function icon(name) {
     merchant: '<rect x="3" y="8" width="18" height="13" rx="1"/><path d="M3 8l2-4h14l2 4"/><path d="M8 8a4 4 0 0 0 8 0"/><path d="M9 15h6"/>',
     bed: '<path d="M3 18v-7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v7"/><path d="M3 18h18"/><path d="M5 9V6h14v3"/><path d="M7 9V7"/>',
     plaza: '<path d="M4 21v-8l2-2V8h3v2l3-1V7h4v2l3 2v9H4z"/><path d="M10 21v-4h4v4"/>',
+    scroll: '<path d="M6 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M8 8h8M8 12h8M8 16h5"/>',
   };
   return `<svg viewBox="0 0 24 24" ${common} aria-hidden="true">${paths[name] || ""}</svg>`;
 }
@@ -1440,6 +1474,7 @@ const ACTIONS = [
   { id: "merchant", icon: "merchant", title: "Merchant", sub: "Chests, potions & materials", kind: "open" },
   { id: "tavern", icon: "tavern", title: "Tavern", sub: "Bet gold · Coin flip, blackjack & food", kind: "open" },
     { id: "temple", icon: "temple", title: "Ancient Temple", sub: "Ascend, mend hearts & rebirth", kind: "open" },
+  { id: "quests", icon: "scroll", title: "Quests", sub: null, kind: "open" },
   { id: "rest", icon: "rest", title: "Rest", sub: null, kind: "emit", event: "town:rest" },
   { id: "sleep", icon: "rest", title: "Sleep Outside", sub: "End the day · Cold stars, small risk", kind: "emit", event: "town:sleepOutside" },
 ];
@@ -1454,6 +1489,24 @@ function renderActionCards(room, selfId) {
   const restLeft = Math.max(0, restMax - (me.restCount || 0));
   ACTIONS.forEach((a) => {
     if (a.id === "rest") a.sub = restLeft > 0 ? `+${restAmt} stamina · ${restLeft}/${restMax} left today` : `No rests left today`;
+    if (a.id === "quests") {
+      const qs = CATALOG.quests || [];
+      const mine = me && me.quests ? me.quests : {};
+      const active = qs.filter((q) => mine[q.id] && mine[q.id].accepted && !mine[q.id].completed);
+      if (!qs.length) a.sub = "No quests in this world";
+      else if (!active.length) a.sub = Object.keys(mine).length ? "All rites complete" : "Seek Old Vesryn in town";
+      else {
+        a.sub = active.map((q) => {
+          const st = mine[q.id];
+          let have = 0;
+          try {
+            const inv = (me.inventory || []).find((i) => i.itemId === q.requiredItem);
+            have = inv ? inv.qty || 0 : 0;
+          } catch (e) {}
+          return `${q.name}: ${Math.min(q.requiredKills, st.kills || 0)}/${q.requiredKills} slain · ${have}/${q.requiredItemCount} cruor`;
+        }).join(" · ");
+      }
+    }
   });
   el.innerHTML = ACTIONS.map((a) => {
     // Editördeki kasaba buton görselleri (images.ui.*Button) varsa IKON KUTUSUNDA
@@ -1488,6 +1541,20 @@ function renderActionCards(room, selfId) {
       const a = ACTIONS.find((x) => x.id === b.getAttribute("data-action"));
       if (a.kind === "open") {
         state.skillTreeOpen = false;
+        if (a.id === "quests") {
+          state.guideOpen = true;
+          const first = (CATALOG.quests || [])[0];
+          state.guideSel = { section: "quests", item: first ? first.id : null };
+          state.dungeonOpen = false;
+          state.plazaOpen = false;
+          state.tavernOpen = false;
+          state.blacksmithOpen = false;
+          state.merchantOpen = false;
+          state.templeOpen = false;
+          state.inventoryOpen = false;
+          renderTown(state.room);
+          return;
+        }
         state.dungeonOpen = a.id === "dungeon";
         state.plazaOpen = a.id === "plaza";
         state.tavernOpen = a.id === "tavern";
@@ -1551,6 +1618,7 @@ function guideSections() {
     { id: "loot", label: "Chests & Loot" },
     { id: "ascend", label: "Ascension" },
     { id: "pets", label: "Pets & Eggs" },
+    { id: "quests", label: "Quests" },
   ];
 }
 
@@ -1593,11 +1661,36 @@ function guideItems(section) {
       { id: "battle", label: "Pets in Battle" },
     ];
   }
+  if (section === "quests") {
+    const qs = CATALOG.quests || [];
+    if (!qs.length) return [];
+    return qs.map((q) => ({ id: q.id, label: q.name || q.id }));
+  }
   return [];
 }
 
 function guideDetail(section, itemId) {
   const esc = escapeHtml;
+  if (section === "quests") {
+    const list = CATALOG.quests || [];
+    if (!list.length) return "<p class='muted'>No quests in this world yet.</p>";
+    const q = list.find((x) => x.id === itemId) || list[0];
+    const me = state.room ? state.room.players.find((p) => p.id === state.playerId) : null;
+    const st = (me && me.quests && me.quests[q.id]) || null;
+    let have = 0;
+    try {
+      const inv = (me && me.inventory || []).find((i) => i.itemId === q.requiredItem);
+      have = inv ? inv.qty || 0 : 0;
+    } catch (e) { have = 0; }
+    const itemDef = (CATALOG.items || []).find((x) => x.id === q.requiredItem);
+    if (!st || !st.accepted) {
+      return `<h3>${esc(q.name || q.id)}</h3><p>${esc(q.description || "")}</p><p class="muted">Not taken up yet — find ${(esc((CATALOG.npcs || []).find((n) => n.id === q.giver) || {}).name || "the quest giver")} in town.</p>`;
+    }
+    const kills = Math.min(q.requiredKills, st.kills || 0);
+    return `<h3>${esc(q.name || q.id)}</h3><p>${esc(q.description || "")}</p>`
+      + `<p><strong>${kills}/${q.requiredKills}</strong> ${esc(q.monsterTag)}s slain · <strong>${have}/${q.requiredItemCount}</strong> ${esc(itemDef ? itemDef.name : q.requiredItem)}</p>`
+      + (st.completed ? `<p><strong>COMPLETE</strong> — the old blood knows you.</p>` : `<p class="muted">Slay ${esc(q.monsterTag)}s in dungeons; cruor sometimes spills from their wounds.</p>`);
+  }
   if (section === "races") {
     const r = (CATALOG.races || []).find((x) => x.id === itemId) || (CATALOG.races || [])[0];
     if (!r) return "<p class='muted'>No races in this world yet.</p>";
@@ -1673,15 +1766,107 @@ function renderGuideView() {
 
 const ST_STATUS = { wet: "Wet", frozen: "Frozen", dot: "Poisoned", expose: "Exposed", weaken: "Weakened", healblock: "Wounded" };
 
+function classRoutesOf(slug) {
+  const list = CATALOG.classes || [];
+  const c = list.find((x) => x.slug === slug);
+  if (!c) return [];
+  if (Array.isArray(c.evolutions) && c.evolutions.length) return c.evolutions;
+  return c.evolution ? [c.evolution] : [];
+}
+
+function classRootOf(slug) {
+  const list = CATALOG.classes || [];
+  let c = list.find((x) => x.slug === slug);
+  const seen = new Set();
+  while (c && c.baseClass && !seen.has(c.slug)) {
+    seen.add(c.slug);
+    const next = list.find((x) => x.slug === c.baseClass);
+    if (!next) break;
+    c = next;
+  }
+  return c ? c.slug : slug;
+}
+
+// Oyuncunun class geçmişi (server publicPlayer.classHistory; eski
+// odalarda yoksa baseClass zincirinden türetilir — oyun kırılmaz).
+function playerHistory(me) {
+  if (me && Array.isArray(me.classHistory) && me.classHistory.length) return me.classHistory.slice();
+  const list = CATALOG.classes || [];
+  const chain = [];
+  const seen = new Set();
+  let c = me ? list.find((x) => x.slug === me.character) : null;
+  while (c && c.baseClass && !seen.has(c.slug)) {
+    seen.add(c.slug);
+    c = list.find((x) => x.slug === c.baseClass);
+    if (!c) break;
+    chain.unshift(c.slug);
+  }
+  if (me && me.character) chain.push(me.character);
+  return chain;
+}
+
+function reachableUppersOf(slug) {
+  const out = [];
+  const seen = new Set();
+  let frontier = [slug];
+  while (frontier.length) {
+    const next = [];
+    for (const s of frontier) {
+      if (seen.has(s)) continue;
+      seen.add(s);
+      for (const r of classRoutesOf(s)) {
+        if (r && r.to && !seen.has(r.to)) {
+          out.push(r.to);
+          next.push(r.to);
+        }
+      }
+    }
+    frontier = next;
+  }
+  return out;
+}
+
+// Ağaçta açık ownerClass'lar: geçmiş + ulaşılabilir üstler.
+function allowedOwnersOf(me) {
+  const set = new Set(playerHistory(me));
+  if (me && me.character) {
+    for (const s of reachableUppersOf(me.character)) set.add(s);
+  }
+  return set;
+}
+
+function treeNodeLineageKey(nodeId) {
+  const st = CATALOG.skillTree || {};
+  for (const [key, lin] of Object.entries(st.lineages || {})) {
+    if ((lin.nodes || []).some((n) => n.id === nodeId)) return key;
+  }
+  return null;
+}
+
+// Cross-class kuralı (server players.js treeNodeAllowed ile birebir):
+// ownerClass'lı üst node geçmişte/ulaşılabilirde olmalı; startersa
+// sadece ORİJİN lineage'ına ait olmalı (ara class baseleri gelmez).
+function treeNodeAllowedFor(me, node, lineageKey) {
+  if (!node) return false;
+  if (node.ownerClass) return allowedOwnersOf(me).has(node.ownerClass);
+  const hist = playerHistory(me);
+  if (!hist.length) return false;
+  if (node.owned) return lineageKey === classRootOf(hist[0]);
+  if (lineageKey == null) return true;
+  return lineageKey === classRootOf(hist[0]) || allowedOwnersOf(me).has(lineageKey);
+}
+
 function classLineageFor(slug) {
   const list = CATALOG.classes || [];
   const chain = [slug];
   let c = list.find((x) => x.slug === slug);
   const seen = new Set();
-  while (c && c.evolution && !seen.has(c.slug)) {
+  while (c && !seen.has(c.slug)) {
     seen.add(c.slug);
-    chain.push(c.evolution.to);
-    c = list.find((x) => x.slug === c.evolution.to);
+    const routes = Array.isArray(c.evolutions) && c.evolutions.length ? c.evolutions : (c.evolution ? [c.evolution] : []);
+    if (!routes.length || !routes[0].to) break;
+    chain.push(routes[0].to);
+    c = list.find((x) => x.slug === routes[0].to);
   }
   c = list.find((x) => x.slug === slug);
   while (c && c.baseClass) {
@@ -1698,13 +1883,30 @@ function skillById(id) {
 
 function skillTreeInfo(player) {
   const st = CATALOG.skillTree || { global: [], lineages: {} };
-  const lineage = classLineageFor(player.character);
+  const hist = playerHistory(player);
+  const lineage = hist.length ? hist : classLineageFor(player.character);
+  // Class sekmesi: orijin starterları + geçmiş/ulaşılabilir üstlerin
+  // nodeları TÜM lineage'lardan birleştirilir (cross-class üst başka
+  // lineage'da yaşayabilir, örn. sanguine nodeları assassin yolunda).
+  const merged = [];
+  const seenIds = new Set();
+  const actuallyLearned = new Set(player.learnedTreeNodes || []);
+  for (const [key, lin] of Object.entries(st.lineages || {})) {
+    for (const n of lin.nodes || []) {
+      if (seenIds.has(n.id)) continue;
+      if (!treeNodeAllowedFor(player, n, key) && !actuallyLearned.has(n.id)) continue;
+      seenIds.add(n.id);
+      merged.push(n);
+    }
+  }
+  const originKey = hist.length ? classRootOf(hist[0]) : lineage[0];
+  const originLin = (st.lineages || {})[originKey];
   return {
     st,
     global: st.global || [],
     lineages: st.lineages || {},
     lineage,
-    spec: st.lineages ? st.lineages[lineage[0]] || null : null,
+    spec: { label: originLin ? originLin.label : "Class", nodes: merged },
     learned: new Set(player.learnedTreeNodes || []),
     points: player.skillPoints || 0,
   };
@@ -1757,11 +1959,10 @@ function classAncestors(slug) {
 }
 
 function treeNodeVisible(node, me, isClassTab, ts) {
-  if (treeNodeIsLearned(node, ts)) return true;
+  // Gerçekten öğrenilmişse hep görünür (tarih büyüse de kaybolmaz).
+  if ((me.learnedTreeNodes || []).includes(node.id)) return true;
   if (!isClassTab) return true;
-  const scope = node.ownerClass || (ts.lineage && ts.lineage[0]);
-  if (!scope) return true;
-  return classAncestors(me.character).includes(scope);
+  return treeNodeAllowedFor(me, node, treeNodeLineageKey(node.id));
 }
 
 function comboHintsFor(skill) {
@@ -2618,7 +2819,8 @@ function renderCombat(room, root) {
       const targetable = canAct && state.selectedSkill && state.selectedSkill.target === "enemy" && !dead;
       return `<button type="button" class="enemy${dead ? " enemy--dead" : ""}${targetable ? " enemy--targetable" : ""}" data-enemy="${i}">
         ${targetable ? `<span class="tgtkey">${d.wave.slice(0, i + 1).filter((x) => x.hp > 0).length}</span>` : ""}
-        <span class="portrait portrait--monster monster-portrait" data-img="${imgFor(m.kind, "monster")}" data-variant="monster"></span>
+        <span class="enemy-bg" data-img="${escapeHtml(m.image || imgFor(m.kind, "monster"))}" data-variant="monster"></span>
+        <span class="enemy-shade" aria-hidden="true"></span>
         <span class="enemy-meta">
           <span class="enemy-name">${escapeHtml(m.name)}</span>
           <span class="hpbar"><span class="hpbar-fill" style="width:${Math.round((m.hp / m.maxHp) * 100)}%"></span></span>
@@ -2663,7 +2865,7 @@ function renderCombat(room, root) {
   const skillsHtml = combatLoadout(me)
     .map((s, si) => {
       if (!s) {
-        return `<div class="skill-slot skill-slot--empty"></div>`;
+        return `<div class="skill-slot skill-slot--empty" title="Empty — equip a skill from the Skill Tree"><span class="skill-empty-plus">+</span></div>`;
       }
       const affordable = me.mana >= (s.mana || 0);
       const usedNow = usedIds.includes(s.id);
@@ -2905,7 +3107,7 @@ function renderPvpView(room){
   const usedIds = [...usedIdsRaw, ...pending];
   const cdMap = (d.cooldowns && d.cooldowns[me.id])||{};
   const skillsHtml = combatLoadout(me).map((s, si)=>{
-    if(!s) return `<div class="skill-slot skill-slot--empty"></div>`;
+    if(!s) return `<div class="skill-slot skill-slot--empty" title="Empty — equip a skill from the Skill Tree"><span class="skill-empty-plus">+</span></div>`;
     const affordable=me.mana>=(s.mana||0);
     const usedNow=usedIds.includes(s.id);
     const cdLeft=cdMap[s.id]||0;
@@ -3229,7 +3431,16 @@ function renderTempleView(room) {
   const staminaOk = me.stamina >= st;
   const maxLives = (CATALOG.temple && CATALOG.temple.maxLives) || 3;
   const baseCls = CATALOG.classes.find((c) => c.slug === me.character);
-  const evos = (temple.evolutions || []).filter((e) => e.from === me.character);
+  const questDone = (qid) => {
+    const st = me.quests && me.quests[qid];
+    return !!(st && st.completed);
+  };
+  // Vampir 40 rotaları (requiresVampire) önceki class vampir değilse
+  // HİÇ görünmez. Şart sadece level + item'dır (diğer classlarla aynı).
+  const isVampire = me.character === "bloodspawn" || me.character === "gloomspawn";
+  const evos = (temple.evolutions || []).filter((e) => e.from === me.character
+    && (!e.requiresQuest || questDone(e.requiresQuest))
+    && (!e.requiresVampire || isVampire));
   // Tapınak şartları sunucuyla birebir aynı mantık (temple.js evolve):
   // legacy = seviye + relic, level_only = sadece seviye, item_only = sadece
   // eşya, level_and_item = ikisi, level_or_item = seviye ya da eşya.
@@ -3259,6 +3470,8 @@ function renderTempleView(room) {
     if (r.t !== "item_only") parts.push(`Requires level ${r.lvl}+`);
     if (r.needItem) parts.push(`${r.n > 1 ? r.n + "× " : ""}${r.itemName} (${r.owned} owned)`);
     else if (r.t === "level_or_item" && r.levelOk) parts.push(`or ${r.n > 1 ? r.n + "× " : ""}${r.itemName} instead`);
+    if (ev && ev.requiresQuest) parts.push("Requires Vesryn's rite (complete)");
+    if (ev && ev.requiresVampire) parts.push("Requires vampire blood");
     return parts.join(" · ") || `Requires level ${r.lvl}+`;
   };
 
@@ -3569,13 +3782,67 @@ function talkLaunchHtml(npcId) {
 }
 
 // Ortak diyalog paneli: metin solda, portre sağda, seçenekler altta sabit.
+// Vesryn (uncle) için göreve göre canlı seçenekler eklenir (kabul / embrace)
+// ve rite düğümünde kişisel ilerleme satırı gösterilir.
+function uncleQuestState() {
+  const me = state.room ? state.room.players.find((p) => p.id === state.playerId) : null;
+  const cat = (typeof CATALOG !== "undefined" && CATALOG) || {};
+  const q = (cat.quests || []).find((x) => x.id === "vampire_rite") || null;
+  if (!q) return { me: me, q: null };
+  const st = (me && me.quests && me.quests[q.id]) || null;
+  let have = 0;
+  try {
+    const inv = (me && me.inventory || []).find((i) => i.itemId === q.requiredItem);
+    have = inv ? inv.qty || 0 : 0;
+  } catch (e) { have = 0; }
+  return {
+    me: me, q: q,
+    accepted: !!(st && st.accepted),
+    kills: Math.min(q.requiredKills, (st && st.kills) || 0),
+    have: have,
+    completed: !!(st && st.completed),
+  };
+}
+
+function uncleDynamicOptions() {
+  const s = uncleQuestState();
+  if (!s.q || !s.me) return [];
+  const out = [];
+  if (!s.accepted) {
+    out.push({ label: "Take up the rite (quest).", action: "quest_accept", questId: s.q.id });
+  }
+  if (s.completed && (s.me.level || 1) >= 20) {
+    if (s.me.character === "assassin") {
+      out.push({ label: "Kneel and embrace the thirst (become Bloodspawn).", action: "vampire_ascend", target: "bloodspawn" });
+    } else if (s.me.character === "mage") {
+      out.push({ label: "Kneel and bind the cruor (become Gloomspawn).", action: "vampire_ascend", target: "gloomspawn" });
+    }
+  }
+  return out;
+}
+
+function talkOptionsFor(npc, node) {
+  const base = (node && node.options) || [];
+  if (npc && npc.id === "uncle") return base.concat(uncleDynamicOptions());
+  return base;
+}
+
 function talkPanelHtml(npc, node, withClose) {
+  let extraProgress = "";
+  const options = talkOptionsFor(npc, node);
+  if (npc.id === "uncle") {
+    const s = uncleQuestState();
+    if (s.q && node.id === "rite") {
+      extraProgress = `<p class="quest-progress">Your rite: ${s.kills}/${s.q.requiredKills} slain · ${s.have}/${s.q.requiredItemCount} cruor${s.completed ? " · <strong>COMPLETE</strong>" : ""}</p>`;
+    }
+  }
   return `<div class="talk-panel talk-fade" key="${escapeHtml(npc.id + ":" + node.id)}">
     <div class="talk-main">
       <p class="talk-name">${escapeHtml(npc.name || npc.id)}</p>
       <p class="talk-text">${escapeHtml(node.text || "")}</p>
+      ${extraProgress}
       <div class="talk-options">
-        ${(node.options || []).map((o, i) => `<button type="button" class="btn btn--smoke btn--mini" data-opt="${i}">${escapeHtml(o.label)}</button>`).join("")}
+        ${options.map((o, i) => `<button type="button" class="btn btn--smoke btn--mini" data-opt="${i}">${escapeHtml(o.label)}</button>`).join("")}
       </div>
     </div>
     <span class="talk-portrait" data-img="${escapeHtml(npc.image || "")}" data-variant="${escapeHtml(npc.id)}" title="${escapeHtml(npc.name || npc.id)}"></span>
@@ -3606,9 +3873,14 @@ function wireTalk(root, renderFn) {
     b.addEventListener("click", () => {
       const npc = state.talkNpcId ? talkNpc(state.talkNpcId) : null;
       const node = npc ? talkNode(npc, state.talkNodeId) : null;
-      const opt = node ? (node.options || [])[Number(b.getAttribute("data-opt"))] : null;
+      const opt = node ? talkOptionsFor(npc, node)[Number(b.getAttribute("data-opt"))] : null;
       if (!opt) return;
       sfxPlay("clicksound");
+      // Diyalog aksiyonları (quest kabul, vampir embrace) sunucuda işletilir.
+      if (opt.action) {
+        socket.emit("npc:action", { npcId: npc.id, action: opt.action, questId: opt.questId, target: opt.target });
+        return;
+      }
       if (opt.end || !opt.to) {
         state.talkNpcId = null;
         state.talkNodeId = null;
@@ -3630,7 +3902,11 @@ function wireTalk(root, renderFn) {
 function renderPlazaView(room) {
   const root = $("plaza-content");
   if (!root) return;
-  const npcs = CATALOG.npcs || [];
+  // Town Center'da sadece kasaba ahalisi konuşur (Mira, Vesryn...).
+  // Dükkan NPC'leri (blacksmith/merchant/tavern) kendi mekanlarında
+  // konuşur — meydanda listelenmez.
+  const SHOP_LOCS = { blacksmith: 1, merchant: 1, tavern: 1 };
+  const npcs = (CATALOG.npcs || []).filter((n) => !SHOP_LOCS[n.location]);
   const npc = state.talkNpcId ? talkNpc(state.talkNpcId) : null;
   if (!npc) {
     root.innerHTML = `

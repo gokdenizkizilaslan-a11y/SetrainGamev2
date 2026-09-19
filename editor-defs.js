@@ -263,6 +263,7 @@ const collections = [
       { key: "element", label: "Element", type: "choice", options: ELEMENTS },
       { key: "effect", label: "VFX Effect (blank = element auto)", type: "choice", options: VFX_IDS, allowBlank: true },
       { key: "sound", label: "Hit Sound (blank = element auto)", type: "sound" },
+      { key: "hitShake", label: "Hit shake 0-3 (hedef kart sallanması, blank = power'a göre auto)", type: "number" },
       { key: "heal", label: "Heal (number= maxHp% or {stat,mult} e.g. {stat:'attack',mult:1.3})", type: "string" },
       { key: "healSelfPct", label: "Heal % of own max HP", type: "percent" },
       { key: "defense", label: "Damage blocked %", type: "percent" },
