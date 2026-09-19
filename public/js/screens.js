@@ -3218,8 +3218,7 @@ function renderTavernView(room) {
   const canSleep = me.gold >= sleepPrice;
   root.innerHTML = `
     ${vendorHead("tavern", "The Tavern", "The keeper wipes a mug. “Warm beds upstairs — safe sleep till dawn.”")}
-    ${talkLaunchHtml("tavernkeeper")}
-    ${talkActiveHtml("tavernkeeper")}
+    ${shopTalkHtml("tavernkeeper")}
     <p class="subhead">Wagering</p>
     <p class="lead">Pick a wager, then a game. A winning coin flip doubles it; blackjack pays 2.5&times; on a natural.</p>
     ${result}
@@ -3671,8 +3670,7 @@ function renderBlacksmithView(room) {
 
   root.innerHTML = `
     ${vendorHead("blacksmith", "Blacksmith", "")}
-    ${talkLaunchHtml("blacksmith")}
-    ${talkActiveHtml("blacksmith")}
+    ${shopTalkHtml("blacksmith")}
     ${shopResources(me)}
     <p class="subhead shop-head">Armor & Weapons — Week ${room.shopStock ? room.shopStock.week : 1} · ${rotGear.length} items (7 days rotation)${shopVendorPortrait("blacksmithNpc", "Blacksmith")}</p>
     ${pinned.length ? `<div class="temple-card temple-card--schematics"><p class="subhead">📐 Schematics — always in stock · 200 gold each</p><div class="shop-grid shop-grid--pinned">${pinned.map((i) => shopCardHtml(me, staminaOk, i, "blacksmith:buy", soldSet.includes(i.id))).join("")}</div></div>` : ""}
@@ -3735,8 +3733,7 @@ function renderMerchantView(room) {
 
   root.innerHTML = `
     ${vendorHead("merchant", "Merchant", "The merchant spreads empty hands wide. “Chests, potions, curiosities — everything has a price.”")}
-    ${talkLaunchHtml("merchant")}
-    ${talkActiveHtml("merchant")}
+    ${shopTalkHtml("merchant")}
     ${shopResources(me)}
     <p class="subhead">Chests, Potions & Materials — Week ${room.shopStock ? room.shopStock.week : 1} · ${stockArr.length} items (7 days rotation)</p>
     <div class="shop-grid">${goods.map((i) => shopCardHtml(me, staminaOk, i, "merchant:buy", soldSetM.includes(i.id))).join("") || '<div class="muted">Nothing for sale today.</div>'}</div>
@@ -3850,13 +3847,18 @@ function talkPanelHtml(npc, node, withClose) {
   ${withClose ? `<div class="talk-close-row"><button type="button" class="btn btn--ghost btn--mini" data-talk-close>Close talk</button></div>` : ""}`;
 }
 
-// Konuşma durumunda dükkan görünümü için panel HTML'i (yanlış NPC ise boş).
-function talkActiveHtml(npcId) {
-  const npc = state.talkNpcId ? talkNpc(state.talkNpcId) : null;
-  if (!npc || (npcId && npc.id !== npcId)) return "";
+// Dükkan içi diyalog HER ZAMAN üstte açıktır (tıklamaya gerek yok):
+// dükkan açılınca konuşma o NPC'ye sabitlenir, panel doğrudan çizilir.
+function shopTalkHtml(npcId) {
+  const npc = talkNpc(npcId);
+  if (!npc) return "";
+  if (state.talkNpcId !== npcId) {
+    state.talkNpcId = npcId;
+    state.talkNodeId = "start";
+  }
   const node = talkNode(npc, state.talkNodeId);
   if (!node) return "";
-  return talkPanelHtml(npc, node, true);
+  return talkPanelHtml(npc, node, false);
 }
 
 // Rozet + seçenek + kapatma tıklamaları; renderFn ilgili görünümü tazeler.
@@ -3906,6 +3908,13 @@ function renderPlazaView(room) {
   // Dükkan NPC'leri (blacksmith/merchant/tavern) kendi mekanlarında
   // konuşur — meydanda listelenmez.
   const SHOP_LOCS = { blacksmith: 1, merchant: 1, tavern: 1 };
+  // Dükkandan meydana dönünce eski dükkan diyaloğu kalmasın — liste görünsün.
+  // (Mira/dayı gibi kasaba ahalisi korunur.)
+  const _shopTalk = state.talkNpcId ? talkNpc(state.talkNpcId) : null;
+  if (_shopTalk && { blacksmith: 1, merchant: 1, tavernkeeper: 1 }[_shopTalk.location || _shopTalk.id]) {
+    state.talkNpcId = null;
+    state.talkNodeId = null;
+  }
   const npcs = (CATALOG.npcs || []).filter((n) => !SHOP_LOCS[n.location]);
   const npc = state.talkNpcId ? talkNpc(state.talkNpcId) : null;
   if (!npc) {
