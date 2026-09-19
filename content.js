@@ -77,33 +77,60 @@ const CONTENT = {
           "id": "start",
           "text": "Mind the sparks. State your business — the forge waits for no one.",
           "options": [
-            { "label": "How does your craft work?", "to": "work" },
-            { "label": "What news of the wars?", "to": "wars" },
-            { "label": "What do you know of the Temple?", "to": "temple" },
-            { "label": "Farewell.", "end": true }
+            {
+              "label": "How does your craft work?",
+              "to": "work"
+            },
+            {
+              "label": "What news of the wars?",
+              "to": "wars"
+            },
+            {
+              "label": "What do you know of the Temple?",
+              "to": "temple"
+            },
+            {
+              "label": "Farewell.",
+              "end": true
+            }
           ]
         },
         {
           "id": "work",
           "text": "Bring me a pattern and the materials, and I will beat them into shape. Patterns — schematics, the traders call them — are always here for two hundred gold. Steel itself you must earn: the wilds beyond the palisade, or the deep places. Nothing in my shop is given.",
           "options": [
-            { "label": "What news of the wars?", "to": "wars" },
-            { "label": "Back.", "to": "start" }
+            {
+              "label": "What news of the wars?",
+              "to": "wars"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
           ]
         },
         {
           "id": "wars",
           "text": "Palendio quarrels with its neighbors as old men quarrel over fences — only with more widows. The crown buys every blade I can finish. If you mean to sell your sword-arm, the dungeons past the hills pay better than any king. Mind you come back breathing.",
           "options": [
-            { "label": "How does your craft work?", "to": "work" },
-            { "label": "Back.", "to": "start" }
+            {
+              "label": "How does your craft work?",
+              "to": "work"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
           ]
         },
         {
           "id": "temple",
           "text": "The Ancient Temple stood before any crown of Palendio was minted — five billion years this world has turned, and the priests say the stones remember all of them. Bring relics there if you find any. I shape metal. They shape people. Both trades leave marks.",
           "options": [
-            { "label": "Back.", "to": "start" }
+            {
+              "label": "Back.",
+              "to": "start"
+            }
           ]
         }
       ],
@@ -120,33 +147,60 @@ const CONTENT = {
           "id": "start",
           "text": "Welcome, welcome. Coin first, sentiment after — but for a new face in Setra, the first counsel is free. What do you seek?",
           "options": [
-            { "label": "Why are times hard?", "to": "times" },
-            { "label": "What comes down the valley road?", "to": "road" },
-            { "label": "Do you buy relics?", "to": "relics" },
-            { "label": "Farewell.", "end": true }
+            {
+              "label": "Why are times hard?",
+              "to": "times"
+            },
+            {
+              "label": "What comes down the valley road?",
+              "to": "road"
+            },
+            {
+              "label": "Do you buy relics?",
+              "to": "relics"
+            },
+            {
+              "label": "Farewell.",
+              "end": true
+            }
           ]
         },
         {
           "id": "times",
           "text": "War taxes, war prices. The caravans from the lowlands charge double and smile while doing it. I sell chests, salves and materials at honest rates — honest for wartime, that is. Spend your first fifty wisely. There will not be a second fifty for free.",
           "options": [
-            { "label": "What comes down the valley road?", "to": "road" },
-            { "label": "Back.", "to": "start" }
+            {
+              "label": "What comes down the valley road?",
+              "to": "road"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
           ]
         },
         {
           "id": "road",
           "text": "Refugees, mostly. And sellswords going the other way, toward the border forts. A keeper's girl — Mira, you may know her — pulled some half-dead wanderer out of the hollow last week. The road gives, and the road takes. Usually it takes.",
           "options": [
-            { "label": "Why are times hard?", "to": "times" },
-            { "label": "Back.", "to": "start" }
+            {
+              "label": "Why are times hard?",
+              "to": "times"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
           ]
         },
         {
           "id": "relics",
           "text": "Ancient relics? I deal in honest goods, friend. Whatever the dungeons cough up — essences, hearts, strange metals — the Temple pays in transformations, and I pay in gold for what honest folk carry. Bring me materials and we will both eat.",
           "options": [
-            { "label": "Back.", "to": "start" }
+            {
+              "label": "Back.",
+              "to": "start"
+            }
           ]
         }
       ],
@@ -163,34 +217,64 @@ const CONTENT = {
           "id": "start",
           "text": "Sit, sit. You look like the road chewed you and thought better of swallowing. Ale is honest here, the beds upstairs are warm, and my ears are warmer still. What will it be?",
           "options": [
-            { "label": "Tell me about the beds.", "to": "beds" },
-            { "label": "Who was found in the hollow?", "to": "stranger" },
-            { "label": "Any strange guests lately?", "to": "guest" },
-            { "label": "Farewell.", "end": true }
+            {
+              "label": "Tell me about the beds.",
+              "to": "beds"
+            },
+            {
+              "label": "Who was found in the hollow?",
+              "to": "stranger"
+            },
+            {
+              "label": "Any strange guests lately?",
+              "to": "guest"
+            },
+            {
+              "label": "Farewell.",
+              "end": true
+            }
           ]
         },
         {
           "id": "beds",
           "text": "Fifteen gold buys a bed, a bolted door and a morning without a knife in your ribs. Sleep in the fields if your purse is light — many do — but the cold takes its toll, and I have seen men wake with one fewer heartbeat in them. Your coin, your choice.",
           "options": [
-            { "label": "Any strange guests lately?", "to": "guest" },
-            { "label": "Back.", "to": "start" }
+            {
+              "label": "Any strange guests lately?",
+              "to": "guest"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
           ]
         },
         {
           "id": "stranger",
           "text": "Aye, Mira's stray. Found senseless in the grass with no memory and no shoes, or so the tale goes. She fed him from her own pot — poor as a church mouse, that girl, but proud. If you see him, tell him the Tavernkeeper says the first ale is on the house. Beginnings should be toasted.",
           "options": [
-            { "label": "Tell me about the beds.", "to": "beds" },
-            { "label": "Back.", "to": "start" }
+            {
+              "label": "Tell me about the beds.",
+              "to": "beds"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
           ]
         },
         {
           "id": "guest",
           "text": "Lower your voice. A pale gentleman came through at dusk — old coin, older manners, eyes like winter ponds. Asked after newcomers to the village. Asked twice. Then he smiled, paid in gold minted before my grandfather was born, and walked into the dark like it owed him passage. Whatever he is looking for... I hope it is not you.",
           "options": [
-            { "label": "Who was found in the hollow?", "to": "stranger" },
-            { "label": "Back.", "to": "start" }
+            {
+              "label": "Who was found in the hollow?",
+              "to": "stranger"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
           ]
         }
       ],
@@ -533,7 +617,7 @@ const CONTENT = {
     {
       "slug": "ranger",
       "label": "Archer",
-      "image": "/images/characters/ranger.webp?v=mtyntcmp",
+      "image": "/images/characters/ranger.webp?v=mu7hv8a1",
       "basicAttack": {
         "id": "quick_shot",
         "name": "Quick Shot",
@@ -688,7 +772,7 @@ const CONTENT = {
     {
       "slug": "rogue",
       "label": "Rogue",
-      "image": "/images/characters/rogue.webp?v=mu04i9dw",
+      "image": "/images/characters/rogue.webp?v=mu7qdwu0",
       "basicAttack": {
         "id": "stab",
         "name": "Stab",
@@ -1738,7 +1822,7 @@ const CONTENT = {
         "level": 40,
         "to": "war_emperor"
       },
-      "image": "/images/characters/warlord.png",
+      "image": "/images/characters/warlord.webp?v=mu7hutcl",
       "basicAttack": {
         "id": "great_slash",
         "name": "Great Slash",
@@ -1802,7 +1886,7 @@ const CONTENT = {
         "level": 40,
         "to": "storm_warden"
       },
-      "image": "/images/characters/warden.png",
+      "image": "/images/characters/warden.webp?v=mu7qfi19",
       "basicAttack": {
         "id": "hunter_shot",
         "name": "Hunter Shot",
@@ -1866,7 +1950,7 @@ const CONTENT = {
         "level": 40,
         "to": "archon"
       },
-      "image": "/images/characters/archmage.png",
+      "image": "/images/characters/archmage.webp?v=mu7qfomb",
       "basicAttack": {
         "id": "arcane_blast",
         "name": "Arcane Blast",
@@ -1931,7 +2015,7 @@ const CONTENT = {
         "level": 40,
         "to": "shade_king"
       },
-      "image": "/images/characters/nightblade.png",
+      "image": "/images/characters/nightblade.webp?v=mu7sia0r",
       "basicAttack": {
         "id": "shadow_stab",
         "name": "Shadow Stab",
@@ -1995,7 +2079,7 @@ const CONTENT = {
         "level": 40,
         "to": "lightbringer"
       },
-      "image": "/images/characters/crusader.png",
+      "image": "/images/characters/crusader.webp?v=mu7s5q2g",
       "basicAttack": {
         "id": "blessed_blade",
         "name": "Blessed Blade",
@@ -2060,7 +2144,7 @@ const CONTENT = {
         "level": 40,
         "to": "death_lord"
       },
-      "image": "/images/characters/reaper.png",
+      "image": "/images/characters/reaper.webp?v=mu7qhiri",
       "basicAttack": {
         "id": "reap",
         "name": "Reap",
@@ -2124,7 +2208,7 @@ const CONTENT = {
         "level": 40,
         "to": "divine_saint"
       },
-      "image": "/images/characters/high_priest.png",
+      "image": "/images/characters/high_priest.webp?v=mu7qgmik",
       "basicAttack": {
         "id": "hallowed_bolt",
         "name": "Hallowed Bolt",
@@ -2251,7 +2335,7 @@ const CONTENT = {
       "slug": "war_emperor",
       "label": "War Emperor",
       "baseClass": "warlord",
-      "image": "/images/characters/war_emperor.png",
+      "image": "/images/characters/war_emperor.webp?v=mu7qi09a",
       "basicAttack": {
         "id": "colossal_slash",
         "name": "Colossal Slash",
@@ -2311,7 +2395,7 @@ const CONTENT = {
       "slug": "storm_warden",
       "label": "Storm Warden",
       "baseClass": "warden",
-      "image": "/images/characters/storm_warden.png",
+      "image": "/images/characters/storm_warden.webp?v=mu7s1c49",
       "basicAttack": {
         "id": "storm_shot",
         "name": "Storm Shot",
@@ -2371,7 +2455,7 @@ const CONTENT = {
       "slug": "archon",
       "label": "Archon",
       "baseClass": "archmage",
-      "image": "/images/characters/archon.png",
+      "image": "/images/characters/archon.webp?v=mu7qrqou",
       "basicAttack": {
         "id": "primordial_bolt",
         "name": "Primordial Bolt",
@@ -2432,7 +2516,7 @@ const CONTENT = {
       "slug": "shade_king",
       "label": "Shade King",
       "baseClass": "nightblade",
-      "image": "/images/characters/shade_king.png",
+      "image": "/images/characters/shade_king.webp?v=mu7scjzg",
       "basicAttack": {
         "id": "eclipse_strike",
         "name": "Eclipse Strike",
@@ -2492,7 +2576,7 @@ const CONTENT = {
       "slug": "lightbringer",
       "label": "Lightbringer",
       "baseClass": "crusader",
-      "image": "/images/characters/lightbringer.png",
+      "image": "/images/characters/lightbringer.webp?v=mu7s66gf",
       "basicAttack": {
         "id": "radiant_edge",
         "name": "Radiant Edge",
@@ -2553,7 +2637,7 @@ const CONTENT = {
       "slug": "death_lord",
       "label": "Death Lord",
       "baseClass": "reaper",
-      "image": "/images/characters/death_lord.png",
+      "image": "/images/characters/death_lord.webp?v=mu7s3fq1",
       "basicAttack": {
         "id": "scythe_sweep",
         "name": "Scythe Sweep",
@@ -2613,7 +2697,7 @@ const CONTENT = {
       "slug": "divine_saint",
       "label": "Divine Saint",
       "baseClass": "high_priest",
-      "image": "/images/characters/divine_saint.png",
+      "image": "/images/characters/divine_saint.webp?v=mu7s6k9a",
       "basicAttack": {
         "id": "divine_light",
         "name": "Divine Light",
@@ -6971,7 +7055,7 @@ const CONTENT = {
       "speed": 4,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/slime.png",
+      "image": "/images/monsters/slime.webp?v=mu7qtmip",
       "resistance": 4,
       "tags": [
         "slime"
@@ -6985,7 +7069,7 @@ const CONTENT = {
       "speed": 8,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/goblin.png",
+      "image": "/images/monsters/goblin.webp?v=mu7qu4od",
       "resistance": 5,
       "tags": [
         "humanoid"
@@ -6999,7 +7083,7 @@ const CONTENT = {
       "speed": 9,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/giant_rat.png",
+      "image": "/images/monsters/giant_rat.webp?v=mu7quogb",
       "resistance": 5,
       "tags": [
         "beast"
@@ -7013,7 +7097,7 @@ const CONTENT = {
       "speed": 14,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/cave_bat.png",
+      "image": "/images/monsters/cave_bat.webp?v=mu7qv2o5",
       "resistance": 1,
       "tags": [
         "beast"
@@ -7027,7 +7111,7 @@ const CONTENT = {
       "speed": 11,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/wolf.png",
+      "image": "/images/monsters/wolf.webp?v=mu7qvbai",
       "resistance": 2,
       "tags": [
         "beast"
@@ -7041,7 +7125,7 @@ const CONTENT = {
       "speed": 9,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/bandit.png",
+      "image": "/images/monsters/bandit.webp?v=mu7qwkj6",
       "resistance": 2,
       "tags": [
         "humanoid"
@@ -7055,7 +7139,7 @@ const CONTENT = {
       "speed": 10,
       "rarity": "common",
       "element": "shadow",
-      "image": "/images/monsters/spider.png",
+      "image": "/images/monsters/spider.webp?v=mu7qxh6t",
       "resistance": 5,
       "tags": [
         "beast"
@@ -7069,7 +7153,7 @@ const CONTENT = {
       "speed": 7,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/wild_boar.png",
+      "image": "/images/monsters/wild_boar.webp?v=mu7qxsqv",
       "resistance": 3,
       "tags": [
         "beast"
@@ -7083,7 +7167,7 @@ const CONTENT = {
       "speed": 10,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/goblin_archer.png",
+      "image": "/images/monsters/goblin_archer.webp?v=mu7qy07h",
       "resistance": 5,
       "tags": [
         "humanoid"
@@ -7097,7 +7181,7 @@ const CONTENT = {
       "speed": 12,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/rat_king.png",
+      "image": "/images/monsters/rat_king.webp?v=mu7qy89j",
       "resistance": 3,
       "tags": [
         "beast"
@@ -7111,7 +7195,7 @@ const CONTENT = {
       "speed": 10,
       "rarity": "uncommon",
       "element": "arcane",
-      "image": "/images/monsters/grove_sprite.png",
+      "image": "/images/monsters/grove_sprite.webp?v=mu7qynwb",
       "resistance": 6,
       "tags": [
         "plant"
@@ -7125,7 +7209,7 @@ const CONTENT = {
       "speed": 8,
       "rarity": "uncommon",
       "element": "physical",
-      "image": "/images/monsters/goblin_warrior.png",
+      "image": "/images/monsters/goblin_warrior.webp?v=mu7qyvo2",
       "resistance": 7,
       "tags": [
         "humanoid"
@@ -7139,7 +7223,7 @@ const CONTENT = {
       "speed": 7,
       "rarity": "uncommon",
       "element": "shadow",
-      "image": "/images/monsters/skeleton.png",
+      "image": "/images/monsters/skeleton.webp?v=mu7qz2m0",
       "resistance": 10,
       "tags": [
         "undead"
@@ -7153,7 +7237,7 @@ const CONTENT = {
       "speed": 12,
       "rarity": "uncommon",
       "element": "physical",
-      "image": "/images/monsters/dire_wolf.png",
+      "image": "/images/monsters/dire_wolf.webp?v=mu7qzanm",
       "resistance": 6,
       "tags": [
         "beast"
@@ -7167,7 +7251,7 @@ const CONTENT = {
       "speed": 15,
       "rarity": "uncommon",
       "element": "physical",
-      "image": "/images/monsters/harpy.png",
+      "image": "/images/monsters/harpy.webp?v=mu7r1669",
       "resistance": 7,
       "tags": [
         "beast"
@@ -7181,7 +7265,7 @@ const CONTENT = {
       "speed": 6,
       "rarity": "uncommon",
       "element": "physical",
-      "image": "/images/monsters/orc.png",
+      "image": "/images/monsters/orc.webp?v=mu7r1eep",
       "resistance": 5,
       "tags": [
         "humanoid"
@@ -7195,7 +7279,7 @@ const CONTENT = {
       "speed": 13,
       "rarity": "uncommon",
       "element": "shadow",
-      "image": "/images/monsters/thorn_viper.png",
+      "image": "/images/monsters/thorn_viper.webp?v=mu7r1k10",
       "resistance": 7,
       "tags": [
         "beast"
@@ -7209,7 +7293,7 @@ const CONTENT = {
       "speed": 4,
       "rarity": "uncommon",
       "element": "physical",
-      "image": "/images/monsters/swamp_troll.png",
+      "image": "/images/monsters/swamp_troll.webp?v=mu7r1wab",
       "resistance": 7,
       "tags": [
         "beast"
@@ -7223,7 +7307,7 @@ const CONTENT = {
       "speed": 11,
       "rarity": "uncommon",
       "element": "physical",
-      "image": "/images/monsters/griffin.png",
+      "image": "/images/monsters/griffin.webp?v=mu7r23vh",
       "resistance": 8,
       "tags": [
         "beast"
@@ -7237,7 +7321,7 @@ const CONTENT = {
       "speed": 3,
       "rarity": "rare",
       "element": "physical",
-      "image": "/images/monsters/golem.png",
+      "image": "/images/monsters/golem.webp?v=mu7r2ahq",
       "resistance": 38,
       "tags": [
         "construct"
@@ -7251,7 +7335,7 @@ const CONTENT = {
       "speed": 4,
       "rarity": "rare",
       "element": "physical",
-      "image": "/images/monsters/stone_warden.png",
+      "image": "/images/monsters/stone_warden.webp?v=mu7r2hkq",
       "resistance": 30,
       "tags": [
         "construct"
@@ -7265,7 +7349,7 @@ const CONTENT = {
       "speed": 12,
       "rarity": "rare",
       "element": "shadow",
-      "image": "/images/monsters/wraith.png",
+      "image": "/images/monsters/wraith.webp?v=mu7r2myq",
       "resistance": 25,
       "tags": [
         "undead"
@@ -7279,7 +7363,7 @@ const CONTENT = {
       "speed": 10,
       "rarity": "rare",
       "element": "physical",
-      "image": "/images/monsters/manticore.png",
+      "image": "/images/monsters/manticore.webp?v=mu7r2rxl",
       "resistance": 12,
       "tags": [
         "beast"
@@ -7293,7 +7377,7 @@ const CONTENT = {
       "speed": 5,
       "rarity": "rare",
       "element": "physical",
-      "image": "/images/monsters/ogre.png",
+      "image": "/images/monsters/ogre.webp?v=mu7r2zoc",
       "resistance": 25,
       "tags": [
         "beast"
@@ -7307,7 +7391,7 @@ const CONTENT = {
       "speed": 9,
       "rarity": "rare",
       "element": "shadow",
-      "image": "/images/monsters/dark_knight.png",
+      "image": "/images/monsters/dark_knight.webp?v=mu7r3ipk",
       "resistance": 20,
       "tags": [
         "humanoid"
@@ -7321,7 +7405,7 @@ const CONTENT = {
       "speed": 8,
       "rarity": "rare",
       "element": "arcane",
-      "image": "/images/monsters/witch.png",
+      "image": "/images/monsters/witch.webp?v=mu7r3r8w",
       "resistance": 15,
       "tags": [
         "humanoid"
@@ -7335,7 +7419,7 @@ const CONTENT = {
       "speed": 12,
       "rarity": "epic",
       "element": "arcane",
-      "image": "/images/monsters/wyvern.png",
+      "image": "/images/monsters/wyvern.webp?v=mu7r4cjg",
       "resistance": 25,
       "tags": [
         "dragon"
@@ -7349,7 +7433,7 @@ const CONTENT = {
       "speed": 3,
       "rarity": "epic",
       "element": "physical",
-      "image": "/images/monsters/ancient_golem.png",
+      "image": "/images/monsters/ancient_golem.webp?v=mu7r4ixe",
       "resistance": 46,
       "tags": [
         "construct"
@@ -7363,7 +7447,7 @@ const CONTENT = {
       "speed": 8,
       "rarity": "legendary",
       "element": "shadow",
-      "image": "/images/monsters/lich.png",
+      "image": "/images/monsters/lich.webp?v=mu7rbse8",
       "resistance": 45,
       "tags": [
         "undead"
@@ -7377,7 +7461,7 @@ const CONTENT = {
       "speed": 6,
       "rarity": "mythic",
       "element": "physical",
-      "image": "/images/monsters/hydra.png",
+      "image": "/images/monsters/hydra.webp?v=mu7r6jq2",
       "resistance": 47,
       "tags": [
         "dragon"
@@ -7391,7 +7475,7 @@ const CONTENT = {
       "speed": 10,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/kobold.png",
+      "image": "/images/monsters/kobold.webp?v=mu7r79ob",
       "resistance": 5,
       "tags": [
         "humanoid"
@@ -7405,7 +7489,7 @@ const CONTENT = {
       "speed": 9,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/scavenger.png",
+      "image": "/images/monsters/scavenger.webp?v=mu7r7hoz",
       "resistance": 0,
       "tags": [
         "humanoid"
@@ -7419,7 +7503,7 @@ const CONTENT = {
       "speed": 8,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/cave_crawler.png",
+      "image": "/images/monsters/cave_crawler.webp?v=mu7r7n2u",
       "resistance": 0,
       "tags": [
         "plant"
@@ -7433,7 +7517,7 @@ const CONTENT = {
       "speed": 13,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/forest_mite.png",
+      "image": "/images/monsters/forest_mite.webp?v=mu7r7urs",
       "resistance": 1,
       "tags": [
         "plant"
@@ -7447,7 +7531,7 @@ const CONTENT = {
       "speed": 4,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/sludge.png",
+      "image": "/images/monsters/sludge.webp?v=mu7r80xw",
       "resistance": 2,
       "tags": [
         "slime"
@@ -7461,7 +7545,7 @@ const CONTENT = {
       "speed": 7,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/thug.png",
+      "image": "/images/monsters/thug.webp?v=mu7r86qm",
       "resistance": 2,
       "tags": [
         "humanoid"
@@ -7475,7 +7559,7 @@ const CONTENT = {
       "speed": 14,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/dusk_bat.png",
+      "image": "/images/monsters/dusk_bat.webp?v=mu7r8glb",
       "resistance": 3,
       "tags": [
         "beast"
@@ -7489,7 +7573,7 @@ const CONTENT = {
       "speed": 5,
       "rarity": "common",
       "element": "physical",
-      "image": "/images/monsters/ember_slime.png",
+      "image": "/images/monsters/ember_slime.webp?v=mu7r8nnb",
       "resistance": 4,
       "tags": [
         "slime"
@@ -7503,7 +7587,7 @@ const CONTENT = {
       "speed": 8,
       "rarity": "uncommon",
       "element": "physical",
-      "image": "/images/monsters/iron_goblin.png",
+      "image": "/images/monsters/iron_goblin.webp?v=mu7rrqif",
       "resistance": 11,
       "tags": [
         "humanoid"
@@ -7517,7 +7601,7 @@ const CONTENT = {
       "speed": 11,
       "rarity": "uncommon",
       "element": "physical",
-      "image": "/images/monsters/bone_archer.png",
+      "image": "/images/monsters/bone_archer.webp?v=mu7rrjd3",
       "resistance": 11,
       "tags": [
         "undead"
@@ -7531,7 +7615,7 @@ const CONTENT = {
       "speed": 13,
       "rarity": "uncommon",
       "element": "physical",
-      "image": "/images/monsters/frost_wolf.png",
+      "image": "/images/monsters/frost_wolf.webp?v=mu7rr9ba",
       "resistance": 10,
       "tags": [
         "beast"
@@ -7545,7 +7629,7 @@ const CONTENT = {
       "speed": 9,
       "rarity": "uncommon",
       "element": "arcane",
-      "image": "/images/monsters/vine_lurker.png",
+      "image": "/images/monsters/vine_lurker.webp?v=mu7rre5s",
       "resistance": 9,
       "tags": [
         "plant"
@@ -7559,7 +7643,7 @@ const CONTENT = {
       "speed": 12,
       "rarity": "uncommon",
       "element": "shadow",
-      "image": "/images/monsters/ash_spider.png",
+      "image": "/images/monsters/ash_spider.webp?v=mu7rs0ti",
       "resistance": 11,
       "tags": [
         "beast"
@@ -7573,7 +7657,7 @@ const CONTENT = {
       "speed": 9,
       "rarity": "uncommon",
       "element": "physical",
-      "image": "/images/monsters/brigand_captain.png",
+      "image": "/images/monsters/brigand_captain.webp?v=mu7rwelo",
       "resistance": 11,
       "tags": [
         "humanoid"
@@ -7587,7 +7671,7 @@ const CONTENT = {
       "speed": 6,
       "rarity": "uncommon",
       "element": "physical",
-      "image": "/images/monsters/marsh_crawler.png",
+      "image": "/images/monsters/marsh_crawler.webp?v=mu7rhs7k",
       "resistance": 5,
       "tags": [
         "plant"
@@ -7601,7 +7685,7 @@ const CONTENT = {
       "speed": 12,
       "rarity": "uncommon",
       "element": "arcane",
-      "image": "/images/monsters/ember_sprite.png",
+      "image": "/images/monsters/ember_sprite.webp?v=mu7roir8",
       "resistance": 10,
       "tags": [
         "plant"
@@ -7615,7 +7699,7 @@ const CONTENT = {
       "speed": 3,
       "rarity": "rare",
       "element": "physical",
-      "image": "/images/monsters/crystal_golem.png",
+      "image": "/images/monsters/crystal_golem.webp?v=mu7rvqqs",
       "resistance": 45,
       "tags": [
         "construct"
@@ -7629,7 +7713,7 @@ const CONTENT = {
       "speed": 11,
       "rarity": "rare",
       "element": "shadow",
-      "image": "/images/monsters/abyss_wraith.png",
+      "image": "/images/monsters/abyss_wraith.webp?v=mu7ruesw",
       "resistance": 14,
       "tags": [
         "undead"
@@ -7643,7 +7727,7 @@ const CONTENT = {
       "speed": 15,
       "rarity": "rare",
       "element": "physical",
-      "image": "/images/monsters/storm_harpy.png",
+      "image": "/images/monsters/storm_harpy.webp?v=mu7rsho3",
       "resistance": 16,
       "tags": [
         "beast"
@@ -7657,7 +7741,7 @@ const CONTENT = {
       "speed": 5,
       "rarity": "rare",
       "element": "physical",
-      "image": "/images/monsters/iron_ogre.png",
+      "image": "/images/monsters/iron_ogre.webp?v=mu7rpeze",
       "resistance": 32,
       "tags": [
         "beast"
@@ -7671,7 +7755,7 @@ const CONTENT = {
       "speed": 9,
       "rarity": "rare",
       "element": "shadow",
-      "image": "/images/monsters/cursed_knight.png",
+      "image": "/images/monsters/cursed_knight.webp?v=mu7rpb0u",
       "resistance": 20,
       "tags": [
         "humanoid"
@@ -7685,7 +7769,7 @@ const CONTENT = {
       "speed": 8,
       "rarity": "rare",
       "element": "arcane",
-      "image": "/images/monsters/flame_witch.png",
+      "image": "/images/monsters/flame_witch.webp?v=mu7rnfdp",
       "resistance": 17,
       "tags": [
         "humanoid"
@@ -7699,7 +7783,7 @@ const CONTENT = {
       "speed": 3,
       "rarity": "rare",
       "element": "physical",
-      "image": "/images/monsters/stone_titan.png",
+      "image": "/images/monsters/stone_titan.webp?v=mu7rmvhz",
       "resistance": 42,
       "tags": [
         "construct"
@@ -7713,7 +7797,7 @@ const CONTENT = {
       "speed": 10,
       "rarity": "rare",
       "element": "physical",
-      "image": "/images/monsters/dusk_manticore.png",
+      "image": "/images/monsters/dusk_manticore.webp?v=mu7rmq8v",
       "resistance": 24,
       "tags": [
         "beast"
@@ -7727,7 +7811,7 @@ const CONTENT = {
       "speed": 11,
       "rarity": "epic",
       "element": "arcane",
-      "image": "/images/monsters/frost_wyvern.png",
+      "image": "/images/monsters/frost_wyvern.webp?v=mu7rn8vx",
       "resistance": 36,
       "tags": [
         "dragon"
@@ -7741,7 +7825,7 @@ const CONTENT = {
       "speed": 3,
       "rarity": "epic",
       "element": "physical",
-      "image": "/images/monsters/void_golem.png",
+      "image": "/images/monsters/void_golem.webp?v=mu7ru458",
       "resistance": 44,
       "tags": [
         "construct"
@@ -7755,7 +7839,7 @@ const CONTENT = {
       "speed": 9,
       "rarity": "epic",
       "element": "shadow",
-      "image": "/images/monsters/storm_lich.png",
+      "image": "/images/monsters/storm_lich.webp?v=mu7rs9hm",
       "resistance": 23,
       "tags": [
         "undead"
@@ -7769,7 +7853,7 @@ const CONTENT = {
       "speed": 6,
       "rarity": "epic",
       "element": "physical",
-      "image": "/images/monsters/nether_hydra.png",
+      "image": "/images/monsters/nether_hydra.webp?v=mu7rjzij",
       "resistance": 40,
       "tags": [
         "dragon"
@@ -7783,7 +7867,7 @@ const CONTENT = {
       "speed": 7,
       "rarity": "legendary",
       "element": "shadow",
-      "image": "/images/monsters/doom_lord.png",
+      "image": "/images/monsters/doom_lord.webp?v=mu7rjrmg",
       "resistance": 30,
       "tags": [
         "demon"
@@ -7797,7 +7881,7 @@ const CONTENT = {
       "speed": 4,
       "rarity": "epic",
       "element": "physical",
-      "image": "/images/monsters/molten_behemoth.png",
+      "image": "/images/monsters/molten_behemoth.webp?v=mu7rds3s",
       "resistance": 40,
       "tags": [
         "demon"
@@ -7811,7 +7895,7 @@ const CONTENT = {
       "speed": 3,
       "rarity": "epic",
       "element": "physical",
-      "image": "/images/monsters/frost_titan.png",
+      "image": "/images/monsters/frost_titan.webp?v=mu7rdgek",
       "resistance": 38,
       "tags": [
         "construct"
@@ -7825,7 +7909,7 @@ const CONTENT = {
       "speed": 8,
       "rarity": "epic",
       "element": "shadow",
-      "image": "/images/monsters/void_herald.png",
+      "image": "/images/monsters/void_herald.webp?v=mu7rd7o2",
       "resistance": 21,
       "tags": [
         "demon"
@@ -7839,7 +7923,7 @@ const CONTENT = {
       "speed": 6,
       "rarity": "epic",
       "element": "arcane",
-      "image": "/images/monsters/storm_colossus.png",
+      "image": "/images/monsters/storm_colossus.webp?v=mu7rd159",
       "resistance": 37,
       "tags": [
         "construct"
@@ -7853,7 +7937,7 @@ const CONTENT = {
       "speed": 12,
       "rarity": "epic",
       "element": "holy",
-      "image": "/images/monsters/phoenix_canary.png",
+      "image": "/images/monsters/phoenix_canary.webp?v=mu7rc371",
       "resistance": 36,
       "tags": [
         "beast"
@@ -7870,7 +7954,7 @@ const CONTENT = {
       "speed": 5,
       "rarity": "mythic",
       "element": "physical",
-      "image": "/images/monsters/world_eater.png",
+      "image": "/images/monsters/world_eater.webp?v=mu7rcazb",
       "resistance": 40
     },
     {
@@ -7881,7 +7965,7 @@ const CONTENT = {
       "speed": 12,
       "rarity": "uncommon",
       "element": "nature",
-      "image": "/images/monsters/vine_wraith.png",
+      "image": "/images/monsters/vine_wraith.webp?v=mu7rch8q",
       "resistance": 9,
       "tags": [
         "undead"
@@ -7895,7 +7979,7 @@ const CONTENT = {
       "speed": 8,
       "rarity": "uncommon",
       "element": "nature",
-      "image": "/images/monsters/thornback_boar.png",
+      "image": "/images/monsters/thornback_boar.webp?v=mu7rcorz",
       "resistance": 12,
       "tags": [
         "beast"
@@ -7909,7 +7993,7 @@ const CONTENT = {
       "speed": 5,
       "rarity": "rare",
       "element": "nature",
-      "image": "/images/monsters/elder_treant.png",
+      "image": "/images/monsters/elder_treant.webp?v=mu7rcttz",
       "resistance": 19,
       "tags": [
         "plant"
