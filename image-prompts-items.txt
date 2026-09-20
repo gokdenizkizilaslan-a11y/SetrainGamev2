@@ -2,278 +2,338 @@
 SETRA GAME - ITEM IMAGE PROMPTS (KREA2)
 ================================================================
 HOW TO USE:
-- 1 prompt = 1 GRID image (SQUARE 1:1, except 2x2 and strips noted).
-  Generate, cut top-left to bottom-right, save each cell to its path.
+- 1 prompt = 1 GRID image. Generate, cut top-left to bottom-right,
+  save each cell to its path.
+- KREA2: always SQUARE 1:1 aspect (strips too — wide canvas with
+  square cells side by side).
 - Files go to public/images/items/<id>.png.
 - Items show as small rounded SQUARE icons in game.
+- IN CELLS write only the item NAME (no .png, no path).
+- FORMAT: simple numbered list in order (1. 2. 3...) — Krea puts
+  them into the boxes left-to-right, top-to-bottom by itself.
+- 3x3 BREAKS? Use image-prompts-2x2.txt — every 3x3 here is
+  pre-split into 2x2 chunks there (same art, same names).
+GRID DISCIPLINE (critical — never break this): draw EXACTLY the
+cell count written in the grid line (3x3 means exactly 9 cells,
+2x2 exactly 4, 1x2 strip exactly 2 side by side — no more, no
+fewer). Perfect straight rows and columns, every cell the same
+size square. Thick dark gap lines BETWEEN every cell and a dark
+border around the whole grid — the gaps form a full cage. NO
+subject may touch or cross a gap line; every icon lives FULLY
+inside its own cell. No half-cut icons at the edges, no
+fragments, no overflow outside the grid. Flat straight front
+view, no tilt, no perspective, no rotation.
 ----------------------------------------------------------------
 BASE STYLE (paint into every grid prompt):
-"League-of-Legends style square item icons, GRID with thin dark gaps
-on dark slate, single centered object per cell filling most of the
-frame, painterly splash-art, dramatic rim light, rarity-tinted glow
-(common slate grey, uncommon leaf green, rare deep blue, epic royal
-purple, legendary molten amber, mythic ember red-gold), purely visual
-wordless emblems"
+"Premium game item-icon finish: single hero object per cell in
+extreme close-up filling 70% of the frame, bold readable
+silhouette, dramatic rim light against deep shadow, painterly oil
+finish, rarity-tinted glow (common slate grey, uncommon leaf
+green, rare deep blue, epic royal purple, legendary molten amber,
+mythic ember red-gold), purely visual wordless emblems.
+SIBLING RULE (critical): items sharing one grid must NEVER look
+alike. Differentiate first by SILHOUETTE (shape, pose, angle),
+then by MATERIAL (wood, iron, jewel, bone, cloth), then by glow —
+no two cells the same object twice."
 CUT ORDER: top-left = cell 1, left-to-right, row by row.
 ================================================================
 
 --- GRID W1 (3x3, common steel I) ---
-9 item icons. Cell 1 (rusty_sword.png): rust-pitted short sword,
-diagonal, grey. Cell 2 (battle_axe.png): heavy double-blade axe, grey.
-Cell 3 (war_hammer.png): blocky iron war hammer, grey. Cell 4
-(longbow.png): tall yew longbow with string, grey. Cell 5
-(shortbow.png): short curved bow, grey. Cell 6 (apprentice_staff.png):
-plain wooden staff with rope grip, grey. Cell 7 (archon_staff.png):
-slim staff with pale crystal, green glow. Cell 8 (dagger.png): small
-steel dagger, grey. Cell 9 (poison_dagger.png): green-dripping dagger,
-grey.
+3x3 grid, 9 square item icons, in this exact order:
+1. rusty_sword — short sword diagonal down-right, heavy brown rust pits over dull steel, grey.
+2. battle_axe — vertical double-crescent axe head with a short haft stub, plain iron, grey.
+3. war_hammer — horizontal blocky hammer head on a thick handle, riveted iron, grey.
+4. longbow — tall vertical yew longbow spanning the full height with a taut string, grey.
+5. shortbow — compact recurve bow tilted opposite diagonal with a curved belly, grey.
+6. apprentice_staff — vertical gnarled wooden staff with a rope grip spiral, grey.
+7. archon_staff — slim upright staff crowned with a pale floating crystal, green glow.
+8. dagger — tiny horizontal stiletto dagger, needle point, grey.
+9. poison_dagger — wavy kris dagger dripping bright green venom, grey.
 
 --- GRID W2 (3x3, mixed steel) ---
-9 item icons. Cell 1 (mace.png): flanged steel mace, grey. Cell 2
-(holy_sword.png): slender sword with sun crossguard, green glow. Cell 3
-(kris_blade.png): wavy kris dagger, green glow. Cell 4
-(whisper_blade.png): thin whispering blade with wind lines, green glow.
-Cell 5 (scepter.png): golden orb scepter, green glow. Cell 6
-(cleric_staff.png): white staff with healing rune, blue glow. Cell 7
-(maul.png): huge two-hand maul, grey. Cell 8 (bulwark_hammer.png):
-tower-shield-headed hammer, green glow. Cell 9 (stone_ash_sword.png):
-ash-grey stone sword with ember veins, grey.
+3x3 grid, 9 square item icons, in this exact order:
+1. mace — flanged steel mace head-on, star-shaped flanges radiating, grey.
+2. holy_sword — slender upright sword with a sun crossguard halo, green glow.
+3. kris_blade — wavy serpentine kris dagger coiling S-shaped, green glow.
+4. whisper_blade — thin horizontal whisper blade with curling wind lines, green glow.
+5. scepter — vertical golden orb scepter with a crown-like top, green glow.
+6. cleric_staff — white staff with a glowing healing rune ring, blue glow.
+7. maul — huge two-hand maul head filling the frame, battered face forward, grey.
+8. bulwark_hammer — hammer whose head is a miniature tower shield, green glow.
+9. stone_ash_sword — ash-grey stone sword with glowing ember veins, grey.
 
 --- GRID W3 (3x3, crafted + arcane) ---
-9 item icons. Cell 1 (fire_ash_sword.png): ash sword wreathed in flame,
-green glow. Cell 2 (molten_cleaver.png): dripping magma cleaver, blue
-glow. Cell 3 (frost_gladius.png): frost-rimed gladius, green glow.
-Cell 4 (arcane_rod.png): violet crystal rod, green glow. Cell 5
-(shadow_knife.png): black-purple kunai knife, green glow. Cell 6
-(ember_sword.png): ember-cracked greatsword, purple glow. Cell 7
-(phoenix_staff.png): golden phoenix-wing staff, amber glow. Cell 8
-(void_cleaver.png): darkness-drinking cleaver, red-gold glow. Cell 9
-(iron_greatsword.png): plain massive greatsword, grey.
+3x3 grid, 9 square item icons, in this exact order:
+1. fire_ash_sword — ash sword wreathed in coiling flame tongues, green glow.
+2. molten_cleaver — broad cleaver blade dripping liquid magma drops, blue glow.
+3. frost_gladius — short gladius rimed with feathered frost crystals, green glow.
+4. arcane_rod — thin violet crystal rod with orbiting spark motes, green glow.
+5. shadow_knife — black-purple kunai knife with a smoky aura trail, green glow.
+6. ember_sword — ember-cracked greatsword split by glowing orange fault lines, purple glow.
+7. phoenix_staff — golden staff crowned with spread phoenix wings, amber glow.
+8. void_cleaver — dark cleaver drinking light into a starless void edge, red-gold glow.
+9. iron_greatsword — plain massive greatsword vertical, brutal and undecorated, grey.
 
 --- GRID W4 (3x3, named steel) ---
-9 item icons. Cell 1 (steel_blade.png): polished steel arming sword,
-grey. Cell 2 (ranger_bow.png): green-wrapped hunting bow, green glow.
-Cell 3 (arcane_scepter.png): violet mana scepter, green glow. Cell 4
-(shadow_dagger.png): curved shadow fang dagger, blue glow. Cell 5
-(dragon_spear.png): long spear with dragon-scale shaft, blue glow.
-Cell 6 (titan_hammer.png): colossal titan maul, purple glow. Cell 7
-(storm_bow.png): lightning-stringed storm bow, purple glow. Cell 8
-(void_blade.png): starless void katana, amber glow. Cell 9
-(world_breaker.png): mountain-cleaving greatmaul, red-gold glow.
+3x3 grid, 9 square item icons, in this exact order:
+1. steel_blade — polished arming sword diagonal with a mirror shine stripe, grey.
+2. ranger_bow — hunting bow wrapped in green leather straps with a leaf charm, green glow.
+3. arcane_scepter — violet mana scepter topped with a faceted amethyst orb, green glow.
+4. shadow_dagger — curved shadow fang dagger like a beast tooth, blue glow.
+5. dragon_spear — long spear with a dragon-scale shaft and a barbed head, blue glow.
+6. titan_hammer — colossal titan maul with a cracked stone head, purple glow.
+7. storm_bow — storm bow strung with a live lightning bolt, purple glow.
+8. void_blade — starless void katana, pure black blade drinking light, amber glow.
+9. world_breaker — mountain-cleaving greatmaul with a peak-shaped head, red-gold glow.
 
 --- GRID W5 (3x3, boss + blood) ---
-9 item icons. Cell 1 (crimson_blade.png): blood-red vampiric blade,
-purple glow. Cell 2 (boss_weapon_ember.png): flaming Ember King
-greatblade, purple glow. Cell 3 (boss_weapon_frost.png): glacier frost
-titan axe, purple glow. Cell 4 (boss_weapon_void.png): tentacled void
-scythe, amber glow. Cell 5 (boss_weapon_storm.png): thunderstorm
-colossus hammer, amber glow. Cell 6 (boss_weapon_world.png): colossal
-world eater fang, red-gold glow. Cell 7 (sturdy_club.png): dependable
-oaken club, grey. Cell 8 (hunter_axe.png): woodsman bearded axe, green
-glow. Cell 9 (oak_staff.png): heartwood staff with leaves, green glow.
+3x3 grid, 9 square item icons, in this exact order:
+1. crimson_blade — blood-red vampiric blade with a bat-wing crossguard, purple glow.
+2. boss_weapon_ember — flaming Ember King greatblade wreathed in crown-shaped fire, purple glow.
+3. boss_weapon_frost — glacier frost titan axe with an icicle beard on its head, purple glow.
+4. boss_weapon_void — tentacled void scythe with star-specked tendrils, amber glow.
+5. boss_weapon_storm — thunderstorm colossus hammer crackling inside a cloud ring, amber glow.
+6. boss_weapon_world — colossal world eater fang, curved mountain-tooth, red-gold glow.
+7. sturdy_club — dependable oaken club with worn grip wraps, grey.
+8. hunter_axe — woodsman bearded axe with a long lower beard hook, green glow.
+9. oak_staff — heartwood staff sprouting live green leaves, green glow.
 
 --- GRID W6 (2x2, rare finds) ---
-2x2 grid, 4 item icons. Cell 1 (frostbrand_axe.png): never-thawing ice
-axe, blue glow. Cell 2 (runed_bow.png): rune-carved glowing bow, blue
-glow. Cell 3 (void_reaver.png): hungering void greatsword, purple glow.
-Cell 4 (stormcaller_staff.png): cloud-crowned storm staff, purple glow.
+2x2 grid, 4 square item icons, in this exact order:
+1. frostbrand_axe — never-thawing ice axe with a translucent frozen head, blue glow.
+2. runed_bow — rune-carved glowing bow with burning blue script along its limbs, blue glow.
+3. void_reaver — hungering void greatsword with a mouth-like fuller, purple glow.
+4. stormcaller_staff — cloud-crowned storm staff with a miniature tempest swirling on top, purple glow.
 
 --- GRID W7 (1x2 strip, legends) ---
-1x2 strip, 2 item icons. Cell 1 (kingsfall_blade.png): dynasty-ending
-golden blade, amber glow. Cell 2 (worldsplitter_axe.png): world-cracking
-obsidian axe, red-gold glow.
+1x2 strip, 2 square item icons side by side, in this exact order:
+1. kingsfall_blade — dynasty-ending golden blade with a crown pommel and royal engravings, amber glow.
+2. worldsplitter_axe — world-cracking obsidian axe split by a glowing red fault, red-gold glow.
 
 --- GRID H1 (3x3, helms I) ---
-9 item icons. Cell 1 (leather_helm.png): stitched leather cap, grey.
-Cell 2 (bronze_helm.png): verdigris bronze helm, grey. Cell 3
-(iron_helm.png): plain iron greathelm, grey. Cell 4 (ranger_hood.png):
-green hunter hood, green glow. Cell 5 (mage_cowl.png): deep blue mage
-cowl, green glow. Cell 6 (knight_helm.png): noble visored helm, blue
-glow. Cell 7 (shadow_mask.png): dark whisper mask, blue glow. Cell 8
-(dragon_helm.png): horned dragon helm, purple glow. Cell 9
-(void_crown.png): starless void crown, amber glow.
+3x3 grid, 9 square item icons, in this exact order:
+1. leather_helm — stitched soft leather cap with floppy ear flaps, grey.
+2. bronze_helm — verdigris bronze helm with a nose guard and green patina, grey.
+3. iron_helm — plain iron greathelm, flat cylinder with breath slits, grey.
+4. ranger_hood — green hunter hood with a pointed draping tail, green glow.
+5. mage_cowl — deep blue mage cowl with a shadowed face opening, green glow.
+6. knight_helm — noble visored helm with a plume slot and etched trim, blue glow.
+7. shadow_mask — dark whisper half-mask with violet eye slits, blue glow.
+8. dragon_helm — horned dragon helm with swept-back horns, purple glow.
+9. void_crown — starless void crown, thin black band with dying stars, amber glow.
 
 --- GRID H2 (2x2, helms II) ---
-2x2 grid, 4 item icons. Cell 1 (glacial_helm.png): ice-crystal helm,
-blue glow. Cell 2 (cloth_cap.png): humble stitched cap, grey. Cell 3
-(wolf_helm.png): alpha pelt helm, green glow. Cell 4 (sentinel_helm.png):
-siege-scarred sentinel helm, blue glow.
+2x2 grid, 4 square item icons, in this exact order:
+1. glacial_helm — ice-crystal helm grown like a glacier, translucent, blue glow.
+2. cloth_cap — humble stitched cloth cap with a floppy top, grey.
+3. wolf_helm — alpha pelt helm with wolf ears and fangs framing the face, green glow.
+4. sentinel_helm — siege-scarred sentinel helm with a T-slit visor, blue glow.
 
 --- GRID H3 (1x2 strip, crowns) ---
-1x2 strip, 2 item icons. Cell 1 (archon_crown.png): sky-tyrant golden
-crown, purple glow. Cell 2 (sage_circlet.png): quiet silver circlet,
-green glow.
+1x2 strip, 2 square item icons side by side, in this exact order:
+1. archon_crown — sky-tyrant golden crown with tall sun-ray spikes, purple glow.
+2. sage_circlet — quiet thin silver circlet with a single small moonstone, green glow.
 
 --- GRID A1 (3x3, armor I) ---
-9 item icons. Cell 1 (leather_chest.png): stitched leather cuirass,
-grey. Cell 2 (padded_armor.png): quilted gambeson, grey. Cell 3
-(chainmail.png): riveted chain shirt, grey. Cell 4 (ranger_vest.png):
-green scout vest, green glow. Cell 5 (silk_robe.png): shimmering blue
-silk robe, green glow. Cell 6 (plate_armor.png): mirror plate cuirass,
-blue glow. Cell 7 (shadow_garb.png): eclipse-dark assassin garb, blue
-glow. Cell 8 (dragon_scale.png): red dragon-scale mail, purple glow.
-Cell 9 (void_plate.png): starless void plate, red-gold glow.
+3x3 grid, 9 square item icons, in this exact order:
+1. leather_chest — stitched leather cuirass with crossed straps, grey.
+2. padded_armor — quilted gambeson with diamond stitching, grey.
+3. chainmail — riveted chain shirt with visible interlocked rings, grey.
+4. ranger_vest — green scout vest with arrow loops and a hood roll, green glow.
+5. silk_robe — shimmering blue silk robe with wide flowing sleeves, green glow.
+6. plate_armor — mirror plate cuirass with a central ridge and faulds, blue glow.
+7. shadow_garb — eclipse-dark assassin garb, tight wraps with buckles, blue glow.
+8. dragon_scale — red dragon-scale mail of overlapping scales, purple glow.
+9. void_plate — starless void plate swallowing light at its edges, red-gold glow.
 
 --- GRID A2 (2x2, heavy plates) ---
-2x2 grid, 4 item icons. Cell 1 (ember_plate.png): ember-veined plate,
-purple glow. Cell 2 (boar_hide_armor.png): musky boar-hide armor, green
-glow. Cell 3 (shadowplate.png): eclipse-forged black plate, blue glow.
-Cell 4 (aegis_armor.png): radiant aegis bulwark, purple glow.
+2x2 grid, 4 square item icons, in this exact order:
+1. ember_plate — ember-veined plate with glowing orange cracks, purple glow.
+2. boar_hide_armor — musky boar-hide armor with bristles and tusks on the shoulders, green glow.
+3. shadowplate — eclipse-forged black plate with violet seam light, blue glow.
+4. aegis_armor — radiant aegis bulwark with a sunburst boss, purple glow.
 
 --- GRID A3 (single, titan relic) ---
-Single square icon. Cell 1 (titanward_plate.png): titan-forged golden
-bulwark with giant runes, amber glow.
+Single square icon:
+1. titanward_plate — titan-forged golden bulwark slab with giant runes, amber glow.
 
 --- GRID L1 (3x3, legs I) ---
-9 item icons. Cell 1 (leather_pants.png): worn leather pants, grey.
-Cell 2 (leather_greaves.png): strapped leather greaves, grey. Cell 3
-(iron_greaves.png): plain iron greaves, grey. Cell 4 (swift_leggings.png):
-light runner leggings, green glow. Cell 5 (sage_pants.png): ink-stained
-scholar trousers, green glow. Cell 6 (knight_leggings.png): gilded
-knight cuisses, blue glow. Cell 7 (shadow_leggings.png): silent dark
-leggings, blue glow. Cell 8 (dragon_leggings.png): scaled dragon
-cuisses, purple glow. Cell 9 (void_leggings.png): starless void
-greaves, amber glow.
+3x3 grid, 9 square item icons, in this exact order:
+1. leather_pants — worn leather pants with patched knees, grey.
+2. leather_greaves — strapped leather greaves with buckle rows, grey.
+3. iron_greaves — plain iron greaves, smooth tubes with knee cops, grey.
+4. swift_leggings — light runner leggings with side slits and cords, green glow.
+5. sage_pants — ink-stained scholar trousers with scroll pocket, green glow.
+6. knight_leggings — gilded knight cuisses with engraved borders, blue glow.
+7. shadow_leggings — silent dark leggings with smoke wisps at the cuffs, blue glow.
+8. dragon_leggings — scaled dragon cuisses of red overlapping plates, purple glow.
+9. void_leggings — starless void greaves with dying-star specks, amber glow.
 
 --- GRID L2 (1x2 strip, swift legs) ---
-1x2 strip, 2 item icons. Cell 1 (swift_greaves.png): feather-light
-plates, green glow. Cell 2 (storm_leggings.png): static-crackling
-leggings, blue glow.
+1x2 strip, 2 square item icons side by side, in this exact order:
+1. swift_greaves — feather-light plates with small wing fins, green glow.
+2. storm_leggings — static-crackling leggings with arcing sparks, blue glow.
 
 --- GRID B1 (3x3, boots) ---
-9 item icons. Cell 1 (leather_boots.png): scuffed leather boots, grey.
-Cell 2 (worn_boots.png): holey traveler boots, grey. Cell 3
-(iron_boots.png): heavy iron sabatons, grey. Cell 4 (ranger_boots.png):
-silent green scout boots, green glow. Cell 5 (sorcery_boots.png):
-rune-stitched blue boots, green glow. Cell 6 (knight_boots.png):
-steel knight sabatons, blue glow. Cell 7 (void_boots.png): starless
-void boots, purple glow. Cell 8 (travel_boots.png): dust-caked road
-boots, grey. Cell 9 (ember_boots.png): still-smoking forge boots, green
-glow.
+3x3 grid, 9 square item icons, in this exact order:
+1. leather_boots — scuffed leather boots with curled toes, grey.
+2. worn_boots — holey traveler boots with a flapping sole, grey.
+3. iron_boots — heavy iron sabatons, blunt and riveted, grey.
+4. ranger_boots — silent green scout boots with soft moccasin soles, green glow.
+5. sorcery_boots — rune-stitched blue boots with glowing seam script, green glow.
+6. knight_boots — steel knight sabatons with pointed toes and gilded trim, blue glow.
+7. void_boots — starless void boots with a light-eating sheen, purple glow.
+8. travel_boots — dust-caked road boots with bedroll straps, grey.
+9. ember_boots — still-smoking forge boots with glowing cracks, green glow.
 
 --- GRID M1 (3x3, amulets) ---
-9 item icons. Cell 1 (iron_amulet.png): plain iron pendant, green glow.
-Cell 2 (mana_talisman.png): blue mana crystal charm, blue glow. Cell 3
-(copper_amulet.png): dull copper amulet, grey. Cell 4 (silver_amulet.png):
-bright silver amulet, green glow. Cell 5 (ruby_amulet.png): blood-red
-ruby amulet, blue glow. Cell 6 (sapphire_amulet.png): deep blue sapphire
-amulet, purple glow. Cell 7 (void_amulet.png): black-hole amulet, amber
-glow. Cell 8 (moon_amulet.png): crescent moon amulet, green glow. Cell 9
-(thunder_amulet.png): bottled-lightning amulet, blue glow.
+3x3 grid, 9 square item icons, in this exact order:
+1. iron_amulet — plain iron pendant disc on a coarse cord, green glow.
+2. mana_talisman — blue mana crystal shard in wire wrapping, blue glow.
+3. copper_amulet — dull copper amulet, round and tarnished, grey.
+4. silver_amulet — bright silver amulet with engraved rays, green glow.
+5. ruby_amulet — blood-red ruby amulet in a claw setting, blue glow.
+6. sapphire_amulet — deep blue sapphire amulet, teardrop cut, purple glow.
+7. void_amulet — black-hole amulet, a dark orb ringed with bent light, amber glow.
+8. moon_amulet — slender crescent moon amulet, silver curve, green glow.
+9. thunder_amulet — bottled-lightning amulet, glass vial with a trapped bolt, blue glow.
 
 --- GRID R1 (3x3, rings I) ---
-9 item icons. Cell 1 (iron_ring.png): plain iron band, grey. Cell 2
-(copper_ring.png): hammered copper ring, grey. Cell 3 (silver_ring.png):
-sleek silver ring, green glow. Cell 4 (ruby_ring.png): ruby signet,
-blue glow. Cell 5 (sapphire_ring.png): sapphire eye ring, purple glow.
-Cell 6 (void_ring.png): starless void band, amber glow. Cell 7
-(vampiric_ring.png): fang-set blood ring, blue glow. Cell 8
-(bone_ring.png): dire-wolf fang ring, grey. Cell 9 (serpent_ring.png):
-coiled silver serpent ring, green glow.
+3x3 grid, 9 square item icons, in this exact order:
+1. iron_ring — plain iron band, thick and unadorned, grey.
+2. copper_ring — hammered copper ring with dents catching light, grey.
+3. silver_ring — sleek thin silver ring with a polished shine, green glow.
+4. ruby_ring — ruby signet ring with a square blood-red stone, blue glow.
+5. sapphire_ring — sapphire eye ring, oval blue stone like a watching eye, purple glow.
+6. void_ring — starless void band, black metal with void sheen, amber glow.
+7. vampiric_ring — fang-set blood ring, two tiny fangs gripping a red gem, blue glow.
+8. bone_ring — dire-wolf fang ring, curved yellowed tooth, grey.
+9. serpent_ring — coiled silver serpent ring biting its own tail, green glow.
 
 --- GRID R2 (single, warden oath) ---
-Single square icon. Cell 1 (warden_ring.png): oath-bound silver ring
-with green oath-stone, blue glow.
+Single square icon:
+1. warden_ring — oath-bound silver ring with a green oath-stone and leaf engraving, blue glow.
 
 --- GRID C1 (3x3, food & salves) ---
-9 item icons. Cell 1 (hearth_tea.png): steaming clay tea cup, grey.
-Cell 2 (field_rations.png): wrapped travel ration pack, grey. Cell 3
-(minor_salve.png): small green salve jar, grey. Cell 4 (wolf_jerky.png):
-strip of smoked jerky, grey. Cell 5 (mushroom_stew.png): hearty
-mushroom bowl, green glow. Cell 6 (frost_berry.png): frosted blue
-berries, green glow. Cell 7 (ember_pepper.png): smoldering red pepper,
-green glow. Cell 8 (troll_draught.png): bubbling green flask, blue
-glow. Cell 9 (skyshard_omelet.png): storm-fried egg dish, blue glow.
+3x3 grid, 9 square item icons, in this exact order:
+1. hearth_tea — steaming clay tea cup with swirling vapor, grey.
+2. field_rations — wrapped travel ration pack tied with twine, grey.
+3. minor_salve — small green salve jar with a cork lid, grey.
+4. wolf_jerky — strip of smoked jerky hanging from a hook, grey.
+5. mushroom_stew — hearty mushroom bowl with rising steam and chunky slices, green glow.
+6. frost_berry — frosted blue berries clustered with ice crystals, green glow.
+7. ember_pepper — smoldering red pepper with glowing cracks, green glow.
+8. troll_draught — bubbling green flask with foam overflowing the neck, blue glow.
+9. skyshard_omelet — storm-fried egg dish crackling with tiny arcs, blue glow.
 
 --- GRID C2 (single, dawn elixir) ---
-Single square icon. Cell 1 (elixir_of_dawn.png): bottled sunrise
-elixir, purple glow.
+Single square icon:
+1. elixir_of_dawn — bottled sunrise elixir, gradient gold-to-rose liquid, purple glow.
 
 --- GRID M2 (3x3, essences & hearts) ---
-9 item icons. Cell 1 (fire_essence.png): bottled flame spark, grey.
-Cell 2 (frost_essence.png): condensed cold droplet, grey. Cell 3
-(arcane_essence.png): swirling violet vial, grey. Cell 4
-(shadow_essence.png): lightless black vial, grey. Cell 5
-(heart_of_fire.png): still-burning fire heart, blue glow. Cell 6
-(golem_heart.png): heavy stone heart, blue glow. Cell 7
-(origin_stone.png): fate-carved rebirth stone, purple glow. Cell 8
-(ancient_relic.png): aeon-old golden artifact, amber glow. Cell 9
-(the_essence_of_life.png): radiant life essence orb, purple glow.
+3x3 grid, 9 square item icons, in this exact order. Four essence vials MUST differ:
+1. fire_essence — squat round flask with a leaping flame spark inside, grey.
+2. frost_essence — tall thin vial with a single condensed cold droplet sinking, grey.
+3. arcane_essence — spiral flask with swirling violet galaxy liquid, grey.
+4. shadow_essence — matte black cube vial of lightless void with no shine, grey.
+5. heart_of_fire — anatomical still-burning fire heart with flame veins, blue glow.
+6. golem_heart — heavy faceted stone heart, grey rock with chisel marks, blue glow.
+7. origin_stone — fate-carved rebirth stone tablet with spiral destiny carving, purple glow.
+8. ancient_relic — aeon-old golden artifact, small sun-disc with eroded glyphs, amber glow.
+9. essence_of_life — radiant life essence orb floating with leaf motes, purple glow.
+NOTE: save this one as essence_of_life (game path differs from item id the_essence_of_life).
 
 --- GRID M3 (3x3, hunt scraps) ---
-9 item icons. Cell 1 (slime_bottle.png): jiggling slime bottle, grey.
-Cell 2 (wolf_fang.png): sharp still-warm fang, grey. Cell 3
-(bat_wing.png): leathery cave bat wing, grey. Cell 4 (spider_silk.png):
-shimmering ash-silk spool, grey. Cell 5 (tough_hide.png): thick beast
-hide roll, green glow. Cell 6 (skeleton_bone.png): malice-dense old
-bone, green glow. Cell 7 (orc_tusk.png): edged orc tusk trophy, green
-glow. Cell 8 (harpy_feather.png): crackling storm feather, green glow.
-Cell 9 (golem_fragment.png): living stone chip, blue glow.
+3x3 grid, 9 square item icons, in this exact order:
+1. slime_bottle — corked bottle with jiggling green slime blob inside, grey.
+2. wolf_fang — single sharp still-warm fang with a blood fleck at the root, grey.
+3. bat_wing — folded leathery cave bat wing with clawed finger bones, grey.
+4. spider_silk — shimmering ash-silk spool wound with silver thread, grey.
+5. tough_hide — thick rolled beast hide with coarse fur edge, green glow.
+6. skeleton_bone — malice-dense old bone yellowed with dark marrow lines, green glow.
+7. orc_tusk — edged orc tusk trophy with carved war notches, green glow.
+8. harpy_feather — crackling storm feather with electric barbs, green glow.
+9. golem_fragment — living stone chip with a glowing eye-like core, blue glow.
 
 --- GRID M4 (2x2, rare mats) ---
-2x2 grid, 4 item icons. Cell 1 (wraith_wisp.png): cold light in a jar,
-blue glow. Cell 2 (treant_bark.png): slowly regrowing bark slab, blue
-glow. Cell 3 (hydra_scale.png): shimmering regrowth scale, purple glow.
-Cell 4 (sword_blueprint.png): weapon schematic scroll, green glow.
+2x2 grid, 4 square item icons, in this exact order:
+1. wraith_wisp — cold pale light swirling inside a sealed jar, blue glow.
+2. treant_bark — slowly regrowing bark slab with a fresh green shoot, blue glow.
+3. hydra_scale — shimmering regrowth scale with rainbow oil-slick sheen, purple glow.
+4. sword_blueprint — weapon schematic scroll half-unrolled with sword diagrams, green glow.
+
+--- GRID M6 (2x2, ascension tokens) ---
+2x2 grid, 4 square item icons, in this exact order. Four tokens MUST differ:
+1. war_crest — scarred round warlord medallion with crossed blades relief, purple glow.
+2. shadow_sigil — whispering thin black-violet shadow rune coin, smoky edges, purple glow.
+3. arcane_seal — humming violet mana seal disc with concentric spell rings, purple glow.
+4. primeval_cruor — still-warm drop of first blood sealed in a thorned crystal vial, amber glow.
 
 --- GRID M5 (1x2 strip, patterns) ---
-1x2 strip, 2 item icons. Cell 1 (armor_blueprint.png): armor schematic
-scroll, green glow. Cell 2 (staff_blueprint.png): staff schematic
-scroll, blue glow.
+1x2 strip, 2 square item icons side by side, in this exact order:
+1. armor_blueprint — armor schematic scroll with cuirass diagrams and measurements, green glow.
+2. staff_blueprint — staff schematic scroll with crystal-mount diagrams, blue glow.
 
 --- GRID K1 (3x3, chests I) ---
-9 item icons. Cell 1 (wooden_chest.png): simple nailed chest, grey.
-Cell 2 (iron_chest.png): banded iron chest, green glow. Cell 3
-(gold_chest.png): gilded chest, blue glow. Cell 4 (emerald_chest.png):
-gem-studded chest, purple glow. Cell 5 (obsidian_chest.png): black-glass
-chest, amber glow. Cell 6 (boss_chest_ember.png): magma-sealed ember
-chest, purple glow. Cell 7 (boss_chest_frost.png): frost-rimed titan
-chest, purple glow. Cell 8 (boss_chest_void.png): void-mouthed herald
-chest, amber glow. Cell 9 (boss_chest_storm.png): storm-wreathed
-colossus chest, amber glow.
+3x3 grid, 9 square item icons, in this exact order. Five normal chests MUST differ by
+material AND shape:
+1. wooden_chest — simple nailed plank chest, flat lid, grey.
+2. iron_chest — banded iron chest with riveted straps and a padlock, green glow.
+3. gold_chest — gilded chest with curved baroque lid, blue glow.
+4. emerald_chest — gem-studded chest with green jewels on the corners, purple glow.
+5. obsidian_chest — black-glass chest with razor-sharp geometric edges, amber glow.
+6. boss_chest_ember — magma-sealed ember chest with lava seams, purple glow.
+7. boss_chest_frost — frost-rimed titan chest with icicle locks, purple glow.
+8. boss_chest_void — void-mouthed herald chest with a dark screaming face, amber glow.
+9. boss_chest_storm — storm-wreathed colossus chest with lightning clasps, amber glow.
 
 --- GRID K2 (1x2 strip, mythic chests) ---
-1x2 strip, 2 item icons. Cell 1 (boss_chest_world.png): world-serpent
-coiled chest, red-gold glow. Cell 2 (mythic_chest.png): legend-shrouded
-mythic chest, red-gold glow.
+1x2 strip, 2 square item icons side by side, in this exact order:
+1. boss_chest_world — world-serpent coiled chest, scaled serpent body wrapping it, red-gold glow.
+2. mythic_chest — legend-shrouded mythic chest wrapped in glowing rune chains, red-gold glow.
 
 --- GRID O1 (2x2, tomes) ---
-2x2 grid, 4 item icons. Cell 1 (tome_ember.png): ember-page grimoire,
-green glow. Cell 2 (tome_frost.png): frost-covered spellbook, blue
-glow. Cell 3 (tome_shadow.png): shadow-ink tome, blue glow. Cell 4
-(tome_light.png): dawn radiant codex, purple glow.
+2x2 grid, 4 square item icons, in this exact order. Four tomes MUST differ by cover:
+1. tome_ember — ember-page grimoire with charred edges and fire sigil, green glow.
+2. tome_frost — frost-covered spellbook with ice crystals on a blue cover, blue glow.
+3. tome_shadow — shadow-ink tome, black leather with whispering pages, blue glow.
+4. tome_light — dawn radiant codex, white gold with a sunburst clasp, purple glow.
 
 --- GRID O2 (single, void tome) ---
-Single square icon. Cell 1 (tome_void.png): starless void grimoire,
-amber glow.
+Single square icon:
+1. tome_void — starless void grimoire, light-eating black cover with dying stars, amber glow.
 
 --- GRID O3 (2x2, blood stones) ---
-2x2 grid, 4 item icons. Cell 1 (stone_blood.png): pulsing blood-red
-lifesteal stone, amber glow. Cell 2 (stone_frost.png): pale frost
-stone, red-gold glow. Cell 3 (stone_shadow.png): whispering shadow
-stone, red-gold glow. Cell 4 (stone_arcane.png): violet arcane stone,
-amber glow.
+2x2 grid, 4 square item icons, in this exact order. Four stones MUST differ by shape:
+1. stone_blood — pulsing blood-red lifesteal stone, rough heart-shaped chunk, amber glow.
+2. stone_frost — pale frost stone, hexagonal ice crystal, red-gold glow.
+3. stone_shadow — whispering shadow stone, jagged shard with smoke trails, red-gold glow.
+4. stone_arcane — violet arcane stone, smooth orb with inner galaxy swirl, amber glow.
 
 --- GRID O4 (single, earth stone) ---
-Single square icon. Cell 1 (stone_earth.png): mossy titan stone, amber
-glow.
+Single square icon:
+1. stone_earth — mossy titan stone, boulder chunk with green moss patches, amber glow.
 
 --- GRID E1 (3x3, eggs I) ---
-9 item icons. Cell 1 (egg_red.png): speckled red egg, grey. Cell 2
-(egg_green.png): mossy green egg, grey. Cell 3 (egg_blue.png): glossy
-blue egg, green glow. Cell 4 (egg_brown.png): muddy brown egg, green
-glow. Cell 5 (egg_yellow.png): golden-yolk yellow egg, blue glow. Cell 6
-(egg_purple.png): veined purple egg, blue glow. Cell 7 (egg_cyan.png):
-storm-glass cyan egg, purple glow. Cell 8 (egg_dark.png): starless dark
-egg, purple glow. Cell 9 (egg_orange.png): magma-cracked orange egg,
-amber glow.
+3x3 grid, 9 square item icons, in this exact order. Nine eggs MUST differ by shell
+pattern AND color:
+1. egg_red — speckled red egg with dark red dots, grey.
+2. egg_green — mossy green egg with moss tufts in cracks, grey.
+3. egg_blue — glossy blue egg with a mirror shine, green glow.
+4. egg_brown — muddy brown egg with dried mud swirls, green glow.
+5. egg_yellow — golden-yolk yellow egg glowing warm from within, blue glow.
+6. egg_purple — veined purple egg with glowing violet veins, blue glow.
+7. egg_cyan — storm-glass cyan egg with a tiny lightning bolt inside, purple glow.
+8. egg_dark — starless dark egg with dying-star specks, purple glow.
+9. egg_orange — magma-cracked orange egg with lava glowing through cracks, amber glow.
 
 --- GRID E2 (single, gold egg) ---
-Single square icon. Cell 1 (egg_gold.png): radiant solid-gold egg,
-red-gold glow.
+Single square icon:
+1. egg_gold — radiant solid-gold egg with engraved sun lines, red-gold glow.
 
 ================================================================
-COVERAGE: 184/184 items. Weapons 51 (W1-W5 + W6 2x2 + W7 strip),
+COVERAGE: 188/188 items. Weapons 51 (W1-W5 + W6 2x2 + W7 strip),
 head 15, armor 14, legs 11, boots 9, amulet 9, ring 10, consumable 10,
-material 24, chest 11, book 5, stone 5, egg 10.
+material 28 (M2 + M3 + M4 2x2 + M5 strip + M6 2x2 ascend tokens),
+chest 11, book 5, stone 5, egg 10.
 ================================================================

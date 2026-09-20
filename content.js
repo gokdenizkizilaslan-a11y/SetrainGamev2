@@ -5689,7 +5689,7 @@ const CONTENT = {
         "gold": 250,
         "wood": 0
       },
-      "image": "",
+      "image": "/images/items/origin_stone.png",
       "description": "Offer it at the Ancient Temple to be reborn into a new race."
     },
     {
@@ -5891,7 +5891,7 @@ const CONTENT = {
         "wood": 0
       },
       "chestTier": "f",
-      "image": "",
+      "image": "/images/items/wooden_chest.png",
       "description": "A simple chest. Common odds of decent loot."
     },
     {
@@ -5904,7 +5904,7 @@ const CONTENT = {
         "wood": 0
       },
       "chestTier": "d",
-      "image": "",
+      "image": "/images/items/iron_chest.png",
       "description": "A sturdy chest. Better odds of uncommon loot."
     },
     {
@@ -5917,7 +5917,7 @@ const CONTENT = {
         "wood": 0
       },
       "chestTier": "c",
-      "image": "",
+      "image": "/images/items/gold_chest.png",
       "description": "A gilded chest. Decent odds of rare loot."
     },
     {
@@ -5930,7 +5930,7 @@ const CONTENT = {
         "wood": 0
       },
       "chestTier": "b",
-      "image": "",
+      "image": "/images/items/emerald_chest.png",
       "description": "A gem-studded chest. Strong odds of epic loot."
     },
     {
@@ -5943,7 +5943,7 @@ const CONTENT = {
         "wood": 0
       },
       "chestTier": "a",
-      "image": "",
+      "image": "/images/items/obsidian_chest.png",
       "description": "A black-glass chest. Fine odds of legendary loot."
     },
     {
@@ -7161,7 +7161,7 @@ const CONTENT = {
         "wood": 0
       },
       "chestTier": "s",
-      "image": "",
+      "image": "/images/items/mythic_chest.png",
       "description": "A chest of legend. Great odds of mythic loot."
     },
     {

@@ -12,6 +12,10 @@ HOW TO USE:
 - Skill icons: 1 prompt = 1 GRID image. Generate, then cut in order
   (top-left to bottom-right) and save each cell to its file path.
   Recommended KREA2: SQUARE 1:1 aspect, wordless emblem-style icons.
+- IN CELLS write only the skill NAME (no .png, no path): each cell
+  says which box (Cell 1, Cell 2...) and what must be inside it.
+- 3x3 BREAKS? Use image-prompts-2x2.txt — every 3x3 here is
+  pre-split into 2x2 chunks there (same art, same names).
 - Only image files are added, then the game restarts.
 ----------------------------------------------------------------
 CHARACTER STYLE (same world as warrior.webp, painted as LoL SPLASH ART):
@@ -42,7 +46,7 @@ composition. Each prompt states GENDER first, then exact HAIR
 ================================================================
 
 
-=================== CHARACTERS (15 missing) ===================
+=================== CHARACTERS (19 missing) ===================
 
 --- [1] warlord -> public/images/characters/warlord.png ---
 Gender male, mid-30s. Splash-art portrait in 3/4 view: a battle-worn
@@ -223,6 +227,67 @@ sword cut across the breastplate, two doves of living light crossing
 behind her shoulders. Her fully lit face radiates transcendent
 warmth. A white marble sanctuary glows behind. Painterly splash-art
 finish, wordless composition.
+
+--- [16] bloodspawn (Lv20 vampire, physical) -> public/images/characters/bloodspawn.png ---
+Gender male, late 20s. Splash-art portrait: a strikingly handsome
+pale fledgling vampire predator in 3/4 view, lean and corded (around
+185 cm, assassin's wiry muscle), tousled black hair falling to the
+collar with one blood-wet strand across the temple, clean-shaven
+aristocratic face with faint veins at the temples, deep crimson eyes
+half-lidded with hunger, subtle fangs just touching the lower lip, a
+fresh cut on his knuckles beading red, dark fitted assassin leather
+slashed open at the throat beneath a high-collared oxblood greatcoat
+with one torn tails edge lifting, a single antique signet ring. His
+fully lit face turns left with predatory calm, droplets of blood
+hanging suspended in the air beside his cheek. Cold dusk light from
+the right over a blurred torchlit town square at sundown. Painterly
+splash-art finish, blood-crimson and ash-black palette, darkly
+elegant, wordless composition.
+
+--- [17] gloomspawn (Lv20 vampire, magic) -> public/images/characters/gloomspawn.png ---
+Gender female, late 20s. Splash-art portrait: a beautiful pale
+vampire sorceress in 3/4 view, slender and poised (around 172 cm),
+long raven-black hair lifting weightless past the waist with violet
+underlight, flawless clean face with delicate dark veins at
+the eyelids, glowing amethyst eyes gazing up-left, subtle fangs in a
+parted crimson smile, one hand raised with blood orbiting her fingers
+in a thin levitating ribbon, deep plum scholar robes slit for motion
+over a corseted bodice with one frayed hem, a cracked crystal amulet
+drinking red light at her throat. Her fully lit face burns with
+fascinated hunger. Violet spell-glow rises from below over a blurred
+moonlit archive of chained tomes. Painterly splash-art finish,
+wine-dark and violet palette, hauntingly beautiful, wordless
+composition.
+
+--- [18] bloodlord (Lv40 EPIC vampire, physical) -> public/images/characters/bloodlord.png ---
+Gender male, ageless. EPIC splash-art portrait from a slight low
+angle: a terrifyingly handsome vampire tyrant advancing forward,
+tall and massive (around 195 cm, heavy predator's shoulders),
+slicked-back black hair with grey victory streaks at medium length,
+clean-shaven brutal aristocratic face with a healed duelling scar
+through the eyebrow, burning crimson eyes locked forward, bared
+fangs in a war snarl, colossal gore-red plate veined with black
+rivers of dried blood, a tattered executioner cape of stitched
+battle banners over one shoulder, a great fang-bladed execution
+sword dragging sparks along the ground. His fully lit face radiates
+apex menace underlit by rising blood-glow from below. A burning
+village square blurs behind in red haze. Painterly splash-art
+finish, a full tier above any bloodspawn, wordless composition.
+
+--- [19] sanguine_lord (Lv40 EPIC vampire, magic) -> public/images/characters/sanguine_lord.png ---
+Gender female, timeless. EPIC splash-art portrait: a devastatingly
+beautiful vampire queen hovering a breath above the ground, tall and
+regal (around 178 cm), waist-long night-black hair drifting upward
+weightless with living blood orbiting through the strands, luminous
+pale face with a single perfect blood tear suspended on one cheek,
+hooded crimson eyes gazing down-right with ancient amusement, subtle
+fangs in a knowing smile, arms half-open as a vast halo of spiraling
+blood rotates behind her shoulders, a gown of layered wine-dark silk
+over rune-etched black mithril with one sleeve torn away, a crown of
+fused fangs worn slightly crooked. Her fully lit face bathes in red
+moonlight full of terrible grace. A drowned cathedral sleeps under a
+blood moon behind. Painterly splash-art finish, a full tier above any
+gloomspawn, wordless composition.
 
 =================== CHARACTERS WITH EXISTING ART (18, reference / regen) ===================
 These already have .webp art in game. Use to regenerate or to keep
@@ -452,221 +517,343 @@ back, dust and birds scattering around its rise. Painterly
 splash-art finish, apocalyptic scale, wordless composition.
 
 
-=================== SKILL ICON GRIDS (17 grids, 143 icons) ===================
-Base style for EVERY grid prompt (LoL ability-icon style, painted
-directly into the prompt):
-"League-of-Legends style set of square ability icons arranged in a
-tidy GRID with thin dark gaps between cells over a dark slate
-backdrop, each icon a painterly SPLASH-ART close-up in the manner of
-LoL champion abilities: the subject fills most of its cell, bold
-dynamic angle, strong rim light, rich saturated color, edge-to-edge
-painted art shaped by the game's rounded icon frame, vibrant element
-language (physical molten steel orange, holy radiant gold white,
-shadow deep violet black, arcane bright violet blue, nature living
-leaf green, fire ember red orange, frost glacial ice blue, lightning
-crackling yellow white, water abyssal blue, blessings soft teal
-glow), a single instantly readable subject per icon, purely visual
-wordless emblems"
+=================== NPC PORTRAITS (1 missing) ===================
+NPC art shows ROUND in town cards and small in dialogue (512x512
+square recommended, face centered, same painterly splash-art family
+as the heroes, wordless composition).
+
+--- [N1] Old Vesryn (uncle) -> public/images/npcs/uncle.png ---
+Gender male, ancient but unbowed. Painterly portrait, centered
+square composition: a gaunt pale old gentleman vampire in 3/4 view,
+tall and stooped (around 185 cm, thin), silver-white hair combed
+severe and short, clean-shaven aristocratic face with winter-pond
+grey eyes holding a tired amusement, faint old-coin gold signet ring
+on one ink-dark finger, high-collared black frock coat with velvet
+lapels over a waistcoat stitched with faded constellations, one
+hand resting on a blackthorn walking cane. His fully lit face meets
+the viewer with courtly menace softened by avuncular warmth. Dusk
+lamplight over a blurred village square behind. Painterly
+splash-art finish, wordless composition.
+(NOTE: blacksmith.png, merchant.png, tavernkeeper.png and mira.png
+already exist on disk — no prompt needed.)
+
+
+=================== SKILL ICON GRIDS (18 grids, 146 icons) ===================
+Base style for EVERY grid prompt (premium ability-icon finish,
+painted directly into the prompt):
+"Set of square ability icons arranged in a tidy GRID with thin
+dark gaps between cells over a dark slate backdrop, each icon a
+painterly close-up battle emblem: the subject fills 80% of its
+cell, bold dynamic three-quarter angle, hot rim light carving the
+silhouette out of deep shadow, hyper-saturated element color,
+edge-to-edge painted art shaped by the game's rounded icon frame,
+vibrant element language (physical molten steel orange, holy
+radiant gold white, shadow deep violet black, arcane bright violet
+blue, nature living leaf green, fire ember red orange, frost
+glacial ice blue, lightning crackling yellow white, water abyssal
+blue, blessings soft teal glow), a single instantly readable
+subject per icon, purely visual wordless emblems"
 CUT ORDER: top-left = cell 1, then left-to-right, row by row.
+GRID DISCIPLINE (critical — never break this): draw EXACTLY the
+cell count written in the grid line (3x3 means exactly 9 cells, no
+more, no fewer). Perfect straight rows and columns, every cell the
+same size square. Thick dark gap lines BETWEEN every cell and a
+dark border around the whole grid — the gaps form a full cage.
+NO subject may touch or cross a gap line; every icon lives FULLY
+inside its own cell. No half-cut icons at the edges, no fragments,
+no overflow outside the grid. Flat straight front view of the
+grid, no tilt, no perspective, no rotation.
+IN CELLS only the skill NAME is written (no .png, no path).
 
 --- GRID S1 (3x3, warrior steel) ---
-3x3 grid, 9 square skill icons. Cell 1 (heavy_strike.png): crossed
-heavy greatswords slam. Cell 2 (slash.png): single swift steel slash
-arc. Cell 3 (great_slash.png): huge Zweihander mid-swing with wind.
-Cell 4 (colossal_slash.png): titanic flaming-edged slash wave.
-Cell 5 (cleave.png): twin axes splitting a shield. Cell 6
-(war_cry.png): roaring lion-head war horn. Cell 7 (battle_fury.png):
-burning red fist with rage flames. Cell 8 (cataclysm.png): meteor
-shattering a fortress wall. Cell 9 (devastate.png): cracked skull
-under falling hammer.
+3x3 grid, 9 square skill icons. Cell 1 (heavy_strike): two crossed
+heavy greatswords slamming down with impact sparks flying, molten
+steel-orange edges. Cell 2 (slash): one swift steel slash arc
+frozen mid-cut with motion blur and bright edge glint. Cell 3
+(great_slash): huge Zweihander sword mid-swing dragging a wind
+vortex, dust spiraling off the blade. Cell 4 (colossal_slash): a
+titanic flaming-edged slash wave ripping diagonally across dark
+rock. Cell 5 (cleave): twin axes splitting a wooden shield in
+half, splinters bursting outward. Cell 6 (war_cry): roaring
+lion-head war horn bellowing golden sound waves. Cell 7
+(battle_fury): clenched fist wreathed in burning red rage flames,
+embers rising. Cell 8 (cataclysm): blazing meteor shattering a
+fortress wall into flying stone chunks. Cell 9 (devastate):
+cracked skull under a falling war hammer, dust exploding.
 
 --- GRID S2 (3x3, archer precision) ---
-3x3 grid, 9 square skill icons. Cell 1 (quick_shot.png): fast arrow
-streak with motion lines. Cell 2 (aimed_shot.png): single arrowhead
-in crosshair. Cell 3 (piercing_shot.png): arrow piercing three
-layered plates. Cell 4 (hunter_shot.png): eagle-eye arrow with feather
-trail. Cell 5 (storm_shot.png): arrow wreathed in storm lightning.
-Cell 6 (volley.png): fan of five arrows raining down. Cell 7
-(storm_barrage.png): storm of lightning arrows spiral. Cell 8
-(shatter_point.png): cracked weak-point target with dagger tip.
-Cell 9 (broken_guard.png): shattered shield with broken sword.
+3x3 grid, 9 square skill icons. Cell 1 (quick_shot): fast arrow
+streaking with white motion lines, feathers blurred. Cell 2
+(aimed_shot): single sharp arrowhead centered in a thin hunter
+crosshair ring. Cell 3 (piercing_shot): arrow punching through
+three layered steel plates, metal curling outward. Cell 4
+(hunter_shot): eagle-eye arrow with a long feather trail curving
+through dusk air. Cell 5 (storm_shot): arrow wreathed in crackling
+storm lightning, blue-white glow. Cell 6 (volley): fan of five
+arrows raining down diagonally with speed lines. Cell 7
+(storm_barrage): spiral storm of lightning arrows twisting like a
+tornado. Cell 8 (shatter_point): cracked weak-point target disc
+with a dagger tip striking its glowing center. Cell 9
+(broken_guard): shattered shield halves with a snapped sword
+falling between them.
 
 --- GRID S3 (3x3, holy blades) ---
-3x3 grid, 9 square skill icons. Cell 1 (smite.png): golden hammer
-falling with holy rays. Cell 2 (sanct_bolt.png): small white-gold
-light bolt. Cell 3 (hallowed_bolt.png): grand radiant spear of light.
-Cell 4 (blessed_blade.png): sword anointed with glowing holy oil.
-Cell 5 (radiant_edge.png): blade edge made of pure sunrise light.
-Cell 6 (divine_light.png): blinding sunburst with dove silhouette.
-Cell 7 (holy_strike.png): sword strike trailing golden light. Cell 8
-(holy_judgement.png): scales of justice crossed with holy sword.
-Cell 9 (radiance.png): rising sun over healed knight.
+3x3 grid, 9 square skill icons. Cell 1 (smite): golden war hammer
+falling with radiant holy rays bursting behind it. Cell 2
+(sanct_bolt): small white-gold bolt of light streaking with a
+sparkling tail. Cell 3 (hallowed_bolt): grand radiant spear of
+light thrusting down through parting clouds. Cell 4
+(blessed_blade): sword blade anointed with glowing holy oil,
+golden drips falling. Cell 5 (radiant_edge): sword edge made of
+pure sunrise light, blinding white-gold glare. Cell 6
+(divine_light): blinding sunburst with a white dove silhouette
+rising at its heart. Cell 7 (holy_strike): sword strike trailing
+a long ribbon of golden light. Cell 8 (holy_judgement): scales
+of justice crossed with a holy sword, glowing pans. Cell 9
+(radiance): rising sun lifting over a kneeling healed knight,
+warm light washing upward.
 
 --- GRID S4 (3x3, healing light) ---
-3x3 grid, 9 square skill icons. Cell 1 (mend.png): glowing green
-plus over bandaged hand. Cell 2 (greater_mend.png): big golden plus
-with angel wings. Cell 3 (magic_mend.png): blue mana drop mending a
-heart. Cell 4 (war_heal.png): bloodied gauntlet gripping green rune.
-Cell 5 (divine_blessing.png): priest hands blessing party silhouettes.
-Cell 6 (resurgence.png): phoenix rising from party banner. Cell 7
-(rejuvenate.png): leaf sprout over pulsing heart. Cell 8
-(spirit_surge.png): three blue mana wisps spiraling up. Cell 9
-(forest_renewal.png): ancient tree blooming with green light.
+3x3 grid, 9 square skill icons. Cell 1 (mend): glowing green
+plus sign hovering over a bandaged healing hand. Cell 2
+(greater_mend): big golden plus with white angel wings spread
+behind it. Cell 3 (magic_mend): blue mana droplet mending a
+cracked glowing heart. Cell 4 (war_heal): bloodied gauntlet
+gripping a green healing rune, light seeping between fingers.
+Cell 5 (divine_blessing): priest hands raised blessing three
+small party silhouettes in warm light. Cell 6 (resurgence):
+phoenix rising with spread wings from a war-torn party banner,
+flames turning to feathers. Cell 7 (rejuvenate): fresh leaf
+sprout unfurling over a pulsing pink heart. Cell 8
+(spirit_surge): three blue mana wisps spiraling upward together.
+Cell 9 (forest_renewal): ancient gnarled tree blooming with
+green light bursting from its crown.
 
 --- GRID S5 (3x3, rogue shadow) ---
-3x3 grid, 9 square skill icons. Cell 1 (stab.png): slim dagger quick
-thrust. Cell 2 (lunge.png): rapier lunging with speed lines. Cell 3
-(shadow_stab.png): black-purple dagger in darkness. Cell 4
-(vampiric_strike.png): fanged dagger dripping red into heart.
-Cell 5 (execute.png): black guillotine blade over skull mark. Cell 6
-(shadow_step.png): bootprints fading into shadow portal. Cell 7
-(shadow_meld.png): hooded face dissolving into smoke. Cell 8
-(shadow_veil.png): dark veil curtain with glowing eyes behind.
-Cell 9 (eclipse_strike.png): black sun eclipse split by blade.
+3x3 grid, 9 square skill icons. Cell 1 (stab): slim dagger
+thrusting forward with a sharp speed-line blur. Cell 2 (lunge):
+rapier lunging deep with white motion streaks. Cell 3
+(shadow_stab): black-purple dagger stabbing out of living
+darkness, violet edge glow. Cell 4 (vampiric_strike): fanged
+dagger dripping red blood into a pierced glowing heart. Cell 5
+(execute): black guillotine blade dropping over a white skull
+mark. Cell 6 (shadow_step): pair of bootprints fading step by
+step into a swirling shadow portal. Cell 7 (shadow_meld):
+hooded face dissolving sideways into grey smoke wisps. Cell 8
+(shadow_veil): dark veil curtain parting to reveal two glowing
+eyes behind it. Cell 9 (eclipse_strike): black sun eclipse split
+by a silver blade slash.
 
 --- GRID S6 (3x3, death shadow + monster claws) ---
-3x3 grid, 9 square skill icons. Cell 1 (reap.png): spectral scythe
-sweep arc. Cell 2 (death_mark.png): skull branded with red X.
-Cell 3 (soul_thief.png): ghostly hand stealing glowing soul orb.
-Cell 4 (soul_reap.png): massive scythe harvesting three souls.
-Cell 5 (scythe_sweep.png): wide crescent scythe whirl. Cell 6
-(dark_veil.png): purple-black shroud with shield glint. Cell 7
-(cripple.png): chained broken leg shackle. Cell 8
-(monster_shadow_attack.png): monstrous shadow claw slash. Cell 9
-(monster_shadow_bolt.png): dark violet bolt with skull tip.
+3x3 grid, 9 square skill icons. Cell 1 (reap): spectral scythe
+sweeping a wide glowing arc through mist. Cell 2 (death_mark):
+pale skull branded with a dripping red X mark. Cell 3
+(soul_thief): ghostly translucent hand stealing a glowing blue
+soul orb. Cell 4 (soul_reap): massive black scythe harvesting
+three rising souls at once. Cell 5 (scythe_sweep): wide crescent
+scythe whirl with blurred double-blade trail. Cell 6
+(dark_veil): purple-black burial shroud with a shield glint
+caught in its folds. Cell 7 (cripple): chained broken leg shackle
+with a snapped iron link. Cell 8 (monster_shadow_attack):
+monstrous shadow claw slashing with violet talon trails. Cell 9
+(monster_shadow_bolt): dark violet bolt with a screaming skull
+tip flying forward.
 
 --- GRID S7 (3x3, arcane cosmos) ---
-3x3 grid, 9 square skill icons. Cell 1 (arcane_bolt.png): small violet
-missile spark. Cell 2 (arcane_barrage.png): triple violet missiles
-fan. Cell 3 (arcane_blast.png): violet explosion ring. Cell 4
-(primordial_bolt.png): ancient rune-carved star bolt. Cell 5
-(meteor.png): single fireball meteor falling. Cell 6 (comet.png):
-ice-blue comet with long tail. Cell 7 (mana_shield.png): blue
-hexagonal mana barrier. Cell 8 (mod_strike.png): glowing pink admin
-gavel strike. Cell 9 (mod_obliterate.png): pink-black annihilation
-beam erasing square.
+3x3 grid, 9 square skill icons. Cell 1 (arcane_bolt): small
+violet missile spark with a crackling star trail. Cell 2
+(arcane_barrage): triple violet missiles fanning out with
+sparking wakes. Cell 3 (arcane_blast): violet explosion ring
+expanding with rune shards. Cell 4 (primordial_bolt): ancient
+rune-carved star bolt burning with old magic. Cell 5 (meteor):
+single roaring fireball meteor falling with a smoke tail. Cell 6
+(comet): ice-blue comet with a long glittering tail. Cell 7
+(mana_shield): blue hexagonal mana barrier dome glowing from
+within. Cell 8 (mod_strike): glowing pink adjudicator gavel
+striking down with verdict light. Cell 9 (mod_obliterate):
+pink-black annihilation beam erasing a square of reality.
 
 --- GRID S8 (3x3, tank iron) ---
-3x3 grid, 9 square skill icons. Cell 1 (shield_bash.png): shield
-smashing with impact star. Cell 2 (adamant_bash.png): diamond-hard
-shield slam. Cell 3 (titan_slam.png): colossal fist cratering ground.
-Cell 4 (defend.png): plain steel shield raised. Cell 5 (fortify.png):
-shield with stone bricks overlay. Cell 6 (shield_wall.png): row of
-interlocked shields. Cell 7 (bastion.png): fortress tower shield
-emblem. Cell 8 (immovable.png): mountain rooted over shield. Cell 9
-(iron_wall.png): riveted iron plate wall.
+3x3 grid, 9 square skill icons. Cell 1 (shield_bash): steel
+shield smashing forward with a star-shaped impact flash. Cell 2
+(adamant_bash): diamond-hard shield slam cracking the ground
+beneath it. Cell 3 (titan_slam): colossal armored fist cratering
+the ground, stone slabs flying. Cell 4 (defend): plain steel
+shield raised squarely, catching the light. Cell 5 (fortify):
+shield overlaid with mortared stone bricks, immovable. Cell 6
+(shield_wall): row of interlocked shields forming an unbroken
+wall. Cell 7 (bastion): fortress tower merged into a shield
+emblem, banners flying. Cell 8 (immovable): grey mountain rooted
+over a small shield at its base. Cell 9 (iron_wall): riveted
+iron plate wall with dents and scratches.
 
 --- GRID S9 (3x3, wards + monster hide) ---
-3x3 grid, 9 square skill icons. Cell 1 (divine_guard.png): golden
-winged shield. Cell 2 (aegis.png): mirror-bright aegis with medusa
-glint. Cell 3 (barrier.png): translucent dome over three figures.
-Cell 4 (stone_skin.png): grey stone hide plate. Cell 5 (holy_ward.png):
-golden bubble over kneeling ally. Cell 6 (group_guard.png): three
-small shields in triangle. Cell 7 (war_banner.png): crimson war banner
-on spear. Cell 8 (monster_stoneskin.png): rocky monster carapace.
-Cell 9 (monster_heal.png): monster flesh stitching with green glow.
+3x3 grid, 9 square skill icons. Cell 1 (divine_guard): golden
+winged shield with feathers spread wide. Cell 2 (aegis):
+mirror-bright aegis with a gorgon glint in its reflection. Cell
+3 (barrier): translucent shimmering dome sheltering three small
+figures. Cell 4 (stone_skin): grey stone hide plate with moss in
+its cracks. Cell 5 (holy_ward): golden bubble of light over a
+kneeling ally. Cell 6 (group_guard): three small shields locked
+in a triangle formation. Cell 7 (war_banner): crimson war banner
+on a spear planted in scorched earth. Cell 8
+(monster_stoneskin): rocky monster carapace with glowing magma
+seams. Cell 9 (monster_heal): monster flesh stitching itself
+shut with green glowing thread.
 
 --- GRID S10 (3x3, nature + beasts) ---
-3x3 grid, 9 square skill icons. Cell 1 (garden_swipe.png): thorny
-garden claw swipe. Cell 2 (root_lash.png): thick root whip lash.
-Cell 3 (bloom_burst.png): flower exploding with pollen burst. Cell 4
-(vine_lash.png): green vine whip curl. Cell 5 (thorn_volley.png):
-fan of sharp thorns. Cell 6 (beast_bite.png): wolf jaws bite mark.
-Cell 7 (beast_strike.png): clawed paw strike. Cell 8
-(alpha_strike.png): alpha wolf head with crown scar. Cell 9
-(tame_hit.png): leather whip with paw charm.
+3x3 grid, 9 square skill icons. Cell 1 (garden_swipe): thorny
+garden claw swiping with petals and leaves bursting. Cell 2
+(root_lash): thick gnarled root whip lashing sideways with dirt
+clods. Cell 3 (bloom_burst): night flower exploding open with a
+pollen burst cloud. Cell 4 (vine_lash): green vine whip curling
+mid-strike with dew drops. Cell 5 (thorn_volley): fan of sharp
+black thorns flying with motion lines. Cell 6 (beast_bite): wolf
+jaws snapping shut leaving a bite-mark crater. Cell 7
+(beast_strike): clawed paw strike raking four glowing gash lines.
+Cell 8 (alpha_strike): alpha wolf head with a crown-shaped scar,
+eyes burning. Cell 9 (tame_hit): leather whip coiled with a small
+paw charm swinging from its handle.
 
 --- GRID S11 (3x3, venom + monster ailments) ---
-3x3 grid, 9 square skill icons. Cell 1 (venom_strike.png): dagger with
-green venom drop. Cell 2 (toxin_drench.png): acid flask pouring.
-Cell 3 (venom_burst.png): green poison explosion vial. Cell 4
-(monster_poison.png): bubbling toxic skull cloud. Cell 5
-(monster_regen.png): green regenerating lizard tail. Cell 6
-(monster_frenzy.png): red enraged eyes with foam. Cell 7
-(monster_weaken.png): drooping crushed sword aura. Cell 8
-(monster_vulnerable.png): cracked heart target exposed. Cell 9
-(monster_physical_attack.png): savage beast fang blow.
+3x3 grid, 9 square skill icons. Cell 1 (venom_strike): dagger
+blade with a fat green venom drop hanging off its tip. Cell 2
+(toxin_drench): acid flask tipping over, green liquid pouring in
+a thick stream. Cell 3 (venom_burst): shattering poison vial
+erupting in a green toxic explosion. Cell 4 (monster_poison):
+bubbling toxic skull-shaped gas cloud rising. Cell 5
+(monster_regen): green lizard tail regrowing with glowing seams
+of new flesh. Cell 6 (monster_frenzy): bloodshot enraged eyes
+with foam and red veins. Cell 7 (monster_weaken): drooping
+crushed sword with a sickly wilting aura. Cell 8
+(monster_vulnerable): cracked red heart target exposed with
+fracture lines. Cell 9 (monster_physical_attack): savage beast
+fang blow with saliva and dust bursting.
 
 --- GRID S12 (3x3, storm + sea + monster magic) ---
-3x3 grid, 9 square skill icons. Cell 1 (monster_arcane_attack.png):
-wild violet surge claw. Cell 2 (monster_arcane_storm.png): violet
-storm vortex. Cell 3 (monster_heavy_blow.png): giant club smash.
-Cell 4 (volt_conduit.png): copper coil with spark. Cell 5
-(static_overload.png): overloaded tesla orb bursting. Cell 6
-(lightning_bolt.png): classic yellow lightning fork. Cell 7
-(water_splash.png): blue wave splash drop. Cell 8 (frost_nova.png):
-ice ring explosion. Cell 9 (mana_shield.png): blue hexagonal mana barrier — SHARED, see S7.
+3x3 grid, 9 square skill icons. Cell 1
+(monster_arcane_attack): wild violet energy surge erupting from
+a clawed hand. Cell 2 (monster_arcane_storm): violet storm
+vortex with lightning crawling inside it. Cell 3
+(monster_heavy_blow): giant stone club smashing down with a
+shockwave ring. Cell 4 (volt_conduit): copper coil rod spitting
+electric sparks. Cell 5 (static_overload): overloaded tesla orb
+bursting with branching arcs. Cell 6 (lightning_bolt): classic
+yellow lightning fork striking with white-hot core. Cell 7
+(water_splash): deep-blue wave splash frozen mid-crash with
+flying droplets. Cell 8 (frost_nova): pale ice ring explosion
+with radiating frost spikes. Cell 9 (mana_shield): blue
+hexagonal mana barrier dome — SHARED, see S7.
 Generate ONCE in S7, reuse the file here, do not regenerate.
 
 --- GRID S13 (3x3, ember boss + fire) ---
-3x3 grid, 9 square skill icons. Cell 1 (boss_ember_skill1.png): flaming
-demon fist strike. Cell 2 (boss_ember_skill2.png): huge magma hammer
-blow. Cell 3 (boss_ember_skill3.png): dimming ash shackles (weaken).
-Cell 4 (boss_ember_skill4.png): lava shield wall (fortify). Cell 5
-(boss_ember_skill5.png): serpent of fire venom. Cell 6
-(boss_ember_skill6.png): phoenix tear healing flame. Cell 7
-(scorch_mark.png): branded burn mark sigil. Cell 8 (ember_storm.png):
-firestorm of falling embers. Cell 9 (blaze_rupture.png): volcano
-fissure eruption.
+3x3 grid, 9 square skill icons. Cell 1 (boss_ember_skill1):
+flaming demon fist punching forward trailing fire ribbons. Cell
+2 (boss_ember_skill2): huge magma hammer head crashing down with
+molten splash. Cell 3 (boss_ember_skill3): dimming ash shackles
+clamping shut, grey chains losing their glow (weaken). Cell 4
+(boss_ember_skill4): curved lava shield wall with flowing magma
+veins (fortify). Cell 5 (boss_ember_skill5): serpent of living
+fire venom coiling to strike with dripping fangs. Cell 6
+(boss_ember_skill6): single phoenix tear drop blooming into a
+healing flame flower. Cell 7 (scorch_mark): branded circular
+burn-mark sigil with smoking edges. Cell 8 (ember_storm):
+firestorm of falling embers swirling in a vortex. Cell 9
+(blaze_rupture): volcano fissure erupting with a lava geyser.
 
 --- GRID S14 (3x3, frost boss + frost) ---
-3x3 grid, 9 square skill icons. Cell 1 (boss_frost_skill1.png): ice
-titan fist strike. Cell 2 (boss_frost_skill2.png): glacier hammer
-smash. Cell 3 (boss_frost_skill3.png): frostbitten chains (weaken).
-Cell 4 (boss_frost_skill4.png): glacier shield (fortify). Cell 5
-(boss_frost_skill5.png): ice-viper venom fang. Cell 6
-(boss_frost_skill6.png): aurora healing crystal. Cell 7
-(frost_bolt.png): sharp icicle bolt. Cell 8 (cold_snap.png): cracked
-frozen hourglass. Cell 9 (glacial_shatter.png): shattering ice
-monolith.
+3x3 grid, 9 square skill icons. Cell 1 (boss_frost_skill1): pale
+ice titan fist smashing with frost shards bursting. Cell 2
+(boss_frost_skill2): glacier hammer head of solid ice crashing
+with snow blast. Cell 3 (boss_frost_skill3): frostbitten iron
+chains coated in blue-white rime (weaken). Cell 4
+(boss_frost_skill4): translucent glacier shield wall with trapped
+air bubbles (fortify). Cell 5 (boss_frost_skill5): ice-viper
+lunging with crystalline venom fangs bared. Cell 6
+(boss_frost_skill6): aurora healing crystal blooming with green
+and violet light ribbons. Cell 7 (frost_bolt): sharp icicle bolt
+flying with frost vapor trail. Cell 8 (cold_snap): cracked
+frozen hourglass leaking blue cold mist. Cell 9
+(glacial_shatter): shattering ice monolith exploding into
+geometric shards.
 
 --- GRID S15 (3x3, void boss + arcane doom) ---
-3x3 grid, 9 square skill icons. Cell 1 (boss_void_skill1.png): void
-tentacle strike. Cell 2 (boss_void_skill2.png): black-hole hammer
-blow. Cell 3 (boss_void_skill3.png): eye of nothingness (expose).
-Cell 4 (boss_void_skill4.png): void shell carapace (fortify). Cell 5
-(boss_void_skill5.png): void leech venom. Cell 6 (boss_void_skill6.png):
-dark rebirth cocoon heal. Cell 7 (arcane_barrage.png): triple violet
-missiles fan — SHARED with S7, reuse file. Cell 8 (meteor.png):
-fireball meteor — SHARED with S7, reuse file. Cell 9 (comet.png):
-star-blue comet — SHARED with S7, reuse file.
+3x3 grid, 9 square skill icons. Cell 1 (boss_void_skill1):
+black void tentacle whipping forward with star-specked suckers.
+Cell 2 (boss_void_skill2): black-hole hammer head ringed with a
+crushing gravity halo. Cell 3 (boss_void_skill3): giant eye of
+nothingness, pure black pupil in a violet sclera (expose). Cell
+4 (boss_void_skill4): chitinous void shell carapace with purple
+vein cracks (fortify). Cell 5 (boss_void_skill5): leech of living
+void latched on, dripping darkness. Cell 6 (boss_void_skill6):
+dark rebirth cocoon splitting open with pale new wings. Cell 7
+(arcane_barrage): triple violet missiles fan — SHARED with S7,
+reuse file. Cell 8 (meteor): fireball meteor — SHARED with S7,
+reuse file. Cell 9 (comet): star-blue comet — SHARED with S7,
+reuse file.
 
 --- GRID S16 (3x3, storm boss + world boss) ---
-3x3 grid, 9 square skill icons. Cell 1 (boss_storm_skill1.png):
-lightning colossus punch. Cell 2 (boss_storm_skill2.png): thunderhead
-hammer. Cell 3 (boss_storm_skill3.png): storm chains (weaken+expose).
-Cell 4 (boss_storm_skill4.png): thunderdome shield (fortify). Cell 5
-(boss_storm_skill5.png): electric plague swarm. Cell 6
-(boss_storm_skill6.png): storm freedove heal flash. Cell 7
-(boss_world_skill1.png): world-serpent bite strike. Cell 8
-(boss_world_skill2.png): continent-crusher maw blow. Cell 9
-(boss_world_skill3.png): collapsing mountain chains (weaken).
+3x3 grid, 9 square skill icons. Cell 1 (boss_storm_skill1):
+lightning colossus stone fist punching through a thunderhead.
+Cell 2 (boss_storm_skill2): thunderhead hammer wreathed in
+rotating storm clouds. Cell 3 (boss_storm_skill3): crackling
+storm chains binding with electric links (weaken+expose). Cell 4
+(boss_storm_skill4): thunderdome shield of arcing lightning bars
+(fortify). Cell 5 (boss_storm_skill5): swarm of electric plague
+locusts with sparking wings. Cell 6 (boss_storm_skill6): white
+storm freedove bursting into a healing lightning flash. Cell 7
+(boss_world_skill1): colossal world-serpent bite with rows of
+mountain teeth closing. Cell 8 (boss_world_skill2):
+continent-crusher maw blow crushing a fortress gate. Cell 9
+(boss_world_skill3): collapsing mountain chains snapping with
+falling boulders (weaken).
 
---- GRID S17 (1x3 strip, world ruin leftovers - LAST 3, nothing left behind) ---
+--- GRID S17 (1x3 strip, world ruin leftovers) ---
 1x3 horizontal strip, 3 square skill icons with thin dark gaps on dark
-slate background, same painterly LoL splash-art icon finish. Cell 1
-(boss_world_skill4.png): volcano-frenzy rage idol (fortify/frenzy).
-Cell 2 (boss_world_skill5.png): rotting world-root venom fang.
-Cell 3 (boss_world_skill6.png): world-tree seed of rebirth heal.
+slate background, same painterly close-up battle-emblem finish. Cell 1
+(boss_world_skill4): crooked volcano-frenzy rage idol with erupting
+crater head (fortify/frenzy). Cell 2 (boss_world_skill5): rotting
+world-root fang oozing black sap. Cell 3 (boss_world_skill6):
+tiny world-tree seed sprouting into a rebirth sapling of light.
+
+--- GRID S18 (1x3 strip, vampire blood arts) ---
+1x3 horizontal strip, 3 square skill icons with thin dark gaps on dark
+slate background, same painterly close-up battle-emblem finish, blood
+element language (deep crimson red with black-violet shadow, wet
+arterial shine). Cell 1 (exsanguinate): twin pale fangs sunk deep
+with two bright blood arcs gushing into a crimson whirl. Cell 2
+(bloodbath): drenching wave of dark blood crashing over an upright
+fang-bladed greatsword. Cell 3 (crimson_rebirth): single drop of
+bright blood blooming into a halo of golden healing light above two
+grasping hands.
+SHARED REUSE (do not regenerate): vampire_bite + tyrant_bite reuse
+exsanguinate/bloodbath art; gloom_bolt + sanguine_bolt reuse
+crimson_rebirth art (basic attacks share their class skill icons).
 
 ================================================================
 COVERAGE CHECK (nothing left behind):
-- Characters: 33/33 class prompts (15 missing-PNG + 18 with .webp).
+- Characters: 37/37 class prompts (19 missing-PNG + 18 with .webp).
   Missing: warlord, warden, archmage, nightblade, crusader, reaper,
   high_priest, ultra_moderator, war_emperor, storm_warden, archon,
-  shade_king, lightbringer, death_lord, divine_saint.
+  shade_king, lightbringer, death_lord, divine_saint, bloodspawn,
+  gloomspawn, bloodlord, sanguine_lord.
   (REMOVED 2026-09-18: stale duplicate "alpha_tamer" deleted from
   content.js — same label/stats as "anima_lorde" but unreachable,
   imageless and missing pet fields. Canonical: anima_lorde.)
   With art: warrior, ranger, mage, rogue, paladin, assassin, support,
   tank, tamer, beastmaster, anima_lorde, gardener, rootbinder,
   lifeweaver, moderator, tester, juggernaut, colossus.
+- NPC portraits: 1 missing (uncle). With art: blacksmith, merchant,
+  tavernkeeper, mira.
 - Boss portraits: 5/5 (ember_king, frost_titan, void_herald,
   storm_colossus, world_eater).
-- Skill icons: 143 unique files in grids S1-S17 (68 player skills +
-  32 basic attacks + 30 boss skills + 13 monster skills).
-  147 cells total, 4 SHARED (generate once, reuse file):
-  mana_shield (S7+S12), arcane_barrage + meteor + comet (S7+S15).
+- Skill icons: 146 unique files in grids S1-S18 (68 player skills +
+  32 basic attacks + 30 boss skills + 13 monster skills + 3 vampire
+  blood arts).
+  150 cells total, 7 SHARED (generate once, reuse file):
+  mana_shield (S7+S12), arcane_barrage + meteor + comet (S7+S15),
+  vampire_bite/tyrant_bite share exsanguinate/bloodbath art and
+  gloom_bolt/sanguine_bolt share crimson_rebirth art (S18).
   Every id from content.js skills table + every basicAttack id is
   listed. Zero missing, zero remainder.
 ================================================================

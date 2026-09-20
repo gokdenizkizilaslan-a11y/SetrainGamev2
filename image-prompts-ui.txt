@@ -1,0 +1,187 @@
+================================================================
+SETRA GAME - UI & BACKGROUND PROMPTS (KREA2)
+================================================================
+HOW TO USE:
+- Buttons: 2 prompts = 2 GRID images (SQUARE 1:1). Generate, cut
+  top-left to bottom-right, save each cell to its path.
+  Button icons show at 42x42px rounded squares in game — bold,
+  centered, instantly readable emblems. They sit on a dark card,
+  so bright subjects with glowing edges work best.
+- Backgrounds: 1 prompt = 1 image (LANDSCAPE 16:9, 1920x1080).
+  The game shows them full-screen COVER behind panels and cards.
+  GAME FRAMING (important): menus, cards and text sit CENTER and
+  BOTTOM of the screen — keep the busy detail in the TOP half and
+  the edges, keep the center-bottom calm and dark so text stays
+  readable. NEVER paint words, letters or signs with text.
+- After saving files, set any EMPTY paths in content.js -> images
+  (buttons + town + combat floors, listed per prompt), then restart.
+GRID DISCIPLINE (critical — never break this): button grids hold
+EXACTLY the written cell count (2x2 means exactly 4 cells, no more,
+no fewer). Perfect straight rows and columns, every cell the same
+size square. Thick dark gap lines BETWEEN every cell and a dark
+border around the whole grid — the gaps form a full cage. NO
+subject may touch or cross a gap line; every icon lives FULLY
+inside its own cell. No half-cut fragments at the edges, nothing
+outside the grid. Flat straight front view, no tilt, no
+perspective, no rotation.
+----------------------------------------------------------------
+BASE STYLE (paint into every prompt below):
+"dark medieval fantasy oil-painting, same world and palette family
+as a torchlit stone village at dusk: muted gold-grey stone,
+parchment browns, deep shadow blacks, ember-orange light accents,
+visible brushwork, cinematic volumetric light, no text, no letters,
+no watermarks, wordless composition"
+================================================================
+
+
+=================== BUTTON ICONS (8, two 2x2 grids) ===================
+
+--- GRID UB1 (2x2, shop buttons) ---
+SQUARE 1:1, 4 square button icons with thin dark gaps on dark
+slate, League-of-Legends emblem style: single bold centered object
+per cell filling 70% of the frame, thick readable silhouette,
+glowing gold rim light, dark carved-stone disc behind each emblem,
+wordless. Cell 1 (blacksmithButton.png): crossed forge hammer over
+a horseshoe on an anvil, ember sparks. Cell 2 (tavernButton.png):
+foaming beer mug with a hanging tavern lantern above it. Cell 3
+(merchantButton.png): balanced merchant scales over a gold coin
+stack. Cell 4 (templeButton.png): ancient stone arch doorway with
+light streaming out.
+SAVE TO: public/images/ui/blacksmithButton.png etc. (filename =
+content.js key + .png). Then set in content.js -> images.ui:
+blacksmithButton, tavernButton, merchantButton, templeButton.
+
+--- GRID UB2 (2x2, action buttons) ---
+SQUARE 1:1, same emblem style as UB1. Cell 1 (dungeonButton.png):
+dark cave mouth with stairs descending into ember glow. Cell 2
+(searchButton.png): magnifier lens over a winding dirt path with
+footprints. Cell 3 (restButton.png): crescent moon over a bedroll
+beside a dying campfire. Cell 4 (sleepButton.png): starry night
+sky over a small tent under a pine silhouette.
+SAVE TO: public/images/ui/<name>.png. Then set in content.js ->
+images.ui: dungeonButton, searchButton, restButton, sleepButton.
+
+
+=================== BACKGROUNDS (10, one prompt each) ===================
+All: LANDSCAPE 16:9 (1920x1080), base style above, busy detail TOP
+half + edges, calm dark center-bottom for panels, no text.
+
+--- [BG1] setup -> public/images/backgrounds/setup.png ---
+Wide painterly view of a hero mustering yard at dawn: empty weapon
+racks and training dummies left and right framing the top corners,
+banners of eight faded class colors hanging from high poles, a long
+stone muster table with maps and candles glowing in the middle
+distance, morning mist low over flagstones, the bottom third calm
+dark empty ground for cards. Warm hopeful light from the upper
+left, wordless.
+
+--- [BG2] lobby -> public/images/backgrounds/lobby.png ---
+Wide painterly view of a torchlit guildhall waiting room: long oak
+benches and a notice board crowded with sealed quest parchments
+(no readable words, wax seals only) along the top, a huge hearth
+fire burning right of center casting ember light, round tables with
+abandoned ale mugs left, the bottom third calm dark floorboards
+for lists. Cozy amber light against deep brown shadow, wordless.
+
+--- [BG3] town -> public/images/backgrounds/town.png ---
+Wide painterly panorama of Setra village square at dusk: crooked
+stone houses with lit windows climbing both sides, blacksmith
+chimney smoke and tavern warm windows mid-frame, temple spire
+rising far center-top against a violet-orange sky, a dry fountain
+plaza below kept intentionally empty and dark for action cards.
+Lantern dots along the streets, swallows in the sky, wordless.
+SAVE NOTE: content.js -> images.backgrounds.town is currently ""
+— set it to "/images/backgrounds/town.png".
+
+--- [BG4] dungeon -> public/images/backgrounds/dungeon.png ---
+Wide painterly descent into a torchlit dungeon: rough-hewn stone
+staircase spiraling down from the top corners, chains and old
+cages hanging in the upper dark, faint green-blue ghost light
+glowing from deep below center-top, rubble and bones pushed to
+the edges, the bottom half near-black empty stone floor for
+combat cards. Cold dread with one warm torch flicker left,
+wordless.
+
+--- [BG5] tavern -> public/images/backgrounds/tavern.png ---
+Wide painterly tavern interior AFTER entering: low beamed ceiling
+with hanging hops and lanterns across the top, a long polished bar
+with brass taps and stacked mugs mid-left, round tables with
+benches and a dozing bard's lute mid-right, huge stone fireplace
+blazing behind the bar, ale barrels stacked to the ceiling in the
+back corners, the bottom third calm dark floorboards for panels.
+Honey-warm light, wood browns and amber, wordless.
+
+--- [BG6] blacksmith -> public/images/backgrounds/blacksmith.png ---
+Wide painterly blacksmith forge interior AFTER entering: massive
+stone forge with roaring coals and bellows dominating upper right,
+anvil on a scorched stump upper left with a half-made sword
+cooling, weapon racks of swords axes and shields lining the top
+edges, hanging chains with horseshoes, quench barrel steaming,
+sparks drifting up through roof smoke-hole light. Bottom third
+calm dark ash floor for shop cards. Ember-orange against soot
+black, heat shimmer, wordless.
+
+--- [BG7] merchant -> public/images/backgrounds/merchant.png ---
+Wide painterly merchant bazaar stall interior AFTER entering:
+overflowing shelves of chests pots scrolls and bottles stacked to
+the top edges, hanging lanterns and weighing scales upper center,
+exotic rugs draped over rails left and right, a brass cash box and
+abacus on the counter mid-distance, peacock feather and crystal
+ball catching light as hero props. Bottom third calm dark carpet
+floor for shop cards. Rich teal purple and gold clutter, wordless.
+
+--- [BG8] temple -> public/images/backgrounds/temple.png ---
+Wide painterly ANCIENT TEMPLE sanctum, the most gorgeous room in
+the game: colossal moss-crowned statues of forgotten kings lining
+both sides and rising out of frame top, a single god-ray shaft of
+gold-white light falling from a broken dome onto a floating
+runed altar stone at center-top, drifting luminous dust and petals
+in the beam, ancient gold-veined mosaic floor with a circular
+ascension seal glowing faintly, braziers with pale ghost-flame
+left and right, stars visible through the dome hole. Bottom third
+calm dark reflective floor for temple cards. Transcendent gold
+and ivory against deep violet shadow, ultra detailed, wordless.
+SAVE NOTE: content.js -> images.backgrounds.temple is set but the
+file is missing — this prompt fills it.
+
+--- [BG9] combat enemy floor -> public/images/backgrounds/combat_enemy.png ---
+Subtle wide dark ground texture for the ENEMY zone in battle:
+cracked scorched battleground stone fading to black at all edges,
+faint ember cracks and drifting ash, almost no detail in the
+center so monster cards pop. Very dark, desaturated, wordless.
+Keep it QUIET — it sits behind cards, never the star.
+SAVE NOTE: content.js -> images.combat.enemy is currently "" —
+set it to "/images/backgrounds/combat_enemy.png".
+
+--- [BG10] combat party floor -> public/images/backgrounds/combat_party.png ---
+Subtle wide dark ground texture for the PARTY zone in battle:
+worn shield-wall flagstones with a faint golden ward-circle
+etched under where heroes stand, edges falling to black, a few
+soft blue mana motes, almost no detail in the center so hero
+cards pop. Very dark, desaturated, wordless. Keep it QUIET.
+SAVE NOTE: content.js -> images.combat.party is currently "" —
+set it to "/images/backgrounds/combat_party.png".
+
+
+=================== PANEL TEXTURE (1) ===================
+
+--- [P1] panel -> public/images/ui/panel.png ---
+SQUARE 1:1, seamless tileable texture: aged dark parchment with
+faint gold filigree border threads and subtle leather grain, 50%
+grey brightness, no vignette, no objects, no text. It is drawn
+UNDER panels at low opacity, so keep contrast LOW.
+SAVE NOTE: content.js -> images.ui.panel is set but the file is
+missing — this prompt fills it.
+
+
+================================================================
+COVERAGE CHECK (nothing left behind):
+- Button icons: 8/8 (UB1 shops + UB2 actions). Filenames match
+  content.js images.ui keys exactly — just paste the paths in.
+- Backgrounds: 10/10 (setup, lobby, town, dungeon, tavern,
+  blacksmith, merchant, temple, combat_enemy, combat_party).
+- Panel texture: 1/1 (panel).
+- Already on disk, no prompt needed: menu.webp, townpanelbg.webp.
+- After saving: set the 5 empty content.js paths (town,
+  combat.enemy, combat.party + 8 buttons), restart server.
+================================================================
