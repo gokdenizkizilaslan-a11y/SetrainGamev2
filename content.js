@@ -5198,14 +5198,15 @@ const CONTENT = {
         "wood": 5
       },
       "stats": {
-        "attack": 18,
-        "speed": 3
+        "attack": 6,
+        "speed": 1
       },
-      "image": "/images/items/rusty_sword.png",
-      "description": "+4 Attack"
+      "image": "/images/items/rusty_sword.webp",
+      "description": "+6 Attack, +1 Speed"
     },
     {
       "id": "leather_helm",
+      "setId": "leather",
       "name": "Leather Helm",
       "slot": "head",
       "rarity": "common",
@@ -5217,11 +5218,12 @@ const CONTENT = {
         "maxHp": 30,
         "resistance": 4
       },
-      "image": "/images/items/leather_helm.png",
+      "image": "/images/items/leather_helm.webp",
       "description": "+30 Max HP, +4 Resistance"
     },
     {
       "id": "leather_chest",
+      "setId": "leather",
       "name": "Leather Chest",
       "slot": "armor",
       "rarity": "common",
@@ -5233,11 +5235,12 @@ const CONTENT = {
         "maxHp": 50,
         "resistance": 6
       },
-      "image": "/images/items/leather_chest.png",
+      "image": "/images/items/leather_chest.webp",
       "description": "+50 Max HP, +6 Resistance"
     },
     {
       "id": "leather_pants",
+      "setId": "leather",
       "name": "Leather Pants",
       "slot": "legs",
       "rarity": "common",
@@ -5249,11 +5252,12 @@ const CONTENT = {
         "maxHp": 35,
         "resistance": 5
       },
-      "image": "/images/items/leather_pants.png",
+      "image": "/images/items/leather_pants.webp",
       "description": "+35 Max HP, +5 Resistance"
     },
     {
       "id": "leather_boots",
+      "setId": "leather",
       "name": "Leather Boots",
       "slot": "boots",
       "rarity": "common",
@@ -5264,11 +5268,12 @@ const CONTENT = {
       "stats": {
         "speed": 1
       },
-      "image": "/images/items/leather_boots.png",
+      "image": "/images/items/leather_boots.webp",
       "description": "+1 Speed"
     },
     {
       "id": "iron_amulet",
+      "setId": "iron",
       "name": "Iron Amulet",
       "slot": "amulet",
       "rarity": "uncommon",
@@ -5280,11 +5285,12 @@ const CONTENT = {
         "mana": 10,
         "magicPower": 3
       },
-      "image": "/images/items/iron_amulet.png",
+      "image": "/images/items/iron_amulet.webp",
       "description": "+10 Mana, +3 Magic Power"
     },
     {
       "id": "iron_ring",
+      "setId": "iron",
       "name": "Iron Ring",
       "slot": "ring",
       "rarity": "common",
@@ -5296,7 +5302,7 @@ const CONTENT = {
         "attack": 2,
         "mana": 5
       },
-      "image": "/images/items/iron_ring.png",
+      "image": "/images/items/iron_ring.webp",
       "description": "+2 Attack, +5 Mana"
     },
     {
@@ -5312,7 +5318,7 @@ const CONTENT = {
         "mana": 20,
         "manaRegen": 1
       },
-      "image": "/images/items/mana_talisman.png",
+      "image": "/images/items/mana_talisman.webp",
       "description": "+20 Mana, +1 Mana Regen"
     },
     {
@@ -5327,7 +5333,7 @@ const CONTENT = {
       "stats": {
         "attack": 8
       },
-      "image": "/images/items/battle_axe.png",
+      "image": "/images/items/battle_axe.webp",
       "description": "+8 Attack"
     },
     {
@@ -5342,7 +5348,7 @@ const CONTENT = {
       "stats": {
         "attack": 12
       },
-      "image": "/images/items/war_hammer.png",
+      "image": "/images/items/war_hammer.webp",
       "description": "+12 Attack"
     },
     {
@@ -5358,7 +5364,7 @@ const CONTENT = {
         "attack": 7,
         "speed": 1
       },
-      "image": "/images/items/longbow.png",
+      "image": "/images/items/longbow.webp",
       "description": "+7 Attack, +1 Speed"
     },
     {
@@ -5374,7 +5380,7 @@ const CONTENT = {
         "attack": 5,
         "speed": 2
       },
-      "image": "/images/items/shortbow.png",
+      "image": "/images/items/shortbow.webp",
       "description": "+5 Attack, +2 Speed"
     },
     {
@@ -5389,7 +5395,7 @@ const CONTENT = {
       "stats": {
         "magicPower": 8
       },
-      "image": "/images/items/apprentice_staff.png",
+      "image": "/images/items/apprentice_staff.webp",
       "description": "+8 Magic Power"
     },
     {
@@ -5405,7 +5411,7 @@ const CONTENT = {
         "magicPower": 14,
         "mana": 10
       },
-      "image": "/images/items/archon_staff.png",
+      "image": "/images/items/archon_staff.webp",
       "description": "+14 Magic Power, +10 Mana"
     },
     {
@@ -5421,7 +5427,7 @@ const CONTENT = {
         "attack": 5,
         "speed": 2
       },
-      "image": "/images/items/dagger.png",
+      "image": "/images/items/dagger.webp",
       "description": "+5 Attack, +2 Speed"
     },
     {
@@ -5436,7 +5442,7 @@ const CONTENT = {
       "stats": {
         "attack": 7
       },
-      "image": "/images/items/poison_dagger.png",
+      "image": "/images/items/poison_dagger.webp",
       "description": "+7 Attack"
     },
     {
@@ -5452,7 +5458,7 @@ const CONTENT = {
         "attack": 6,
         "magicPower": 3
       },
-      "image": "/images/items/mace.png",
+      "image": "/images/items/mace.webp",
       "description": "+6 Attack, +3 Magic Power"
     },
     {
@@ -5468,7 +5474,7 @@ const CONTENT = {
         "attack": 8,
         "magicPower": 5
       },
-      "image": "/images/items/holy_sword.png",
+      "image": "/images/items/holy_sword.webp",
       "description": "+8 Attack, +5 Magic Power"
     },
     {
@@ -5483,7 +5489,7 @@ const CONTENT = {
       "stats": {
         "attack": 10
       },
-      "image": "/images/items/kris_blade.png",
+      "image": "/images/items/kris_blade.webp",
       "description": "+10 Attack"
     },
     {
@@ -5499,7 +5505,7 @@ const CONTENT = {
         "attack": 8,
         "speed": 2
       },
-      "image": "/images/items/whisper_blade.png",
+      "image": "/images/items/whisper_blade.webp",
       "description": "+8 Attack, +2 Speed"
     },
     {
@@ -5515,7 +5521,7 @@ const CONTENT = {
         "magicPower": 10,
         "healPower": 2
       },
-      "image": "/images/items/scepter.png",
+      "image": "/images/items/scepter.webp",
       "description": "+10 Magic Power, +2 Heal Power"
     },
     {
@@ -5531,7 +5537,7 @@ const CONTENT = {
         "magicPower": 12,
         "healPower": 4
       },
-      "image": "/images/items/cleric_staff.png",
+      "image": "/images/items/cleric_staff.webp",
       "description": "+12 Magic Power, +4 Heal Power"
     },
     {
@@ -5547,7 +5553,7 @@ const CONTENT = {
         "attack": 11,
         "maxHp": 20
       },
-      "image": "/images/items/maul.png",
+      "image": "/images/items/maul.webp",
       "description": "+11 Attack, +20 Max HP"
     },
     {
@@ -5563,7 +5569,7 @@ const CONTENT = {
         "attack": 8,
         "resistance": 5
       },
-      "image": "/images/items/bulwark_hammer.png",
+      "image": "/images/items/bulwark_hammer.webp",
       "description": "+8 Attack, +5 Resistance"
     },
     {
@@ -5579,7 +5585,7 @@ const CONTENT = {
       "stats": {
         "attack": 8
       },
-      "image": "/images/items/stone_ash_sword.png",
+      "image": "/images/items/stone_ash_sword.webp",
       "description": "+8 Attack. A base for temple crafting."
     },
     {
@@ -5592,7 +5598,7 @@ const CONTENT = {
         "wood": 0
       },
       "heal": 40,
-      "image": "/images/items/hearth_tea.png",
+      "image": "/images/items/hearth_tea.webp",
       "description": "Heals 40 HP when used."
     },
     {
@@ -5605,7 +5611,7 @@ const CONTENT = {
         "wood": 0
       },
       "food": 2,
-      "image": "/images/items/field_rations.png",
+      "image": "/images/items/field_rations.webp",
       "description": "+2 Food."
     },
     {
@@ -5617,7 +5623,7 @@ const CONTENT = {
         "gold": 40,
         "wood": 0
       },
-      "image": "/images/items/fire_essence.png",
+      "image": "/images/items/fire_essence.webp",
       "description": "A spark of bottled flame. Used in crafting."
     },
     {
@@ -5629,7 +5635,7 @@ const CONTENT = {
         "gold": 40,
         "wood": 0
       },
-      "image": "/images/items/frost_essence.png",
+      "image": "/images/items/frost_essence.webp",
       "description": "Cold condensed to a droplet. Used in crafting."
     },
     {
@@ -5641,7 +5647,7 @@ const CONTENT = {
         "gold": 40,
         "wood": 0
       },
-      "image": "/images/items/arcane_essence.png",
+      "image": "/images/items/arcane_essence.webp",
       "description": "Raw magic held in a vial. Used in crafting."
     },
     {
@@ -5653,7 +5659,7 @@ const CONTENT = {
         "gold": 40,
         "wood": 0
       },
-      "image": "/images/items/shadow_essence.png",
+      "image": "/images/items/shadow_essence.webp",
       "description": "Light that never arrives. Used in crafting."
     },
     {
@@ -5665,7 +5671,7 @@ const CONTENT = {
         "gold": 150,
         "wood": 0
       },
-      "image": "/images/items/heart_of_fire.png",
+      "image": "/images/items/heart_of_fire.webp",
       "description": "The still-burning heart of a fire spirit."
     },
     {
@@ -5677,7 +5683,7 @@ const CONTENT = {
         "gold": 200,
         "wood": 0
       },
-      "image": "/images/items/golem_heart.png",
+      "image": "/images/items/golem_heart.webp",
       "description": "Offer it at the Ancient Temple to mend a lost heart."
     },
     {
@@ -5689,7 +5695,7 @@ const CONTENT = {
         "gold": 250,
         "wood": 0
       },
-      "image": "/images/items/origin_stone.png",
+      "image": "/images/items/origin_stone.webp",
       "description": "Offer it at the Ancient Temple to be reborn into a new race."
     },
     {
@@ -5701,7 +5707,7 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "image": "/images/items/ancient_relic.png",
+      "image": "/images/items/ancient_relic.webp",
       "description": "An artifact older than the kingdom. The temple remembers."
     },
     {
@@ -5713,7 +5719,7 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "image": "/images/items/war_crest.png",
+      "image": "/images/items/war_crest.webp",
       "description": "A battle-worn crest. The Ancient Temple demands it from those walking the heavy path (Warlord, Juggernaut, Crusader)."
     },
     {
@@ -5725,7 +5731,7 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "image": "/images/items/shadow_sigil.png",
+      "image": "/images/items/shadow_sigil.webp",
       "description": "A whispering sigil. The Ancient Temple demands it from those walking the shadow path (Nightblade, Reaper, Warden)."
     },
     {
@@ -5737,7 +5743,7 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "image": "/images/items/arcane_seal.png",
+      "image": "/images/items/arcane_seal.webp",
       "description": "A humming seal. The Ancient Temple demands it from those walking the arcane path (Archmage, High Priest)."
     },
     {
@@ -5749,7 +5755,7 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "image": "/images/items/primeval_cruor.png",
+      "image": "/images/items/primeval_cruor.webp",
       "description": "First blood, still warm. Rarely spills from humanoid wounds. Old Vesryn demands 10 drops for his rite."
     },
     {
@@ -5764,7 +5770,7 @@ const CONTENT = {
       "stats": {
         "attack": 16
       },
-      "image": "/images/items/fire_ash_sword.png",
+      "image": "/images/items/fire_ash_sword.webp",
       "craftOnly": true,
       "description": "+12 Attack. Still warm to the touch."
     },
@@ -5780,7 +5786,7 @@ const CONTENT = {
       "stats": {
         "attack": 28
       },
-      "image": "/images/items/molten_cleaver.png",
+      "image": "/images/items/molten_cleaver.webp",
       "craftOnly": true,
       "description": "+20 Attack. It hums with fire."
     },
@@ -5797,7 +5803,7 @@ const CONTENT = {
         "attack": 18,
         "resistance": 6
       },
-      "image": "/images/items/frost_gladius.png",
+      "image": "/images/items/frost_gladius.webp",
       "craftOnly": true,
       "description": "+12 Attack, +3 Resistance."
     },
@@ -5814,12 +5820,13 @@ const CONTENT = {
         "magicPower": 20,
         "mana": 15
       },
-      "image": "/images/items/arcane_rod.png",
+      "image": "/images/items/arcane_rod.webp",
       "craftOnly": true,
       "description": "+14 Magic Power, +10 Mana."
     },
     {
       "id": "shadow_knife",
+      "setId": "shadow",
       "name": "Shadow Knife",
       "slot": "weapon",
       "rarity": "uncommon",
@@ -5831,9 +5838,9 @@ const CONTENT = {
         "attack": 18,
         "speed": 3
       },
-      "image": "/images/items/shadow_knife.png",
+      "image": "/images/items/shadow_knife.webp",
       "craftOnly": true,
-      "description": "+11 Attack, +2 Speed."
+      "description": "+18 Attack, +3 Speed."
     },
     {
       "id": "ember_sword",
@@ -5845,10 +5852,10 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 18
+        "attack": 26
       },
-      "image": "/images/items/ember_sword.png",
-      "description": "+18 Attack. Found only in the deep ruins."
+      "image": "/images/items/ember_sword.webp",
+      "description": "+26 Attack. Found only in the deep ruins."
     },
     {
       "id": "phoenix_staff",
@@ -5860,14 +5867,15 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "magicPower": 22,
+        "magicPower": 30,
         "healPower": 6
       },
-      "image": "/images/items/phoenix_staff.png",
-      "description": "+22 Magic Power, +6 Heal Power."
+      "image": "/images/items/phoenix_staff.webp",
+      "description": "+30 Magic Power, +6 Heal Power."
     },
     {
       "id": "void_cleaver",
+      "setId": "void",
       "name": "Void Cleaver",
       "slot": "weapon",
       "rarity": "mythic",
@@ -5876,10 +5884,10 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 30
+        "attack": 42
       },
-      "image": "/images/items/void_cleaver.png",
-      "description": "+30 Attack. The edge drinks the dark."
+      "image": "/images/items/void_cleaver.webp",
+      "description": "+42 Attack. The edge drinks the dark."
     },
     {
       "id": "wooden_chest",
@@ -5948,6 +5956,7 @@ const CONTENT = {
     },
     {
       "id": "iron_greatsword",
+      "setId": "iron",
       "name": "Iron Greatsword",
       "slot": "weapon",
       "rarity": "common",
@@ -5958,7 +5967,7 @@ const CONTENT = {
       "stats": {
         "attack": 12
       },
-      "image": "/images/items/iron_greatsword.png",
+      "image": "/images/items/iron_greatsword.webp",
       "description": "+12 attack"
     },
     {
@@ -5973,11 +5982,12 @@ const CONTENT = {
       "stats": {
         "attack": 14
       },
-      "image": "/images/items/steel_blade.png",
+      "image": "/images/items/steel_blade.webp",
       "description": "+14 attack"
     },
     {
       "id": "ranger_bow",
+      "setId": "ranger",
       "name": "Ranger Bow",
       "slot": "weapon",
       "rarity": "uncommon",
@@ -5989,7 +5999,7 @@ const CONTENT = {
         "attack": 16,
         "speed": 1
       },
-      "image": "/images/items/ranger_bow.png",
+      "image": "/images/items/ranger_bow.webp",
       "description": "+16 attack, +1 speed"
     },
     {
@@ -6005,11 +6015,12 @@ const CONTENT = {
         "magicPower": 16,
         "mana": 12
       },
-      "image": "/images/items/arcane_scepter.png",
+      "image": "/images/items/arcane_scepter.webp",
       "description": "+16 magicPower, +12 mana"
     },
     {
       "id": "shadow_dagger",
+      "setId": "shadow",
       "name": "Shadow Dagger",
       "slot": "weapon",
       "rarity": "rare",
@@ -6021,11 +6032,12 @@ const CONTENT = {
         "attack": 20,
         "speed": 2
       },
-      "image": "/images/items/shadow_dagger.png",
+      "image": "/images/items/shadow_dagger.webp",
       "description": "+20 attack, +2 speed"
     },
     {
       "id": "dragon_spear",
+      "setId": "dragon",
       "name": "Dragon Spear",
       "slot": "weapon",
       "rarity": "rare",
@@ -6037,7 +6049,7 @@ const CONTENT = {
         "attack": 22,
         "speed": 1
       },
-      "image": "/images/items/dragon_spear.png",
+      "image": "/images/items/dragon_spear.webp",
       "description": "+22 attack, +1 speed"
     },
     {
@@ -6052,7 +6064,7 @@ const CONTENT = {
       "stats": {
         "attack": 26
       },
-      "image": "/images/items/titan_hammer.png",
+      "image": "/images/items/titan_hammer.webp",
       "description": "+26 attack"
     },
     {
@@ -6068,11 +6080,12 @@ const CONTENT = {
         "attack": 24,
         "speed": 2
       },
-      "image": "/images/items/storm_bow.png",
+      "image": "/images/items/storm_bow.webp",
       "description": "+24 attack, +2 speed"
     },
     {
       "id": "void_blade",
+      "setId": "void",
       "name": "Void Blade",
       "slot": "weapon",
       "rarity": "legendary",
@@ -6084,7 +6097,7 @@ const CONTENT = {
         "attack": 32,
         "speed": 1
       },
-      "image": "/images/items/void_blade.png",
+      "image": "/images/items/void_blade.webp",
       "description": "+32 attack, +1 speed"
     },
     {
@@ -6097,10 +6110,11 @@ const CONTENT = {
         "wood": 120
       },
       "stats": {
-        "attack": 38
+        "attack": 46,
+        "maxHp": 20
       },
-      "image": "/images/items/world_breaker.png",
-      "description": "+38 attack"
+      "image": "/images/items/world_breaker.webp",
+      "description": "+46 attack, +20 Max HP"
     },
     {
       "id": "bronze_helm",
@@ -6115,11 +6129,12 @@ const CONTENT = {
         "maxHp": 35,
         "resistance": 5
       },
-      "image": "/images/items/bronze_helm.png",
+      "image": "/images/items/bronze_helm.webp",
       "description": "+35 maxHp, +5 resistance"
     },
     {
       "id": "iron_helm",
+      "setId": "iron",
       "name": "Iron Helm",
       "slot": "head",
       "rarity": "common",
@@ -6131,11 +6146,12 @@ const CONTENT = {
         "maxHp": 45,
         "resistance": 7
       },
-      "image": "/images/items/iron_helm.png",
+      "image": "/images/items/iron_helm.webp",
       "description": "+45 maxHp, +7 resistance"
     },
     {
       "id": "ranger_hood",
+      "setId": "ranger",
       "name": "Ranger Hood",
       "slot": "head",
       "rarity": "uncommon",
@@ -6148,7 +6164,7 @@ const CONTENT = {
         "resistance": 6,
         "speed": 1
       },
-      "image": "/images/items/ranger_hood.png",
+      "image": "/images/items/ranger_hood.webp",
       "description": "+40 maxHp, +6 resistance, +1 speed"
     },
     {
@@ -6165,7 +6181,7 @@ const CONTENT = {
         "magicPower": 8,
         "mana": 12
       },
-      "image": "/images/items/mage_cowl.png",
+      "image": "/images/items/mage_cowl.webp",
       "description": "+30 maxHp, +8 magicPower, +12 mana"
     },
     {
@@ -6181,11 +6197,12 @@ const CONTENT = {
         "maxHp": 70,
         "resistance": 12
       },
-      "image": "/images/items/knight_helm.png",
+      "image": "/images/items/knight_helm.webp",
       "description": "+70 maxHp, +12 resistance"
     },
     {
       "id": "shadow_mask",
+      "setId": "shadow",
       "name": "Shadow Mask",
       "slot": "head",
       "rarity": "rare",
@@ -6198,11 +6215,12 @@ const CONTENT = {
         "resistance": 9,
         "speed": 1
       },
-      "image": "/images/items/shadow_mask.png",
+      "image": "/images/items/shadow_mask.webp",
       "description": "+55 maxHp, +9 resistance, +1 speed"
     },
     {
       "id": "dragon_helm",
+      "setId": "dragon",
       "name": "Dragon Helm",
       "slot": "head",
       "rarity": "epic",
@@ -6215,11 +6233,12 @@ const CONTENT = {
         "resistance": 18,
         "attack": 5
       },
-      "image": "/images/items/dragon_helm.png",
+      "image": "/images/items/dragon_helm.webp",
       "description": "+100 maxHp, +18 resistance, +5 attack"
     },
     {
       "id": "void_crown",
+      "setId": "void",
       "name": "Void Crown",
       "slot": "head",
       "rarity": "legendary",
@@ -6232,7 +6251,7 @@ const CONTENT = {
         "resistance": 22,
         "magicPower": 12
       },
-      "image": "/images/items/void_crown.png",
+      "image": "/images/items/void_crown.webp",
       "description": "+130 maxHp, +22 resistance, +12 magicPower"
     },
     {
@@ -6248,7 +6267,7 @@ const CONTENT = {
         "maxHp": 55,
         "resistance": 7
       },
-      "image": "/images/items/padded_armor.png",
+      "image": "/images/items/padded_armor.webp",
       "description": "+55 maxHp, +7 resistance"
     },
     {
@@ -6261,14 +6280,15 @@ const CONTENT = {
         "wood": 12
       },
       "stats": {
-        "maxHp": 65,
-        "resistance": 9
+        "maxHp": 55,
+        "resistance": 8
       },
-      "image": "/images/items/chainmail.png",
-      "description": "+65 maxHp, +9 resistance"
+      "image": "/images/items/chainmail.webp",
+      "description": "+55 maxHp, +8 resistance"
     },
     {
       "id": "ranger_vest",
+      "setId": "ranger",
       "name": "Ranger Vest",
       "slot": "armor",
       "rarity": "uncommon",
@@ -6281,7 +6301,7 @@ const CONTENT = {
         "resistance": 8,
         "speed": 1
       },
-      "image": "/images/items/ranger_vest.png",
+      "image": "/images/items/ranger_vest.webp",
       "description": "+60 maxHp, +8 resistance, +1 speed"
     },
     {
@@ -6296,10 +6316,10 @@ const CONTENT = {
       "stats": {
         "maxHp": 45,
         "resistance": 6,
-        "magicPower": 10
+        "magicPower": 14
       },
-      "image": "/images/items/silk_robe.png",
-      "description": "+45 maxHp, +6 resistance, +10 magicPower"
+      "image": "/images/items/silk_robe.webp",
+      "description": "+45 maxHp, +6 resistance, +14 magicPower"
     },
     {
       "id": "plate_armor",
@@ -6314,11 +6334,12 @@ const CONTENT = {
         "maxHp": 110,
         "resistance": 18
       },
-      "image": "/images/items/plate_armor.png",
+      "image": "/images/items/plate_armor.webp",
       "description": "+110 maxHp, +18 resistance"
     },
     {
       "id": "shadow_garb",
+      "setId": "shadow",
       "name": "Shadow Garb",
       "slot": "armor",
       "rarity": "rare",
@@ -6331,11 +6352,12 @@ const CONTENT = {
         "resistance": 14,
         "speed": 1
       },
-      "image": "/images/items/shadow_garb.png",
+      "image": "/images/items/shadow_garb.webp",
       "description": "+85 maxHp, +14 resistance, +1 speed"
     },
     {
       "id": "dragon_scale",
+      "setId": "dragon",
       "name": "Dragon Scale",
       "slot": "armor",
       "rarity": "epic",
@@ -6348,11 +6370,12 @@ const CONTENT = {
         "resistance": 26,
         "attack": 6
       },
-      "image": "/images/items/dragon_scale.png",
+      "image": "/images/items/dragon_scale.webp",
       "description": "+150 maxHp, +26 resistance, +6 attack"
     },
     {
       "id": "void_plate",
+      "setId": "void",
       "name": "Void Plate",
       "slot": "armor",
       "rarity": "mythic",
@@ -6365,11 +6388,12 @@ const CONTENT = {
         "resistance": 35,
         "magicPower": 10
       },
-      "image": "/images/items/void_plate.png",
+      "image": "/images/items/void_plate.webp",
       "description": "+200 maxHp, +35 resistance, +10 magicPower"
     },
     {
       "id": "leather_greaves",
+      "setId": "leather",
       "name": "Leather Greaves",
       "slot": "legs",
       "rarity": "common",
@@ -6381,11 +6405,12 @@ const CONTENT = {
         "maxHp": 40,
         "resistance": 6
       },
-      "image": "/images/items/leather_greaves.png",
+      "image": "/images/items/leather_greaves.webp",
       "description": "+40 maxHp, +6 resistance"
     },
     {
       "id": "iron_greaves",
+      "setId": "iron",
       "name": "Iron Greaves",
       "slot": "legs",
       "rarity": "common",
@@ -6397,7 +6422,7 @@ const CONTENT = {
         "maxHp": 50,
         "resistance": 8
       },
-      "image": "/images/items/iron_greaves.png",
+      "image": "/images/items/iron_greaves.webp",
       "description": "+50 maxHp, +8 resistance"
     },
     {
@@ -6414,7 +6439,7 @@ const CONTENT = {
         "resistance": 7,
         "speed": 1
       },
-      "image": "/images/items/swift_leggings.png",
+      "image": "/images/items/swift_leggings.webp",
       "description": "+45 maxHp, +7 resistance, +1 speed"
     },
     {
@@ -6431,7 +6456,7 @@ const CONTENT = {
         "magicPower": 9,
         "mana": 10
       },
-      "image": "/images/items/sage_pants.png",
+      "image": "/images/items/sage_pants.webp",
       "description": "+35 maxHp, +9 magicPower, +10 mana"
     },
     {
@@ -6447,11 +6472,12 @@ const CONTENT = {
         "maxHp": 80,
         "resistance": 14
       },
-      "image": "/images/items/knight_leggings.png",
+      "image": "/images/items/knight_leggings.webp",
       "description": "+80 maxHp, +14 resistance"
     },
     {
       "id": "shadow_leggings",
+      "setId": "shadow",
       "name": "Shadow Leggings",
       "slot": "legs",
       "rarity": "rare",
@@ -6464,11 +6490,12 @@ const CONTENT = {
         "resistance": 11,
         "speed": 1
       },
-      "image": "/images/items/shadow_leggings.png",
+      "image": "/images/items/shadow_leggings.webp",
       "description": "+65 maxHp, +11 resistance, +1 speed"
     },
     {
       "id": "dragon_leggings",
+      "setId": "dragon",
       "name": "Dragon Leggings",
       "slot": "legs",
       "rarity": "epic",
@@ -6481,11 +6508,12 @@ const CONTENT = {
         "resistance": 22,
         "attack": 4
       },
-      "image": "/images/items/dragon_leggings.png",
+      "image": "/images/items/dragon_leggings.webp",
       "description": "+120 maxHp, +22 resistance, +4 attack"
     },
     {
       "id": "void_leggings",
+      "setId": "void",
       "name": "Void Leggings",
       "slot": "legs",
       "rarity": "legendary",
@@ -6498,7 +6526,7 @@ const CONTENT = {
         "resistance": 28,
         "magicPower": 10
       },
-      "image": "/images/items/void_leggings.png",
+      "image": "/images/items/void_leggings.webp",
       "description": "+160 maxHp, +28 resistance, +10 magicPower"
     },
     {
@@ -6513,11 +6541,12 @@ const CONTENT = {
       "stats": {
         "speed": 1
       },
-      "image": "/images/items/worn_boots.png",
+      "image": "/images/items/worn_boots.webp",
       "description": "+1 speed"
     },
     {
       "id": "iron_boots",
+      "setId": "iron",
       "name": "Iron Boots",
       "slot": "boots",
       "rarity": "common",
@@ -6530,11 +6559,12 @@ const CONTENT = {
         "resistance": 4,
         "speed": 1
       },
-      "image": "/images/items/iron_boots.png",
+      "image": "/images/items/iron_boots.webp",
       "description": "+20 maxHp, +4 resistance, +1 speed"
     },
     {
       "id": "ranger_boots",
+      "setId": "ranger",
       "name": "Ranger Boots",
       "slot": "boots",
       "rarity": "uncommon",
@@ -6543,10 +6573,11 @@ const CONTENT = {
         "wood": 12
       },
       "stats": {
+        "maxHp": 20,
         "speed": 2
       },
-      "image": "/images/items/ranger_boots.png",
-      "description": "+2 speed"
+      "image": "/images/items/ranger_boots.webp",
+      "description": "+20 Max HP, +2 speed"
     },
     {
       "id": "sorcery_boots",
@@ -6561,7 +6592,7 @@ const CONTENT = {
         "mana": 12,
         "magicPower": 6
       },
-      "image": "/images/items/sorcery_boots.png",
+      "image": "/images/items/sorcery_boots.webp",
       "description": "+12 mana, +6 magicPower"
     },
     {
@@ -6578,11 +6609,12 @@ const CONTENT = {
         "resistance": 8,
         "speed": 1
       },
-      "image": "/images/items/knight_boots.png",
+      "image": "/images/items/knight_boots.webp",
       "description": "+40 maxHp, +8 resistance, +1 speed"
     },
     {
       "id": "void_boots",
+      "setId": "void",
       "name": "Void Boots",
       "slot": "boots",
       "rarity": "epic",
@@ -6595,7 +6627,7 @@ const CONTENT = {
         "resistance": 12,
         "speed": 2
       },
-      "image": "/images/items/void_boots.png",
+      "image": "/images/items/void_boots.webp",
       "description": "+60 maxHp, +12 resistance, +2 speed"
     },
     {
@@ -6611,7 +6643,7 @@ const CONTENT = {
         "mana": 8,
         "magicPower": 4
       },
-      "image": "/images/items/copper_amulet.png",
+      "image": "/images/items/copper_amulet.webp",
       "description": "+8 mana, +4 magicPower"
     },
     {
@@ -6627,7 +6659,7 @@ const CONTENT = {
         "mana": 14,
         "magicPower": 7
       },
-      "image": "/images/items/silver_amulet.png",
+      "image": "/images/items/silver_amulet.webp",
       "description": "+14 mana, +7 magicPower"
     },
     {
@@ -6644,7 +6676,7 @@ const CONTENT = {
         "magicPower": 12,
         "healPower": 4
       },
-      "image": "/images/items/ruby_amulet.png",
+      "image": "/images/items/ruby_amulet.webp",
       "description": "+20 mana, +12 magicPower, +4 healPower"
     },
     {
@@ -6661,11 +6693,12 @@ const CONTENT = {
         "magicPower": 18,
         "manaRegen": 2
       },
-      "image": "/images/items/sapphire_amulet.png",
+      "image": "/images/items/sapphire_amulet.webp",
       "description": "+30 mana, +18 magicPower, +2 manaRegen"
     },
     {
       "id": "void_amulet",
+      "setId": "void",
       "name": "Void Amulet",
       "slot": "amulet",
       "rarity": "legendary",
@@ -6678,7 +6711,7 @@ const CONTENT = {
         "magicPower": 24,
         "healPower": 8
       },
-      "image": "/images/items/void_amulet.png",
+      "image": "/images/items/void_amulet.webp",
       "description": "+40 mana, +24 magicPower, +8 healPower"
     },
     {
@@ -6693,7 +6726,7 @@ const CONTENT = {
       "stats": {
         "attack": 3
       },
-      "image": "/images/items/copper_ring.png",
+      "image": "/images/items/copper_ring.webp",
       "description": "+3 attack"
     },
     {
@@ -6709,7 +6742,7 @@ const CONTENT = {
         "attack": 5,
         "mana": 8
       },
-      "image": "/images/items/silver_ring.png",
+      "image": "/images/items/silver_ring.webp",
       "description": "+5 attack, +8 mana"
     },
     {
@@ -6725,7 +6758,7 @@ const CONTENT = {
         "attack": 8,
         "critChance": 5
       },
-      "image": "/images/items/ruby_ring.png",
+      "image": "/images/items/ruby_ring.webp",
       "description": "+8 attack, +5 critChance"
     },
     {
@@ -6742,11 +6775,12 @@ const CONTENT = {
         "magicPower": 10,
         "critChance": 7
       },
-      "image": "/images/items/sapphire_ring.png",
+      "image": "/images/items/sapphire_ring.webp",
       "description": "+12 attack, +10 magicPower, +7 critChance"
     },
     {
       "id": "void_ring",
+      "setId": "void",
       "name": "Void Ring",
       "slot": "ring",
       "rarity": "legendary",
@@ -6759,7 +6793,7 @@ const CONTENT = {
         "magicPower": 14,
         "critDamage": 15
       },
-      "image": "/images/items/void_ring.png",
+      "image": "/images/items/void_ring.webp",
       "description": "+16 attack, +14 magicPower, +15 critDamage"
     },
     {
@@ -6771,7 +6805,7 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "image": "/images/items/essence_of_life.png",
+      "image": "/images/items/essence_of_life.webp",
       "description": "A rare essence that can revive a fallen ally at the Ancient Temple."
     },
     {
@@ -6787,7 +6821,7 @@ const CONTENT = {
         "magicPower": 12,
         "healPower": 2
       },
-      "image": "/images/items/tome_ember.png",
+      "image": "/images/items/tome_ember.webp",
       "description": "+12 Magic Power, +2 Heal Power. For mages."
     },
     {
@@ -6803,7 +6837,7 @@ const CONTENT = {
         "magicPower": 14,
         "mana": 12
       },
-      "image": "/images/items/tome_frost.png",
+      "image": "/images/items/tome_frost.webp",
       "description": "+14 Magic Power, +12 Mana."
     },
     {
@@ -6820,7 +6854,7 @@ const CONTENT = {
         "mana": 8,
         "omnivamp": 3
       },
-      "image": "/images/items/tome_shadow.png",
+      "image": "/images/items/tome_shadow.webp",
       "description": "+10 Magic Power, +3% Omnivamp."
     },
     {
@@ -6837,7 +6871,7 @@ const CONTENT = {
         "healPower": 6,
         "mana": 10
       },
-      "image": "/images/items/tome_light.png",
+      "image": "/images/items/tome_light.webp",
       "description": "+16 Magic Power, +6 Heal, +10 Mana."
     },
     {
@@ -6853,7 +6887,7 @@ const CONTENT = {
         "magicPower": 22,
         "manaRegen": 2
       },
-      "image": "/images/items/tome_void.png",
+      "image": "/images/items/tome_void.webp",
       "description": "+22 Magic Power, +2 Mana Regen."
     },
     {
@@ -6868,7 +6902,7 @@ const CONTENT = {
       "stats": {
         "omnivamp": 10
       },
-      "image": "/images/items/stone_blood.png",
+      "image": "/images/items/stone_blood.webp",
       "craftOnly": true,
       "description": "+10% Omnivamp. Heals 10% of all damage dealt. (Craftable)"
     },
@@ -6885,7 +6919,7 @@ const CONTENT = {
         "omnivamp": 8,
         "resistance": 10
       },
-      "image": "/images/items/stone_frost.png",
+      "image": "/images/items/stone_frost.webp",
       "description": "+8% Omnivamp, +10 Resistance."
     },
     {
@@ -6900,7 +6934,7 @@ const CONTENT = {
       "stats": {
         "omnivamp": 12
       },
-      "image": "/images/items/stone_shadow.png",
+      "image": "/images/items/stone_shadow.webp",
       "description": "+12% Omnivamp."
     },
     {
@@ -6916,7 +6950,7 @@ const CONTENT = {
         "omnivamp": 6,
         "magicPower": 15
       },
-      "image": "/images/items/stone_arcane.png",
+      "image": "/images/items/stone_arcane.webp",
       "description": "+6% Omnivamp, +15 Magic Power."
     },
     {
@@ -6932,7 +6966,7 @@ const CONTENT = {
         "omnivamp": 7,
         "maxHp": 50
       },
-      "image": "/images/items/stone_earth.png",
+      "image": "/images/items/stone_earth.webp",
       "description": "+7% Omnivamp, +50 Max HP."
     },
     {
@@ -6948,7 +6982,7 @@ const CONTENT = {
         "omnivamp": 5,
         "attack": 4
       },
-      "image": "/images/items/vampiric_ring.png",
+      "image": "/images/items/vampiric_ring.webp",
       "description": "+5% Omnivamp, +4 Attack."
     },
     {
@@ -6964,7 +6998,7 @@ const CONTENT = {
         "attack": 24,
         "omnivamp": 4
       },
-      "image": "/images/items/crimson_blade.png",
+      "image": "/images/items/crimson_blade.webp",
       "description": "+24 Attack, +4% Omnivamp."
     },
     {
@@ -6977,12 +7011,12 @@ const CONTENT = {
         "wood": 28
       },
       "stats": {
-        "maxHp": 60,
+        "maxHp": 75,
         "resistance": 10,
         "magicPower": 6
       },
-      "image": "/images/items/glacial_helm.png",
-      "description": "+60 HP, +10 Res, +6 Mgc."
+      "image": "/images/items/glacial_helm.webp",
+      "description": "+75 HP, +10 Res, +6 Mgc."
     },
     {
       "id": "ember_plate",
@@ -6998,7 +7032,7 @@ const CONTENT = {
         "resistance": 20,
         "attack": 5
       },
-      "image": "/images/items/ember_plate.png",
+      "image": "/images/items/ember_plate.webp",
       "description": "+130 HP, +20 Res, +5 Atk."
     },
     {
@@ -7011,10 +7045,10 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 32,
+        "attack": 36,
         "critChance": 5
       },
-      "image": "/images/items/boss_weapon_ember.png",
+      "image": "/images/items/boss_weapon_ember.webp",
       "bossWeapon": true,
       "description": "Ember King's blade - only drops from Ember King (50%)."
     },
@@ -7031,7 +7065,7 @@ const CONTENT = {
         "attack": 36,
         "resistance": 8
       },
-      "image": "/images/items/boss_weapon_frost.png",
+      "image": "/images/items/boss_weapon_frost.webp",
       "bossWeapon": true,
       "description": "Frost Titan's axe - only drops from Frost Titan (50%)."
     },
@@ -7048,7 +7082,7 @@ const CONTENT = {
         "attack": 40,
         "omnivamp": 4
       },
-      "image": "/images/items/boss_weapon_void.png",
+      "image": "/images/items/boss_weapon_void.webp",
       "bossWeapon": true,
       "description": "Void Herald's scythe - only drops from Void Herald (50%)."
     },
@@ -7065,7 +7099,7 @@ const CONTENT = {
         "attack": 44,
         "speed": 1
       },
-      "image": "/images/items/boss_weapon_storm.png",
+      "image": "/images/items/boss_weapon_storm.webp",
       "bossWeapon": true,
       "description": "Storm Colossus hammer - only drops from Storm Colossus (50%)."
     },
@@ -7082,7 +7116,7 @@ const CONTENT = {
         "attack": 48,
         "critDamage": 15
       },
-      "image": "/images/items/boss_weapon_world.png",
+      "image": "/images/items/boss_weapon_world.webp",
       "bossWeapon": true,
       "description": "World Eater's fang - only drops from World Eater (50%)."
     },
@@ -7174,7 +7208,7 @@ const CONTENT = {
       },
       "description": "A dependable oaken club.",
       "value": 25,
-      "image": "/images/items/sturdy_club.png"
+      "image": "/images/items/sturdy_club.webp"
     },
     {
       "id": "cloth_cap",
@@ -7186,7 +7220,7 @@ const CONTENT = {
       },
       "description": "Stitched cloth, better than nothing.",
       "value": 22,
-      "image": "/images/items/cloth_cap.png"
+      "image": "/images/items/cloth_cap.webp"
     },
     {
       "id": "bone_ring",
@@ -7198,7 +7232,7 @@ const CONTENT = {
       },
       "description": "Carved from a dire wolf fang.",
       "value": 24,
-      "image": "/images/items/bone_ring.png"
+      "image": "/images/items/bone_ring.webp"
     },
     {
       "id": "travel_boots",
@@ -7211,7 +7245,7 @@ const CONTENT = {
       },
       "description": "Worn soles, swift steps.",
       "value": 26,
-      "image": "/images/items/travel_boots.png"
+      "image": "/images/items/travel_boots.webp"
     },
     {
       "id": "hunter_axe",
@@ -7223,7 +7257,7 @@ const CONTENT = {
       },
       "description": "A woodsman's heavy axe.",
       "value": 70,
-      "image": "/images/items/hunter_axe.png"
+      "image": "/images/items/hunter_axe.webp"
     },
     {
       "id": "wolf_helm",
@@ -7236,7 +7270,7 @@ const CONTENT = {
       },
       "description": "Fashioned from an alpha pelt.",
       "value": 65,
-      "image": "/images/items/wolf_helm.png"
+      "image": "/images/items/wolf_helm.webp"
     },
     {
       "id": "boar_hide_armor",
@@ -7249,7 +7283,7 @@ const CONTENT = {
       },
       "description": "Thick, musky, tough.",
       "value": 75,
-      "image": "/images/items/boar_hide_armor.png"
+      "image": "/images/items/boar_hide_armor.webp"
     },
     {
       "id": "swift_greaves",
@@ -7262,7 +7296,7 @@ const CONTENT = {
       },
       "description": "Light plates for fast feet.",
       "value": 68,
-      "image": "/images/items/swift_greaves.png"
+      "image": "/images/items/swift_greaves.webp"
     },
     {
       "id": "ember_boots",
@@ -7275,7 +7309,7 @@ const CONTENT = {
       },
       "description": "Still warm from the forge.",
       "value": 72,
-      "image": "/images/items/ember_boots.png"
+      "image": "/images/items/ember_boots.webp"
     },
     {
       "id": "moon_amulet",
@@ -7283,11 +7317,12 @@ const CONTENT = {
       "rarity": "uncommon",
       "slot": "amulet",
       "stats": {
-        "mana": 25
+        "mana": 25,
+        "magicPower": 4
       },
       "description": "Drinks in moonlight.",
       "value": 70,
-      "image": "/images/items/moon_amulet.png"
+      "image": "/images/items/moon_amulet.webp"
     },
     {
       "id": "serpent_ring",
@@ -7299,7 +7334,7 @@ const CONTENT = {
       },
       "description": "A coiled silver serpent.",
       "value": 66,
-      "image": "/images/items/serpent_ring.png"
+      "image": "/images/items/serpent_ring.webp"
     },
     {
       "id": "oak_staff",
@@ -7311,7 +7346,7 @@ const CONTENT = {
       },
       "description": "Heartwood humming with mana.",
       "value": 74,
-      "image": "/images/items/oak_staff.png"
+      "image": "/images/items/oak_staff.webp"
     },
     {
       "id": "frostbrand_axe",
@@ -7323,7 +7358,7 @@ const CONTENT = {
       },
       "description": "Its edge never thaws.",
       "value": 200,
-      "image": "/images/items/frostbrand_axe.png"
+      "image": "/images/items/frostbrand_axe.webp"
     },
     {
       "id": "sentinel_helm",
@@ -7336,7 +7371,7 @@ const CONTENT = {
       },
       "description": "Stood a hundred sieges.",
       "value": 185,
-      "image": "/images/items/sentinel_helm.png"
+      "image": "/images/items/sentinel_helm.webp"
     },
     {
       "id": "shadowplate",
@@ -7345,11 +7380,12 @@ const CONTENT = {
       "slot": "armor",
       "stats": {
         "maxHp": 110,
-        "resistance": 14
+        "resistance": 16,
+        "speed": 2
       },
       "description": "Forged in eclipse dark.",
       "value": 210,
-      "image": "/images/items/shadowplate.png"
+      "image": "/images/items/shadowplate.webp"
     },
     {
       "id": "storm_leggings",
@@ -7357,12 +7393,13 @@ const CONTENT = {
       "rarity": "rare",
       "slot": "legs",
       "stats": {
+        "maxHp": 40,
         "resistance": 10,
         "speed": 2
       },
       "description": "Crackling with static.",
       "value": 190,
-      "image": "/images/items/storm_leggings.png"
+      "image": "/images/items/storm_leggings.webp"
     },
     {
       "id": "thunder_amulet",
@@ -7370,11 +7407,12 @@ const CONTENT = {
       "rarity": "rare",
       "slot": "amulet",
       "stats": {
-        "attack": 10
+        "attack": 14,
+        "speed": 2
       },
       "description": "A bottled thunderstorm.",
       "value": 195,
-      "image": "/images/items/thunder_amulet.png"
+      "image": "/images/items/thunder_amulet.webp"
     },
     {
       "id": "warden_ring",
@@ -7387,7 +7425,7 @@ const CONTENT = {
       },
       "description": "Oath-bound silver.",
       "value": 188,
-      "image": "/images/items/warden_ring.png"
+      "image": "/images/items/warden_ring.webp"
     },
     {
       "id": "runed_bow",
@@ -7400,10 +7438,11 @@ const CONTENT = {
       },
       "description": "Runes guide every shaft.",
       "value": 205,
-      "image": "/images/items/runed_bow.png"
+      "image": "/images/items/runed_bow.webp"
     },
     {
       "id": "void_reaver",
+      "setId": "void",
       "name": "Void Reaver",
       "rarity": "epic",
       "slot": "weapon",
@@ -7412,7 +7451,7 @@ const CONTENT = {
       },
       "description": "It hungers between swings.",
       "value": 500,
-      "image": "/images/items/void_reaver.png"
+      "image": "/images/items/void_reaver.webp"
     },
     {
       "id": "aegis_armor",
@@ -7421,11 +7460,11 @@ const CONTENT = {
       "slot": "armor",
       "stats": {
         "maxHp": 150,
-        "resistance": 18
+        "resistance": 24
       },
       "description": "A wall you can wear.",
       "value": 520,
-      "image": "/images/items/aegis_armor.png"
+      "image": "/images/items/aegis_armor.webp"
     },
     {
       "id": "archon_crown",
@@ -7438,7 +7477,7 @@ const CONTENT = {
       },
       "description": "Worn by sky-tyrants.",
       "value": 510,
-      "image": "/images/items/archon_crown.png"
+      "image": "/images/items/archon_crown.webp"
     },
     {
       "id": "stormcaller_staff",
@@ -7450,7 +7489,7 @@ const CONTENT = {
       },
       "description": "Points at clouds; clouds obey.",
       "value": 530,
-      "image": "/images/items/stormcaller_staff.png"
+      "image": "/images/items/stormcaller_staff.webp"
     },
     {
       "id": "kingsfall_blade",
@@ -7462,7 +7501,7 @@ const CONTENT = {
       },
       "description": "Ended a dynasty.",
       "value": 1200,
-      "image": "/images/items/kingsfall_blade.png"
+      "image": "/images/items/kingsfall_blade.webp"
     },
     {
       "id": "titanward_plate",
@@ -7475,7 +7514,7 @@ const CONTENT = {
       },
       "description": "Titan-forged bulwark.",
       "value": 1250,
-      "image": "/images/items/titanward_plate.png"
+      "image": "/images/items/titanward_plate.webp"
     },
     {
       "id": "worldsplitter_axe",
@@ -7487,7 +7526,7 @@ const CONTENT = {
       },
       "description": "The ground remembers it.",
       "value": 2500,
-      "image": "/images/items/worldsplitter_axe.png"
+      "image": "/images/items/worldsplitter_axe.webp"
     },
     {
       "id": "slime_bottle",
@@ -7495,7 +7534,7 @@ const CONTENT = {
       "rarity": "common",
       "slot": "material",
       "description": "A jiggling bottle of fresh slime.",
-      "image": "/images/items/slime_bottle.png",
+      "image": "/images/items/slime_bottle.webp",
       "value": 6
     },
     {
@@ -7504,7 +7543,7 @@ const CONTENT = {
       "rarity": "common",
       "slot": "material",
       "description": "A sharp fang, still warm.",
-      "image": "/images/items/wolf_fang.png",
+      "image": "/images/items/wolf_fang.webp",
       "value": 6
     },
     {
@@ -7513,7 +7552,7 @@ const CONTENT = {
       "rarity": "common",
       "slot": "material",
       "description": "Leathery and light.",
-      "image": "/images/items/bat_wing.png",
+      "image": "/images/items/bat_wing.webp",
       "value": 5
     },
     {
@@ -7522,7 +7561,7 @@ const CONTENT = {
       "rarity": "common",
       "slot": "material",
       "description": "Stronger than it looks.",
-      "image": "/images/items/spider_silk.png",
+      "image": "/images/items/spider_silk.webp",
       "value": 7
     },
     {
@@ -7531,7 +7570,7 @@ const CONTENT = {
       "rarity": "uncommon",
       "slot": "material",
       "description": "Thick hide of a hardy beast.",
-      "image": "/images/items/tough_hide.png",
+      "image": "/images/items/tough_hide.webp",
       "value": 15
     },
     {
@@ -7540,7 +7579,7 @@ const CONTENT = {
       "rarity": "uncommon",
       "slot": "material",
       "description": "Dense with old malice.",
-      "image": "/images/items/skeleton_bone.png",
+      "image": "/images/items/skeleton_bone.webp",
       "value": 14
     },
     {
@@ -7549,7 +7588,7 @@ const CONTENT = {
       "rarity": "uncommon",
       "slot": "material",
       "description": "A trophy with an edge.",
-      "image": "/images/items/orc_tusk.png",
+      "image": "/images/items/orc_tusk.webp",
       "value": 16
     },
     {
@@ -7558,7 +7597,7 @@ const CONTENT = {
       "rarity": "uncommon",
       "slot": "material",
       "description": "Crackles faintly.",
-      "image": "/images/items/harpy_feather.png",
+      "image": "/images/items/harpy_feather.webp",
       "value": 18
     },
     {
@@ -7567,7 +7606,7 @@ const CONTENT = {
       "rarity": "rare",
       "slot": "material",
       "description": "A chip of living stone.",
-      "image": "/images/items/golem_fragment.png",
+      "image": "/images/items/golem_fragment.webp",
       "value": 50
     },
     {
@@ -7576,7 +7615,7 @@ const CONTENT = {
       "rarity": "rare",
       "slot": "material",
       "description": "Cold light in a jar.",
-      "image": "/images/items/wraith_wisp.png",
+      "image": "/images/items/wraith_wisp.webp",
       "value": 55
     },
     {
@@ -7585,7 +7624,7 @@ const CONTENT = {
       "rarity": "rare",
       "slot": "material",
       "description": "Bark that slowly regrows.",
-      "image": "/images/items/treant_bark.png",
+      "image": "/images/items/treant_bark.webp",
       "value": 48
     },
     {
@@ -7594,7 +7633,7 @@ const CONTENT = {
       "rarity": "epic",
       "slot": "material",
       "description": "It shimmers with regrowth.",
-      "image": "/images/items/hydra_scale.png",
+      "image": "/images/items/hydra_scale.webp",
       "value": 150
     },
     {
@@ -7603,7 +7642,7 @@ const CONTENT = {
       "rarity": "common",
       "slot": "consumable",
       "description": "Heals small wounds.",
-      "image": "/images/items/minor_salve.png",
+      "image": "/images/items/minor_salve.webp",
       "heal": 25,
       "value": 10
     },
@@ -7613,7 +7652,7 @@ const CONTENT = {
       "rarity": "common",
       "slot": "consumable",
       "description": "Chewy trail food.",
-      "image": "/images/items/wolf_jerky.png",
+      "image": "/images/items/wolf_jerky.webp",
       "heal": 15,
       "food": 1,
       "value": 8
@@ -7624,7 +7663,7 @@ const CONTENT = {
       "rarity": "uncommon",
       "slot": "consumable",
       "description": "A hearty dungeon stew.",
-      "image": "/images/items/mushroom_stew.png",
+      "image": "/images/items/mushroom_stew.webp",
       "heal": 45,
       "food": 1,
       "value": 20
@@ -7635,7 +7674,7 @@ const CONTENT = {
       "rarity": "uncommon",
       "slot": "consumable",
       "description": "Numbing and sweet.",
-      "image": "/images/items/frost_berry.png",
+      "image": "/images/items/frost_berry.webp",
       "heal": 30,
       "value": 12
     },
@@ -7645,7 +7684,7 @@ const CONTENT = {
       "rarity": "uncommon",
       "slot": "consumable",
       "description": "Burns going down.",
-      "image": "/images/items/ember_pepper.png",
+      "image": "/images/items/ember_pepper.webp",
       "heal": 20,
       "food": 2,
       "value": 10
@@ -7656,7 +7695,7 @@ const CONTENT = {
       "rarity": "rare",
       "slot": "consumable",
       "description": "Regrows more than courage.",
-      "image": "/images/items/troll_draught.png",
+      "image": "/images/items/troll_draught.webp",
       "heal": 90,
       "value": 45
     },
@@ -7666,7 +7705,7 @@ const CONTENT = {
       "rarity": "rare",
       "slot": "consumable",
       "description": "Storm-harpy eggs, fried.",
-      "image": "/images/items/skyshard_omelet.png",
+      "image": "/images/items/skyshard_omelet.webp",
       "heal": 60,
       "food": 2,
       "value": 35
@@ -7677,7 +7716,7 @@ const CONTENT = {
       "rarity": "epic",
       "slot": "consumable",
       "description": "First light, bottled.",
-      "image": "/images/items/elixir_of_dawn.png",
+      "image": "/images/items/elixir_of_dawn.webp",
       "heal": 150,
       "value": 90
     },
@@ -7687,7 +7726,7 @@ const CONTENT = {
       "rarity": "uncommon",
       "slot": "material",
       "description": "Reusable weapon pattern.",
-      "image": "/images/items/sword_blueprint.png",
+      "image": "/images/items/sword_blueprint.webp",
       "blueprint": true,
       "price": {
         "gold": 200,
@@ -7700,7 +7739,7 @@ const CONTENT = {
       "rarity": "uncommon",
       "slot": "material",
       "description": "Reusable armor pattern.",
-      "image": "/images/items/armor_blueprint.png",
+      "image": "/images/items/armor_blueprint.webp",
       "blueprint": true,
       "price": {
         "gold": 200,
@@ -7713,7 +7752,7 @@ const CONTENT = {
       "rarity": "rare",
       "slot": "material",
       "description": "Reusable staff pattern.",
-      "image": "/images/items/staff_blueprint.png",
+      "image": "/images/items/staff_blueprint.webp",
       "blueprint": true,
       "price": {
         "gold": 200,
@@ -7731,7 +7770,315 @@ const CONTENT = {
         "mana": 15
       },
       "description": "For quiet, clever minds.",
-      "image": "/images/items/sage_circlet.png"
+      "image": "/images/items/sage_circlet.webp"
+    },
+    {
+      "id": "blood_blade",
+      "name": "Blood Blade",
+      "slot": "weapon",
+      "rarity": "epic",
+      "price": {
+        "gold": 430,
+        "wood": 60
+      },
+      "stats": {
+        "attack": 28
+      },
+      "setId": "blood",
+      "image": "/images/items/blood_blade.webp",
+      "description": "+28 Attack. It remembers every vein."
+    },
+    {
+      "id": "blood_fang",
+      "name": "Blood Fang",
+      "slot": "weapon",
+      "rarity": "rare",
+      "price": {
+        "gold": 230,
+        "wood": 35
+      },
+      "stats": {
+        "attack": 18,
+        "speed": 2
+      },
+      "setId": "blood",
+      "image": "/images/items/blood_fang.webp",
+      "description": "+18 Attack, +2 Speed. Still warm."
+    },
+    {
+      "id": "blood_helm",
+      "name": "Blood Helm",
+      "slot": "head",
+      "rarity": "epic",
+      "price": {
+        "gold": 390,
+        "wood": 55
+      },
+      "stats": {
+        "maxHp": 90,
+        "resistance": 16,
+        "speed": 2
+      },
+      "setId": "blood",
+      "image": "/images/items/blood_helm.webp",
+      "description": "+90 Max HP, +16 Resistance, +2 Speed."
+    },
+    {
+      "id": "blood_chest",
+      "name": "Blood Chest",
+      "slot": "armor",
+      "rarity": "epic",
+      "price": {
+        "gold": 410,
+        "wood": 60
+      },
+      "stats": {
+        "maxHp": 140,
+        "resistance": 22
+      },
+      "setId": "blood",
+      "image": "/images/items/blood_chest.webp",
+      "description": "+140 Max HP, +22 Resistance."
+    },
+    {
+      "id": "blood_leggings",
+      "name": "Blood Leggings",
+      "slot": "legs",
+      "rarity": "epic",
+      "price": {
+        "gold": 380,
+        "wood": 55
+      },
+      "stats": {
+        "maxHp": 110,
+        "resistance": 20
+      },
+      "setId": "blood",
+      "image": "/images/items/blood_leggings.webp",
+      "description": "+110 Max HP, +20 Resistance."
+    },
+    {
+      "id": "blood_boots",
+      "name": "Blood Boots",
+      "slot": "boots",
+      "rarity": "rare",
+      "price": {
+        "gold": 150,
+        "wood": 24
+      },
+      "stats": {
+        "maxHp": 45,
+        "resistance": 10,
+        "speed": 2
+      },
+      "setId": "blood",
+      "image": "/images/items/blood_boots.webp",
+      "description": "+45 Max HP, +10 Resistance, +2 Speed."
+    },
+    {
+      "id": "blood_ring",
+      "name": "Blood Ring",
+      "slot": "ring",
+      "rarity": "epic",
+      "price": {
+        "gold": 400,
+        "wood": 55
+      },
+      "stats": {
+        "attack": 10,
+        "omnivamp": 5
+      },
+      "setId": "blood",
+      "image": "/images/items/blood_ring.webp",
+      "description": "+10 Attack, +5% Omnivamp."
+    },
+    {
+      "id": "blood_amulet",
+      "name": "Blood Amulet",
+      "slot": "amulet",
+      "rarity": "rare",
+      "price": {
+        "gold": 210,
+        "wood": 30
+      },
+      "stats": {
+        "mana": 20,
+        "magicPower": 10,
+        "omnivamp": 3
+      },
+      "setId": "blood",
+      "image": "/images/items/blood_amulet.webp",
+      "description": "+20 Mana, +10 Magic Power, +3% Omnivamp."
+    },
+    {
+      "id": "blood_tome",
+      "name": "Blood Tome",
+      "slot": "book",
+      "rarity": "rare",
+      "price": {
+        "gold": 220,
+        "wood": 32
+      },
+      "stats": {
+        "magicPower": 14,
+        "healPower": 8
+      },
+      "setId": "blood",
+      "image": "/images/items/blood_tome.webp",
+      "description": "+14 Magic Power, +8 Heal Power. Written in red."
+    }
+  ],
+  "itemSets": [
+    {
+      "id": "void",
+      "name": "Voidcaller",
+      "description": "Gear steeped in the lightless void. It hums when whole.",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "stats": {
+            "attack": 12,
+            "magicPower": 12
+          }
+        },
+        {
+          "pieces": 4,
+          "stats": {
+            "attack": 30,
+            "magicPower": 30,
+            "speed": 5
+          }
+        }
+      ]
+    },
+    {
+      "id": "shadow",
+      "name": "Nightshade",
+      "description": "Eclipse-dark garb for those who strike unseen.",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "stats": {
+            "attack": 8,
+            "speed": 2
+          }
+        },
+        {
+          "pieces": 4,
+          "stats": {
+            "attack": 20,
+            "speed": 5,
+            "critChance": 3
+          }
+        }
+      ]
+    },
+    {
+      "id": "ranger",
+      "name": "Wildstrider",
+      "description": "Scout gear of the deep woods. Light feet, true aim.",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "stats": {
+            "attack": 6,
+            "speed": 2
+          }
+        },
+        {
+          "pieces": 4,
+          "stats": {
+            "attack": 15,
+            "maxHp": 30,
+            "speed": 3
+          }
+        }
+      ]
+    },
+    {
+      "id": "dragon",
+      "name": "Dragonscale",
+      "description": "Plate cut from elder wyrms. Heavy, proud, unbroken.",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "stats": {
+            "maxHp": 20,
+            "resistance": 5
+          }
+        },
+        {
+          "pieces": 4,
+          "stats": {
+            "maxHp": 60,
+            "resistance": 12,
+            "attack": 10
+          }
+        }
+      ]
+    },
+    {
+      "id": "leather",
+      "name": "Trailworn",
+      "description": "Honest stitched leather for the road.",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "stats": {
+            "maxHp": 15
+          }
+        },
+        {
+          "pieces": 4,
+          "stats": {
+            "maxHp": 40,
+            "resistance": 4
+          }
+        }
+      ]
+    },
+    {
+      "id": "iron",
+      "name": "Ironclad",
+      "description": "Plain iron, honestly forged.",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "stats": {
+            "maxHp": 12,
+            "resistance": 2
+          }
+        },
+        {
+          "pieces": 4,
+          "stats": {
+            "maxHp": 30,
+            "resistance": 6
+          }
+        }
+      ]
+    },
+    {
+      "id": "blood",
+      "name": "Sanguine",
+      "description": "Vampiric relics that thirst together. Two pieces wake them; four unleash them.",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "stats": {
+            "attack": 12,
+            "maxHp": 25
+          }
+        },
+        {
+          "pieces": 4,
+          "stats": {
+            "attack": 30,
+            "maxHp": 60,
+            "omnivamp": 5
+          }
+        }
+      ]
     }
   ],
   "monsters": [
@@ -13963,11 +14310,13 @@ function publicCatalog() {
       stats: i.stats || {},
       heal: i.heal,
       food: i.food,
+      setId: i.setId || null,
       image: i.image,
       description: i.description || "",
     })),
     equipmentSlots: CONTENT.equipmentSlots,
     quests: CONTENT.quests || [],
+    itemSets: CONTENT.itemSets || [],
     bosses: (CONTENT.bosses || []).map((b) => ({ id: b.id, label: b.label, image: b.image, hp: b.hp, attack: b.attack, element: b.element, rarity: b.rarity || "mythic", unlockAfter: b.unlockAfter || null })),
     monsters: CONTENT.monsters.map((m) => ({ id: m.id, name: m.name, image: m.image, rarity: m.rarity || "common", element: m.element || "physical" })),
     anomalyFrameColors: Object.fromEntries(
