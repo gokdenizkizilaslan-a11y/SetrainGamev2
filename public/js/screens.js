@@ -2410,6 +2410,11 @@ function renderDungeonBrowser(room, root) {
   // Parties for selected rank (only forming & open)
   const parties = (room.dungeons || []).filter((d) => d.status === "forming" && d.open && d.rank === selectedRank);
   const dgDef = CATALOG.dungeons.find((x) => x.rank === selectedRank) || null;
+  const omenList = CATALOG.dailyOmens || [];
+  const omen = omenList.length ? omenList[(Math.max(1, room.day || 1) - 1) % omenList.length] : null;
+  const omenLine = omen && omen.name
+    ? `<p class="muted" title="${escapeHtml(omen.desc || "")}">Today: ${escapeHtml(omen.icon || "✦")} <strong>${escapeHtml(omen.name)}</strong></p>`
+    : "";
 
   const leftHtml = `<div class="dungeon-browser-left">
     <p class="subhead">Dungeons</p>
@@ -2498,7 +2503,7 @@ function renderDungeonBrowser(room, root) {
     </div>`;
   }
 
-  root.innerHTML = `<div class="dungeon-browser">${leftHtml}${rightHtml}</div>`;
+  root.innerHTML = `${omenLine}<div class="dungeon-browser">${leftHtml}${rightHtml}</div>`;
   initImages(root);
   root.querySelectorAll("[data-rank]").forEach((b)=>{
     b.addEventListener("click", ()=>{

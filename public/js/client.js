@@ -201,6 +201,20 @@ function renderTown(room) {
 
   if (!inOverlay) {
     $("town-day").textContent = room.day;
+    try {
+      const omens = (typeof CATALOG !== "undefined" && CATALOG.dailyOmens) || [];
+      const o = omens.length ? omens[(Math.max(1, room.day || 1) - 1) % omens.length] : null;
+      const el = $("town-omen");
+      if (el) {
+        if (o && o.name) {
+          el.textContent = `${o.icon || "✦"} ${o.name}`;
+          el.title = o.desc || "Today's omen";
+        } else {
+          el.textContent = "";
+          el.title = "";
+        }
+      }
+    } catch (e) {}
     renderProfileCard(room, state.playerId);
     renderActionCards(room, state.playerId);
     renderTownParty(room);

@@ -14,6 +14,7 @@ const { dealDamage, addShield, removeShieldInstance, heal, loseLife, addXp, addP
 const passives = require("./passives");
 const stacks = require("./stacks");
 const chest = require("./chest");
+const omens = require("./omens");
 
 function randVariance(variance) {
   return 1 + (Math.random() * 2 - 1) * variance;
@@ -591,7 +592,7 @@ function spawnWave(room, d) {
   const fewer = def.sizeProfile === "fewerStronger";
   const countScale = fewer ? size.fewerCount : size.count;
   const totalCount = Math.max(1, Math.round(def.monsterCount * countScale));
-  const power = def.monsterPower * size.power * (CONTENT.combat.monsterScale || 1);
+  const power = def.monsterPower * size.power * (CONTENT.combat.monsterScale || 1) * omens.monsterHpMultOf(room);
   const totalFloors = floorCountFor(d.size, totalCount);
 
   d.totalFloors = totalFloors;
@@ -811,7 +812,7 @@ function act(room, player, skillId, targetId) {
         } else {
         const critChance = (player.critChance != null ? player.critChance + pCrit.chance : 0) / 100 || (CONTENT.combat.critChance || 0);
         const critBonus = (player.critDamage != null ? player.critDamage + pCrit.damage : Math.round(((CONTENT.combat.critMult || 1.5) - 1) * 100));
-        crit = Math.random() < critChance;
+        crit = Math.random() < critChance + omens.critBonusOf(room);
         const critMult = crit ? 1 + critBonus / 100 : 1;
         dmg = Math.max(
           1,
@@ -1410,9 +1411,14 @@ function victory(room, d) {
     const members = allMembers(room, d);
     // Editördeki özel ödüller (rewards) varsa uygulanır; yoksa klasik değerler.
     const rw = (bossDef && bossDef.rewards) || {};
-    const gold = Math.round((150 + Math.floor(Math.random()*80)) * (Number(rw.goldMultiplier) > 0 ? Number(rw.goldMultiplier) : 1));
-    const wood = 40 + Math.floor(Math.random()*20);
-    const xp = Math.round((400 + Math.floor(Math.random()*200)) * (Number(rw.xpMultiplier) > 0 ? Number(rw.xpMultiplier) : 1));
+    let gold = Math.round((150 + Math.floor(Math.random()*80)) * (Number(rw.goldMultiplier) > 0 ? Number(rw.goldMultiplier) : 1));
+    let wood = 40 + Math.floor(Math.random()*20);
+    let xp = Math.round((400 + Math.floor(Math.random()*200)) * (Number(rw.xpMultiplier) > 0 ? Number(rw.xpMultiplier) : 1));
+    try {
+      gold = Math.round(gold * omens.goldMultOf(room));
+      wood = Math.round(wood * omens.goldMultOf(room));
+      xp = Math.round(xp * omens.xpMultOf(room));
+    } catch (e) {}
     for (const p of members) {
       p.gold += gold; p.wood+=wood; addXp(p,xp);
       if (!p.bossKills) p.bossKills=[];
@@ -1478,6 +1484,12 @@ function victory(room, d) {
   gold += banked.gold || 0;
   wood += banked.wood || 0;
   xp += banked.xp || 0;
+  // Daily omen: small rotating day bonus (data: CONTENT.dailyOmens).
+  try {
+    gold = Math.round(gold * omens.goldMultOf(room));
+    wood = Math.round(wood * omens.goldMultOf(room));
+    xp = Math.round(xp * omens.xpMultOf(room));
+  } catch (e) {}
   // Class passives: victory spoils (best mult among members wins).
   try {
     let vx = 1;

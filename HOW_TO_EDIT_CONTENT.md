@@ -214,6 +214,22 @@ combos: [
 
 Example: put a `wet`-applying effect on a skill (e.g. `effect: "wet"`), and every lightning/lightning-affected skill hitting that enemy uses ×1.5. Remove a combo row to disable it — combat and the hints follow automatically, no JS changes.
 
+### Daily omens (rotating day modifiers)
+
+`dailyOmens` in `content.js` is a short list the game cycles through by day number (`list[(day-1) % len]`). Each entry is small and safe:
+
+```js
+dailyOmens: [
+  { id: "echoes", name: "Echoes", icon: "🔮", desc: "+15% XP.",
+    goldMult: 1, xpMult: 1.15, playerCritBonus: 0, monsterHpMult: 1 },
+]
+```
+
+- `goldMult` scales dungeon gold AND wood; `xpMult` scales dungeon + boss XP.
+- `playerCritBonus` (0.05 = +5%) applies to hero crits in PvE only, never PvP.
+- `monsterHpMult` scales spawned monster and boss HP (pair it with bonus XP like Iron Trial).
+- Empty/missing list = calm, everything behaves as before. Shown in town, the dungeon browser, and the dawn log. Editable in the editor's Daily Omens page.
+
 ## Monsters
 
 The roster is **30 monsters**, each with an `id`, `name`, `hp`, `attack`, `speed`, `image`, and a `rarity` (`common` → `mythic`). Optional `element` sets the damage type of its attacks (see Skills section) — otherwise it defaults to `physical`. Dungeon waves pull monster ids from each dungeon's `monsterPool`; bigger dungeons scale a monster's HP and attack up (see below).

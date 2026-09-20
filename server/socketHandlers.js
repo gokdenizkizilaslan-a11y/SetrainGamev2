@@ -374,9 +374,9 @@ function registerSocketHandlers(io) {
           }
           dungeon.resetRoomDungeons(room);
           if (stock.maybeRotate(room)) {
-            room.log = { type: "day", text: `Day ${room.day} dawns. The merchants restock their shelves.`, ts: Date.now() };
+            room.log = { type: "day", text: `Day ${room.day} dawns. The merchants restock their shelves.${require("./omens").dawnSuffix(room.day)}`, ts: Date.now() };
           } else {
-            room.log = { type: "day", text: `Day ${room.day} dawns. Stamina restored.`, ts: Date.now() };
+            room.log = { type: "day", text: `Day ${room.day} dawns. Stamina restored.${require("./omens").dawnSuffix(room.day)}`, ts: Date.now() };
           }
         }
         emitRoomState(io, room);
@@ -428,9 +428,9 @@ function registerSocketHandlers(io) {
           }
           dungeon.resetRoomDungeons(room);
           if (stock.maybeRotate(room)) {
-            room.log = { type: "day", text: `Day ${room.day} dawns. The merchants restock their shelves.`, ts: Date.now() };
+            room.log = { type: "day", text: `Day ${room.day} dawns. The merchants restock their shelves.${require("./omens").dawnSuffix(room.day)}`, ts: Date.now() };
           } else {
-            room.log = { type: "day", text: `Day ${room.day} dawns. Stamina restored.`, ts: Date.now() };
+            room.log = { type: "day", text: `Day ${room.day} dawns. Stamina restored.${require("./omens").dawnSuffix(room.day)}`, ts: Date.now() };
           }
         }
         emitRoomState(io, room);
@@ -716,9 +716,9 @@ function registerSocketHandlers(io) {
           }
           dungeon.resetRoomDungeons(room);
           if (stock.maybeRotate(room)) {
-            room.log = { type: "day", text: `Day ${room.day} dawns. The merchants restock their shelves.`, ts: Date.now() };
+            room.log = { type: "day", text: `Day ${room.day} dawns. The merchants restock their shelves.${require("./omens").dawnSuffix(room.day)}`, ts: Date.now() };
           } else {
-            room.log = { type: "day", text: `Day ${room.day} dawns. Stamina restored.`, ts: Date.now() };
+            room.log = { type: "day", text: `Day ${room.day} dawns. Stamina restored.${require("./omens").dawnSuffix(room.day)}`, ts: Date.now() };
           }
         }
         emitRoomState(io, room);

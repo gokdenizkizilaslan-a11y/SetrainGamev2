@@ -340,6 +340,25 @@ const collections = [
       { key: "desc", label: "Description", type: "string" },
     ],
   },
+  {
+    id: "dailyOmens",
+    label: "Daily Omens",
+    kind: "collection",
+    path: "dailyOmens",
+    idField: "id",
+    idLabel: "id",
+    nameField: "name",
+    itemLabelTemplate: "{name} ({id})",
+    fields: [
+      { key: "name", label: "Display Name", type: "string" },
+      { key: "icon", label: "Icon (emoji)", type: "string" },
+      { key: "desc", label: "Description (shown in town)", type: "string" },
+      { key: "goldMult", label: "Gold/wood multiplier (1 = normal)", type: "number" },
+      { key: "xpMult", label: "XP multiplier (1 = normal)", type: "number" },
+      { key: "playerCritBonus", label: "Hero crit bonus 0..1 (0.05 = +5%)", type: "number" },
+      { key: "monsterHpMult", label: "Monster HP multiplier (1 = normal)", type: "number" },
+    ],
+  },
 ];
 
 const pages = [

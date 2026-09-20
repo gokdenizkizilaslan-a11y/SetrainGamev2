@@ -981,6 +981,20 @@ input:focus {
   color: var(--ink);
 }
 
+.day-omen {
+  font-size: 0.72rem;
+  color: var(--gold-bright);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(232, 183, 108, 0.3);
+  border-radius: 999px;
+  padding: 0.25rem 0.6rem;
+  white-space: nowrap;
+}
+
+.day-omen:empty {
+  display: none;
+}
+
 /* Profile card (left column) */
 
 .profile-card {

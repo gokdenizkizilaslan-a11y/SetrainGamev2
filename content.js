@@ -14828,6 +14828,74 @@ const CONTENT = {
       "ifElement": "physical",
       "mult": 1.2,
       "desc": "Weakened enemies crumble, taking +20% physical damage."
+    },
+    {
+      "id": "rend",
+      "name": "Rend",
+      "when": "dot",
+      "ifElement": "physical",
+      "mult": 1.3,
+      "desc": "Steel tears bleeding foes, dealing +30% physical damage to poisoned targets."
+    },
+    {
+      "id": "backstab",
+      "name": "Backstab",
+      "when": "expose",
+      "ifElement": "shadow",
+      "mult": 1.4,
+      "desc": "Shadow finds the cracks, dealing +40% shadow damage to exposed targets."
+    }
+  ],
+  "dailyOmens": [
+    {
+      "id": "bountiful_dawn",
+      "name": "Bountiful Dawn",
+      "icon": "🌾",
+      "desc": "+15% gold and wood from dungeon victories.",
+      "goldMult": 1.15,
+      "xpMult": 1,
+      "playerCritBonus": 0,
+      "monsterHpMult": 1
+    },
+    {
+      "id": "echoes",
+      "name": "Echoes",
+      "icon": "🔮",
+      "desc": "+15% XP from dungeon victories.",
+      "goldMult": 1,
+      "xpMult": 1.15,
+      "playerCritBonus": 0,
+      "monsterHpMult": 1
+    },
+    {
+      "id": "keen_edge",
+      "name": "Keen Edge",
+      "icon": "⚔️",
+      "desc": "+5% crit chance for heroes in dungeons.",
+      "goldMult": 1,
+      "xpMult": 1,
+      "playerCritBonus": 0.05,
+      "monsterHpMult": 1
+    },
+    {
+      "id": "iron_trial",
+      "name": "Iron Trial",
+      "icon": "🛡️",
+      "desc": "Monsters +10% HP, but victories grant +10% XP.",
+      "goldMult": 1,
+      "xpMult": 1.1,
+      "playerCritBonus": 0,
+      "monsterHpMult": 1.1
+    },
+    {
+      "id": "calm_day",
+      "name": "Calm Day",
+      "icon": "☀️",
+      "desc": "A quiet day. No omens stir.",
+      "goldMult": 1,
+      "xpMult": 1,
+      "playerCritBonus": 0,
+      "monsterHpMult": 1
     }
   ],
   "affinity": {
@@ -15459,6 +15527,7 @@ function publicCatalog() {
     elements: CONTENT.elements || [],
     affinity: CONTENT.affinity || {},
     combos: CONTENT.combos || [],
+    dailyOmens: CONTENT.dailyOmens || [],
     darkTrait: CONTENT.darkTrait || { deal: 1.3, taken: 1.5 },
     races: (CONTENT.races || []).map((r) => ({
       id: r.id,

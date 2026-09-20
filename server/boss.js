@@ -144,14 +144,16 @@ function startBoss(room, player) {
       skills.push({id:"auto_attack", name:"Strike", power:1, element:"physical"});
     } catch(e) {}
   }
+  // Iron Trial omen: boss HP scales too (XP omen compensates at victory).
+  const omenHp = Math.max(1, Math.round(bossDef.hp * require("./omens").monsterHpMultOf(room)));
   b.wave = [{
     id: `${bossDef.id}_0`,
     kind: bossDef.id,
     name: bossDef.label || bossDef.name || bossDef.id,
     image: bossDef.image,
     element: bossDef.element,
-    hp: bossDef.hp,
-    maxHp: bossDef.hp,
+    hp: omenHp,
+    maxHp: omenHp,
     attack: bossDef.attack,
     speed: bossDef.speed,
     resistance: Math.max(0, Math.round(bossDef.resistance || 0)),
