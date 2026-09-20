@@ -2293,6 +2293,22 @@ const CONTENT = {
     {
       "slug": "beastmaster",
       "label": "Beastmaster",
+      "passives": [
+        {
+          "id": "beastmaster_pack_alpha",
+          "kind": "damageBonus",
+          "name": "Pack Alpha",
+          "desc": "+15% damage.",
+          "mult": 0.15
+        },
+        {
+          "id": "beastmaster_predator_strides",
+          "kind": "speed",
+          "name": "Predator Strides",
+          "desc": "+3 speed.",
+          "flat": 3
+        }
+      ],
       "baseClass": "tamer",
       "evolution": {
         "level": 40,
@@ -2359,6 +2375,29 @@ const CONTENT = {
     {
       "slug": "anima_lorde",
       "label": "Alpha Tamer",
+      "passives": [
+        {
+          "id": "anima_lorde_apex_bond",
+          "kind": "damageBonus",
+          "name": "Apex Bond",
+          "desc": "+20% damage.",
+          "mult": 0.2
+        },
+        {
+          "id": "anima_lorde_wild_sprint",
+          "kind": "speed",
+          "name": "Wild Sprint",
+          "desc": "+5 speed.",
+          "flat": 5
+        },
+        {
+          "id": "anima_lorde_legendary_beasts",
+          "kind": "victoryXp",
+          "name": "Legendary Beasts",
+          "desc": "+20% XP from victories.",
+          "mult": 0.2
+        }
+      ],
       "baseClass": "beastmaster",
       "image": "/images/characters/anima_lorde.webp?v=mu0er997",
       "basicAttack": {
@@ -2502,6 +2541,23 @@ const CONTENT = {
     {
       "slug": "rootbinder",
       "label": "Rootbinder",
+      "passives": [
+        {
+          "id": "rootbinder_deep_roots",
+          "kind": "shieldStart",
+          "name": "Deep Roots",
+          "desc": "Start combat with a shield equal to 60% max HP (3 turns).",
+          "pct": 0.6,
+          "turns": 3
+        },
+        {
+          "id": "rootbinder_sap_flow",
+          "kind": "regenBonus",
+          "name": "Sap Flow",
+          "desc": "+20% regeneration.",
+          "mult": 0.2
+        }
+      ],
       "baseClass": "gardener",
       "evolution": {
         "level": 40,
@@ -2579,6 +2635,30 @@ const CONTENT = {
     {
       "slug": "lifeweaver",
       "label": "Lifeweaver",
+      "passives": [
+        {
+          "id": "lifeweaver_worldbloom",
+          "kind": "regenBonus",
+          "name": "Worldbloom",
+          "desc": "+40% regeneration.",
+          "mult": 0.4
+        },
+        {
+          "id": "lifeweaver_gentle_season",
+          "kind": "healBonus",
+          "name": "Gentle Season",
+          "desc": "+30% healing.",
+          "mult": 0.3
+        },
+        {
+          "id": "lifeweaver_bark_sanctuary",
+          "kind": "shieldStart",
+          "name": "Bark Sanctuary",
+          "desc": "Start combat with a shield equal to 40% max HP (4 turns).",
+          "pct": 0.4,
+          "turns": 4
+        }
+      ],
       "baseClass": "rootbinder",
       "image": "/images/characters/lifeweaver.webp?v=mu0fbhy5",
       "basicAttack": {
@@ -2724,6 +2804,29 @@ const CONTENT = {
     {
       "slug": "ultra_moderator",
       "label": "Ultra Moderator",
+      "passives": [
+        {
+          "id": "ultra_moderator_ban_hammer",
+          "kind": "damageBonus",
+          "name": "Ban Hammer",
+          "desc": "+20% damage.",
+          "mult": 0.2
+        },
+        {
+          "id": "ultra_moderator_trophy_case",
+          "kind": "victoryXp",
+          "name": "Trophy Case",
+          "desc": "+50% XP from victories.",
+          "mult": 0.5
+        },
+        {
+          "id": "ultra_moderator_confiscated",
+          "kind": "victoryGold",
+          "name": "Confiscated",
+          "desc": "+50% gold from victories.",
+          "mult": 0.5
+        }
+      ],
       "baseClass": "moderator",
       "image": "/images/characters/ultra_moderator.png",
       "basicAttack": {
@@ -2869,6 +2972,21 @@ const CONTENT = {
     {
       "slug": "warlord",
       "label": "War Lord",
+      "passives": [
+        {
+          "id": "warlord_battle_hunger",
+          "kind": "damageBonus",
+          "name": "Battle Hunger",
+          "desc": "+15% damage.",
+          "mult": 0.15
+        },
+        {
+          "id": "warlord_undying",
+          "kind": "secondWind",
+          "name": "Undying Warlord",
+          "desc": "Survive lethal damage once per combat at 1 HP."
+        }
+      ],
       "baseClass": "warrior",
       "evolution": {
         "level": 40,
@@ -2933,6 +3051,23 @@ const CONTENT = {
     {
       "slug": "warden",
       "label": "Warden",
+      "passives": [
+        {
+          "id": "warden_true_aim",
+          "kind": "damageBonus",
+          "name": "True Aim",
+          "desc": "+30% damage vs targets above 50% HP.",
+          "aboveHpPct": 0.5,
+          "mult": 0.3
+        },
+        {
+          "id": "warden_piercing_shots",
+          "kind": "pierce",
+          "name": "Piercing Shots",
+          "desc": "Shots pierce flat resistance.",
+          "flat": 8
+        }
+      ],
       "baseClass": "ranger",
       "evolution": {
         "level": 40,
@@ -2997,6 +3132,23 @@ const CONTENT = {
     {
       "slug": "archmage",
       "label": "Archmage",
+      "passives": [
+        {
+          "id": "archmage_overmind",
+          "kind": "statBonus",
+          "name": "Overmind",
+          "desc": "+20% magic power.",
+          "stat": "magicPower",
+          "pct": 0.2
+        },
+        {
+          "id": "archmage_deep_well",
+          "kind": "manaRegen",
+          "name": "Deep Well",
+          "desc": "+2 mana regen per round.",
+          "flat": 2
+        }
+      ],
       "baseClass": "mage",
       "evolution": {
         "level": 40,
@@ -3062,6 +3214,23 @@ const CONTENT = {
     {
       "slug": "nightblade",
       "label": "Nightblade",
+      "passives": [
+        {
+          "id": "nightblade_red_harvest",
+          "kind": "damageBonus",
+          "name": "Red Harvest",
+          "desc": "+30% damage vs targets below 50% HP.",
+          "belowHpPct": 0.5,
+          "mult": 0.3
+        },
+        {
+          "id": "nightblade_ghoststep",
+          "kind": "dodge",
+          "name": "Ghoststep",
+          "desc": "10% chance to dodge attacks.",
+          "chance": 0.1
+        }
+      ],
       "baseClass": "rogue",
       "evolution": {
         "level": 40,
@@ -3126,6 +3295,23 @@ const CONTENT = {
     {
       "slug": "crusader",
       "label": "Crusader",
+      "passives": [
+        {
+          "id": "crusader_bulwark_of_dawn",
+          "kind": "damageTaken",
+          "name": "Bulwark of Dawn",
+          "desc": "Take 40% less damage (true damage excluded).",
+          "mult": -0.4
+        },
+        {
+          "id": "crusader_dawn_ward_greater",
+          "kind": "shieldStart",
+          "name": "Greater Dawn Ward",
+          "desc": "Start combat with a shield equal to 25% max HP (4 turns).",
+          "pct": 0.25,
+          "turns": 4
+        }
+      ],
       "baseClass": "paladin",
       "evolution": {
         "level": 40,
@@ -3191,6 +3377,22 @@ const CONTENT = {
     {
       "slug": "reaper",
       "label": "Reaper",
+      "passives": [
+        {
+          "id": "reaper_reap_the_weak",
+          "kind": "execute",
+          "name": "Reap the Weak",
+          "desc": "Your hits execute targets at or below 15% HP.",
+          "finishBelowHpPct": 0.15
+        },
+        {
+          "id": "reaper_soul_siphon",
+          "kind": "lifesteal",
+          "name": "Soul Siphon",
+          "desc": "Heal 10% of all damage dealt.",
+          "pct": 0.1
+        }
+      ],
       "baseClass": "assassin",
       "evolution": {
         "level": 40,
@@ -3255,6 +3457,22 @@ const CONTENT = {
     {
       "slug": "high_priest",
       "label": "High Priest",
+      "passives": [
+        {
+          "id": "high_priest_benediction",
+          "kind": "healBonus",
+          "name": "Greater Benediction",
+          "desc": "+35% healing.",
+          "mult": 0.35
+        },
+        {
+          "id": "high_priest_renewing_light",
+          "kind": "regenBonus",
+          "name": "Renewing Light",
+          "desc": "+25% regeneration.",
+          "mult": 0.25
+        }
+      ],
       "baseClass": "support",
       "evolution": {
         "level": 40,
@@ -3321,6 +3539,22 @@ const CONTENT = {
     {
       "slug": "juggernaut",
       "label": "Juggernaut",
+      "passives": [
+        {
+          "id": "juggernaut_avalanche_hide",
+          "kind": "thorns",
+          "name": "Avalanche Hide",
+          "desc": "Reflect 25% of damage taken.",
+          "mult": 0.25
+        },
+        {
+          "id": "juggernaut_siege_flesh",
+          "kind": "damageTaken",
+          "name": "Siege Flesh",
+          "desc": "Take 15% less damage (true damage excluded).",
+          "mult": -0.15
+        }
+      ],
       "baseClass": "tank",
       "evolution": {
         "level": 40,
@@ -3386,6 +3620,28 @@ const CONTENT = {
     {
       "slug": "war_emperor",
       "label": "War Emperor",
+      "passives": [
+        {
+          "id": "war_emperor_conqueror_aura",
+          "kind": "damageBonus",
+          "name": "Conqueror's Aura",
+          "desc": "+25% damage.",
+          "mult": 0.25
+        },
+        {
+          "id": "war_emperor_no_survivors",
+          "kind": "overkill",
+          "name": "No Survivors",
+          "desc": "Excess killing damage crashes into another foe."
+        },
+        {
+          "id": "war_emperor_imperial_decree",
+          "kind": "execute",
+          "name": "Imperial Decree",
+          "desc": "Your hits execute targets at or below 10% HP.",
+          "finishBelowHpPct": 0.1
+        }
+      ],
       "baseClass": "warlord",
       "image": "/images/characters/war_emperor.webp?v=mu7qi09a",
       "basicAttack": {
@@ -3446,6 +3702,24 @@ const CONTENT = {
     {
       "slug": "storm_warden",
       "label": "Storm Warden",
+      "passives": [
+        {
+          "id": "storm_warden_storms_judgment",
+          "kind": "damageBonus",
+          "name": "Storm's Judgment",
+          "desc": "+35% damage vs targets above 50% HP.",
+          "aboveHpPct": 0.5,
+          "mult": 0.35
+        },
+        {
+          "id": "storm_warden_second_bolt",
+          "kind": "echo",
+          "name": "Second Bolt",
+          "desc": "25% chance to strike again for 40% damage.",
+          "chance": 0.25,
+          "mult": 0.4
+        }
+      ],
       "baseClass": "warden",
       "image": "/images/characters/storm_warden.webp?v=mu7s1c49",
       "basicAttack": {
@@ -3506,6 +3780,23 @@ const CONTENT = {
     {
       "slug": "archon",
       "label": "Archon",
+      "passives": [
+        {
+          "id": "archon_cosmic_mind",
+          "kind": "statBonus",
+          "name": "Cosmic Mind",
+          "desc": "+30% magic power.",
+          "stat": "magicPower",
+          "pct": 0.3
+        },
+        {
+          "id": "archon_star_thirst",
+          "kind": "manaOnKill",
+          "name": "Star Thirst",
+          "desc": "Regain 8 mana on kill.",
+          "flat": 8
+        }
+      ],
       "baseClass": "archmage",
       "image": "/images/characters/archon.webp?v=mu7qrqou",
       "basicAttack": {
@@ -3567,6 +3858,23 @@ const CONTENT = {
     {
       "slug": "shade_king",
       "label": "Shade King",
+      "passives": [
+        {
+          "id": "shade_king_eclipse_reign",
+          "kind": "damageBonus",
+          "name": "Eclipse Reign",
+          "desc": "+35% damage vs targets below 50% HP.",
+          "belowHpPct": 0.5,
+          "mult": 0.35
+        },
+        {
+          "id": "shade_king_untouchable",
+          "kind": "dodge",
+          "name": "Untouchable",
+          "desc": "15% chance to dodge attacks.",
+          "chance": 0.15
+        }
+      ],
       "baseClass": "nightblade",
       "image": "/images/characters/shade_king.webp?v=mu7scjzg",
       "basicAttack": {
@@ -3627,6 +3935,30 @@ const CONTENT = {
     {
       "slug": "lightbringer",
       "label": "Lightbringer",
+      "passives": [
+        {
+          "id": "lightbringer_dawn_incarnate",
+          "kind": "damageTaken",
+          "name": "Dawn Incarnate",
+          "desc": "Take 40% less damage (true damage excluded).",
+          "mult": -0.4
+        },
+        {
+          "id": "lightbringer_radiant_mercy",
+          "kind": "healBonus",
+          "name": "Radiant Mercy",
+          "desc": "+30% healing.",
+          "mult": 0.3
+        },
+        {
+          "id": "lightbringer_halo_wall",
+          "kind": "shieldStart",
+          "name": "Halo Wall",
+          "desc": "Start combat with a shield equal to 20% max HP (4 turns).",
+          "pct": 0.2,
+          "turns": 4
+        }
+      ],
       "baseClass": "crusader",
       "image": "/images/characters/lightbringer.webp?v=mu7s66gf",
       "basicAttack": {
@@ -3688,6 +4020,30 @@ const CONTENT = {
     {
       "slug": "death_lord",
       "label": "Death Lord",
+      "passives": [
+        {
+          "id": "death_lord_deaths_due",
+          "kind": "hpBurn",
+          "name": "Death's Due",
+          "desc": "Hits burn 4% of target max HP as exact damage (max 400).",
+          "pct": 0.04,
+          "cap": 400
+        },
+        {
+          "id": "death_lord_soul_feast",
+          "kind": "lifesteal",
+          "name": "Soul Feast",
+          "desc": "Heal 12% of all damage dealt.",
+          "pct": 0.12
+        },
+        {
+          "id": "death_lord_final_word",
+          "kind": "execute",
+          "name": "Final Word",
+          "desc": "Your hits execute targets at or below 20% HP.",
+          "finishBelowHpPct": 0.2
+        }
+      ],
       "baseClass": "reaper",
       "image": "/images/characters/death_lord.webp?v=mu7s3fq1",
       "basicAttack": {
@@ -3748,6 +4104,23 @@ const CONTENT = {
     {
       "slug": "bloodspawn",
       "label": "Bloodspawn",
+      "passives": [
+        {
+          "id": "bloodspawn_sanguine_hunger",
+          "kind": "lifesteal",
+          "name": "Sanguine Hunger",
+          "desc": "Heal 10% of all damage dealt.",
+          "pct": 0.1
+        },
+        {
+          "id": "bloodspawn_apex_predator",
+          "kind": "damageBonus",
+          "name": "Apex Predator",
+          "desc": "+15% damage vs targets above 70% HP.",
+          "aboveHpPct": 0.7,
+          "mult": 0.15
+        }
+      ],
       "baseClass": "assassin",
       "tagline": "Fledgling of the Old Blood",
       "lore": "An assassin who knelt before Old Vesryn and rose thirsting. Fast, cruel, and forever barred from any other path.",
@@ -3822,6 +4195,29 @@ const CONTENT = {
     {
       "slug": "bloodlord",
       "label": "Bloodlord",
+      "passives": [
+        {
+          "id": "bloodlord_blood_tyranny",
+          "kind": "lifesteal",
+          "name": "Blood Tyranny",
+          "desc": "Heal 15% of all damage dealt.",
+          "pct": 0.15
+        },
+        {
+          "id": "bloodlord_crimson_verdict",
+          "kind": "execute",
+          "name": "Crimson Verdict",
+          "desc": "Your hits execute targets at or below 15% HP.",
+          "finishBelowHpPct": 0.15
+        },
+        {
+          "id": "bloodlord_red_reign",
+          "kind": "damageBonus",
+          "name": "Red Reign",
+          "desc": "+20% damage.",
+          "mult": 0.2
+        }
+      ],
       "baseClass": "bloodspawn",
       "tagline": "Tyrant of the Thirst",
       "lore": "A Bloodspawn that gorged for twenty levels and rose higher. The physical peak of the old blood — nothing else can become this.",
@@ -3886,6 +4282,30 @@ const CONTENT = {
     {
       "slug": "gloomspawn",
       "label": "Gloomspawn",
+      "passives": [
+        {
+          "id": "gloomspawn_moonlit_thirst",
+          "kind": "lifesteal",
+          "name": "Moonlit Thirst",
+          "desc": "Heal 10% of all damage dealt.",
+          "pct": 0.1
+        },
+        {
+          "id": "gloomspawn_gloom_well",
+          "kind": "manaRegen",
+          "name": "Gloom Well",
+          "desc": "+2 mana regen per round.",
+          "flat": 2
+        },
+        {
+          "id": "gloomspawn_occult_mind",
+          "kind": "statBonus",
+          "name": "Occult Mind",
+          "desc": "+15% magic power.",
+          "stat": "magicPower",
+          "pct": 0.15
+        }
+      ],
       "baseClass": "mage",
       "tagline": "Acolyte of the Gloom",
       "lore": "A mage who knelt before Old Vesryn and bound the cruor into spellcraft. The magical twin of the Bloodspawn — no other path leads here.",
@@ -3960,6 +4380,29 @@ const CONTENT = {
     {
       "slug": "sanguine_lord",
       "label": "Sanguine Lord",
+      "passives": [
+        {
+          "id": "sanguine_lord_first_thirst",
+          "kind": "lifesteal",
+          "name": "First Thirst",
+          "desc": "Heal 20% of all damage dealt.",
+          "pct": 0.2
+        },
+        {
+          "id": "sanguine_lord_crimson_grace",
+          "kind": "healBonus",
+          "name": "Crimson Grace",
+          "desc": "+30% healing.",
+          "mult": 0.3
+        },
+        {
+          "id": "sanguine_lord_soul_vintage",
+          "kind": "manaOnKill",
+          "name": "Soul Vintage",
+          "desc": "Regain 8 mana on kill.",
+          "flat": 8
+        }
+      ],
       "baseClass": "gloomspawn",
       "tagline": "Heir of the First Thirst",
       "lore": "A mage who completed Vesryn's rite and bound the primeval cruor into spellcraft. Peerless blood magic — open only to those the rite has marked.",
@@ -4024,6 +4467,28 @@ const CONTENT = {
     {
       "slug": "divine_saint",
       "label": "Divine Saint",
+      "passives": [
+        {
+          "id": "divine_saint_miracle",
+          "kind": "healBonus",
+          "name": "Miracle",
+          "desc": "+50% healing.",
+          "mult": 0.5
+        },
+        {
+          "id": "divine_saint_martyrs_return",
+          "kind": "secondWind",
+          "name": "Martyr's Return",
+          "desc": "Survive lethal damage once per combat at 1 HP."
+        },
+        {
+          "id": "divine_saint_everlasting_grace",
+          "kind": "regenBonus",
+          "name": "Everlasting Grace",
+          "desc": "+30% regeneration.",
+          "mult": 0.3
+        }
+      ],
       "baseClass": "high_priest",
       "image": "/images/characters/divine_saint.webp?v=mu7s6k9a",
       "basicAttack": {
@@ -4086,6 +4551,30 @@ const CONTENT = {
     {
       "slug": "colossus",
       "label": "Colossus",
+      "passives": [
+        {
+          "id": "colossus_mountains_spite",
+          "kind": "thorns",
+          "name": "Mountain's Spite",
+          "desc": "Reflect 35% of damage taken.",
+          "mult": 0.35
+        },
+        {
+          "id": "colossus_bedrock_form",
+          "kind": "damageTaken",
+          "name": "Bedrock Form",
+          "desc": "Take 20% less damage (true damage excluded).",
+          "mult": -0.2
+        },
+        {
+          "id": "colossus_gate_of_stone",
+          "kind": "shieldStart",
+          "name": "Gate of Stone",
+          "desc": "Start combat with a shield equal to 30% max HP (5 turns).",
+          "pct": 0.3,
+          "turns": 5
+        }
+      ],
       "baseClass": "juggernaut",
       "image": "/images/characters/colossus.webp?v=mu0ft8go",
       "basicAttack": {
