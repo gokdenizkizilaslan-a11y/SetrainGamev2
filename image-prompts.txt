@@ -888,6 +888,17 @@ grasping hands.
 SHARED REUSE (do not regenerate): vampire_bite + tyrant_bite reuse
 exsanguinate/bloodbath art; gloom_bolt + sanguine_bolt reuse
 crimson_rebirth art (basic attacks share their class skill icons).
+
+--- GRID S19 (1x2 strip, juggernaut arts) ---
+1x2 strip, 2 square skill icons side by side, in this exact order,
+same painterly close-up battle-emblem finish, earth/physical
+element language (cracked stone browns, dust ochre, seismic force
+lines). Cell 1 (seismic_slam): massive armored fist slamming the
+ground with radial cracks bursting outward. Cell 2
+(colossal_crash): mountain-sized falling boulder fist trailing
+dust, impact crater blooming below.
+MAP (kopyala-yapistir dosya adlari):
+cell1: seismic_slam, cell2: colossal_crash,
 MAP (kopyala-yapistir dosya adlari):
 cell1: exsanguinate, cell2: bloodbath, cell3: crimson_rebirth,
 
@@ -908,9 +919,9 @@ COVERAGE CHECK (nothing left behind):
   tavernkeeper, mira.
 - Boss portraits: 5/5 (ember_king, frost_titan, void_herald,
   storm_colossus, world_eater).
-- Skill icons: 146 unique files in grids S1-S18 (68 player skills +
+- Skill icons: 148 unique files in grids S1-S19 (68 player skills +
   32 basic attacks + 30 boss skills + 13 monster skills + 3 vampire
-  blood arts).
+  blood arts + 2 juggernaut arts).
   150 cells total, 7 SHARED (generate once, reuse file):
   mana_shield (S7+S12), arcane_barrage + meteor + comet (S7+S15),
   vampire_bite/tyrant_bite share exsanguinate/bloodbath art and

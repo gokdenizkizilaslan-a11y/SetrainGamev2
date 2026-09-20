@@ -5598,6 +5598,40 @@ const CONTENT = {
       "description": "Block 95% of incoming damage this round."
     },
     {
+      "id": "seismic_slam",
+      "cooldown": 3,
+      "name": "Seismic Slam",
+      "target": "enemy",
+      "mana": 12,
+      "power": 0,
+      "baseDamage": {
+        "stat": "maxHp",
+        "mult": 0.08
+      },
+      "element": "physical",
+      "effect": "heavy_hammer_slam",
+      "hitShake": 2,
+      "image": "/images/skills/seismic_slam.png",
+      "description": "Slam the ground with your whole weight: 8% of your max HP as damage."
+    },
+    {
+      "id": "colossal_crash",
+      "cooldown": 4,
+      "name": "Colossal Crash",
+      "target": "enemy",
+      "mana": 18,
+      "power": 0,
+      "baseDamage": {
+        "stat": "maxHp",
+        "mult": 0.12
+      },
+      "element": "physical",
+      "effect": "heavy_hammer_slam",
+      "hitShake": 3,
+      "image": "/images/skills/colossal_crash.png",
+      "description": "Crash down like a mountain: 12% of your max HP as damage."
+    },
+    {
       "id": "battle_fury",
       "cooldown": 3,
       "name": "Battle Fury",
@@ -14702,8 +14736,22 @@ const CONTENT = {
             "minLevel": 20
           },
           {
+            "id": "t_seismic_slam",
+            "skillId": "seismic_slam",
+            "ownerClass": "juggernaut",
+            "cost": 4,
+            "minLevel": 20
+          },
+          {
             "id": "t_immovable",
             "skillId": "immovable",
+            "ownerClass": "colossus",
+            "cost": 8,
+            "minLevel": 40
+          },
+          {
+            "id": "t_colossal_crash",
+            "skillId": "colossal_crash",
             "ownerClass": "colossus",
             "cost": 8,
             "minLevel": 40

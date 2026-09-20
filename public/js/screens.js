@@ -1072,7 +1072,7 @@ function skillMechanicsLine(s) {
   if (!s) return "";
   const parts = [];
   if (s.baseDamage != null && typeof s.baseDamage === "object") {
-    const st = s.baseDamage.stat === "targetMaxHp" ? "target max HP" : s.baseDamage.stat === "targetHp" ? "target current HP" : s.baseDamage.stat;
+    const st = s.baseDamage.stat === "targetMaxHp" ? "target max HP" : s.baseDamage.stat === "targetHp" ? "target current HP" : s.baseDamage.stat === "maxHp" ? "own max HP" : s.baseDamage.stat;
     parts.push(Math.round(Number(s.baseDamage.mult || 0) * 100) + "% of " + st + " as base");
   }
   if (s.hitsAll) parts.push("Hits ALL enemies");
