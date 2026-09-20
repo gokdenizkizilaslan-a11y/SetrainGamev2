@@ -408,6 +408,7 @@ const CONTENT = {
       "id": "vampire_rite",
       "name": "The Progenitor's Thirst",
       "giver": "uncle",
+      "classes": ["assassin", "mage"],
       "monsterTag": "humanoid",
       "requiredKills": 50,
       "requiredItem": "primeval_cruor",

@@ -833,6 +833,76 @@ function applyStatDelta(player, stats, sign) {
   }
 }
 
+// Eski editör string yazmışsa tolere et (dizi değilse çöpe atma, parse dene).
+function setTiers(set) {
+  const b = set && set.bonuses;
+  if (Array.isArray(b)) return b;
+  if (typeof b === "string" && b.trim()) {
+    try {
+      const parsed = JSON.parse(b);
+      if (Array.isArray(parsed)) return parsed;
+    } catch (e) { /* fall through */ }
+  }
+  return [];
+}
+
+// ---- Item set bonuses (2pc / 4pc, per-set independent) ----
+// Equipped pieces counted per setId; every threshold at or below the
+// count applies (cumulative: 4 pieces grants the 2pc AND the 4pc tier).
+// Previously applied bonus is tracked in player._setStats and removed
+// first, so re-equipping can never stack or leak stats.
+function equippedSetCounts(player) {
+  const counts = {};
+  for (const itemId of Object.values(player.equipment || {})) {
+    if (!itemId) continue;
+    const item = getItem(itemId);
+    if (item && item.setId) counts[item.setId] = (counts[item.setId] || 0) + 1;
+  }
+  return counts;
+}
+
+function recalcSetBonus(player) {
+  if (player._setStats) {
+    applyStatDelta(player, player._setStats, -1);
+  }
+  const total = {};
+  const counts = equippedSetCounts(player);
+  for (const set of CONTENT.itemSets || []) {
+    const n = counts[set.id] || 0;
+    if (!n) continue;
+    for (const tier of setTiers(set).slice().sort((a, b) => a.pieces - b.pieces)) {
+      if (n < tier.pieces) break;
+      for (const [k, v] of Object.entries(tier.stats || {})) {
+        total[k] = (total[k] || 0) + (Number(v) || 0);
+      }
+    }
+  }
+  player._setStats = total;
+  if (Object.keys(total).length) applyStatDelta(player, total, 1);
+  return total;
+}
+
+function setBonusInfo(player) {
+  const counts = equippedSetCounts(player);
+  const out = [];
+  for (const set of CONTENT.itemSets || []) {
+    const n = counts[set.id] || 0;
+    if (!n) continue;
+    out.push({
+      id: set.id,
+      name: set.name,
+      description: set.description || "",
+      count: n,
+      tiers: setTiers(set).slice().sort((a, b) => a.pieces - b.pieces).map((t) => ({
+        pieces: t.pieces,
+        stats: t.stats || {},
+        active: n >= t.pieces,
+      })),
+    });
+  }
+  return out;
+}
+
 function equipItem(player, itemId) {
   const item = getItem(itemId);
   if (!item) {
@@ -861,6 +931,7 @@ function equipItem(player, itemId) {
   removeItem(player, itemId, 1);
   player.equipment[slot] = itemId;
   applyStatDelta(player, item.stats, 1);
+  recalcSetBonus(player);
   return { slot, item };
 }
 
@@ -873,6 +944,7 @@ function unequipSlot(player, slot) {
   if (item) applyStatDelta(player, item.stats, -1);
   addItem(player, itemId, 1);
   player.equipment[slot] = null;
+  recalcSetBonus(player);
   return itemId;
 }
 
@@ -924,6 +996,8 @@ module.exports = {
   applyStatDelta,
   equipItem,
   unequipSlot,
+  recalcSetBonus,
+  setBonusInfo,
   healForFood,
   eatFood,
   setSkillLoadout,

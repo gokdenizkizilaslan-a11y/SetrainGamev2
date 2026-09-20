@@ -200,6 +200,7 @@
                   <h2>Setra Village</h2>
                 </div>
                 <div class="town-day" style="display:flex;align-items:center;gap:0.5rem">
+                  <button type="button" id="btn-quests" class="btn btn--ghost" style="padding:0.4rem 0.7rem;font-size:0.85rem" title="Quests">📜 Quests</button>
                   <button type="button" id="btn-guide" class="btn btn--ghost" style="padding:0.4rem 0.7rem;font-size:0.85rem" title="How to play">📖 Guide</button>
                   <button type="button" id="btn-skilltree" class="btn btn--ghost" style="padding:0.4rem 0.7rem;font-size:0.85rem" title="Open Skill Tree">✦ Skill Tree</button>
                   <div style="text-align:center">
@@ -598,7 +599,9 @@ window.ChestSystem = {
     card.className = `loot-card ${item.rarity || 'common'}`;
     card.innerHTML = `
       <span style="font-size: 10px; text-transform: uppercase; color: #aaa; font-weight: bold;">${item.rarity || 'Item'}</span>
-      <div style="font-size: 40px; margin: 8px 0;">${item.icon || '🎁'}</div>
+      <div style="width:84px;height:84px;margin:8px auto;border-radius:12px;overflow:hidden;position:relative;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:40px;">${item.icon || '🎁'}
+        ${item.image ? `<img src="${item.image}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.remove()">` : ""}
+      </div>
       <strong style="font-size: 13px; color: #fff;">${item.name}</strong>
       <small style="font-size: 11px; color: #aaa; margin-top: 4px;">${item.description || ''}</small>
     `;

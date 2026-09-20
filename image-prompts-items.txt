@@ -101,6 +101,22 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 7. sturdy_club — dependable oaken club with worn grip wraps, grey.
 8. hunter_axe — woodsman bearded axe with a long lower beard hook, green glow.
 9. oak_staff — heartwood staff sprouting live green leaves, green glow.
+
+--- GRID WB (3x3, blood arsenal) ---
+3x3 grid, 9 square item icons, in this exact order. Blood steel MUST look vampiric, never plain:
+1. blood_blade — long crimson greatblade with a bat-wing crossguard and thirsty edge, purple glow.
+2. blood_fang — short curved fang dagger with a single blood channel, green glow.
+3. blood_helm — dark helm with a T-slit visor weeping red from the eyes, purple glow.
+4. blood_chest — black cuirass with a ribcage relief and red seam light, purple glow.
+5. blood_leggings — dark cuisses with dripping red joint lines, purple glow.
+6. blood_boots — black boots with clawed toes and red sole glow, blue glow.
+7. blood_ring — fang-set blood ring, two tiny fangs gripping a red gem, purple glow.
+8. blood_amulet — teardrop blood vial amulet on a black cord, blue glow.
+9. blood_tome — blood-ink grimoire with a beating heart clasp, blue glow.
+MAP (kopyala-yapistir dosya adlari):
+cell1: blood_blade, cell2: blood_fang, cell3: blood_helm,
+cell4: blood_chest, cell5: blood_leggings, cell6: blood_boots,
+cell7: blood_ring, cell8: blood_amulet, cell9: blood_tome,
 MAP (kopyala-yapistir dosya adlari):
 cell1: crimson_blade, cell2: boss_weapon_ember, cell3: boss_weapon_frost,
 cell4: boss_weapon_void, cell5: boss_weapon_storm, cell6: boss_weapon_world,
@@ -418,7 +434,7 @@ MAP (kopyala-yapistir dosya adlari):
 cell1: egg_gold,
 
 ================================================================
-COVERAGE: 188/188 items. Weapons 51 (W1-W5 + W6 2x2 + W7 strip),
+COVERAGE: 197/197 items. Weapons 53 (W1-W5 + W6 2x2 + W7 strip + WB 3x3),
 head 15, armor 14, legs 11, boots 9, amulet 9, ring 10, consumable 10,
 material 28 (M2 + M3 + M4 2x2 + M5 strip + M6 2x2 ascend tokens),
 chest 11, book 5, stone 5, egg 10.

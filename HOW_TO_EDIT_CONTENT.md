@@ -295,6 +295,22 @@ Gear you buy goes into your **inventory**; equip it in the Inventory screen. The
 
 To add an item: push a row onto `items` and drop art in `public/images/items/`. If its rarity is buyable it appears in the shop automatically.
 
+## Item sets (2pc / 4pc bonuses)
+
+Give equippable items the same `setId` (e.g. `"void"`) and define the set in the top-level `itemSets` array:
+
+```js
+itemSets: [
+  { id: "void", name: "Voidcaller", description: "...",
+    bonuses: [
+      { pieces: 2, stats: { attack: 12, magicPower: 12 } },
+      { pieces: 4, stats: { attack: 30, magicPower: 30, speed: 5 } },
+    ] },
+]
+```
+
+Rules: tiers stack (4 pieces grants the 2pc tier AND the 4pc tier). Each set is counted independently, so 2 void + 2 blood activates both 2pc bonuses. Bonus stat keys are the same as item `stats`. Active sets show in the character panel (click your portrait) with per-tier progress. Manage sets in GameCraft: Items tab → Item Sets, or the old editor's `Item Sets` collection.
+
 ## Victory and defeat
 
 - **Victory** (all monsters dead): gold/wood/XP awarded as above; anyone still at 0 HP loses 1 life and is revived to full.

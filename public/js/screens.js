@@ -1340,6 +1340,11 @@ function renderProfileCard(room, selfId) {
       ${chip(icon("crit"), `Crit ${me.critChance}%`)}
       ${chip(icon("crit"), `Crit Dmg +${me.critDamage}%`)}
     </div>
+    ${(() => {
+      const sets = equippedSetInfo(me).filter((s) => s.tiers.some((t) => t.active));
+      if (!sets.length) return "";
+      return `<div class="profile-sets">${sets.map((s) => `<span class="profile-set">◈ ${escapeHtml(s.def.name)} ${s.count}pc</span>`).join("")}</div>`;
+    })()}
     <div class="profile-btn-row">
       <button type="button" class="btn btn--bronze btn--mini" style="flex:1" id="btn-open-inventory">Equipments</button>
       <button type="button" class="btn btn--ghost btn--mini" style="flex:1" id="btn-open-pets">Pets</button>
@@ -1375,6 +1380,40 @@ function renderProfileCard(room, selfId) {
 }
 
 // ---- Character detail modal (portrait click / Details button) ----
+// Kuşanılı set bonusu bilgisi (istemci gösterimi; statlar sunucuda
+// equip/unequip anında uygulanır). Her set bağımsız sayılır:
+// 2 void + 2 blood giyen ikisinin 2'li bonusunu da alır.
+function equippedSetInfo(me) {
+  const counts = {};
+  for (const itemId of Object.values(me.equipment || {})) {
+    if (!itemId) continue;
+    const it = (CATALOG.items || []).find((x) => x.id === itemId);
+    if (it && it.setId) counts[it.setId] = (counts[it.setId] || 0) + 1;
+  }
+  const out = [];
+  for (const set of CATALOG.itemSets || []) {
+    const n = counts[set.id] || 0;
+    if (!n) continue;
+    out.push({
+      def: set,
+      count: n,
+      tiers: (set.bonuses || []).slice().sort((a, b) => a.pieces - b.pieces).map((t) => ({
+        pieces: t.pieces,
+        stats: t.stats || {},
+        active: n >= t.pieces,
+      })),
+    });
+  }
+  return out;
+}
+
+function setStatsText(stats) {
+  return Object.entries(stats || {})
+    .filter(([, v]) => Number(v))
+    .map(([k, v]) => `+${v} ${statLabel(k)}`)
+    .join(", ");
+}
+
 function openCharModal(room, selfId) {
   const ov = $("char-modal");
   if (!ov) return;
@@ -1407,6 +1446,16 @@ function openCharModal(room, selfId) {
       </div>
       ${classPass.length ? `<p class="cp-kit-head">Passives</p><div class="cp-passives">${classPass.map((p) => `<div class="cp-passive"><strong>${escapeHtml(p.name || p.kind)}</strong>${p.desc ? `<span>${escapeHtml(p.desc)}</span>` : ""}</div>`).join("")}</div>` : ""}
       ${racePass.length ? `<p class="cp-kit-head">Racial traits</p><div class="cp-passives">${racePass.map((p) => `<div class="cp-passive"><strong>${escapeHtml(p.name || p.kind)}</strong>${p.desc ? `<span>${escapeHtml(p.desc)}</span>` : ""}</div>`).join("")}</div>` : ""}
+      ${(() => {
+        const sets = equippedSetInfo(me);
+        if (!sets.length) return "";
+        return `<p class="cp-kit-head">Item Sets</p><div class="cp-passives">${sets.map((s) => `
+          <div class="cp-passive cp-set${s.tiers.some((t) => t.active) ? " cp-set--on" : ""}">
+            <strong>${escapeHtml(s.def.name)} <em>${s.count}pc</em></strong>
+            ${s.def.description ? `<span>${escapeHtml(s.def.description)}</span>` : ""}
+            ${s.tiers.map((t) => `<span class="cp-set-tier${t.active ? " cp-set-tier--on" : ""}">${t.pieces}pc: ${escapeHtml(setStatsText(t.stats)) || "—"}${t.active ? " ✓" : ""}</span>`).join("")}
+          </div>`).join("")}</div>`;
+      })()}
       ${kit.length ? `<p class="cp-kit-head">Skills</p><div class="cp-kit">${kit.map((s) => `<div class="cp-skill"><span>${escapeHtml(s.name)}</span><em>${escapeHtml(skillShort(s))}</em></div>`).join("")}</div>` : ""}
     </div>`;
   ov.classList.remove("hidden");
@@ -1474,7 +1523,6 @@ const ACTIONS = [
   { id: "merchant", icon: "merchant", title: "Merchant", sub: "Chests, potions & materials", kind: "open" },
   { id: "tavern", icon: "tavern", title: "Tavern", sub: "Bet gold · Coin flip, blackjack & food", kind: "open" },
     { id: "temple", icon: "temple", title: "Ancient Temple", sub: "Ascend, mend hearts & rebirth", kind: "open" },
-  { id: "quests", icon: "scroll", title: "Quests", sub: null, kind: "open" },
   { id: "rest", icon: "rest", title: "Rest", sub: null, kind: "emit", event: "town:rest" },
   { id: "sleep", icon: "rest", title: "Sleep Outside", sub: "End the day · Cold stars, small risk", kind: "emit", event: "town:sleepOutside" },
 ];
@@ -1489,24 +1537,6 @@ function renderActionCards(room, selfId) {
   const restLeft = Math.max(0, restMax - (me.restCount || 0));
   ACTIONS.forEach((a) => {
     if (a.id === "rest") a.sub = restLeft > 0 ? `+${restAmt} stamina · ${restLeft}/${restMax} left today` : `No rests left today`;
-    if (a.id === "quests") {
-      const qs = CATALOG.quests || [];
-      const mine = me && me.quests ? me.quests : {};
-      const active = qs.filter((q) => mine[q.id] && mine[q.id].accepted && !mine[q.id].completed);
-      if (!qs.length) a.sub = "No quests in this world";
-      else if (!active.length) a.sub = Object.keys(mine).length ? "All rites complete" : "Seek Old Vesryn in town";
-      else {
-        a.sub = active.map((q) => {
-          const st = mine[q.id];
-          let have = 0;
-          try {
-            const inv = (me.inventory || []).find((i) => i.itemId === q.requiredItem);
-            have = inv ? inv.qty || 0 : 0;
-          } catch (e) {}
-          return `${q.name}: ${Math.min(q.requiredKills, st.kills || 0)}/${q.requiredKills} slain · ${have}/${q.requiredItemCount} cruor`;
-        }).join(" · ");
-      }
-    }
   });
   el.innerHTML = ACTIONS.map((a) => {
     // Editördeki kasaba buton görselleri (images.ui.*Button) varsa IKON KUTUSUNDA
@@ -1541,20 +1571,6 @@ function renderActionCards(room, selfId) {
       const a = ACTIONS.find((x) => x.id === b.getAttribute("data-action"));
       if (a.kind === "open") {
         state.skillTreeOpen = false;
-        if (a.id === "quests") {
-          state.guideOpen = true;
-          const first = (CATALOG.quests || [])[0];
-          state.guideSel = { section: "quests", item: first ? first.id : null };
-          state.dungeonOpen = false;
-          state.plazaOpen = false;
-          state.tavernOpen = false;
-          state.blacksmithOpen = false;
-          state.merchantOpen = false;
-          state.templeOpen = false;
-          state.inventoryOpen = false;
-          renderTown(state.room);
-          return;
-        }
         state.dungeonOpen = a.id === "dungeon";
         state.plazaOpen = a.id === "plaza";
         state.tavernOpen = a.id === "tavern";
@@ -3828,8 +3844,15 @@ function uncleDynamicOptions() {
   const s = uncleQuestState();
   if (!s.q || !s.me) return [];
   const out = [];
-  if (!s.accepted) {
-    out.push({ label: "Take up the rite (quest).", action: "quest_accept", questId: s.q.id });
+  // Rite sorulari once sorulmali: who + dusk + rite düğümleri gezilmeden
+  // kabul seçeneği çıkmaz (dayıyla biraz konuşmak lazım).
+  const seen = (state.talkSeen && state.talkSeen.uncle) || {};
+  const asked = seen.who && seen.dusk && seen.rite;
+  const cls = s.me.character;
+  if (!s.accepted && asked && (cls === "assassin" || cls === "mage")) {
+    out.push(cls === "mage"
+      ? { label: "Take up the rite of gloom (magic path).", action: "quest_accept", questId: s.q.id }
+      : { label: "Take up the rite of blood (physical path).", action: "quest_accept", questId: s.q.id });
   }
   if (s.completed && (s.me.level || 1) >= 20) {
     if (s.me.character === "assassin") {
@@ -3839,6 +3862,14 @@ function uncleDynamicOptions() {
     }
   }
   return out;
+}
+
+// Dayıyla hangi düğümler gezildi? (rite kabulü için who/dusk/rite şart)
+function markTalkSeen(npcId, nodeId) {
+  if (!npcId || !nodeId) return;
+  state.talkSeen = state.talkSeen || {};
+  state.talkSeen[npcId] = state.talkSeen[npcId] || {};
+  state.talkSeen[npcId][nodeId] = true;
 }
 
 function talkOptionsFor(npc, node) {
@@ -3854,6 +3885,13 @@ function talkPanelHtml(npc, node, withClose) {
     const s = uncleQuestState();
     if (s.q && node.id === "rite") {
       extraProgress = `<p class="quest-progress">Your rite: ${s.kills}/${s.q.requiredKills} slain · ${s.have}/${s.q.requiredItemCount} cruor${s.completed ? " · <strong>COMPLETE</strong>" : ""}</p>`;
+    }
+    // Başka class ritü isteyemez — dayı uygun olmadığını söyler.
+    if (s.q && !s.accepted && s.me && s.me.character !== "assassin" && s.me.character !== "mage") {
+      const seen = (state.talkSeen && state.talkSeen.uncle) || {};
+      if (seen.who || seen.dusk || seen.rite) {
+        extraProgress += `<p class="quest-progress">Vesryn eyes you coldly: “The thirst is not in you, child. This rite is for assassins and mages alone — return as one of them.”</p>`;
+      }
     }
   }
   return `<div class="talk-panel talk-fade" key="${escapeHtml(npc.id + ":" + node.id)}">
@@ -3878,6 +3916,7 @@ function shopTalkHtml(npcId) {
   if (state.talkNpcId !== npcId) {
     state.talkNpcId = npcId;
     state.talkNodeId = "start";
+    markTalkSeen(npcId, "start");
   }
   const node = talkNode(npc, state.talkNodeId);
   if (!node) return "";
@@ -3890,6 +3929,7 @@ function wireTalk(root, renderFn) {
     b.addEventListener("click", () => {
       state.talkNpcId = b.getAttribute("data-talk");
       state.talkNodeId = "start";
+      markTalkSeen(state.talkNpcId, "start");
       sfxPlay("clicksound");
       renderFn();
     })
@@ -3911,6 +3951,7 @@ function wireTalk(root, renderFn) {
         state.talkNodeId = null;
       } else {
         state.talkNodeId = opt.to;
+        markTalkSeen(npc.id, opt.to);
       }
       renderFn();
     })
@@ -3955,6 +3996,7 @@ function renderPlazaView(room) {
       b.addEventListener("click", () => {
         state.talkNpcId = b.getAttribute("data-npc");
         state.talkNodeId = "start";
+        markTalkSeen(state.talkNpcId, "start");
         sfxPlay("clicksound");
         renderPlazaView(room);
       })

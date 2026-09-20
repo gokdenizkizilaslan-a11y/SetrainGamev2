@@ -439,6 +439,23 @@ $("btn-guide").addEventListener("click", () => {
   renderTown(state.room);
 });
 
+$("btn-quests").addEventListener("click", () => {
+  state.skillTreeOpen = false;
+  state.guideOpen = true;
+  const first = (typeof CATALOG !== "undefined" && CATALOG.quests && CATALOG.quests[0]) || null;
+  state.guideSel = { section: "quests", item: first ? first.id : null };
+  state.dungeonOpen = false;
+  state.plazaOpen = false;
+  state.tavernOpen = false;
+  state.blacksmithOpen = false;
+  state.merchantOpen = false;
+  state.templeOpen = false;
+  state.inventoryOpen = false;
+  state.pvpOpen = false;
+  state.petsOpen = false;
+  renderTown(state.room);
+});
+
 $("btn-guide-close").addEventListener("click", () => {
   state.guideOpen = false;
   renderTown(state.room);
@@ -717,6 +734,7 @@ socket.on("chest:loot", (payload) => {
     name: it.name,
     rarity: it.rarity,
     description: it.description,
+    image: it.image || "",
     icon: lootItemIcon(it),
   }));
   ChestSystem.open({

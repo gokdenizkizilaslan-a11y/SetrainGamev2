@@ -39,10 +39,18 @@ function acceptQuest(room, player, questId) {
   requirePlaying(room, player);
   const def = getQuestDef(questId);
   if (!def) throw new Error("No such quest.");
+  if (def.classes && def.classes.length && !def.classes.includes(player.character)) {
+    throw new Error("Old Vesryn shakes his head: the old blood does not stir in you. This rite is for assassins and mages alone.");
+  }
   if (!player.quests) player.quests = {};
   const st = player.quests[questId];
   if (st && st.accepted) throw new Error("You have already taken up this rite.");
-  player.quests[questId] = { accepted: true, kills: 0, completed: false };
+  player.quests[questId] = {
+    accepted: true,
+    kills: 0,
+    completed: false,
+    path: player.character === "mage" ? "gloom" : "blood",
+  };
   const itemDef = def.requiredItem ? getItem(def.requiredItem) : null;
   return {
     type: "quest",

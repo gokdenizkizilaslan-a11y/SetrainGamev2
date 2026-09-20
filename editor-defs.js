@@ -235,8 +235,25 @@ const collections = [
       },
       { key: "heal", label: "HP healed when used (consumables)", type: "number", if: (i) => i.slot === "consumable" },
       { key: "food", label: "Food gained when used (consumables)", type: "number", if: (i) => i.slot === "consumable" },
+      { key: "setId", label: "Item set id (blank = no set; 2pc/4pc bonuses from Item Sets)", type: "string" },
       { key: "description", label: "Description", type: "string" },
       { key: "image", label: "Image path", ...img("items") },
+    ],
+  },
+
+  {
+    id: "itemSets",
+    label: "Item Sets (2pc / 4pc bonuses)",
+    kind: "collection",
+    path: "itemSets",
+    idField: "id",
+    idLabel: "id (e.g. void)",
+    nameField: "name",
+    itemLabelTemplate: "{name} ({id})",
+    fields: [
+      { key: "name", label: "Set name", type: "string" },
+      { key: "description", label: "Description (shown in character panel)", type: "string" },
+      { key: "bonuses", label: 'Tiers as JSON, e.g. [{"pieces":2,"stats":{"attack":10}},{"pieces":4,"stats":{"attack":30}}] — tiers stack, keys: attack/maxHp/mana/manaRegen/resistance/magicPower/healPower/speed/critChance/critDamage/omnivamp', type: "string" },
     ],
   },
 
