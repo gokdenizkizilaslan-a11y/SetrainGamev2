@@ -4077,8 +4077,8 @@ function renderInventory(room) {
       // Tüccar geri alımı: değerin %60'ı (değer yoksa altın fiyatından).
       const sellUnit = Math.floor((((typeof item.value === "number" && item.value > 0) ? item.value : (item.price && item.price.gold) || 0)) * 0.6);
       const sellBtns = (!isChest && sellUnit > 0)
-        ? `<button type="button" class="btn btn--mini" data-sell="${inv.itemId}" data-qty="1" title="Sell to merchant: +${sellUnit} gold">Sell +${sellUnit}g</button>` +
-          (inv.qty > 1 ? `<button type="button" class="btn btn--mini" data-sell="${inv.itemId}" data-qty="${inv.qty}" title="Sell all: +${sellUnit * inv.qty} gold">All +${sellUnit * inv.qty}g</button>` : "")
+        ? `<span class="bag-sell"><button type="button" class="btn btn--mini" data-sell="${inv.itemId}" data-qty="1" title="Sell to merchant: +${sellUnit} gold">Sell +${sellUnit}g</button>` +
+          (inv.qty > 1 ? `<button type="button" class="btn btn--mini" data-sell="${inv.itemId}" data-qty="${inv.qty}" title="Sell all: +${sellUnit * inv.qty} gold">All +${sellUnit * inv.qty}g</button>` : "") + `</span>`
         : "";
       const action = isChest
         ? `<button type="button" class="btn btn--mini" data-open-chest="${inv.itemId}">Open</button>`

@@ -599,7 +599,7 @@ window.ChestSystem = {
     card.className = `loot-card ${item.rarity || 'common'}`;
     card.innerHTML = `
       <span style="font-size: 10px; text-transform: uppercase; color: #aaa; font-weight: bold;">${item.rarity || 'Item'}</span>
-      <div style="width:84px;height:84px;margin:8px auto;border-radius:12px;overflow:hidden;position:relative;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:40px;">${item.icon || '🎁'}
+      <div style="width:110px;height:110px;margin:8px auto;border-radius:12px;overflow:hidden;position:relative;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:40px;">${item.icon || '🎁'}
         ${item.image ? `<img src="${item.image}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.remove()">` : ""}
       </div>
       <strong style="font-size: 13px; color: #fff;">${item.name}</strong>

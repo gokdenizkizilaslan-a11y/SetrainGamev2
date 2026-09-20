@@ -2680,7 +2680,7 @@ input:focus {
 .pet-slot-label { font-family:Cinzel; font-size:0.6rem; color:var(--gold-bright); letter-spacing:0.1em; text-transform:uppercase; }
 .pet-socket { width:3.4rem; height:3.4rem; border-radius:50%; }
 .pet-socket--empty { border-style:dashed; }
-.pet-slot-icon { width:2.6rem; height:2.6rem; border-radius:50%; background-size:cover; background-position:center; border:none; }
+.pet-slot-icon { width:100%; height:100%; min-height:7rem; border-radius:12px; background-size:cover; background-position:center; border:none; }
 .pet-slot-empty { font-size:1rem; color:var(--muted); }
 .pet-slot-name { font-family:Cinzel; font-size:0.76rem; line-height:1.25; }
 .pet-slot-level { font-size:0.64rem; color:var(--muted); }
@@ -3375,8 +3375,15 @@ input:focus {
 
 .shop-card-top {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
   gap: 0.55rem;
+}
+
+.shop-card-top .item-icon {
+  width: 100%;
+  height: 7rem;
+  border-radius: 12px;
 }
 
 .shop-card-name {
@@ -3502,12 +3509,13 @@ input:focus {
   color: var(--gold-bright);
 }
 
-/* Itemin icine oturacagi belli soket kutusu */
+/* Itemin icine oturacagi belli soket kutusu: kartın üstünde kocaman
+   kare alan, resim içini tamamen doldurur. */
 .equip-socket,
 .bag-socket,
 .pet-socket {
-  width: 3.2rem;
-  height: 3.2rem;
+  width: 100%;
+  height: 7rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3516,6 +3524,7 @@ input:focus {
   border: 1px solid rgba(232, 183, 108, 0.28);
   box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6);
   flex-shrink: 0;
+  overflow: hidden;
 }
 .equip-socket .item-icon,
 .bag-socket .item-icon,
@@ -3638,6 +3647,28 @@ input:focus {
   gap: 0.25rem;
   justify-content: center;
   min-height: 0;
+}
+
+/* Sell seçeneği: satırın üstüne gelince altta küçük belirir. */
+.bag-sell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  justify-content: center;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity 0.15s ease, max-height 0.15s ease;
+}
+
+.bag-sell:empty {
+  display: none;
+}
+
+.bag-row:hover .bag-sell,
+.bag-row:focus-within .bag-sell {
+  opacity: 1;
+  max-height: 3rem;
 }
 
 .bag-desc {
