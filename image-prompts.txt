@@ -554,19 +554,11 @@ glacial ice blue, lightning crackling yellow white, water abyssal
 blue, blessings soft teal glow), a single instantly readable
 subject per icon, purely visual wordless emblems"
 CUT ORDER: top-left = cell 1, then left-to-right, row by row.
-GRID DISCIPLINE (critical — never break this): draw EXACTLY the
-cell count written in the grid line (3x3 means exactly 9 cells, no
-more, no fewer). Perfect straight rows and columns, every cell the
-same size square. Thick dark gap lines BETWEEN every cell and a
-dark border around the whole grid — the gaps form a full cage.
-NO subject may touch or cross a gap line; every icon lives FULLY
-inside its own cell. No half-cut icons at the edges, no fragments,
-no overflow outside the grid. Flat straight front view of the
-grid, no tilt, no perspective, no rotation.
 IN CELLS only the skill NAME is written (no .png, no path).
 
 --- GRID S1 (3x3, warrior steel) ---
 3x3 grid, 9 square skill icons. Cell 1 (heavy_strike): two crossed
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 heavy greatswords slamming down with impact sparks flying, molten
 steel-orange edges. Cell 2 (slash): one swift steel slash arc
 frozen mid-cut with motion blur and bright edge glint. Cell 3
@@ -580,9 +572,13 @@ lion-head war horn bellowing golden sound waves. Cell 7
 embers rising. Cell 8 (cataclysm): blazing meteor shattering a
 fortress wall into flying stone chunks. Cell 9 (devastate):
 cracked skull under a falling war hammer, dust exploding.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: heavy_strike, cell2: slash, cell3: great_slash,
+cell4: colossal_slash, cell5: cleave, cell6: war_cry,
+cell7: battle_fury, cell8: cataclysm, cell9: devastate,
 --- GRID S2 (3x3, archer precision) ---
 3x3 grid, 9 square skill icons. Cell 1 (quick_shot): fast arrow
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 streaking with white motion lines, feathers blurred. Cell 2
 (aimed_shot): single sharp arrowhead centered in a thin hunter
 crosshair ring. Cell 3 (piercing_shot): arrow punching through
@@ -596,9 +592,13 @@ tornado. Cell 8 (shatter_point): cracked weak-point target disc
 with a dagger tip striking its glowing center. Cell 9
 (broken_guard): shattered shield halves with a snapped sword
 falling between them.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: quick_shot, cell2: aimed_shot, cell3: piercing_shot,
+cell4: hunter_shot, cell5: storm_shot, cell6: volley,
+cell7: storm_barrage, cell8: shatter_point, cell9: broken_guard,
 --- GRID S3 (3x3, holy blades) ---
 3x3 grid, 9 square skill icons. Cell 1 (smite): golden war hammer
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 falling with radiant holy rays bursting behind it. Cell 2
 (sanct_bolt): small white-gold bolt of light streaking with a
 sparkling tail. Cell 3 (hallowed_bolt): grand radiant spear of
@@ -612,9 +612,13 @@ a long ribbon of golden light. Cell 8 (holy_judgement): scales
 of justice crossed with a holy sword, glowing pans. Cell 9
 (radiance): rising sun lifting over a kneeling healed knight,
 warm light washing upward.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: smite, cell2: sanct_bolt, cell3: hallowed_bolt,
+cell4: blessed_blade, cell5: radiant_edge, cell6: divine_light,
+cell7: holy_strike, cell8: holy_judgement, cell9: radiance,
 --- GRID S4 (3x3, healing light) ---
 3x3 grid, 9 square skill icons. Cell 1 (mend): glowing green
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 plus sign hovering over a bandaged healing hand. Cell 2
 (greater_mend): big golden plus with white angel wings spread
 behind it. Cell 3 (magic_mend): blue mana droplet mending a
@@ -628,9 +632,13 @@ sprout unfurling over a pulsing pink heart. Cell 8
 (spirit_surge): three blue mana wisps spiraling upward together.
 Cell 9 (forest_renewal): ancient gnarled tree blooming with
 green light bursting from its crown.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: mend, cell2: greater_mend, cell3: magic_mend,
+cell4: war_heal, cell5: divine_blessing, cell6: resurgence,
+cell7: rejuvenate, cell8: spirit_surge, cell9: forest_renewal,
 --- GRID S5 (3x3, rogue shadow) ---
 3x3 grid, 9 square skill icons. Cell 1 (stab): slim dagger
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 thrusting forward with a sharp speed-line blur. Cell 2 (lunge):
 rapier lunging deep with white motion streaks. Cell 3
 (shadow_stab): black-purple dagger stabbing out of living
@@ -643,9 +651,13 @@ hooded face dissolving sideways into grey smoke wisps. Cell 8
 (shadow_veil): dark veil curtain parting to reveal two glowing
 eyes behind it. Cell 9 (eclipse_strike): black sun eclipse split
 by a silver blade slash.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: stab, cell2: lunge, cell3: shadow_stab,
+cell4: vampiric_strike, cell5: execute, cell6: shadow_step,
+cell7: shadow_meld, cell8: shadow_veil, cell9: eclipse_strike,
 --- GRID S6 (3x3, death shadow + monster claws) ---
 3x3 grid, 9 square skill icons. Cell 1 (reap): spectral scythe
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 sweeping a wide glowing arc through mist. Cell 2 (death_mark):
 pale skull branded with a dripping red X mark. Cell 3
 (soul_thief): ghostly translucent hand stealing a glowing blue
@@ -658,9 +670,13 @@ with a snapped iron link. Cell 8 (monster_shadow_attack):
 monstrous shadow claw slashing with violet talon trails. Cell 9
 (monster_shadow_bolt): dark violet bolt with a screaming skull
 tip flying forward.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: reap, cell2: death_mark, cell3: soul_thief,
+cell4: soul_reap, cell5: scythe_sweep, cell6: dark_veil,
+cell7: cripple, cell8: monster_shadow_attack, cell9: monster_shadow_bolt,
 --- GRID S7 (3x3, arcane cosmos) ---
 3x3 grid, 9 square skill icons. Cell 1 (arcane_bolt): small
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 violet missile spark with a crackling star trail. Cell 2
 (arcane_barrage): triple violet missiles fanning out with
 sparking wakes. Cell 3 (arcane_blast): violet explosion ring
@@ -672,9 +688,13 @@ single roaring fireball meteor falling with a smoke tail. Cell 6
 within. Cell 8 (mod_strike): glowing pink adjudicator gavel
 striking down with verdict light. Cell 9 (mod_obliterate):
 pink-black annihilation beam erasing a square of reality.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: arcane_bolt, cell2: arcane_barrage, cell3: arcane_blast,
+cell4: primordial_bolt, cell5: meteor, cell6: comet,
+cell7: mana_shield, cell8: mod_strike, cell9: mod_obliterate,
 --- GRID S8 (3x3, tank iron) ---
 3x3 grid, 9 square skill icons. Cell 1 (shield_bash): steel
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 shield smashing forward with a star-shaped impact flash. Cell 2
 (adamant_bash): diamond-hard shield slam cracking the ground
 beneath it. Cell 3 (titan_slam): colossal armored fist cratering
@@ -686,9 +706,13 @@ wall. Cell 7 (bastion): fortress tower merged into a shield
 emblem, banners flying. Cell 8 (immovable): grey mountain rooted
 over a small shield at its base. Cell 9 (iron_wall): riveted
 iron plate wall with dents and scratches.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: shield_bash, cell2: adamant_bash, cell3: titan_slam,
+cell4: defend, cell5: fortify, cell6: shield_wall,
+cell7: bastion, cell8: immovable, cell9: iron_wall,
 --- GRID S9 (3x3, wards + monster hide) ---
 3x3 grid, 9 square skill icons. Cell 1 (divine_guard): golden
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 winged shield with feathers spread wide. Cell 2 (aegis):
 mirror-bright aegis with a gorgon glint in its reflection. Cell
 3 (barrier): translucent shimmering dome sheltering three small
@@ -700,9 +724,13 @@ on a spear planted in scorched earth. Cell 8
 (monster_stoneskin): rocky monster carapace with glowing magma
 seams. Cell 9 (monster_heal): monster flesh stitching itself
 shut with green glowing thread.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: divine_guard, cell2: aegis, cell3: barrier,
+cell4: stone_skin, cell5: holy_ward, cell6: group_guard,
+cell7: war_banner, cell8: monster_stoneskin, cell9: monster_heal,
 --- GRID S10 (3x3, nature + beasts) ---
 3x3 grid, 9 square skill icons. Cell 1 (garden_swipe): thorny
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 garden claw swiping with petals and leaves bursting. Cell 2
 (root_lash): thick gnarled root whip lashing sideways with dirt
 clods. Cell 3 (bloom_burst): night flower exploding open with a
@@ -714,9 +742,13 @@ jaws snapping shut leaving a bite-mark crater. Cell 7
 Cell 8 (alpha_strike): alpha wolf head with a crown-shaped scar,
 eyes burning. Cell 9 (tame_hit): leather whip coiled with a small
 paw charm swinging from its handle.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: garden_swipe, cell2: root_lash, cell3: bloom_burst,
+cell4: vine_lash, cell5: thorn_volley, cell6: beast_bite,
+cell7: beast_strike, cell8: alpha_strike, cell9: tame_hit,
 --- GRID S11 (3x3, venom + monster ailments) ---
 3x3 grid, 9 square skill icons. Cell 1 (venom_strike): dagger
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 blade with a fat green venom drop hanging off its tip. Cell 2
 (toxin_drench): acid flask tipping over, green liquid pouring in
 a thick stream. Cell 3 (venom_burst): shattering poison vial
@@ -729,11 +761,16 @@ crushed sword with a sickly wilting aura. Cell 8
 (monster_vulnerable): cracked red heart target exposed with
 fracture lines. Cell 9 (monster_physical_attack): savage beast
 fang blow with saliva and dust bursting.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: venom_strike, cell2: toxin_drench, cell3: venom_burst,
+cell4: monster_poison, cell5: monster_regen, cell6: monster_frenzy,
+cell7: monster_weaken, cell8: monster_vulnerable, cell9: monster_physical_attack,
 --- GRID S12 (3x3, storm + sea + monster magic) ---
 3x3 grid, 9 square skill icons. Cell 1
 (monster_arcane_attack): wild violet energy surge erupting from
-a clawed hand. Cell 2 (monster_arcane_storm): violet storm
+a clawed hand.
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
+Cell 2 (monster_arcane_storm): violet storm
 vortex with lightning crawling inside it. Cell 3
 (monster_heavy_blow): giant stone club smashing down with a
 shockwave ring. Cell 4 (volt_conduit): copper coil rod spitting
@@ -745,9 +782,13 @@ flying droplets. Cell 8 (frost_nova): pale ice ring explosion
 with radiating frost spikes. Cell 9 (mana_shield): blue
 hexagonal mana barrier dome — SHARED, see S7.
 Generate ONCE in S7, reuse the file here, do not regenerate.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: monster_arcane_attack, cell2: monster_arcane_storm, cell3: monster_heavy_blow,
+cell4: volt_conduit, cell5: static_overload, cell6: lightning_bolt,
+cell7: water_splash, cell8: frost_nova, cell9: mana_shield,
 --- GRID S13 (3x3, ember boss + fire) ---
 3x3 grid, 9 square skill icons. Cell 1 (boss_ember_skill1):
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 flaming demon fist punching forward trailing fire ribbons. Cell
 2 (boss_ember_skill2): huge magma hammer head crashing down with
 molten splash. Cell 3 (boss_ember_skill3): dimming ash shackles
@@ -760,9 +801,13 @@ healing flame flower. Cell 7 (scorch_mark): branded circular
 burn-mark sigil with smoking edges. Cell 8 (ember_storm):
 firestorm of falling embers swirling in a vortex. Cell 9
 (blaze_rupture): volcano fissure erupting with a lava geyser.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: boss_ember_skill1, cell2: boss_ember_skill2, cell3: boss_ember_skill3,
+cell4: boss_ember_skill4, cell5: boss_ember_skill5, cell6: boss_ember_skill6,
+cell7: scorch_mark, cell8: ember_storm, cell9: blaze_rupture,
 --- GRID S14 (3x3, frost boss + frost) ---
 3x3 grid, 9 square skill icons. Cell 1 (boss_frost_skill1): pale
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 ice titan fist smashing with frost shards bursting. Cell 2
 (boss_frost_skill2): glacier hammer head of solid ice crashing
 with snow blast. Cell 3 (boss_frost_skill3): frostbitten iron
@@ -776,9 +821,13 @@ flying with frost vapor trail. Cell 8 (cold_snap): cracked
 frozen hourglass leaking blue cold mist. Cell 9
 (glacial_shatter): shattering ice monolith exploding into
 geometric shards.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: boss_frost_skill1, cell2: boss_frost_skill2, cell3: boss_frost_skill3,
+cell4: boss_frost_skill4, cell5: boss_frost_skill5, cell6: boss_frost_skill6,
+cell7: frost_bolt, cell8: cold_snap, cell9: glacial_shatter,
 --- GRID S15 (3x3, void boss + arcane doom) ---
 3x3 grid, 9 square skill icons. Cell 1 (boss_void_skill1):
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 black void tentacle whipping forward with star-specked suckers.
 Cell 2 (boss_void_skill2): black-hole hammer head ringed with a
 crushing gravity halo. Cell 3 (boss_void_skill3): giant eye of
@@ -791,9 +840,13 @@ dark rebirth cocoon splitting open with pale new wings. Cell 7
 reuse file. Cell 8 (meteor): fireball meteor — SHARED with S7,
 reuse file. Cell 9 (comet): star-blue comet — SHARED with S7,
 reuse file.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: boss_void_skill1, cell2: boss_void_skill2, cell3: boss_void_skill3,
+cell4: boss_void_skill4, cell5: boss_void_skill5, cell6: boss_void_skill6,
+cell7: arcane_barrage, cell8: meteor, cell9: comet,
 --- GRID S16 (3x3, storm boss + world boss) ---
 3x3 grid, 9 square skill icons. Cell 1 (boss_storm_skill1):
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 lightning colossus stone fist punching through a thunderhead.
 Cell 2 (boss_storm_skill2): thunderhead hammer wreathed in
 rotating storm clouds. Cell 3 (boss_storm_skill3): crackling
@@ -807,17 +860,23 @@ mountain teeth closing. Cell 8 (boss_world_skill2):
 continent-crusher maw blow crushing a fortress gate. Cell 9
 (boss_world_skill3): collapsing mountain chains snapping with
 falling boulders (weaken).
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: boss_storm_skill1, cell2: boss_storm_skill2, cell3: boss_storm_skill3,
+cell4: boss_storm_skill4, cell5: boss_storm_skill5, cell6: boss_storm_skill6,
+cell7: boss_world_skill1, cell8: boss_world_skill2, cell9: boss_world_skill3,
 --- GRID S17 (1x3 strip, world ruin leftovers) ---
 1x3 horizontal strip, 3 square skill icons with thin dark gaps on dark
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 slate background, same painterly close-up battle-emblem finish. Cell 1
 (boss_world_skill4): crooked volcano-frenzy rage idol with erupting
 crater head (fortify/frenzy). Cell 2 (boss_world_skill5): rotting
 world-root fang oozing black sap. Cell 3 (boss_world_skill6):
 tiny world-tree seed sprouting into a rebirth sapling of light.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: boss_world_skill4, cell2: boss_world_skill5, cell3: boss_world_skill6,
 --- GRID S18 (1x3 strip, vampire blood arts) ---
 1x3 horizontal strip, 3 square skill icons with thin dark gaps on dark
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 slate background, same painterly close-up battle-emblem finish, blood
 element language (deep crimson red with black-violet shadow, wet
 arterial shine). Cell 1 (exsanguinate): twin pale fangs sunk deep
@@ -829,6 +888,8 @@ grasping hands.
 SHARED REUSE (do not regenerate): vampire_bite + tyrant_bite reuse
 exsanguinate/bloodbath art; gloom_bolt + sanguine_bolt reuse
 crimson_rebirth art (basic attacks share their class skill icons).
+MAP (kopyala-yapistir dosya adlari):
+cell1: exsanguinate, cell2: bloodbath, cell3: crimson_rebirth,
 
 ================================================================
 COVERAGE CHECK (nothing left behind):

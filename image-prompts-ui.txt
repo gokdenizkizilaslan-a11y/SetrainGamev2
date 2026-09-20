@@ -15,15 +15,6 @@ HOW TO USE:
   readable. NEVER paint words, letters or signs with text.
 - After saving files, set any EMPTY paths in content.js -> images
   (buttons + town + combat floors, listed per prompt), then restart.
-GRID DISCIPLINE (critical — never break this): button grids hold
-EXACTLY the written cell count (2x2 means exactly 4 cells, no more,
-no fewer). Perfect straight rows and columns, every cell the same
-size square. Thick dark gap lines BETWEEN every cell and a dark
-border around the whole grid — the gaps form a full cage. NO
-subject may touch or cross a gap line; every icon lives FULLY
-inside its own cell. No half-cut fragments at the edges, nothing
-outside the grid. Flat straight front view, no tilt, no
-perspective, no rotation.
 ----------------------------------------------------------------
 BASE STYLE (paint into every prompt below):
 "dark medieval fantasy oil-painting, same world and palette family
@@ -38,6 +29,7 @@ no watermarks, wordless composition"
 
 --- GRID UB1 (2x2, shop buttons) ---
 SQUARE 1:1, 4 square button icons with thin dark gaps on dark
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 slate, League-of-Legends emblem style: single bold centered object
 per cell filling 70% of the frame, thick readable silhouette,
 glowing gold rim light, dark carved-stone disc behind each emblem,
@@ -50,9 +42,11 @@ light streaming out.
 SAVE TO: public/images/ui/blacksmithButton.png etc. (filename =
 content.js key + .png). Then set in content.js -> images.ui:
 blacksmithButton, tavernButton, merchantButton, templeButton.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: blacksmithButton, cell2: tavernButton, cell3: merchantButton, cell4: templeButton,
 --- GRID UB2 (2x2, action buttons) ---
 SQUARE 1:1, same emblem style as UB1. Cell 1 (dungeonButton.png):
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 dark cave mouth with stairs descending into ember glow. Cell 2
 (searchButton.png): magnifier lens over a winding dirt path with
 footprints. Cell 3 (restButton.png): crescent moon over a bedroll
@@ -60,6 +54,8 @@ beside a dying campfire. Cell 4 (sleepButton.png): starry night
 sky over a small tent under a pine silhouette.
 SAVE TO: public/images/ui/<name>.png. Then set in content.js ->
 images.ui: dungeonButton, searchButton, restButton, sleepButton.
+MAP (kopyala-yapistir dosya adlari):
+cell1: dungeonButton, cell2: searchButton, cell3: restButton, cell4: sleepButton,
 
 
 =================== BACKGROUNDS (10, one prompt each) ===================

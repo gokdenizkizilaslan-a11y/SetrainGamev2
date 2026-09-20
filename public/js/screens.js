@@ -3261,6 +3261,29 @@ function rarityBadge(item) {
   const m = meta[r];
   return `<span class="rarity-badge" style="--rarity:${m ? m.color : "#9aa7b5"}">${escapeHtml(m ? m.label : r)}</span>`;
 }
+
+// Nadirlik rengi (kart çerçeveleri için). Bilinmeyende common grisi.
+function rarityColor(r) {
+  const meta = (CATALOG.loot && CATALOG.loot.rarityMeta) || {};
+  return (meta[r] && meta[r].color) || "#9aa7b5";
+}
+
+// Savaş dalgasındaki canavarın nadirliği (normal + boss).
+function monsterRarityOf(kind) {
+  const m = (CATALOG.monsters || []).find((x) => x.id === kind);
+  if (m && m.rarity) return m.rarity;
+  const b = (CATALOG.bosses || []).find((x) => x.id === kind);
+  if (b && b.rarity) return b.rarity;
+  return "common";
+}
+
+// Petin nadirliği = çıktığı yumurtanın nadirliği.
+function petEggRarity(petId) {
+  const pd = (CATALOG.pets || []).find((x) => x.id === petId);
+  const eggId = pd && pd.egg;
+  const egg = eggId && (CATALOG.eggs || []).find((x) => x.id === eggId);
+  return (egg && egg.rarity) || "common";
+}
 function chestRatesHtml(item) {
   if (!item || item.slot !== "chest" || !item.chestTier) return "";
   const tier = item.chestTier;
@@ -3576,7 +3599,7 @@ function shopCardHtml(me, staminaOk, item, buyEvent, isSold) {
     ? `<span class="purchased-badge">${equipped ? "Equipped" : `Owned ×${owned}`}</span>`
     : "";
   const chestRates = item.slot === "chest" ? chestRatesHtml(item) : "";
-  return `<div class="shop-card ${isSold ? "shop-card--sold" : ""}">
+  return `<div class="shop-card ${isSold ? "shop-card--sold" : ""}" style="--rarity:${rarityColor(item.rarity)}">
     <span class="shop-card-top">${itemIconEl(item)}<span class="shop-card-name">${escapeHtml(item.name)}</span></span>
     <span class="shop-card-badges">${rarityBadge(item)}<span class="purchased-badge">${escapeHtml(slotLabel(item.slot))}</span>${ownedBadge}${soldBadge}</span>
     <span class="shop-card-desc">${escapeHtml(item.description)}</span>
@@ -3985,7 +4008,7 @@ function renderInventory(room) {
     const isStone = id==="stone";
     const stoneTip = isStone && item ? `<span class="stat-chip"><em>Stack</em><b>Omni ${item.stats.omnivamp || 0}%</b></span>` : "";
     const tip = item ? `${escapeHtml(item.name)}${item.description ? " — " + escapeHtml(item.description) : ""}` : slot.label + " (empty)";
-    return `<div class="equip-slot${item ? " equip-slot--filled" : " equip-slot--empty"}" title="${tip}">
+    return `<div class="equip-slot${item ? " equip-slot--filled" : " equip-slot--empty"}" title="${tip}"${item ? ` style="--rarity:${rarityColor(item.rarity)}"` : ""}>
         <span class="equip-slot-label">${escapeHtml(slot.label)}</span>
         <span class="equip-socket">${item ? itemIconEl(item) : `<span class="equip-slot-placeholder">${icon(slotGlyphs[id] || "weapon")}</span>`}</span>
         <span class="equip-slot-item">${item ? escapeHtml(item.name) : '<span class="muted">— Empty —</span>'}</span>
@@ -4023,7 +4046,7 @@ function renderInventory(room) {
       const chestRates = item.slot === "chest" ? chestRatesHtml(item) : "";
       const chestPlain = chestRates.replace(/<[^>]*>/g, "");
       const tip = `${escapeHtml(item.name)}${item.description ? " — " + escapeHtml(item.description) : ""}${chestPlain ? " — " + escapeHtml(chestPlain) : ""}`;
-      return `<div class="bag-row bag-card" title="${tip}">
+      return `<div class="bag-row bag-card" title="${tip}" style="--rarity:${rarityColor(item.rarity)}">
         <span class="bag-socket">${itemIconEl(item)}</span>
         <span class="bag-name">${escapeHtml(item.name)} <span class="bag-qty">×${inv.qty}</span></span>
         <span class="bag-badges">${rarityBadge(item)}</span>
@@ -4135,7 +4158,7 @@ function renderPetsView(room){
     const statChips = pd && pd.stats ? Object.entries(pd.stats).map(([k,v])=>{ const b = k === "attack" ? (pp.bonusAttack || 0) : k === "magicPower" ? (pp.bonusMagic || 0) : k === "resistance" ? (pp.bonusResist || 0) : 0; return `<span class="stat-chip"><em>${escapeHtml(k)}</em><b>${v + b}</b></span>`; }).join("") : "";
     const petSkills = pd && pd.petSkills ? pd.petSkills.map(s=> `${s.kind} ${s.value}${s.kind==="attack"||s.kind==="heal"||s.kind==="shield"?"":"%"} /${s.interval}t`).join(" · ") : (pd && pd.buffKind ? `${pd.buffKind} (${pd.element})` : "auto");
     const tip = `${escapeHtml(displayName)} — Lv ${lvl} ${stage}${pd && pd.description ? " — " + escapeHtml(stripPetOrigin(pd.description)) : ""}`;
-    return `<div class="bag-row pet-card" title="${tip}">
+    return `<div class="bag-row pet-card" title="${tip}" style="--rarity:${rarityColor(petEggRarity(pp.petId))}">
       <span class="bag-socket pet-socket"><span class="item-icon" data-img="${escapeHtml(img)}" data-variant="${escapeHtml(pp.petId)}"></span></span>
       <span class="bag-name">${escapeHtml(displayName)}</span>
       <span class="bag-badges">${isActive?'<span class="badge badge--ready">Active</span>':''}<span class="pet-lvl">Lv ${lvl} · ${stage}</span>${pd && pd.element ? `<span class="pet-el">${escapeHtml(pd.element)}</span>` : ""}</span>
@@ -4153,7 +4176,7 @@ function renderPetsView(room){
     const it=(CATALOG.items||[]).find(x=>x.id===inv.itemId);
     const eggDef=(CATALOG.eggs||[]).find(x=>x.id===inv.itemId);
     const tip = `${escapeHtml(it.name)}${it.description ? " — " + escapeHtml(it.description) : ""}`;
-    return `<div class="bag-row bag-card egg-card" title="${tip}">
+    return `<div class="bag-row bag-card egg-card" title="${tip}" style="--rarity:${rarityColor(it.rarity)}">
       <span class="bag-socket egg-socket">${itemIconEl(it)}</span>
       <span class="bag-name">${escapeHtml(it.name)} <span class="bag-qty">×${inv.qty}</span></span>
       <span class="bag-badges">${rarityBadge(it)}</span>

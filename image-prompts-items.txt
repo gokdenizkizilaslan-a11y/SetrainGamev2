@@ -13,16 +13,6 @@ HOW TO USE:
   them into the boxes left-to-right, top-to-bottom by itself.
 - 3x3 BREAKS? Use image-prompts-2x2.txt — every 3x3 here is
   pre-split into 2x2 chunks there (same art, same names).
-GRID DISCIPLINE (critical — never break this): draw EXACTLY the
-cell count written in the grid line (3x3 means exactly 9 cells,
-2x2 exactly 4, 1x2 strip exactly 2 side by side — no more, no
-fewer). Perfect straight rows and columns, every cell the same
-size square. Thick dark gap lines BETWEEN every cell and a dark
-border around the whole grid — the gaps form a full cage. NO
-subject may touch or cross a gap line; every icon lives FULLY
-inside its own cell. No half-cut icons at the edges, no
-fragments, no overflow outside the grid. Flat straight front
-view, no tilt, no perspective, no rotation.
 ----------------------------------------------------------------
 BASE STYLE (paint into every grid prompt):
 "Premium game item-icon finish: single hero object per cell in
@@ -30,16 +20,14 @@ extreme close-up filling 70% of the frame, bold readable
 silhouette, dramatic rim light against deep shadow, painterly oil
 finish, rarity-tinted glow (common slate grey, uncommon leaf
 green, rare deep blue, epic royal purple, legendary molten amber,
-mythic ember red-gold), purely visual wordless emblems.
-SIBLING RULE (critical): items sharing one grid must NEVER look
-alike. Differentiate first by SILHOUETTE (shape, pose, angle),
-then by MATERIAL (wood, iron, jewel, bone, cloth), then by glow —
-no two cells the same object twice."
+mythic ember red-gold, ancient relic blood red), purely visual
+wordless emblems."
 CUT ORDER: top-left = cell 1, left-to-right, row by row.
 ================================================================
 
 --- GRID W1 (3x3, common steel I) ---
 3x3 grid, 9 square item icons, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. rusty_sword — short sword diagonal down-right, heavy brown rust pits over dull steel, grey.
 2. battle_axe — vertical double-crescent axe head with a short haft stub, plain iron, grey.
 3. war_hammer — horizontal blocky hammer head on a thick handle, riveted iron, grey.
@@ -49,9 +37,13 @@ CUT ORDER: top-left = cell 1, left-to-right, row by row.
 7. archon_staff — slim upright staff crowned with a pale floating crystal, green glow.
 8. dagger — tiny horizontal stiletto dagger, needle point, grey.
 9. poison_dagger — wavy kris dagger dripping bright green venom, grey.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: rusty_sword, cell2: battle_axe, cell3: war_hammer,
+cell4: longbow, cell5: shortbow, cell6: apprentice_staff,
+cell7: archon_staff, cell8: dagger, cell9: poison_dagger,
 --- GRID W2 (3x3, mixed steel) ---
 3x3 grid, 9 square item icons, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. mace — flanged steel mace head-on, star-shaped flanges radiating, grey.
 2. holy_sword — slender upright sword with a sun crossguard halo, green glow.
 3. kris_blade — wavy serpentine kris dagger coiling S-shaped, green glow.
@@ -61,9 +53,13 @@ CUT ORDER: top-left = cell 1, left-to-right, row by row.
 7. maul — huge two-hand maul head filling the frame, battered face forward, grey.
 8. bulwark_hammer — hammer whose head is a miniature tower shield, green glow.
 9. stone_ash_sword — ash-grey stone sword with glowing ember veins, grey.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: mace, cell2: holy_sword, cell3: kris_blade,
+cell4: whisper_blade, cell5: scepter, cell6: cleric_staff,
+cell7: maul, cell8: bulwark_hammer, cell9: stone_ash_sword,
 --- GRID W3 (3x3, crafted + arcane) ---
 3x3 grid, 9 square item icons, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. fire_ash_sword — ash sword wreathed in coiling flame tongues, green glow.
 2. molten_cleaver — broad cleaver blade dripping liquid magma drops, blue glow.
 3. frost_gladius — short gladius rimed with feathered frost crystals, green glow.
@@ -73,9 +69,13 @@ CUT ORDER: top-left = cell 1, left-to-right, row by row.
 7. phoenix_staff — golden staff crowned with spread phoenix wings, amber glow.
 8. void_cleaver — dark cleaver drinking light into a starless void edge, red-gold glow.
 9. iron_greatsword — plain massive greatsword vertical, brutal and undecorated, grey.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: fire_ash_sword, cell2: molten_cleaver, cell3: frost_gladius,
+cell4: arcane_rod, cell5: shadow_knife, cell6: ember_sword,
+cell7: phoenix_staff, cell8: void_cleaver, cell9: iron_greatsword,
 --- GRID W4 (3x3, named steel) ---
 3x3 grid, 9 square item icons, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. steel_blade — polished arming sword diagonal with a mirror shine stripe, grey.
 2. ranger_bow — hunting bow wrapped in green leather straps with a leaf charm, green glow.
 3. arcane_scepter — violet mana scepter topped with a faceted amethyst orb, green glow.
@@ -85,9 +85,13 @@ CUT ORDER: top-left = cell 1, left-to-right, row by row.
 7. storm_bow — storm bow strung with a live lightning bolt, purple glow.
 8. void_blade — starless void katana, pure black blade drinking light, amber glow.
 9. world_breaker — mountain-cleaving greatmaul with a peak-shaped head, red-gold glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: steel_blade, cell2: ranger_bow, cell3: arcane_scepter,
+cell4: shadow_dagger, cell5: dragon_spear, cell6: titan_hammer,
+cell7: storm_bow, cell8: void_blade, cell9: world_breaker,
 --- GRID W5 (3x3, boss + blood) ---
 3x3 grid, 9 square item icons, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. crimson_blade — blood-red vampiric blade with a bat-wing crossguard, purple glow.
 2. boss_weapon_ember — flaming Ember King greatblade wreathed in crown-shaped fire, purple glow.
 3. boss_weapon_frost — glacier frost titan axe with an icicle beard on its head, purple glow.
@@ -97,21 +101,29 @@ CUT ORDER: top-left = cell 1, left-to-right, row by row.
 7. sturdy_club — dependable oaken club with worn grip wraps, grey.
 8. hunter_axe — woodsman bearded axe with a long lower beard hook, green glow.
 9. oak_staff — heartwood staff sprouting live green leaves, green glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: crimson_blade, cell2: boss_weapon_ember, cell3: boss_weapon_frost,
+cell4: boss_weapon_void, cell5: boss_weapon_storm, cell6: boss_weapon_world,
+cell7: sturdy_club, cell8: hunter_axe, cell9: oak_staff,
 --- GRID W6 (2x2, rare finds) ---
 2x2 grid, 4 square item icons, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. frostbrand_axe — never-thawing ice axe with a translucent frozen head, blue glow.
 2. runed_bow — rune-carved glowing bow with burning blue script along its limbs, blue glow.
 3. void_reaver — hungering void greatsword with a mouth-like fuller, purple glow.
 4. stormcaller_staff — cloud-crowned storm staff with a miniature tempest swirling on top, purple glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: frostbrand_axe, cell2: runed_bow, cell3: void_reaver, cell4: stormcaller_staff,
 --- GRID W7 (1x2 strip, legends) ---
 1x2 strip, 2 square item icons side by side, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. kingsfall_blade — dynasty-ending golden blade with a crown pommel and royal engravings, amber glow.
 2. worldsplitter_axe — world-cracking obsidian axe split by a glowing red fault, red-gold glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: kingsfall_blade, cell2: worldsplitter_axe,
 --- GRID H1 (3x3, helms I) ---
 3x3 grid, 9 square item icons, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. leather_helm — stitched soft leather cap with floppy ear flaps, grey.
 2. bronze_helm — verdigris bronze helm with a nose guard and green patina, grey.
 3. iron_helm — plain iron greathelm, flat cylinder with breath slits, grey.
@@ -121,21 +133,29 @@ CUT ORDER: top-left = cell 1, left-to-right, row by row.
 7. shadow_mask — dark whisper half-mask with violet eye slits, blue glow.
 8. dragon_helm — horned dragon helm with swept-back horns, purple glow.
 9. void_crown — starless void crown, thin black band with dying stars, amber glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: leather_helm, cell2: bronze_helm, cell3: iron_helm,
+cell4: ranger_hood, cell5: mage_cowl, cell6: knight_helm,
+cell7: shadow_mask, cell8: dragon_helm, cell9: void_crown,
 --- GRID H2 (2x2, helms II) ---
 2x2 grid, 4 square item icons, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. glacial_helm — ice-crystal helm grown like a glacier, translucent, blue glow.
 2. cloth_cap — humble stitched cloth cap with a floppy top, grey.
 3. wolf_helm — alpha pelt helm with wolf ears and fangs framing the face, green glow.
 4. sentinel_helm — siege-scarred sentinel helm with a T-slit visor, blue glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: glacial_helm, cell2: cloth_cap, cell3: wolf_helm, cell4: sentinel_helm,
 --- GRID H3 (1x2 strip, crowns) ---
 1x2 strip, 2 square item icons side by side, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. archon_crown — sky-tyrant golden crown with tall sun-ray spikes, purple glow.
 2. sage_circlet — quiet thin silver circlet with a single small moonstone, green glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: archon_crown, cell2: sage_circlet,
 --- GRID A1 (3x3, armor I) ---
 3x3 grid, 9 square item icons, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. leather_chest — stitched leather cuirass with crossed straps, grey.
 2. padded_armor — quilted gambeson with diamond stitching, grey.
 3. chainmail — riveted chain shirt with visible interlocked rings, grey.
@@ -145,20 +165,28 @@ CUT ORDER: top-left = cell 1, left-to-right, row by row.
 7. shadow_garb — eclipse-dark assassin garb, tight wraps with buckles, blue glow.
 8. dragon_scale — red dragon-scale mail of overlapping scales, purple glow.
 9. void_plate — starless void plate swallowing light at its edges, red-gold glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: leather_chest, cell2: padded_armor, cell3: chainmail,
+cell4: ranger_vest, cell5: silk_robe, cell6: plate_armor,
+cell7: shadow_garb, cell8: dragon_scale, cell9: void_plate,
 --- GRID A2 (2x2, heavy plates) ---
 2x2 grid, 4 square item icons, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. ember_plate — ember-veined plate with glowing orange cracks, purple glow.
 2. boar_hide_armor — musky boar-hide armor with bristles and tusks on the shoulders, green glow.
 3. shadowplate — eclipse-forged black plate with violet seam light, blue glow.
 4. aegis_armor — radiant aegis bulwark with a sunburst boss, purple glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: ember_plate, cell2: boar_hide_armor, cell3: shadowplate, cell4: aegis_armor,
 --- GRID A3 (single, titan relic) ---
 Single square icon:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. titanward_plate — titan-forged golden bulwark slab with giant runes, amber glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: titanward_plate,
 --- GRID L1 (3x3, legs I) ---
 3x3 grid, 9 square item icons, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. leather_pants — worn leather pants with patched knees, grey.
 2. leather_greaves — strapped leather greaves with buckle rows, grey.
 3. iron_greaves — plain iron greaves, smooth tubes with knee cops, grey.
@@ -168,14 +196,20 @@ Single square icon:
 7. shadow_leggings — silent dark leggings with smoke wisps at the cuffs, blue glow.
 8. dragon_leggings — scaled dragon cuisses of red overlapping plates, purple glow.
 9. void_leggings — starless void greaves with dying-star specks, amber glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: leather_pants, cell2: leather_greaves, cell3: iron_greaves,
+cell4: swift_leggings, cell5: sage_pants, cell6: knight_leggings,
+cell7: shadow_leggings, cell8: dragon_leggings, cell9: void_leggings,
 --- GRID L2 (1x2 strip, swift legs) ---
 1x2 strip, 2 square item icons side by side, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. swift_greaves — feather-light plates with small wing fins, green glow.
 2. storm_leggings — static-crackling leggings with arcing sparks, blue glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: swift_greaves, cell2: storm_leggings,
 --- GRID B1 (3x3, boots) ---
 3x3 grid, 9 square item icons, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. leather_boots — scuffed leather boots with curled toes, grey.
 2. worn_boots — holey traveler boots with a flapping sole, grey.
 3. iron_boots — heavy iron sabatons, blunt and riveted, grey.
@@ -185,9 +219,13 @@ Single square icon:
 7. void_boots — starless void boots with a light-eating sheen, purple glow.
 8. travel_boots — dust-caked road boots with bedroll straps, grey.
 9. ember_boots — still-smoking forge boots with glowing cracks, green glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: leather_boots, cell2: worn_boots, cell3: iron_boots,
+cell4: ranger_boots, cell5: sorcery_boots, cell6: knight_boots,
+cell7: void_boots, cell8: travel_boots, cell9: ember_boots,
 --- GRID M1 (3x3, amulets) ---
 3x3 grid, 9 square item icons, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. iron_amulet — plain iron pendant disc on a coarse cord, green glow.
 2. mana_talisman — blue mana crystal shard in wire wrapping, blue glow.
 3. copper_amulet — dull copper amulet, round and tarnished, grey.
@@ -197,9 +235,13 @@ Single square icon:
 7. void_amulet — black-hole amulet, a dark orb ringed with bent light, amber glow.
 8. moon_amulet — slender crescent moon amulet, silver curve, green glow.
 9. thunder_amulet — bottled-lightning amulet, glass vial with a trapped bolt, blue glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: iron_amulet, cell2: mana_talisman, cell3: copper_amulet,
+cell4: silver_amulet, cell5: ruby_amulet, cell6: sapphire_amulet,
+cell7: void_amulet, cell8: moon_amulet, cell9: thunder_amulet,
 --- GRID R1 (3x3, rings I) ---
 3x3 grid, 9 square item icons, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. iron_ring — plain iron band, thick and unadorned, grey.
 2. copper_ring — hammered copper ring with dents catching light, grey.
 3. silver_ring — sleek thin silver ring with a polished shine, green glow.
@@ -209,13 +251,19 @@ Single square icon:
 7. vampiric_ring — fang-set blood ring, two tiny fangs gripping a red gem, blue glow.
 8. bone_ring — dire-wolf fang ring, curved yellowed tooth, grey.
 9. serpent_ring — coiled silver serpent ring biting its own tail, green glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: iron_ring, cell2: copper_ring, cell3: silver_ring,
+cell4: ruby_ring, cell5: sapphire_ring, cell6: void_ring,
+cell7: vampiric_ring, cell8: bone_ring, cell9: serpent_ring,
 --- GRID R2 (single, warden oath) ---
 Single square icon:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. warden_ring — oath-bound silver ring with a green oath-stone and leaf engraving, blue glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: warden_ring,
 --- GRID C1 (3x3, food & salves) ---
 3x3 grid, 9 square item icons, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. hearth_tea — steaming clay tea cup with swirling vapor, grey.
 2. field_rations — wrapped travel ration pack tied with twine, grey.
 3. minor_salve — small green salve jar with a cork lid, grey.
@@ -225,13 +273,19 @@ Single square icon:
 7. ember_pepper — smoldering red pepper with glowing cracks, green glow.
 8. troll_draught — bubbling green flask with foam overflowing the neck, blue glow.
 9. skyshard_omelet — storm-fried egg dish crackling with tiny arcs, blue glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: hearth_tea, cell2: field_rations, cell3: minor_salve,
+cell4: wolf_jerky, cell5: mushroom_stew, cell6: frost_berry,
+cell7: ember_pepper, cell8: troll_draught, cell9: skyshard_omelet,
 --- GRID C2 (single, dawn elixir) ---
 Single square icon:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. elixir_of_dawn — bottled sunrise elixir, gradient gold-to-rose liquid, purple glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: elixir_of_dawn,
 --- GRID M2 (3x3, essences & hearts) ---
-3x3 grid, 9 square item icons, in this exact order. Four essence vials MUST differ:
+3x3 grid, 9 square item icons, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. fire_essence — squat round flask with a leaping flame spark inside, grey.
 2. frost_essence — tall thin vial with a single condensed cold droplet sinking, grey.
 3. arcane_essence — spiral flask with swirling violet galaxy liquid, grey.
@@ -242,9 +296,13 @@ Single square icon:
 8. ancient_relic — aeon-old golden artifact, small sun-disc with eroded glyphs, amber glow.
 9. essence_of_life — radiant life essence orb floating with leaf motes, purple glow.
 NOTE: save this one as essence_of_life (game path differs from item id the_essence_of_life).
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: fire_essence, cell2: frost_essence, cell3: arcane_essence,
+cell4: shadow_essence, cell5: heart_of_fire, cell6: golem_heart,
+cell7: origin_stone, cell8: ancient_relic, cell9: essence_of_life,
 --- GRID M3 (3x3, hunt scraps) ---
 3x3 grid, 9 square item icons, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. slime_bottle — corked bottle with jiggling green slime blob inside, grey.
 2. wolf_fang — single sharp still-warm fang with a blood fleck at the root, grey.
 3. bat_wing — folded leathery cave bat wing with clawed finger bones, grey.
@@ -254,29 +312,38 @@ NOTE: save this one as essence_of_life (game path differs from item id the_essen
 7. orc_tusk — edged orc tusk trophy with carved war notches, green glow.
 8. harpy_feather — crackling storm feather with electric barbs, green glow.
 9. golem_fragment — living stone chip with a glowing eye-like core, blue glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: slime_bottle, cell2: wolf_fang, cell3: bat_wing,
+cell4: spider_silk, cell5: tough_hide, cell6: skeleton_bone,
+cell7: orc_tusk, cell8: harpy_feather, cell9: golem_fragment,
 --- GRID M4 (2x2, rare mats) ---
 2x2 grid, 4 square item icons, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. wraith_wisp — cold pale light swirling inside a sealed jar, blue glow.
 2. treant_bark — slowly regrowing bark slab with a fresh green shoot, blue glow.
 3. hydra_scale — shimmering regrowth scale with rainbow oil-slick sheen, purple glow.
 4. sword_blueprint — weapon schematic scroll half-unrolled with sword diagrams, green glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: wraith_wisp, cell2: treant_bark, cell3: hydra_scale, cell4: sword_blueprint,
 --- GRID M6 (2x2, ascension tokens) ---
-2x2 grid, 4 square item icons, in this exact order. Four tokens MUST differ:
+2x2 grid, 4 square item icons, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. war_crest — scarred round warlord medallion with crossed blades relief, purple glow.
 2. shadow_sigil — whispering thin black-violet shadow rune coin, smoky edges, purple glow.
 3. arcane_seal — humming violet mana seal disc with concentric spell rings, purple glow.
 4. primeval_cruor — still-warm drop of first blood sealed in a thorned crystal vial, amber glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: war_crest, cell2: shadow_sigil, cell3: arcane_seal, cell4: primeval_cruor,
 --- GRID M5 (1x2 strip, patterns) ---
 1x2 strip, 2 square item icons side by side, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. armor_blueprint — armor schematic scroll with cuirass diagrams and measurements, green glow.
 2. staff_blueprint — staff schematic scroll with crystal-mount diagrams, blue glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: armor_blueprint, cell2: staff_blueprint,
 --- GRID K1 (3x3, chests I) ---
-3x3 grid, 9 square item icons, in this exact order. Five normal chests MUST differ by
-material AND shape:
+3x3 grid, 9 square item icons, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. wooden_chest — simple nailed plank chest, flat lid, grey.
 2. iron_chest — banded iron chest with riveted straps and a padlock, green glow.
 3. gold_chest — gilded chest with curved baroque lid, blue glow.
@@ -286,37 +353,50 @@ material AND shape:
 7. boss_chest_frost — frost-rimed titan chest with icicle locks, purple glow.
 8. boss_chest_void — void-mouthed herald chest with a dark screaming face, amber glow.
 9. boss_chest_storm — storm-wreathed colossus chest with lightning clasps, amber glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: wooden_chest, cell2: iron_chest, cell3: gold_chest,
+cell4: emerald_chest, cell5: obsidian_chest, cell6: boss_chest_ember,
+cell7: boss_chest_frost, cell8: boss_chest_void, cell9: boss_chest_storm,
 --- GRID K2 (1x2 strip, mythic chests) ---
 1x2 strip, 2 square item icons side by side, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. boss_chest_world — world-serpent coiled chest, scaled serpent body wrapping it, red-gold glow.
 2. mythic_chest — legend-shrouded mythic chest wrapped in glowing rune chains, red-gold glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: boss_chest_world, cell2: mythic_chest,
 --- GRID O1 (2x2, tomes) ---
-2x2 grid, 4 square item icons, in this exact order. Four tomes MUST differ by cover:
+2x2 grid, 4 square item icons, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. tome_ember — ember-page grimoire with charred edges and fire sigil, green glow.
 2. tome_frost — frost-covered spellbook with ice crystals on a blue cover, blue glow.
 3. tome_shadow — shadow-ink tome, black leather with whispering pages, blue glow.
 4. tome_light — dawn radiant codex, white gold with a sunburst clasp, purple glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: tome_ember, cell2: tome_frost, cell3: tome_shadow, cell4: tome_light,
 --- GRID O2 (single, void tome) ---
 Single square icon:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. tome_void — starless void grimoire, light-eating black cover with dying stars, amber glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: tome_void,
 --- GRID O3 (2x2, blood stones) ---
-2x2 grid, 4 square item icons, in this exact order. Four stones MUST differ by shape:
+2x2 grid, 4 square item icons, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. stone_blood — pulsing blood-red lifesteal stone, rough heart-shaped chunk, amber glow.
 2. stone_frost — pale frost stone, hexagonal ice crystal, red-gold glow.
 3. stone_shadow — whispering shadow stone, jagged shard with smoke trails, red-gold glow.
 4. stone_arcane — violet arcane stone, smooth orb with inner galaxy swirl, amber glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: stone_blood, cell2: stone_frost, cell3: stone_shadow, cell4: stone_arcane,
 --- GRID O4 (single, earth stone) ---
 Single square icon:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. stone_earth — mossy titan stone, boulder chunk with green moss patches, amber glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: stone_earth,
 --- GRID E1 (3x3, eggs I) ---
-3x3 grid, 9 square item icons, in this exact order. Nine eggs MUST differ by shell
-pattern AND color:
+3x3 grid, 9 square item icons, in this exact order:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. egg_red — speckled red egg with dark red dots, grey.
 2. egg_green — mossy green egg with moss tufts in cracks, grey.
 3. egg_blue — glossy blue egg with a mirror shine, green glow.
@@ -326,10 +406,16 @@ pattern AND color:
 7. egg_cyan — storm-glass cyan egg with a tiny lightning bolt inside, purple glow.
 8. egg_dark — starless dark egg with dying-star specks, purple glow.
 9. egg_orange — magma-cracked orange egg with lava glowing through cracks, amber glow.
-
+MAP (kopyala-yapistir dosya adlari):
+cell1: egg_red, cell2: egg_green, cell3: egg_blue,
+cell4: egg_brown, cell5: egg_yellow, cell6: egg_purple,
+cell7: egg_cyan, cell8: egg_dark, cell9: egg_orange,
 --- GRID E2 (single, gold egg) ---
 Single square icon:
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 1. egg_gold — radiant solid-gold egg with engraved sun lines, red-gold glow.
+MAP (kopyala-yapistir dosya adlari):
+cell1: egg_gold,
 
 ================================================================
 COVERAGE: 188/188 items. Weapons 51 (W1-W5 + W6 2x2 + W7 strip),

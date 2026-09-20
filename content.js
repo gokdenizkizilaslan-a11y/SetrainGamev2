@@ -10460,7 +10460,7 @@ const CONTENT = {
       },
       "ancient_relic": {
         "label": "Ancient Relic",
-        "color": "#ffe14d"
+        "color": "#ff2323"
       }
     },
     "dropChance": {
@@ -13968,7 +13968,7 @@ function publicCatalog() {
     })),
     equipmentSlots: CONTENT.equipmentSlots,
     quests: CONTENT.quests || [],
-    bosses: (CONTENT.bosses || []).map((b) => ({ id: b.id, label: b.label, image: b.image, hp: b.hp, attack: b.attack, element: b.element, unlockAfter: b.unlockAfter || null })),
+    bosses: (CONTENT.bosses || []).map((b) => ({ id: b.id, label: b.label, image: b.image, hp: b.hp, attack: b.attack, element: b.element, rarity: b.rarity || "mythic", unlockAfter: b.unlockAfter || null })),
     monsters: CONTENT.monsters.map((m) => ({ id: m.id, name: m.name, image: m.image, rarity: m.rarity || "common", element: m.element || "physical" })),
     anomalyFrameColors: Object.fromEntries(
       CONTENT.anomalies.traits.map((t) => [t.id, t.frameColor])

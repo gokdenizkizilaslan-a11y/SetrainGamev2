@@ -2409,6 +2409,10 @@ input:focus {
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
+.enemy {
+  border-color: var(--rarity, var(--glass-line));
+}
+
 .fighter[style*="--frame"] {
   border-color: var(--frame);
 }
