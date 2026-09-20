@@ -289,10 +289,14 @@ const CONTENT = {
       "nodes": [
         {
           "id": "start",
-          "text": "Oh — hello. Mind the baskets, I just came from the hollow with herbs. You look like someone with somewhere to be. Is there something I can do for you?",
+          "text": "You! You're up and walking — oh, thank the dawn. I found you senseless in the hollow grass, no memory and no shoes, and half-carried you all the way to town myself. Are you alright? Does your head still ache?",
           "options": [
             {
-              "label": "Who are you?",
+              "label": "I'm alright, thanks to you.",
+              "to": "better"
+            },
+            {
+              "label": "Who are you, again?",
               "to": "who"
             },
             {
@@ -306,9 +310,23 @@ const CONTENT = {
           ]
         },
         {
-          "id": "who",
-          "text": "Nobody important. The Tavernkeeper took me in when the road took my family. I gather herbs, feed strays — the two-legged kind too. If you are hurt, the town will not let you starve. That much I can promise.",
+          "id": "better",
+          "text": "Good. Good! Eat something today, you hear me? No more fainting in ditches on my watch. The town already talks — 'Mira's stray,' they say. Let them talk. You're MY stray, and strays eat first at my table.",
           "options": [
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "who",
+          "text": "Mira! I gather herbs, I feed strays — and you, my friend, are my finest stray yet. The Tavernkeeper took me in when the road took my family. If you are hurt, the town will not let you starve. That much I can promise.",
+          "options": [
+            {
+              "label": "I'm alright, thanks to you.",
+              "to": "better"
+            },
             {
               "label": "The pale gentleman — have you seen him?",
               "to": "pale"
@@ -392,6 +410,720 @@ const CONTENT = {
         {
           "id": "rite",
           "text": "The rite is simple and it is not easy. Slay 50 of the humanoid filth that infest these lands — goblins, bandits, knights, witches, all that walk like men and kill like beasts. And bring me 10 drops of primeval cruor, the first blood, which sometimes spills from their wounds. Do this, and the old blood will know you.",
+          "options": [
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        }
+      ],
+      "offers": []
+    },
+    {
+      "id": "zeynep",
+      "name": "Zeynep the Apothecary",
+      "title": "Town lunatic (probably)",
+      "image": "/images/npcs/zeynep.png",
+      "location": "town",
+      "nodes": [
+        {
+          "id": "start",
+          "text": "YOU! Yes, you with the face! Come closer, I don't bite on Tuesdays. I'm Zeynep — apothecary, genius, town lunatic, pick whichever, they're all true. What do you want? I have answers. Most of them are even for your questions.",
+          "options": [
+            {
+              "label": "The coup — is it true what they say?",
+              "to": "z01"
+            },
+            {
+              "label": "What are you brewing?",
+              "to": "z07"
+            },
+            {
+              "label": "Why are you staring at that pigeon?",
+              "to": "z12"
+            },
+            {
+              "label": "Nice moon tonight.",
+              "to": "z17"
+            },
+            {
+              "label": "How is the Tavernkeeper?",
+              "to": "z21"
+            },
+            {
+              "label": "Do you know Old Vesryn?",
+              "to": "z25"
+            },
+            {
+              "label": "Do you know Mira?",
+              "to": "z28"
+            },
+            {
+              "label": "Any advice for the dungeons?",
+              "to": "z31"
+            },
+            {
+              "label": "What do you think of slimes?",
+              "to": "z35"
+            },
+            {
+              "label": "Nice boots.",
+              "to": "z38"
+            },
+            {
+              "label": "Will it rain tomorrow?",
+              "to": "z41"
+            },
+            {
+              "label": "I can't sleep. Help?",
+              "to": "z44"
+            },
+            {
+              "label": "What's that croaking?",
+              "to": "z47"
+            },
+            {
+              "label": "Farewell. Probably.",
+              "end": true
+            }
+          ]
+        },
+        {
+          "id": "z01",
+          "text": "THE COUP! Oh, you heard! Nine years ago, the Gray Banner boys marched on the town hall with pikes and a list of demands. Demands! On paper! While I was in the middle of a very important nap in the doorway. So I stood up — hair everywhere, one shoe on — and said: 'Boys. Put those down before someone gets crowned.'",
+          "options": [
+            {
+              "label": "And then?",
+              "to": "z02"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z02",
+          "text": "Their three leaders — big mustaches, tiny brains, you know the type — laughed at me. LAUGHED! So I said: 'Fine. All three of you. My hut. Tonight. If any of you walk out by morning, the town is yours.' They stopped laughing. The whole square stopped breathing.",
+          "options": [
+            {
+              "label": "You didn't.",
+              "to": "z03"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z03",
+          "text": "I DID. All three. At once. By dawn, General Puff-Chest was crying into my pillow asking for his mother, Captain Left-Boots had proposed marriage twice, and the so-called Supreme Leader was doing my dishes and begging for a job reference. The coup was OVER, darling. Cancelled by exhaustion.",
+          "options": [
+            {
+              "label": "That's... that's incredible.",
+              "to": "z04"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z04",
+          "text": "The council wanted to give me a medal. I said: 'Melt it down, I need a new cauldron.' They named a street after me instead. Then UNNAMED it when the priest found out why. Cowards! History will remember. I remember! Mostly. The details get fuzzy around midnight, but the snoring — three-part harmony — I'll never forget.",
+          "options": [
+            {
+              "label": "What happened to the leaders?",
+              "to": "z05"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z05",
+          "text": "Puff-Chest runs a bakery now. Terrible bread, wonderful man. Left-Boots married a goat farmer and looks ten years younger. And the Supreme Leader? He sweeps my porch every Sunday. Still does! That's not a rumor, that's a SCHEDULE. Ask anyone. Ask HIM — he'll be here Sunday with a broom and that look in his eye.",
+          "options": [
+            {
+              "label": "You're a hero, Zeynep.",
+              "to": "z06"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z06",
+          "text": "Hero? Lunatic? Apothecary? YES. I'm all three before breakfast. The town calls me mad because sane people don't stop armies with their bedroom. Their loss! Say — you smell a little like old blood, little moth. If the thirst ever takes you, go see Old Vesryn at dusk. Tell him Zeynep sent you. He owes me money. Don't tell him I said that.",
+          "options": [
+            {
+              "label": "Tell me about Vesryn.",
+              "to": "z25"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z07",
+          "text": "Brewing? BREWING?! I am brewing justice! And soup. Mostly soup. This cauldron here holds my famous 'Probably Not Poison' stew — seventeen herbs, one bootlace for texture, and a secret ingredient I forgot, which is why it's secret. Bottomless appetite, bottomless pot. Science!",
+          "options": [
+            {
+              "label": "Can I taste it?",
+              "to": "z08"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z08",
+          "text": "Taste it? TASTE IT?! Nobody tastes batch forty-one! Batch forty lost me two eyebrows and a customer. But batch forty-one — oh, she's PERFECT. She sings when stirred. Listen! ...You don't hear that? Hm. That's concerning. For you, I mean. My hearing is excellent. The pot and I agree.",
+          "options": [
+            {
+              "label": "What else do you brew?",
+              "to": "z09"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z09",
+          "text": "Hair tonic that grows hair on EVERYTHING — doorknobs, chickens, one very surprised priest. Love philters (banned in three villages, highly effective, do not combine with coup leaders). And my masterpiece: a tea that makes you remember things that never happened. Would you like some? Last cup made a man remember being a chair. He sits better now. Improved posture!",
+          "options": [
+            {
+              "label": "I'll pass on the tea.",
+              "to": "z10"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z10",
+          "text": "Wise! Wisdom looks good on you. Most people drink first and remember being furniture later. You — you have the eyes of someone who reads labels. I like that. The frogs like that too. Have you met my frogs? They're in the well. Don't drink from the well.",
+          "options": [
+            {
+              "label": "Tell me about the frogs.",
+              "to": "z47"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z11",
+          "text": "Oh good, you're back! The stew missed you. It said so. In words. With grammar! Anyway — where were we? Potions! Right! My entire inventory is: green ones heal, red ones thrill, blue ones bill — that one costs extra. And if it's glowing, don't shake it. That's not a rule, that's a eulogy waiting to happen.",
+          "options": [
+            {
+              "label": "Tell me about the frogs.",
+              "to": "z47"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z12",
+          "text": "Shhh! That pigeon — the grey one with the attitude — owes me three coppers and a secret. Pigeons are the town's real government, you know. They see EVERYTHING. The council just stamps what the pigeons decide. I've been trying to get elected to the pigeon council for years, but they say my cooing is 'mocking.' IT'S CALLED DEDICATION, GERALD!",
+          "options": [
+            {
+              "label": "Who is Gerald?",
+              "to": "z13"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z13",
+          "text": "Gerald is THAT pigeon. The grey one. Don't let the identical grey ones fool you — Gerald has a scar. Emotional scar. From me, when I called his landing 'adequate.' He's never forgiven me. Pigeons hold grudges the way I hold grudges: forever, and with snacks involved.",
+          "options": [
+            {
+              "label": "What secrets do pigeons know?",
+              "to": "z14"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z14",
+          "text": "Everything! Who sneaks out at night (the baker, flour everywhere, worst sneak in history). Who waters whose garden (scandalous). And where the fattest crumbs fall on market day — now THAT is classified. I'd tell you, but then Gerald wins. And Gerald does NOT win. Not this week. Not ever.",
+          "options": [
+            {
+              "label": "Can pigeons scout dungeons?",
+              "to": "z15"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z15",
+          "text": "Tried it! Sent twelve pigeons into the F-rank with tiny helmets. Eleven came back heroes. The twelfth — Kevin — now runs the place, probably. He sends postcards. They just say 'COO' but I know what he means. He means the loot is excellent and the slimes are weak to compliments.",
+          "options": [
+            {
+              "label": "Any advice for the dungeons?",
+              "to": "z31"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z16",
+          "text": "Oh! You came back to pigeon talk! My favorite subject after myself and soup. Remember: bread in the LEFT pocket (snacks), stones in the RIGHT pocket (self-defense), and never — NEVER — wink at a pigeon unless you mean it. Winking is a marriage proposal in pigeon. I am married to four pigeons. Four!",
+          "options": [
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z17",
+          "text": "The moon! Finally, someone with culture! People think the moon just hangs there. WRONG. The moon commutes. Every night it clocks in, does its glowing, clocks out. I've seen its timesheets. Impeccable penmanship. Terrible attendance during eclipses — calls in sick, the drama queen.",
+          "options": [
+            {
+              "label": "What about a blood moon?",
+              "to": "z18"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z18",
+          "text": "Blood moon?! Oh, that's just the moon blushing. It happens when Old Vesryn looks at it too long. Don't tell him I told you. Actually DO tell him — his face does this thing, like a raisin remembering being a grape. Priceless! But from a distance. A LARGE distance. Trust auntie Zeynep.",
+          "options": [
+            {
+              "label": "Is the moon made of cheese?",
+              "to": "z19"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z19",
+          "text": "Cheese? CHEESE?! My dear, the moon is made of moon. Everyone knows that. Though — between you and me — I once licked a moonrock the merchant sold me and it tasted faintly of gouda. Either the moon IS cheese, or the merchant is a genius, or I need better hobbies. Verdict: all three. Simultaneously!",
+          "options": [
+            {
+              "label": "I need to lie down.",
+              "to": "z20"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z20",
+          "text": "Lie down? HERE? On MY good cobblestones? ...Fine. They're clean. I licked them this morning. Minty! Rest a while, little hero. When you wake up I'll tell you about the time I arm-wrestled the fog. Spoiler: the fog cheats. It has no arms and yet — somehow — it wins.",
+          "options": [
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z21",
+          "text": "The Tavernkeeper? Oh, bless his apron, that man waters the ale and counts the foam as a serving. I told him: 'You keep this up and the mugs will unionize!' He laughed. The mugs did NOT laugh. They're organizing. Tuesday meetings. Bring your own coaster.",
+          "options": [
+            {
+              "label": "Is the food good at least?",
+              "to": "z22"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z22",
+          "text": "The stew? It's... consistent. That's the kindest true thing I can say. I've been sneaking MY herbs into their pot for years — little upgrades, you understand. The 'mystery flavor' everyone praises? That's mine. You're welcome, town. My invoice is in the mail. It's been in the mail for six years. The mail pigeon is Gerald. He eats invoices.",
+          "options": [
+            {
+              "label": "What about the beds?",
+              "to": "z23"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z23",
+          "text": "The beds upstairs? Lumpy in a way that builds character. I once slept there and woke up fluent in a language nobody speaks. Useful at parties! Useless everywhere else! My advice: sleep on your left side, dream on your right, and if the mattress whispers your name, that's just the springs. Probably. Pay no attention.",
+          "options": [
+            {
+              "label": "Anything stronger than ale?",
+              "to": "z24"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z24",
+          "text": "Stronger?! My sweet summer child, I once distilled moonlight and regret into a shot glass. One sip and the drinker could hear colors for a week. The Tavernkeeper BANNED it. Banned! Said something about 'health codes' and 'the screaming.' Philistine! Fine. Water for you. Sparkling. From the well. NOT the frog well. The other well.",
+          "options": [
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z25",
+          "text": "Vesryn? Old Bloodbags? Oh, we go WAY back. He owes me money AND an apology AND — technically — a small house. Lovely man. Terrible debtor. Pale as milk left in a cellar. He only comes out at dusk because the sun filed a complaint. True story! The sun and I are close. It tells me things.",
+          "options": [
+            {
+              "label": "What does he want from newcomers?",
+              "to": "z26"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z26",
+          "text": "What does he want? Oh, the usual: blood, loyalty, eternal servitude, someone to reach the top shelf — he's dramatic AND short, worst combination. But listen: under all that cape-swishing, he's Mira's uncle and he'd burn the world for that girl. Just... maybe don't tell him I said anything nice. I have a reputation to protect.",
+          "options": [
+            {
+              "label": "Should I trust him?",
+              "to": "z27"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z27",
+          "text": "Trust him? With your life: yes. With your lunch: absolutely not. The man inhales stew like a haunted bellows. But for the old blood business — the rite, the thirst, all that midnight poetry — he's the only honest broker in town. Tell him Zeynep sent you. Then RUN. No no — walk. Running implies debt. You don't owe him. I do. IT'S COMPLICATED.",
+          "options": [
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z28",
+          "text": "Mira? Oh, my sweet herb girl! I found her the way she found you — well, no. SHE found YOU. I found HER stealing my bandages years ago. Tiny thief, huge heart. I taught her everything: which mushroom kills, which mushroom thrills, and which mushroom to serve the tax collector. She's the best of us. Don't you DARE get her hurt.",
+          "options": [
+            {
+              "label": "She saved my life.",
+              "to": "z29"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z29",
+          "text": "Of course she did! It's her hobby! Collecting strays! You, me, three-legged Tom the cat, a one-eyed crow named Justice — we're all Mira's strays! She feeds us, scolds us, patches us up. One day this town will realize she's been holding it together with soup and stubbornness. On that day, I shall say 'I told you so' in FOUR languages.",
+          "options": [
+            {
+              "label": "What languages?",
+              "to": "z30"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z30",
+          "text": "Common, Pigeon, Frog, and Tax Collector. The last one is just sighing with extra steps. Anyway — Mira. If anyone in this town deserves a quiet life, it's her. So YOU — yes, you — stay alive out there, or I'll resurrect you myself just to scold you. My scolding has RANGE, little stray. Ask the Gray Banner boys. Oh wait — they're still traumatized!",
+          "options": [
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z31",
+          "text": "Dungeons?! Oh, marvelous! My favorite topic after soup and myself! Rule one: everything down there wants to hug you TO DEATH. Rule two: the floor is lava. Not always lava. But assume lava. Rule three: bring snacks. Goblins can be bribed with cheese. Skeletons cannot — no stomachs, no sense of humor, total waste of cheese.",
+          "options": [
+            {
+              "label": "What about bosses?",
+              "to": "z32"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z32",
+          "text": "Bosses! Big lads with big feelings! The Ember King? Divorced. Twice. It's the horns — intimidating in battle, terrible for cuddling. The Frost Titan? Just cold. Emotionally AND thermally. My advice: compliment their lairs. 'Lovely magma pools, very feng shui.' Works sixty percent of the time, every time. The other forty percent: run.",
+          "options": [
+            {
+              "label": "And if I fall?",
+              "to": "z33"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z33",
+          "text": "Fall? Down there? Oh honey, everyone falls! I fell down a well once — that's how I met the frogs, best thing that ever happened to me besides the coup. If you fall in a dungeon, the town drags you home and Mira fusses over you with soup. Dying is just fainting with commitment. Commit LESS. Snack MORE.",
+          "options": [
+            {
+              "label": "Slimes though — easy, right?",
+              "to": "z35"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z34",
+          "text": "Oh! Back for more dungeon wisdom! Fine, fine — pro tip, free of charge: lick every new potion BEFORE battle. No! Wait! That's my OTHER advice column! Do NOT lick potions! Drink them like a normal person! ...Unless it's glowing. Glowing ones you lick. No! Ugh. Forget everything. Bring cheese. Cheese never lies.",
+          "options": [
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z35",
+          "text": "Slimes! My beloved blobs! People mock them — 'oh, they're just jelly' — and then they slip on one and sue the dungeon! Slimes are 90% water, 10% grudge. They remember EVERYTHING. I once insulted a slime in my youth and to this day they jiggle menacingly when I pass. Respect the jiggle!",
+          "options": [
+            {
+              "label": "How do you fight one?",
+              "to": "z36"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z36",
+          "text": "Salt! No wait, that's slugs. Slimes hate... hmm... compliments? Kevin the pigeon said compliments! Yes! Tell the slime it looks less translucent today! It'll blush — you can SEE it blush, the whole blob goes pink — and while it's flustered, you bonk it! Science! Kevin has a tiny helmet. I trust Kevin.",
+          "options": [
+            {
+              "label": "Who is Kevin?",
+              "to": "z37"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z37",
+          "text": "Kevin is my BEST pigeon! Plumage like a thundercloud, heart like a lion, bladder like a traitor! He runs the F-rank now — did I tell you? Sends postcards: 'COO.' That's pigeon for 'the loot is excellent.' Learn pigeon, little hero. It's the language of the future. And of Gerald. Ugh. Gerald.",
+          "options": [
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z38",
+          "text": "My BOOTS?! You're complimenting my BOOTS?! Oh, stop it! ...Don't stop. These beauties are genuine faux-dragon hide — the dragon was complimentary about them, true story, he said 'nice boots' right before trying to eat my cart. One boot is left, one is right, and BOTH are magnificent. Fashion is armor for the soul!",
+          "options": [
+            {
+              "label": "Where did you get them?",
+              "to": "z39"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z39",
+          "text": "Won them! Arm-wrestling! Against the fog! I told you about the fog — cheats something awful! Best two out of three, and on the third bout the fog got... distracted. By what? BY MY BOOTS, obviously. Dazzled! It handed them over and dissipated in shame. I wear victory on my feet, darling!",
+          "options": [
+            {
+              "label": "Can I have boots like that?",
+              "to": "z40"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z40",
+          "text": "Boots like MINE?! Oh, sweetie, these are one of a kind! But — because I like your face — I'll tell you the secret: wear two different socks. LEFT sock for luck, RIGHT sock for speed. Mismatched socks confuse the ground itself! That's why I never trip! ...In public. Where people can see. The ground and I have an understanding.",
+          "options": [
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z41",
+          "text": "Rain tomorrow? Let me consult the council! ...The PIGEON council! Gerald says... hmm... Gerald says it'll rain indoors. Gerald is an idiot. My knees say sun, my elbows say hail, and my left eyebrow — the wise one — says DRIZZLE WITH PURPOSE. Pack for all four weathers and a fifth one you invent yourself!",
+          "options": [
+            {
+              "label": "What about storms?",
+              "to": "z42"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z42",
+          "text": "Storms?! Oh, I LOVE storms! I stand on the roof and conduct the lightning with a soup ladle! BEETHOVEN OF THE TEMPEST, they call me! Nobody calls me that. The lightning and I have an understanding: it misses me, I applaud. Standing ovation, every time. You should try it! ...Actually no. You look flammable. Stay inside.",
+          "options": [
+            {
+              "label": "Flammable?!",
+              "to": "z43"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z43",
+          "text": "Flammable is a spectrum, darling! On one end: rocks. On the other end: ME after my moonshine. You're somewhere in the middle — 'damp twig' energy. No offense! Damp twigs survive! Rocks just sit there being smug! Embrace the twig! Now go inside before the sky does something theatrical!",
+          "options": [
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z44",
+          "text": "Can't sleep?! Oh, my specialty! Forget sheep — amateurs, all wool and no technique. I count TAX COLLECTORS jumping over a fence! One... two... by seven you're begging for sleep, by twelve you're asleep, by twenty you're auditing THEM in your dreams! Works every time! Side effects include: budgeting. You've been warned.",
+          "options": [
+            {
+              "label": "Got anything stronger?",
+              "to": "z45"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z45",
+          "text": "Stronger?! My moonshine lullaby: one drop in warm milk and you'll sleep through a siege! Two drops and you'll sleep through YOUR OWN snoring — paradoxical, magnificent! Three drops and... well. Let's just say the well frogs know the rest of that story. THEY won't drink from the well either. NOBODY drinks from the well!!",
+          "options": [
+            {
+              "label": "What happened at the well?",
+              "to": "z46"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z46",
+          "text": "What DIDN'T happen at the well! Let's just say three drops too many, one moonless night, and a chorus of frogs who witnessed EVERYTHING. They croak it to this day. Listen... hear that? 'ZEY-nep! ZEY-nep!' They're not saying my name. They're issuing a WARNING. To you. About me. Rude! Accurate! But rude!",
+          "options": [
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z47",
+          "text": "The croaking?! Oh, those are MY frogs! Well — the well's frogs. Technically the well's. Emotionally MINE. They hold parliament every night: Croak Croakerson opens with old business (me, falling in, AGAIN), then new business (also me, also falling). Democracy in action! I bring them flies. Big ones. Parliamentary bribes. It works!",
+          "options": [
+            {
+              "label": "Can frogs predict the future?",
+              "to": "z48"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z48",
+          "text": "Predict?! They INVENT the future and dare it to happen! Three croaks means rain! Two croaks means a visitor! One long croak means SOMEONE is about to fall in the well — statistically, historically, ME. I've started wearing a helmet near water. Fashion AND function! The fog is jealous. The fog wishes it had my helmet.",
+          "options": [
+            {
+              "label": "One more frog question.",
+              "to": "z49"
+            },
+            {
+              "label": "Back.",
+              "to": "start"
+            }
+          ]
+        },
+        {
+          "id": "z49",
+          "text": "Last frog fact, and it's my favorite: frogs blink with their EYES but see with their SOULS. That's why they stare at you while you talk. They're not listening — they're JUDGING. And you know what? Fair. I've earned every stare. Now hop along, little hero — the frogs and I have a budget meeting. Snacks were promised. Snacks WILL be delivered!",
           "options": [
             {
               "label": "Back.",
@@ -14196,6 +14928,7 @@ function publicCatalog() {
       // Secret flag only (boolean) — the password itself NEVER leaves the server.
       secret: !!c.secret,
       evolution: c.evolution ? { to: c.evolution.to, level: c.evolution.level } : null,
+      evolutions: (c.evolutions || []).map((r) => ({ to: r.to, level: r.level || 20 })),
       basicAttack: c.basicAttack,
       skills: c.startingSkills || [],
       manaRegen: c.manaRegen || 0,
@@ -14312,12 +15045,18 @@ function publicCatalog() {
       heal: i.heal,
       food: i.food,
       setId: i.setId || null,
+      chestTier: i.chestTier || null,
+      craftOnly: i.craftOnly || null,
+      bossWeapon: i.bossWeapon || null,
+      blueprint: i.blueprint || null,
+      chestDrop: i.chestDrop || null,
       image: i.image,
       description: i.description || "",
     })),
     equipmentSlots: CONTENT.equipmentSlots,
     quests: CONTENT.quests || [],
     itemSets: CONTENT.itemSets || [],
+    eggs: CONTENT.eggs || [],
     bosses: (CONTENT.bosses || []).map((b) => ({ id: b.id, label: b.label, image: b.image, hp: b.hp, attack: b.attack, element: b.element, rarity: b.rarity || "mythic", unlockAfter: b.unlockAfter || null })),
     monsters: CONTENT.monsters.map((m) => ({ id: m.id, name: m.name, image: m.image, rarity: m.rarity || "common", element: m.element || "physical" })),
     anomalyFrameColors: Object.fromEntries(
