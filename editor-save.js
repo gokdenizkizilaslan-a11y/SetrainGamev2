@@ -90,9 +90,19 @@ function validateReferences(data) {
   }
   // Dead-copy detector: hidden from class select (has baseClass) yet no
   // evolution leads to it — exactly how the alpha_tamer orphan happened.
+  // Classes with `obtain` (e.g. "dialogue:uncle") are reachable out-of-band
+  // (quest/NPC), so they are exempt — but a dialogue obtain must name a
+  // real NPC or the class can never actually be earned.
+  const npcIds = new Set((data.npcs || []).map((n) => n && n.id));
   for (const c of classes) {
-    if (c.baseClass && !evoTargets.has(c.slug)) {
-      errors.push(`Class "${c.slug}" is unreachable: it never appears in class select and no evolution leads to it. Delete it or wire an evolution to it.`);
+    if (c.baseClass && !evoTargets.has(c.slug) && !c.obtain) {
+      errors.push(`Class "${c.slug}" is unreachable: it never appears in class select and no evolution leads to it. Delete it, wire an evolution to it, or set obtain (e.g. "dialogue:uncle").`);
+    }
+    if (c.obtain && String(c.obtain).startsWith("dialogue:")) {
+      const npcId = String(c.obtain).slice("dialogue:".length);
+      if (!npcIds.has(npcId)) {
+        errors.push(`Class "${c.slug}" is obtained via missing NPC "${npcId}".`);
+      }
     }
   }
   // NPC dialogue graph: broken links land on an empty panel.

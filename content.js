@@ -4104,6 +4104,7 @@ const CONTENT = {
     {
       "slug": "bloodspawn",
       "label": "Bloodspawn",
+      "obtain": "dialogue:uncle",
       "passives": [
         {
           "id": "bloodspawn_sanguine_hunger",
@@ -4282,6 +4283,7 @@ const CONTENT = {
     {
       "slug": "gloomspawn",
       "label": "Gloomspawn",
+      "obtain": "dialogue:uncle",
       "passives": [
         {
           "id": "gloomspawn_moonlit_thirst",

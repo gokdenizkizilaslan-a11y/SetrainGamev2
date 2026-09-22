@@ -404,6 +404,8 @@ and the evolved class carries its own:
 
 Chain: **base @20 → mid → mid @40 → apex**. The apex class has `baseClass` but **no** `evolution` (it's the strongest form). Evolved classes never appear on the character-creation screen, but the temple shows the current class's next form with its level requirement, the signature skill you can then learn on the Skill Tree, and the stat bonus.
 
+**Classes earned outside evolutions** (e.g. Bloodspawn/Gloomspawn via Old Vesryn's dialogue) must set `obtain`, e.g. `obtain: "dialogue:uncle"`. Without it, validation rejects the class as unreachable ("no evolution leads to it") — that's the dead-copy detector doing its job. If `obtain` names an NPC (`dialogue:<npcId>`), that NPC must exist.
+
 When you evolve:
 - The required item is consumed (Warlord Crest for the heavy path, Shadow Sigil for the shadow path, Arcane Seal for the arcane path, Drop of Primeval Cruor for the vampires) and the temple stamina is spent. These materials are **epic/legendary loot-only** (never sold): crests/seals drop from their matching special dungeons (Foundry, Sanctum, Bastion), cruor rarely spills from any humanoid foe. The two Lv40 vampire routes (Bloodlord, Sanguine Lord) need level 40 + 5 cruor like any other ascension, but their temple cards only appear while the hero's current class is a vampire.
 - Your `character` becomes the evolved class (with its new `growth` / `manaRegen`), and your `classHistory` gains the new class (e.g. `["warrior", "reaper"]`).
@@ -453,7 +455,7 @@ Set the matching path in `content.js` (or via the editor's Image field). PNG or 
 
 ## Music
 
-Drop audio files (`.mp3`, `.ogg`, `.wav`, `.m4a`, `.flac`) into `public/music/`. The widget in the corner plays them **in filename order, looping back** to the first when the list ends, with a Volume slider and Play/Pause. No audio folder or no files = no widget shown.
+Three channels, all optional: drop audio files (`.mp3`, `.ogg`, `.wav`, `.m4a`, `.flac`) into `public/music/town/` (town + menus, loops), `public/music/combat/` (auto-switches when a fight starts, back after), and `public/music/victory/` (first file plays once on victory, background ducks). Files play **in filename order, looping back**, with a Volume slider and Play/Pause. Empty folder = that channel stays silent; no music at all = widget hidden. Files directly under `public/music/` still play as the town list (legacy). GameCraft → Müzikler tab uploads/deletes/previews the same folders (game server must be running).
 
 ## Sound effects and action feedback
 
