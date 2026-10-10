@@ -4846,6 +4846,20 @@ input:focus {
 .ascend-arrow {
   color: var(--gold-bright);
 }
+.ascend-portraits {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.2rem;
+}
+.temple-ascend-img {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  flex: 0 0 auto;
+}
 
 .temple-req {
   font-size: 0.78rem !important;

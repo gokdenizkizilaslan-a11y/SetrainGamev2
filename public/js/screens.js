@@ -620,7 +620,10 @@ function drainCombatFx(root) {
   }
   const last = fx[fx.length - 1];
   if (last && last.type === "result") {
-    if (last.outcome === "victory") sfxPlay(["winningsound"]);
+    if (last.outcome === "victory") {
+      sfxPlay(["winningsound"]);
+      try { if (typeof playVictorySting === "function") playVictorySting(); } catch (e) {}
+    }
     else sfxPlay(["losingsound"]);
   }
 }
@@ -3521,6 +3524,7 @@ function renderTempleView(room) {
   const evoCard = (ev) => `<div class="temple-card temple-card--ascend">
     <p class="subhead">✦ Ascension</p>
     ${baseCls ? `
+      <div class="ascend-portraits"><span class="portrait portrait--${escapeHtml(baseCls.slug)} temple-ascend-img" data-img="${escapeHtml(baseCls.image || "")}" data-variant="${escapeHtml(baseCls.slug)}"></span><span class="ascend-arrow">➤</span><span class="portrait portrait--${escapeHtml(ev.to.slug)} temple-ascend-img" data-img="${escapeHtml((ev.to && ev.to.image) || "")}" data-variant="${escapeHtml(ev.to.slug)}"></span></div>
       <p class="ascend-line"><span>${escapeHtml(baseCls.label)}</span><span class="ascend-arrow">➤</span><strong>${escapeHtml(ev.to.label)}</strong></p>
       <p class="temple-req">${evoReqText(ev)}</p>
       ${ev.skill ? `<p class="temple-skill">Unlocks <strong>${escapeHtml(ev.skill.name)}</strong><span class="muted"> — ${escapeHtml(ev.skill.description)}</span></p>` : ""}
@@ -3578,6 +3582,7 @@ function renderTempleView(room) {
     </div>
     <p class="subhead">The Ancient Temple remembers a purpose older than the kingdom.</p>
     <div class="temple-grid">${evolveHtml}${restoreHtml}${originHtml}${reviveHtml}</div>`;
+  initImages(root);
 
   root.querySelectorAll("[data-evolve-to]").forEach((b) =>
     b.addEventListener("click", () => socket.emit("temple:evolve", { to: b.getAttribute("data-evolve-to") }))
