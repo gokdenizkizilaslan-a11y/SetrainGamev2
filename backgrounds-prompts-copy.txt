@@ -1,0 +1,197 @@
+==================================================================
+SETRA - MEKAN + UI PROMPTLARI (KOPYALA-YAPISTIR, KREA2)
+Grid YOK. Her blok TEK sahne, 1 defa uretilir, aynisi yok.
+==================================================================
+
+NASIL KULLANILIR:
+1. BLOK 01'den basla, PROMPT'u KREA2'ye aynen yapistir.
+2. Aspect ratio'ya dikkat: BG = Landscape 16:9, Buton = Square 1:1.
+3. Uret, KESME YOK, dosyayi direkt verilen isimle kaydet.
+4. GameCraft > Tema/Arka Plan > ilgili alana yukle > Oyuna Uygula.
+5. Eksik dosya oyunu bozmaz (gradient fallback).
+
+KREA2 GENEL NOT (her promptun sonunda zaten var):
+"no text, no letters, no watermark, no logo, painterly,
+detailed, game-ready". UI'nin geldigi orta-alt kisim sakin
+birakilir, karakterler kenarda (sag/sol) kompozisyonludur.
+
+==================================================================
+BLOK 01 / BG-TOWN - Kasaba Meydani
+Hedef: public/images/backgrounds/town.png (1920x1080, 16:9)
+==================================================================
+
+--- PROMPT (KOPYALA) ---
+Cozy medieval stone village square at golden dusk, wide establishing shot. Left side: timber-framed tavern with warm glowing windows and hanging lantern. Right side: stone blacksmith forge with chimney smoke and orange glow spilling from the door. Center background: small ancient temple dome on a hill, banners fluttering. Foreground center and bottom: calm empty cobblestone plaza, dark and uncluttered, room for UI cards. A few villagers as tiny silhouettes near the edges, never in the center. Torchlight, ember-orange and gold-grey stone palette, oil-painting brushwork, atmospheric haze. No text, no letters, no watermark, painterly, detailed, game-ready.
+
+--- KAYDET ---
+town.png -> public/images/backgrounds/town.png
+GameCraft: Tema > Kasaba Meydani Arka Plani (town)
+
+==================================================================
+BLOK 02 / BG-BLACKSMITH - Demirci Ici (yasli demirci SAGDA)
+Hedef: public/images/backgrounds/blacksmith.png (1920x1080, 16:9)
+==================================================================
+
+--- PROMPT (KOPYALA) ---
+Interior of a medieval blacksmith forge, warm and smoky. RIGHT SIDE of the frame: a bulky elderly blacksmith with grey beard, rolled sleeves, leather apron, hammer resting on his shoulder, standing beside a glowing anvil, looking toward the viewer. LEFT and CENTER: stone forge with roaring fire, hanging swords axes and shields on the wall, wooden workbench with tools, sparks drifting up. Foreground bottom-center: dark empty floor space, calm and uncluttered for shop UI. Ember-orange fire light vs cool stone shadow, oil-painting finish. No text, no letters, no watermark, painterly, detailed, game-ready.
+
+--- KAYDET ---
+blacksmith.png -> public/images/backgrounds/blacksmith.png
+GameCraft: Tema > Demirci Ic Mekan (blacksmith)
+
+==================================================================
+BLOK 03 / BG-TAVERN - Taverna Ici (hanci SOLDa)
+Hedef: public/images/backgrounds/tavern.png (1920x1080, 16:9)
+==================================================================
+
+--- PROMPT (KOPYALA) ---
+Warm medieval tavern interior at night. LEFT SIDE: a cheerful middle-aged tavernkeeper wiping a wooden mug, standing behind a long oak bar with candles and ale barrels. RIGHT and CENTER background: round tables with dice cups and cards, fireplace crackling, hanging hams and lanterns. Foreground bottom-center: dark empty wooden floor, calm space for game UI. Honey-gold candlelight, cozy shadows, oil-painting brushwork. No text, no letters, no watermark, painterly, detailed, game-ready.
+
+--- KAYDET ---
+tavern.png -> public/images/backgrounds/tavern.png
+GameCraft: Tema > Taverna (tavern)
+
+==================================================================
+BLOK 04 / BG-MERCHANT - Tuccar Dukkani (tuccar SAGDA)
+Hedef: public/images/backgrounds/merchant.png (1920x1080, 16:9)
+==================================================================
+
+--- PROMPT (KOPYALA) ---
+Bustling medieval merchant bazaar stall interior. RIGHT SIDE: a sly smiling merchant in colorful robes and turban, arms spread over his wares, standing behind a carpet-covered counter. LEFT and CENTER: wooden shelves with chests, glowing potions, rolled scrolls, hanging amulets, birdcage with a small phoenix feather. Foreground bottom-center: dark empty rug floor, calm space for shop UI. Jewel-toned fabrics, lantern glow, dust motes in sunbeams, oil-painting finish. No text, no letters, no watermark, painterly, detailed, game-ready.
+
+--- KAYDET ---
+merchant.png -> public/images/backgrounds/merchant.png
+GameCraft: Tema > Tuccar Dukkani (merchant)
+
+==================================================================
+BLOK 05 / BG-TEMPLE - Antik Tapinak (ortasi bos)
+Hedef: public/images/backgrounds/temple.png (1920x1080, 16:9)
+==================================================================
+
+--- PROMPT (KOPYALA) ---
+Ancient stone temple hall, mystical and solemn. CENTER background: tall glowing archway with floating runes and a beam of pale gold light falling onto an empty circular altar. LEFT: cracked pillars with vines and candles. RIGHT: hooded stone statue holding a bowl of blue flame. Foreground bottom-center: dark empty marble floor, wide calm space for ascension cards. Teal-gold sacred palette, volumetric light rays, drifting dust, oil-painting finish. No text, no letters, no watermark, painterly, detailed, game-ready.
+
+--- KAYDET ---
+temple.png -> public/images/backgrounds/temple.png
+GameCraft: Tema > Antik Tapinak (temple)
+
+==================================================================
+BLOK 06 / BG-DUNGEON - Zindan Savasi (dusman ustte, bosluk altta)
+Hedef: public/images/backgrounds/dungeon.png (1920x1080, 16:9)
+==================================================================
+
+--- PROMPT (KOPYALA) ---
+Dark dungeon battle arena, dramatic wide shot. TOP half: jagged cave walls with glowing cracks, chains hanging, faint monster silhouettes lurking in shadow. BOTTOM half: flat dark stone fighting ground, empty and calm, room for hero cards and UI. Cold blue-grey rock with ember-orange rim light from below, fog crawling on the ground, oil-painting finish. No text, no letters, no watermark, painterly, detailed, game-ready.
+
+--- KAYDET ---
+dungeon.png -> public/images/backgrounds/dungeon.png
+GameCraft: Tema > Zindan (dungeon)
+
+==================================================================
+BLOK 07 / BG-SETUP - Karakter Kurulum Ekrani
+Hedef: public/images/backgrounds/setup.png (1920x1080, 16:9)
+==================================================================
+
+--- PROMPT (KOPYALA) ---
+Medieval hero assembly hall before a journey. LEFT and RIGHT edges: rows of empty armor stands with swords, bows, staves and shields, torches on stone walls. CENTER background: large arched window with dawn light streaming in. Foreground bottom-center: dark empty stone floor, calm space for class cards. Muted steel-blue and warm gold palette, hopeful morning mood, oil-painting finish. No text, no letters, no watermark, painterly, detailed, game-ready.
+
+--- KAYDET ---
+setup.png -> public/images/backgrounds/setup.png
+GameCraft: Tema > Kurulum Ekrani (setup)
+
+==================================================================
+BLOK 08 / BG-LOBBY - Lobi Bekleme Odasi
+Hedef: public/images/backgrounds/lobby.png (1920x1080, 16:9)
+==================================================================
+
+--- PROMPT (KOPYALA) ---
+Medieval war-tent lobby interior, calm before battle. LEFT: wooden table with a painted battle map, candles and daggers pinning the corners. RIGHT: weapon rack with shields and banners of different colors. CENTER background: tent opening showing a distant village and mountains at dusk. Foreground bottom-center: dark empty carpet floor, calm space for player list UI. Warm canvas and leather tones, soft lantern light, oil-painting finish. No text, no letters, no watermark, painterly, detailed, game-ready.
+
+--- KAYDET ---
+lobby.png -> public/images/backgrounds/lobby.png
+GameCraft: Tema > Lobi (lobby)
+
+==================================================================
+BLOK 09 / COMBAT-ENEMY - Dusman Alani Zemini (opsiyonel)
+Hedef: public/images/backgrounds/combat_enemy.png (1920x540, wide)
+==================================================================
+
+--- PROMPT (KOPYALA) ---
+Top-down dark battleground texture for monsters to stand on. Cracked obsidian stone with faint glowing red veins, scorched edges, subtle fog, vignette darkening at the corners. Flat, no characters, no props in the center, tiling-friendly. No text, no watermark, painterly, game-ready.
+
+--- KAYDET ---
+combat_enemy.png -> public/images/backgrounds/combat_enemy.png
+GameCraft: Tema > Savas Alani > Dusman Alani (combat.enemy)
+
+==================================================================
+BLOK 10 / COMBAT-PARTY - Takim Alani Zemini (opsiyonel)
+Hedef: public/images/backgrounds/combat_party.png (1920x540, wide)
+==================================================================
+
+--- PROMPT (KOPYALA) ---
+Top-down warm battleground texture for heroes to stand on. Worn wooden planks over dark stone, faint gold rune circle border, soft torch glow from below, vignette at corners. Flat, no characters, no props in the center. No text, no watermark, painterly, game-ready.
+
+--- KAYDET ---
+combat_party.png -> public/images/backgrounds/combat_party.png
+GameCraft: Tema > Savas Alani > Takim Alani (combat.party)
+
+==================================================================
+BLOK 11 / BTN-BLACKSMITH - Kasaba Demirci Butonu (buton vs arka plan FARKLI)
+Hedef: public/images/ui/blacksmith_btn.png (512x512, 1:1)
+Aciklama: Bu BUTON ikonudur (meydandaki kucuk kutu).
+blacksmith.png ise iceri girinceki BUYUK arka plandir. Farkli dosyalar.
+==================================================================
+
+--- PROMPT (KOPYALA) ---
+Square game button icon, centered single emblem on a dark iron disc with gold rim. A crossed hammer and anvil with small sparks, molten orange edges, bold readable silhouette filling 70% of the frame. Dark slate background inside the disc, LoL-style ability button finish. No text, no letters, no watermark, painterly, game-ready.
+
+--- KAYDET ---
+blacksmith_btn.png -> public/images/ui/blacksmith_btn.png
+GameCraft: Tema > UI > Demirci Buton (blacksmithButton)
+
+==================================================================
+BLOK 12 / NPC-BLACKSMITH - Demirci Ustasi Portresi (dukkan ici)
+Hedef: public/images/ui/blacksmith_npc.png (512x512, 1:1, yuz ortada)
+==================================================================
+
+--- PROMPT (KOPYALA) ---
+Portrait of an elderly medieval blacksmith, square composition, face centered and fully lit. Bulky man in his 60s, grey braided beard, soot on his cheeks, kind tired eyes, leather apron over rolled sleeves, one hand on a hammer handle over his shoulder. Blurred forge fire glow behind. Warm ember palette, painterly splash-art finish. No text, no watermark, game-ready.
+
+--- KAYDET ---
+blacksmith_npc.png -> public/images/ui/blacksmith_npc.png
+GameCraft: Tema > UI > Demirci NPC (blacksmithNpc)
+
+==================================================================
+BLOK 13-16 / DIGER BUTONLAR (4x kucuk, ayni stil)
+Hedefler (512x512, 1:1):
+- public/images/ui/tavern_btn.png
+- public/images/ui/merchant_btn.png
+- public/images/ui/temple_btn.png
+- public/images/ui/dungeon_btn.png
+==================================================================
+
+--- PROMPT TAVERN (KOPYALA) ---
+Square game button icon, dark wooden disc with gold rim. A foaming ale mug with dice beside it, warm candle-gold glow, bold silhouette 70% frame. No text, no watermark, painterly, game-ready.
+
+--- PROMPT MERCHANT (KOPYALA) ---
+Square game button icon, dark purple disc with gold rim. An open treasure chest spilling gold coins and a glowing potion, jewel tones, bold silhouette 70% frame. No text, no watermark, painterly, game-ready.
+
+--- PROMPT TEMPLE (KOPYALA) ---
+Square game button icon, dark stone disc with gold rim. A glowing ancient archway with a beam of light, teal-gold runes, bold silhouette 70% frame. No text, no watermark, painterly, game-ready.
+
+--- PROMPT DUNGEON (KOPYALA) ---
+Square game button icon, dark cave-stone disc with gold rim. A black dungeon gate with red glowing cracks and chains, bold silhouette 70% frame. No text, no watermark, painterly, game-ready.
+
+--- KAYDET ---
+tavern_btn.png -> public/images/ui/tavern_btn.png
+merchant_btn.png -> public/images/ui/merchant_btn.png
+temple_btn.png -> public/images/ui/temple_btn.png
+dungeon_btn.png -> public/images/ui/dungeon_btn.png
+GameCraft: Tema > UI > ilgili buton alani
+
+==================================================================
+BITTI - KONTROL
+==================================================================
+BG 8 dosya + combat 2 + buton 5 + npc 1 = 16 uretim, hepsi TEKIL.
+Aynisi yok, grid yok, kesme yok.
+Dosya yoksa oyun gradient gosterir, kirilmaz.
