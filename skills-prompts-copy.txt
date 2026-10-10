@@ -239,12 +239,14 @@ cell8 -> monster_vulnerable.png
 cell9 -> monster_physical_attack.png
 
 ==================================================================
-BLOK 12 / S12 - Storm + Sea + Monster Magic (9)
+BLOK 12 / S12 - Storm + Sea + Monster Magic (8, TEKRARSIZ)
 ==================================================================
+NOT: mana_shield burada YOK. 1 kez S7'de uretilir, buraya dosya kopyalanir.
+Bu blok sadece 8 ikon uretir, aynisi yok.
 
 --- PROMPT (KOPYALA) ---
 Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
-3x3 grid, 9 square skill icons. Cell 1 (monster_arcane_attack): wild violet energy surge erupting from a clawed hand. Cell 2 (monster_arcane_storm): violet storm vortex with lightning crawling inside it. Cell 3 (monster_heavy_blow): giant stone club smashing down with a shockwave ring. Cell 4 (volt_conduit): copper coil rod spitting electric sparks. Cell 5 (static_overload): overloaded tesla orb bursting with branching arcs. Cell 6 (lightning_bolt): classic yellow lightning fork striking with white-hot core. Cell 7 (water_splash): deep-blue wave splash frozen mid-crash with flying droplets. Cell 8 (frost_nova): pale ice ring explosion with radiating frost spikes. Cell 9 (mana_shield): blue hexagonal mana barrier dome — SHARED, see S7. Generate ONCE in S7, reuse the file here, do not regenerate.
+4x2 grid, 8 square skill icons. Cell 1 (monster_arcane_attack): wild violet energy surge erupting from a clawed hand. Cell 2 (monster_arcane_storm): violet storm vortex with lightning crawling inside it. Cell 3 (monster_heavy_blow): giant stone club smashing down with a shockwave ring. Cell 4 (volt_conduit): copper coil rod spitting electric sparks. Cell 5 (static_overload): overloaded tesla orb bursting with branching arcs. Cell 6 (lightning_bolt): classic yellow lightning fork striking with white-hot core. Cell 7 (water_splash): deep-blue wave splash frozen mid-crash with flying droplets. Cell 8 (frost_nova): pale ice ring explosion with radiating frost spikes.
 Base style: Set of square ability icons arranged in a tidy GRID with thin dark gaps between cells over a dark slate backdrop, each icon a painterly close-up battle emblem, wordless emblems.
 
 --- KES ---
@@ -256,7 +258,8 @@ cell5 -> static_overload.png
 cell6 -> lightning_bolt.png
 cell7 -> water_splash.png
 cell8 -> frost_nova.png
-cell9 -> mana_shield.png  [S7'den kopyala, uretme]
+DOSYA KOPYA (uretme, S7'den kopyala):
+mana_shield.png -> BLOK 07'den kopyala
 
 ==================================================================
 BLOK 13 / S13 - Ember Boss + Fire (9)
@@ -299,12 +302,14 @@ cell8 -> cold_snap.png
 cell9 -> glacial_shatter.png
 
 ==================================================================
-BLOK 15 / S15 - Void Boss + Arcane Doom (9)
+BLOK 15 / S15 - Void Boss (6, TEKRARSIZ)
 ==================================================================
+NOT: arcane_barrage / meteor / comet burada YOK. 1 kez S7'de uretilir.
+Bu blok sadece 6 void ikon uretir, aynisi yok.
 
 --- PROMPT (KOPYALA) ---
 Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
-3x3 grid, 9 square skill icons. Cell 1 (boss_void_skill1): black void tentacle whipping forward with star-specked suckers. Cell 2 (boss_void_skill2): black-hole hammer head ringed with a crushing gravity halo. Cell 3 (boss_void_skill3): giant eye of nothingness, pure black pupil in a violet sclera (expose). Cell 4 (boss_void_skill4): chitinous void shell carapace with purple vein cracks (fortify). Cell 5 (boss_void_skill5): leech of living void latched on, dripping darkness. Cell 6 (boss_void_skill6): dark rebirth cocoon splitting open with pale new wings. Cell 7 (arcane_barrage): triple violet missiles fan — SHARED with S7, reuse file. Cell 8 (meteor): fireball meteor — SHARED with S7, reuse file. Cell 9 (comet): star-blue comet — SHARED with S7, reuse file.
+3x2 grid, 6 square skill icons. Cell 1 (boss_void_skill1): black void tentacle whipping forward with star-specked suckers. Cell 2 (boss_void_skill2): black-hole hammer head ringed with a crushing gravity halo. Cell 3 (boss_void_skill3): giant eye of nothingness, pure black pupil in a violet sclera (expose). Cell 4 (boss_void_skill4): chitinous void shell carapace with purple vein cracks (fortify). Cell 5 (boss_void_skill5): leech of living void latched on, dripping darkness. Cell 6 (boss_void_skill6): dark rebirth cocoon splitting open with pale new wings.
 Base style: Set of square ability icons arranged in a tidy GRID with thin dark gaps between cells over a dark slate backdrop, each icon a painterly close-up battle emblem, wordless emblems.
 
 --- KES ---
@@ -314,9 +319,8 @@ cell3 -> boss_void_skill3.png
 cell4 -> boss_void_skill4.png
 cell5 -> boss_void_skill5.png
 cell6 -> boss_void_skill6.png
-cell7 -> arcane_barrage.png  [S7'den kopyala]
-cell8 -> meteor.png  [S7'den kopyala]
-cell9 -> comet.png  [S7'den kopyala]
+DOSYA KOPYA (uretme, S7'den kopyala):
+arcane_barrage.png, meteor.png, comet.png -> BLOK 07'den kopyala
 
 ==================================================================
 BLOK 16 / S16 - Storm Boss + World Boss (9)
@@ -361,16 +365,16 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 1x3 horizontal strip, 3 square skill icons with thin dark gaps on dark slate background, same painterly close-up battle-emblem finish, blood element language (deep crimson red with black-violet shadow, wet arterial shine). Cell 1 (exsanguinate): twin pale fangs sunk deep with two bright blood arcs gushing into a crimson whirl. Cell 2 (bloodbath): drenching wave of dark blood crashing over an upright fang-bladed greatsword. Cell 3 (crimson_rebirth): single drop of bright blood blooming into a halo of golden healing light above two grasping hands.
 Base style: Set of square ability icons arranged in a tidy GRID with thin dark gaps between cells over a dark slate backdrop, each icon a painterly close-up battle emblem, wordless emblems.
 
---- KES ---
-cell1 -> exsanguinate.png  [vampire_bite de bunu kullanir, kopyala]
-cell2 -> bloodbath.png  [tyrant_bite de bunu kullanir, kopyala]
-cell3 -> crimson_rebirth.png  [gloom_bolt + sanguine_bolt de bunu kullanir, kopyala]
+--- KES (sadece 3 uretim, gerisi dosya kopya) ---
+cell1 -> exsanguinate.png  [1 kez uret]
+cell2 -> bloodbath.png  [1 kez uret]
+cell3 -> crimson_rebirth.png  [1 kez uret]
 
-NOT: ayrica lazim olan basic attack dosyalari (ayni klasore kopyala):
-vampire_bite.png <- exsanguinate.png kopyala
-tyrant_bite.png <- bloodbath.png kopyala
-gloom_bolt.png <- crimson_rebirth.png kopyala
-sanguine_bolt.png <- crimson_rebirth.png kopyala
+DOSYA KOPYA (prompt yok, uretme - Windows'ta kopyala-yapistir):
+vampire_bite.png <- exsanguinate.png'nin kopyasi
+tyrant_bite.png <- bloodbath.png'nin kopyasi
+gloom_bolt.png <- crimson_rebirth.png'nin kopyasi
+sanguine_bolt.png <- crimson_rebirth.png'nin kopyasi
 
 ==================================================================
 BLOK 19 / S19 - Juggernaut Arts (2)
@@ -388,10 +392,15 @@ cell2 -> colossal_crash.png
 ==================================================================
 BITTI - KONTROL LISTESI
 ==================================================================
-Toplam unique dosya: 148
-- BLOK 01-12: 108 hucre (1 SHARED: mana_shield)
-- BLOK 13-17: 30 boss + 9 element = 39 hucre (3 SHARED: arcane_barrage/meteor/comet)
-- BLOK 18: 3 dosya + 4 kopya (vampire_bite, tyrant_bite, gloom_bolt, sanguine_bolt)
-- BLOK 19: 2 dosya
+Toplam unique uretim: 144 prompt + 7 dosya kopya = 151 dosya
+- BLOK 01-11: 99 ikon (tekrarsiz)
+- BLOK 07: 9 ikon (1 kez uret, baskasi uretme)
+- BLOK 12: 8 ikon (mana_shield yok, dosyayi BLOK 07'den kopyala)
+- BLOK 13-14: 18 ikon (tekrarsiz)
+- BLOK 15: 6 ikon (arcane_barrage/meteor/comet yok, BLOK 07'den kopyala)
+- BLOK 16-17: 12 ikon (tekrarsiz)
+- BLOK 18: 3 uretim + 4 dosya kopya
+- BLOK 19: 2 ikon
+SHARED = prompt degil, dosya kopya demek. Ayni gorsel 2 skillde kullanilir.
 Hepsi public/images/skills/ icine .png olarak atilir.
 Oyun .png yoksa gradient gosterir, hata vermez.
