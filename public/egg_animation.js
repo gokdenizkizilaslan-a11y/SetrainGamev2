@@ -15,7 +15,10 @@
     return (window.CATALOG && window.CATALOG.pets) || [];
   }
   function stripOrigin(text) {
-    return String(text || "").replace(/\s+from\s+[\w\s'-]*egg\s*$/i, "").trim();
+    return String(text || "")
+      .replace(/\s*(?:[-–—]\s*)?from\s+egg_[a-z0-9_]+\s*$/i, "")
+      .replace(/\s+from\s+[\w\s'-]*egg\s*$/i, "")
+      .trim();
   }
   // 10 Egg Theme Configurations
   const EGG_THEMES = {
@@ -391,25 +394,32 @@
                   const lvl = 1;
                   const stage = lvl>=15?"Adult": lvl>=8?"Young":"Baby";
                   const stats = pd.stats ? Object.entries(pd.stats).map(([k,v])=> `<span style="background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:999px;border:1px solid rgba(232,180,92,0.2);">${k} ${v}</span>`).join('') : '';
-                  statsEl.innerHTML = stats + ` <span style="background:rgba(232,180,92,0.2);padding:2px 6px;border-radius:999px;">Lv ${lvl} ${stage}</span>`;
+                  const role = (typeof petRoleMeta === "function") ? petRoleMeta(pd).tag : "";
+                  statsEl.innerHTML = stats + ` <span style="background:rgba(232,180,92,0.2);padding:2px 6px;border-radius:999px;">Lv ${lvl} ${stage}</span>` + (role ? ` <span style="background:rgba(232,180,92,0.15);padding:2px 6px;border-radius:999px;border:1px solid rgba(232,180,92,0.3);">${role}</span>` : "");
                 } else statsEl.innerHTML = '';
               }
               if(skillsEl){
                 const pd = catalogPets().find(x=>x.id===petId);
-                if(pd && pd.petSkills && pd.petSkills.length){
+                if(pd && typeof petSkillText === "function"){
+                  skillsEl.innerText = petSkillText(pd);
+                } else if(pd && pd.petSkills && pd.petSkills.length){
                   const map={attack:'Atk', heal:'Heal', shield:'Shield', weaken:'Weaken', frozen:'Frozen', wet:'Wet', magicBoost:'Mgc'};
-                  skillsEl.innerHTML = pd.petSkills.map(s=> `${map[s.kind]||s.kind} ${s.value}${s.kind==="attack"||s.kind==="heal"||s.kind==="shield"?"" : "%"} /${s.interval}t`).join(' · ') + ` · ${pd.element}`;
+                  skillsEl.innerText = pd.petSkills.map(s=> `${map[s.kind]||s.kind} ${s.value}${s.kind==="attack"||s.kind==="heal"||s.kind==="shield"?"" : "%"} /${s.interval}t`).join(' · ') + ` · ${pd.element}`;
                 } else if(pd && pd.buffKind){
-                  const map={attack:'Atk +15% 2t', magicBoost:'Mgc +15% 2t', defense:'Def +15% 2t', shield:'Shield', wet:'Wet', frozen:'Frozen'};
-                  skillsEl.innerHTML = `Skill: ${map[pd.buffKind]||pd.buffKind} ${pd.element?`(${pd.element})`:''} — every 2 turns`;
+                  const map={attack:'Strike', magicBoost:'Magic +15%', defense:'Defense +15%', shield:'Shield', wet:'Wet', frozen:'Frozen'};
+                  skillsEl.innerText = `${map[pd.buffKind]||pd.buffKind}${pd.element?` (${pd.element})`:''}, every 2 turns`;
                 } else {
-                  skillsEl.innerHTML = `Pet helps every 2 turns — auto`;
+                  skillsEl.innerText = `Uses random tricks (heal, shield, weaken or bite), every few turns`;
                 }
               }
               const descEl = document.getElementById('pet-desc-el');
               if(descEl){
                 const pd = catalogPets().find(x=>x.id===petId);
-                if(pd) descEl.innerText = stripOrigin(pd.description);
+                if(pd){
+                  descEl.innerText = (typeof petDescriptionText === "function")
+                    ? petDescriptionText(pd)
+                    : stripOrigin(pd.description);
+                }
               }
 
               stageRevealed.classList.remove('hidden');

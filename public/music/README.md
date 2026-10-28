@@ -1,15 +1,23 @@
-MÜZİK NASIL EKLENİR (3-4 parça, sıralı + döngü)
+MÜZİK NASIL EKLENİR (kasaba / savaş / zafer)
 ================================================
-1. Ses dosyalarını BU klasöre at: public/music/
-   Desteklenen uzantılar: .mp3 .ogg .wav .m4a .flac
-2. Çalma sırası = dosya adı sırası (A-Z). Örnek:
-     01-town-theme.mp3
-     02-dungeon-theme.mp3
-     03-boss-theme.mp3
-     04-victory-theme.mp3
-   Başına 01, 02... koyarsan istediğin sırada çalar.
-3. Sunucuyu yeniden başlatmaya gerek YOK (liste her sayfada yeniden okunur).
-   Ama müzik çalar açıksa sayfayı yenilemen gerekir.
-4. Davranış: parça bitmeden ~1.5 sn fade-out → sonraki parça fade-in
-   ile başlar → liste bitince başa döner (döngü).
-5. Klasör boşsa müzik çalar gizli kalır, oyun etkilenmez.
+Ses dosyalarını DOĞRU alt klasöre at (yoksa oluştur):
+  public/music/town/     → kasabada + menülerde döngüyle çalar
+  public/music/combat/   → savaş başlayınca geçer, bitince kasabaya döner
+  public/music/victory/  → zaferde BİR kez çalar (ilk dosya)
+
+Desteklenen uzantılar: .mp3 .ogg .wav .m4a .flac
+Çalma sırası = dosya adı sırası (A-Z). Başına 01, 02... koyarsan
+istediğin sırada çalar:
+  public/music/town/01-town-theme.mp3
+  public/music/combat/01-battle-drums.mp3
+  public/music/victory/victory-fanfare.mp3
+
+Kurallar:
+- Sunucuyu yeniden başlatmaya gerek YOK (liste her sayfada yeniden okunur).
+- Klasör boşsa o kanal sessiz kalır: combat boşsa savaşta kasaba
+  çalmaya devam eder, victory boşsa sadece winningsound efekti çalar.
+- Hiç müzik yoksa çalar gizli kalır, oyun etkilenmez.
+- Eski usul (tüm dosyalar doğrudan public/music/ altında) hâlâ
+  kasaba listesi olarak çalar — geriye uyumlu.
+- GameCraft → Müzikler sekmesinden de yükleyebilir/silebilirsin
+  (önce oyun sunucusu açık olmalı: npm start).

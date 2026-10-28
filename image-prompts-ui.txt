@@ -27,9 +27,12 @@ no watermarks, wordless composition"
 
 =================== BUTTON ICONS (8, two 2x2 grids) ===================
 
+
 --- GRID UB1 (2x2, shop buttons) ---
-SQUARE 1:1, 4 square button icons with thin dark gaps on dark
+
 Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
+
+SQUARE 1:1, 4 square button icons with thin dark gaps on dark
 slate, League-of-Legends emblem style: single bold centered object
 per cell filling 70% of the frame, thick readable silhouette,
 glowing gold rim light, dark carved-stone disc behind each emblem,
@@ -42,11 +45,16 @@ light streaming out.
 SAVE TO: public/images/ui/blacksmithButton.png etc. (filename =
 content.js key + .png). Then set in content.js -> images.ui:
 blacksmithButton, tavernButton, merchantButton, templeButton.
+
 MAP (kopyala-yapistir dosya adlari):
 cell1: blacksmithButton, cell2: tavernButton, cell3: merchantButton, cell4: templeButton,
+
 --- GRID UB2 (2x2, action buttons) ---
-SQUARE 1:1, same emblem style as UB1. Cell 1 (dungeonButton.png):
+
 Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
+
+SQUARE 1:1, same emblem style as UB1. Cell 1 (dungeonButton.png):
+
 dark cave mouth with stairs descending into ember glow. Cell 2
 (searchButton.png): magnifier lens over a winding dirt path with
 footprints. Cell 3 (restButton.png): crescent moon over a bedroll
@@ -54,9 +62,9 @@ beside a dying campfire. Cell 4 (sleepButton.png): starry night
 sky over a small tent under a pine silhouette.
 SAVE TO: public/images/ui/<name>.png. Then set in content.js ->
 images.ui: dungeonButton, searchButton, restButton, sleepButton.
+
 MAP (kopyala-yapistir dosya adlari):
 cell1: dungeonButton, cell2: searchButton, cell3: restButton, cell4: sleepButton,
-
 
 =================== BACKGROUNDS (10, one prompt each) ===================
 All: LANDSCAPE 16:9 (1920x1080), base style above, busy detail TOP
@@ -158,7 +166,6 @@ cards pop. Very dark, desaturated, wordless. Keep it QUIET.
 SAVE NOTE: content.js -> images.combat.party is currently "" —
 set it to "/images/backgrounds/combat_party.png".
 
-
 =================== PANEL TEXTURE (1) ===================
 
 --- [P1] panel -> public/images/ui/panel.png ---
@@ -168,7 +175,6 @@ grey brightness, no vignette, no objects, no text. It is drawn
 UNDER panels at low opacity, so keep contrast LOW.
 SAVE NOTE: content.js -> images.ui.panel is set but the file is
 missing — this prompt fills it.
-
 
 ================================================================
 COVERAGE CHECK (nothing left behind):

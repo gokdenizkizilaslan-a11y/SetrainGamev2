@@ -1,15 +1,17 @@
 ==================================================================
 SETRA - SKILL PROMPTLARI (KOPYALA-YAPISTIR)
-Sadece skiller. Baska bir sey yok.
+Tum skill ikonlari: 116 skill + 36 basic attack + 30 boss skill
++ vampir + monster ikonlari. Toplam 152 hedef dosya.
 Hedef: public/images/skills/<id>.png  (256x256 onerilir)
-==================================================================
+=================================================================
 
 NASIL KULLANILIR:
 1. Asagidaki BLOK 01'den basla.
 2. PROMPT kismini KREA'ya aynen yapistir, uret.
 3. KES kismina gore hucreleri kes, verilen isimle kaydet.
 4. SHARED yazanlari TEKRAR URETME, dosyayi kopyala.
-5. Klasor suan bos, oyun eksik dosyada gradient gosterir, bozulmaz.
+5. Boss skillleri BLOK 13-17, vampir blood art BLOK 18.
+6. Klasor suan bos, oyun eksik dosyada gradient gosterir, bozulmaz.
 
 BASE STYLE (her promptun icinde zaten var, ekstra ekleme):
 "square ability icons in tidy GRID, thin dark gaps, dark slate
@@ -392,15 +394,17 @@ cell2 -> colossal_crash.png
 ==================================================================
 BITTI - KONTROL LISTESI
 ==================================================================
-Toplam unique uretim: 144 prompt + 7 dosya kopya = 151 dosya
+Toplam: 148 tekil uretim + 4 dosya kopya = 152 hedef dosya
 - BLOK 01-11: 99 ikon (tekrarsiz)
-- BLOK 07: 9 ikon (1 kez uret, baskasi uretme)
-- BLOK 12: 8 ikon (mana_shield yok, dosyayi BLOK 07'den kopyala)
-- BLOK 13-14: 18 ikon (tekrarsiz)
-- BLOK 15: 6 ikon (arcane_barrage/meteor/comet yok, BLOK 07'den kopyala)
-- BLOK 16-17: 12 ikon (tekrarsiz)
-- BLOK 18: 3 uretim + 4 dosya kopya
-- BLOK 19: 2 ikon
+- BLOK 12: 8 ikon (mana_shield yok, BLOK 07'den kopyala)
+- BLOK 13-14: 18 ikon (Ember + Frost boss, tekrarsiz)
+- BLOK 15: 6 ikon (Void boss; arcane_barrage/meteor/comet BLOK 07'den)
+- BLOK 16-17: 12 ikon (Storm + World boss, tekrarsiz)
+- BLOK 18: 3 uretim + 4 dosya kopya (vampir)
+- BLOK 19: 2 ikon (Juggernaut)
 SHARED = prompt degil, dosya kopya demek. Ayni gorsel 2 skillde kullanilir.
 Hepsi public/images/skills/ icine .png olarak atilir.
 Oyun .png yoksa gradient gosterir, hata vermez.
+
+Boss PORTRELERI burada degil: image-prompts-bosses.txt
+Tum skill ikonlari tek dosyada: image-prompts-skills.txt

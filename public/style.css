@@ -3737,6 +3737,41 @@ input:focus {
   font-size: 0.62rem;
   color: var(--ink-soft);
   line-height: 1.4;
+  text-align: left;
+}
+.pet-role {
+  font-size: 0.56rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+  border: 1px solid rgba(232, 183, 108, 0.3);
+  border-radius: 999px;
+  padding: 0 0.45rem;
+  line-height: 1.35;
+}
+.pet-card .pet-desc {
+  min-height: 0;
+  -webkit-line-clamp: 4;
+}
+.pet-slot-role {
+  font-size: 0.55rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+  border: 1px solid rgba(232, 183, 108, 0.3);
+  border-radius: 999px;
+  padding: 0 0.4rem;
+  line-height: 1.35;
+}
+.pet-slot-skill {
+  font-size: 0.56rem;
+  color: var(--ink-soft);
+  line-height: 1.35;
+  text-align: left;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* Tavern provisions */

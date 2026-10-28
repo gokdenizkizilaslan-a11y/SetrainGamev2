@@ -379,7 +379,63 @@ function petDisplayName(petDef, level){
 // Origin phrases like "Slime King from Green Egg" describe data, not gameplay —
 // show the name/description without the origin tail.
 function stripPetOrigin(text) {
-  return String(text || "").replace(/\s+from\s+[\w\s'-]*egg\s*$/i, "").trim();
+  return String(text || "")
+    .replace(/\s*(?:[-–—]\s*)?from\s+egg_[a-z0-9_]+\s*$/i, "")
+    .replace(/\s+from\s+[\w\s'-]*egg\s*$/i, "")
+    .trim();
+}
+// Pet stats are the pet's OWN power (server/combat.js uses them for the pet's
+// attacks/heals). They are not added to the player, so say that out loud.
+const PET_ROLE_META = {
+  heal: { tag: "Healer", line: "Restores your HP during battle." },
+  shield: { tag: "Protector", line: "Raises shields that absorb incoming damage." },
+  weaken: { tag: "Debuffer", line: "Weakens a random enemy so its hits land softer." },
+  frozen: { tag: "Controller", line: "Freezes a random enemy, stalling its turn." },
+  wet: { tag: "Soaker", line: "Soaks a random enemy to set up water combos." },
+  attack: { tag: "Striker", line: "Deals damage to a random enemy." },
+  magicBoost: { tag: "Magic Buffer", line: "Boosts your magic power for 2 turns." },
+  defense: { tag: "Guardian", line: "Boosts your defense for 2 turns." },
+};
+function petSkillKinds(pd) {
+  if (!pd) return [];
+  if (Array.isArray(pd.petSkills) && pd.petSkills.length) {
+    return pd.petSkills.map((s) => s && s.kind).filter(Boolean);
+  }
+  return pd.buffKind ? [pd.buffKind] : [];
+}
+function petRoleMeta(pd) {
+  const kinds = petSkillKinds(pd);
+  if (!kinds.length) {
+    return {
+      tag: "Wildcard",
+      line: "Fights with random tricks: heals, shields, weakens or bites.",
+    };
+  }
+  const tags = [];
+  const lines = [];
+  for (const kind of kinds) {
+    const meta = PET_ROLE_META[kind];
+    if (!meta) {
+      if (!tags.includes(kind)) tags.push(kind);
+      continue;
+    }
+    if (!tags.includes(meta.tag)) tags.push(meta.tag);
+    if (!lines.includes(meta.line)) lines.push(meta.line);
+  }
+  return { tag: tags.join(" + ") || "Companion", line: lines.join(" ") };
+}
+// Keep hand-written lore, but drop data-only tails like
+// "From egg_red" or "X - grants attack buff."
+function petRealDescription(pd) {
+  if (!pd) return "";
+  const text = stripPetOrigin(pd.description);
+  if (!text) return "";
+  if (pd.name && text.toLowerCase() === String(pd.name).toLowerCase()) return "";
+  if (/^\s*[^.]*\bgrants?\b[^.]*\bbuff\b\.?\s*$/i.test(text)) return "";
+  return text;
+}
+function petDescriptionText(pd) {
+  return petRealDescription(pd) || petRoleMeta(pd).line;
 }
 function petImageForLevel(petDef, level){
   if(!petDef || !petDef.image) return "";
@@ -412,9 +468,13 @@ function petSkillText(pd) {
       .map((s) => {
         const n = s.interval || 2;
         const v = s.value || 0;
-        if (s.kind === "attack") return `Strikes a random foe for ~${Math.round(v * 100)}% of your best stat, ${every(n)}`;
-        if (s.kind === "heal") return `Heals you for ~${Math.round(v * 100)}% of max HP, ${every(n)}`;
-        if (s.kind === "shield") return `Shields you for ~${v} (+magic), ${every(n)}`;
+        if (s.kind === "attack") return `Strikes a random foe for ~${Math.round(v * 100)}% of your best stat + its own power, ${every(n)}`;
+        if (s.kind === "heal") return `Heals you for ~${Math.round(v * 100)}% of max HP + its Magic, ${every(n)}`;
+        if (s.kind === "shield") {
+          return v < 5
+            ? `Shields you for a small amount (+Magic), ${every(n)}`
+            : `Shields you for ~${v} (+Magic), ${every(n)}`;
+        }
         if (s.kind === "weaken") return `Weakens a random foe by ~${Math.round(v * 100)}% for 2 turns, ${every(n)}`;
         if (s.kind === "frozen") return `Freezes a random foe for 2 turns, ${every(n)}`;
         if (s.kind === "wet") return `Soaks a random foe for 2 turns, ${every(n)}`;
@@ -425,22 +485,24 @@ function petSkillText(pd) {
   // Legacy buffKind pets (server default: value 0.15, every 2 turns, 2-turn buff).
   if (pd && pd.buffKind) {
     const what =
-      pd.buffKind === "attack" ? "your damage +15% for 2 turns" :
-      pd.buffKind === "magicBoost" ? "your magic +15% for 2 turns" :
-      pd.buffKind === "defense" ? "your defense +15% for 2 turns" :
+      pd.buffKind === "attack" ? "Strikes a random foe with its own Attack" :
+      pd.buffKind === "magicBoost" ? "Boosts your magic +15% for 2 turns" :
+      pd.buffKind === "defense" ? "Boosts your defense +15% for 2 turns" :
       `${pd.buffKind} +15% for 2 turns`;
-    return `Boosts ${what}, every 2 turns`;
+    return `${what}, every 2 turns`;
   }
-  return "Fights beside you with random tricks (heal, shield or bite), every few turns";
+  return "Uses random tricks (heal, shield, weaken or bite), every few turns";
 }
 function petTitleText(pd, pp, lvl) {
   if (!pd) return "Pet";
-  const lines = [`${petDisplayName(pd, lvl)} — Lv ${lvl} ${petStage(lvl)}`];
+  const role = petRoleMeta(pd);
+  const lines = [`${petDisplayName(pd, lvl)} — Lv ${lvl} ${petStage(lvl)} (${role.tag})`];
   if (pd.element) lines.push(`Element: ${pd.element}`);
   const stats = petStatText(pd, pp);
-  if (stats) lines.push(stats);
-  lines.push("Skills: " + petSkillText(pd));
-  if (pd.description) lines.push(stripPetOrigin(pd.description));
+  if (stats) lines.push(`Own stats: ${stats} (powers the pet, not you)`);
+  lines.push("Ability: " + petSkillText(pd));
+  const desc = petDescriptionText(pd);
+  if (desc) lines.push(desc);
   return lines.join("\n");
 }
 
@@ -4210,9 +4272,11 @@ function renderPetsView(room){
     const displayName = pd ? petDisplayName(pd, lvl) : "Empty";
     const img = pd ? petImageForLevel(pd, lvl) : "";
     const stage = petStage(lvl);
+    const role = pd ? petRoleMeta(pd) : null;
+    const slotSkill = pd ? petSkillText(pd) : "";
     slots.push(`<div class="pet-slot ${pid?"pet-slot--filled":"pet-slot--empty"} ${isMiddle?"pet-slot--middle":""}" data-pet-slot="${i}" title="${pd ? escapeHtml(petTitleText(pd, pp, lvl)) : "Empty slot"}">
       <span class="pet-slot-label">${isMiddle && maxPets===3 ? "Middle" : "Slot "+(i+1)}</span>
-      ${pid ? `<span class="pet-socket"><span class="pet-slot-icon" data-img="${escapeHtml(img)}" data-variant="${escapeHtml(pid)}"></span></span><span class="pet-slot-name">${escapeHtml(displayName)}</span><span class="pet-slot-level">Lv ${lvl} · ${stage}</span><button type="button" class="btn btn--mini" data-pet-unequip="${pid}">Unequip</button>` : `<span class="pet-socket pet-socket--empty"><span class="pet-slot-empty">?</span></span><span class="muted" style="font-size:0.68rem">Empty slot</span>`}
+      ${pid ? `<span class="pet-socket"><span class="pet-slot-icon" data-img="${escapeHtml(img)}" data-variant="${escapeHtml(pid)}"></span></span><span class="pet-slot-name">${escapeHtml(displayName)}</span><span class="pet-slot-level">Lv ${lvl} · ${stage}</span><span class="pet-slot-role">${escapeHtml(role.tag)}</span><span class="pet-slot-skill">${escapeHtml(slotSkill)}</span><button type="button" class="btn btn--mini" data-pet-unequip="${pid}">Unequip</button>` : `<span class="pet-socket pet-socket--empty"><span class="pet-slot-empty">?</span></span><span class="muted" style="font-size:0.68rem">Empty slot</span>`}
     </div>`);
   }
   const petsList = pets.map(pp=>{
@@ -4223,15 +4287,17 @@ function renderPetsView(room){
     const displayName = pd ? petDisplayName(pd, lvl) : pp.petId;
     const img = pd ? petImageForLevel(pd, lvl) : "";
     const statChips = pd && pd.stats ? Object.entries(pd.stats).map(([k,v])=>{ const b = k === "attack" ? (pp.bonusAttack || 0) : k === "magicPower" ? (pp.bonusMagic || 0) : k === "resistance" ? (pp.bonusResist || 0) : 0; return `<span class="stat-chip"><em>${escapeHtml(k)}</em><b>${v + b}</b></span>`; }).join("") : "";
-    const petSkills = pd && pd.petSkills ? pd.petSkills.map(s=> `${s.kind} ${s.value}${s.kind==="attack"||s.kind==="heal"||s.kind==="shield"?"":"%"} /${s.interval}t`).join(" · ") : (pd && pd.buffKind ? `${pd.buffKind} (${pd.element})` : "auto");
-    const tip = `${escapeHtml(displayName)} — Lv ${lvl} ${stage}${pd && pd.description ? " — " + escapeHtml(stripPetOrigin(pd.description)) : ""}`;
-    return `<div class="bag-row pet-card" title="${tip}" style="--rarity:${rarityColor(petEggRarity(pp.petId))}">
+    const role = pd ? petRoleMeta(pd) : { tag: "Pet" };
+    const skillText = pd ? petSkillText(pd) : "No data";
+    const lore = pd ? petDescriptionText(pd) : "";
+    const tip = pd ? petTitleText(pd, pp, lvl) : displayName;
+    return `<div class="bag-row pet-card" title="${escapeHtml(tip)}" style="--rarity:${rarityColor(petEggRarity(pp.petId))}">
       <span class="bag-socket pet-socket"><span class="item-icon" data-img="${escapeHtml(img)}" data-variant="${escapeHtml(pp.petId)}"></span></span>
       <span class="bag-name">${escapeHtml(displayName)}</span>
-      <span class="bag-badges">${isActive?'<span class="badge badge--ready">Active</span>':''}<span class="pet-lvl">Lv ${lvl} · ${stage}</span>${pd && pd.element ? `<span class="pet-el">${escapeHtml(pd.element)}</span>` : ""}</span>
-      <span class="bag-desc">${pd?escapeHtml(stripPetOrigin(pd.description)):''}</span>
+      <span class="bag-badges">${isActive?'<span class="badge badge--ready">Active</span>':''}<span class="pet-lvl">Lv ${lvl} · ${stage}</span>${pd && pd.element ? `<span class="pet-el">${escapeHtml(pd.element)}</span>` : ""}<span class="pet-role">${escapeHtml(role.tag)}</span></span>
+      <span class="bag-desc pet-desc">${escapeHtml(lore)}</span>
       <span class="pet-stats">${statChips}<span class="stat-chip"><em>XP</em><b>${pp.xp||0}/${pp.xpToNext||0}</b></span></span>
-      <span class="pet-skills">Skills: ${escapeHtml(petSkills)}</span>
+      <span class="pet-skills">${escapeHtml(skillText)}</span>
       <button type="button" class="btn btn--mini" data-pet-active="${pp.petId}">${isActive?'Unequip':'Equip'}</button>
     </div>`;
   }).join("");
@@ -4254,9 +4320,10 @@ function renderPetsView(room){
   }).join("");
   root.innerHTML = `
     <section class="inv-section">
-      <div class="inv-section-head"><span class="subhead" style="margin:0">Equipped Pets (${activeIds.length}/${maxPets}) ${petMult > 1 ? `— ${maxPets} slots ${petMult}× bonus!` : ""}</span></div>
+      <div class="inv-section-head"><span class="subhead" style="margin:0">Equipped Pets (${activeIds.length}/${maxPets}) ${petMult > 1 ? `— pet power ×${petMult}` : ""}</span></div>
       <div class="pets-top">
         <div class="pet-slots ${maxPets===3?"pet-slots--3":""}">${slots.join("")}</div>
+        <p class="hint">Equipped pets act automatically in combat. Their Attack / Magic / Resistance power their own skills — they are not added to your character's stats.</p>
       </div>
     </section>
     <section class="inv-section">
@@ -4266,7 +4333,7 @@ function renderPetsView(room){
     <section class="inv-section">
       <div class="inv-section-head"><span class="subhead" style="margin:0">Collection</span><span class="inv-count">${pets.length} pets</span></div>
       <div class="bag-list">${petsList || '<div class="muted">No pets yet. Hatch eggs above!</div>'}</div>
-      <p class="hint">Baby Lv 1-7 · Young Lv 8+ · Adult Lv 15+. Pet slots & bonus come from your class.</p>
+      <p class="hint">Baby Lv 1-7 · Young Lv 8+ · Adult Lv 15+. Pet slots and the pet power multiplier come from your class. Hover a pet for the full breakdown.</p>
     </section>
   `;
   initImages(root);
