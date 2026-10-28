@@ -18,7 +18,7 @@ app.use(express.json({ limit: "50mb" }));
 // önizlemeyi doğrudan çekebilsin diye salt-okunur GET'lere CORS.
 // Oyun mantığına dokunmaz, sadece header ekler.
 app.use((req, res, next) => {
-  if (req.method === "GET" && (req.path === "/api/sounds" || req.path === "/api/music" || req.path.startsWith("/sounds/") || req.path.startsWith("/images/"))) {
+  if (req.method === "GET" && (req.path === "/api/sounds" || req.path === "/api/music" || req.path.startsWith("/sounds/") || req.path.startsWith("/music/") || req.path.startsWith("/images/"))) {
     res.setHeader("Access-Control-Allow-Origin", "*");
   }
   next();
@@ -35,17 +35,29 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/editor", editorRoutes);
 
-app.get("/api/music", (req, res) => {
-  let tracks = [];
+function listAudioFiles(dir) {
   try {
-    tracks = fs
-      .readdirSync(MUSIC_DIR)
+    return fs
+      .readdirSync(dir)
       .filter((f) => AUDIO_EXT.includes(path.extname(f).toLowerCase()))
       .sort();
   } catch (e) {
-    // music folder may not exist yet
+    return []; // folder may not exist yet
   }
-  res.json({ tracks });
+}
+
+app.get("/api/music", (req, res) => {
+  // Legacy root files play as town music (old behavior preserved).
+  const tracks = listAudioFiles(MUSIC_DIR);
+  const townSub = listAudioFiles(path.join(MUSIC_DIR, "town"));
+  const combat = listAudioFiles(path.join(MUSIC_DIR, "combat"));
+  const victoryFiles = listAudioFiles(path.join(MUSIC_DIR, "victory"));
+  res.json({
+    tracks,
+    town: townSub.length ? townSub.map((f) => "town/" + f) : tracks,
+    combat: combat.map((f) => "combat/" + f),
+    victory: victoryFiles.length ? "victory/" + victoryFiles[0] : null,
+  });
 });
 
 app.get("/api/sounds", (req, res) => {

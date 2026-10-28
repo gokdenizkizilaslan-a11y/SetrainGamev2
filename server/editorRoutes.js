@@ -315,6 +315,74 @@ router.post("/api/delete", auth, (req, res) => {
   }
 });
 
+// --- Music upload / delete (GameCraft "Müzik" sekmesi -> gerçek dosya) ---
+// town/ = kasaba listesi, combat/ = savaş listesi, victory/ = zafer melodisi
+// (ilk dosya). Aynı güvenlik kalıbı: klasör whitelist, uzantı whitelist,
+// yol dışarı kaçamaz, 30MB sınır. Müzikler content.js'te geçmez — klasör
+// listesi oyunun /api/music çıktısıdır, paylaşım koruması gerekmez.
+const MUSIC_ROOT = path.join(__dirname, "..", "public", "music");
+const MUSIC_FOLDERS = new Set(["town", "combat", "victory"]);
+const MUSIC_EXTS = ["mp3", "ogg", "wav", "m4a", "flac"];
+const MAX_MUSIC_BYTES = 30 * 1024 * 1024;
+
+function resolveMusicTarget(folder, filename) {
+  if (!MUSIC_FOLDERS.has(folder)) return { error: "Bilinmeyen müzik klasörü: " + folder + " (town/combat/victory)." };
+  const nameMatch = /^([a-z0-9][a-z0-9_-]*)\.([a-z0-9]+)$/.exec(filename);
+  if (!nameMatch) return { error: "Geçersiz dosya adı." };
+  if (!MUSIC_EXTS.includes(nameMatch[2])) {
+    return { error: "Desteklenen uzantılar: " + MUSIC_EXTS.join(", ") };
+  }
+  const dir = path.resolve(MUSIC_ROOT, folder);
+  const target = path.resolve(dir, nameMatch[1] + "." + nameMatch[2]);
+  if (!target.startsWith(path.resolve(MUSIC_ROOT) + path.sep)) return { error: "Geçersiz hedef yol." };
+  return { dir, target, safeName: nameMatch[1] + "." + nameMatch[2] };
+}
+
+router.post("/api/music-upload", auth, (req, res) => {
+  const folder = String((req.body && req.body.folder) || "").toLowerCase();
+  const filename = String((req.body && req.body.filename) || "").toLowerCase();
+  const data = (req.body && req.body.data) || "";
+  const rt = resolveMusicTarget(folder, filename);
+  if (rt.error) return res.status(400).json({ ok: false, error: rt.error });
+  let buf;
+  try {
+    const b64 = String(data).includes(",") ? String(data).slice(String(data).indexOf(",") + 1) : String(data);
+    buf = Buffer.from(b64, "base64");
+  } catch (e) {
+    return res.status(400).json({ ok: false, error: "Ses verisi çözülemedi (base64)." });
+  }
+  if (!buf || buf.length === 0) {
+    return res.status(400).json({ ok: false, error: "Boş ses dosyası." });
+  }
+  if (buf.length > MAX_MUSIC_BYTES) {
+    return res.status(413).json({ ok: false, error: "Dosya çok büyük (maks ~30MB)." });
+  }
+  try {
+    fs.mkdirSync(rt.dir, { recursive: true });
+    const existed = fs.existsSync(rt.target);
+    fs.writeFileSync(rt.target, buf);
+    res.json({ ok: true, url: "/music/" + folder + "/" + rt.safeName, file: folder + "/" + rt.safeName, overwritten: existed });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: "Dosya yazılamadı: " + String(e.message).slice(0, 200) });
+  }
+});
+
+router.post("/api/music-delete", auth, (req, res) => {
+  const folder = String((req.body && req.body.folder) || "").toLowerCase();
+  const filename = String((req.body && req.body.filename) || "").toLowerCase();
+  const rt = resolveMusicTarget(folder, filename);
+  if (rt.error) return res.status(400).json({ ok: false, error: rt.error });
+  if (!fs.existsSync(rt.target)) {
+    return res.json({ ok: true, file: folder + "/" + rt.safeName, note: "Dosya zaten yoktu." });
+  }
+  try {
+    fs.unlinkSync(rt.target);
+    res.json({ ok: true, file: folder + "/" + rt.safeName });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: "Dosya silinemedi: " + String(e.message).slice(0, 200) });
+  }
+});
+
 router.get("/api/editor", auth, (req, res) => {
   res.json({ defs: resolveDefs(editorData), data: editorData });
 });

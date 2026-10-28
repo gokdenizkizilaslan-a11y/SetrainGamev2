@@ -106,6 +106,9 @@ function startBoss(room, player) {
     m.hp=m.maxHp; m.mana=m.maxMana;
     m._struckThisCombat = false;
     m._secondWindUsed = false;
+    m.shields = [];
+    m.shield = 0;
+    m.maxShield = 0;
     try {
       const passives = require("./passives");
       const { addShield } = require("./players");

@@ -67,14 +67,10 @@ function createParty(room, player, rank, size) {
   if (!dungeonDef || !sizeDef) {
     throw new Error("Unknown dungeon or size.");
   }
-  if (dungeonDef.isBoss && dungeonDef.unlockAfter) {
-    const kills = player.bossKills || [];
-    if (!kills.includes(dungeonDef.unlockAfter)) throw new Error("Defeat the previous boss first.");
-  }
-  // Single party per boss: if boss dungeon already has a party (waiting or fighting), block
+  // Boss fights use the dedicated boss-party system (server/boss.js).
+  // Allowing a normal dungeon party here skipped boss rewards/unlock progress.
   if (dungeonDef.isBoss) {
-    const existingBossParty = (room.dungeons||[]).find(d=> d.rank===dungeonDef.rank && (d.status==="forming"||d.status==="waiting"||d.status==="fighting"));
-    if (existingBossParty) throw new Error("Another fight is already running on this boss.");
+    throw new Error("Boss fights start from the boss pin on the map.");
   }
   if (player.endedDay) {
     throw new Error("You have already ended this day.");

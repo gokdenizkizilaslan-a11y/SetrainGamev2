@@ -191,13 +191,31 @@ function applyClassGrowth(player) {
   player.maxHp += gain(g.hp);
   player.hp = Math.min(player.maxHp, player.hp + gain(g.hp));
   player.attack += gain(g.attack);
-  player.mana += gain(g.mana);
+  const manaGain = gain(g.mana);
+  player.maxMana += manaGain;
+  player.mana = Math.min(player.maxMana, player.mana + manaGain);
   player.resistance += gain(g.resistance);
   player.magicPower += gain(g.magicPower);
   player.healPower += gain(g.healPower || 0);
   player.critChance = (player.critChance || 0) + (g.critChance || 0);
   player.critDamage = (player.critDamage || 0) + (g.critDamage || 0);
   applyPassiveStatBonus(player, g);
+}
+
+// Secret (test) classes may start above level 1. Apply per-level growth on
+// top of freshly rolled level-1 stats (called again in startGame, because
+// rollStats would otherwise overwrite the lobby-time values).
+function applyStartLevelGrowth(player) {
+  const cls = getClass(player.character);
+  const startLevel = Math.min(CONTENT.leveling.maxLevel, Math.max(1, Math.floor((cls && cls.startLevel) || 1)));
+  if (startLevel <= 1) return;
+  player.level = 1;
+  for (let lv = 1; lv < startLevel; lv++) {
+    player.level = lv + 1;
+    applyClassGrowth(player);
+  }
+  player.hp = player.maxHp;
+  player.mana = player.maxMana;
 }
 
 function addXp(player, amount) {
@@ -572,15 +590,7 @@ function createPlayer({ id, name, character, isHost = false }) {
   }
   // Secret (test) classes may start above level 1: apply per-level growth so
   // stats match a naturally leveled character. Normal classes skip this.
-  const startLevel = Math.min(CONTENT.leveling.maxLevel, Math.max(1, Math.floor((cls && cls.startLevel) || 1)));
-  if (startLevel > 1) {
-    for (let lv = 1; lv < startLevel; lv++) {
-      player.level = lv + 1;
-      applyClassGrowth(player);
-    }
-    player.hp = player.maxHp;
-    player.mana = player.maxMana;
-  }
+  applyStartLevelGrowth(player);
   seedOwnedTreeNodes(player);
   return player;
 }
@@ -975,6 +985,7 @@ function setSkillLoadout(player, ids) {
 module.exports = {
   createPlayer,
   rollStats,
+  applyStartLevelGrowth,
   rerollRace,
   publicPlayer,
   addXp,

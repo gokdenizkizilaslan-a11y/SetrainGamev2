@@ -1,26 +1,10 @@
 const { CONTENT, getClass, getItem } = require("../content");
-const { requirePlaying, spendStamina } = require("./town");
+const { requirePlaying, requireNoActiveBattle, spendStamina } = require("./town");
 const { hasItem, removeItem, addItem, applyStatDelta, rerollRace, historyOf } = require("./players");
 
 function originCfg() {
   return CONTENT.temple.origin || { item: "origin_stone", price: 250, startQty: 5 };
 }
-// Savaşın ortasında ırk değişmez (canlı stat'larla dövüş bozulur).
-function requireNoActiveBattle(room, player) {
-  const d = (room.dungeons || []).find((x) => (x.memberIds || []).includes(player.id));
-  if (d && (d.status === "fighting" || d.status === "done")) {
-    throw new Error("Finish your battle first.");
-  }
-  const b = (room.bossParties || []).find((x) => (x.memberIds || []).includes(player.id));
-  if (b && b.status === "fighting") {
-    throw new Error("Finish your battle first.");
-  }
-  const pvp = (room.pvpDuels || []).find((x) => (x.memberIds || []).includes(player.id));
-  if (pvp && pvp.status === "fighting") {
-    throw new Error("Finish your duel first.");
-  }
-}
-
 function rerollOrigin(room, player) {
   requirePlaying(room, player);
   requireNoActiveBattle(room, player);
@@ -63,6 +47,7 @@ function buyOriginStone(room, player) {
 
 function evolve(room, player, targetTo) {
   requirePlaying(room, player);
+  requireNoActiveBattle(room, player);
   const baseCls = getClass(player.character);
   if (!baseCls) {
     throw new Error("Your class has no ascension.");

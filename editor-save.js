@@ -88,6 +88,160 @@ function validateReferences(data) {
       }
     }
   }
+  // Full cross-reference sweep: any id one system mentions must exist in
+  // the other. These are the bugs players can't test until hours in
+  // (silent no-ops, dead buttons, missing loot), so they fail here.
+  {
+    const itemIds = new Set((data.items || []).map((i) => i && i.id));
+    const monIds = new Set((data.monsters || []).map((m) => m && m.id));
+    const bossIds = new Set((data.bosses || []).map((b) => b && b.id));
+    const npcIds2 = new Set((data.npcs || []).map((n) => n && n.id));
+    const eggIds = new Set((data.eggs || []).map((e) => e && e.id));
+    const petIds = new Set((data.pets || []).map((p) => p && p.id));
+    const elemIds = new Set((data.elements || []).map((e) => e && e.id));
+    const dungeonRanks = new Set((data.dungeons || []).map((d) => d && d.rank));
+    const questIds = new Set((data.quests || []).map((q) => q && q.id));
+    const setIds = new Set((data.itemSets || []).map((s) => s && s.id));
+    const taxo = new Set(data.monsterTags || []);
+    const rarities = (data.loot && data.loot.rarityOrder) || [];
+    const ITEM_STATS = ["attack", "resistance", "magicPower", "healPower", "maxHp", "maxMana", "hp", "mana", "speed", "critChance", "critDamage", "manaRegen", "omnivamp", "lifesteal"];
+    // RACE_STATS: dosyanın üstündeki ortak liste kullanılır.
+    const RACE_STATS = ["attack", "resistance", "magicPower", "healPower", "maxHp", "maxMana", "speed", "manaRegen", "critChance", "critDamage"];
+    const BUFFS = ["attack", "defense", "regen", "weaken", "expose", "dot", "wet", "frozen", "shield", "magicBoost", "pet_attack", "pet_magic", "pet_defense", "pet_weaken", "healblock", "stack", "heal", "poison"];
+    for (const c of classes) {
+      for (const r of [...(c.evolutions || []), ...(c.evolution ? [c.evolution] : [])]) {
+        if (r && r.requiredItem && !itemIds.has(r.requiredItem)) errors.push(`Class "${c.slug}" evolution item "${r.requiredItem}" is not in items.`);
+        if (r && r.requiresQuest && !questIds.has(r.requiresQuest)) errors.push(`Class "${c.slug}" evolution quest "${r.requiresQuest}" is not in quests.`);
+      }
+    }
+    for (const s of skills) {
+      if (s.element && !elemIds.has(s.element)) errors.push(`Skill "${s.id}" has unknown element "${s.element}".`);
+      for (const b of s.buffs || []) {
+        if (b && b.kind && !BUFFS.includes(b.kind)) errors.push(`Skill "${s.id}" has unknown buff "${b.kind}" (silently ignored in combat).`);
+      }
+      if (s.bonusVsStatus && !BUFFS.includes(s.bonusVsStatus.status)) errors.push(`Skill "${s.id}" bonusVsStatus "${s.bonusVsStatus.status}" never triggers.`);
+      if (s.secondHit && s.secondHit.element && !elemIds.has(s.secondHit.element)) errors.push(`Skill "${s.id}" secondHit element "${s.secondHit.element}" is unknown.`);
+      if (s.baseDamage && typeof s.baseDamage === "object" && s.baseDamage.stat) {
+        const st = s.baseDamage.stat;
+        if (!["targetMaxHp", "targetHp", "attack", "magicPower", "maxHp", "maxMana", "resistance", "healPower", "speed"].includes(st)) errors.push(`Skill "${s.id}" baseDamage stat "${st}" does nothing.`);
+      }
+      if (s.heal && typeof s.heal === "object" && s.heal.stat && !["maxHp", "attack", "magicPower", "healPower"].includes(s.heal.stat)) errors.push(`Skill "${s.id}" heal stat "${s.heal.stat}" does nothing.`);
+    }
+    for (const i of data.items || []) {
+      if (i.stats) for (const k of Object.keys(i.stats)) {
+        if (!ITEM_STATS.includes(k)) errors.push(`Item "${i.id}" stat "${k}" is never applied.`);
+      }
+      if (i.setId && !setIds.has(i.setId)) errors.push(`Item "${i.id}" set "${i.setId}" is not in itemSets.`);
+    }
+    for (const st of data.itemSets || []) {
+      let prev = 0;
+      for (const t of st.bonuses || []) {
+        if (!(t.pieces > prev)) errors.push(`Item set "${st.id}" tiers must ascend.`);
+        prev = t.pieces;
+        for (const k of Object.keys((t.stats) || {})) {
+          if (!ITEM_STATS.includes(k)) errors.push(`Item set "${st.id}" stat "${k}" is never applied.`);
+        }
+      }
+    }
+    for (const m of data.monsters || []) {
+      if (m.element && !elemIds.has(m.element)) errors.push(`Monster "${m.id}" has unknown element "${m.element}".`);
+      if (m.rarity && !rarities.includes(m.rarity)) errors.push(`Monster "${m.id}" has unknown rarity "${m.rarity}".`);
+      for (const sk of m.skills || []) if (!skillIds.has(sk)) errors.push(`Monster "${m.id}" uses missing skill "${sk}".`);
+      for (const t of m.tags || []) if (!taxo.has(t)) errors.push(`Monster "${m.id}" tag "${t}" is not in monsterTags.`);
+    }
+    for (const d of data.dungeons || []) {
+      for (const mid of d.monsterPool || []) {
+        if (!monIds.has(mid) && !bossIds.has(mid)) errors.push(`Dungeon "${d.rank}" spawns missing monster "${mid}".`);
+      }
+      for (const mt of d.materialPool || []) {
+        if (!itemIds.has(mt)) errors.push(`Dungeon "${d.rank}" drops missing material "${mt}".`);
+      }
+      if (d.unlockAfter && !bossIds.has(d.unlockAfter)) errors.push(`Dungeon "${d.rank}" unlockAfter missing boss "${d.unlockAfter}".`);
+      if (d.sizeProfile && !["more", "fewerStronger"].includes(d.sizeProfile)) errors.push(`Dungeon "${d.rank}" has unknown sizeProfile "${d.sizeProfile}".`);
+      if (d.isBoss && !(d.monsterPool || []).some((x) => bossIds.has(x))) errors.push(`Dungeon "${d.rank}" isBoss but its pool has no boss.`);
+    }
+    for (const b of data.bosses || []) {
+      if (b.weaponId && !itemIds.has(b.weaponId)) errors.push(`Boss "${b.id}" weapon "${b.weaponId}" is not in items.`);
+      if (b.chestId && !itemIds.has(b.chestId)) errors.push(`Boss "${b.id}" chest "${b.chestId}" is not in items.`);
+      if (b.unlockAfter && !bossIds.has(b.unlockAfter)) errors.push(`Boss "${b.id}" unlockAfter missing boss "${b.unlockAfter}".`);
+      if (b.element && !elemIds.has(b.element)) errors.push(`Boss "${b.id}" has unknown element "${b.element}".`);
+      for (const t of b.tags || []) if (!taxo.has(t)) errors.push(`Boss "${b.id}" tag "${t}" is not in monsterTags.`);
+      for (const arr of Object.values(b.phaseSkills || {})) {
+        for (const sid of arr || []) {
+          if (!skillIds.has(sid)) errors.push(`Boss "${b.id}" phase skill "${sid}" is not in skills (boss would stall).`);
+        }
+      }
+      if (b.rewards && b.rewards.guaranteedDrop && !itemIds.has(b.rewards.guaranteedDrop)) errors.push(`Boss "${b.id}" reward "${b.rewards.guaranteedDrop}" is not in items.`);
+    }
+    {
+      const nodeIds = new Set();
+      const allNodes = [...((data.skillTree && data.skillTree.global) || [])];
+      for (const l of Object.values((data.skillTree && data.skillTree.lineages) || {})) {
+        for (const n of (l && l.nodes) || []) allNodes.push(n);
+      }
+      for (const n of allNodes) {
+        if (!n || !n.id) { errors.push("Skill tree has a node without id."); continue; }
+        if (nodeIds.has(n.id)) errors.push(`Duplicate skill tree node "${n.id}".`);
+        nodeIds.add(n.id);
+      }
+      for (const n of allNodes) {
+        if (n.skillId && !skillIds.has(n.skillId)) errors.push(`Skill tree node "${n.id}" points to missing skill "${n.skillId}".`);
+        for (const p of n.prereqs || []) {
+          if (!nodeIds.has(p)) errors.push(`Skill tree node "${n.id}" requires missing node "${p}" (unlearnable).`);
+        }
+        if (n.ownerClass && !slugs.has(n.ownerClass)) errors.push(`Skill tree node "${n.id}" is owned by missing class "${n.ownerClass}".`);
+      }
+    }
+    for (const q of data.quests || []) {
+      if (q.giver && !npcIds2.has(q.giver)) errors.push(`Quest "${q.id}" giver "${q.giver}" is not an NPC.`);
+      if (q.requiredItem && !itemIds.has(q.requiredItem)) errors.push(`Quest "${q.id}" item "${q.requiredItem}" is not in items.`);
+      if (q.monsterTag && !taxo.has(q.monsterTag)) errors.push(`Quest "${q.id}" tag "${q.monsterTag}" is not in monsterTags (counter never moves).`);
+      for (const cl of q.classes || []) {
+        if (!slugs.has(cl)) errors.push(`Quest "${q.id}" class "${cl}" does not exist.`);
+      }
+    }
+    {
+      const t = data.temple || {};
+      if (t.restore && t.restore.item && !itemIds.has(t.restore.item)) errors.push(`Temple restore item "${t.restore.item}" is not in items.`);
+      if (t.origin && t.origin.item && !itemIds.has(t.origin.item)) errors.push(`Temple origin item "${t.origin.item}" is not in items.`);
+      for (const r of t.recipes || []) {
+        for (const inp of r.inputs || []) {
+          if (!itemIds.has(inp.item)) errors.push(`Temple recipe "${r.id}" input "${inp.item}" is not in items.`);
+        }
+        if (r.output && !itemIds.has(r.output.item)) errors.push(`Temple recipe "${r.id}" output "${r.output.item}" is not in items.`);
+      }
+    }
+    for (const cb of data.combos || []) {
+      if (cb.ifElement && !elemIds.has(cb.ifElement)) errors.push(`Combo "${cb.id}" element "${cb.ifElement}" is unknown.`);
+    }
+    for (const p of data.pets || []) {
+      if (p.element && !elemIds.has(p.element)) errors.push(`Pet "${p.id}" has unknown element "${p.element}".`);
+      if (p.egg && ![...(data.eggs || []).map((e) => e && e.id)].includes(p.egg)) errors.push(`Pet "${p.id}" egg "${p.egg}" does not exist.`);
+      if (p.stats) for (const k of Object.keys(p.stats)) {
+        if (!["attack", "magicPower", "resistance"].includes(k)) errors.push(`Pet "${p.id}" stat "${k}" is never applied.`);
+      }
+    }
+    for (const e of data.eggs || []) {
+      if (e.rarity && !rarities.includes(e.rarity)) errors.push(`Egg "${e.id}" has unknown rarity "${e.rarity}".`);
+      for (const d of e.dungeons || []) {
+        if (!dungeonRanks.has(d)) errors.push(`Egg "${e.id}" drops in missing dungeon "${d}".`);
+      }
+      for (const p of e.pets || []) {
+        if (!((data.pets || []).some((x) => x && x.id === p))) errors.push(`Egg "${e.id}" hatches missing pet "${p}".`);
+      }
+    }
+    for (const r of data.races || []) {
+      if (r.stats) for (const k of Object.keys(r.stats)) {
+        if (!RACE_STATS.includes(k)) errors.push(`Race "${r.id}" stat "${k}" is never applied (did you mean maxHp/maxMana?).`);
+      }
+    }
+    for (const r of rarities) {
+      if (!((data.loot.rarityMeta || {})[r])) errors.push(`Rarity "${r}" has no color in rarityMeta.`);
+    }
+    for (const s of data.baseSkills || []) {
+      if (!skillIds.has(s)) errors.push(`baseSkills lists missing skill "${s}".`);
+    }
+  }
   // Dead-copy detector: hidden from class select (has baseClass) yet no
   // evolution leads to it — exactly how the alpha_tamer orphan happened.
   // Classes with `obtain` (e.g. "dialogue:uncle") are reachable out-of-band

@@ -297,16 +297,19 @@ function onRoomState(room) {
       state.dungeonOpen = false;
       state.pvpOpen = true;
     }
+    // Müzik modu: savaşan ekranda combat listesi, geride town listesi.
+    try {
+      const fighting =
+        (myD && myD.status === "fighting") ||
+        (myPvp && myPvp.status === "fighting");
+      setMusicMode(fighting ? "combat" : "town");
+    } catch (e) {}
     renderPvpInviteBanner(room);
     // ensure pets/dungeon not auto-open on fresh game start
     if (!inCombat && !inBoss && !myPvp && state.petsOpen && !state.inventoryOpen) {
       // keep petsOpen as is only if user explicitly opened it; don't auto-open
     }
     if (!inCombat && !inBoss && !myPvp) {
-      // don't auto-open pets, keep as user set, but ensure not stuck
-      if (state.petsOpen && !document.getElementById("pets-view")?.classList.contains("hidden") === false) {
-        // leave as is
-      }
       state.pendingFx = [];
     }
     renderTown(room);
@@ -438,8 +441,7 @@ $("btn-dungeon-close").addEventListener("click", () => {
 
 $("btn-skilltree").addEventListener("click", () => {
   state.skillTreeOpen = true;
-  const c = $("skilltree-content");
-  if (c) delete c.dataset.centered;
+  if (typeof resetSkillTreeMapView === "function") resetSkillTreeMapView();
   renderTown(state.room);
 });
 
@@ -788,9 +790,16 @@ socket.on("session:expired", () => {
 // ---- Music (sequential playlist, fade in/out, loops back to start) ----
 
 const music = {
+  town: [],
+  combat: [],
+  townIndex: 0,
+  combatIndex: 0,
+  mode: "town",
+  playing: false,
+  victory: null,
+  // Eski tek-liste API'siyle uyumluluk (artık kullanılmıyor, sessiz).
   tracks: [],
   index: 0,
-  playing: false,
 };
 
 const FADE_IN_MS = 2000;
@@ -834,8 +843,24 @@ function fadeAudioTo(audio, target, ms, done) {
   }, 50);
 }
 
+function musicList() {
+  return music.mode === "combat" ? music.combat : music.town;
+}
+
+function musicPos() {
+  return music.mode === "combat" ? music.combatIndex : music.townIndex;
+}
+
+function musicSetPos(i) {
+  if (music.mode === "combat") music.combatIndex = i;
+  else music.townIndex = i;
+}
+
 function musicTrackName() {
-  return music.tracks[music.index] || "No music";
+  const list = musicList();
+  if (!list.length) return "No music";
+  const f = list[musicPos() % list.length] || "";
+  return f.split("/").pop() || "No music";
 }
 
 function updateMusicTrack() {
@@ -851,8 +876,9 @@ function playAudioSafe(audio) {
 
 function playMusic() {
   const audio = $("music-audio");
-  if (!music.tracks.length) return;
-  if (!audio.src) audio.src = "/music/" + music.tracks[music.index];
+  const list = musicList();
+  if (!list.length) return;
+  if (!audio.src) audio.src = "/music/" + list[musicPos() % list.length];
   audio.volume = 0;
   playAudioSafe(audio);
   fadeAudioTo(audio, musicTargetVolume(), FADE_IN_MS);
@@ -871,7 +897,9 @@ function pauseMusic() {
 
 function startTrackNow() {
   const audio = $("music-audio");
-  audio.src = "/music/" + music.tracks[music.index];
+  const list = musicList();
+  if (!list.length) return;
+  audio.src = "/music/" + list[musicPos() % list.length];
   updateMusicTrack();
   if (music.playing) {
     audio.volume = 0;
@@ -881,20 +909,65 @@ function startTrackNow() {
 }
 
 function nextTrack() {
-  if (!music.tracks.length) return;
-  music.index = (music.index + 1) % music.tracks.length;
+  const list = musicList();
+  if (!list.length) return;
+  musicSetPos((musicPos() + 1) % list.length);
   startTrackNow();
+}
+
+// Savaş/kasaba geçişi: hedef listede parça varsa oraya geç (yoksa
+// susmak yerine mevcut liste çalmaya devam eder — sessizlik yok).
+function setMusicMode(mode) {
+  if (mode !== "combat" && mode !== "town") return;
+  if (music.mode === mode) return;
+  const target = mode === "combat" ? music.combat : music.town;
+  if (!target.length) return;
+  music.mode = mode;
+  startTrackNow();
+}
+
+// Zafer melodisi: ayrı kanalda bir kez çalar, arka planı kısar,
+// bitince geri açar. Dosya yoksa sessizce hiçbir şey yapmaz.
+function playVictorySting() {
+  if (!music.victory) return;
+  try {
+    let sting = $("music-sting");
+    if (!sting) {
+      sting = document.createElement("audio");
+      sting.id = "music-sting";
+      sting.preload = "auto";
+      document.body.appendChild(sting);
+      sting.addEventListener("ended", () => {
+        const bg = $("music-audio");
+        if (bg && music.playing) fadeAudioTo(bg, musicTargetVolume(), 800);
+      });
+    }
+    const bg = $("music-audio");
+    if (bg && music.playing) fadeAudioTo(bg, musicTargetVolume() * 0.2, 400);
+    sting.src = "/music/" + music.victory;
+    sting.volume = musicTargetVolume();
+    playAudioSafe(sting);
+  } catch (e) { /* müzik asla oyunu kırmaz */ }
 }
 
 async function loadMusic() {
   try {
     const res = await fetch("/api/music");
     const data = await res.json();
-    music.tracks = data.tracks || [];
+    // Yeni API: town/combat/victory. Eski tekil tracks de desteklenir.
+    music.town = data.town || data.tracks || [];
+    music.combat = data.combat || [];
+    music.victory = data.victory || null;
+    music.townIndex = 0;
+    music.combatIndex = 0;
+    music.tracks = music.town.slice();
+    music.index = 0;
   } catch (e) {
+    music.town = [];
+    music.combat = [];
     music.tracks = [];
   }
-  if (!music.tracks.length) return;
+  if (!music.town.length && !music.combat.length) return;
   $("music").classList.remove("hidden");
   updateMusicTrack();
   const savedVolume = Number(localStorage.getItem("setra-music-volume"));
@@ -939,20 +1012,11 @@ document.addEventListener("keydown", (e) => {
   const t = e.target;
   if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT" || t.isContentEditable)) return;
   const k = (e.key || "").toLowerCase();
-  const qi = SKILL_HOTKEYS.indexOf(k);
-  const ni = ["1", "2", "3", "4", "5"].indexOf(k);
-  if (qi === -1 && ni === -1) return;
   const dRoot = document.getElementById("dungeon-content");
   const dOpen = state.dungeonOpen && dRoot && !document.getElementById("dungeon-view").classList.contains("hidden");
   const pRoot = document.getElementById("pvp-content");
   const pOpen = state.pvpOpen && pRoot && !document.getElementById("pvp-view").classList.contains("hidden");
   if (!dOpen && !pOpen) return;
-  if (qi !== -1) {
-    const root = dOpen ? dRoot : pRoot;
-    const sel = dOpen ? ".skill-slot[data-skill]" : ".skill-slot[data-pskill]";
-    hotkeyClickSlot([...root.querySelectorAll(sel)], qi);
-    return;
-  }
   // O = turu bitir, P = kaç (buton yoksa bir şey olmaz).
   if (k === "o" || k === "p") {
     const root = dOpen ? dRoot : pRoot;
@@ -962,6 +1026,15 @@ document.addEventListener("keydown", (e) => {
       : (k === "o" ? "btn-pvp-end" : "btn-pvp-leave");
     const btn = root.querySelector("#" + id);
     if (btn) btn.click();
+    return;
+  }
+  const qi = SKILL_HOTKEYS.indexOf(k);
+  const ni = ["1", "2", "3", "4", "5"].indexOf(k);
+  if (qi === -1 && ni === -1) return;
+  if (qi !== -1) {
+    const root = dOpen ? dRoot : pRoot;
+    const sel = dOpen ? ".skill-slot[data-skill]" : ".skill-slot[data-pskill]";
+    hotkeyClickSlot([...root.querySelectorAll(sel)], qi);
     return;
   }
   // Number keys pick a target in visual order (only dungeon has target picking).

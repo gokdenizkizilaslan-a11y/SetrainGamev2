@@ -5,7 +5,7 @@ const {
   ROOM_CODE_LENGTH,
   ROOM_CODE_CHARS,
 } = require("./constants");
-const { createPlayer, rollStats, publicPlayer, onNewDay } = require("./players");
+const { createPlayer, rollStats, applyStartLevelGrowth, publicPlayer, onNewDay } = require("./players");
 const { idleDungeon, publicDungeon } = require("./dungeon");
 const stock = require("./stock");
 
@@ -304,6 +304,7 @@ function startGame(socketId) {
   room.log = { type: "day", text: "Day 1 — the town stirs. Spend your stamina wisely." };
   for (const p of room.players) {
     rollStats(p);
+    applyStartLevelGrowth(p);
     onNewDay(p);
     p.dungeonId = null;
     p.bossId = null;

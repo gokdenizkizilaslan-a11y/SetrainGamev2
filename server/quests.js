@@ -1,5 +1,5 @@
 const { CONTENT, getClass, getItem, getMonster } = require("../content");
-const { requirePlaying } = require("./town");
+const { requirePlaying, requireNoActiveBattle } = require("./town");
 const { hasItem, removeItem, addItem, applyStatDelta, historyOf } = require("./players");
 
 function getQuestDef(questId) {
@@ -139,6 +139,7 @@ function vampireAscendEligible(player, target) {
 // 10 cruor bedel olarak yanar; temple'daki gibi ascend sinematiği döner.
 function vampireAscend(room, player, target) {
   requirePlaying(room, player);
+  requireNoActiveBattle(room, player);
   const check = vampireAscendEligible(player, target);
   if (!check.ok) throw new Error(check.reason);
   const def = getQuestDef("vampire_rite");

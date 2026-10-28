@@ -155,6 +155,27 @@ function getPvpFor(room, player) {
   return (room.pvpDuels||[]).find(d=> d.memberIds.includes(player.id)) || null;
 }
 function clearTimer(d){ if(d.turnTimer){ clearTimeout(d.turnTimer); d.turnTimer=null; } }
+// DoT/thorns/pet damage can drop a duelist outside the normal "attack" path.
+// Resolve the duel here so it can never get stuck with a dead fighter.
+function checkPvpDeaths(room, d) {
+  if (!d || d.status !== "fighting") return true;
+  const fighters = (d.memberIds || []).map((id) => room.players.find((p) => p.id === id));
+  if (fighters.length < 2 || fighters.some((p) => !p)) return false;
+  const [a, b] = fighters;
+  if (a.hp > 0 && b.hp > 0) return false;
+  const draw = a.hp <= 0 && b.hp <= 0;
+  const winner = draw ? null : (a.hp > 0 ? a : b);
+  d.status = "done";
+  d.result = {
+    outcome: draw ? "defeat" : "victory",
+    text: draw ? "Both duelists fall — the duel is a draw." : `${winner.name} wins the duel!`,
+  };
+  addFx(d, { type: "result", outcome: d.result.outcome });
+  d.log.push(d.result.text);
+  clearTimer(d);
+  if (typeof room.broadcast === "function") { try { room.broadcast(); } catch (e) {} }
+  return true;
+}
 
 function buildTurnOrder(room,d){
   const members = d.memberIds.map(id=> room.players.find(p=>p.id===id)).filter(Boolean).filter(p=>p.hp>0 && p.lives>0);
@@ -471,7 +492,10 @@ function act(room, player, skillId){
   // find opponent
   const oppId = d.memberIds.find(id=>id!==player.id);
   const opponent = room.players.find(p=>p.id===oppId);
-  if(!opponent || opponent.hp<=0) throw new Error("Opponent down.");
+  if(!opponent || opponent.hp<=0) {
+    checkPvpDeaths(room, d);
+    throw new Error("Opponent down.");
+  }
   // Execute pre-gate (mana yanmadan)
   if(skill.execute && skill.execute.belowHpPct != null && opponent.maxHp > 0
       && opponent.hp / opponent.maxHp > Number(skill.execute.belowHpPct)) {
@@ -719,15 +743,8 @@ function act(room, player, skillId){
       addFx(d,{type:"buff", actor:player.id, target:"player", targetId, kind:e.kind, value:e.value, turns});
     }
   }
-  // check win
-  if(opponent.hp<=0){
-    d.status="done";
-    d.result={outcome:"victory", text:`${player.name} wins the duel!`};
-    addFx(d,{type:"result", outcome:"victory"});
-    d.log.push(d.result.text);
-    clearTimer(d);
-    return d;
-  }
+  // check win (also catches thorns/DoT killing the attacker)
+  if(checkPvpDeaths(room,d)) return d;
   armTimer(room,d);
   return d;
 }
@@ -754,6 +771,7 @@ function advanceTurn(room,d){
   d.round+=1;
   tickCooldowns(d);
   try { tickPvpBuffs(room, d); } catch (e) {}
+  if (checkPvpDeaths(room, d)) return true;
   d.endedTurns=new Set();
   buildTurnOrder(room,d);
   // mana regen

@@ -10,7 +10,7 @@ const {
   getPetPowerMult,
   resolveDamageStat,
 } = require("../content");
-const { dealDamage, addShield, removeShieldInstance, heal, loseLife, addXp, addPetXp, removeItem, healForFood, addItem } = require("./players");
+const { dealDamage, addShield, removeShieldInstance, tickShields, heal, loseLife, addXp, addPetXp, removeItem, healForFood, addItem } = require("./players");
 const passives = require("./passives");
 const stacks = require("./stacks");
 const chest = require("./chest");
@@ -625,6 +625,10 @@ function spawnWave(room, d) {
     p.mana = p.maxMana;
     p._struckThisCombat = false;
     p._secondWindUsed = false;
+    // A fresh delve starts with no leftover shields from an earlier fight.
+    p.shields = [];
+    p.shield = 0;
+    p.maxShield = 0;
     for (const s of passives.shieldStartFor(p, p.maxHp)) {
       addShield(p, s.amount, s.turns);
     }
@@ -1342,7 +1346,12 @@ function finishMonsterPhase(room, d) {
     return;
   }
   tickBuffs(room, d);
-  checkEnd(room, d); // a DoT tick may have finished the last monster
+  // Shield turns must expire like every other round-based buff — otherwise
+  // passive/pet shields (no buff uid) stay forever.
+  for (const p of allMembers(room, d)) {
+    try { tickShields(p); } catch (e) { /* a shield can never break the round */ }
+  }
+  checkEnd(room, d); // a DoT tick may have finished the last monster (or wiped the party)
   if (d.status !== "fighting" || d._floorTransition) return;
   d.round += 1;
   tickCooldowns(d);

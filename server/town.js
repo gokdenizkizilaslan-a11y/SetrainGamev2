@@ -13,6 +13,22 @@ function requirePlaying(room, player) {
   }
 }
 
+// Savaşın ortasında ırk/sınıf değişmez (canlı stat'larla dövüş bozulur).
+function requireNoActiveBattle(room, player) {
+  const d = (room.dungeons || []).find((x) => (x.memberIds || []).includes(player.id));
+  if (d && (d.status === "fighting" || d.status === "done")) {
+    throw new Error("Finish your battle first.");
+  }
+  const b = (room.bossParties || []).find((x) => (x.memberIds || []).includes(player.id));
+  if (b && b.status === "fighting") {
+    throw new Error("Finish your battle first.");
+  }
+  const pvp = (room.pvpDuels || []).find((x) => (x.memberIds || []).includes(player.id));
+  if (pvp && pvp.status === "fighting") {
+    throw new Error("Finish your duel first.");
+  }
+}
+
 function spendStamina(player, cost) {
   if (player.stamina < cost) {
     throw new Error("Not enough stamina.");
@@ -107,4 +123,4 @@ function sleepOutside(player) {
   };
 }
 
-module.exports = { requirePlaying, spendStamina, search, endDay, rest, sleepOutside };
+module.exports = { requirePlaying, requireNoActiveBattle, spendStamina, search, endDay, rest, sleepOutside };

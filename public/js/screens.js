@@ -2104,7 +2104,13 @@ function renderTreeMap(nodes, ts, me) {
   return L;
 }
 
-const stMap = { scale: 1, x: 0, y: 0, dragging: false, lastX: 0, lastY: 0 };
+const stMap = { scale: 1, x: 0, y: 0, dragging: false, lastX: 0, lastY: 0, fitted: false, tab: null };
+let stWindowBound = false;
+
+// Called when the skill tree is opened: the next render re-centers the map.
+function resetSkillTreeMapView() {
+  stMap.fitted = false;
+}
 
 function updateStMapTransform() {
   const inner = $("skilltree-map");
@@ -2123,6 +2129,8 @@ function fitSkillTreeMap() {
   stMap.scale = Math.max(0.55, Math.min(1, Math.min(vw / sw, vh / sh) * 0.94));
   stMap.x = (vw - sw * stMap.scale) / 2;
   stMap.y = (vh - sh * stMap.scale) / 2;
+  stMap.fitted = true;
+  stMap.tab = state.skillTreeTab;
   updateStMapTransform();
 }
 
@@ -2143,20 +2151,26 @@ function initSkillTreeMapInteractions() {
     stMap.lastX = e.clientX;
     stMap.lastY = e.clientY;
   });
-  window.addEventListener("mouseup", () => {
-    stMap.dragging = false;
-    if (vp) vp.style.cursor = "grab";
-  });
-  window.addEventListener("mousemove", (e) => {
-    if (!stMap.dragging) return;
-    const dx = e.clientX - stMap.lastX;
-    const dy = e.clientY - stMap.lastY;
-    stMap.x += dx;
-    stMap.y += dy;
-    stMap.lastX = e.clientX;
-    stMap.lastY = e.clientY;
-    updateStMapTransform();
-  });
+  // Window-level drag listeners are attached once (the viewport is recreated
+  // on every render, so binding them per render would leak listeners).
+  if (!stWindowBound) {
+    stWindowBound = true;
+    window.addEventListener("mouseup", () => {
+      stMap.dragging = false;
+      const cur = $("skilltree-map-viewport");
+      if (cur) cur.style.cursor = "grab";
+    });
+    window.addEventListener("mousemove", (e) => {
+      if (!stMap.dragging) return;
+      const dx = e.clientX - stMap.lastX;
+      const dy = e.clientY - stMap.lastY;
+      stMap.x += dx;
+      stMap.y += dy;
+      stMap.lastX = e.clientX;
+      stMap.lastY = e.clientY;
+      updateStMapTransform();
+    });
+  }
   let lastDist = 0;
   vp.addEventListener("touchstart", (e) => {
     if (e.touches.length === 2) {
@@ -2294,7 +2308,8 @@ function renderSkillTreeView(room) {
   if (gridEl) {
     renderTreeMap(nodes, ts, me);
     initSkillTreeMapInteractions();
-    fitSkillTreeMap();
+    if (!stMap.fitted || stMap.tab !== state.skillTreeTab) fitSkillTreeMap();
+    else updateStMapTransform();
     const zin = $("st-zoom-in");
     const zout = $("st-zoom-out");
     const zreset = $("st-zoom-reset");
@@ -4350,15 +4365,23 @@ function renderMap(room) {
       const b = (CATALOG.bosses||[]).find(x=>x.id===bid);
       if (!b) return;
       if (el.classList.contains("locked")) { showToast("Defeat the previous boss first."); playSfx("block"); return; }
-      // Check if boss dungeon already has a fighting party (single party per boss)
-      const bossRank = bid; // boss id same as dungeon rank for new boss dungeons
-      const existingBossDungeon = (room.dungeons||[]).find(x=>x.rank===bossRank && x.status==="fighting");
-      if (existingBossDungeon) { showToast("Another fight is already running on this boss."); return; }
-      const existingWaiting = (room.dungeons||[]).find(x=>x.rank===bossRank && x.status==="forming");
-      if (existingWaiting) {
-        socket.emit("dungeon:joinById", {dungeonId: existingWaiting.id});
-      } else {
-        socket.emit("dungeon:create", {rank: bossRank, size: "normal"});
+      // Boss fights use their own party system (server/boss.js), not dungeons.
+      const bossParties = room.bossParties || [];
+      const existingFight = bossParties.find(x=>x.bossId===bid && x.status==="fighting");
+      if (existingFight) {
+        if ((existingFight.memberIds||[]).includes(state.playerId)) {
+          state.dungeonOpen = true;
+          closeMap();
+        } else {
+          showToast("Another fight is already running on this boss.");
+        }
+        return;
+      }
+      const existingWaiting = bossParties.find(x=>x.bossId===bid && x.status==="waiting");
+      if (existingWaiting && !(existingWaiting.memberIds||[]).includes(state.playerId)) {
+        socket.emit("boss:join", {bossId: bid});
+      } else if (!existingWaiting) {
+        socket.emit("boss:challenge", {bossId: bid});
       }
       state.dungeonOpen = true;
       closeMap();

@@ -15155,7 +15155,7 @@ const CONTENT = {
       "desc": "Graceful and attuned. +12 mana, +1 speed.",
       "chance": 10,
       "stats": {
-        "mana": 12,
+        "maxMana": 12,
         "speed": 1
       },
       "passives": []
@@ -15608,7 +15608,10 @@ function publicCatalog() {
       gradeWeights: CONTENT.loot.gradeWeights,
     },
     sizes: CONTENT.dungeonSizes.map((s) => ({ id: s.id, label: s.label, stamina: s.stamina })),
-    dungeons: CONTENT.dungeons.map((d) => ({
+    // Boss dungeons are entered from the world-map boss pins (server/boss.js),
+    // never from the normal dungeon browser — showing them there created a
+    // second, reward-less "boss fight" path.
+    dungeons: CONTENT.dungeons.filter((d) => !d.isBoss).map((d) => ({
       rank: d.rank,
       label: d.label,
       image: d.image,
