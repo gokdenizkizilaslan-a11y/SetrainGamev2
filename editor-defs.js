@@ -518,6 +518,7 @@ const pages = [
       { path: "images.ui.searchButton", label: "Search button icon (blank = SVG)", type: "image", folder: "ui" },
       { path: "images.ui.restButton", label: "Rest button icon (blank = SVG)", type: "image", folder: "ui" },
       { path: "images.ui.sleepButton", label: "Sleep button icon (blank = SVG)", type: "image", folder: "ui" },
+      { path: "images.ui.restNight", label: "Rest / sleep transition image (blank = CSS night sky)", type: "image", folder: "ui" },
       { path: "images.ui.actionCardOpacity", label: "Action card opacity 0..1 (blank = default)", type: "string" },
       { path: "images.ui.bgPhotoOpacity", label: "Background photo opacity 0..1 (blank = default)", type: "string" },
       { path: "images.ui.bgPhotoTownOpacity", label: "Town background photo opacity 0..1 (blank = default)", type: "string" },

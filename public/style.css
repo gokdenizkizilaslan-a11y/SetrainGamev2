@@ -5249,3 +5249,285 @@ input:focus {
   border-radius: 6px;
   color: var(--ink-soft);
 }
+
+/* ===== Item cards: full-bleed art + always-visible actions ===== */
+.bag-card,
+.equip-slot,
+.shop-card,
+.pet-card {
+  position: relative;
+  isolation: isolate;
+  height: auto;
+  overflow: visible;
+}
+.bag-card { min-height: clamp(14rem, 18vw, 17rem); }
+.equip-slot--filled { min-height: clamp(13rem, 17vw, 16rem); }
+.shop-card { min-height: clamp(16rem, 20vw, 18rem); }
+.pet-card { min-height: clamp(14rem, 18vw, 17rem); }
+
+.bag-card > .bag-socket,
+.equip-slot--filled > .equip-socket,
+.pet-card > .pet-socket {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  margin: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  box-shadow: none;
+  pointer-events: none;
+}
+.bag-card > .bag-socket .item-icon,
+.equip-slot--filled > .equip-socket .item-icon,
+.pet-card > .pet-socket .item-icon {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background-size: cover;
+  background-position: center;
+}
+.shop-card > .item-icon {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  margin: 0;
+  border-radius: inherit;
+  box-shadow: none;
+  pointer-events: none;
+  background-size: cover;
+  background-position: center;
+}
+.shop-card > .item-icon--chest svg {
+  width: 2.6rem;
+  height: 2.6rem;
+}
+
+.bag-card::after,
+.equip-slot--filled::after,
+.shop-card::after,
+.pet-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(5, 3, 2, 0.12) 0%,
+    rgba(5, 3, 2, 0.3) 34%,
+    rgba(5, 3, 2, 0.78) 72%,
+    rgba(5, 3, 2, 0.94) 100%
+  );
+  box-shadow: inset 0 0 0 1px rgba(232, 183, 108, 0.14);
+}
+
+.bag-card > :not(.bag-socket),
+.equip-slot > :not(.equip-socket),
+.shop-card > :not(.item-icon),
+.pet-card > :not(.pet-socket) {
+  position: relative;
+  z-index: 2;
+}
+
+.bag-card .bag-name,
+.bag-card .bag-desc,
+.equip-slot .equip-slot-label,
+.equip-slot .equip-slot-item,
+.shop-card .shop-card-name,
+.shop-card .shop-card-desc,
+.pet-card .bag-name,
+.pet-card .bag-desc,
+.pet-card .pet-desc,
+.pet-card .pet-skills {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95), 0 2px 8px rgba(0, 0, 0, 0.75);
+}
+
+.bag-card .bag-name,
+.shop-card .shop-card-name,
+.equip-slot .equip-slot-item {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  text-wrap: balance;
+}
+.bag-card .bag-desc,
+.pet-card .pet-desc {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+  -webkit-line-clamp: 4;
+}
+.shop-card .shop-card-desc {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+}
+
+.bag-card > .btn,
+.equip-slot > .btn,
+.pet-card > .btn {
+  width: 100%;
+  margin-top: auto;
+}
+.shop-card > .shop-card-price { margin-top: auto; }
+.shop-card > .btn {
+  width: 100%;
+  margin-top: 0;
+}
+
+.bag-row.bag-card > .bag-sell {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: 0.45rem;
+  width: 100%;
+  margin-top: auto;
+  max-height: none;
+  overflow: visible;
+  opacity: 1;
+}
+.bag-row.bag-card > .btn + .bag-sell { margin-top: 0; }
+.bag-row.bag-card > .bag-sell:empty { display: none; }
+.bag-row.bag-card > .bag-sell .btn {
+  width: 100%;
+  font-size: 0.66rem;
+  line-height: 1.25;
+  white-space: normal;
+}
+
+/* ===== Rest / sleep night transition ===== */
+.night-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 34%, #1a2745 0%, #0b1223 46%, #03050a 100%);
+  transition: opacity 0.45s ease, visibility 0s linear 0.45s;
+}
+.night-transition.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 0.4s ease;
+}
+.night-transition__art {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-position: center;
+  background-size: cover;
+  opacity: 0.72;
+  filter: saturate(0.85) brightness(0.82);
+  transform: scale(1.03);
+}
+.night-transition__sky {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at 8% 18%, rgba(255, 255, 255, 0.95) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 17% 64%, rgba(255, 246, 214, 0.8) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 24% 30%, rgba(255, 255, 255, 0.7) 0 1.2px, transparent 2px),
+    radial-gradient(circle at 33% 82%, rgba(255, 255, 255, 0.85) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 42% 12%, rgba(255, 244, 208, 0.9) 0 1.4px, transparent 2.2px),
+    radial-gradient(circle at 51% 56%, rgba(255, 255, 255, 0.55) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 61% 26%, rgba(255, 255, 255, 0.8) 0 1.2px, transparent 2px),
+    radial-gradient(circle at 69% 76%, rgba(255, 240, 196, 0.85) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 78% 42%, rgba(255, 255, 255, 0.75) 0 1.3px, transparent 2.1px),
+    radial-gradient(circle at 86% 14%, rgba(255, 255, 255, 0.9) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 92% 68%, rgba(255, 250, 230, 0.7) 0 1.2px, transparent 2px),
+    radial-gradient(circle at 12% 88%, rgba(255, 255, 255, 0.6) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 57% 92%, rgba(255, 255, 255, 0.65) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 72% 6%, rgba(255, 245, 220, 0.8) 0 1.2px, transparent 2px);
+  background-repeat: no-repeat;
+  animation: nightTwinkle 2.4s ease-in-out infinite alternate;
+}
+.night-transition__moon {
+  position: absolute;
+  top: 16%;
+  right: 14%;
+  width: clamp(4rem, 8vw, 7rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 36% 34%, #fffdf0 0%, #ffeab0 46%, #d9a75c 100%);
+  box-shadow: 0 0 24px rgba(255, 234, 176, 0.55), 0 0 80px rgba(255, 220, 140, 0.28);
+}
+.night-transition.is-visible .night-transition__moon {
+  animation: nightMoonIn 1.35s ease both;
+}
+.night-transition__copy {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  max-width: min(90vw, 46rem);
+  padding: 1.5rem;
+  text-align: center;
+}
+.night-transition.is-visible .night-transition__copy {
+  animation: nightCopyIn 0.9s ease both;
+}
+.night-transition__eyebrow {
+  font-family: "Cinzel", serif;
+  font-size: 0.64rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(255, 232, 180, 0.72);
+}
+.night-transition__title {
+  font-family: "Cinzel", serif;
+  font-size: clamp(2rem, 6vw, 4rem);
+  line-height: 1.05;
+  color: #fff4d6;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.65);
+}
+.night-transition__sub {
+  max-width: 32rem;
+  font-size: clamp(0.8rem, 1.5vw, 1rem);
+  line-height: 1.5;
+  color: rgba(240, 230, 214, 0.82);
+}
+@keyframes nightTwinkle {
+  from { opacity: 0.55; }
+  to { opacity: 1; }
+}
+@keyframes nightMoonIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.85); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes nightCopyIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .night-transition,
+  .night-transition__sky,
+  .night-transition.is-visible .night-transition__moon,
+  .night-transition.is-visible .night-transition__copy {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -10902,6 +10902,7 @@ const CONTENT = {
       "searchButton": "",
       "restButton": "",
       "sleepButton": "",
+      "restNight": "",
       "actionCardOpacity": "",
       "bgPhotoOpacity": "",
       "bgPhotoTownOpacity": ""

@@ -78,6 +78,46 @@ function showToast(message) {
   showToast._t = setTimeout(() => toast.classList.add("hidden"), 3200);
 }
 
+let nightTransitionBusy = false;
+function playNightTransition(title, sub, onCovered) {
+  const el = $("night-transition");
+  if (!el) {
+    if (onCovered) onCovered();
+    return;
+  }
+  if (nightTransitionBusy) return;
+  nightTransitionBusy = true;
+
+  const ui = (CATALOG.images && CATALOG.images.ui) || {};
+  const art = el.querySelector(".night-transition__art");
+  const titleEl = el.querySelector(".night-transition__title");
+  const subEl = el.querySelector(".night-transition__sub");
+  const rawImg = typeof ui.restNight === "string" ? ui.restNight.trim() : "";
+  if (art) art.style.backgroundImage = rawImg ? `url("${rawImg.replace(/"/g, "%22")}")` : "none";
+  if (titleEl) titleEl.textContent = title || "Night falls";
+  if (subEl) subEl.textContent = sub || "";
+
+  el.classList.remove("is-visible");
+  void el.offsetWidth;
+  el.classList.add("is-visible");
+  el.setAttribute("aria-hidden", "false");
+
+  let covered = false;
+  const cover = () => {
+    if (covered) return;
+    covered = true;
+    if (onCovered) onCovered();
+  };
+  setTimeout(cover, 620);
+  setTimeout(() => {
+    el.classList.remove("is-visible");
+    el.setAttribute("aria-hidden", "true");
+  }, 1500);
+  setTimeout(() => {
+    nightTransitionBusy = false;
+  }, 2050);
+}
+
 // ---- Feedback: sounds, floating text, hit effects ----
 
 let sfxEnabled = localStorage.getItem("setra-sfx-enabled") !== "0";
@@ -1644,8 +1684,12 @@ function renderActionCards(room, selfId) {
         state.templeOpen = a.id === "temple";
         state.inventoryOpen = false;
         renderTown(state.room);
+      } else if (a.id === "sleep") {
+        state.justSlept = true;
+        playNightTransition("Night falls", "You sleep beneath the cold stars. Stamina returns at dawn.", () => socket.emit(a.event));
+      } else if (a.id === "rest") {
+        playNightTransition("You rest", "The stars wheel overhead while your strength returns.", () => socket.emit(a.event));
       } else {
-        if (a.id === "sleep") state.justSlept = true;
         socket.emit(a.event);
       }
     });
@@ -3341,7 +3385,9 @@ function renderTavernView(room) {
       <span class="sleep-text"><strong>Warm bed</strong><span class="muted">safe sleep · ${sleepPrice} gold</span></span>
       <button type="button" class="btn btn--gold btn--mini${canSleep ? "" : " btn--mini-disabled"}" id="btn-tavern-sleep">Sleep</button>
     </div>`;
-  root.querySelector("#btn-tavern-sleep").addEventListener("click", () => socket.emit("tavern:sleep"));
+  root.querySelector("#btn-tavern-sleep").addEventListener("click", () => {
+    playNightTransition("Night falls", "You sleep safely at the tavern. Stamina returns at dawn.", () => socket.emit("tavern:sleep"));
+  });
   wireTalk(root, () => renderTavernView(room));
   root.querySelectorAll("[data-bet]").forEach((b) =>
     b.addEventListener("click", () => {
@@ -3703,7 +3749,8 @@ function shopCardHtml(me, staminaOk, item, buyEvent, isSold) {
     : "";
   const chestRates = item.slot === "chest" ? chestRatesHtml(item) : "";
   return `<div class="shop-card ${isSold ? "shop-card--sold" : ""}" style="--rarity:${rarityColor(item.rarity)}">
-    <span class="shop-card-top">${itemIconEl(item)}<span class="shop-card-name">${escapeHtml(item.name)}</span></span>
+    ${itemIconEl(item)}
+    <span class="shop-card-top"><span class="shop-card-name">${escapeHtml(item.name)}</span></span>
     <span class="shop-card-badges">${rarityBadge(item)}<span class="purchased-badge">${escapeHtml(slotLabel(item.slot))}</span>${ownedBadge}${soldBadge}</span>
     <span class="shop-card-desc">${escapeHtml(item.description)}</span>
     ${chestRates ? `<span class="shop-card-desc" style="font-size:0.68rem;color:var(--muted)">${chestRates}</span>` : ""}
