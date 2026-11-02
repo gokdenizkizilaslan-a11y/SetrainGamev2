@@ -3358,17 +3358,17 @@ function tavernDialogueHtml() {
   }
 }
 
-// GameCraft editor paths (images.ui.*) are applied to the whole card so the
-// artwork fills the button edge-to-edge. Missing paths keep the warm CSS look.
+// GameCraft editor paths (images.ui.*) fill their art panel edge-to-edge.
+// Missing paths keep the warm CSS look.
 function applyTavernArt(root, ui) {
   if (!root) return;
   const map = [
     [".tavernkeeper-image-placeholder", ui.tavernPortrait],
-    ["#btn-tavern-sleep", ui.tavernSleep],
-    [".tavern-rations-card", ui.tavernRations],
-    ["#btn-flip", ui.tavernCoin],
-    ["#btn-bj", ui.tavernCards],
-    ["#btn-tavern-leave", ui.tavernLeave],
+    [".sleep-image-placeholder", ui.tavernSleep],
+    [".rations-image-placeholder", ui.tavernRations],
+    [".coin-image-placeholder", ui.tavernCoin],
+    [".playing-card-image-placeholder", ui.tavernCards],
+    [".door-image-placeholder", ui.tavernLeave],
   ];
   map.forEach(([selector, url]) => {
     const el = root.querySelector(selector);
@@ -3428,8 +3428,11 @@ function renderTavernView(room) {
       ${tavernDialogueHtml()}
 
       <div class="tavern-actions">
-        <!-- GameCraft: images.ui.tavernSleep fills this whole card -->
+        <!-- GameCraft: images.ui.tavernSleep fills the art panel -->
         <button type="button" class="tavern-sleep-card${canSleep ? "" : " is-unaffordable"}" id="btn-tavern-sleep">
+          <span class="tavern-image sleep-image-placeholder tavern-image--cover">
+            <span class="tavern-img-hint" aria-hidden="true">Bed</span>
+          </span>
           <span class="tavern-sleep-body">
             <span class="tavern-card-kicker">Rest &amp; Recovery</span>
             <span class="tavern-card-title">Sleep</span>
@@ -3438,50 +3441,61 @@ function renderTavernView(room) {
           </span>
         </button>
 
-        <!-- GameCraft: images.ui.tavernRations fills this whole card -->
-        <div class="tavern-rations-card">
-          <div class="tavern-rations-body">
-            <span class="tavern-card-title">Field Rations</span>
-            <span class="tavern-card-desc">${prov.foodAmount} FOOD</span>
-            <button type="button" class="btn btn--bronze btn--mini" id="btn-buy-food">Buy (${prov.foodPrice} gold)</button>
-          </div>
+        <div class="tavern-side">
+          <section class="tavern-wager" aria-labelledby="tavern-wager-title">
+            <div class="tavern-section-head">
+              <h3 class="tavern-section-title" id="tavern-wager-title">Wagering</h3>
+              <p class="tavern-section-desc">Pick a wager, then a game.</p>
+            </div>
+            ${result}
+            <div class="bet-row" role="group" aria-label="Wager amount">
+              ${bets
+                .map((b) => `<button type="button" class="bet-btn${state.bet === b ? " is-selected" : ""}" data-bet="${b}">${b} GOLD</button>`)
+                .join("")}
+            </div>
+            <div class="tavern-games">
+              <!-- GameCraft: images.ui.tavernCoin fills the art panel -->
+              <button type="button" class="tavern-game-card" id="btn-flip">
+                <span class="tavern-image coin-image-placeholder tavern-image--cover">
+                  <span class="tavern-img-hint" aria-hidden="true">Coin</span>
+                </span>
+                <span class="tavern-game-body">
+                  <span class="tavern-game-title">Coin Flip</span>
+                  <span class="tavern-game-sub">Call it in the air. A winning toss doubles your wager.</span>
+                </span>
+              </button>
+              <!-- GameCraft: images.ui.tavernCards fills the art panel -->
+              <button type="button" class="tavern-game-card" id="btn-bj">
+                <span class="tavern-image playing-card-image-placeholder tavern-image--cover">
+                  <span class="tavern-img-hint" aria-hidden="true">Cards</span>
+                </span>
+                <span class="tavern-game-body">
+                  <span class="tavern-game-title">Blackjack</span>
+                  <span class="tavern-game-sub">Draw close to 21 without going over. Naturals pay 2.5&times;.</span>
+                </span>
+              </button>
+              <!-- GameCraft: images.ui.tavernLeave fills the art panel -->
+              <button type="button" class="tavern-leave-card" id="btn-tavern-leave">
+                <span class="tavern-image door-image-placeholder tavern-image--cover">
+                  <span class="tavern-img-hint" aria-hidden="true">Door</span>
+                </span>
+                <span class="tavern-leave-text">Leave</span>
+              </button>
+            </div>
+          </section>
         </div>
       </div>
 
-      <section class="tavern-wager" aria-labelledby="tavern-wager-title">
-        <div class="tavern-section-head">
-          <h3 class="tavern-section-title" id="tavern-wager-title">Wagering</h3>
-          <p class="tavern-section-desc">Pick a wager, then a game. A winning coin flip doubles it; blackjack pays 2.5&times; on a natural.</p>
+      <!-- GameCraft: images.ui.tavernRations fills the art panel -->
+      <div class="tavern-rations-card">
+        <span class="tavern-image rations-image-placeholder tavern-image--cover">
+          <span class="tavern-img-hint" aria-hidden="true">Food</span>
+        </span>
+        <div class="tavern-rations-body">
+          <span class="tavern-card-title">Field Rations</span>
+          <span class="tavern-card-desc">${prov.foodAmount} FOOD</span>
         </div>
-        ${result}
-        <div class="bet-row" role="group" aria-label="Wager amount">
-          ${bets
-            .map((b) => `<button type="button" class="bet-btn${state.bet === b ? " is-selected" : ""}" data-bet="${b}">${b} GOLD</button>`)
-            .join("")}
-        </div>
-        <div class="tavern-games">
-          <!-- GameCraft: images.ui.tavernCoin fills this whole card -->
-          <button type="button" class="tavern-game-card" id="btn-flip">
-            <span class="tavern-game-body">
-              <span class="tavern-game-title">Coin Flip</span>
-              <span class="tavern-game-sub">Call it in the air. A winning toss doubles your wager.</span>
-            </span>
-          </button>
-          <!-- GameCraft: images.ui.tavernCards fills this whole card -->
-          <button type="button" class="tavern-game-card" id="btn-bj">
-            <span class="tavern-game-body">
-              <span class="tavern-game-title">Blackjack</span>
-              <span class="tavern-game-sub">Draw close to 21 without going over. Naturals pay 2.5&times;.</span>
-            </span>
-          </button>
-        </div>
-      </section>
-
-      <div class="tavern-leave-row">
-        <!-- GameCraft: images.ui.tavernLeave fills this whole card -->
-        <button type="button" class="tavern-leave-card" id="btn-tavern-leave">
-          <span class="tavern-leave-text">Leave</span>
-        </button>
+        <button type="button" class="btn btn--bronze btn--mini" id="btn-buy-food">Buy (${prov.foodPrice} gold)</button>
       </div>
     </div>`;
   applyTavernArt(root, tavernArt);

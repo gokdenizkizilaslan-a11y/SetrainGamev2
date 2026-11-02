@@ -6422,8 +6422,8 @@ input:focus {
 }
 
 /* ============================================================
-   TAVERN LAYOUT V2 — compact, full-card artwork
-   Card images come from GameCraft: images.ui.*
+   TAVERN LAYOUT V3 - roomy cards, full-bleed artwork
+   Card art comes from GameCraft: images.ui.*
    ============================================================ */
 
 .tavern-view {
@@ -6453,190 +6453,161 @@ input:focus {
 }
 
 .tavern-shell {
-  gap: 0.55rem;
+  gap: 0.85rem;
 }
 
-/* ---- Compact dialogue ---- */
+/* ---- Art panels: artwork always fills the rounded frame ---- */
 
-.tavern-dialogue {
-  min-height: 0;
-  padding: 0.65rem 0.8rem;
-  gap: 0.75rem;
-  border-radius: 14px;
+.tavern-image.has-card-bg {
+  border-color: rgba(232, 180, 92, 0.45);
 }
 
-.tavern-dialogue-main {
-  gap: 0.35rem;
-}
-
-.tavern-dialogue-name {
-  font-size: 0.78rem;
-  letter-spacing: 0.07em;
-}
-
-.tavern-dialogue-text {
-  font-size: 0.82rem;
-  line-height: 1.5;
-}
-
-.tavern-dialogue-options {
-  gap: 0.35rem;
-  padding-top: 0.2rem;
-}
-
-.tavern-dialogue-options .btn {
-  font-size: 0.56rem;
-  letter-spacing: 0.05em;
-  padding: 0.32rem 0.52rem;
-}
-
-.tavernkeeper-image-placeholder {
-  width: 6.5rem;
-  min-height: 6.5rem;
-  height: auto;
-  align-self: stretch;
-  border-radius: 10px;
-}
-
-.tavernkeeper-image-placeholder.has-card-bg {
-  background-image: var(--cp-img);
-  background-size: cover;
-  background-position: center top;
-  background-repeat: no-repeat;
-}
-
-.tavernkeeper-image-placeholder.has-card-bg .tavern-img-hint,
-.tavernkeeper-image-placeholder.has-card-bg::after {
+.tavern-image.has-card-bg::after {
   display: none;
 }
 
-/* ---- Compact main action cards ---- */
-
-.tavern-actions {
-  gap: 0.55rem;
-  grid-template-columns: minmax(0, 1.55fr) minmax(190px, 0.6fr);
-}
-
-.tavern-sleep-card {
-  position: relative;
-  overflow: hidden;
-  min-height: 7rem;
-  padding: 0.7rem 0.9rem;
-  align-items: flex-end;
-  gap: 0;
-  border-radius: 14px;
-}
-
-.tavern-sleep-body {
-  position: relative;
-  z-index: 1;
-  gap: 0.18rem;
-  padding: 0;
-}
-
-.tavern-card-kicker {
-  font-size: 0.5rem;
-}
-
-.tavern-sleep-body .tavern-card-title {
-  font-size: 1rem;
-}
-
-.tavern-card-desc {
-  font-size: 0.76rem;
-  line-height: 1.35;
-}
-
-.tavern-card-price {
-  margin-top: 0.2rem;
-  padding: 0.16rem 0.55rem;
-  font-size: 0.64rem;
-}
-
-.tavern-coin {
-  width: 0.58rem;
-  height: 0.58rem;
-}
-
-.tavern-rations-card {
-  position: relative;
-  overflow: hidden;
-  min-height: 7rem;
-  padding: 0.6rem 0.7rem;
-  justify-content: flex-end;
-  border-radius: 14px;
-}
-
-.tavern-rations-body {
-  position: relative;
-  z-index: 1;
-  gap: 0.1rem;
-  padding-top: 0;
-}
-
-.tavern-rations-body .tavern-card-title {
-  font-size: 0.78rem;
-}
-
-.tavern-rations-body .tavern-card-desc {
-  font-size: 0.7rem;
-}
-
-.tavern-rations-body .btn {
-  margin-top: 0.2rem;
-  padding: 0.26rem 0.5rem;
-  font-size: 0.56rem;
-}
-
-/* Full-card artwork: cover the whole button, never squash. */
-.tavern-sleep-card.has-card-bg,
-.tavern-rations-card.has-card-bg,
-.tavern-game-card.has-card-bg,
-.tavern-leave-card.has-card-bg {
+.sleep-image-placeholder.has-card-bg,
+.rations-image-placeholder.has-card-bg,
+.coin-image-placeholder.has-card-bg,
+.playing-card-image-placeholder.has-card-bg,
+.door-image-placeholder.has-card-bg,
+.tavernkeeper-image-placeholder.has-card-bg {
+  background-image: var(--cp-img);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
 
-.tavern-sleep-card.has-card-bg {
-  background-image:
-    linear-gradient(90deg, rgba(8, 5, 2, 0.92) 0%, rgba(8, 5, 2, 0.62) 55%, rgba(8, 5, 2, 0.18) 100%),
-    var(--cp-img);
+/* ---- Roomier dialogue ---- */
+
+.tavern-dialogue {
+  min-height: 8.25rem;
+  padding: 0.9rem 1rem;
+  gap: 1rem;
+  border-radius: 16px;
 }
 
-.tavern-rations-card.has-card-bg {
-  background-image:
-    linear-gradient(to top, rgba(8, 5, 2, 0.94) 0%, rgba(8, 5, 2, 0.55) 60%, rgba(8, 5, 2, 0.15) 100%),
-    var(--cp-img);
+.tavern-dialogue-main {
+  gap: 0.4rem;
 }
 
-.tavern-game-card.has-card-bg {
-  background-image:
-    linear-gradient(90deg, rgba(8, 5, 2, 0.92) 0%, rgba(8, 5, 2, 0.6) 55%, rgba(8, 5, 2, 0.2) 100%),
-    var(--cp-img);
+.tavern-dialogue-name {
+  font-size: 0.88rem;
+  letter-spacing: 0.08em;
 }
 
-.tavern-leave-card.has-card-bg {
-  background-image:
-    linear-gradient(90deg, rgba(8, 5, 2, 0.85), rgba(8, 5, 2, 0.45)),
-    var(--cp-img);
+.tavern-dialogue-text {
+  font-size: 0.9rem;
+  line-height: 1.6;
 }
 
-/* ---- Compact wagering ---- */
-
-.tavern-wager {
-  padding: 0.65rem 0.75rem;
-  border-radius: 14px;
+.tavern-dialogue-options {
+  gap: 0.4rem;
+  padding-top: 0.25rem;
 }
+
+.tavern-dialogue-options .btn {
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  padding: 0.36rem 0.6rem;
+}
+
+.tavernkeeper-image-placeholder {
+  width: 8.5rem;
+  min-height: 7.5rem;
+  height: auto;
+  align-self: stretch;
+  border-radius: 12px;
+}
+
+/* ---- Main actions: big sleep card + game column ---- */
+
+.tavern-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 1fr);
+  gap: 0.85rem;
+  align-items: stretch;
+}
+
+.tavern-sleep-card {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 0.9rem;
+  width: 100%;
+  min-height: 15rem;
+  padding: 0.6rem;
+  border-radius: 16px;
+  overflow: hidden;
+  text-align: left;
+}
+
+.sleep-image-placeholder {
+  width: 46%;
+  min-height: 100%;
+  flex: none;
+  align-self: stretch;
+  border-radius: 12px;
+}
+
+.tavern-sleep-body {
+  flex: 1;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 0 0.55rem 0 0.15rem;
+}
+
+.tavern-sleep-body .tavern-card-kicker {
+  font-size: 0.56rem;
+}
+
+.tavern-sleep-body .tavern-card-title {
+  font-size: 1.6rem;
+  letter-spacing: 0.1em;
+}
+
+.tavern-sleep-body .tavern-card-desc {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.tavern-sleep-body .tavern-card-price {
+  margin-top: 0.45rem;
+  padding: 0.22rem 0.7rem;
+  font-size: 0.72rem;
+}
+
+.tavern-coin {
+  width: 0.7rem;
+  height: 0.7rem;
+}
+
+.tavern-side {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.tavern-side .tavern-wager {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+/* ---- Wagering ---- */
 
 .tavern-section-head {
   align-items: baseline;
   gap: 0.1rem 0.7rem;
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.4rem;
 }
 
 .tavern-section-title {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
 }
 
 .tavern-section-desc {
@@ -6645,161 +6616,285 @@ input:focus {
 }
 
 .tavern-result {
-  margin-bottom: 0.35rem;
-  font-size: 0.78rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.74rem;
 }
 
 .tavern-wager .bet-row {
-  gap: 0.3rem;
-  margin: 0 0 0.45rem;
+  gap: 0.35rem;
+  margin: 0 0 0.6rem;
 }
 
 .tavern-wager .bet-btn {
-  padding: 0.22rem 0.5rem;
-  border-radius: 7px;
-  font-size: 0.58rem;
+  padding: 0.3rem 0.62rem;
+  border-radius: 8px;
+  font-size: 0.62rem;
 }
 
 .tavern-games {
-  gap: 0.5rem;
+  display: grid;
+  flex: 1;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
 }
 
 .tavern-game-card {
-  position: relative;
-  overflow: hidden;
-  min-height: 3.8rem;
-  padding: 0.5rem 0.65rem;
-  align-items: flex-end;
-  gap: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 0.45rem;
+  width: 100%;
+  min-height: 5.2rem;
+  padding: 0.35rem;
   border-radius: 12px;
+  overflow: hidden;
+  text-align: left;
+}
+
+.tavern-game-card .tavern-image {
+  width: 36%;
+  min-height: 100%;
+  flex: none;
+  align-self: stretch;
+  border-radius: 9px;
 }
 
 .tavern-game-body {
-  position: relative;
-  z-index: 1;
-  gap: 0.1rem;
-  padding: 0;
+  flex: 1;
+  justify-content: center;
+  gap: 0.12rem;
+  padding: 0 0.1rem 0 0;
 }
 
 .tavern-game-title {
-  font-size: 0.78rem;
+  font-size: 0.74rem;
+  letter-spacing: 0.05em;
 }
 
 .tavern-game-sub {
-  font-size: 0.64rem;
-  line-height: 1.3;
+  font-size: 0.6rem;
+  line-height: 1.25;
 }
 
-/* ---- Compact leave card ---- */
-
-.tavern-leave-row {
-  margin-top: 0.1rem;
-}
+/* ---- Leave spans the game row ---- */
 
 .tavern-leave-card {
-  position: relative;
+  display: flex;
+  flex-direction: row;
+  grid-column: 1 / -1;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 3.1rem;
+  padding: 0.35rem 0.7rem 0.35rem 0.35rem;
+  border-radius: 12px;
   overflow: hidden;
-  min-width: 7.5rem;
-  min-height: 2.5rem;
-  padding: 0.3rem 0.75rem;
-  justify-content: center;
-  border-radius: 10px;
+}
+
+.tavern-leave-card .tavern-image {
+  width: 3.4rem;
+  height: 2.4rem;
+  min-height: 0;
+  flex: none;
+  border-radius: 8px;
 }
 
 .tavern-leave-text {
-  position: relative;
-  z-index: 1;
-  font-size: 0.66rem;
+  font-size: 0.7rem;
 }
 
-/* ---- V2 responsive / short screens ---- */
+/* ---- Field rations bar ---- */
 
-@media (max-width: 860px) {
+.tavern-rations-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.8rem;
+  min-height: 4.6rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: 14px;
+}
+
+.tavern-rations-card .tavern-image {
+  width: 4.6rem;
+  height: 3.4rem;
+  min-height: 0;
+  flex: none;
+  border-radius: 10px;
+}
+
+.tavern-rations-body {
+  flex: 1;
+  gap: 0.1rem;
+  padding-top: 0;
+}
+
+.tavern-rations-body .tavern-card-title {
+  font-size: 0.9rem;
+}
+
+.tavern-rations-body .tavern-card-desc {
+  font-size: 0.72rem;
+}
+
+.tavern-rations-card .btn {
+  flex: none;
+  margin-left: auto;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.64rem;
+}
+
+/* ---- Blackjack table ---- */
+
+.tavern-blackjack {
+  padding: 1rem;
+  border-radius: 16px;
+}
+
+/* ---- V3 responsive / short screens ---- */
+
+@media (max-width: 900px) {
   .tavern-actions {
     grid-template-columns: 1fr;
-    gap: 0.5rem;
   }
 
-  .tavern-sleep-card,
-  .tavern-rations-card {
-    min-height: 6.5rem;
+  .tavern-sleep-card {
+    min-height: 11rem;
+  }
+
+  .sleep-image-placeholder {
+    width: 42%;
   }
 }
 
 @media (max-width: 640px) {
   .tavern-dialogue {
     flex-direction: column-reverse;
-    gap: 0.5rem;
+    gap: 0.6rem;
   }
 
   .tavernkeeper-image-placeholder {
     width: 100%;
-    height: 7rem;
-    min-height: 7rem;
+    height: 8rem;
+    min-height: 8rem;
   }
 
-  .tavern-games {
-    grid-template-columns: 1fr;
+  .tavern-sleep-card {
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .sleep-image-placeholder {
+    width: 100%;
+    height: 9.5rem;
+    min-height: 9.5rem;
+  }
+
+  .tavern-rations-card {
+    flex-wrap: wrap;
+  }
+
+  .tavern-rations-card .btn {
+    width: 100%;
+    margin-left: 0;
   }
 }
 
 @media (max-height: 800px) {
   .tavern-shell {
-    gap: 0.5rem;
+    gap: 0.55rem;
   }
 
   .tavern-dialogue {
-    padding: 0.6rem 0.7rem;
+    min-height: 6.5rem;
+    padding: 0.7rem 0.85rem;
   }
 
   .tavern-dialogue-text {
-    font-size: 0.78rem;
-    line-height: 1.4;
-  }
-
-  .tavern-dialogue-options .btn {
-    padding: 0.26rem 0.45rem;
-    font-size: 0.52rem;
+    font-size: 0.82rem;
+    line-height: 1.45;
   }
 
   .tavernkeeper-image-placeholder {
-    width: 5.8rem;
-    min-height: 5.8rem;
+    width: 7rem;
   }
 
-  .tavern-sleep-card,
-  .tavern-rations-card {
-    min-height: 7rem;
+  .tavern-sleep-card {
+    min-height: 12.5rem;
   }
 
-  .tavern-wager {
-    padding: 0.55rem 0.65rem;
+  .tavern-sleep-body .tavern-card-title {
+    font-size: 1.3rem;
   }
 
   .tavern-game-card {
-    min-height: 3.6rem;
+    min-height: 4.4rem;
   }
 
-  .tavern-game-sub {
-    font-size: 0.6rem;
+  .tavern-rations-card {
+    min-height: 4rem;
   }
 }
 
 @media (max-height: 700px) {
+  .tavern-shell {
+    gap: 0.45rem;
+  }
+
+  .tavern-dialogue {
+    min-height: 0;
+    padding: 0.6rem 0.75rem;
+  }
+
   .tavern-dialogue-text {
-    font-size: 0.74rem;
+    font-size: 0.76rem;
+    line-height: 1.4;
   }
 
   .tavern-dialogue-options .btn {
-    font-size: 0.5rem;
+    padding: 0.28rem 0.48rem;
+    font-size: 0.55rem;
   }
 
-  .tavern-sleep-card,
-  .tavern-rations-card {
-    min-height: 6.2rem;
+  .tavern-section-desc {
+    display: none;
+  }
+
+  .tavern-wager .bet-row {
+    margin-bottom: 0.45rem;
+  }
+
+  .tavern-sleep-card {
+    min-height: 10.5rem;
+  }
+
+  .tavern-sleep-body .tavern-card-title {
+    font-size: 1.15rem;
+  }
+
+  .tavern-sleep-body .tavern-card-desc {
+    font-size: 0.8rem;
+  }
+
+  .tavern-game-card {
+    min-height: 3.8rem;
   }
 
   .tavern-game-sub {
     display: none;
   }
+
+  .tavern-leave-card {
+    min-height: 2.6rem;
+  }
+
+  .tavern-rations-card {
+    min-height: 3.5rem;
+    padding: 0.4rem 0.6rem;
+  }
+
+  .tavern-rations-card .tavern-image {
+    width: 3.6rem;
+    height: 2.6rem;
+  }
 }
+
