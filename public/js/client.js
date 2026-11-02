@@ -12,6 +12,7 @@ const state = {
   tavernOpen: false,
   blacksmithOpen: false,
   merchantOpen: false,
+  merchantCat: "chest",
   templeOpen: false,
   templeTab: "ascend",
   inventoryOpen: false,

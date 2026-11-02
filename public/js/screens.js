@@ -1682,6 +1682,7 @@ function renderActionCards(room, selfId) {
         state.blacksmithOpen = a.id === "blacksmith";
         state.merchantOpen = a.id === "merchant";
         state.templeOpen = a.id === "temple";
+        if (a.id === "merchant") state.merchantCat = "chest";
         if (a.id === "temple") state.templeTab = "ascend";
         state.inventoryOpen = false;
         renderTown(state.room);
@@ -3714,6 +3715,9 @@ function renderTempleView(room) {
   if (state.craftOpen) {
     state.craftOpen = false;
   }
+  const ui = (CATALOG.images && CATALOG.images.ui) || {};
+  const bgs = (CATALOG.images && CATALOG.images.backgrounds) || {};
+  setCardBg($("temple-view"), ui.templeBg || bgs.temple || "");
   const temple = CATALOG.temple || {};
   const st = (CATALOG.town && CATALOG.town.temple && CATALOG.town.temple.stamina) || 2;
   const staminaOk = me.stamina >= st;
@@ -3828,34 +3832,41 @@ function renderTempleView(room) {
     revive: reviveHtml,
   };
   const templeNav = [
-    { id: "ascend", label: "Ascend", ico: "level", count: evos.length },
-    { id: "hearts", label: "Mend a Heart", ico: "lives", count: Math.max(0, maxLives - me.lives) },
-    { id: "rebirth", label: "Rebirth", ico: "rest", count: stoneQty },
-    { id: "revive", label: "Revive Ally", ico: "heal", count: deadAllies.length },
-  ].map((t) => `<button type="button" class="temple-nav-btn${templeTab === t.id ? " temple-nav-btn--active" : ""}" data-temple-tab="${t.id}"${templeTab === t.id ? ' aria-current="page"' : ""}>
-      <span class="temple-nav-ico">${icon(t.ico)}</span>
-      <span class="temple-nav-label">${t.label}</span>
-      ${t.count > 0 ? `<span class="temple-nav-count">${t.count}</span>` : ""}
+    { id: "ascend", label: "Ascend", ico: "level", count: evos.length, note: evos.length ? `${evos.length} form${evos.length === 1 ? "" : "s"}` : "No forms", art: ui.templeAscend },
+    { id: "hearts", label: "Mend a Heart", ico: "lives", count: Math.max(0, maxLives - me.lives), note: `${me.lives}/${maxLives} hearts`, art: ui.templeHearts },
+    { id: "rebirth", label: "Rebirth", ico: "rest", count: stoneQty, note: `${stoneQty} stone${stoneQty === 1 ? "" : "s"}`, art: ui.templeRebirth },
+    { id: "revive", label: "Revive Ally", ico: "heal", count: deadAllies.length, note: deadAllies.length ? `${deadAllies.length} fallen` : "No fallen", art: ui.templeRevive },
+  ].map((t) => `<button type="button" class="market-cat${templeTab === t.id ? " market-cat--active" : ""}" data-temple-tab="${t.id}" role="tab" aria-selected="${templeTab === t.id}"${templeTab === t.id ? ' aria-current="page"' : ""}>
+      <span class="market-art" data-img="${escapeHtml(t.art || "")}" data-variant="temple-${t.id}">
+        <span class="market-art-hint market-art-hint--ico" aria-hidden="true">${icon(t.ico)}</span>
+      </span>
+      <span class="market-cat-body">
+        <span class="market-cat-kicker">Sacred Rite</span>
+        <span class="market-cat-title">${escapeHtml(t.label)}</span>
+        <span class="market-cat-count">${escapeHtml(t.note)}</span>
+      </span>
     </button>`).join("");
 
   root.innerHTML = `
-    ${vendorHead("temple", "Ancient Temple", "The stones hum. “The Temple remembers a purpose older than the kingdom.”")}
-    <div class="shop-resources">
-      ${chip(icon("gold"), `Gold ${me.gold}`)}
-      ${chip(icon("wood"), `Wood ${me.wood}`)}
-      ${chip(icon("lives"), `Lives ${me.lives}/${maxLives}`)}
-      ${chip(icon("stamina"), `Stamina ${me.stamina}`)}
-    </div>
-    <p class="subhead">The Ancient Temple remembers a purpose older than the kingdom.</p>
-    <div class="temple-layout">
-      <nav class="temple-nav" aria-label="Ancient Temple services">${templeNav}</nav>
-      <section class="temple-page">
-        <div class="temple-page-head">
-          <p class="temple-page-kicker">Sacred Rites</p>
-          <h3 class="temple-page-title">${templeTabMeta[templeTab].title}</h3>
-          <p class="temple-page-sub">${templeTabMeta[templeTab].sub}</p>
+    <div class="market-shell">
+      <div class="market-temple-intro">
+        <p class="market-intro-kicker">Sacred Rites</p>
+        <p class="market-intro-line">The stones hum with a purpose older than the kingdom.</p>
+        <div class="market-res">
+          ${chip(icon("gold"), `Gold ${me.gold}`)}
+          ${chip(icon("lives"), `Lives ${me.lives}/${maxLives}`)}
+          ${chip(icon("stamina"), `Stamina ${me.stamina}`)}
         </div>
-        <div class="temple-grid">${templePages[templeTab]}</div>
+      </div>
+      <div class="market-cats" role="tablist" aria-label="Ancient Temple services">${templeNav}</div>
+      <section class="market-shelf market-temple-page">
+        <div class="market-shelf-head">
+          <div>
+            <h3 class="market-shelf-title">${templeTabMeta[templeTab].title}</h3>
+            <p class="market-shelf-sub">${templeTabMeta[templeTab].sub}</p>
+          </div>
+        </div>
+        <div class="temple-grid market-temple-grid">${templePages[templeTab]}</div>
       </section>
     </div>`;
   initImages(root);
@@ -4054,6 +4065,9 @@ function renderMerchantView(room) {
     root.innerHTML = "";
     return;
   }
+  const ui = (CATALOG.images && CATALOG.images.ui) || {};
+  const bgs = (CATALOG.images && CATALOG.images.backgrounds) || {};
+  setCardBg($("merchant-view"), ui.merchantBg || bgs.merchant || "");
   const st = (CATALOG.town && CATALOG.town.merchant && CATALOG.town.merchant.stamina) || 1;
   const staminaOk = me.stamina >= st;
   const buyable = (CATALOG.loot && CATALOG.loot.buyable) || ["common", "uncommon", "rare"];
@@ -4064,18 +4078,70 @@ function renderMerchantView(room) {
     : (CATALOG.items || []).filter(
         (i) => (i.slot === "consumable" || i.slot === "material" || i.slot === "chest") && buyable.includes(i.rarity) && !i.craftOnly && !i.dungeonOnly
       );
+  const npc = talkNpc("merchant");
+  const npcTitle = (npc && (npc.title || npc.name)) || "Merchant of Setra Village";
+
+  const cats = [
+    { id: "chest", label: "Chests", kicker: "Treasure", art: ui.merchantChests },
+    { id: "consumable", label: "Potions", kicker: "Supplies", art: ui.merchantPotions },
+    { id: "material", label: "Materials", kicker: "Crafting", art: ui.merchantMaterials },
+  ];
+  const byCat = {};
+  cats.forEach((c) => { byCat[c.id] = goods.filter((i) => i.slot === c.id); });
+  const available = cats.filter((c) => byCat[c.id].length);
+  const activeId = available.some((c) => c.id === state.merchantCat)
+    ? state.merchantCat
+    : (available[0] ? available[0].id : "chest");
+  state.merchantCat = activeId;
+  const activeCat = cats.find((c) => c.id === activeId) || cats[0];
+  const activeItems = byCat[activeId] || [];
+
+  const catCards = cats.map((c) => {
+    const count = byCat[c.id].length;
+    const active = c.id === activeId;
+    const note = count ? `${count} ${count === 1 ? "item" : "items"}` : "Sold out";
+    return `<button type="button" class="market-cat${active ? " market-cat--active" : ""}${count ? "" : " market-cat--empty"}" data-merchant-cat="${c.id}" role="tab" aria-selected="${active}">
+      <span class="market-art" data-img="${escapeHtml(c.art || "")}" data-variant="merchant-${c.id}">
+        <span class="market-art-hint" aria-hidden="true">${escapeHtml(c.label)}</span>
+      </span>
+      <span class="market-cat-body">
+        <span class="market-cat-kicker">${escapeHtml(c.kicker)}</span>
+        <span class="market-cat-title">${escapeHtml(c.label)}</span>
+        <span class="market-cat-count">${escapeHtml(note)}</span>
+      </span>
+    </button>`;
+  }).join("");
 
   root.innerHTML = `
-    ${vendorHead("merchant", "Merchant", "The merchant spreads empty hands wide. “Chests, potions, curiosities — everything has a price.”")}
-    ${shopTalkHtml("merchant")}
-    ${shopResources(me)}
-    <p class="subhead">Chests, Potions & Materials — Week ${room.shopStock ? room.shopStock.week : 1} · ${stockArr.length} items (7 days rotation)</p>
-    <div class="shop-grid">${goods.map((i) => shopCardHtml(me, staminaOk, i, "merchant:buy", soldSetM.includes(i.id))).join("") || '<div class="muted">Nothing for sale today.</div>'}</div>
-    <div class="btn-row">
-      <button type="button" class="btn btn--bronze" id="btn-merchant-inventory">Open Inventory</button>
+    <div class="market-shell">
+      <div class="market-talk-wrap">${shopTalkHtml("merchant", { name: npcTitle })}</div>
+      <div class="market-res">
+        ${chip(icon("gold"), `Gold ${me.gold}`)}
+        ${chip(icon("wood"), `Wood ${me.wood}`)}
+        ${chip(icon("stamina"), `Stamina ${me.stamina}`)}
+      </div>
+      <div class="market-cats" role="tablist" aria-label="Merchant wares">${catCards}</div>
+      <section class="market-shelf">
+        <div class="market-shelf-head">
+          <div>
+            <h3 class="market-shelf-title">${escapeHtml(activeCat.label)}</h3>
+            <p class="market-shelf-sub">Week ${room.shopStock ? room.shopStock.week : 1} · tap a category above to browse</p>
+          </div>
+          <button type="button" class="btn btn--bronze btn--mini" id="btn-merchant-inventory">Open Inventory</button>
+        </div>
+        <div class="shop-grid market-grid">${activeItems.map((i) => shopCardHtml(me, staminaOk, i, "merchant:buy", soldSetM.includes(i.id))).join("") || '<div class="muted market-empty">Nothing in this category today — check back next week.</div>'}</div>
+      </section>
     </div>`;
   initImages(root);
 
+  root.querySelectorAll("[data-merchant-cat]").forEach((b) =>
+    b.addEventListener("click", () => {
+      state.merchantCat = b.getAttribute("data-merchant-cat");
+      sfxPlay("clicksound");
+      renderMerchantView(room);
+      root.scrollTop = 0;
+    })
+  );
   root.querySelectorAll("[data-buy]").forEach((b) =>
     b.addEventListener("click", () => socket.emit("merchant:buy", { itemId: b.getAttribute("data-buy") }))
   );
@@ -4085,7 +4151,8 @@ function renderMerchantView(room) {
       socket.emit("inventory:equip", { itemId: b.getAttribute("data-equip") });
     })
   );
-  root.querySelector("#btn-merchant-inventory").addEventListener("click", () => {
+  const invBtn = root.querySelector("#btn-merchant-inventory");
+  if (invBtn) invBtn.addEventListener("click", () => {
     sfxPlay("inventorysound");
     state.merchantOpen = false;
     state.inventoryOpen = true;
@@ -4173,8 +4240,9 @@ function talkOptionsFor(npc, node) {
   return base;
 }
 
-function talkPanelHtml(npc, node, withClose) {
+function talkPanelHtml(npc, node, withClose, nameOverride) {
   let extraProgress = "";
+  const displayName = nameOverride || npc.name || npc.id;
   const options = talkOptionsFor(npc, node);
   if (npc.id === "uncle") {
     const s = uncleQuestState();
@@ -4191,21 +4259,21 @@ function talkPanelHtml(npc, node, withClose) {
   }
   return `<div class="talk-panel talk-fade" key="${escapeHtml(npc.id + ":" + node.id)}">
     <div class="talk-main">
-      <p class="talk-name">${escapeHtml(npc.name || npc.id)}</p>
+      <p class="talk-name">${escapeHtml(displayName)}</p>
       <p class="talk-text">${escapeHtml(node.text || "")}</p>
       ${extraProgress}
       <div class="talk-options">
         ${options.map((o, i) => `<button type="button" class="btn btn--smoke btn--mini" data-opt="${i}">${escapeHtml(o.label)}</button>`).join("")}
       </div>
     </div>
-    <span class="talk-portrait" data-img="${escapeHtml(npc.image || "")}" data-variant="${escapeHtml(npc.id)}" title="${escapeHtml(npc.name || npc.id)}"></span>
+    <span class="talk-portrait" data-img="${escapeHtml(npc.image || "")}" data-variant="${escapeHtml(npc.id)}" title="${escapeHtml(displayName)}"></span>
   </div>
   ${withClose ? `<div class="talk-close-row"><button type="button" class="btn btn--ghost btn--mini" data-talk-close>Close talk</button></div>` : ""}`;
 }
 
 // Dükkan içi diyalog HER ZAMAN üstte açıktır (tıklamaya gerek yok):
 // dükkan açılınca konuşma o NPC'ye sabitlenir, panel doğrudan çizilir.
-function shopTalkHtml(npcId) {
+function shopTalkHtml(npcId, opts) {
   const npc = talkNpc(npcId);
   if (!npc) return "";
   if (state.talkNpcId !== npcId) {
@@ -4215,7 +4283,8 @@ function shopTalkHtml(npcId) {
   }
   const node = talkNode(npc, state.talkNodeId);
   if (!node) return "";
-  return talkPanelHtml(npc, node, false);
+  const nameOverride = opts && opts.name ? opts.name : "";
+  return talkPanelHtml(npc, node, false, nameOverride);
 }
 
 // Rozet + seçenek + kapatma tıklamaları; renderFn ilgili görünümü tazeler.
