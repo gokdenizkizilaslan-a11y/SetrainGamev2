@@ -10912,7 +10912,7 @@ const CONTENT = {
     },
     "ui": {
       "panel": "/images/ui/panel.png",
-      "townPanelBg": "/images/ui/townpanelbg.webp?v=mtzteh8n",
+      "townPanelBg": "/images/ui/townpanelbg.webp?v=mvzwm5t7",
       "merchantBg": "",
       "merchantChests": "",
       "merchantPotions": "",

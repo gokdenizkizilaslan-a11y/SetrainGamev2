@@ -4361,6 +4361,12 @@ function wireTalk(root, renderFn) {
 function renderPlazaView(room) {
   const root = $("plaza-content");
   if (!root) return;
+  // Town Center sahnesi: town manzarasi paneli neredeyse tamamen kaplasin
+  // (kenarda ornate UI cercevesi kalir). Editor ile: ui.townBg || backgrounds.town.
+  const _imgs = CATALOG.images || {};
+  const _bgs = _imgs.backgrounds || {};
+  const _ui = _imgs.ui || {};
+  setCardBg($("plaza-view"), _ui.townBg || _bgs.town || "");
   // Town Center'da sadece kasaba ahalisi konuşur (Mira, Vesryn...).
   // Dükkan NPC'leri (blacksmith/merchant/tavern) kendi mekanlarında
   // konuşur — meydanda listelenmez.

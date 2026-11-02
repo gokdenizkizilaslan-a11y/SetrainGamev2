@@ -4745,6 +4745,34 @@ input:focus {
   height: 12rem;
 }
 
+/* Town Center: town manzarasi paneli neredeyse tamamen kaplar; sadece kenar
+   cercevesi ve yuvarlatilmis kose ucgenleri (arkadaki ornate UI) gorunur kalir. */
+#plaza-view {
+  position: relative;
+  isolation: isolate;
+}
+#plaza-view.has-card-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 16px;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to bottom, rgba(8, 5, 3, 0.34), rgba(8, 5, 3, 0.62)),
+    var(--cp-img);
+  background-size: cover, cover;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+/* Town Center acikken arkadaki ambient town fotografi gizle — panel zaten
+   ayni town manzarasini tasidigi icin cift gorunmesin, tek kalsin. */
+body[data-screen="screen-town"]:has(#plaza-view:not(.hidden)) #bg-photo {
+  opacity: 0;
+}
+
 /* Story intro: tek sabit boyutlu sahne — içerik değişir, kart ve buton sabit. */
 #story-overlay.has-card-bg {
   background-color: rgba(6, 3, 1, 0.9);
