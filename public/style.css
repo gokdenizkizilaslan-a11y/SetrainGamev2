@@ -2764,10 +2764,28 @@ input:focus {
 .pet-slot-level { font-size:0.64rem; color:var(--muted); }
 @media (max-width: 560px) { .pet-slots { flex-direction:column; align-items:center; } .pet-slot--middle { transform:none; } .bag-list { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); } }
 
+.combat-tray {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.55rem 0.9rem;
+  margin-top: 0.7rem;
+}
+.combat-tray .skill-bar,
+.combat-tray .item-bar {
+  flex: 0 0 auto;
+  width: max-content;
+  max-width: 100%;
+  margin-top: 0;
+}
+
 .skill-bar {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.7rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0.5rem;
   margin-top: 0.7rem;
 }
 
@@ -2778,12 +2796,15 @@ input:focus {
   align-items: stretch;
   justify-content: flex-end;
   gap: 0.05rem;
+  flex: 0 0 88px;
+  width: 88px;
+  height: 88px;
   min-width: 0;
-  min-height: 7.5rem;
+  min-height: 88px;
   padding: 0;
   overflow: visible;
   border: 1px solid var(--glass-line);
-  border-radius: 14px;
+  border-radius: 12px;
   background: var(--glass-2);
   color: var(--ink);
   font-family: "Cinzel", serif;
@@ -2809,7 +2830,7 @@ input:focus {
   border-radius: inherit;
   box-shadow: none;
   background-color: #2f2f2f;
-  background-size: contain;
+  background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
 }
@@ -2817,18 +2838,22 @@ input:focus {
   position: relative;
   z-index: 2;
   width: 100%;
-  padding: 0 0.45rem;
-  font-size: 0.9rem;
-  line-height: 1.12;
+  padding: 0 0.3rem;
+  font-size: 0.72rem;
+  line-height: 1.1;
   text-align: center;
   text-shadow: 0 1px 4px #000, 0 0 10px rgba(0, 0, 0, 0.85);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 .skill-slot .skill-mana {
   position: relative;
   z-index: 2;
   width: 100%;
-  padding: 0 0.45rem 0.5rem;
-  font-size: 0.72rem;
+  padding: 0 0.3rem 0.3rem;
+  font-size: 0.6rem;
   text-align: center;
   color: rgba(243, 231, 210, 0.82);
   text-shadow: 0 1px 3px #000;
@@ -3095,23 +3120,46 @@ input:focus {
 .item-bar {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
+  align-items: center;
+  gap: 0.5rem;
   margin-top: 0.7rem;
+}
+
+@media (min-width: 720px) {
+  .combat-tray > .item-bar {
+    padding-left: 0.9rem;
+    border-left: 1px dashed rgba(232, 183, 108, 0.22);
+  }
 }
 
 .item-btn {
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.55rem 0.85rem;
+  justify-content: center;
+  flex: 0 0 88px;
+  width: 88px;
+  min-height: 88px;
+  gap: 0.25rem;
+  padding: 0.4rem 0.3rem;
+  overflow: hidden;
   border: 1px solid var(--glass-line);
   border-radius: 12px;
   background: var(--glass-2);
   color: var(--ink);
   font-family: "Cinzel", serif;
-  font-size: 0.85rem;
+  font-size: 0.7rem;
+  line-height: 1.1;
+  text-align: center;
   cursor: pointer;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.item-btn > span:last-child {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .item-btn:hover:not(.item-btn--disabled) {
@@ -3125,9 +3173,25 @@ input:focus {
 }
 
 .item-btn .item-icon {
-  width: 1.6rem;
-  height: 1.6rem;
+  width: 2.1rem;
+  height: 2.1rem;
   margin: 0;
+}
+
+@media (max-width: 560px) {
+  .combat-tray { gap: 0.45rem 0.6rem; }
+  .skill-slot {
+    flex-basis: 78px;
+    width: 78px;
+    height: 78px;
+    min-height: 78px;
+  }
+  .item-btn {
+    flex-basis: 78px;
+    width: 78px;
+    min-height: 78px;
+    font-size: 0.66rem;
+  }
 }
 
 .combat-top {
@@ -4688,6 +4752,7 @@ input:focus {
   flex-direction: column;
   align-items: center;
   gap: 0.4rem;
+  width: 100%;
   padding: 1rem 0.7rem;
   border: 1px solid var(--glass-line);
   border-radius: 14px;
@@ -4703,14 +4768,16 @@ input:focus {
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
 }
 .npc-portrait {
-  width: 4.2rem;
-  height: 4.2rem;
-  border-radius: 50%;
-  border: 2px solid rgba(232, 183, 108, 0.6);
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  height: auto;
+  border-radius: 10px;
+  border: 1px solid rgba(232, 183, 108, 0.6);
   background: linear-gradient(135deg, #4a3b28, #241a10);
   background-size: cover;
-  background-position: center top;
-  box-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.15);
+  background-position: center;
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.15);
 }
 .npc-name {
   font-weight: 700;
@@ -4807,11 +4874,11 @@ input:focus {
 .talk-launch-portrait {
   width: 2.4rem;
   height: 2.4rem;
-  border-radius: 50%;
+  border-radius: 7px;
   border: 1px solid rgba(232, 183, 108, 0.6);
-  background: linear-gradient(135deg, #4a3b28, #241a10);
+  background: #2f2f2f;
   background-size: cover;
-  background-position: center top;
+  background-position: center;
   flex: none;
 }
 .talk-close-row {

@@ -3030,7 +3030,7 @@ function renderCombat(room, root) {
     .join("");
 
   const itemButtons = [`<button type="button" class="item-btn${canAct && me.food > 0 ? "" : " item-btn--disabled"}" data-item="food">
-    ${itemIconEl({ id: "food", image: "" })}
+    ${itemIconEl({ id: "food", image: "/images/items/field_rations.webp" })}
     <span>Eat Food (${me.food})</span>
   </button>`];
   (me.inventory || []).forEach((inv) => {
@@ -3075,8 +3075,10 @@ function renderCombat(room, root) {
       </div>
       <div class="enemy-wave">${enemiesHtml || '<div class="muted">No foes remain.</div>'}</div>
       <div class="party-row">${partyHtml}</div>
-      <div class="skill-bar">${skillsHtml}</div>
-      <div class="item-bar">${itemsHtml}</div>
+      <div class="combat-tray">
+        <div class="skill-bar">${skillsHtml}</div>
+        <div class="item-bar">${itemsHtml}</div>
+      </div>
       <div class="combat-hint">${escapeHtml(hint)}${canAct ? ' <span class="muted">[Q-T] skills · [1-5] target · [O] end · [P] flee</span>' : ""}</div>
       ${logHtml}
     </div>
