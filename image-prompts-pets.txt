@@ -1,6 +1,6 @@
 ==================================================================
 SETRA - PET GORSEL PROMPTLARI (KREA2)
-101 pet portresi + otomatik dosya isimlendirme
+101 pet portresi + otomatik ID satirlari
 ==================================================================
 
 HEDEF KLASOR : public/images/pets/
@@ -13,8 +13,8 @@ EVRELER      : Baby = <id>.png, Young = <id>_young.png,
 
 NASIL KULLANILIR:
   1) Grid promptunu KREA'ya aynen yapistir, kare gorsel uret.
-  2) Gorseli MAP'teki hucre sirasina gore kes.
-  3) Her parcayi MAP'te yazan dosya adiyla kaydet.
+  2) Gorseli IDS satirindaki hucre sirasina gore kes.
+  3) Her parcayi IDS satirindaki id ile (id.png) kaydet.
   4) Hucre etiketleri sadece sana hangi petin nerede oldugunu soyler;
      gorsele yazi yazdirma (wordless).
 
@@ -26,7 +26,7 @@ OTOMATIK ISIMLENDIRME KODU (Node.js)
 ==================================================================
 Asagidaki kodu repo kokunde pet-isimleri.js olarak kaydet ve
 `node pet-isimleri.js` calistir. content.js'teki siraya gore
-butun gridleri ve dosya adlarini otomatik yazar. Boylece isim
+butun gridleri ve IDS satirlarini otomatik yazar. Boylece isim
 uydurman gerekmez; kod her zaman content.js ile ayni kalir.
 
 ```js
@@ -41,9 +41,7 @@ for (let i = 0; i < pets.length; i += 9) {
   const cols = chunk.length <= 2 ? chunk.length : 3;
   const rows = Math.ceil(chunk.length / cols);
   lines.push(`\n--- GRID P${grid} | ${rows}x${cols} | ${chunk.length} pet ---`);
-  chunk.forEach((p, j) => {
-    lines.push(`cell${j + 1} -> ${p.id}.png   // ${p.name} (${p.element})`);
-  });
+  lines.push(chunk.map((p, j) => `cell${j + 1}: ${p.id}`).join(", ") + ",");
 }
 const text = lines.join("\n");
 console.log(text);
@@ -51,8 +49,7 @@ fs.writeFileSync("pet-isimleri.txt", text + "\n", "utf8");
 ```
 
 Ornek cikti (ilk grid):
-  cell1 -> fire_wolf.png   // Fire Wolf (fire)
-  cell2 -> water_sprite.png   // Water Sprite (water)
+  cell1: fire_wolf, cell2: water_sprite, cell3: pet_direwolf,
 
 ==================================================================
 GRID P1 | 3x3 | 9 pet | starter pack
@@ -71,16 +68,10 @@ Cell 7 (pet_sprout): walking seedling with leaf arms.
 Cell 8 (pet_flame_sprite): dancing living flame girl.
 Cell 9 (pet_mossling): round moss ball with pebble eyes.
 
-MAP (hucre -> dosya: public/images/pets/):
-  cell1 -> fire_wolf.png
-  cell2 -> water_sprite.png
-  cell3 -> pet_direwolf.png
-  cell4 -> pet_ember_pup.png
-  cell5 -> pet_cinder_cub.png
-  cell6 -> pet_slime.png
-  cell7 -> pet_sprout.png
-  cell8 -> pet_flame_sprite.png
-  cell9 -> pet_mossling.png
+IDS (kopyala-yapistir):
+cell1: fire_wolf, cell2: water_sprite, cell3: pet_direwolf,
+cell4: pet_ember_pup, cell5: pet_cinder_cub, cell6: pet_slime,
+cell7: pet_sprout, cell8: pet_flame_sprite, cell9: pet_mossling,
 
 ==================================================================
 GRID P2 | 3x3 | 9 pet | grove + frost pups
@@ -99,16 +90,10 @@ Cell 7 (pet_frost_pup): white-blue husky pup with snowflake markings.
 Cell 8 (pet_ice_whelp): shivering ice-scale baby drake.
 Cell 9 (pet_snow_cub): fluffy snow leopard cub.
 
-MAP (hucre -> dosya: public/images/pets/):
-  cell1 -> pet_vine_pup.png
-  cell2 -> pet_thorn_whelp.png
-  cell3 -> pet_grove_sprite.png
-  cell4 -> pet_slime_king.png
-  cell5 -> pet_forest_cub.png
-  cell6 -> pet_natureling.png
-  cell7 -> pet_frost_pup.png
-  cell8 -> pet_ice_whelp.png
-  cell9 -> pet_snow_cub.png
+IDS (kopyala-yapistir):
+cell1: pet_vine_pup, cell2: pet_thorn_whelp, cell3: pet_grove_sprite,
+cell4: pet_slime_king, cell5: pet_forest_cub, cell6: pet_natureling,
+cell7: pet_frost_pup, cell8: pet_ice_whelp, cell9: pet_snow_cub,
 
 ==================================================================
 GRID P3 | 3x3 | 9 pet | frost drakes + stone pack
@@ -127,16 +112,10 @@ Cell 7 (pet_crystal_sprite): floating amethyst crystal sprite.
 Cell 8 (pet_golem_whelp): baby stone golem with kind eyes.
 Cell 9 (pet_granite_pup): speckled granite mastiff pup.
 
-MAP (hucre -> dosya: public/images/pets/):
-  cell1 -> pet_glacierling.png
-  cell2 -> pet_chill_sprite.png
-  cell3 -> pet_frost_drake.png
-  cell4 -> pet_stone_pup.png
-  cell5 -> pet_rockling.png
-  cell6 -> pet_boulder_cub.png
-  cell7 -> pet_crystal_sprite.png
-  cell8 -> pet_golem_whelp.png
-  cell9 -> pet_granite_pup.png
+IDS (kopyala-yapistir):
+cell1: pet_glacierling, cell2: pet_chill_sprite, cell3: pet_frost_drake,
+cell4: pet_stone_pup, cell5: pet_rockling, cell6: pet_boulder_cub,
+cell7: pet_crystal_sprite, cell8: pet_golem_whelp, cell9: pet_granite_pup,
 
 ==================================================================
 GRID P4 | 3x3 | 9 pet | storm + first darks
@@ -155,16 +134,10 @@ Cell 7 (pet_shadow_pup): black mist puppy with violet eyes.
 Cell 8 (pet_voidling): small floating void orb with tentacles.
 Cell 9 (pet_dusk_whelp): twilight-purple baby drake.
 
-MAP (hucre -> dosya: public/images/pets/):
-  cell1 -> pet_storm_pup.png
-  cell2 -> pet_thunder_cub.png
-  cell3 -> pet_lightning_drake.png
-  cell4 -> pet_wind_sprite.png
-  cell5 -> pet_gale_whelp.png
-  cell6 -> pet_storm_hatchling.png
-  cell7 -> pet_shadow_pup.png
-  cell8 -> pet_voidling.png
-  cell9 -> pet_dusk_whelp.png
+IDS (kopyala-yapistir):
+cell1: pet_storm_pup, cell2: pet_thunder_cub, cell3: pet_lightning_drake,
+cell4: pet_wind_sprite, cell5: pet_gale_whelp, cell6: pet_storm_hatchling,
+cell7: pet_shadow_pup, cell8: pet_voidling, cell9: pet_dusk_whelp,
 
 ==================================================================
 GRID P5 | 3x3 | 9 pet | dark + crystal waters
@@ -183,16 +156,10 @@ Cell 7 (pet_spell_whelp): baby drake with scroll wings.
 Cell 8 (pet_runeling): walking rune stone with legs.
 Cell 9 (pet_crystal_hound): glass-blue crystal hound.
 
-MAP (hucre -> dosya: public/images/pets/):
-  cell1 -> pet_night_cub.png
-  cell2 -> pet_shade_sprite.png
-  cell3 -> pet_umbra_drake.png
-  cell4 -> pet_crystal_drake.png
-  cell5 -> pet_arcane_pup.png
-  cell6 -> pet_mana_sprite.png
-  cell7 -> pet_spell_whelp.png
-  cell8 -> pet_runeling.png
-  cell9 -> pet_crystal_hound.png
+IDS (kopyala-yapistir):
+cell1: pet_night_cub, cell2: pet_shade_sprite, cell3: pet_umbra_drake,
+cell4: pet_crystal_drake, cell5: pet_arcane_pup, cell6: pet_mana_sprite,
+cell7: pet_spell_whelp, cell8: pet_runeling, cell9: pet_crystal_hound,
 
 ==================================================================
 GRID P6 | 3x3 | 9 pet | deep void + phoenix rise
@@ -211,16 +178,10 @@ Cell 7 (pet_phoenix_hatchling): golden chick bursting from ash egg.
 Cell 8 (pet_ember_drake): red-scaled fire drake hatchling.
 Cell 9 (pet_flame_hound): muscular hound with mane of fire.
 
-MAP (hucre -> dosya: public/images/pets/):
-  cell1 -> pet_void_pup.png
-  cell2 -> pet_abyssling.png
-  cell3 -> pet_nether_cub.png
-  cell4 -> pet_shadow_drake.png
-  cell5 -> pet_dark_hound.png
-  cell6 -> pet_void_sprite.png
-  cell7 -> pet_phoenix_hatchling.png
-  cell8 -> pet_ember_drake.png
-  cell9 -> pet_flame_hound.png
+IDS (kopyala-yapistir):
+cell1: pet_void_pup, cell2: pet_abyssling, cell3: pet_nether_cub,
+cell4: pet_shadow_drake, cell5: pet_dark_hound, cell6: pet_void_sprite,
+cell7: pet_phoenix_hatchling, cell8: pet_ember_drake, cell9: pet_flame_hound,
 
 ==================================================================
 GRID P7 | 3x3 | 9 pet | inferno + mythic lights
@@ -239,16 +200,10 @@ Cell 7 (pet_divine_whelp): baby kirin with halo nub.
 Cell 8 (pet_light_sprite): warm lantern light sprite.
 Cell 9 (pet_mythic_hound): noble silver hound with constellation coat.
 
-MAP (hucre -> dosya: public/images/pets/):
-  cell1 -> pet_inferno_pup.png
-  cell2 -> pet_blaze_drake.png
-  cell3 -> pet_phoenix_chick.png
-  cell4 -> pet_mythic_drake.png
-  cell5 -> pet_gold_pup.png
-  cell6 -> pet_radiant_cub.png
-  cell7 -> pet_divine_whelp.png
-  cell8 -> pet_light_sprite.png
-  cell9 -> pet_mythic_hound.png
+IDS (kopyala-yapistir):
+cell1: pet_inferno_pup, cell2: pet_blaze_drake, cell3: pet_phoenix_chick,
+cell4: pet_mythic_drake, cell5: pet_gold_pup, cell6: pet_radiant_cub,
+cell7: pet_divine_whelp, cell8: pet_light_sprite, cell9: pet_mythic_hound,
 
 ==================================================================
 GRID P8 | 3x3 | 9 pet | numbered I
@@ -267,16 +222,10 @@ Cell 7 (pet_arcane_pup_106): frost-blue arcane puppy with snow runes.
 Cell 8 (pet_mana_sprite_107): violet mana sprite with staff.
 Cell 9 (pet_spell_whelp_108): holy-gold spellbook drake.
 
-MAP (hucre -> dosya: public/images/pets/):
-  cell1 -> pet_rage_pup_100.png
-  cell2 -> pet_fury_cub_101.png
-  cell3 -> pet_berserk_whelp_102.png
-  cell4 -> pet_war_hound_103.png
-  cell5 -> pet_battle_pup_104.png
-  cell6 -> pet_might_cub_105.png
-  cell7 -> pet_arcane_pup_106.png
-  cell8 -> pet_mana_sprite_107.png
-  cell9 -> pet_spell_whelp_108.png
+IDS (kopyala-yapistir):
+cell1: pet_rage_pup_100, cell2: pet_fury_cub_101, cell3: pet_berserk_whelp_102,
+cell4: pet_war_hound_103, cell5: pet_battle_pup_104, cell6: pet_might_cub_105,
+cell7: pet_arcane_pup_106, cell8: pet_mana_sprite_107, cell9: pet_spell_whelp_108,
 
 ==================================================================
 GRID P9 | 3x3 | 9 pet | numbered II
@@ -295,16 +244,10 @@ Cell 7 (pet_crystal_pup_115): clear quartz crystal pup.
 Cell 8 (pet_boulder_cub_116): frost-dusted boulder cub.
 Cell 9 (pet_rock_sprite_117): arcane-glyph rock sprite.
 
-MAP (hucre -> dosya: public/images/pets/):
-  cell1 -> pet_mystic_cub_109.png
-  cell2 -> pet_rune_pup_110.png
-  cell3 -> pet_gale_sprite_111.png
-  cell4 -> pet_stone_guardian_112.png
-  cell5 -> pet_iron_pup_113.png
-  cell6 -> pet_granite_whelp_114.png
-  cell7 -> pet_crystal_pup_115.png
-  cell8 -> pet_boulder_cub_116.png
-  cell9 -> pet_rock_sprite_117.png
+IDS (kopyala-yapistir):
+cell1: pet_mystic_cub_109, cell2: pet_rune_pup_110, cell3: pet_gale_sprite_111,
+cell4: pet_stone_guardian_112, cell5: pet_iron_pup_113, cell6: pet_granite_whelp_114,
+cell7: pet_crystal_pup_115, cell8: pet_boulder_cub_116, cell9: pet_rock_sprite_117,
 
 ==================================================================
 GRID P10 | 3x3 | 9 pet | frost lynxes + ember darks
@@ -323,16 +266,10 @@ Cell 7 (pet_ember_lynx_124): dark ember lynx with cinder spots.
 Cell 8 (pet_flame_hound_125): steel-grey flame hound.
 Cell 9 (pet_cinder_pup_126): frost-pale cinder puppy.
 
-MAP (hucre -> dosya: public/images/pets/):
-  cell1 -> pet_frost_lynx_118.png
-  cell2 -> pet_glacier_pup_119.png
-  cell3 -> pet_snow_hound_120.png
-  cell4 -> pet_ice_cub_121.png
-  cell5 -> pet_chill_whelp_122.png
-  cell6 -> pet_frost_kit_123.png
-  cell7 -> pet_ember_lynx_124.png
-  cell8 -> pet_flame_hound_125.png
-  cell9 -> pet_cinder_pup_126.png
+IDS (kopyala-yapistir):
+cell1: pet_frost_lynx_118, cell2: pet_glacier_pup_119, cell3: pet_snow_hound_120,
+cell4: pet_ice_cub_121, cell5: pet_chill_whelp_122, cell6: pet_frost_kit_123,
+cell7: pet_ember_lynx_124, cell8: pet_flame_hound_125, cell9: pet_cinder_pup_126,
 
 ==================================================================
 GRID P11 | 3x3 | 9 pet | blaze + storm riders
@@ -351,16 +288,10 @@ Cell 7 (pet_wind_sprite_133): laughing lightning wind sprite.
 Cell 8 (pet_lightning_pup_134): dark storm puppy with spark collar.
 Cell 9 (pet_tempest_whelp_135): grey tempest drake whelp.
 
-MAP (hucre -> dosya: public/images/pets/):
-  cell1 -> pet_blaze_cub_127.png
-  cell2 -> pet_inferno_whelp_128.png
-  cell3 -> pet_fire_sprite_129.png
-  cell4 -> pet_storm_hawk_130.png
-  cell5 -> pet_thunder_pup_131.png
-  cell6 -> pet_gale_cub_132.png
-  cell7 -> pet_wind_sprite_133.png
-  cell8 -> pet_lightning_pup_134.png
-  cell9 -> pet_tempest_whelp_135.png
+IDS (kopyala-yapistir):
+cell1: pet_blaze_cub_127, cell2: pet_inferno_whelp_128, cell3: pet_fire_sprite_129,
+cell4: pet_storm_hawk_130, cell5: pet_thunder_pup_131, cell6: pet_gale_cub_132,
+cell7: pet_wind_sprite_133, cell8: pet_lightning_pup_134, cell9: pet_tempest_whelp_135,
 
 ==================================================================
 GRID P12 | 1x2 | 2 pet | last two
@@ -372,9 +303,8 @@ painterly storybook-realism creature portraits, one companion beast per cell in 
 Cell 1 (pet_shadow_cat_136): frost-blue shadow cat with moon eyes.
 Cell 2 (pet_void_pup_137): arcane-violet void puppy with galaxy swirl.
 
-MAP (hucre -> dosya: public/images/pets/):
-  cell1 -> pet_shadow_cat_136.png
-  cell2 -> pet_void_pup_137.png
+IDS (kopyala-yapistir):
+cell1: pet_shadow_cat_136, cell2: pet_void_pup_137,
 
 ==================================================================
 KAPSAM KONTROLU

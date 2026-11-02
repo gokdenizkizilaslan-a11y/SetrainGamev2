@@ -33,7 +33,8 @@ the right over a blurred torchlit town square at sundown. Painterly
 splash-art finish, blood-crimson and ash-black palette, darkly
 elegant, wordless composition.
 
-
+IDS (kopyala-yapistir):
+cell1: bloodspawn,
 
 --- [17] gloomspawn (Lv20 vampire, magic) -> public/images/characters/gloomspawn.png ---
 Gender female, late 20s. Splash-art portrait: a beautiful pale
@@ -50,7 +51,8 @@ moonlit archive of chained tomes. Painterly splash-art finish,
 wine-dark and violet palette, hauntingly beautiful, wordless
 composition.
 
-
+IDS (kopyala-yapistir):
+cell1: gloomspawn,
 
 --- [18] bloodlord (Lv40 EPIC vampire, physical) -> public/images/characters/bloodlord.png ---
 Gender male, ageless. EPIC splash-art portrait from a slight low
@@ -67,7 +69,8 @@ apex menace underlit by rising blood-glow from below. A burning
 village square blurs behind in red haze. Painterly splash-art
 finish, a full tier above any bloodspawn, wordless composition.
 
-
+IDS (kopyala-yapistir):
+cell1: bloodlord,
 
 --- [19] sanguine_lord (Lv40 EPIC vampire, magic) -> public/images/characters/sanguine_lord.png ---
 Gender female, timeless. EPIC splash-art portrait: a devastatingly
@@ -83,6 +86,9 @@ fused fangs worn slightly crooked. Her fully lit face bathes in red
 moonlight full of terrible grace. A drowned cathedral sleeps under a
 blood moon behind. Painterly splash-art finish, a full tier above any
 gloomspawn, wordless composition.
+
+IDS (kopyala-yapistir):
+cell1: sanguine_lord,
 
 =================== SKILL IKONLARI ===================
 

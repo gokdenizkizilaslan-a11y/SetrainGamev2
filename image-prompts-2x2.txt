@@ -13,14 +13,14 @@ order — Krea puts them into the boxes by itself.
 BASE STYLES: skill chunks use the skill base style, item chunks the
 item base style from the main files.
 Grids already 2x2 / 1x2 / single in the main files (UB1, UB2, W6,
-W7, H2, H3, A2, A3, L2, R2, C2, M4, M5, M6, K2, O1-O4, E2, S17,
-S18, S19) need no fallback - generate them as written.
-Boss skill chunks (S13-S16) are included below; S13-S17 boss
-skilllerinin tamami image-prompts-skills.txt icinde de var.
+W7, H2, H3, A2, A3, L2, R2, C2, M4, M5, M6, K2, O1-O4, E2) need
+no fallback - generate them as written.
+Boss skill chunks (S13-S16) and S17 are included below; all skill
+blocks are 3x3 in image-prompts-skills.txt.
 ================================================================
 
 
-=================== SKILL CHUNKS (48 grids, 144 icons) ===================
+=================== SKILL CHUNKS (50 grids, 152 icons) ===================
 
 
 --- GRID S1a (2x2, warrior steel part 1/3) ---
@@ -34,7 +34,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. great_slash — huge Zweihander sword mid-swing dragging a wind vortex, dust spiraling off the blade.
 4. colossal_slash — a titanic flaming-edged slash wave ripping diagonally across dark rock.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: heavy_strike, cell2: slash, cell3: great_slash, cell4: colossal_slash,
 
 --- GRID S1b (2x2, warrior steel part 2/3) ---
@@ -48,7 +48,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. battle_fury — clenched fist wreathed in burning red rage flames, embers rising.
 4. cataclysm — blazing meteor shattering a fortress wall into flying stone chunks.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: cleave, cell2: war_cry, cell3: battle_fury, cell4: cataclysm,
 
 --- GRID S1c (single, warrior steel part 3/3) ---
@@ -59,7 +59,7 @@ Single square icon:
 
 1. devastate — cracked skull under a falling war hammer, dust exploding.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: devastate,
 
 --- GRID S2a (2x2, archer precision part 1/3) ---
@@ -73,7 +73,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. piercing_shot — arrow punching through three layered steel plates, metal curling outward.
 4. hunter_shot — eagle-eye arrow with a long feather trail curving through dusk air.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: quick_shot, cell2: aimed_shot, cell3: piercing_shot, cell4: hunter_shot,
 
 --- GRID S2b (2x2, archer precision part 2/3) ---
@@ -87,7 +87,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. storm_barrage — spiral storm of lightning arrows twisting like a tornado.
 4. shatter_point — cracked weak-point target disc with a dagger tip striking its glowing center.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: storm_shot, cell2: volley, cell3: storm_barrage, cell4: shatter_point,
 
 --- GRID S2c (single, archer precision part 3/3) ---
@@ -98,7 +98,7 @@ Single square icon:
 
 1. broken_guard — shattered shield halves with a snapped sword falling between them.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: broken_guard,
 
 --- GRID S3a (2x2, holy blades part 1/3) ---
@@ -112,7 +112,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. hallowed_bolt — grand radiant spear of light thrusting down through parting clouds.
 4. blessed_blade — sword blade anointed with glowing holy oil, golden drips falling.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: smite, cell2: sanct_bolt, cell3: hallowed_bolt, cell4: blessed_blade,
 
 --- GRID S3b (2x2, holy blades part 2/3) ---
@@ -126,7 +126,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. holy_strike — sword strike trailing a long ribbon of golden light.
 4. holy_judgement — scales of justice crossed with a holy sword, glowing pans.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: radiant_edge, cell2: divine_light, cell3: holy_strike, cell4: holy_judgement,
 
 --- GRID S3c (single, holy blades part 3/3) ---
@@ -137,7 +137,7 @@ Single square icon:
 
 1. radiance — rising sun lifting over a kneeling healed knight, warm light washing upward.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: radiance,
 
 --- GRID S4a (2x2, healing light part 1/3) ---
@@ -151,7 +151,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. magic_mend — blue mana droplet mending a cracked glowing heart.
 4. war_heal — bloodied gauntlet gripping a green healing rune, light seeping between fingers.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: mend, cell2: greater_mend, cell3: magic_mend, cell4: war_heal,
 
 --- GRID S4b (2x2, healing light part 2/3) ---
@@ -165,7 +165,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. rejuvenate — fresh leaf sprout unfurling over a pulsing pink heart.
 4. spirit_surge — three blue mana wisps spiraling upward together.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: divine_blessing, cell2: resurgence, cell3: rejuvenate, cell4: spirit_surge,
 
 --- GRID S4c (single, healing light part 3/3) ---
@@ -176,7 +176,7 @@ Single square icon:
 
 1. forest_renewal — ancient gnarled tree blooming with green light bursting from its crown.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: forest_renewal,
 
 --- GRID S5a (2x2, rogue shadow part 1/3) ---
@@ -190,7 +190,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. shadow_stab — black-purple dagger stabbing out of living darkness, violet edge glow.
 4. vampiric_strike — fanged dagger dripping red blood into a pierced glowing heart.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: stab, cell2: lunge, cell3: shadow_stab, cell4: vampiric_strike,
 
 --- GRID S5b (2x2, rogue shadow part 2/3) ---
@@ -204,7 +204,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. shadow_meld — hooded face dissolving sideways into grey smoke wisps.
 4. shadow_veil — dark veil curtain parting to reveal two glowing eyes behind it.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: execute, cell2: shadow_step, cell3: shadow_meld, cell4: shadow_veil,
 
 --- GRID S5c (single, rogue shadow part 3/3) ---
@@ -215,7 +215,7 @@ Single square icon:
 
 1. eclipse_strike — black sun eclipse split by a silver blade slash.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: eclipse_strike,
 
 --- GRID S6a (2x2, death shadow + monster claws part 1/3) ---
@@ -229,7 +229,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. soul_thief — ghostly translucent hand stealing a glowing blue soul orb.
 4. soul_reap — massive black scythe harvesting three rising souls at once.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: reap, cell2: death_mark, cell3: soul_thief, cell4: soul_reap,
 
 --- GRID S6b (2x2, death shadow + monster claws part 2/3) ---
@@ -243,7 +243,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. cripple — chained broken leg shackle with a snapped iron link.
 4. monster_shadow_attack — monstrous shadow claw slashing with violet talon trails.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: scythe_sweep, cell2: dark_veil, cell3: cripple, cell4: monster_shadow_attack,
 
 --- GRID S6c (single, death shadow + monster claws part 3/3) ---
@@ -254,7 +254,7 @@ Single square icon:
 
 1. monster_shadow_bolt — dark violet bolt with a screaming skull tip flying forward.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: monster_shadow_bolt,
 
 --- GRID S7a (2x2, arcane cosmos part 1/3) ---
@@ -268,7 +268,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. arcane_blast — violet explosion ring expanding with rune shards.
 4. primordial_bolt — ancient rune-carved star bolt burning with old magic.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: arcane_bolt, cell2: arcane_barrage, cell3: arcane_blast, cell4: primordial_bolt,
 
 --- GRID S7b (2x2, arcane cosmos part 2/3) ---
@@ -282,7 +282,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. mana_shield — blue hexagonal mana barrier dome glowing from within.
 4. mod_strike — glowing pink adjudicator gavel striking down with verdict light.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: meteor, cell2: comet, cell3: mana_shield, cell4: mod_strike,
 
 --- GRID S7c (single, arcane cosmos part 3/3) ---
@@ -293,7 +293,7 @@ Single square icon:
 
 1. mod_obliterate — pink-black annihilation beam erasing a square of reality.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: mod_obliterate,
 
 --- GRID S8a (2x2, tank iron part 1/3) ---
@@ -307,7 +307,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. titan_slam — colossal armored fist cratering the ground, stone slabs flying.
 4. defend — plain steel shield raised squarely, catching the light.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: shield_bash, cell2: adamant_bash, cell3: titan_slam, cell4: defend,
 
 --- GRID S8b (2x2, tank iron part 2/3) ---
@@ -321,7 +321,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. bastion — fortress tower merged into a shield emblem, banners flying.
 4. immovable — grey mountain rooted over a small shield at its base.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: fortify, cell2: shield_wall, cell3: bastion, cell4: immovable,
 
 --- GRID S8c (single, tank iron part 3/3) ---
@@ -332,7 +332,7 @@ Single square icon:
 
 1. iron_wall — riveted iron plate wall with dents and scratches.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: iron_wall,
 
 --- GRID S9a (2x2, wards + monster hide part 1/3) ---
@@ -346,7 +346,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. barrier — translucent shimmering dome sheltering three small figures.
 4. stone_skin — grey stone hide plate with moss in its cracks.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: divine_guard, cell2: aegis, cell3: barrier, cell4: stone_skin,
 
 --- GRID S9b (2x2, wards + monster hide part 2/3) ---
@@ -360,7 +360,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. war_banner — crimson war banner on a spear planted in scorched earth.
 4. monster_stoneskin — rocky monster carapace with glowing magma seams.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: holy_ward, cell2: group_guard, cell3: war_banner, cell4: monster_stoneskin,
 
 --- GRID S9c (single, wards + monster hide part 3/3) ---
@@ -371,7 +371,7 @@ Single square icon:
 
 1. monster_heal — monster flesh stitching itself shut with green glowing thread.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: monster_heal,
 
 --- GRID S10a (2x2, nature + beasts part 1/3) ---
@@ -385,7 +385,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. bloom_burst — night flower exploding open with a pollen burst cloud.
 4. vine_lash — green vine whip curling mid-strike with dew drops.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: garden_swipe, cell2: root_lash, cell3: bloom_burst, cell4: vine_lash,
 
 --- GRID S10b (2x2, nature + beasts part 2/3) ---
@@ -399,7 +399,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. beast_strike — clawed paw strike raking four glowing gash lines.
 4. alpha_strike — alpha wolf head with a crown-shaped scar, eyes burning.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: thorn_volley, cell2: beast_bite, cell3: beast_strike, cell4: alpha_strike,
 
 --- GRID S10c (single, nature + beasts part 3/3) ---
@@ -410,7 +410,7 @@ Single square icon:
 
 1. tame_hit — leather whip coiled with a small paw charm swinging from its handle.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: tame_hit,
 
 --- GRID S11a (2x2, venom + monster ailments part 1/3) ---
@@ -424,7 +424,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. venom_burst — shattering poison vial erupting in a green toxic explosion.
 4. monster_poison — bubbling toxic skull-shaped gas cloud rising.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: venom_strike, cell2: toxin_drench, cell3: venom_burst, cell4: monster_poison,
 
 --- GRID S11b (2x2, venom + monster ailments part 2/3) ---
@@ -438,7 +438,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. monster_weaken — drooping crushed sword with a sickly wilting aura.
 4. monster_vulnerable — cracked red heart target exposed with fracture lines.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: monster_regen, cell2: monster_frenzy, cell3: monster_weaken, cell4: monster_vulnerable,
 
 --- GRID S11c (single, venom + monster ailments part 3/3) ---
@@ -449,7 +449,7 @@ Single square icon:
 
 1. monster_physical_attack — savage beast fang blow with saliva and dust bursting.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: monster_physical_attack,
 
 --- GRID S12a (2x2, storm + sea + monster magic part 1/3) ---
@@ -463,7 +463,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. monster_heavy_blow — giant stone club smashing down with a shockwave ring.
 4. volt_conduit — copper coil rod spitting electric sparks.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: monster_arcane_attack, cell2: monster_arcane_storm, cell3: monster_heavy_blow, cell4: volt_conduit,
 
 --- GRID S12b (2x2, storm + sea + monster magic part 2/3) ---
@@ -477,7 +477,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. water_splash — deep-blue wave splash frozen mid-crash with flying droplets.
 4. frost_nova — pale ice ring explosion with radiating frost spikes.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: static_overload, cell2: lightning_bolt, cell3: water_splash, cell4: frost_nova,
 
 --- GRID S12c (single, storm + sea + monster magic part 3/3) ---
@@ -488,7 +488,7 @@ Single square icon:
 
 1. mana_shield — blue hexagonal mana barrier dome — SHARED, see S7. Generate ONCE in S7, reuse the file here, do not regenerate.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: mana_shield,
 
 --- GRID S13a (2x2, ember boss + fire part 1/3) ---
@@ -502,7 +502,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. boss_ember_skill3 — dimming ash shackles clamping shut, grey chains losing their glow (weaken).
 4. boss_ember_skill4 — curved lava shield wall with flowing magma veins (fortify).
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: boss_ember_skill1, cell2: boss_ember_skill2, cell3: boss_ember_skill3, cell4: boss_ember_skill4,
 
 --- GRID S13b (2x2, ember boss + fire part 2/3) ---
@@ -516,7 +516,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. scorch_mark — branded circular burn-mark sigil with smoking edges.
 4. ember_storm — firestorm of falling embers swirling in a vortex.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: boss_ember_skill5, cell2: boss_ember_skill6, cell3: scorch_mark, cell4: ember_storm,
 
 --- GRID S13c (single, ember boss + fire part 3/3) ---
@@ -527,7 +527,7 @@ Single square icon:
 
 1. blaze_rupture — volcano fissure erupting with a lava geyser.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: blaze_rupture,
 
 --- GRID S14a (2x2, frost boss + frost part 1/3) ---
@@ -541,7 +541,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. boss_frost_skill3 — frostbitten iron chains coated in blue-white rime (weaken).
 4. boss_frost_skill4 — translucent glacier shield wall with trapped air bubbles (fortify).
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: boss_frost_skill1, cell2: boss_frost_skill2, cell3: boss_frost_skill3, cell4: boss_frost_skill4,
 
 --- GRID S14b (2x2, frost boss + frost part 2/3) ---
@@ -555,7 +555,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. frost_bolt — sharp icicle bolt flying with frost vapor trail.
 4. cold_snap — cracked frozen hourglass leaking blue cold mist.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: boss_frost_skill5, cell2: boss_frost_skill6, cell3: frost_bolt, cell4: cold_snap,
 
 --- GRID S14c (single, frost boss + frost part 3/3) ---
@@ -566,7 +566,7 @@ Single square icon:
 
 1. glacial_shatter — shattering ice monolith exploding into geometric shards.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: glacial_shatter,
 
 --- GRID S15a (2x2, void boss + arcane doom part 1/3) ---
@@ -580,7 +580,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. boss_void_skill3 — giant eye of nothingness, pure black pupil in a violet sclera (expose).
 4. boss_void_skill4 — chitinous void shell carapace with purple vein cracks (fortify).
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: boss_void_skill1, cell2: boss_void_skill2, cell3: boss_void_skill3, cell4: boss_void_skill4,
 
 --- GRID S15b (2x2, void boss + arcane doom part 2/3) ---
@@ -594,7 +594,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. arcane_barrage — triple violet missiles fan — SHARED with S7, reuse file.
 4. meteor — fireball meteor — SHARED with S7, reuse file.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: boss_void_skill5, cell2: boss_void_skill6, cell3: arcane_barrage, cell4: meteor,
 
 --- GRID S15c (single, void boss + arcane doom part 3/3) ---
@@ -605,7 +605,7 @@ Single square icon:
 
 1. comet — star-blue comet — SHARED with S7, reuse file.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: comet,
 
 --- GRID S16a (2x2, storm boss + world boss part 1/3) ---
@@ -619,7 +619,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. boss_storm_skill3 — crackling storm chains binding with electric links (weaken+expose).
 4. boss_storm_skill4 — thunderdome shield of arcing lightning bars (fortify).
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: boss_storm_skill1, cell2: boss_storm_skill2, cell3: boss_storm_skill3, cell4: boss_storm_skill4,
 
 --- GRID S16b (2x2, storm boss + world boss part 2/3) ---
@@ -633,7 +633,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. boss_world_skill1 — colossal world-serpent bite with rows of mountain teeth closing.
 4. boss_world_skill2 — continent-crusher maw blow crushing a fortress gate.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: boss_storm_skill5, cell2: boss_storm_skill6, cell3: boss_world_skill1, cell4: boss_world_skill2,
 
 --- GRID S16c (single, storm boss + world boss part 3/3) ---
@@ -644,10 +644,38 @@ Single square icon:
 
 1. boss_world_skill3 — collapsing mountain chains snapping with falling boulders (weaken).
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: boss_world_skill3,
 
-=================== ITEM CHUNKS (48 grids, 144 icons) ===================
+--- GRID S17a (2x2, world ruin + blood + juggernaut part 1/2) ---
+
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
+
+2x2 grid, 4 square skill icons, in this exact order:
+
+1. boss_world_skill4 — crooked volcano-frenzy rage idol with erupting crater head (fortify/frenzy).
+2. boss_world_skill5 — rotting world-root fang oozing black sap.
+3. boss_world_skill6 — tiny world-tree seed sprouting into a rebirth sapling of light.
+4. exsanguinate — twin pale fangs sunk deep with two bright blood arcs gushing into a crimson whirl.
+
+IDS (kopyala-yapistir):
+cell1: boss_world_skill4, cell2: boss_world_skill5, cell3: boss_world_skill6, cell4: exsanguinate,
+
+--- GRID S17b (2x2, world ruin + blood + juggernaut part 2/2) ---
+
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
+
+2x2 grid, 4 square skill icons, in this exact order:
+
+1. bloodbath — drenching wave of dark blood crashing over an upright fang-bladed greatsword.
+2. crimson_rebirth — single drop of bright blood blooming into a halo of golden healing light above two grasping hands.
+3. seismic_slam — massive armored fist slamming the ground with radial cracks bursting outward.
+4. colossal_crash — mountain-sized falling boulder fist trailing dust, impact crater blooming below.
+
+IDS (kopyala-yapistir):
+cell1: bloodbath, cell2: crimson_rebirth, cell3: seismic_slam, cell4: colossal_crash,
+
+=================== ITEM CHUNKS (51 grids, 153 icons) ===================
 
 --- GRID W1a (2x2, common steel I part 1/3) ---
 
@@ -660,7 +688,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. war_hammer — horizontal blocky hammer head on a thick handle, riveted iron, grey.
 4. longbow — tall vertical yew longbow spanning the full height with a taut string, grey.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: rusty_sword, cell2: battle_axe, cell3: war_hammer, cell4: longbow,
 
 --- GRID W1b (2x2, common steel I part 2/3) ---
@@ -674,7 +702,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. archon_staff — slim upright staff crowned with a pale floating crystal, green glow.
 4. dagger — tiny horizontal stiletto dagger, needle point, grey.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: shortbow, cell2: apprentice_staff, cell3: archon_staff, cell4: dagger,
 
 --- GRID W1c (single, common steel I part 3/3) ---
@@ -685,7 +713,7 @@ Single square icon:
 
 1. poison_dagger — wavy kris dagger dripping bright green venom, grey.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: poison_dagger,
 
 --- GRID W2a (2x2, mixed steel part 1/3) ---
@@ -699,7 +727,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. kris_blade — wavy serpentine kris dagger coiling S-shaped, green glow.
 4. whisper_blade — thin horizontal whisper blade with curling wind lines, green glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: mace, cell2: holy_sword, cell3: kris_blade, cell4: whisper_blade,
 
 --- GRID W2b (2x2, mixed steel part 2/3) ---
@@ -713,7 +741,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. maul — huge two-hand maul head filling the frame, battered face forward, grey.
 4. bulwark_hammer — hammer whose head is a miniature tower shield, green glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: scepter, cell2: cleric_staff, cell3: maul, cell4: bulwark_hammer,
 
 --- GRID W2c (single, mixed steel part 3/3) ---
@@ -724,7 +752,7 @@ Single square icon:
 
 1. stone_ash_sword — ash-grey stone sword with glowing ember veins, grey.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: stone_ash_sword,
 
 --- GRID W3a (2x2, crafted + arcane part 1/3) ---
@@ -738,7 +766,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. frost_gladius — short gladius rimed with feathered frost crystals, green glow.
 4. arcane_rod — thin violet crystal rod with orbiting spark motes, green glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: fire_ash_sword, cell2: molten_cleaver, cell3: frost_gladius, cell4: arcane_rod,
 
 --- GRID W3b (2x2, crafted + arcane part 2/3) ---
@@ -752,7 +780,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. phoenix_staff — golden staff crowned with spread phoenix wings, amber glow.
 4. void_cleaver — dark cleaver drinking light into a starless void edge, red-gold glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: shadow_knife, cell2: ember_sword, cell3: phoenix_staff, cell4: void_cleaver,
 
 --- GRID W3c (single, crafted + arcane part 3/3) ---
@@ -763,7 +791,7 @@ Single square icon:
 
 1. iron_greatsword — plain massive greatsword vertical, brutal and undecorated, grey.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: iron_greatsword,
 
 --- GRID W4a (2x2, named steel part 1/3) ---
@@ -777,7 +805,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. arcane_scepter — violet mana scepter topped with a faceted amethyst orb, green glow.
 4. shadow_dagger — curved shadow fang dagger like a beast tooth, blue glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: steel_blade, cell2: ranger_bow, cell3: arcane_scepter, cell4: shadow_dagger,
 
 --- GRID W4b (2x2, named steel part 2/3) ---
@@ -791,7 +819,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. storm_bow — storm bow strung with a live lightning bolt, purple glow.
 4. void_blade — starless void katana, pure black blade drinking light, amber glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: dragon_spear, cell2: titan_hammer, cell3: storm_bow, cell4: void_blade,
 
 --- GRID W4c (single, named steel part 3/3) ---
@@ -802,7 +830,7 @@ Single square icon:
 
 1. world_breaker — mountain-cleaving greatmaul with a peak-shaped head, red-gold glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: world_breaker,
 
 --- GRID W5a (2x2, boss + blood part 1/3) ---
@@ -816,7 +844,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. boss_weapon_frost — glacier frost titan axe with an icicle beard on its head, purple glow.
 4. boss_weapon_void — tentacled void scythe with star-specked tendrils, amber glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: crimson_blade, cell2: boss_weapon_ember, cell3: boss_weapon_frost, cell4: boss_weapon_void,
 
 --- GRID W5b (2x2, boss + blood part 2/3) ---
@@ -830,7 +858,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. sturdy_club — dependable oaken club with worn grip wraps, grey.
 4. hunter_axe — woodsman bearded axe with a long lower beard hook, green glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: boss_weapon_storm, cell2: boss_weapon_world, cell3: sturdy_club, cell4: hunter_axe,
 
 --- GRID W5c (single, boss + blood part 3/3) ---
@@ -841,8 +869,47 @@ Single square icon:
 
 1. oak_staff — heartwood staff sprouting live green leaves, green glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: oak_staff,
+
+--- GRID WBa (2x2, blood arsenal part 1/3) ---
+
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
+
+2x2 grid, 4 square item icons, in this exact order:
+
+1. blood_blade — long crimson greatblade with a bat-wing crossguard and thirsty edge, purple glow.
+2. blood_fang — short curved fang dagger with a single blood channel, green glow.
+3. blood_helm — dark helm with a T-slit visor weeping red from the eyes, purple glow.
+4. blood_chest — black cuirass with a ribcage relief and red seam light, purple glow.
+
+IDS (kopyala-yapistir):
+cell1: blood_blade, cell2: blood_fang, cell3: blood_helm, cell4: blood_chest,
+
+--- GRID WBb (2x2, blood arsenal part 2/3) ---
+
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
+
+2x2 grid, 4 square item icons, in this exact order:
+
+1. blood_leggings — dark cuisses with dripping red joint lines, purple glow.
+2. blood_boots — black boots with clawed toes and red sole glow, blue glow.
+3. blood_ring — fang-set blood ring, two tiny fangs gripping a red gem, purple glow.
+4. blood_amulet — teardrop blood vial amulet on a black cord, blue glow.
+
+IDS (kopyala-yapistir):
+cell1: blood_leggings, cell2: blood_boots, cell3: blood_ring, cell4: blood_amulet,
+
+--- GRID WBc (single, blood arsenal part 3/3) ---
+
+Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
+
+Single square icon:
+
+1. blood_tome — blood-ink grimoire with a beating heart clasp, blue glow.
+
+IDS (kopyala-yapistir):
+cell1: blood_tome,
 
 --- GRID H1a (2x2, helms I part 1/3) ---
 
@@ -855,7 +922,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. iron_helm — plain iron greathelm, flat cylinder with breath slits, grey.
 4. ranger_hood — green hunter hood with a pointed draping tail, green glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: leather_helm, cell2: bronze_helm, cell3: iron_helm, cell4: ranger_hood,
 
 --- GRID H1b (2x2, helms I part 2/3) ---
@@ -869,7 +936,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. shadow_mask — dark whisper half-mask with violet eye slits, blue glow.
 4. dragon_helm — horned dragon helm with swept-back horns, purple glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: mage_cowl, cell2: knight_helm, cell3: shadow_mask, cell4: dragon_helm,
 
 --- GRID H1c (single, helms I part 3/3) ---
@@ -880,7 +947,7 @@ Single square icon:
 
 1. void_crown — starless void crown, thin black band with dying stars, amber glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: void_crown,
 
 --- GRID A1a (2x2, armor I part 1/3) ---
@@ -894,7 +961,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. chainmail — riveted chain shirt with visible interlocked rings, grey.
 4. ranger_vest — green scout vest with arrow loops and a hood roll, green glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: leather_chest, cell2: padded_armor, cell3: chainmail, cell4: ranger_vest,
 
 --- GRID A1b (2x2, armor I part 2/3) ---
@@ -908,7 +975,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. shadow_garb — eclipse-dark assassin garb, tight wraps with buckles, blue glow.
 4. dragon_scale — red dragon-scale mail of overlapping scales, purple glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: silk_robe, cell2: plate_armor, cell3: shadow_garb, cell4: dragon_scale,
 
 --- GRID A1c (single, armor I part 3/3) ---
@@ -919,7 +986,7 @@ Single square icon:
 
 1. void_plate — starless void plate swallowing light at its edges, red-gold glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: void_plate,
 
 --- GRID L1a (2x2, legs I part 1/3) ---
@@ -933,7 +1000,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. iron_greaves — plain iron greaves, smooth tubes with knee cops, grey.
 4. swift_leggings — light runner leggings with side slits and cords, green glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: leather_pants, cell2: leather_greaves, cell3: iron_greaves, cell4: swift_leggings,
 
 --- GRID L1b (2x2, legs I part 2/3) ---
@@ -947,7 +1014,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. shadow_leggings — silent dark leggings with smoke wisps at the cuffs, blue glow.
 4. dragon_leggings — scaled dragon cuisses of red overlapping plates, purple glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: sage_pants, cell2: knight_leggings, cell3: shadow_leggings, cell4: dragon_leggings,
 
 --- GRID L1c (single, legs I part 3/3) ---
@@ -958,7 +1025,7 @@ Single square icon:
 
 1. void_leggings — starless void greaves with dying-star specks, amber glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: void_leggings,
 
 --- GRID B1a (2x2, boots part 1/3) ---
@@ -972,7 +1039,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. iron_boots — heavy iron sabatons, blunt and riveted, grey.
 4. ranger_boots — silent green scout boots with soft moccasin soles, green glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: leather_boots, cell2: worn_boots, cell3: iron_boots, cell4: ranger_boots,
 
 --- GRID B1b (2x2, boots part 2/3) ---
@@ -986,7 +1053,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. void_boots — starless void boots with a light-eating sheen, purple glow.
 4. travel_boots — dust-caked road boots with bedroll straps, grey.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: sorcery_boots, cell2: knight_boots, cell3: void_boots, cell4: travel_boots,
 
 --- GRID B1c (single, boots part 3/3) ---
@@ -997,7 +1064,7 @@ Single square icon:
 
 1. ember_boots — still-smoking forge boots with glowing cracks, green glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: ember_boots,
 
 --- GRID M1a (2x2, amulets part 1/3) ---
@@ -1011,7 +1078,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. copper_amulet — dull copper amulet, round and tarnished, grey.
 4. silver_amulet — bright silver amulet with engraved rays, green glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: iron_amulet, cell2: mana_talisman, cell3: copper_amulet, cell4: silver_amulet,
 
 --- GRID M1b (2x2, amulets part 2/3) ---
@@ -1025,7 +1092,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. void_amulet — black-hole amulet, a dark orb ringed with bent light, amber glow.
 4. moon_amulet — slender crescent moon amulet, silver curve, green glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: ruby_amulet, cell2: sapphire_amulet, cell3: void_amulet, cell4: moon_amulet,
 
 --- GRID M1c (single, amulets part 3/3) ---
@@ -1036,7 +1103,7 @@ Single square icon:
 
 1. thunder_amulet — bottled-lightning amulet, glass vial with a trapped bolt, blue glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: thunder_amulet,
 
 --- GRID R1a (2x2, rings I part 1/3) ---
@@ -1050,7 +1117,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. silver_ring — sleek thin silver ring with a polished shine, green glow.
 4. ruby_ring — ruby signet ring with a square blood-red stone, blue glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: iron_ring, cell2: copper_ring, cell3: silver_ring, cell4: ruby_ring,
 
 --- GRID R1b (2x2, rings I part 2/3) ---
@@ -1064,7 +1131,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. vampiric_ring — fang-set blood ring, two tiny fangs gripping a red gem, blue glow.
 4. bone_ring — dire-wolf fang ring, curved yellowed tooth, grey.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: sapphire_ring, cell2: void_ring, cell3: vampiric_ring, cell4: bone_ring,
 
 --- GRID R1c (single, rings I part 3/3) ---
@@ -1075,7 +1142,7 @@ Single square icon:
 
 1. serpent_ring — coiled silver serpent ring biting its own tail, green glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: serpent_ring,
 
 --- GRID C1a (2x2, food & salves part 1/3) ---
@@ -1089,7 +1156,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. minor_salve — small green salve jar with a cork lid, grey.
 4. wolf_jerky — strip of smoked jerky hanging from a hook, grey.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: hearth_tea, cell2: field_rations, cell3: minor_salve, cell4: wolf_jerky,
 
 --- GRID C1b (2x2, food & salves part 2/3) ---
@@ -1103,7 +1170,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. ember_pepper — smoldering red pepper with glowing cracks, green glow.
 4. troll_draught — bubbling green flask with foam overflowing the neck, blue glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: mushroom_stew, cell2: frost_berry, cell3: ember_pepper, cell4: troll_draught,
 
 --- GRID C1c (single, food & salves part 3/3) ---
@@ -1114,7 +1181,7 @@ Single square icon:
 
 1. skyshard_omelet — storm-fried egg dish crackling with tiny arcs, blue glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: skyshard_omelet,
 
 --- GRID M2a (2x2, essences & hearts part 1/3) ---
@@ -1128,7 +1195,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. arcane_essence — spiral flask with swirling violet galaxy liquid, grey.
 4. shadow_essence — matte black cube vial of lightless void with no shine, grey.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: fire_essence, cell2: frost_essence, cell3: arcane_essence, cell4: shadow_essence,
 
 --- GRID M2b (2x2, essences & hearts part 2/3) ---
@@ -1142,7 +1209,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. origin_stone — fate-carved rebirth stone tablet with spiral destiny carving, purple glow.
 4. ancient_relic — aeon-old golden artifact, small sun-disc with eroded glyphs, amber glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: heart_of_fire, cell2: golem_heart, cell3: origin_stone, cell4: ancient_relic,
 
 --- GRID M2c (single, essences & hearts part 3/3) ---
@@ -1153,7 +1220,7 @@ Single square icon:
 
 1. essence_of_life — radiant life essence orb floating with leaf motes, purple glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: essence_of_life,
 
 --- GRID M3a (2x2, hunt scraps part 1/3) ---
@@ -1167,7 +1234,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. bat_wing — folded leathery cave bat wing with clawed finger bones, grey.
 4. spider_silk — shimmering ash-silk spool wound with silver thread, grey.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: slime_bottle, cell2: wolf_fang, cell3: bat_wing, cell4: spider_silk,
 
 --- GRID M3b (2x2, hunt scraps part 2/3) ---
@@ -1181,7 +1248,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. orc_tusk — edged orc tusk trophy with carved war notches, green glow.
 4. harpy_feather — crackling storm feather with electric barbs, green glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: tough_hide, cell2: skeleton_bone, cell3: orc_tusk, cell4: harpy_feather,
 
 --- GRID M3c (single, hunt scraps part 3/3) ---
@@ -1192,7 +1259,7 @@ Single square icon:
 
 1. golem_fragment — living stone chip with a glowing eye-like core, blue glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: golem_fragment,
 
 --- GRID K1a (2x2, chests I part 1/3) ---
@@ -1206,7 +1273,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. gold_chest — gilded chest with curved baroque lid, blue glow.
 4. emerald_chest — gem-studded chest with green jewels on the corners, purple glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: wooden_chest, cell2: iron_chest, cell3: gold_chest, cell4: emerald_chest,
 
 --- GRID K1b (2x2, chests I part 2/3) ---
@@ -1220,7 +1287,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. boss_chest_frost — frost-rimed titan chest with icicle locks, purple glow.
 4. boss_chest_void — void-mouthed herald chest with a dark screaming face, amber glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: obsidian_chest, cell2: boss_chest_ember, cell3: boss_chest_frost, cell4: boss_chest_void,
 
 --- GRID K1c (single, chests I part 3/3) ---
@@ -1231,7 +1298,7 @@ Single square icon:
 
 1. boss_chest_storm — storm-wreathed colossus chest with lightning clasps, amber glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: boss_chest_storm,
 
 --- GRID E1a (2x2, eggs I part 1/3) ---
@@ -1245,7 +1312,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. egg_blue — glossy blue egg with a mirror shine, green glow.
 4. egg_brown — muddy brown egg with dried mud swirls, green glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: egg_red, cell2: egg_green, cell3: egg_blue, cell4: egg_brown,
 
 --- GRID E1b (2x2, eggs I part 2/3) ---
@@ -1259,7 +1326,7 @@ Fit: each icon fits fully inside its own box with a small margin — nothing cro
 3. egg_cyan — storm-glass cyan egg with a tiny lightning bolt inside, purple glow.
 4. egg_dark — starless dark egg with dying-star specks, purple glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: egg_yellow, cell2: egg_purple, cell3: egg_cyan, cell4: egg_dark,
 
 --- GRID E1c (single, eggs I part 3/3) ---
@@ -1270,11 +1337,13 @@ Single square icon:
 
 1. egg_orange — magma-cracked orange egg with lava glowing through cracks, amber glow.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: egg_orange,
 
 =================== END ===================
-Chunks cover every 3x3 cell of the main files exactly once. After
-saving, GameCraft lists show the images at once (missing badge
+Chunks cover every item 3x3 cell exactly once. Skill chunks repeat
+4 SHARED icons (mana_shield, arcane_barrage, meteor, comet) marked
+"SHARED" in their prompts — generate those once and reuse the file.
+After saving, GameCraft lists show the images at once (missing badge
 goes away); no game code changes needed.
 ================================================================

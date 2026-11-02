@@ -9,11 +9,12 @@ HOW TO USE:
   the name text over the BOTTOM, and the in-game portrait crops a
   CIRCLE from the center. So paint the FACE slightly above center,
   fully lit and fully in frame.
-- Bu dosyada SADECE karakter portreleri var (skill/pet/boss yok).
+- Bu dosyada karakter + NPC portreleri var (skill/pet/boss yok).
 - Skill ikonlari  : image-prompts-skills.txt (S1-S19, boss dahil)
-- Boss portreleri : image-prompts-bosses.txt (B1-B5 + NPC)
+- Boss portreleri : image-prompts-bosses.txt (B1-B5)
+- NPC portreleri  : bu dosyada (N1-N5)
 - Vampirler       : image-prompts-vampires.txt
-- Petler          : image-prompts-pets.txt (otomatik isim kodu ile)
+- Petler          : image-prompts-pets.txt (otomatik ID ile)
 - 3x3 BREAKS? image-prompts-2x2.txt ayni ikonlari 2x2 parcalara boler.
 - Only image files are added, then the game restarts.
 ----------------------------------------------------------------
@@ -60,6 +61,9 @@ from the right across a blurred town gate arch, dust glowing in the
 air. Painterly splash-art finish, muted steel-and-crimson palette,
 wordless composition.
 
+IDS (kopyala-yapistir):
+cell1: warlord,
+
 --- [2] warden -> public/images/characters/warden.png ---
 Gender female, late 20s. Splash-art portrait: a warden archer caught
 mid-draw, tall and athletic (around 175 cm, lean runner's build), long
@@ -71,6 +75,9 @@ feathered pauldron and a frayed finger guard. Her fully lit face in
 leaning 3/4 profile, one eye narrowed along the arrow. Low golden sun
 from the left, blurred town wall and dark pine tops behind. Painterly
 splash-art finish, earthy green palette, wordless composition.
+
+IDS (kopyala-yapistir):
+cell1: warden,
 
 --- [3] archmage -> public/images/characters/archmage.png ---
 Gender male, near 40. Splash-art portrait: a gaunt archmage scholar in
@@ -84,6 +91,9 @@ up-left in fascinated study, tired intelligent eyes. Violet rune-glow
 falls from above over a blurred tower study of stacked scrolls and
 candle stubs. Painterly splash-art finish, wordless composition.
 
+IDS (kopyala-yapistir):
+cell1: archmage,
+
 --- [4] nightblade -> public/images/characters/nightblade.png ---
 Gender male, mid-20s. Splash-art portrait: a pale human nightblade
 duelist glancing back over his shoulder, slim fencer's build (around
@@ -95,6 +105,9 @@ fully lit face carries a roguish half-smile, eyes glinting. Cold
 moonlight enters from the left across a narrow lamplit alley with wet
 cobblestones behind. Painterly splash-art finish, deep blue-silver
 palette, wordless composition.
+
+IDS (kopyala-yapistir):
+cell1: nightblade,
 
 --- [5] crusader -> public/images/characters/crusader.png ---
 Gender female, late 20s. Splash-art portrait: a crusader lifting a
@@ -108,6 +121,9 @@ expression, dust motes drifting through the sunbeam. Worn cathedral
 steps blur behind. Painterly splash-art finish, white-and-gold
 palette, wordless composition.
 
+IDS (kopyala-yapistir):
+cell1: crusader,
+
 --- [6] reaper -> public/images/characters/reaper.png ---
 Gender male, early 30s. Splash-art portrait: a pale lean human reaper
 assassin (around 185 cm, wiry) leaning at ease, a scythe shaft slung
@@ -120,6 +136,9 @@ side-light from the right. A misty town-edge graveyard fence and bare
 branches blur behind. Painterly splash-art finish, ash-grey palette,
 quiet menace, wordless composition.
 
+IDS (kopyala-yapistir):
+cell1: reaper,
+
 --- [7] high_priest -> public/images/characters/high_priest.png ---
 Gender female, mid-40s. Splash-art portrait: a high priestess of soft
 matronly build (around 168 cm), copper-streaked auburn hair pinned up
@@ -130,6 +149,9 @@ upper right, a simple rope belt over ivory ceremonial robes with one
 carefully darned patch, wooden prayer beads at her wrist. Warm light
 descends from above through a blurred chapel stone arch. Painterly
 splash-art finish, deeply human compassion, wordless composition.
+
+IDS (kopyala-yapistir):
+cell1: high_priest,
 
 --- [8] ultra_moderator -> public/images/characters/ultra_moderator.png ---
 Gender male, ageless. Splash-art portrait: a cosmic moderator entity
@@ -142,6 +164,9 @@ off his cuff into the air. His fully lit face shines with quiet
 omnipotence. Magenta rim light plays against daylight over a blurred
 bustling town square. Painterly splash-art finish, wordless
 composition.
+
+IDS (kopyala-yapistir):
+cell1: ultra_moderator,
 
 --- [9] war_emperor (Lv40 EPIC) -> public/images/characters/war_emperor.png ---
 Gender male, near 60. EPIC splash-art portrait from a slight low
@@ -156,6 +181,9 @@ from below-right. Throne steps blur behind in heat haze. Painterly
 splash-art finish, the unmistakable weight of a conqueror a full tier
 above any warlord, wordless composition.
 
+IDS (kopyala-yapistir):
+cell1: war_emperor,
+
 --- [10] storm_warden (Lv40 EPIC) -> public/images/characters/storm_warden.png ---
 Gender female, early 30s. EPIC splash-art portrait: a storm warden
 huntress leaning into a gale, tall and athletic (around 180 cm, long
@@ -167,6 +195,9 @@ rune pulsing at her collarbone. Her fully lit face burns with focus,
 flash-lit from above-left. Dark rooftops toss under churning storm
 clouds behind. Painterly splash-art finish, electric blue-grey
 palette, wordless composition.
+
+IDS (kopyala-yapistir):
+cell1: storm_warden,
 
 --- [11] archon (Lv40 EPIC) -> public/images/characters/archon.png ---
 Gender male, eternally young. EPIC splash-art portrait: an archon
@@ -180,6 +211,9 @@ bathes in comet light full of quiet awe. A night-blue sky sleeps over
 dark rooftops behind. Painterly splash-art finish, wordless
 composition.
 
+IDS (kopyala-yapistir):
+cell1: archon,
+
 --- [12] shade_king (Lv40 EPIC) -> public/images/characters/shade_king.png ---
 Gender male, ageless. EPIC splash-art portrait: a pale human shade
 king leaning forward with his chin resting near steepled fingers, tall
@@ -191,6 +225,9 @@ curling upward from his shoulders. His fully lit face in 3/4 turns
 left with cold regal disdain. A dark throne alcove frames a crescent
 eclipse halo behind him. Painterly splash-art finish, majestic and
 hauntingly beautiful, wordless composition.
+
+IDS (kopyala-yapistir):
+cell1: shade_king,
 
 --- [13] lightbringer (Lv40 EPIC) -> public/images/characters/lightbringer.png ---
 Gender female, timeless. EPIC splash-art portrait: a lightbringer
@@ -204,6 +241,9 @@ triumph as the overexposed sunrise balances across her features.
 White temple columns blur behind. Painterly splash-art finish,
 wordless composition.
 
+IDS (kopyala-yapistir):
+cell1: lightbringer,
+
 --- [14] death_lord (Lv40 EPIC) -> public/images/characters/death_lord.png ---
 Gender male, ageless. EPIC splash-art portrait: a pale human death
 lord aristocrat in near-profile 3/4 facing right, tall and gaunt
@@ -216,6 +256,9 @@ holds bored supremacy in cold side-light. A dark manor window with a
 dead winter garden blurs behind. Painterly splash-art finish, darkly
 elegant, wordless composition.
 
+IDS (kopyala-yapistir):
+cell1: death_lord,
+
 --- [15] divine_saint (Lv40 EPIC) -> public/images/characters/divine_saint.png ---
 Gender female, timeless. EPIC splash-art portrait: a divine saint
 descending inside a shaft of light, graceful (around 175 cm),
@@ -226,6 +269,9 @@ sword cut across the breastplate, two doves of living light crossing
 behind her shoulders. Her fully lit face radiates transcendent
 warmth. A white marble sanctuary glows behind. Painterly splash-art
 finish, wordless composition.
+
+IDS (kopyala-yapistir):
+cell1: divine_saint,
 
 =================== CHARACTERS WITH EXISTING ART (18, reference / regen) ===================
 These already have .webp art in game. Use to regenerate or to keep
@@ -243,6 +289,9 @@ His fully lit face in 3/4 looks left with beginner resolve. Morning
 light over a blurred village street. Warm humble steel palette,
 painterly splash-art finish, wordless composition.
 
+IDS (kopyala-yapistir):
+cell1: warrior,
+
 --- [R2] archer (slug: ranger) -> public/images/characters/ranger.webp ---
 Gender female, mid-20s. Splash-art portrait: a wiry long-range hunter
 woman mid-step, lean (around 172 cm), ash-brown hair tied back at
@@ -252,6 +301,9 @@ held diagonal across the chest, a quiver strap over one shoulder.
 His fully lit face in 3/4 scans the distance right. Pale daylight,
 blurred pine ridge behind. Painterly splash-art finish, wordless
 composition.
+
+IDS (kopyala-yapistir):
+cell1: ranger,
 
 --- [R3] mage -> public/images/characters/mage.webp ---
 Gender female, mid-teens. Splash-art portrait: a teenage apprentice
@@ -263,6 +315,9 @@ ear.
 His fully lit face tilts up-right in wonder. Candle-warm blur of a
 study room behind. Painterly splash-art finish, wordless composition.
 
+IDS (kopyala-yapistir):
+cell1: mage,
+
 --- [R4] rogue -> public/images/characters/rogue.webp ---
 Gender male, early 20s. Splash-art portrait: a quick-eyed young
 cutpurse leaning on a stone wall and flipping a coin, lean build
@@ -272,6 +327,9 @@ patched cloak over worn dark leathers, crossed baldrics with twin
 sword hilts behind. His fully lit face in 3/4 glances sideways right.
 Torch-warm blur of an old town lane behind. Painterly splash-art
 finish, wordless composition.
+
+IDS (kopyala-yapistir):
+cell1: rogue,
 
 --- [R5] paladin -> public/images/characters/paladin.webp ---
 Gender male, early 30s. Splash-art portrait: a broad holy guardian
@@ -284,6 +342,9 @@ levelly forward-left with quiet patience. Soft chapel light, blurred
 stone courtyard behind. Painterly splash-art finish, wordless
 composition.
 
+IDS (kopyala-yapistir):
+cell1: paladin,
+
 --- [R6] assassin -> public/images/characters/assassin.webp ---
 Gender male, late teens. Splash-art portrait: a lean apprentice
 assassin boy (around 175 cm, wiry), straight black hair with bangs
@@ -292,6 +353,9 @@ unwrapping a cloth from a slender blade, simple black training garb
 with a grey sash and a single throwing needle between the fingers. His fully lit
 face in 3/4 studies the blade down-left. Cold window light, blurred
 dojo wall behind. Painterly splash-art finish, wordless composition.
+
+IDS (kopyala-yapistir):
+cell1: assassin,
 
 --- [R7] healer (support) -> public/images/characters/support.webp ---
 Gender female, late teens. Splash-art portrait: a gentle healer adept
@@ -302,6 +366,9 @@ hands holding a soft mint-green glow, a tall staff braced at her side. Her fully
 at the light with tenderness. Warm infirmary blur with shelves of
 jars behind. Painterly splash-art finish, wordless composition.
 
+IDS (kopyala-yapistir):
+cell1: support,
+
 --- [R8] tank -> public/images/characters/tank.webp ---
 Gender male, late 20s. Splash-art portrait: a hulking living-wall man
 planted like a rock (around 195 cm, massive arms and barrel torso),
@@ -310,6 +377,9 @@ flattened nose, massive scratched tower shield braced beside him,
 plain riveted plate with rope repairs. His fully lit face in 3/4 looks
 left, unbothered and steady. Overcast daylight, blurred fortress
 wall behind. Painterly splash-art finish, wordless composition.
+
+IDS (kopyala-yapistir):
+cell1: tank,
 
 --- [R9] tamer -> public/images/characters/tamer.webp ---
 Gender female, late teens. Splash-art portrait: a bright-eyed young
@@ -321,6 +391,9 @@ training whip coiled at the hip. Her fully lit face in 3/4 glows
 toward her animals. Sunny meadow blur with town roofs far behind.
 Painterly splash-art finish, wordless composition.
 
+IDS (kopyala-yapistir):
+cell1: tamer,
+
 --- [R10] beastmaster -> public/images/characters/beastmaster.webp ---
 Gender male, early 30s. Splash-art portrait: a hardened beastmaster
 mid-command, rugged athletic (around 185 cm), tangled short black hair
@@ -330,6 +403,9 @@ forward-right pointing as two wolf silhouettes blur past at the
 frame edge. His fully lit face shouts direction right. Dusty arena
 light, blurred wooden palisade behind. Painterly splash-art finish,
 wordless composition.
+
+IDS (kopyala-yapistir):
+cell1: beastmaster,
 
 --- [R11] anima_lorde (alpha tamer) -> public/images/characters/anima_lorde.webp ---
 Gender male, late 20s. Splash-art portrait: a radiant alpha tamer
@@ -341,6 +417,9 @@ stag skull faintly glowing behind one shoulder. His fully lit face in
 3/4 gazes right in calm command. Deep forest light with drifting
 spores behind. Painterly splash-art finish, wordless composition.
 
+IDS (kopyala-yapistir):
+cell1: anima_lorde,
+
 --- [R12] gardener -> public/images/characters/gardener.webp ---
 Gender male, late teens. Splash-art portrait: a soft-spoken young
 gardener boy, slim (around 172 cm), short curly light-brown hair with
@@ -349,6 +428,9 @@ on the cheek, a patched apron over mossy greens, pruning shears in one
 hand and a curling vine around the wrist. His fully lit face in 3/4 smiles
 down-left at the vine. Greenhouse morning blur with hanging plants
 behind. Painterly splash-art finish, wordless composition.
+
+IDS (kopyala-yapistir):
+cell1: gardener,
 
 --- [R13] rootbinder -> public/images/characters/rootbinder.webp ---
 Gender male elf, ageless. Splash-art portrait: a transformed rootbinder
@@ -360,6 +442,9 @@ coiling the other arm. His fully lit face in 3/4 looks left with ancient patienc
 Deep loam-green light, blurred giant roots behind. Painterly
 splash-art finish, wordless composition.
 
+IDS (kopyala-yapistir):
+cell1: rootbinder,
+
 --- [R14] lifeweaver -> public/images/characters/lifeweaver.webp ---
 Gender male, ageless. Splash-art portrait: an ascended lifeweaver
 aglow from within, tall and luminous (around 188 cm, slim), cloud-white
@@ -368,6 +453,9 @@ with blossom-pink light on the cheeks, gown of woven petals and light
 over bark-silk, both hands releasing a swirl of glowing pollen. Her fully lit face tilts up-right in quiet ecstasy.
 Sun-drenched canopy blur with falling petals behind. Painterly
 splash-art finish, wordless composition.
+
+IDS (kopyala-yapistir):
+cell1: lifeweaver,
 
 --- [R15] moderator -> public/images/characters/moderator.webp ---
 Gender male, mid-30s. Splash-art portrait: a
@@ -379,6 +467,9 @@ decorative UI frame — this prompt paints the first real portrait.) His fully
 lit face in 3/4 inspects something right with cool authority. Cold
 hall light, blurred archive pillars behind. Painterly splash-art
 finish, wordless composition.
+
+IDS (kopyala-yapistir):
+cell1: moderator,
 
 --- [R16] tester -> public/images/characters/tester.webp ---
 Gender male, early 20s. Splash-art portrait: a
@@ -394,6 +485,9 @@ splash-art finish, playful and scrappy, wordless composition.
 (NOTE: current file is a decorative UI frame — this prompt paints the
 first real portrait.)
 
+IDS (kopyala-yapistir):
+cell1: tester,
+
 --- [R17] juggernaut -> public/images/characters/juggernaut.webp ---
 Gender male, late 30s. Splash-art portrait: a mountainous juggernaut
 mid-breath before a charge (around 205 cm, immensely broad), shaved
@@ -402,6 +496,9 @@ colossal layered plate with dents the size of fists,
 chain-wrapped fists raised, breath fogging in cold air. His fully lit
 face in 3/4 glares left. Iron-grey storm light, blurred siege
 engines behind. Painterly splash-art finish, wordless composition.
+
+IDS (kopyala-yapistir):
+cell1: juggernaut,
 
 --- [R18] colossus -> public/images/characters/colossus.webp ---
 Gender male, ancient. Splash-art portrait: an ancient colossus at rest
@@ -413,8 +510,10 @@ crushing a broken siege ram. His fully lit face in 3/4 looks down
 with weary pride. Pale sky over ruined walls behind. Painterly
 splash-art finish, wordless composition.
 
+IDS (kopyala-yapistir):
+cell1: colossus,
 
-=================== NPC PORTRAITS (1 missing) ===================
+=================== NPC PORTRAITS (5 missing) ===================
 NPC art shows ROUND in town cards and small in dialogue (512x512
 square recommended, face centered, same painterly splash-art family
 as the heroes, wordless composition).
@@ -431,8 +530,72 @@ hand resting on a blackthorn walking cane. His fully lit face meets
 the viewer with courtly menace softened by avuncular warmth. Dusk
 lamplight over a blurred village square behind. Painterly
 splash-art finish, wordless composition.
-(NOTE: blacksmith.png, merchant.png, tavernkeeper.png and mira.png
-already exist on disk — no prompt needed.)
+
+IDS (kopyala-yapistir):
+cell1: uncle,
+
+--- [N2] Blacksmith -> public/images/npcs/blacksmith.png ---
+Gender male, mid-40s. Painterly portrait, centered square composition:
+a broad village blacksmith in 3/4 view, thick-armed and barrel-chested
+(around 185 cm), short cropped dark hair receding at the temples,
+clean-shaven soot-smudged face with old burn flecks on one cheek,
+warm narrowed eyes and an easy half-smile, a scarred leather apron over
+a rolled-sleeve linen shirt, heavy forearms crossed, a smith's hammer
+resting across one shoulder. His fully lit face meets the viewer with
+plain dependable warmth. Forge firelight from the left over a blurred
+anvil, hanging tongs and cooling blades. Painterly splash-art finish,
+iron-grey and ember-orange palette, wordless composition.
+
+IDS (kopyala-yapistir):
+cell1: blacksmith,
+
+--- [N3] Merchant -> public/images/npcs/merchant.png ---
+Gender female, mid-30s. Painterly portrait, centered square composition:
+a shrewd travelling merchant in 3/4 view, neat and compact (around
+168 cm), dark oiled hair pinned beneath a soft felt cap with a brass
+coin pin, clean face with quick calculating eyes and a thin knowing
+smile, a patched teal wool coat with a scruffy fur collar over a linen
+shirt, rings on two fingers, one hand resting on a leather ledger and
+the other lifting a small brass balance scale. Her fully lit face meets
+the viewer with friendly cunning. Warm lantern light over a blurred
+stall of stacked crates, patterned rugs and glass bottles. Painterly
+splash-art finish, teal-and-gold palette, wordless composition.
+
+IDS (kopyala-yapistir):
+cell1: merchant,
+
+--- [N4] Tavernkeeper -> public/images/npcs/tavernkeeper.png ---
+Gender male, late 40s. Painterly portrait, centered square composition:
+a stout tavernkeeper in 3/4 view, round-bellied with strong arms (around
+178 cm), short greying hair and a thick moustache, clean-shaven ruddy
+face with deep laugh lines and a welcoming grin, a stained leather vest
+over a rolled-sleeve linen tunic, a towel over one shoulder, one hand
+lifting a foaming tankard and the other resting on a tapped ale barrel.
+His fully lit face meets the viewer with loud good humour. Honey-warm
+lantern light over a blurred tavern bar of hanging mugs and stacked
+barrels. Painterly splash-art finish, amber-and-oak palette, wordless
+composition.
+
+IDS (kopyala-yapistir):
+cell1: tavernkeeper,
+
+--- [N5] Zeynep the Apothecary -> public/images/npcs/zeynep.png ---
+Gender female, mid-20s. Painterly portrait, centered square composition:
+a wild-eyed village apothecary in 3/4 view, slight and quick (around
+165 cm), dark unruly hair escaping a crooked herb-stained headscarf,
+clean face with a bright distracted grin and a smudge of green paste on
+one cheek, layered mismatched shawls over a stained apron, a necklace of
+small glass vials, one hand raising a bubbling green flask and the other
+clutching a bundle of dried herbs. Her fully lit face meets the viewer
+with unsettling cheer. Green witchlight from below over blurred shelves
+of jars and hanging roots. Painterly splash-art finish, moss-green and
+parchment palette, wordless composition.
+
+IDS (kopyala-yapistir):
+cell1: zeynep,
+
+(NOTE: mira.png already exists on disk — no prompt needed.
+blacksmith, merchant, tavernkeeper, uncle and zeynep still need generation.)
 
 
 COVERAGE CHECK (this file only):
@@ -447,11 +610,12 @@ COVERAGE CHECK (this file only):
   assassin, support, tank, tamer, beastmaster, anima_lorde,
   gardener, rootbinder, lifeweaver, moderator, tester, juggernaut,
   colossus.
-- NPC portraits: 1 missing (uncle). With art: blacksmith, merchant,
-  tavernkeeper, mira.
+- NPC portraits: 5 missing (blacksmith, merchant, tavernkeeper, uncle,
+  zeynep). With art: mira.
 - MOVED OUT (ayri dosyalar):
   image-prompts-skills.txt  <- S1-S19 (TUM skill ikonlari, boss dahil)
-  image-prompts-bosses.txt  <- B1-B5 boss portreleri + N1 NPC
+  image-prompts-bosses.txt  <- B1-B5 boss portreleri
   image-prompts-vampires.txt<- 4 vampir karakter portresi
-  image-prompts-pets.txt    <- 101 pet + otomatik isimlendirme kodu
+  image-prompts-pets.txt    <- 101 pet + otomatik ID
+
 ================================================================

@@ -6,11 +6,13 @@ Boss skilleri + monster + vampir + temel saldirilar dahil
 HEDEF KLASOR : public/images/skills/
 DOSYA BOYUTU : 256x256 kare (PNG)
 KESIM SIRASI: sol-ust = cell1, sonra soldan saga, satir satir.
+GRID DUZENI : TUM bloklar 3x3. SHARED hucreleri yeniden uretme, kopyala.
+              Son blokta 1 hucre bilerek bos (koyu slate, nesne/yazi yok).
 
 NASIL KULLANILIR:
   1) Blok blok ilerle. Her blogun PROMPT kismini KREA'ya aynen yapistir.
-  2) Uretilen grid gorselini MAP'teki sirayla kes.
-  3) Her hucreyi MAP'te yazan dosya adiyla public/images/skills/ icine kaydet.
+  2) Uretilen grid gorselini IDS satirindaki sirayla kes.
+  3) Her hucreyi IDS satirindaki id ile (id.png) public/images/skills/ icine kaydet.
   4) 'DOSYA KOPYA' yazanlari YENIDEN URETME; ilgili bloktan kopyala.
   5) Hucre etiketleri SADECE sana hangi ikonun hangi hucrede oldugunu soyler.
      Gorsele yazi yazdirma; ikonlar wordless olmali.
@@ -30,6 +32,7 @@ Grid: 3x3 | Uretilecek ikon: 9
 ==================================================================
 
 PROMPT (kopyala-yapistir):
+
 Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
 3x3 grid, 9 square skill icons.
 Cell 1 (heavy_strike): two crossed heavy greatswords slamming down with impact sparks flying, molten steel-orange edges.
@@ -43,16 +46,10 @@ Cell 8 (cataclysm): blazing meteor shattering a fortress wall into flying stone 
 Cell 9 (devastate): cracked skull under a falling war hammer, dust exploding.
 Base style: Set of square ability icons arranged in a tidy GRID with thin dark gaps between cells over a dark slate backdrop, each icon a painterly close-up battle emblem: the subject fills 80% of its cell, bold dynamic three-quarter angle, hot rim light carving the silhouette out of deep shadow, hyper-saturated element color, edge-to-edge painted art shaped by the game's rounded icon frame, a single instantly readable subject per icon, purely visual wordless emblems.
 
-MAP (hucre -> dosya):
-  cell1 -> heavy_strike.png
-  cell2 -> slash.png
-  cell3 -> great_slash.png
-  cell4 -> colossal_slash.png
-  cell5 -> cleave.png
-  cell6 -> war_cry.png
-  cell7 -> battle_fury.png
-  cell8 -> cataclysm.png
-  cell9 -> devastate.png
+IDS (kopyala-yapistir):
+cell1: heavy_strike, cell2: slash, cell3: great_slash,
+cell4: colossal_slash, cell5: cleave, cell6: war_cry,
+cell7: battle_fury, cell8: cataclysm, cell9: devastate,
 
 ==================================================================
 BLOK 02 | S2 | Archer Precision (9)
@@ -73,16 +70,10 @@ Cell 8 (shatter_point): cracked weak-point target disc with a dagger tip strikin
 Cell 9 (broken_guard): shattered shield halves with a snapped sword falling between them.
 Base style: Set of square ability icons arranged in a tidy GRID with thin dark gaps between cells over a dark slate backdrop, each icon a painterly close-up battle emblem: the subject fills 80% of its cell, bold dynamic three-quarter angle, hot rim light carving the silhouette out of deep shadow, hyper-saturated element color, edge-to-edge painted art shaped by the game's rounded icon frame, a single instantly readable subject per icon, purely visual wordless emblems.
 
-MAP (hucre -> dosya):
-  cell1 -> quick_shot.png
-  cell2 -> aimed_shot.png
-  cell3 -> piercing_shot.png
-  cell4 -> hunter_shot.png
-  cell5 -> storm_shot.png
-  cell6 -> volley.png
-  cell7 -> storm_barrage.png
-  cell8 -> shatter_point.png
-  cell9 -> broken_guard.png
+IDS (kopyala-yapistir):
+cell1: quick_shot, cell2: aimed_shot, cell3: piercing_shot,
+cell4: hunter_shot, cell5: storm_shot, cell6: volley,
+cell7: storm_barrage, cell8: shatter_point, cell9: broken_guard,
 
 ==================================================================
 BLOK 03 | S3 | Holy Blades (9)
@@ -103,16 +94,10 @@ Cell 8 (holy_judgement): scales of justice crossed with a holy sword, glowing pa
 Cell 9 (radiance): rising sun lifting over a kneeling healed knight, warm light washing upward.
 Base style: Set of square ability icons arranged in a tidy GRID with thin dark gaps between cells over a dark slate backdrop, each icon a painterly close-up battle emblem: the subject fills 80% of its cell, bold dynamic three-quarter angle, hot rim light carving the silhouette out of deep shadow, hyper-saturated element color, edge-to-edge painted art shaped by the game's rounded icon frame, a single instantly readable subject per icon, purely visual wordless emblems.
 
-MAP (hucre -> dosya):
-  cell1 -> smite.png
-  cell2 -> sanct_bolt.png
-  cell3 -> hallowed_bolt.png
-  cell4 -> blessed_blade.png
-  cell5 -> radiant_edge.png
-  cell6 -> divine_light.png
-  cell7 -> holy_strike.png
-  cell8 -> holy_judgement.png
-  cell9 -> radiance.png
+IDS (kopyala-yapistir):
+cell1: smite, cell2: sanct_bolt, cell3: hallowed_bolt,
+cell4: blessed_blade, cell5: radiant_edge, cell6: divine_light,
+cell7: holy_strike, cell8: holy_judgement, cell9: radiance,
 
 ==================================================================
 BLOK 04 | S4 | Healing Light (9)
@@ -133,16 +118,10 @@ Cell 8 (spirit_surge): three blue mana wisps spiraling upward together.
 Cell 9 (forest_renewal): ancient gnarled tree blooming with green light bursting from its crown.
 Base style: Set of square ability icons arranged in a tidy GRID with thin dark gaps between cells over a dark slate backdrop, each icon a painterly close-up battle emblem: the subject fills 80% of its cell, bold dynamic three-quarter angle, hot rim light carving the silhouette out of deep shadow, hyper-saturated element color, edge-to-edge painted art shaped by the game's rounded icon frame, a single instantly readable subject per icon, purely visual wordless emblems.
 
-MAP (hucre -> dosya):
-  cell1 -> mend.png
-  cell2 -> greater_mend.png
-  cell3 -> magic_mend.png
-  cell4 -> war_heal.png
-  cell5 -> divine_blessing.png
-  cell6 -> resurgence.png
-  cell7 -> rejuvenate.png
-  cell8 -> spirit_surge.png
-  cell9 -> forest_renewal.png
+IDS (kopyala-yapistir):
+cell1: mend, cell2: greater_mend, cell3: magic_mend,
+cell4: war_heal, cell5: divine_blessing, cell6: resurgence,
+cell7: rejuvenate, cell8: spirit_surge, cell9: forest_renewal,
 
 ==================================================================
 BLOK 05 | S5 | Rogue Shadow (9)
@@ -163,16 +142,10 @@ Cell 8 (shadow_veil): dark veil curtain parting to reveal two glowing eyes behin
 Cell 9 (eclipse_strike): black sun eclipse split by a silver blade slash.
 Base style: Set of square ability icons arranged in a tidy GRID with thin dark gaps between cells over a dark slate backdrop, each icon a painterly close-up battle emblem: the subject fills 80% of its cell, bold dynamic three-quarter angle, hot rim light carving the silhouette out of deep shadow, hyper-saturated element color, edge-to-edge painted art shaped by the game's rounded icon frame, a single instantly readable subject per icon, purely visual wordless emblems.
 
-MAP (hucre -> dosya):
-  cell1 -> stab.png
-  cell2 -> lunge.png
-  cell3 -> shadow_stab.png
-  cell4 -> vampiric_strike.png
-  cell5 -> execute.png
-  cell6 -> shadow_step.png
-  cell7 -> shadow_meld.png
-  cell8 -> shadow_veil.png
-  cell9 -> eclipse_strike.png
+IDS (kopyala-yapistir):
+cell1: stab, cell2: lunge, cell3: shadow_stab,
+cell4: vampiric_strike, cell5: execute, cell6: shadow_step,
+cell7: shadow_meld, cell8: shadow_veil, cell9: eclipse_strike,
 
 ==================================================================
 BLOK 06 | S6 | Death Shadow + Monster Claws (9)
@@ -193,16 +166,10 @@ Cell 8 (monster_shadow_attack): monstrous shadow claw slashing with violet talon
 Cell 9 (monster_shadow_bolt): dark violet bolt with a screaming skull tip flying forward.
 Base style: Set of square ability icons arranged in a tidy GRID with thin dark gaps between cells over a dark slate backdrop, each icon a painterly close-up battle emblem: the subject fills 80% of its cell, bold dynamic three-quarter angle, hot rim light carving the silhouette out of deep shadow, hyper-saturated element color, edge-to-edge painted art shaped by the game's rounded icon frame, a single instantly readable subject per icon, purely visual wordless emblems.
 
-MAP (hucre -> dosya):
-  cell1 -> reap.png
-  cell2 -> death_mark.png
-  cell3 -> soul_thief.png
-  cell4 -> soul_reap.png
-  cell5 -> scythe_sweep.png
-  cell6 -> dark_veil.png
-  cell7 -> cripple.png
-  cell8 -> monster_shadow_attack.png
-  cell9 -> monster_shadow_bolt.png
+IDS (kopyala-yapistir):
+cell1: reap, cell2: death_mark, cell3: soul_thief,
+cell4: soul_reap, cell5: scythe_sweep, cell6: dark_veil,
+cell7: cripple, cell8: monster_shadow_attack, cell9: monster_shadow_bolt,
 
 ==================================================================
 BLOK 07 | S7 | Arcane Cosmos (9) [PAYLASIMLI - 1x URET]
@@ -223,16 +190,10 @@ Cell 8 (mod_strike): glowing pink adjudicator gavel striking down with verdict l
 Cell 9 (mod_obliterate): pink-black annihilation beam erasing a square of reality.
 Base style: Set of square ability icons arranged in a tidy GRID with thin dark gaps between cells over a dark slate backdrop, each icon a painterly close-up battle emblem: the subject fills 80% of its cell, bold dynamic three-quarter angle, hot rim light carving the silhouette out of deep shadow, hyper-saturated element color, edge-to-edge painted art shaped by the game's rounded icon frame, a single instantly readable subject per icon, purely visual wordless emblems.
 
-MAP (hucre -> dosya):
-  cell1 -> arcane_bolt.png
-  cell2 -> arcane_barrage.png [S15 ile PAYLASIMLI, tekrar uretme]
-  cell3 -> arcane_blast.png
-  cell4 -> primordial_bolt.png
-  cell5 -> meteor.png [S15 ile PAYLASIMLI]
-  cell6 -> comet.png [S15 ile PAYLASIMLI]
-  cell7 -> mana_shield.png [S12 ile PAYLASIMLI]
-  cell8 -> mod_strike.png
-  cell9 -> mod_obliterate.png
+IDS (kopyala-yapistir):
+cell1: arcane_bolt, cell2: arcane_barrage, cell3: arcane_blast,
+cell4: primordial_bolt, cell5: meteor, cell6: comet,
+cell7: mana_shield, cell8: mod_strike, cell9: mod_obliterate,
 
 ==================================================================
 BLOK 08 | S8 | Tank Iron (9)
@@ -253,16 +214,10 @@ Cell 8 (immovable): grey mountain rooted over a small shield at its base.
 Cell 9 (iron_wall): riveted iron plate wall with dents and scratches.
 Base style: Set of square ability icons arranged in a tidy GRID with thin dark gaps between cells over a dark slate backdrop, each icon a painterly close-up battle emblem: the subject fills 80% of its cell, bold dynamic three-quarter angle, hot rim light carving the silhouette out of deep shadow, hyper-saturated element color, edge-to-edge painted art shaped by the game's rounded icon frame, a single instantly readable subject per icon, purely visual wordless emblems.
 
-MAP (hucre -> dosya):
-  cell1 -> shield_bash.png
-  cell2 -> adamant_bash.png
-  cell3 -> titan_slam.png
-  cell4 -> defend.png
-  cell5 -> fortify.png
-  cell6 -> shield_wall.png
-  cell7 -> bastion.png
-  cell8 -> immovable.png
-  cell9 -> iron_wall.png
+IDS (kopyala-yapistir):
+cell1: shield_bash, cell2: adamant_bash, cell3: titan_slam,
+cell4: defend, cell5: fortify, cell6: shield_wall,
+cell7: bastion, cell8: immovable, cell9: iron_wall,
 
 ==================================================================
 BLOK 09 | S9 | Wards + Monster Hide (9)
@@ -283,16 +238,10 @@ Cell 8 (monster_stoneskin): rocky monster carapace with glowing magma seams.
 Cell 9 (monster_heal): monster flesh stitching itself shut with green glowing thread.
 Base style: Set of square ability icons arranged in a tidy GRID with thin dark gaps between cells over a dark slate backdrop, each icon a painterly close-up battle emblem: the subject fills 80% of its cell, bold dynamic three-quarter angle, hot rim light carving the silhouette out of deep shadow, hyper-saturated element color, edge-to-edge painted art shaped by the game's rounded icon frame, a single instantly readable subject per icon, purely visual wordless emblems.
 
-MAP (hucre -> dosya):
-  cell1 -> divine_guard.png
-  cell2 -> aegis.png
-  cell3 -> barrier.png
-  cell4 -> stone_skin.png
-  cell5 -> holy_ward.png
-  cell6 -> group_guard.png
-  cell7 -> war_banner.png
-  cell8 -> monster_stoneskin.png
-  cell9 -> monster_heal.png
+IDS (kopyala-yapistir):
+cell1: divine_guard, cell2: aegis, cell3: barrier,
+cell4: stone_skin, cell5: holy_ward, cell6: group_guard,
+cell7: war_banner, cell8: monster_stoneskin, cell9: monster_heal,
 
 ==================================================================
 BLOK 10 | S10 | Nature + Beasts (9)
@@ -313,16 +262,10 @@ Cell 8 (alpha_strike): alpha wolf head with a crown-shaped scar, eyes burning.
 Cell 9 (tame_hit): leather whip coiled with a small paw charm swinging from its handle.
 Base style: Set of square ability icons arranged in a tidy GRID with thin dark gaps between cells over a dark slate backdrop, each icon a painterly close-up battle emblem: the subject fills 80% of its cell, bold dynamic three-quarter angle, hot rim light carving the silhouette out of deep shadow, hyper-saturated element color, edge-to-edge painted art shaped by the game's rounded icon frame, a single instantly readable subject per icon, purely visual wordless emblems.
 
-MAP (hucre -> dosya):
-  cell1 -> garden_swipe.png
-  cell2 -> root_lash.png
-  cell3 -> bloom_burst.png
-  cell4 -> vine_lash.png
-  cell5 -> thorn_volley.png
-  cell6 -> beast_bite.png
-  cell7 -> beast_strike.png
-  cell8 -> alpha_strike.png
-  cell9 -> tame_hit.png
+IDS (kopyala-yapistir):
+cell1: garden_swipe, cell2: root_lash, cell3: bloom_burst,
+cell4: vine_lash, cell5: thorn_volley, cell6: beast_bite,
+cell7: beast_strike, cell8: alpha_strike, cell9: tame_hit,
 
 ==================================================================
 BLOK 11 | S11 | Venom + Monster Ailments (9)
@@ -343,25 +286,19 @@ Cell 8 (monster_vulnerable): cracked red heart target exposed with fracture line
 Cell 9 (monster_physical_attack): savage beast fang blow with saliva and dust bursting.
 Base style: Set of square ability icons arranged in a tidy GRID with thin dark gaps between cells over a dark slate backdrop, each icon a painterly close-up battle emblem: the subject fills 80% of its cell, bold dynamic three-quarter angle, hot rim light carving the silhouette out of deep shadow, hyper-saturated element color, edge-to-edge painted art shaped by the game's rounded icon frame, a single instantly readable subject per icon, purely visual wordless emblems.
 
-MAP (hucre -> dosya):
-  cell1 -> venom_strike.png
-  cell2 -> toxin_drench.png
-  cell3 -> venom_burst.png
-  cell4 -> monster_poison.png
-  cell5 -> monster_regen.png
-  cell6 -> monster_frenzy.png
-  cell7 -> monster_weaken.png
-  cell8 -> monster_vulnerable.png
-  cell9 -> monster_physical_attack.png
+IDS (kopyala-yapistir):
+cell1: venom_strike, cell2: toxin_drench, cell3: venom_burst,
+cell4: monster_poison, cell5: monster_regen, cell6: monster_frenzy,
+cell7: monster_weaken, cell8: monster_vulnerable, cell9: monster_physical_attack,
 
 ==================================================================
-BLOK 12 | S12 | Storm + Sea + Monster Magic (8, TEKRARSIZ)
-Grid: 4x2 | Uretilecek ikon: 8 | PAYLASIM VAR
+BLOK 12 | S12 | Storm + Sea + Monster Magic (9, 1 KOPYA)
+Grid: 3x3 | Uretilecek ikon: 8 | Kopya: 1 (mana_shield)
 ==================================================================
 
 PROMPT (kopyala-yapistir):
 Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
-4x2 grid, 8 square skill icons.
+3x3 grid, 9 square skill icons.
 Cell 1 (monster_arcane_attack): wild violet energy surge erupting from a clawed hand.
 Cell 2 (monster_arcane_storm): violet storm vortex with lightning crawling inside it.
 Cell 3 (monster_heavy_blow): giant stone club smashing down with a shockwave ring.
@@ -370,17 +307,13 @@ Cell 5 (static_overload): overloaded tesla orb bursting with branching arcs.
 Cell 6 (lightning_bolt): classic yellow lightning fork striking with white-hot core.
 Cell 7 (water_splash): deep-blue wave splash frozen mid-crash with flying droplets.
 Cell 8 (frost_nova): pale ice ring explosion with radiating frost spikes.
+Cell 9 (mana_shield): blue hexagonal mana barrier dome glowing from within — COPY from S7, do not regenerate.
 Base style: Set of square ability icons arranged in a tidy GRID with thin dark gaps between cells over a dark slate backdrop, each icon a painterly close-up battle emblem: the subject fills 80% of its cell, bold dynamic three-quarter angle, hot rim light carving the silhouette out of deep shadow, hyper-saturated element color, edge-to-edge painted art shaped by the game's rounded icon frame, a single instantly readable subject per icon, purely visual wordless emblems.
 
-MAP (hucre -> dosya):
-  cell1 -> monster_arcane_attack.png
-  cell2 -> monster_arcane_storm.png
-  cell3 -> monster_heavy_blow.png
-  cell4 -> volt_conduit.png
-  cell5 -> static_overload.png
-  cell6 -> lightning_bolt.png
-  cell7 -> water_splash.png
-  cell8 -> frost_nova.png
+IDS (kopyala-yapistir):
+cell1: monster_arcane_attack, cell2: monster_arcane_storm, cell3: monster_heavy_blow,
+cell4: volt_conduit, cell5: static_overload, cell6: lightning_bolt,
+cell7: water_splash, cell8: frost_nova, cell9: mana_shield,
 
   DOSYA KOPYA (uretme, S7'den kopyala):
   mana_shield.png -> BLOK 07'den kopyala
@@ -404,16 +337,10 @@ Cell 8 (ember_storm): firestorm of falling embers swirling in a vortex.
 Cell 9 (blaze_rupture): volcano fissure erupting with a lava geyser.
 Base style: Set of square ability icons arranged in a tidy GRID with thin dark gaps between cells over a dark slate backdrop, each icon a painterly close-up battle emblem: the subject fills 80% of its cell, bold dynamic three-quarter angle, hot rim light carving the silhouette out of deep shadow, hyper-saturated element color, edge-to-edge painted art shaped by the game's rounded icon frame, a single instantly readable subject per icon, purely visual wordless emblems.
 
-MAP (hucre -> dosya):
-  cell1 -> boss_ember_skill1.png
-  cell2 -> boss_ember_skill2.png
-  cell3 -> boss_ember_skill3.png
-  cell4 -> boss_ember_skill4.png
-  cell5 -> boss_ember_skill5.png
-  cell6 -> boss_ember_skill6.png
-  cell7 -> scorch_mark.png
-  cell8 -> ember_storm.png
-  cell9 -> blaze_rupture.png
+IDS (kopyala-yapistir):
+cell1: boss_ember_skill1, cell2: boss_ember_skill2, cell3: boss_ember_skill3,
+cell4: boss_ember_skill4, cell5: boss_ember_skill5, cell6: boss_ember_skill6,
+cell7: scorch_mark, cell8: ember_storm, cell9: blaze_rupture,
 
 ==================================================================
 BLOK 14 | S14 | Frost Boss + Frost (9)
@@ -434,40 +361,34 @@ Cell 8 (cold_snap): cracked frozen hourglass leaking blue cold mist.
 Cell 9 (glacial_shatter): shattering ice monolith exploding into geometric shards.
 Base style: Set of square ability icons arranged in a tidy GRID with thin dark gaps between cells over a dark slate backdrop, each icon a painterly close-up battle emblem: the subject fills 80% of its cell, bold dynamic three-quarter angle, hot rim light carving the silhouette out of deep shadow, hyper-saturated element color, edge-to-edge painted art shaped by the game's rounded icon frame, a single instantly readable subject per icon, purely visual wordless emblems.
 
-MAP (hucre -> dosya):
-  cell1 -> boss_frost_skill1.png
-  cell2 -> boss_frost_skill2.png
-  cell3 -> boss_frost_skill3.png
-  cell4 -> boss_frost_skill4.png
-  cell5 -> boss_frost_skill5.png
-  cell6 -> boss_frost_skill6.png
-  cell7 -> frost_bolt.png
-  cell8 -> cold_snap.png
-  cell9 -> glacial_shatter.png
+IDS (kopyala-yapistir):
+cell1: boss_frost_skill1, cell2: boss_frost_skill2, cell3: boss_frost_skill3,
+cell4: boss_frost_skill4, cell5: boss_frost_skill5, cell6: boss_frost_skill6,
+cell7: frost_bolt, cell8: cold_snap, cell9: glacial_shatter,
 
 ==================================================================
-BLOK 15 | S15 | Void Boss (6, TEKRARSIZ)
-Grid: 3x2 | Uretilecek ikon: 6 | BOSS + SHARED
+BLOK 15 | S15 | Void Boss + Arcane Doom (9, 3 KOPYA)
+Grid: 3x3 | Uretilecek ikon: 6 | Kopya: 3 (arcane_barrage, meteor, comet)
 ==================================================================
 
 PROMPT (kopyala-yapistir):
 Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
-3x2 grid, 6 square skill icons.
+3x3 grid, 9 square skill icons.
 Cell 1 (boss_void_skill1): black void tentacle whipping forward with star-specked suckers.
 Cell 2 (boss_void_skill2): black-hole hammer head ringed with a crushing gravity halo.
 Cell 3 (boss_void_skill3): giant eye of nothingness, pure black pupil in a violet sclera (expose).
 Cell 4 (boss_void_skill4): chitinous void shell carapace with purple vein cracks (fortify).
 Cell 5 (boss_void_skill5): leech of living void latched on, dripping darkness.
 Cell 6 (boss_void_skill6): dark rebirth cocoon splitting open with pale new wings.
+Cell 7 (arcane_barrage): triple violet missiles fanning out with sparking wakes — COPY from S7, do not regenerate.
+Cell 8 (meteor): single roaring fireball meteor falling with a smoke tail — COPY from S7, do not regenerate.
+Cell 9 (comet): ice-blue comet with a long glittering tail — COPY from S7, do not regenerate.
 Base style: Set of square ability icons arranged in a tidy GRID with thin dark gaps between cells over a dark slate backdrop, each icon a painterly close-up battle emblem: the subject fills 80% of its cell, bold dynamic three-quarter angle, hot rim light carving the silhouette out of deep shadow, hyper-saturated element color, edge-to-edge painted art shaped by the game's rounded icon frame, a single instantly readable subject per icon, purely visual wordless emblems.
 
-MAP (hucre -> dosya):
-  cell1 -> boss_void_skill1.png
-  cell2 -> boss_void_skill2.png
-  cell3 -> boss_void_skill3.png
-  cell4 -> boss_void_skill4.png
-  cell5 -> boss_void_skill5.png
-  cell6 -> boss_void_skill6.png
+IDS (kopyala-yapistir):
+cell1: boss_void_skill1, cell2: boss_void_skill2, cell3: boss_void_skill3,
+cell4: boss_void_skill4, cell5: boss_void_skill5, cell6: boss_void_skill6,
+cell7: arcane_barrage, cell8: meteor, cell9: comet,
 
   DOSYA KOPYA (uretme, S7'den kopyala):
   arcane_barrage.png, meteor.png, comet.png -> BLOK 07'den kopyala
@@ -491,52 +412,34 @@ Cell 8 (boss_world_skill2): continent-crusher maw blow crushing a fortress gate.
 Cell 9 (boss_world_skill3): collapsing mountain chains snapping with falling boulders (weaken).
 Base style: Set of square ability icons arranged in a tidy GRID with thin dark gaps between cells over a dark slate backdrop, each icon a painterly close-up battle emblem: the subject fills 80% of its cell, bold dynamic three-quarter angle, hot rim light carving the silhouette out of deep shadow, hyper-saturated element color, edge-to-edge painted art shaped by the game's rounded icon frame, a single instantly readable subject per icon, purely visual wordless emblems.
 
-MAP (hucre -> dosya):
-  cell1 -> boss_storm_skill1.png
-  cell2 -> boss_storm_skill2.png
-  cell3 -> boss_storm_skill3.png
-  cell4 -> boss_storm_skill4.png
-  cell5 -> boss_storm_skill5.png
-  cell6 -> boss_storm_skill6.png
-  cell7 -> boss_world_skill1.png
-  cell8 -> boss_world_skill2.png
-  cell9 -> boss_world_skill3.png
+IDS (kopyala-yapistir):
+cell1: boss_storm_skill1, cell2: boss_storm_skill2, cell3: boss_storm_skill3,
+cell4: boss_storm_skill4, cell5: boss_storm_skill5, cell6: boss_storm_skill6,
+cell7: boss_world_skill1, cell8: boss_world_skill2, cell9: boss_world_skill3,
 
 ==================================================================
-BLOK 17 | S17 | World Ruin Leftovers (3)
-Grid: 1x3 | Uretilecek ikon: 3 | BOSS
+BLOK 17 | S17 | World Ruin + Blood + Juggernaut (8, 1 BOS)
+Grid: 3x3 | Uretilecek ikon: 8 | Bos hucre: 1
 ==================================================================
 
 PROMPT (kopyala-yapistir):
 Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
-1x3 horizontal strip, 3 square skill icons with thin dark gaps on dark slate background, same painterly close-up battle-emblem finish.
+3x3 grid, 9 square skill icons. Cells 1-8 are listed; leave cell 9 EMPTY (plain dark slate, no object, no text).
 Cell 1 (boss_world_skill4): crooked volcano-frenzy rage idol with erupting crater head (fortify/frenzy).
 Cell 2 (boss_world_skill5): rotting world-root fang oozing black sap.
 Cell 3 (boss_world_skill6): tiny world-tree seed sprouting into a rebirth sapling of light.
+Cell 4 (exsanguinate): twin pale fangs sunk deep with two bright blood arcs gushing into a crimson whirl.
+Cell 5 (bloodbath): drenching wave of dark blood crashing over an upright fang-bladed greatsword.
+Cell 6 (crimson_rebirth): single drop of bright blood blooming into a halo of golden healing light above two grasping hands.
+Cell 7 (seismic_slam): massive armored fist slamming the ground with radial cracks bursting outward.
+Cell 8 (colossal_crash): mountain-sized falling boulder fist trailing dust, impact crater blooming below.
+Element language: blood cells use deep crimson red with black-violet shadow and wet arterial shine; earth cells use cracked stone browns, dust ochre and seismic force lines.
 Base style: Set of square ability icons arranged in a tidy GRID with thin dark gaps between cells over a dark slate backdrop, each icon a painterly close-up battle emblem: the subject fills 80% of its cell, bold dynamic three-quarter angle, hot rim light carving the silhouette out of deep shadow, hyper-saturated element color, edge-to-edge painted art shaped by the game's rounded icon frame, a single instantly readable subject per icon, purely visual wordless emblems.
 
-MAP (hucre -> dosya):
-  cell1 -> boss_world_skill4.png
-  cell2 -> boss_world_skill5.png
-  cell3 -> boss_world_skill6.png
-
-==================================================================
-BLOK 18 | S18 | Vampire Blood Arts (3) [PAYLASIMLI]
-Grid: 1x3 | Uretilecek ikon: 3 | PAYLASIM VAR
-==================================================================
-
-PROMPT (kopyala-yapistir):
-Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
-1x3 horizontal strip, 3 square skill icons with thin dark gaps on dark slate background, same painterly close-up battle-emblem finish, blood element language (deep crimson red with black-violet shadow, wet arterial shine).
-Cell 1 (exsanguinate): twin pale fangs sunk deep with two bright blood arcs gushing into a crimson whirl.
-Cell 2 (bloodbath): drenching wave of dark blood crashing over an upright fang-bladed greatsword.
-Cell 3 (crimson_rebirth): single drop of bright blood blooming into a halo of golden healing light above two grasping hands.
-Base style: Set of square ability icons arranged in a tidy GRID with thin dark gaps between cells over a dark slate backdrop, each icon a painterly close-up battle emblem: the subject fills 80% of its cell, bold dynamic three-quarter angle, hot rim light carving the silhouette out of deep shadow, hyper-saturated element color, edge-to-edge painted art shaped by the game's rounded icon frame, a single instantly readable subject per icon, purely visual wordless emblems.
-
-MAP (hucre -> dosya):
-  cell1 -> exsanguinate.png [1 kez uret]
-  cell2 -> bloodbath.png [1 kez uret]
-  cell3 -> crimson_rebirth.png [1 kez uret]
+IDS (kopyala-yapistir):
+cell1: boss_world_skill4, cell2: boss_world_skill5, cell3: boss_world_skill6,
+cell4: exsanguinate, cell5: bloodbath, cell6: crimson_rebirth,
+cell7: seismic_slam, cell8: colossal_crash,
 
   DOSYA KOPYA (prompt yok, uretme - Windows'ta kopyala-yapistir):
   vampire_bite.png <- exsanguinate.png'nin kopyasi
@@ -545,30 +448,19 @@ MAP (hucre -> dosya):
   sanguine_bolt.png <- crimson_rebirth.png'nin kopyasi
 
 ==================================================================
-BLOK 19 | S19 | Juggernaut Arts (2)
-Grid: 1x2 | Uretilecek ikon: 2
-==================================================================
-
-PROMPT (kopyala-yapistir):
-Fit: each icon fits fully inside its own box with a small margin — nothing cropped, nothing spilling out.
-1x2 strip, 2 square skill icons side by side, in this exact order, same painterly close-up battle-emblem finish, earth/physical element language (cracked stone browns, dust ochre, seismic force lines).
-Cell 1 (seismic_slam): massive armored fist slamming the ground with radial cracks bursting outward.
-Cell 2 (colossal_crash): mountain-sized falling boulder fist trailing dust, impact crater blooming below.
-Base style: Set of square ability icons arranged in a tidy GRID with thin dark gaps between cells over a dark slate backdrop, each icon a painterly close-up battle emblem: the subject fills 80% of its cell, bold dynamic three-quarter angle, hot rim light carving the silhouette out of deep shadow, hyper-saturated element color, edge-to-edge painted art shaped by the game's rounded icon frame, a single instantly readable subject per icon, purely visual wordless emblems.
-
-MAP (hucre -> dosya):
-  cell1 -> seismic_slam.png
-  cell2 -> colossal_crash.png
-
-==================================================================
 KAPSAM KONTROLU
 ==================================================================
+Grid duzeni           : 17 blok, HEPSI 3x3 (16 tam + S17'de 8 ikon + 1 bos hucre)
+Grid hucreleri        : 152 (148 tekil uretim + 4 SHARED kopya hucre)
 Uretilecek tekil ikon : 148
 Kopyalanacak dosya    : 4 (vampire_bite, tyrant_bite, gloom_bolt, sanguine_bolt)
 Toplam hedef dosya    : 152
 content.js ihtiyaci   : 152 (116 skill + 36 basic attack)
 Eksik                 : yok
 Fazla/eskimis         : yok
+
+NOT: SHARED kopya hucreleri: S12 -> mana_shield; S15 -> arcane_barrage,
+meteor, comet. Bunlar S7'de bir kez uretilir, burada tekrar uretilmez.
 
 NOT: 5 boss girdisi (boss_ember_king, boss_frost_titan, boss_void_herald,
 boss_storm_colossus, boss_world_eater) skill ikonu degil, boss portresidir.

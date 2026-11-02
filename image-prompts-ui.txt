@@ -46,7 +46,7 @@ SAVE TO: public/images/ui/blacksmithButton.png etc. (filename =
 content.js key + .png). Then set in content.js -> images.ui:
 blacksmithButton, tavernButton, merchantButton, templeButton.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: blacksmithButton, cell2: tavernButton, cell3: merchantButton, cell4: templeButton,
 
 --- GRID UB2 (2x2, action buttons) ---
@@ -63,7 +63,7 @@ sky over a small tent under a pine silhouette.
 SAVE TO: public/images/ui/<name>.png. Then set in content.js ->
 images.ui: dungeonButton, searchButton, restButton, sleepButton.
 
-MAP (kopyala-yapistir dosya adlari):
+IDS (kopyala-yapistir):
 cell1: dungeonButton, cell2: searchButton, cell3: restButton, cell4: sleepButton,
 
 =================== BACKGROUNDS (10, one prompt each) ===================
@@ -79,6 +79,9 @@ distance, morning mist low over flagstones, the bottom third calm
 dark empty ground for cards. Warm hopeful light from the upper
 left, wordless.
 
+IDS (kopyala-yapistir):
+cell1: setup,
+
 --- [BG2] lobby -> public/images/backgrounds/lobby.png ---
 Wide painterly view of a torchlit guildhall waiting room: long oak
 benches and a notice board crowded with sealed quest parchments
@@ -86,6 +89,9 @@ benches and a notice board crowded with sealed quest parchments
 fire burning right of center casting ember light, round tables with
 abandoned ale mugs left, the bottom third calm dark floorboards
 for lists. Cozy amber light against deep brown shadow, wordless.
+
+IDS (kopyala-yapistir):
+cell1: lobby,
 
 --- [BG3] town -> public/images/backgrounds/town.png ---
 Wide painterly panorama of Setra village square at dusk: crooked
@@ -97,6 +103,9 @@ Lantern dots along the streets, swallows in the sky, wordless.
 SAVE NOTE: content.js -> images.backgrounds.town is currently ""
 — set it to "/images/backgrounds/town.png".
 
+IDS (kopyala-yapistir):
+cell1: town,
+
 --- [BG4] dungeon -> public/images/backgrounds/dungeon.png ---
 Wide painterly descent into a torchlit dungeon: rough-hewn stone
 staircase spiraling down from the top corners, chains and old
@@ -106,6 +115,9 @@ the edges, the bottom half near-black empty stone floor for
 combat cards. Cold dread with one warm torch flicker left,
 wordless.
 
+IDS (kopyala-yapistir):
+cell1: dungeon,
+
 --- [BG5] tavern -> public/images/backgrounds/tavern.png ---
 Wide painterly tavern interior AFTER entering: low beamed ceiling
 with hanging hops and lanterns across the top, a long polished bar
@@ -114,6 +126,9 @@ benches and a dozing bard's lute mid-right, huge stone fireplace
 blazing behind the bar, ale barrels stacked to the ceiling in the
 back corners, the bottom third calm dark floorboards for panels.
 Honey-warm light, wood browns and amber, wordless.
+
+IDS (kopyala-yapistir):
+cell1: tavern,
 
 --- [BG6] blacksmith -> public/images/backgrounds/blacksmith.png ---
 Wide painterly blacksmith forge interior AFTER entering: massive
@@ -125,6 +140,9 @@ sparks drifting up through roof smoke-hole light. Bottom third
 calm dark ash floor for shop cards. Ember-orange against soot
 black, heat shimmer, wordless.
 
+IDS (kopyala-yapistir):
+cell1: blacksmith,
+
 --- [BG7] merchant -> public/images/backgrounds/merchant.png ---
 Wide painterly merchant bazaar stall interior AFTER entering:
 overflowing shelves of chests pots scrolls and bottles stacked to
@@ -133,6 +151,9 @@ exotic rugs draped over rails left and right, a brass cash box and
 abacus on the counter mid-distance, peacock feather and crystal
 ball catching light as hero props. Bottom third calm dark carpet
 floor for shop cards. Rich teal purple and gold clutter, wordless.
+
+IDS (kopyala-yapistir):
+cell1: merchant,
 
 --- [BG8] temple -> public/images/backgrounds/temple.png ---
 Wide painterly ANCIENT TEMPLE sanctum, the most gorgeous room in
@@ -148,6 +169,9 @@ and ivory against deep violet shadow, ultra detailed, wordless.
 SAVE NOTE: content.js -> images.backgrounds.temple is set but the
 file is missing — this prompt fills it.
 
+IDS (kopyala-yapistir):
+cell1: temple,
+
 --- [BG9] combat enemy floor -> public/images/backgrounds/combat_enemy.png ---
 Subtle wide dark ground texture for the ENEMY zone in battle:
 cracked scorched battleground stone fading to black at all edges,
@@ -156,6 +180,9 @@ center so monster cards pop. Very dark, desaturated, wordless.
 Keep it QUIET — it sits behind cards, never the star.
 SAVE NOTE: content.js -> images.combat.enemy is currently "" —
 set it to "/images/backgrounds/combat_enemy.png".
+
+IDS (kopyala-yapistir):
+cell1: combat_enemy,
 
 --- [BG10] combat party floor -> public/images/backgrounds/combat_party.png ---
 Subtle wide dark ground texture for the PARTY zone in battle:
@@ -166,6 +193,9 @@ cards pop. Very dark, desaturated, wordless. Keep it QUIET.
 SAVE NOTE: content.js -> images.combat.party is currently "" —
 set it to "/images/backgrounds/combat_party.png".
 
+IDS (kopyala-yapistir):
+cell1: combat_party,
+
 =================== PANEL TEXTURE (1) ===================
 
 --- [P1] panel -> public/images/ui/panel.png ---
@@ -175,6 +205,9 @@ grey brightness, no vignette, no objects, no text. It is drawn
 UNDER panels at low opacity, so keep contrast LOW.
 SAVE NOTE: content.js -> images.ui.panel is set but the file is
 missing — this prompt fills it.
+
+IDS (kopyala-yapistir):
+cell1: panel,
 
 ================================================================
 COVERAGE CHECK (nothing left behind):

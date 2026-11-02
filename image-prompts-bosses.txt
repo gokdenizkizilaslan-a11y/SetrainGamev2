@@ -23,7 +23,8 @@ spiraling around his shoulders, throne-room lava glow rising from
 below. Painterly splash-art finish, overwhelming heat and menace,
 wordless composition.
 
-
+IDS (kopyala-yapistir):
+cell1: ember_king,
 
 --- [B2] Glacier Doomlord -> public/images/bosses/frost_titan.png ---
 Splash-art boss portrait: a towering glacier doomlord turning into a
@@ -33,7 +34,8 @@ blasting sideways off his shoulders, frozen runes glowing beneath
 the frost on his brow. Painterly splash-art finish, deep cold
 dread, wordless composition.
 
-
+IDS (kopyala-yapistir):
+cell1: frost_titan,
 
 --- [B3] Eternal Abyss Herald -> public/images/bosses/void_herald.png ---
 Splash-art boss portrait: a gaunt eternal abyss herald entity
@@ -44,7 +46,8 @@ shattered void glass orbiting its shoulders, faint violet nebulae
 coiling behind. Painterly splash-art finish, cosmic horror and
 silence, wordless composition.
 
-
+IDS (kopyala-yapistir):
+cell1: void_herald,
 
 --- [B4] Thunder Tyrant -> public/images/bosses/storm_colossus.png ---
 Splash-art boss portrait: a gigantic thunder tyrant colossus
@@ -54,7 +57,8 @@ above its brow, storm clouds rotating around its fists, rain
 lashing sideways across its glowing eyes. Painterly splash-art
 finish, roaring tempest power, wordless composition.
 
-
+IDS (kopyala-yapistir):
+cell1: storm_colossus,
 
 --- [B5] Oblivion Devourer -> public/images/bosses/world_eater.png ---
 Splash-art boss portrait: a nightmarish oblivion devourer
@@ -64,11 +68,16 @@ behind the maw, forests and fortress towers tumbling from its
 back, dust and birds scattering around its rise. Painterly
 splash-art finish, apocalyptic scale, wordless composition.
 
+IDS (kopyala-yapistir):
+cell1: world_eater,
 
-=================== NPC PORTRAITS (1 missing) ===================
+=================== NPC PORTRAITS (image-prompts.txt) ===================
 NPC art shows ROUND in town cards and small in dialogue (512x512
 square recommended, face centered, same painterly splash-art family
 as the heroes, wordless composition).
+Bu dosyada sadece uncle var. Diger 4 NPC portresi
+(blacksmith, merchant, tavernkeeper, zeynep) image-prompts.txt ->
+NPC PORTRAITS bolumunde.
 
 --- [N1] Old Vesryn (uncle) -> public/images/npcs/uncle.png ---
 Gender male, ancient but unbowed. Painterly portrait, centered
@@ -82,8 +91,11 @@ hand resting on a blackthorn walking cane. His fully lit face meets
 the viewer with courtly menace softened by avuncular warmth. Dusk
 lamplight over a blurred village square behind. Painterly
 splash-art finish, wordless composition.
-(NOTE: blacksmith.png, merchant.png, tavernkeeper.png and mira.png
-already exist on disk — no prompt needed.)
+
+IDS (kopyala-yapistir):
+cell1: uncle,
+
+(NOTE: mira.png already exists on disk — no prompt needed.)
 
 =================== SKILL IKONLARI ===================
 
