@@ -2808,7 +2808,9 @@ input:focus {
   margin: 0;
   border-radius: inherit;
   box-shadow: none;
-  background-size: cover;
+  background-color: #2f2f2f;
+  background-size: contain;
+  background-repeat: no-repeat;
   background-position: center;
 }
 .skill-slot .skill-name {
