@@ -818,6 +818,12 @@ function showStoryIntro() {
   const lines = intro && Array.isArray(intro.lines) ? intro.lines : [];
   el.classList.remove("hidden");
 
+  // Arka plan: Setra meydani/koy gorseli (Theme UI'dan degistirilebilir; town fallback).
+  const imgs = CATALOG.images || {};
+  const bgs = imgs.backgrounds || {};
+  const ui = imgs.ui || {};
+  setCardBg(el, ui.storyBg || bgs.town || "");
+
   // Konuşan oyuncunun adı + sınıf portresi (Mira gibi) gösterilebilsin.
   const me = state.room ? state.room.players.find((p) => p.id === state.playerId) : null;
   const playerName = (me && me.name) || "You";

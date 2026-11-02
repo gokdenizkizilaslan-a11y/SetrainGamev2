@@ -1140,7 +1140,10 @@ const CONTENT = {
       "id": "vampire_rite",
       "name": "The Progenitor's Thirst",
       "giver": "uncle",
-      "classes": ["assassin", "mage"],
+      "classes": [
+        "assassin",
+        "mage"
+      ],
       "monsterTag": "humanoid",
       "requiredKills": 50,
       "requiredItem": "primeval_cruor",
@@ -4191,7 +4194,15 @@ const CONTENT = {
           "requirementType": "level_and_item",
           "requiresVampire": true
         }
-      ]
+      ],
+      "evolution": {
+        "level": 40,
+        "to": "bloodlord",
+        "requiredItem": "primeval_cruor",
+        "requiredItemCount": 5,
+        "requirementType": "level_and_item",
+        "requiresVampire": true
+      }
     },
     {
       "slug": "bloodlord",
@@ -4377,7 +4388,15 @@ const CONTENT = {
           "requirementType": "level_and_item",
           "requiresVampire": true
         }
-      ]
+      ],
+      "evolution": {
+        "level": 40,
+        "to": "sanguine_lord",
+        "requiredItem": "primeval_cruor",
+        "requiredItemCount": 5,
+        "requirementType": "level_and_item",
+        "requiresVampire": true
+      }
     },
     {
       "slug": "sanguine_lord",
@@ -10878,9 +10897,9 @@ const CONTENT = {
   "images": {
     "backgrounds": {
       "menu": "/images/backgrounds/menu.webp",
-      "setup": "/images/backgrounds/setup.png",
-      "lobby": "/images/backgrounds/lobby.png",
-      "town": "",
+      "setup": "/images/backgrounds/setup.webp?v=mvzvhr9k",
+      "lobby": "/images/backgrounds/lobby.webp?v=mvzvmxoj",
+      "town": "/images/backgrounds/town.webp?v=mvzvyu13",
       "dungeon": "/images/backgrounds/dungeon.png",
       "tavern": "/images/backgrounds/tavern.png",
       "blacksmith": "/images/backgrounds/blacksmith.png",
