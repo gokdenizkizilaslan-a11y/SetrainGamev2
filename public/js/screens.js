@@ -2129,11 +2129,11 @@ function skillTreeLayout(nodes) {
     (byTier[t] = byTier[t] || []).push(n);
   }
   const tiers = [1, 2, 3, 4].filter((t) => byTier[t]);
-  const NODE_W = 128;
-  const NODE_H = 84;
-  const GAP_X = 44;
-  const ROW_H = 142;
-  const PAD = 56;
+  const NODE_W = 152;
+  const NODE_H = 152;
+  const GAP_X = 40;
+  const ROW_H = 200;
+  const PAD = 64;
   let maxW = 0;
   for (const t of tiers) {
     const cols = byTier[t].length;
