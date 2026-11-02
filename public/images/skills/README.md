@@ -3,10 +3,10 @@
 Her beceri `id`'si ile yüklenir:
 
 ```
-public/images/skills/<skill_id>.png     →  örnek: slash.png
+public/images/skills/<skill_id>.webp    →  örnek: slash.webp
 ```
 
-> Yol: `skills[].image = "/images/skills/<id>.png"` ve sınıfların temel saldırısı
+> Yol: `skills[].image = "/images/skills/<id>.webp"` ve sınıfların temel saldırısı
 > `classes[].basicAttack.image` aynı klasörü kullanır.
 
 ## Örnek id'ler
@@ -26,8 +26,8 @@ boss_ember_king_skill1...`
 
 ## Kurallar
 
-- Format: PNG veya JPG.
-- Önerilen boyut: `128×128` veya `256×256`.
+- Format: WebP (önerilen), PNG veya JPG.
+- Önerilen boyut: `256×256` (kare).
 - **Dosya yoksa:** bronz degrade kare fallback'i görünür, oyun çökmez.
 
 ## Yeni beceri eklerken
@@ -37,4 +37,4 @@ boss_ember_king_skill1...`
 2. **Image path**'teki **"Default: ..."** butonuna bas.
 3. Beceriyi bir sınıfa eklemek istersen **Classes** → `startingSkills` alanına
    id'yi ekle.
-4. Kaydet → `public/images/skills/<id>.png` dosyasını at → restart.
+4. Kaydet → `public/images/skills/<id>.webp` dosyasını at → restart.

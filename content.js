@@ -1414,7 +1414,7 @@ const CONTENT = {
         "name": "Slash",
         "power": 1,
         "element": "physical",
-        "image": "/images/skills/slash.png",
+        "image": "/images/skills/slash.webp",
         "description": "Deals 8 + 1× attack damage.",
         "baseDamage": 8
       },
@@ -1521,7 +1521,7 @@ const CONTENT = {
         "name": "Quick Shot",
         "power": 0.9,
         "element": "physical",
-        "image": "/images/skills/quick_shot.png",
+        "image": "/images/skills/quick_shot.webp",
         "description": "Deals 8 + 0.9× attack damage.",
         "baseDamage": 8
       },
@@ -1621,7 +1621,7 @@ const CONTENT = {
         "name": "Arcane Bolt",
         "power": 0.95,
         "element": "arcane",
-        "image": "/images/skills/arcane_bolt.png",
+        "image": "/images/skills/arcane_bolt.webp",
         "description": "Deals 8 + 0.95× magic damage.",
         "baseDamage": 8
       },
@@ -1715,7 +1715,7 @@ const CONTENT = {
         "name": "Stab",
         "power": 1,
         "element": "physical",
-        "image": "/images/skills/stab.png",
+        "image": "/images/skills/stab.webp",
         "description": "Deals 8 + 1× attack damage.",
         "baseDamage": 8
       },
@@ -1815,7 +1815,7 @@ const CONTENT = {
         "name": "Smite",
         "power": 0.95,
         "element": "holy",
-        "image": "/images/skills/smite.png",
+        "image": "/images/skills/smite.webp",
         "description": "Deals 8 + 0.95× attack damage.",
         "baseDamage": 8
       },
@@ -1922,7 +1922,7 @@ const CONTENT = {
         "name": "Lunge",
         "power": 1.05,
         "element": "physical",
-        "image": "/images/skills/lunge.png",
+        "image": "/images/skills/lunge.webp",
         "description": "Deals 8 + 1.05× attack damage.",
         "baseDamage": 8
       },
@@ -2021,7 +2021,7 @@ const CONTENT = {
         "name": "Sanct Bolt",
         "power": 0.9,
         "element": "holy",
-        "image": "/images/skills/sanct_bolt.png",
+        "image": "/images/skills/sanct_bolt.webp",
         "description": "Deals 8 + 0.9× attack damage.",
         "baseDamage": 8
       },
@@ -2123,7 +2123,7 @@ const CONTENT = {
         "power": 0.85,
         "element": "physical",
         "effect": "heavy_hammer_slam",
-        "image": "/images/skills/shield_bash.png",
+        "image": "/images/skills/shield_bash.webp",
         "description": "Deals 8 + 0.85× attack damage.",
         "baseDamage": 8
       },
@@ -2229,7 +2229,7 @@ const CONTENT = {
         "name": "Tame Hit",
         "power": 1,
         "element": "physical",
-        "image": "/images/skills/tame_hit.png",
+        "image": "/images/skills/tame_hit.webp",
         "description": "Deals 8 + 1× attack damage.",
         "baseDamage": 8
       },
@@ -2320,7 +2320,7 @@ const CONTENT = {
         "name": "Beast Strike",
         "power": 1.15,
         "element": "physical",
-        "image": "/images/skills/beast_strike.png",
+        "image": "/images/skills/beast_strike.webp",
         "description": "Deals 8 + 1.15× attack damage.",
         "baseDamage": 8
       },
@@ -2405,7 +2405,7 @@ const CONTENT = {
         "name": "Alpha Strike",
         "power": 1.25,
         "element": "physical",
-        "image": "/images/skills/alpha_strike.png",
+        "image": "/images/skills/alpha_strike.webp",
         "description": "Deals 8 + 1.25× attack damage.",
         "baseDamage": 8
       },
@@ -2466,7 +2466,7 @@ const CONTENT = {
         "name": "Garden Swipe",
         "power": 0.9,
         "element": "nature",
-        "image": "/images/skills/vine_lash.png",
+        "image": "/images/skills/vine_lash.webp",
         "description": "Deals 8 + 0.9× magic damage.",
         "baseDamage": 8
       },
@@ -2572,7 +2572,7 @@ const CONTENT = {
         "name": "Root Lash",
         "power": 1.1,
         "element": "nature",
-        "image": "/images/skills/thorn_volley.png",
+        "image": "/images/skills/thorn_volley.webp",
         "description": "Deals 8 + 1.1× magic damage.",
         "baseDamage": 8
       },
@@ -2666,7 +2666,7 @@ const CONTENT = {
         "name": "Bloom Burst",
         "power": 1.2,
         "element": "nature",
-        "image": "/images/skills/forest_renewal.png",
+        "image": "/images/skills/forest_renewal.webp",
         "description": "Deals 8 + 1.2× magic damage.",
         "baseDamage": 8
       },
@@ -2737,7 +2737,7 @@ const CONTENT = {
         "name": "Mod Strike",
         "power": 1.5,
         "element": "arcane",
-        "image": "/images/skills/meteor.png",
+        "image": "/images/skills/meteor.webp",
         "description": "Deals 8 + 1.5× magic damage.",
         "baseDamage": 8
       },
@@ -2834,7 +2834,7 @@ const CONTENT = {
         "name": "Mod Obliterate",
         "power": 1.8,
         "element": "arcane",
-        "image": "/images/skills/cataclysm.png",
+        "image": "/images/skills/cataclysm.webp",
         "description": "Deals 8 + 1.8× magic damage.",
         "baseDamage": 8
       },
@@ -2912,7 +2912,7 @@ const CONTENT = {
         "name": "Slash",
         "power": 1,
         "element": "physical",
-        "image": "/images/skills/slash.png",
+        "image": "/images/skills/slash.webp",
         "description": "Deals 8 + 1× attack damage.",
         "baseDamage": 8
       },
@@ -2998,7 +2998,7 @@ const CONTENT = {
         "name": "Great Slash",
         "power": 1.2,
         "element": "physical",
-        "image": "/images/skills/great_slash.png",
+        "image": "/images/skills/great_slash.webp",
         "description": "Deals 8 + 1.2× attack damage.",
         "baseDamage": 8
       },
@@ -3079,7 +3079,7 @@ const CONTENT = {
         "name": "Hunter Shot",
         "power": 1.05,
         "element": "physical",
-        "image": "/images/skills/hunter_shot.png",
+        "image": "/images/skills/hunter_shot.webp",
         "description": "Deals 8 + 1.05× attack damage.",
         "baseDamage": 8
       },
@@ -3160,7 +3160,7 @@ const CONTENT = {
         "name": "Arcane Blast",
         "power": 1.1,
         "element": "arcane",
-        "image": "/images/skills/arcane_blast.png",
+        "image": "/images/skills/arcane_blast.webp",
         "description": "Deals 8 + 1.1× magic damage.",
         "baseDamage": 8
       },
@@ -3242,7 +3242,7 @@ const CONTENT = {
         "name": "Shadow Stab",
         "power": 1.1,
         "element": "shadow",
-        "image": "/images/skills/shadow_stab.png",
+        "image": "/images/skills/shadow_stab.webp",
         "description": "Deals 8 + 1.1× magic damage.",
         "baseDamage": 8
       },
@@ -3323,7 +3323,7 @@ const CONTENT = {
         "name": "Blessed Blade",
         "power": 1.1,
         "element": "holy",
-        "image": "/images/skills/blessed_blade.png",
+        "image": "/images/skills/blessed_blade.webp",
         "description": "Deals 8 + 1.1× attack damage.",
         "baseDamage": 8
       },
@@ -3404,7 +3404,7 @@ const CONTENT = {
         "name": "Reap",
         "power": 1.2,
         "element": "shadow",
-        "image": "/images/skills/reap.png",
+        "image": "/images/skills/reap.webp",
         "description": "Deals 8 + 1.2× magic damage.",
         "baseDamage": 8
       },
@@ -3484,7 +3484,7 @@ const CONTENT = {
         "name": "Hallowed Bolt",
         "power": 1,
         "element": "holy",
-        "image": "/images/skills/hallowed_bolt.png",
+        "image": "/images/skills/hallowed_bolt.webp",
         "description": "Deals 8 + 1× attack damage.",
         "baseDamage": 8
       },
@@ -3567,7 +3567,7 @@ const CONTENT = {
         "power": 0.95,
         "element": "physical",
         "effect": "heavy_hammer_slam",
-        "image": "/images/skills/adamant_bash.png",
+        "image": "/images/skills/adamant_bash.webp",
         "description": "Deals 8 + 0.95× attack damage.",
         "baseDamage": 8
       },
@@ -3649,7 +3649,7 @@ const CONTENT = {
         "name": "Colossal Slash",
         "power": 1.3,
         "element": "physical",
-        "image": "/images/skills/colossal_slash.png",
+        "image": "/images/skills/colossal_slash.webp",
         "description": "Deals 8 + 1.3× attack damage.",
         "baseDamage": 8
       },
@@ -3727,7 +3727,7 @@ const CONTENT = {
         "name": "Storm Shot",
         "power": 1.15,
         "element": "physical",
-        "image": "/images/skills/storm_shot.png",
+        "image": "/images/skills/storm_shot.webp",
         "description": "Deals 8 + 1.15× attack damage.",
         "baseDamage": 8
       },
@@ -3804,7 +3804,7 @@ const CONTENT = {
         "name": "Primordial Bolt",
         "power": 1.2,
         "element": "arcane",
-        "image": "/images/skills/primordial_bolt.png",
+        "image": "/images/skills/primordial_bolt.webp",
         "description": "Deals 8 + 1.2× magic damage.",
         "baseDamage": 8
       },
@@ -3882,7 +3882,7 @@ const CONTENT = {
         "name": "Eclipse Strike",
         "power": 1.2,
         "element": "shadow",
-        "image": "/images/skills/eclipse_strike.png",
+        "image": "/images/skills/eclipse_strike.webp",
         "description": "Deals 8 + 1.2× magic damage.",
         "baseDamage": 8
       },
@@ -3966,7 +3966,7 @@ const CONTENT = {
         "name": "Radiant Edge",
         "power": 1.2,
         "element": "holy",
-        "image": "/images/skills/radiant_edge.png",
+        "image": "/images/skills/radiant_edge.webp",
         "description": "Deals 8 + 1.2× attack damage.",
         "baseDamage": 8
       },
@@ -4051,7 +4051,7 @@ const CONTENT = {
         "name": "Scythe Sweep",
         "power": 1.3,
         "element": "shadow",
-        "image": "/images/skills/scythe_sweep.png",
+        "image": "/images/skills/scythe_sweep.webp",
         "description": "Deals 8 + 1.3× magic damage.",
         "baseDamage": 8
       },
@@ -4132,7 +4132,7 @@ const CONTENT = {
         "power": 1.3,
         "element": "blood",
         "scaling": "attack",
-        "image": "/images/skills/exsanguinate.png",
+        "image": "/images/skills/exsanguinate.webp",
         "description": "Deals 8 + 1.3× attack damage.",
         "baseDamage": 8
       },
@@ -4229,7 +4229,7 @@ const CONTENT = {
         "power": 1.4,
         "element": "blood",
         "scaling": "attack",
-        "image": "/images/skills/bloodbath.png",
+        "image": "/images/skills/bloodbath.webp",
         "description": "Deals 10 + 1.4× attack damage.",
         "baseDamage": 10
       },
@@ -4318,7 +4318,7 @@ const CONTENT = {
         "power": 1.3,
         "element": "blood",
         "scaling": "magicPower",
-        "image": "/images/skills/crimson_rebirth.png",
+        "image": "/images/skills/crimson_rebirth.webp",
         "description": "Deals 10 + 1.3× magic damage.",
         "baseDamage": 10
       },
@@ -4415,7 +4415,7 @@ const CONTENT = {
         "power": 1.3,
         "element": "blood",
         "scaling": "magicPower",
-        "image": "/images/skills/crimson_rebirth.png",
+        "image": "/images/skills/crimson_rebirth.webp",
         "description": "Deals 10 + 1.3× magic damage.",
         "baseDamage": 10
       },
@@ -4498,7 +4498,7 @@ const CONTENT = {
         "name": "Divine Light",
         "power": 1.1,
         "element": "holy",
-        "image": "/images/skills/divine_light.png",
+        "image": "/images/skills/divine_light.webp",
         "description": "Deals 8 + 1.1× attack damage.",
         "baseDamage": 8
       },
@@ -4585,7 +4585,7 @@ const CONTENT = {
         "power": 1.05,
         "element": "physical",
         "effect": "heavy_hammer_slam",
-        "image": "/images/skills/titan_slam.png",
+        "image": "/images/skills/titan_slam.webp",
         "description": "Deals 8 + 1.05× attack damage.",
         "baseDamage": 8
       },
@@ -4675,7 +4675,7 @@ const CONTENT = {
       "power": 1.6,
       "element": "fire",
       "effect": "fire_meteor_crash",
-      "image": "/images/skills/boss_ember_skill1.png",
+      "image": "/images/skills/boss_ember_skill1.webp",
       "description": "Deals 45 + 1.6× magic damage.",
       "baseDamage": 45
     },
@@ -4737,7 +4737,7 @@ const CONTENT = {
       "power": 2.4,
       "element": "fire",
       "effect": "heavy_hammer_slam",
-      "image": "/images/skills/boss_ember_skill2.png",
+      "image": "/images/skills/boss_ember_skill2.webp",
       "description": "Deals 60 + 2.4× magic damage.",
       "baseDamage": 60
     },
@@ -4755,7 +4755,7 @@ const CONTENT = {
       "duration": 2,
       "element": "fire",
       "effect": "fire_meteor_crash",
-      "image": "/images/skills/boss_ember_skill3.png",
+      "image": "/images/skills/boss_ember_skill3.webp",
       "description": "Ember weaken 35% 2t"
     },
     {
@@ -4772,7 +4772,7 @@ const CONTENT = {
       "duration": 2,
       "element": "fire",
       "effect": "fire_meteor_crash",
-      "image": "/images/skills/boss_ember_skill4.png",
+      "image": "/images/skills/boss_ember_skill4.webp",
       "description": "Ember fortify 45% 2t"
     },
     {
@@ -4790,7 +4790,7 @@ const CONTENT = {
         }
       ],
       "duration": 3,
-      "image": "/images/skills/boss_ember_skill5.png",
+      "image": "/images/skills/boss_ember_skill5.webp",
       "description": "Deals 30 + 0.9× magic damage.",
       "baseDamage": 30
     },
@@ -4801,7 +4801,7 @@ const CONTENT = {
       "mana": 10,
       "effect": "heal_aura_fountain",
       "healSelfPct": 0.25,
-      "image": "/images/skills/boss_ember_skill6.png",
+      "image": "/images/skills/boss_ember_skill6.webp",
       "description": "Ember heal 25%"
     },
     {
@@ -4812,7 +4812,7 @@ const CONTENT = {
       "power": 1.6,
       "element": "frost",
       "effect": "frost_crystal_spear",
-      "image": "/images/skills/boss_frost_skill1.png",
+      "image": "/images/skills/boss_frost_skill1.webp",
       "description": "Deals 45 + 1.6× magic damage.",
       "baseDamage": 45
     },
@@ -4824,7 +4824,7 @@ const CONTENT = {
       "power": 2.4,
       "element": "frost",
       "effect": "heavy_hammer_slam",
-      "image": "/images/skills/boss_frost_skill2.png",
+      "image": "/images/skills/boss_frost_skill2.webp",
       "description": "Deals 60 + 2.4× magic damage.",
       "baseDamage": 60
     },
@@ -4842,7 +4842,7 @@ const CONTENT = {
       "duration": 2,
       "element": "frost",
       "effect": "frost_crystal_spear",
-      "image": "/images/skills/boss_frost_skill3.png",
+      "image": "/images/skills/boss_frost_skill3.webp",
       "description": "Frost weaken 35% 2t"
     },
     {
@@ -4859,7 +4859,7 @@ const CONTENT = {
       "duration": 2,
       "element": "frost",
       "effect": "frost_crystal_spear",
-      "image": "/images/skills/boss_frost_skill4.png",
+      "image": "/images/skills/boss_frost_skill4.webp",
       "description": "Frost fortify 45% 2t"
     },
     {
@@ -4877,7 +4877,7 @@ const CONTENT = {
         }
       ],
       "duration": 3,
-      "image": "/images/skills/boss_frost_skill5.png",
+      "image": "/images/skills/boss_frost_skill5.webp",
       "description": "Deals 30 + 0.9× magic damage.",
       "baseDamage": 30
     },
@@ -4888,7 +4888,7 @@ const CONTENT = {
       "mana": 10,
       "effect": "heal_aura_fountain",
       "healSelfPct": 0.25,
-      "image": "/images/skills/boss_frost_skill6.png",
+      "image": "/images/skills/boss_frost_skill6.webp",
       "description": "Frost heal 25%"
     },
     {
@@ -4899,7 +4899,7 @@ const CONTENT = {
       "power": 1.7,
       "element": "shadow",
       "effect": "shadow_scythe_reap",
-      "image": "/images/skills/boss_void_skill1.png",
+      "image": "/images/skills/boss_void_skill1.webp",
       "description": "Deals 45 + 1.7× magic damage.",
       "baseDamage": 45
     },
@@ -4911,7 +4911,7 @@ const CONTENT = {
       "power": 2.5,
       "element": "shadow",
       "effect": "heavy_hammer_slam",
-      "image": "/images/skills/boss_void_skill2.png",
+      "image": "/images/skills/boss_void_skill2.webp",
       "description": "Deals 60 + 2.5× magic damage.",
       "baseDamage": 60
     },
@@ -4929,7 +4929,7 @@ const CONTENT = {
       "duration": 2,
       "element": "shadow",
       "effect": "shadow_scythe_reap",
-      "image": "/images/skills/boss_void_skill3.png",
+      "image": "/images/skills/boss_void_skill3.webp",
       "description": "Void expose 30% 2t"
     },
     {
@@ -4946,7 +4946,7 @@ const CONTENT = {
       "duration": 2,
       "element": "shadow",
       "effect": "shadow_scythe_reap",
-      "image": "/images/skills/boss_void_skill4.png",
+      "image": "/images/skills/boss_void_skill4.webp",
       "description": "Void fortify 50% 2t"
     },
     {
@@ -4964,7 +4964,7 @@ const CONTENT = {
         }
       ],
       "duration": 3,
-      "image": "/images/skills/boss_void_skill5.png",
+      "image": "/images/skills/boss_void_skill5.webp",
       "description": "Deals 30 + 0.85× magic damage.",
       "baseDamage": 30
     },
@@ -4975,7 +4975,7 @@ const CONTENT = {
       "mana": 10,
       "effect": "heal_aura_fountain",
       "healSelfPct": 0.3,
-      "image": "/images/skills/boss_void_skill6.png",
+      "image": "/images/skills/boss_void_skill6.webp",
       "description": "Void heal 30%"
     },
     {
@@ -4986,7 +4986,7 @@ const CONTENT = {
       "power": 1.7,
       "element": "arcane",
       "effect": "frost_crystal_spear",
-      "image": "/images/skills/boss_storm_skill1.png",
+      "image": "/images/skills/boss_storm_skill1.webp",
       "description": "Deals 45 + 1.7× magic damage.",
       "baseDamage": 45
     },
@@ -4998,7 +4998,7 @@ const CONTENT = {
       "power": 2.5,
       "element": "arcane",
       "effect": "heavy_hammer_slam",
-      "image": "/images/skills/boss_storm_skill2.png",
+      "image": "/images/skills/boss_storm_skill2.webp",
       "description": "Deals 60 + 2.5× magic damage.",
       "baseDamage": 60
     },
@@ -5020,7 +5020,7 @@ const CONTENT = {
       "duration": 2,
       "element": "arcane",
       "effect": "frost_crystal_spear",
-      "image": "/images/skills/boss_storm_skill3.png",
+      "image": "/images/skills/boss_storm_skill3.webp",
       "description": "Storm weaken+expose 2t"
     },
     {
@@ -5037,7 +5037,7 @@ const CONTENT = {
       "duration": 2,
       "element": "arcane",
       "effect": "frost_crystal_spear",
-      "image": "/images/skills/boss_storm_skill4.png",
+      "image": "/images/skills/boss_storm_skill4.webp",
       "description": "Storm fortify 40% 2t"
     },
     {
@@ -5055,7 +5055,7 @@ const CONTENT = {
         }
       ],
       "duration": 3,
-      "image": "/images/skills/boss_storm_skill5.png",
+      "image": "/images/skills/boss_storm_skill5.webp",
       "description": "Deals 30 + 0.9× magic damage.",
       "baseDamage": 30
     },
@@ -5066,7 +5066,7 @@ const CONTENT = {
       "mana": 10,
       "effect": "heal_aura_fountain",
       "healSelfPct": 0.25,
-      "image": "/images/skills/boss_storm_skill6.png",
+      "image": "/images/skills/boss_storm_skill6.webp",
       "description": "Storm heal 25%"
     },
     {
@@ -5077,7 +5077,7 @@ const CONTENT = {
       "power": 1.8,
       "element": "physical",
       "effect": "heavy_hammer_slam",
-      "image": "/images/skills/boss_world_skill1.png",
+      "image": "/images/skills/boss_world_skill1.webp",
       "description": "Deals 60 + 1.8× attack damage.",
       "baseDamage": 60
     },
@@ -5089,7 +5089,7 @@ const CONTENT = {
       "power": 2.6,
       "element": "physical",
       "effect": "heavy_hammer_slam",
-      "image": "/images/skills/boss_world_skill2.png",
+      "image": "/images/skills/boss_world_skill2.webp",
       "description": "Deals 60 + 2.6× attack damage.",
       "baseDamage": 60
     },
@@ -5107,7 +5107,7 @@ const CONTENT = {
       "duration": 2,
       "element": "physical",
       "effect": "heavy_hammer_slam",
-      "image": "/images/skills/boss_world_skill3.png",
+      "image": "/images/skills/boss_world_skill3.webp",
       "description": "World weaken 40% 2t"
     },
     {
@@ -5124,7 +5124,7 @@ const CONTENT = {
       "duration": 2,
       "element": "physical",
       "effect": "heavy_hammer_slam",
-      "image": "/images/skills/boss_world_skill4.png",
+      "image": "/images/skills/boss_world_skill4.webp",
       "description": "World frenzy 40% 2t"
     },
     {
@@ -5142,7 +5142,7 @@ const CONTENT = {
         }
       ],
       "duration": 3,
-      "image": "/images/skills/boss_world_skill5.png",
+      "image": "/images/skills/boss_world_skill5.webp",
       "description": "Deals 30 + 1× attack damage.",
       "baseDamage": 30
     },
@@ -5153,7 +5153,7 @@ const CONTENT = {
       "mana": 10,
       "effect": "heal_aura_fountain",
       "healSelfPct": 0.35,
-      "image": "/images/skills/boss_world_skill6.png",
+      "image": "/images/skills/boss_world_skill6.webp",
       "description": "World heal 35%"
     },
     {
@@ -5164,7 +5164,7 @@ const CONTENT = {
       "power": 1.6,
       "element": "physical",
       "effect": "heavy_hammer_slam",
-      "image": "/images/skills/heavy_strike.png",
+      "image": "/images/skills/heavy_strike.webp",
       "description": "Deals 30 + 1.6× attack damage.",
       "baseDamage": 30
     },
@@ -5174,7 +5174,7 @@ const CONTENT = {
       "target": "self",
       "mana": 4,
       "defense": 0.5,
-      "image": "/images/skills/defend.png",
+      "image": "/images/skills/defend.webp",
       "description": "Block 50% of incoming damage this round."
     },
     {
@@ -5185,7 +5185,7 @@ const CONTENT = {
       "mana": 8,
       "power": 1.9,
       "element": "arcane",
-      "image": "/images/skills/arcane_barrage.png",
+      "image": "/images/skills/arcane_barrage.webp",
       "description": "Deals 45 + 1.9× magic damage.",
       "baseDamage": 45
     },
@@ -5195,7 +5195,7 @@ const CONTENT = {
       "target": "self",
       "mana": 6,
       "defense": 0.55,
-      "image": "/images/skills/mana_shield.png",
+      "image": "/images/skills/mana_shield.webp",
       "description": "Block 55% of incoming damage this round."
     },
     {
@@ -5206,7 +5206,7 @@ const CONTENT = {
       "mana": 10,
       "power": 2,
       "element": "physical",
-      "image": "/images/skills/aimed_shot.png",
+      "image": "/images/skills/aimed_shot.webp",
       "description": "Deals 45 + 2× attack damage.",
       "baseDamage": 45
     },
@@ -5217,7 +5217,7 @@ const CONTENT = {
       "mana": 5,
       "power": 1.3,
       "element": "physical",
-      "image": "/images/skills/piercing_shot.png",
+      "image": "/images/skills/piercing_shot.webp",
       "description": "Deals 30 + 1.3× attack damage.",
       "baseDamage": 30
     },
@@ -5231,7 +5231,7 @@ const CONTENT = {
       "lifesteal": 0.5,
       "element": "shadow",
       "effect": "shadow_scythe_reap",
-      "image": "/images/skills/vampiric_strike.png",
+      "image": "/images/skills/vampiric_strike.webp",
       "description": "Deals 45 + 2× magic damage. Heals for half the damage dealt.",
       "baseDamage": 45
     },
@@ -5241,7 +5241,7 @@ const CONTENT = {
       "target": "self",
       "mana": 5,
       "defense": 0.5,
-      "image": "/images/skills/shadow_meld.png",
+      "image": "/images/skills/shadow_meld.webp",
       "description": "Block 50% of incoming damage this round."
     },
     {
@@ -5251,7 +5251,7 @@ const CONTENT = {
       "mana": 7,
       "power": 1.5,
       "element": "holy",
-      "image": "/images/skills/holy_strike.png",
+      "image": "/images/skills/holy_strike.webp",
       "description": "Deals 30 + 1.5× attack damage.",
       "baseDamage": 30
     },
@@ -5261,7 +5261,7 @@ const CONTENT = {
       "target": "self",
       "mana": 6,
       "defense": 0.6,
-      "image": "/images/skills/divine_guard.png",
+      "image": "/images/skills/divine_guard.webp",
       "description": "Block 60% of incoming damage this round."
     },
     {
@@ -5273,7 +5273,7 @@ const CONTENT = {
       "power": 2.5,
       "element": "shadow",
       "effect": "shadow_scythe_reap",
-      "image": "/images/skills/execute.png",
+      "image": "/images/skills/execute.webp",
       "description": "Deals 65 + 2.5x magic TRUE damage. Exact — ignores all reductions.",
       "baseDamage": 65,
       "trueDamage": true
@@ -5284,7 +5284,7 @@ const CONTENT = {
       "target": "self",
       "mana": 5,
       "defense": 0.5,
-      "image": "/images/skills/shadow_step.png",
+      "image": "/images/skills/shadow_step.webp",
       "description": "Block 50% of incoming damage this round."
     },
     {
@@ -5294,7 +5294,7 @@ const CONTENT = {
       "target": "ally",
       "mana": 8,
       "heal": 0.35,
-      "image": "/images/skills/mend.png",
+      "image": "/images/skills/mend.webp",
       "description": "Restore 35% of an ally's max HP."
     },
     {
@@ -5304,7 +5304,7 @@ const CONTENT = {
       "target": "ally",
       "mana": 14,
       "heal": 0.55,
-      "image": "/images/skills/greater_mend.png",
+      "image": "/images/skills/greater_mend.webp",
       "description": "Restore 55% of an ally's max HP."
     },
     {
@@ -5313,7 +5313,7 @@ const CONTENT = {
       "target": "self",
       "mana": 6,
       "defense": 0.6,
-      "image": "/images/skills/fortify.png",
+      "image": "/images/skills/fortify.webp",
       "description": "Block 60% of incoming damage this round."
     },
     {
@@ -5322,7 +5322,7 @@ const CONTENT = {
       "target": "self",
       "mana": 5,
       "defense": 0.5,
-      "image": "/images/skills/war_banner.png",
+      "image": "/images/skills/war_banner.webp",
       "description": "Block 50% of incoming damage this round."
     },
     {
@@ -5333,7 +5333,7 @@ const CONTENT = {
       "power": 1.5,
       "element": "physical",
       "effect": "axe_cleave_horizontal",
-      "image": "/images/skills/cleave.png",
+      "image": "/images/skills/cleave.webp",
       "description": "Deals 30 + 1.5× attack damage.",
       "baseDamage": 30
     },
@@ -5344,7 +5344,7 @@ const CONTENT = {
       "target": "self",
       "mana": 7,
       "defense": 0.7,
-      "image": "/images/skills/shield_wall.png",
+      "image": "/images/skills/shield_wall.webp",
       "description": "Block 70% of incoming damage this round."
     },
     {
@@ -5354,7 +5354,7 @@ const CONTENT = {
       "target": "party",
       "mana": 6,
       "manaRestorePct": 0.3,
-      "image": "/images/skills/spirit_surge.png",
+      "image": "/images/skills/spirit_surge.webp",
       "description": "Restore 30% of each ally's max mana."
     },
     {
@@ -5366,7 +5366,7 @@ const CONTENT = {
       "power": 2.6,
       "element": "physical",
       "effect": "heavy_hammer_slam",
-      "image": "/images/skills/war_cry.png",
+      "image": "/images/skills/war_cry.webp",
       "description": "Deals 65 + 2.6× attack damage.",
       "baseDamage": 65
     },
@@ -5378,7 +5378,7 @@ const CONTENT = {
       "mana": 12,
       "power": 2.4,
       "element": "physical",
-      "image": "/images/skills/volley.png",
+      "image": "/images/skills/volley.webp",
       "description": "Deals 65 + 2.4× attack damage.",
       "baseDamage": 65
     },
@@ -5391,7 +5391,7 @@ const CONTENT = {
       "power": 2.8,
       "element": "arcane",
       "effect": "heavy_hammer_slam",
-      "image": "/images/skills/meteor.png",
+      "image": "/images/skills/meteor.webp",
       "description": "Deals 65 + 2.8× magic damage.",
       "baseDamage": 65
     },
@@ -5405,7 +5405,7 @@ const CONTENT = {
       "lifesteal": 0.4,
       "element": "shadow",
       "effect": "shadow_scythe_reap",
-      "image": "/images/skills/shadow_veil.png",
+      "image": "/images/skills/shadow_veil.webp",
       "description": "Deals 65 + 2.6× magic damage. Heals for 40% of the damage dealt.",
       "baseDamage": 65
     },
@@ -5418,7 +5418,7 @@ const CONTENT = {
       "power": 2.2,
       "healSelfPct": 0.4,
       "element": "holy",
-      "image": "/images/skills/holy_judgement.png",
+      "image": "/images/skills/holy_judgement.webp",
       "description": "Deals 45 + 2.2× attack damage. Restores 40% of your max HP.",
       "baseDamage": 45
     },
@@ -5431,7 +5431,7 @@ const CONTENT = {
       "power": 3,
       "element": "shadow",
       "effect": "shadow_scythe_reap",
-      "image": "/images/skills/death_mark.png",
+      "image": "/images/skills/death_mark.webp",
       "description": "Deals 85 + 3x magic damage.",
       "baseDamage": 85
     },
@@ -5442,7 +5442,7 @@ const CONTENT = {
       "target": "party",
       "mana": 16,
       "heal": 0.45,
-      "image": "/images/skills/divine_blessing.png",
+      "image": "/images/skills/divine_blessing.webp",
       "description": "Restore 45% of each ally's max HP."
     },
     {
@@ -5452,7 +5452,7 @@ const CONTENT = {
       "target": "self",
       "mana": 8,
       "defense": 0.85,
-      "image": "/images/skills/bastion.png",
+      "image": "/images/skills/bastion.webp",
       "description": "Block 85% of incoming damage this round."
     },
     {
@@ -5464,7 +5464,7 @@ const CONTENT = {
       "power": 3,
       "element": "physical",
       "effect": "heavy_hammer_slam",
-      "image": "/images/skills/cataclysm.png",
+      "image": "/images/skills/cataclysm.webp",
       "description": "Deals 85 + 3× attack damage.",
       "baseDamage": 85
     },
@@ -5476,7 +5476,7 @@ const CONTENT = {
       "mana": 15,
       "power": 2.9,
       "element": "physical",
-      "image": "/images/skills/storm_barrage.png",
+      "image": "/images/skills/storm_barrage.webp",
       "description": "Deals 85 + 2.9× attack damage.",
       "baseDamage": 85
     },
@@ -5489,7 +5489,7 @@ const CONTENT = {
       "power": 3.2,
       "element": "arcane",
       "effect": "heavy_hammer_slam",
-      "image": "/images/skills/comet.png",
+      "image": "/images/skills/comet.webp",
       "description": "Deals 85 + 3.2× magic damage.",
       "baseDamage": 85
     },
@@ -5503,7 +5503,7 @@ const CONTENT = {
       "lifesteal": 0.5,
       "element": "shadow",
       "effect": "shadow_scythe_reap",
-      "image": "/images/skills/soul_thief.png",
+      "image": "/images/skills/soul_thief.webp",
       "description": "Deals 85 + 3× magic damage. Heals for half the damage dealt.",
       "baseDamage": 85
     },
@@ -5516,7 +5516,7 @@ const CONTENT = {
       "power": 2.5,
       "healSelfPct": 0.6,
       "element": "holy",
-      "image": "/images/skills/radiance.png",
+      "image": "/images/skills/radiance.webp",
       "description": "Deals 65 + 2.5× attack damage. Restores 60% of your max HP.",
       "baseDamage": 65
     },
@@ -5529,7 +5529,7 @@ const CONTENT = {
       "power": 3.4,
       "element": "shadow",
       "effect": "shadow_scythe_reap",
-      "image": "/images/skills/soul_reap.png",
+      "image": "/images/skills/soul_reap.webp",
       "description": "Deals 85 + 3.4× magic damage.",
       "baseDamage": 85
     },
@@ -5541,7 +5541,7 @@ const CONTENT = {
       "mana": 20,
       "heal": 0.6,
       "manaRestorePct": 0.2,
-      "image": "/images/skills/resurgence.png",
+      "image": "/images/skills/resurgence.webp",
       "description": "Restore 60% of each ally's max HP and 20% of their max mana."
     },
     {
@@ -5556,7 +5556,7 @@ const CONTENT = {
       "scaling": "attack",
       "effect": "blood_scythe",
       "hitShake": 3,
-      "image": "/images/skills/exsanguinate.png",
+      "image": "/images/skills/exsanguinate.webp",
       "description": "Deals 90 + 3.2× attack damage. Heals you for 60% of the damage dealt.",
       "baseDamage": 90
     },
@@ -5572,7 +5572,7 @@ const CONTENT = {
       "scaling": "attack",
       "effect": "blood_scythe",
       "hitShake": 3,
-      "image": "/images/skills/bloodbath.png",
+      "image": "/images/skills/bloodbath.webp",
       "description": "Deals 95 + 3.6× attack damage. Heals you for 40% of the damage dealt.",
       "baseDamage": 95
     },
@@ -5586,7 +5586,7 @@ const CONTENT = {
       "manaRestorePct": 0.15,
       "element": "blood",
       "hitShake": 0,
-      "image": "/images/skills/crimson_rebirth.png",
+      "image": "/images/skills/crimson_rebirth.webp",
       "description": "Restore 45% of each ally's max HP and 15% of their max mana with first blood."
     },
     {
@@ -5596,7 +5596,7 @@ const CONTENT = {
       "target": "self",
       "mana": 10,
       "defense": 0.95,
-      "image": "/images/skills/immovable.png",
+      "image": "/images/skills/immovable.webp",
       "description": "Block 95% of incoming damage this round."
     },
     {
@@ -5613,7 +5613,7 @@ const CONTENT = {
       "element": "physical",
       "effect": "heavy_hammer_slam",
       "hitShake": 2,
-      "image": "/images/skills/seismic_slam.png",
+      "image": "/images/skills/seismic_slam.webp",
       "description": "Slam the ground with your whole weight: 8% of your max HP as damage."
     },
     {
@@ -5630,7 +5630,7 @@ const CONTENT = {
       "element": "physical",
       "effect": "heavy_hammer_slam",
       "hitShake": 3,
-      "image": "/images/skills/colossal_crash.png",
+      "image": "/images/skills/colossal_crash.webp",
       "description": "Crash down like a mountain: 12% of your max HP as damage."
     },
     {
@@ -5646,7 +5646,7 @@ const CONTENT = {
         }
       ],
       "duration": 2,
-      "image": "/images/skills/battle_fury.png",
+      "image": "/images/skills/battle_fury.webp",
       "description": "Increase your damage by 30% for 2 rounds."
     },
     {
@@ -5662,7 +5662,7 @@ const CONTENT = {
         }
       ],
       "duration": 2,
-      "image": "/images/skills/iron_wall.png",
+      "image": "/images/skills/iron_wall.webp",
       "description": "Block 40% of incoming damage for 2 rounds."
     },
     {
@@ -5678,7 +5678,7 @@ const CONTENT = {
         }
       ],
       "duration": 2,
-      "image": "/images/skills/group_guard.png",
+      "image": "/images/skills/group_guard.webp",
       "description": "The whole party blocks 25% of incoming damage for 2 rounds."
     },
     {
@@ -5698,7 +5698,7 @@ const CONTENT = {
         }
       ],
       "duration": 2,
-      "image": "/images/skills/cripple.png",
+      "image": "/images/skills/cripple.webp",
       "description": "A monster deals 30% less damage and takes 20% more for 2 rounds."
     },
     {
@@ -5715,7 +5715,7 @@ const CONTENT = {
         }
       ],
       "duration": 3,
-      "image": "/images/skills/venom_strike.png",
+      "image": "/images/skills/venom_strike.webp",
       "description": "Deals 15 + 0.6× attack damage. Poisons the monster for 3 rounds.",
       "baseDamage": 15
     },
@@ -5731,7 +5731,7 @@ const CONTENT = {
         }
       ],
       "duration": 3,
-      "image": "/images/skills/rejuvenate.png",
+      "image": "/images/skills/rejuvenate.webp",
       "description": "An ally regains 8% of max HP each round for 3 rounds."
     },
     {
@@ -5902,7 +5902,7 @@ const CONTENT = {
         }
       ],
       "duration": 2,
-      "image": "/images/skills/aegis.png",
+      "image": "/images/skills/aegis.webp",
       "description": "Gain 60 shield for 2 rounds."
     },
     {
@@ -5918,7 +5918,7 @@ const CONTENT = {
         }
       ],
       "duration": 2,
-      "image": "/images/skills/barrier.png",
+      "image": "/images/skills/barrier.webp",
       "description": "All allies gain 35 shield for 2 rounds."
     },
     {
@@ -5938,7 +5938,7 @@ const CONTENT = {
         }
       ],
       "duration": 2,
-      "image": "/images/skills/stone_skin.png",
+      "image": "/images/skills/stone_skin.webp",
       "description": "Gain 80 shield and 15% damage reduction."
     },
     {
@@ -5954,7 +5954,7 @@ const CONTENT = {
         }
       ],
       "duration": 2,
-      "image": "/images/skills/holy_ward.png",
+      "image": "/images/skills/holy_ward.webp",
       "description": "Give an ally 50 shield for 2 rounds."
     },
     {
@@ -5974,7 +5974,7 @@ const CONTENT = {
         }
       ],
       "duration": 2,
-      "image": "/images/skills/dark_veil.png",
+      "image": "/images/skills/dark_veil.webp",
       "description": "Gain 45 shield and weaken attacker 15%."
     },
     {
@@ -5994,7 +5994,7 @@ const CONTENT = {
       "mana": 8,
       "power": 2,
       "element": "frost",
-      "image": "/images/skills/frost_bolt.png",
+      "image": "/images/skills/frost_bolt.webp",
       "description": "Deals 45 + 2× magic damage. May freeze the target.",
       "baseDamage": 45
     },
@@ -6013,7 +6013,7 @@ const CONTENT = {
         }
       ],
       "duration": 1,
-      "image": "/images/skills/frost_nova.png",
+      "image": "/images/skills/frost_nova.webp",
       "description": "Deals 45 + 1.8× magic damage. Freezes the target for 1 turn.",
       "baseDamage": 45
     },
@@ -6031,7 +6031,7 @@ const CONTENT = {
         }
       ],
       "duration": 2,
-      "image": "/images/skills/water_splash.png",
+      "image": "/images/skills/water_splash.webp",
       "description": "Deals 30 + 1.5× magic damage. Soaks the target for 2 turns (wet).",
       "baseDamage": 30
     },
@@ -6043,7 +6043,7 @@ const CONTENT = {
       "mana": 9,
       "power": 1.8,
       "element": "lightning",
-      "image": "/images/skills/lightning_bolt.png",
+      "image": "/images/skills/lightning_bolt.webp",
       "description": "Deals 45 + 1.8× magic damage. +50% vs wet (Overcharge).",
       "baseDamage": 45
     },
@@ -6056,7 +6056,7 @@ const CONTENT = {
         "stat": "attack",
         "mult": 1.3
       },
-      "image": "/images/skills/war_heal.png",
+      "image": "/images/skills/war_heal.webp",
       "description": "Heals 1.3× attack power. Scales with healPower."
     },
     {
@@ -6068,7 +6068,7 @@ const CONTENT = {
         "stat": "magicPower",
         "mult": 2
       },
-      "image": "/images/skills/magic_mend.png",
+      "image": "/images/skills/magic_mend.webp",
       "description": "Heals 2× magicPower. Scales with healPower."
     },
     {
@@ -6086,7 +6086,7 @@ const CONTENT = {
       ],
       "duration": 3,
       "effect": "fire_slash_arc",
-      "image": "/images/skills/scorch_mark.png",
+      "image": "/images/skills/scorch_mark.webp",
       "description": "Deals 30 + 1.1× magic damage. Sets the foe burning.",
       "baseDamage": 30
     },
@@ -6106,7 +6106,7 @@ const CONTENT = {
       ],
       "duration": 3,
       "effect": "ember_whirlwind",
-      "image": "/images/skills/ember_storm.png",
+      "image": "/images/skills/ember_storm.webp",
       "description": "Deals 30 + 1.6× magic damage. Leaves the foe burning.",
       "baseDamage": 30
     },
@@ -6119,7 +6119,7 @@ const CONTENT = {
       "power": 2.3,
       "element": "fire",
       "effect": "magma_eruption_burst",
-      "image": "/images/skills/blaze_rupture.png",
+      "image": "/images/skills/blaze_rupture.webp",
       "description": "Deals 65 + 2.3× magic damage. Burning targets take +60%.",
       "baseDamage": 65
     },
@@ -6139,7 +6139,7 @@ const CONTENT = {
       ],
       "duration": 2,
       "effect": "frost_crystal_spear",
-      "image": "/images/skills/cold_snap.png",
+      "image": "/images/skills/cold_snap.webp",
       "description": "Deals 30 + 1.3× magic damage. Freezes the target for 2 rounds.",
       "baseDamage": 30
     },
@@ -6152,7 +6152,7 @@ const CONTENT = {
       "power": 2.4,
       "element": "frost",
       "effect": "ice_spikes_ground",
-      "image": "/images/skills/glacial_shatter.png",
+      "image": "/images/skills/glacial_shatter.webp",
       "description": "Deals 65 + 2.4× magic damage. Frozen targets take +65%.",
       "baseDamage": 65
     },
@@ -6171,7 +6171,7 @@ const CONTENT = {
       ],
       "duration": 3,
       "effect": "electric_sparks_shower",
-      "image": "/images/skills/volt_conduit.png",
+      "image": "/images/skills/volt_conduit.webp",
       "description": "Deals 30 + 1.2× magic damage. Electrifies the target.",
       "baseDamage": 30
     },
@@ -6184,7 +6184,7 @@ const CONTENT = {
       "power": 2.2,
       "element": "lightning",
       "effect": "lightning_strike_heavy",
-      "image": "/images/skills/static_overload.png",
+      "image": "/images/skills/static_overload.webp",
       "description": "Deals 45 + 2.2× magic damage. Wet targets take +50%.",
       "baseDamage": 45
     },
@@ -6203,7 +6203,7 @@ const CONTENT = {
       ],
       "duration": 3,
       "effect": "mud_splash_entangle",
-      "image": "/images/skills/toxin_drench.png",
+      "image": "/images/skills/toxin_drench.webp",
       "description": "Deals 15 + 0.9× attack damage. Poisons the foe.",
       "baseDamage": 15
     },
@@ -6216,7 +6216,7 @@ const CONTENT = {
       "power": 2.2,
       "element": "physical",
       "effect": "earth_fissure_rupture",
-      "image": "/images/skills/venom_burst.png",
+      "image": "/images/skills/venom_burst.webp",
       "description": "Deals 45 + 2.2× attack damage. Poisoned targets take +50%.",
       "baseDamage": 45
     },
@@ -6240,7 +6240,7 @@ const CONTENT = {
       ],
       "duration": 2,
       "effect": "shield_bash_shock",
-      "image": "/images/skills/broken_guard.png",
+      "image": "/images/skills/broken_guard.webp",
       "description": "Deals 15 + 1× attack damage. Foe takes 25% more, deals 20% less (2 rounds).",
       "baseDamage": 15
     },
@@ -6252,7 +6252,7 @@ const CONTENT = {
       "power": 1.6,
       "element": "physical",
       "effect": "piercing_rapier_thrust",
-      "image": "/images/skills/shatter_point.png",
+      "image": "/images/skills/shatter_point.webp",
       "description": "Deals 30 + 1.6× attack damage. Exposed targets take +80%.",
       "baseDamage": 30
     },
@@ -6265,7 +6265,7 @@ const CONTENT = {
       "power": 2.6,
       "element": "physical",
       "effect": "heavy_hammer_slam",
-      "image": "/images/skills/devastate.png",
+      "image": "/images/skills/devastate.webp",
       "description": "Deals 65 + 2.6× attack damage. Weakened targets take +35%.",
       "baseDamage": 65
     },
@@ -6277,7 +6277,7 @@ const CONTENT = {
       "power": 1.4,
       "element": "nature",
       "effect": "nature_vine_burst",
-      "image": "/images/skills/vine_lash.png",
+      "image": "/images/skills/vine_lash.webp",
       "description": "Deals 30 + 1.4× magic damage.",
       "baseDamage": 30
     },
@@ -6297,7 +6297,7 @@ const CONTENT = {
         }
       ],
       "duration": 3,
-      "image": "/images/skills/thorn_volley.png",
+      "image": "/images/skills/thorn_volley.webp",
       "description": "Deals 45 + 1.9× magic damage.",
       "baseDamage": 45
     },
@@ -6309,7 +6309,7 @@ const CONTENT = {
       "element": "nature",
       "effect": "heal_aura_fountain",
       "healSelfPct": 0.3,
-      "image": "/images/skills/forest_renewal.png",
+      "image": "/images/skills/forest_renewal.webp",
       "description": "Bloom with nature's blessing, restoring 30% of your max HP."
     },
     {
@@ -6321,7 +6321,7 @@ const CONTENT = {
       "baseDamage": 25,
       "element": "physical",
       "effect": "rising_katana_slash",
-      "image": "/images/skills/beast_bite.png",
+      "image": "/images/skills/beast_bite.webp",
       "description": "Deals 25 + 1.3× attack damage. Your companion tears into the foe."
     }
   ],
