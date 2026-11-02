@@ -818,43 +818,66 @@ function showStoryIntro() {
   const lines = intro && Array.isArray(intro.lines) ? intro.lines : [];
   el.classList.remove("hidden");
 
-  const showParagraphs = () => {
-    el.innerHTML = `<div class="notice-card story-card">
-      <h2>${escapeHtml(title)}</h2>
-      ${paragraphs.map((p) => `<p>${escapeHtml(p)}</p>`).join("")}
-      <button type="button" class="btn btn--gold" id="btn-story-go">${lines.length ? "Wake Up" : escapeHtml(cta)}</button>
+  // Konuşan oyuncunun adı + sınıf portresi (Mira gibi) gösterilebilsin.
+  const me = state.room ? state.room.players.find((p) => p.id === state.playerId) : null;
+  const playerName = (me && me.name) || "You";
+  const playerImg = me ? imgFor(me.character, "class") : "";
+
+  // Sabit boyutlu sahne: her adımda yalnızca içerik değişir; kart ve devam
+  // butonu hep aynı yerde kalır, böylece aynı noktaya tıklayarak ilerlenir.
+  const stage = (bodyHtml, btnLabel, onNext) => {
+    el.innerHTML = `<div class="notice-card story-card story-stage talk-fade">
+      <div class="story-stage-body">${bodyHtml}</div>
+      <div class="story-stage-foot"><button type="button" class="btn btn--gold" id="btn-story-next">${escapeHtml(btnLabel)}</button></div>
     </div>`;
-    el.querySelector("#btn-story-go").addEventListener("click", () => {
-      if (lines.length) showLine(0);
-      else el.classList.add("hidden");
-    });
+    initImages(el);
+    const btn = el.querySelector("#btn-story-next");
+    if (btn) btn.addEventListener("click", onNext);
+  };
+
+  const showParagraphs = () => {
+    stage(
+      `<h2 class="story-title">${escapeHtml(title)}</h2>` +
+        paragraphs.map((p) => `<p class="story-text">${escapeHtml(p)}</p>`).join(""),
+      lines.length ? "Wake Up" : cta,
+      () => {
+        if (lines.length) showLine(0);
+        else el.classList.add("hidden");
+      }
+    );
   };
   const showLine = (idx) => {
     const ln = lines[idx];
-    const tag = ln.who === "npc" ? escapeHtml(intro.speaker || "Stranger") : ln.who === "you" ? "You" : "";
-    el.innerHTML = `<div class="notice-card story-card story-talk talk-fade" key="intro-${idx}">
-      <div class="talk-panel">
+    const isNpc = ln.who === "npc";
+    const isYou = ln.who === "you";
+    const tag = isNpc ? escapeHtml(intro.speaker || "Stranger") : isYou ? escapeHtml(playerName) : "";
+    const portrait = isYou
+      ? `<span class="talk-portrait" data-img="${escapeHtml(playerImg)}" data-variant="${escapeHtml(me ? me.character : "")}" title="${escapeHtml(playerName)}"></span>`
+      : isNpc
+      ? `<span class="talk-portrait" data-img="${escapeHtml(intro.image || "")}" data-variant="intro" title="${escapeHtml(intro.speaker || "")}"></span>`
+      : "";
+    stage(
+      `<div class="talk-panel">
         <div class="talk-main">
           ${tag ? `<p class="talk-name">${tag}</p>` : ""}
           <p class="talk-text">${escapeHtml(ln.text || "")}</p>
-          <div class="talk-options"><button type="button" class="btn btn--smoke btn--mini" id="btn-story-next">${idx < lines.length - 1 ? "Continue" : escapeHtml(cta)}</button></div>
         </div>
-        ${ln.who === "npc" ? `<span class="talk-portrait" data-img="${escapeHtml(intro.image || "")}" data-variant="intro"></span>` : ""}
-      </div>
-    </div>`;
-    initImages(el);
-    el.querySelector("#btn-story-next").addEventListener("click", () => {
-      if (idx < lines.length - 1) showLine(idx + 1);
-      else showReward();
-    });
+        ${portrait}
+      </div>`,
+      idx < lines.length - 1 ? "Continue" : cta,
+      () => {
+        if (idx < lines.length - 1) showLine(idx + 1);
+        else showReward();
+      }
+    );
   };
   const showReward = () => {
-    el.innerHTML = `<div class="notice-card story-card">
-      <h2>${escapeHtml(title)}</h2>
-      ${intro.rewardNote ? `<p><em>${escapeHtml(intro.rewardNote)}</em></p>` : ""}
-      <button type="button" class="btn btn--gold" id="btn-story-go">${escapeHtml(cta)}</button>
-    </div>`;
-    el.querySelector("#btn-story-go").addEventListener("click", () => el.classList.add("hidden"));
+    stage(
+      `<h2 class="story-title">${escapeHtml(title)}</h2>` +
+        (intro.rewardNote ? `<p class="story-text"><em>${escapeHtml(intro.rewardNote)}</em></p>` : ""),
+      cta,
+      () => el.classList.add("hidden")
+    );
   };
   showParagraphs();
 }

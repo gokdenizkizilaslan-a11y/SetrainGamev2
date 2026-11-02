@@ -4745,6 +4745,61 @@ input:focus {
   height: 12rem;
 }
 
+/* Story intro: tek sabit boyutlu sahne — içerik değişir, kart ve buton sabit. */
+.story-stage {
+  width: min(94vw, 700px);
+  max-width: min(94vw, 700px);
+  min-height: min(72vh, 22rem);
+  max-height: 84vh;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  padding: 1.7rem 1.9rem 1.25rem;
+  border-radius: 16px;
+}
+.story-stage-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.story-stage-body .story-title {
+  margin: 0 0 1rem;
+  font-family: "Cinzel", serif;
+  font-size: 1.9rem;
+  color: var(--gold-bright);
+  text-align: center;
+}
+.story-stage-body .story-text {
+  margin: 0 0 0.9rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+.story-stage-foot {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.9rem;
+}
+.story-stage-foot .btn {
+  min-width: 9.5rem;
+}
+.story-stage .talk-panel {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  min-height: 0;
+}
+.story-stage .talk-text {
+  font-size: 1.06rem;
+}
+.story-stage .talk-portrait {
+  width: 9.5rem;
+  height: 12rem;
+}
+
 /* ---- Town Center + dialogue ---- */
 
 .npc-card {
