@@ -3358,6 +3358,24 @@ function tavernDialogueHtml() {
   }
 }
 
+// GameCraft editor paths (images.ui.*) are applied to the whole card so the
+// artwork fills the button edge-to-edge. Missing paths keep the warm CSS look.
+function applyTavernArt(root, ui) {
+  if (!root) return;
+  const map = [
+    [".tavernkeeper-image-placeholder", ui.tavernPortrait],
+    ["#btn-tavern-sleep", ui.tavernSleep],
+    [".tavern-rations-card", ui.tavernRations],
+    ["#btn-flip", ui.tavernCoin],
+    ["#btn-bj", ui.tavernCards],
+    ["#btn-tavern-leave", ui.tavernLeave],
+  ];
+  map.forEach(([selector, url]) => {
+    const el = root.querySelector(selector);
+    if (el) setCardBg(el, url || "");
+  });
+}
+
 function renderTavernView(room) {
   const me = room.players.find((p) => p.id === state.playerId);
   const root = $("tavern-content");
@@ -3365,6 +3383,8 @@ function renderTavernView(room) {
     root.innerHTML = "";
     return;
   }
+  const tavernArt = (CATALOG.images && CATALOG.images.ui) || {};
+  setCardBg($("tavern-view"), tavernArt.tavernBg || "");
   const t = me.tavern;
   if (t && t.status === "done" && t.won !== undefined) {
     const key = t.game + ":" + (t.message || "");
@@ -3408,11 +3428,8 @@ function renderTavernView(room) {
       ${tavernDialogueHtml()}
 
       <div class="tavern-actions">
+        <!-- GameCraft: images.ui.tavernSleep fills this whole card -->
         <button type="button" class="tavern-sleep-card${canSleep ? "" : " is-unaffordable"}" id="btn-tavern-sleep">
-          <span class="tavern-image sleep-image-placeholder tavern-image--cover">
-            <!-- ADD SLEEP / BED IMAGE HERE -->
-            <span class="tavern-img-hint" aria-hidden="true">Bed</span>
-          </span>
           <span class="tavern-sleep-body">
             <span class="tavern-card-kicker">Rest &amp; Recovery</span>
             <span class="tavern-card-title">Sleep</span>
@@ -3421,11 +3438,8 @@ function renderTavernView(room) {
           </span>
         </button>
 
+        <!-- GameCraft: images.ui.tavernRations fills this whole card -->
         <div class="tavern-rations-card">
-          <div class="tavern-image rations-image-placeholder tavern-image--contain">
-            <!-- ADD FIELD RATIONS / FOOD IMAGE HERE -->
-            <span class="tavern-img-hint" aria-hidden="true">Food</span>
-          </div>
           <div class="tavern-rations-body">
             <span class="tavern-card-title">Field Rations</span>
             <span class="tavern-card-desc">${prov.foodAmount} FOOD</span>
@@ -3446,21 +3460,15 @@ function renderTavernView(room) {
             .join("")}
         </div>
         <div class="tavern-games">
+          <!-- GameCraft: images.ui.tavernCoin fills this whole card -->
           <button type="button" class="tavern-game-card" id="btn-flip">
-            <span class="tavern-image coin-image-placeholder tavern-image--contain">
-              <!-- ADD COIN IMAGE HERE -->
-              <span class="tavern-img-hint" aria-hidden="true">Coin</span>
-            </span>
             <span class="tavern-game-body">
               <span class="tavern-game-title">Coin Flip</span>
               <span class="tavern-game-sub">Call it in the air. A winning toss doubles your wager.</span>
             </span>
           </button>
+          <!-- GameCraft: images.ui.tavernCards fills this whole card -->
           <button type="button" class="tavern-game-card" id="btn-bj">
-            <span class="tavern-image playing-card-image-placeholder tavern-image--contain">
-              <!-- ADD PLAYING CARDS IMAGE HERE -->
-              <span class="tavern-img-hint" aria-hidden="true">Cards</span>
-            </span>
             <span class="tavern-game-body">
               <span class="tavern-game-title">Blackjack</span>
               <span class="tavern-game-sub">Draw close to 21 without going over. Naturals pay 2.5&times;.</span>
@@ -3470,15 +3478,13 @@ function renderTavernView(room) {
       </section>
 
       <div class="tavern-leave-row">
+        <!-- GameCraft: images.ui.tavernLeave fills this whole card -->
         <button type="button" class="tavern-leave-card" id="btn-tavern-leave">
-          <span class="tavern-image door-image-placeholder tavern-image--cover">
-            <!-- ADD DOOR IMAGE HERE -->
-            <span class="tavern-img-hint" aria-hidden="true">Door</span>
-          </span>
           <span class="tavern-leave-text">Leave</span>
         </button>
       </div>
     </div>`;
+  applyTavernArt(root, tavernArt);
   root.querySelector("#btn-tavern-sleep").addEventListener("click", () => {
     playNightTransition("Night falls", "You sleep safely at the tavern. Stamina returns at dawn.", () => socket.emit("tavern:sleep"));
   });

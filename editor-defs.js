@@ -510,6 +510,13 @@ const pages = [
     fields: [
       { path: "images.ui.townPanelBg", label: "Town panel bg (blank = default)", type: "image", folder: "ui" },
       { path: "images.ui.profileBg", label: "Profile card bg (blank = glass)", type: "image", folder: "ui" },
+      { path: "images.ui.tavernBg", label: "Tavern background - behind everything (blank = CSS)", type: "image", folder: "ui" },
+      { path: "images.ui.tavernPortrait", label: "Tavernkeeper portrait (blank = placeholder)", type: "image", folder: "ui" },
+      { path: "images.ui.tavernSleep", label: "Tavern Sleep card art - fills the card (blank = CSS)", type: "image", folder: "ui" },
+      { path: "images.ui.tavernRations", label: "Tavern Field Rations card art - fills the card (blank = CSS)", type: "image", folder: "ui" },
+      { path: "images.ui.tavernCoin", label: "Tavern Coin Flip card art - fills the card (blank = CSS)", type: "image", folder: "ui" },
+      { path: "images.ui.tavernCards", label: "Tavern Blackjack card art - fills the card (blank = CSS)", type: "image", folder: "ui" },
+      { path: "images.ui.tavernLeave", label: "Tavern Leave card art - fills the card (blank = CSS)", type: "image", folder: "ui" },
       { path: "images.ui.blacksmithButton", label: "Blacksmith button icon (blank = SVG)", type: "image", folder: "ui" },
       { path: "images.ui.tavernButton", label: "Tavern button icon (blank = SVG)", type: "image", folder: "ui" },
       { path: "images.ui.merchantButton", label: "Merchant button icon (blank = SVG)", type: "image", folder: "ui" },
