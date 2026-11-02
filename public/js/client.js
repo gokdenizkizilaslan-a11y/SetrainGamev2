@@ -13,6 +13,7 @@ const state = {
   blacksmithOpen: false,
   merchantOpen: false,
   templeOpen: false,
+  templeTab: "ascend",
   inventoryOpen: false,
   pvpOpen: false,
   petsOpen: false,

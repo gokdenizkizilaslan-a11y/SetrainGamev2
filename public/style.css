@@ -5019,6 +5019,144 @@ input:focus {
   margin-top: 0.6rem;
 }
 
+.temple-layout {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+  margin-top: 0.7rem;
+}
+
+.temple-nav {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.5rem;
+  border: 1px solid var(--glass-line);
+  border-radius: 14px;
+  background: var(--glass-2);
+}
+
+.temple-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.6rem 0.65rem;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  font-family: "Cinzel", serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.temple-nav-btn:hover {
+  color: var(--gold-bright);
+  border-color: rgba(232, 183, 108, 0.3);
+  background: rgba(232, 183, 108, 0.08);
+}
+
+.temple-nav-btn--active {
+  color: var(--ink);
+  border-color: rgba(232, 183, 108, 0.6);
+  background: linear-gradient(135deg, rgba(216, 156, 74, 0.34), rgba(216, 156, 74, 0.12));
+  box-shadow: inset 3px 0 0 var(--gold-bright);
+}
+
+.temple-nav-ico {
+  display: inline-flex;
+  flex: none;
+  width: 1.1rem;
+  height: 1.1rem;
+  color: var(--gold-bright);
+}
+
+.temple-nav-ico svg {
+  width: 100%;
+  height: 100%;
+}
+
+.temple-nav-label {
+  min-width: 0;
+}
+
+.temple-nav-count {
+  margin-left: auto;
+  padding: 0.05rem 0.35rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--gold-bright);
+  font-size: 0.68rem;
+  line-height: 1.35;
+}
+
+.temple-page {
+  min-width: 0;
+}
+
+.temple-page-head {
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid rgba(232, 183, 108, 0.2);
+}
+
+.temple-page-kicker {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.temple-page-title {
+  margin: 0.1rem 0 0.15rem;
+  color: var(--gold-bright);
+  font-family: "Cinzel", serif;
+  font-size: 1.15rem;
+}
+
+.temple-page-sub {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.temple-page .temple-grid {
+  margin-top: 0.7rem;
+}
+
+.temple-page .temple-card > .subhead {
+  display: none;
+}
+
+@media (max-width: 680px) {
+  .temple-layout {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  .temple-nav {
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 0.4rem;
+  }
+  .temple-nav-btn {
+    flex: 1 1 auto;
+    width: auto;
+    padding: 0.5rem 0.65rem;
+    font-size: 0.78rem;
+  }
+}
+
 .temple-card {
   display: flex;
   flex-direction: column;
@@ -5711,5 +5849,574 @@ input:focus {
   .night-transition.is-visible .night-transition__copy {
     animation: none !important;
     transition: none !important;
+  }
+}
+
+/* ============================================================
+   TAVERN REDESIGN
+   Cozy medieval fantasy layout. Every visual asset is an empty
+   placeholder; drop an <img> inside any .tavern-image container.
+   ============================================================ */
+
+.tavern-view {
+  --tavern-walnut: #2a1a10;
+  --tavern-burgundy: #4a1f22;
+  --tavern-parchment: #f3e7d2;
+  --tavern-panel: rgba(26, 16, 10, 0.86);
+}
+
+.tavern-view .tavern-head {
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid rgba(232, 180, 92, 0.28);
+}
+
+.tavern-head-title {
+  margin: 0;
+  font-size: 0.8rem;
+  letter-spacing: 0.3em;
+}
+
+.tavern-head-back {
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+}
+
+.tavern-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-bottom: 0.35rem;
+}
+
+/* ---- Shared image placeholder ---- */
+
+.tavern-image {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgba(232, 180, 92, 0.28);
+  border-radius: 10px;
+  background:
+    radial-gradient(120% 120% at 50% 15%, rgba(232, 180, 92, 0.1), transparent 62%),
+    repeating-linear-gradient(45deg, rgba(255, 235, 200, 0.025) 0 9px, transparent 9px 18px),
+    linear-gradient(160deg, rgba(62, 41, 24, 0.72), rgba(18, 11, 7, 0.86));
+  color: rgba(232, 180, 92, 0.5);
+}
+
+.tavern-image::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px dashed rgba(232, 180, 92, 0.16);
+  border-radius: 7px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.tavern-image img {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+}
+
+.tavern-image--cover img { object-fit: cover; }
+.tavern-image--contain img { object-fit: contain; }
+
+.tavern-img-hint {
+  position: relative;
+  z-index: 1;
+  font-family: "Cinzel", serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(232, 180, 92, 0.45);
+}
+
+.tavern-image:has(img) .tavern-img-hint {
+  display: none;
+}
+
+/* ---- Tavernkeeper dialogue ---- */
+
+.tavern-dialogue {
+  display: flex;
+  align-items: stretch;
+  gap: 1rem;
+  min-height: 11rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(232, 180, 92, 0.32);
+  border-radius: 16px;
+  background:
+    radial-gradient(120% 140% at 100% 0%, rgba(122, 48, 48, 0.26), transparent 58%),
+    linear-gradient(145deg, rgba(60, 40, 24, 0.9), rgba(22, 14, 9, 0.94));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 225, 170, 0.07),
+    0 10px 26px rgba(0, 0, 0, 0.32);
+}
+
+.tavern-dialogue-main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.tavern-dialogue-name {
+  margin: 0;
+  font-family: "Cinzel", serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+}
+
+.tavern-dialogue-text {
+  flex: 1;
+  margin: 0;
+  font-size: 0.96rem;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+.tavern-dialogue-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: auto;
+  padding-top: 0.35rem;
+}
+
+.tavern-dialogue-options .btn {
+  font-size: 0.66rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.tavernkeeper-image-placeholder {
+  width: 9rem;
+  min-height: 11.5rem;
+  flex: none;
+  align-self: stretch;
+  border-radius: 12px;
+}
+
+/* ---- Sleep + Field Rations ---- */
+
+.tavern-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(220px, 0.85fr);
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.tavern-sleep-card {
+  display: flex;
+  gap: 1rem;
+  align-items: stretch;
+  width: 100%;
+  margin: 0;
+  padding: 0.85rem;
+  border: 1px solid rgba(232, 180, 92, 0.55);
+  border-radius: 16px;
+  background:
+    linear-gradient(135deg, rgba(74, 31, 34, 0.35), transparent 55%),
+    linear-gradient(160deg, rgba(72, 50, 29, 0.9), rgba(27, 17, 11, 0.94));
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  box-shadow:
+    0 0 0 1px rgba(232, 180, 92, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 230, 180, 0.08);
+  transition: border-color 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease;
+}
+
+.tavern-sleep-card:hover {
+  border-color: var(--gold-bright);
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 0 3px rgba(232, 180, 92, 0.14),
+    0 12px 30px rgba(0, 0, 0, 0.4),
+    0 0 24px rgba(216, 156, 74, 0.24);
+}
+
+.tavern-sleep-card:active {
+  transform: translateY(0) scale(0.99);
+}
+
+.tavern-sleep-card.is-unaffordable {
+  border-color: rgba(232, 180, 92, 0.3);
+}
+
+.tavern-sleep-card.is-unaffordable .tavern-card-price {
+  color: var(--danger);
+  border-color: rgba(226, 96, 74, 0.45);
+}
+
+.sleep-image-placeholder {
+  width: 45%;
+  min-height: 10rem;
+  flex: none;
+}
+
+.tavern-sleep-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.35rem;
+  min-width: 0;
+  padding: 0.15rem 0.25rem;
+}
+
+.tavern-card-kicker {
+  font-family: "Cinzel", serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.tavern-card-title {
+  font-family: "Cinzel", serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+}
+
+.tavern-card-desc {
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+
+.tavern-card-price {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: max-content;
+  max-width: 100%;
+  margin-top: 0.3rem;
+  padding: 0.28rem 0.7rem;
+  border: 1px solid rgba(232, 180, 92, 0.4);
+  border-radius: 999px;
+  background: rgba(232, 180, 92, 0.1);
+  font-family: "Cinzel", serif;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--gold-bright);
+}
+
+.tavern-coin {
+  width: 0.72rem;
+  height: 0.72rem;
+  flex: none;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffe6a8, #d89c4a 62%, #8a5a1f);
+  box-shadow: inset 0 0 0 1px rgba(80, 50, 10, 0.55);
+}
+
+.tavern-rations-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 12.5rem;
+  padding: 0.75rem;
+  border: 1px solid var(--glass-line);
+  border-radius: 16px;
+  background:
+    linear-gradient(160deg, rgba(58, 39, 24, 0.72), rgba(20, 13, 8, 0.9));
+  box-shadow: inset 0 1px 0 rgba(255, 230, 180, 0.05);
+}
+
+.rations-image-placeholder {
+  flex: 1;
+  width: 100%;
+  min-height: 7rem;
+}
+
+.tavern-rations-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding-top: 0.6rem;
+}
+
+.tavern-rations-body .btn {
+  margin-top: 0.2rem;
+  align-self: flex-start;
+}
+
+/* ---- Wagering ---- */
+
+.tavern-wager {
+  padding: 1rem;
+  border: 1px solid var(--glass-line);
+  border-radius: 16px;
+  background:
+    radial-gradient(120% 140% at 0% 0%, rgba(122, 48, 48, 0.16), transparent 55%),
+    rgba(32, 21, 14, 0.62);
+}
+
+.tavern-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.7rem;
+}
+
+.tavern-section-title {
+  margin: 0;
+  font-family: "Cinzel", serif;
+  font-size: 1.05rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+}
+
+.tavern-section-desc {
+  max-width: 58ch;
+  margin: 0;
+  font-size: 0.84rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.tavern-result {
+  margin-bottom: 0.55rem;
+}
+
+.tavern-wager .bet-row {
+  flex-wrap: wrap;
+  margin: 0 0 0.85rem;
+}
+
+.tavern-wager .bet-btn {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tavern-games {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.tavern-game-card {
+  display: flex;
+  gap: 0.8rem;
+  align-items: stretch;
+  width: 100%;
+  margin: 0;
+  padding: 0.7rem;
+  border: 1px solid rgba(232, 180, 92, 0.26);
+  border-radius: 14px;
+  background: linear-gradient(160deg, rgba(63, 43, 26, 0.76), rgba(21, 13, 8, 0.92));
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease;
+}
+
+.tavern-game-card:hover {
+  border-color: rgba(232, 180, 92, 0.7);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.34), 0 0 18px rgba(216, 156, 74, 0.18);
+}
+
+.tavern-game-card:active {
+  transform: translateY(0) scale(0.99);
+}
+
+.coin-image-placeholder {
+  width: 5rem;
+  height: 5rem;
+  flex: none;
+  align-self: center;
+  border-radius: 50%;
+}
+
+.playing-card-image-placeholder {
+  width: 4.6rem;
+  height: 6rem;
+  flex: none;
+  align-self: center;
+  border-radius: 8px;
+}
+
+.tavern-game-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.2rem;
+  min-width: 0;
+  padding: 0.15rem 0;
+}
+
+.tavern-game-title {
+  font-family: "Cinzel", serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+}
+
+.tavern-game-sub {
+  font-size: 0.76rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+/* ---- Leave ---- */
+
+.tavern-leave-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.1rem;
+}
+
+.tavern-leave-card {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.5rem 0.9rem 0.5rem 0.5rem;
+  border: 1px solid rgba(232, 180, 92, 0.3);
+  border-radius: 12px;
+  background: rgba(20, 13, 8, 0.78);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+  transition: border-color 0.16s ease, background 0.16s ease, transform 0.16s ease;
+}
+
+.tavern-leave-card:hover {
+  border-color: var(--gold-bright);
+  background: rgba(46, 30, 18, 0.9);
+  transform: translateY(-1px);
+}
+
+.door-image-placeholder {
+  width: 3.1rem;
+  height: 3.6rem;
+  flex: none;
+  border-radius: 8px 8px 4px 4px;
+}
+
+.tavern-leave-text {
+  font-family: "Cinzel", serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+}
+
+/* ---- Blackjack table ---- */
+
+.tavern-blackjack {
+  padding: 1rem;
+  border: 1px solid var(--glass-line);
+  border-radius: 16px;
+  background:
+    radial-gradient(80% 120% at 50% 0%, rgba(53, 92, 54, 0.22), transparent 60%),
+    rgba(24, 16, 10, 0.84);
+}
+
+.tavern-blackjack .card-area {
+  padding: 0.9rem;
+  border: 1px solid rgba(232, 180, 92, 0.2);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.tavern-blackjack .log-line {
+  margin-top: 0.6rem;
+}
+
+/* ---- Responsive ---- */
+
+@media (max-width: 860px) {
+  .tavern-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .tavern-rations-card {
+    flex-direction: row;
+    align-items: center;
+    min-height: 0;
+    gap: 0.8rem;
+  }
+
+  .rations-image-placeholder {
+    width: 40%;
+    flex: none;
+    min-height: 7rem;
+  }
+
+  .tavern-rations-body {
+    flex: 1;
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .tavern-dialogue {
+    flex-direction: column-reverse;
+  }
+
+  .tavernkeeper-image-placeholder {
+    width: 100%;
+    min-height: 9rem;
+    height: 9rem;
+  }
+
+  .tavern-sleep-card {
+    flex-direction: column;
+  }
+
+  .sleep-image-placeholder {
+    width: 100%;
+    min-height: 8rem;
+  }
+
+.tavern-games {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .tavern-head-title {
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+  }
+
+  .tavern-head-back {
+    padding: 0.5rem 0.7rem;
+    font-size: 0.62rem;
+  }
+
+  .tavern-dialogue {
+    padding: 0.85rem;
+  }
+
+  .tavern-section-head {
+    align-items: flex-start;
   }
 }

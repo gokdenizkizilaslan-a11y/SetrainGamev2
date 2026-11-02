@@ -1682,6 +1682,7 @@ function renderActionCards(room, selfId) {
         state.blacksmithOpen = a.id === "blacksmith";
         state.merchantOpen = a.id === "merchant";
         state.templeOpen = a.id === "temple";
+        if (a.id === "temple") state.templeTab = "ascend";
         state.inventoryOpen = false;
         renderTown(state.room);
       } else if (a.id === "sleep") {
@@ -3325,9 +3326,45 @@ function renderPvpView(room){
 
 // ---- Tavern ----
 
+// Tavernkeeper panel: same dialogue state/options as shopTalkHtml, but with a
+// dedicated portrait placeholder so the art can be dropped in independently.
+function tavernDialogueHtml() {
+  try {
+    const npc = talkNpc("tavernkeeper");
+    if (!npc) return "";
+    if (state.talkNpcId !== "tavernkeeper") {
+      state.talkNpcId = "tavernkeeper";
+      state.talkNodeId = "start";
+      markTalkSeen("tavernkeeper", "start");
+    }
+    const node = talkNode(npc, state.talkNodeId);
+    if (!node) return "";
+    const options = talkOptionsFor(npc, node);
+    return `<div class="tavern-dialogue talk-fade">
+      <div class="tavern-dialogue-main">
+        <p class="tavern-dialogue-name">${escapeHtml(npc.name || "Tavernkeeper")}</p>
+        <p class="tavern-dialogue-text">${escapeHtml(node.text || "")}</p>
+        <div class="tavern-dialogue-options">
+          ${options.map((o, i) => `<button type="button" class="btn btn--smoke btn--mini" data-opt="${i}">${escapeHtml(o.label)}</button>`).join("")}
+        </div>
+      </div>
+      <div class="tavern-image tavernkeeper-image-placeholder tavern-image--cover">
+        <!-- ADD TAVERNKEEPER PORTRAIT HERE -->
+        <span class="tavern-img-hint" aria-hidden="true">Portrait</span>
+      </div>
+    </div>`;
+  } catch (e) {
+    return "";
+  }
+}
+
 function renderTavernView(room) {
   const me = room.players.find((p) => p.id === state.playerId);
   const root = $("tavern-content");
+  if (!me) {
+    root.innerHTML = "";
+    return;
+  }
   const t = me.tavern;
   if (t && t.status === "done" && t.won !== undefined) {
     const key = t.game + ":" + (t.message || "");
@@ -3344,51 +3381,111 @@ function renderTavernView(room) {
     const dealerShown = t.dealerShown || t.status === "done";
     const dealerCards = dealerShown ? t.dealerHand : t.dealerHand.slice(0, 1);
     root.innerHTML = `
-      <p class="subhead">Blackjack — ${t.bet} gold</p>
-      <div class="card-area">
-        <div class="card-row"><span class="muted">Dealer:</span> ${handHtml(dealerCards)}</div>
-        <div class="card-row"><span class="muted">You:</span> ${handHtml(t.playerHand)}</div>
-      </div>
-      <div class="btn-row">
-        <button type="button" class="btn" id="btn-hit">Hit</button>
-        <button type="button" class="btn btn--bronze" id="btn-stand">Stand</button>
-      </div>
-      <div class="log-line">${escapeHtml(t.message || "")}</div>`;
+      <div class="tavern-blackjack">
+        <p class="subhead">Blackjack — ${t.bet} gold</p>
+        <div class="card-area">
+          <div class="card-row"><span class="muted">Dealer:</span> ${handHtml(dealerCards)}</div>
+          <div class="card-row"><span class="muted">You:</span> ${handHtml(t.playerHand)}</div>
+        </div>
+        <div class="btn-row">
+          <button type="button" class="btn" id="btn-hit">Hit</button>
+          <button type="button" class="btn btn--bronze" id="btn-stand">Stand</button>
+        </div>
+        <div class="log-line">${escapeHtml(t.message || "")}</div>
+      </div>`;
     root.querySelector("#btn-hit").addEventListener("click", () => socket.emit("tavern:move", { move: "hit" }));
     root.querySelector("#btn-stand").addEventListener("click", () => socket.emit("tavern:move", { move: "stand" }));
     return;
   }
 
-  const result = t && t.status === "done" ? `<div class="log-line">${escapeHtml(t.message || "")}</div>` : "";
+  const result = t && t.status === "done" ? `<div class="log-line tavern-result">${escapeHtml(t.message || "")}</div>` : "";
   const prov = (CATALOG.town && CATALOG.town.tavern && CATALOG.town.tavern.provisions) || { foodPrice: 10, foodAmount: 2 };
   const sleepPrice = (CATALOG.town && CATALOG.town.tavern && CATALOG.town.tavern.sleep && CATALOG.town.tavern.sleep.price) || 15;
   const canSleep = me.gold >= sleepPrice;
+  const bets = (CATALOG.town && CATALOG.town.tavern && CATALOG.town.tavern.bets) || [5, 10, 25];
   root.innerHTML = `
-    ${vendorHead("tavern", "The Tavern", "The keeper wipes a mug. “Warm beds upstairs — safe sleep till dawn.”")}
-    ${shopTalkHtml("tavernkeeper")}
-    <p class="subhead">Wagering</p>
-    <p class="lead">Pick a wager, then a game. A winning coin flip doubles it; blackjack pays 2.5&times; on a natural.</p>
-    ${result}
-    <div class="bet-row">
-      ${(CATALOG.town.tavern.bets || [5, 10, 25])
-        .map((b) => `<button type="button" class="bet-btn${state.bet === b ? " is-selected" : ""}" data-bet="${b}">${b} gold</button>`)
-        .join("")}
-    </div>
-    <div class="btn-row">
-      <button type="button" class="btn" id="btn-flip">Coin Flip</button>
-      <button type="button" class="btn btn--bronze" id="btn-bj">Blackjack</button>
-    </div>
-    <div class="provisions-row">
-      <span class="muted">Field Rations — ${prov.foodAmount} food</span>
-      <button type="button" class="btn btn--bronze btn--mini" id="btn-buy-food">Buy (${prov.foodPrice} gold)</button>
-    </div>
-    <div class="sleep-card">
-      <span class="sleep-ico">${icon("bed")}</span>
-      <span class="sleep-text"><strong>Warm bed</strong><span class="muted">safe sleep · ${sleepPrice} gold</span></span>
-      <button type="button" class="btn btn--gold btn--mini${canSleep ? "" : " btn--mini-disabled"}" id="btn-tavern-sleep">Sleep</button>
+    <div class="tavern-shell">
+      ${tavernDialogueHtml()}
+
+      <div class="tavern-actions">
+        <button type="button" class="tavern-sleep-card${canSleep ? "" : " is-unaffordable"}" id="btn-tavern-sleep">
+          <span class="tavern-image sleep-image-placeholder tavern-image--cover">
+            <!-- ADD SLEEP / BED IMAGE HERE -->
+            <span class="tavern-img-hint" aria-hidden="true">Bed</span>
+          </span>
+          <span class="tavern-sleep-body">
+            <span class="tavern-card-kicker">Rest &amp; Recovery</span>
+            <span class="tavern-card-title">Sleep</span>
+            <span class="tavern-card-desc">Rest your weary body. Wake up refreshed.</span>
+            <span class="tavern-card-price"><span class="tavern-coin" aria-hidden="true"></span>${sleepPrice} GOLD</span>
+          </span>
+        </button>
+
+        <div class="tavern-rations-card">
+          <div class="tavern-image rations-image-placeholder tavern-image--contain">
+            <!-- ADD FIELD RATIONS / FOOD IMAGE HERE -->
+            <span class="tavern-img-hint" aria-hidden="true">Food</span>
+          </div>
+          <div class="tavern-rations-body">
+            <span class="tavern-card-title">Field Rations</span>
+            <span class="tavern-card-desc">${prov.foodAmount} FOOD</span>
+            <button type="button" class="btn btn--bronze btn--mini" id="btn-buy-food">Buy (${prov.foodPrice} gold)</button>
+          </div>
+        </div>
+      </div>
+
+      <section class="tavern-wager" aria-labelledby="tavern-wager-title">
+        <div class="tavern-section-head">
+          <h3 class="tavern-section-title" id="tavern-wager-title">Wagering</h3>
+          <p class="tavern-section-desc">Pick a wager, then a game. A winning coin flip doubles it; blackjack pays 2.5&times; on a natural.</p>
+        </div>
+        ${result}
+        <div class="bet-row" role="group" aria-label="Wager amount">
+          ${bets
+            .map((b) => `<button type="button" class="bet-btn${state.bet === b ? " is-selected" : ""}" data-bet="${b}">${b} GOLD</button>`)
+            .join("")}
+        </div>
+        <div class="tavern-games">
+          <button type="button" class="tavern-game-card" id="btn-flip">
+            <span class="tavern-image coin-image-placeholder tavern-image--contain">
+              <!-- ADD COIN IMAGE HERE -->
+              <span class="tavern-img-hint" aria-hidden="true">Coin</span>
+            </span>
+            <span class="tavern-game-body">
+              <span class="tavern-game-title">Coin Flip</span>
+              <span class="tavern-game-sub">Call it in the air. A winning toss doubles your wager.</span>
+            </span>
+          </button>
+          <button type="button" class="tavern-game-card" id="btn-bj">
+            <span class="tavern-image playing-card-image-placeholder tavern-image--contain">
+              <!-- ADD PLAYING CARDS IMAGE HERE -->
+              <span class="tavern-img-hint" aria-hidden="true">Cards</span>
+            </span>
+            <span class="tavern-game-body">
+              <span class="tavern-game-title">Blackjack</span>
+              <span class="tavern-game-sub">Draw close to 21 without going over. Naturals pay 2.5&times;.</span>
+            </span>
+          </button>
+        </div>
+      </section>
+
+      <div class="tavern-leave-row">
+        <button type="button" class="tavern-leave-card" id="btn-tavern-leave">
+          <span class="tavern-image door-image-placeholder tavern-image--cover">
+            <!-- ADD DOOR IMAGE HERE -->
+            <span class="tavern-img-hint" aria-hidden="true">Door</span>
+          </span>
+          <span class="tavern-leave-text">Leave</span>
+        </button>
+      </div>
     </div>`;
   root.querySelector("#btn-tavern-sleep").addEventListener("click", () => {
     playNightTransition("Night falls", "You sleep safely at the tavern. Stamina returns at dawn.", () => socket.emit("tavern:sleep"));
+  });
+  const leaveBtn = root.querySelector("#btn-tavern-leave");
+  if (leaveBtn) leaveBtn.addEventListener("click", () => {
+    state.tavernOpen = false;
+    renderTown(state.room);
   });
   wireTalk(root, () => renderTavernView(room));
   root.querySelectorAll("[data-bet]").forEach((b) =>
@@ -3697,6 +3794,30 @@ function renderTempleView(room) {
     ${deadAllies.length ? deadAllies.map((p) => `<div class="craft-row"><span class="craft-out">${escapeHtml(p.name)} — Lives ${p.lives}</span><button type="button" class="btn btn--mini${canRevive ? "" : " btn--mini-disabled"}" data-revive="${p.id}">Revive</button></div>`).join("") : `<p class="muted">No fallen allies.</p>`}
   </div>`;
 
+  const templeTabMeta = {
+    ascend: { title: "Ascension", sub: "Forms your current class can ascend into." },
+    hearts: { title: "Mend a Heart", sub: `Offer ${escapeHtml(restoreItem.itemName || "a Heart of Golem")} to restore one of your ${maxLives} hearts.` },
+    rebirth: { title: "Rebirth of Blood", sub: `Offer ${escapeHtml(stoneName)} to be reborn into a new race.` },
+    revive: { title: "Revive Ally", sub: "Offer The Essence of Life to bring a fallen ally back to the fight." },
+  };
+  const templeTab = templeTabMeta[state.templeTab] ? state.templeTab : "ascend";
+  const templePages = {
+    ascend: evolveHtml,
+    hearts: restoreHtml,
+    rebirth: originHtml,
+    revive: reviveHtml,
+  };
+  const templeNav = [
+    { id: "ascend", label: "Ascend", ico: "level", count: evos.length },
+    { id: "hearts", label: "Mend a Heart", ico: "lives", count: Math.max(0, maxLives - me.lives) },
+    { id: "rebirth", label: "Rebirth", ico: "rest", count: stoneQty },
+    { id: "revive", label: "Revive Ally", ico: "heal", count: deadAllies.length },
+  ].map((t) => `<button type="button" class="temple-nav-btn${templeTab === t.id ? " temple-nav-btn--active" : ""}" data-temple-tab="${t.id}"${templeTab === t.id ? ' aria-current="page"' : ""}>
+      <span class="temple-nav-ico">${icon(t.ico)}</span>
+      <span class="temple-nav-label">${t.label}</span>
+      ${t.count > 0 ? `<span class="temple-nav-count">${t.count}</span>` : ""}
+    </button>`).join("");
+
   root.innerHTML = `
     ${vendorHead("temple", "Ancient Temple", "The stones hum. “The Temple remembers a purpose older than the kingdom.”")}
     <div class="shop-resources">
@@ -3706,8 +3827,26 @@ function renderTempleView(room) {
       ${chip(icon("stamina"), `Stamina ${me.stamina}`)}
     </div>
     <p class="subhead">The Ancient Temple remembers a purpose older than the kingdom.</p>
-    <div class="temple-grid">${evolveHtml}${restoreHtml}${originHtml}${reviveHtml}</div>`;
+    <div class="temple-layout">
+      <nav class="temple-nav" aria-label="Ancient Temple services">${templeNav}</nav>
+      <section class="temple-page">
+        <div class="temple-page-head">
+          <p class="temple-page-kicker">Sacred Rites</p>
+          <h3 class="temple-page-title">${templeTabMeta[templeTab].title}</h3>
+          <p class="temple-page-sub">${templeTabMeta[templeTab].sub}</p>
+        </div>
+        <div class="temple-grid">${templePages[templeTab]}</div>
+      </section>
+    </div>`;
   initImages(root);
+
+  root.querySelectorAll("[data-temple-tab]").forEach((b) =>
+    b.addEventListener("click", () => {
+      state.templeTab = b.getAttribute("data-temple-tab");
+      renderTempleView(room);
+      root.scrollTop = 0;
+    })
+  );
 
   root.querySelectorAll("[data-evolve-to]").forEach((b) =>
     b.addEventListener("click", () => socket.emit("temple:evolve", { to: b.getAttribute("data-evolve-to") }))
