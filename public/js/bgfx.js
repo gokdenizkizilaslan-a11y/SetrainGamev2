@@ -235,7 +235,10 @@
     "screen-mode": "menu",
     "screen-setup": "setup",
     "screen-lobby": "lobby",
-    "screen-town": "town",
+    // Town'da en arkadaki ambient = Ana Menu arka plani (menu). Town meydani
+    // (town) yalnizca Town Center panelinin ic kutusunda gosterilir, arkada
+    // tekrar etmesin. (Editor: images.backgrounds.menu)
+    "screen-town": "menu",
   };
   // Once ekrana ozel, sonra global bg, en sonda menu (eski davranis):
   const GLOBAL_BASES = ["/images/backgrounds/bg", "/images/backgrounds/menu"];
@@ -328,15 +331,41 @@
     }
   }
 
+  // Iki katmanli yumusak gecis: yeni arka plan eskisinin UZERINDE belirir,
+  // boylece ekran / oda (dungeon, taverna, tuccar, tapinak...) degisince
+  // manzara aniden ziplamaz, crossfade ile sadelelesir.
+  let activeLayer = 0;
   function setPhoto(box, url) {
+    const layers = box.querySelectorAll(".bg-photo__layer");
+    if (!layers.length) {
+      // Katman bulunamazsa eski davranis (dogrudan background) — guvenli fallback.
+      if (url) {
+        if (box.dataset.url !== url) {
+          box.style.backgroundImage = "url('" + url + "')";
+          box.dataset.url = url;
+        }
+        box.classList.add("has-photo");
+      } else {
+        box.classList.remove("has-photo");
+      }
+      return;
+    }
+    const cur = layers[activeLayer];
+    const next = layers[1 - activeLayer];
     if (url) {
       // ayni resim zaten yukluyse goz kirpmasin
       if (box.dataset.url !== url) {
-        box.style.backgroundImage = "url('" + url + "')";
+        next.style.backgroundImage = "url('" + url + "')";
+        void next.offsetWidth; // yeni resmin cizilmesini garantile
+        next.style.opacity = "1";
+        cur.style.opacity = "0";
+        activeLayer = 1 - activeLayer;
         box.dataset.url = url;
       }
       box.classList.add("has-photo");
     } else {
+      cur.style.opacity = "0";
+      next.style.opacity = "0";
       box.classList.remove("has-photo");
     }
   }

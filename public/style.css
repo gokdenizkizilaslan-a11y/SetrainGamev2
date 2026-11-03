@@ -92,12 +92,21 @@ body[data-screen="screen-town"] .parchment-vignette {
   inset: 0;
   z-index: 0;
   pointer-events: none;
+  filter: blur(var(--bg-photo-blur));
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+/* Arka plan resmi iki katman arasinda crossfade olur: ekran/oda degisince
+   yeni manzara eskisinin uzerinde yumusakca belirir, ziplama olmaz. */
+#bg-photo .bg-photo__layer {
+  position: absolute;
+  inset: 0;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  filter: blur(var(--bg-photo-blur));
   opacity: 0;
-  transition: opacity 0.6s ease, background-image 0.3s ease;
+  transition: opacity 0.7s ease;
+  will-change: opacity;
 }
 #bg-photo.has-photo {
   opacity: var(--bg-photo-opacity);
@@ -115,6 +124,14 @@ body[data-screen="screen-town"] #bg-photo.has-photo {
   align-items: center;
   justify-content: center;
   padding: 2rem 1rem;
+}
+/* Smooth fade when the whole screen changes (menu -> setup -> lobby -> town). */
+.screen:not(.hidden) {
+  animation: screen-in 0.45s ease both;
+}
+@keyframes screen-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .hidden {
@@ -4767,12 +4784,6 @@ input:focus {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
 }
 
-/* Town Center acikken arkadaki ambient town fotografi gizle — panel zaten
-   ayni town manzarasini tasidigi icin cift gorunmesin, tek kalsin. */
-body[data-screen="screen-town"]:has(#plaza-view:not(.hidden)) #bg-photo {
-  opacity: 0;
-}
-
 /* Story intro: tek sabit boyutlu sahne — içerik değişir, kart ve buton sabit. */
 #story-overlay.has-card-bg {
   background-color: rgba(6, 3, 1, 0.9);
@@ -4986,13 +4997,15 @@ body[data-screen="screen-town"]:has(#plaza-view:not(.hidden)) #bg-photo {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
-/* Gentle entrance for every overlay panel */
+/* Gentle, smooth entrance for every overlay panel (dungeon / tavern /
+   merchant / temple / plaza / skill tree ...). Slight lift and settle. */
 .overlay-view:not(.hidden) > div {
-  animation: overlay-in 0.25s ease-out;
+  animation: overlay-in 0.42s cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 @keyframes overlay-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from { opacity: 0; transform: translateY(12px); }
+  60%  { opacity: 1; }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ---- Settings / pause overlay ---- */
