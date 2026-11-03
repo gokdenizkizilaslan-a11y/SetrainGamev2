@@ -10,3 +10,7 @@ for_ai/
 .aider*
 gamecraft-rpg-studiov1/
 oldassets/
+skilllersetrain/
+opencode-ip-rotator/
+*.tmp
+Thumbs.db
