@@ -105,7 +105,7 @@ body[data-screen="screen-town"] .parchment-vignette {
   background-position: center;
   background-repeat: no-repeat;
   opacity: 0;
-  transition: opacity 0.7s ease;
+  transition: opacity 1.05s cubic-bezier(0.33, 0, 0.18, 1);
   will-change: opacity;
 }
 #bg-photo.has-photo {
@@ -2044,6 +2044,32 @@ input:focus {
 }
 .overlay-view.hidden {
   display: none !important;
+}
+/* Tum overlay sekmeleri (dungeon, taverna, demirci, tuccar, tapinak, town
+   center...) icin tam-kaplayan zemin resmi: oyun gorseli en arkada durur,
+   ustte ayri bir baslik resmi olmaz. Resim yuklenince yumusakca belirir. */
+.overlay-view.has-card-bg {
+  position: relative;
+  isolation: isolate;
+}
+.overlay-view.has-card-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 16px;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to bottom, rgba(8, 5, 3, 0.55), rgba(8, 5, 3, 0.74)),
+    var(--cp-img);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  animation: backdrop-in 0.75s ease both;
+}
+@keyframes backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 /* Town ana gizliyken panel yine dolu kalsın */
 #town-main.hidden {
@@ -4783,6 +4809,17 @@ input:focus {
   background-repeat: no-repeat, no-repeat;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
 }
+/* Town Center basligi: panelin ic kutusunda, town manzarasinin uzerinde. */
+.plaza-title {
+  margin: 0.1rem 0 0.9rem;
+  font-family: "Cinzel", serif;
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+  text-shadow: 0 2px 10px #000, 0 0 3px #000;
+}
 
 /* Story intro: tek sabit boyutlu sahne — içerik değişir, kart ve buton sabit. */
 #story-overlay.has-card-bg {
@@ -4997,15 +5034,18 @@ input:focus {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
-/* Gentle, smooth entrance for every overlay panel (dungeon / tavern /
-   merchant / temple / plaza / skill tree ...). Slight lift and settle. */
+/* Smooth entrance for every overlay panel (dungeon / tavern / merchant /
+   temple / plaza / blacksmith / skill tree ...): soft lift + settle. */
 .overlay-view:not(.hidden) > div {
-  animation: overlay-in 0.42s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  animation: overlay-in 0.58s cubic-bezier(0.16, 0.9, 0.24, 1) both;
+}
+.overlay-view:not(.hidden) > div:nth-child(2) {
+  animation-delay: 0.07s;
 }
 @keyframes overlay-in {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(22px) scale(0.968); }
   60%  { opacity: 1; }
-  to   { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* ---- Settings / pause overlay ---- */

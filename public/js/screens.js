@@ -4009,6 +4009,10 @@ function renderBlacksmithView(room) {
     renderCraftBench(room, me, root, "blacksmith");
     return;
   }
+  // Demirci manzarasi panelin tam-kaplayan zemini olur (ustte ayri banner yok).
+  const ui = (CATALOG.images && CATALOG.images.ui) || {};
+  const bgs = (CATALOG.images && CATALOG.images.backgrounds) || {};
+  setCardBg($("blacksmith-view"), ui.blacksmithBg || bgs.blacksmith || "");
   const st = (CATALOG.town && CATALOG.town.blacksmith && CATALOG.town.blacksmith.stamina) || 2;
   const staminaOk = me.stamina >= st;
   const buyable = (CATALOG.loot && CATALOG.loot.buyable) || ["common", "uncommon", "rare"];
@@ -4043,7 +4047,7 @@ function renderBlacksmithView(room) {
   }).join("");
 
   root.innerHTML = `
-    ${vendorHead("blacksmith", "Blacksmith", "")}
+    <p class="plaza-title">Blacksmith</p>
     ${shopTalkHtml("blacksmith")}
     ${shopResources(me)}
     <p class="subhead shop-head">Armor & Weapons — Week ${room.shopStock ? room.shopStock.week : 1} · ${rotGear.length} items (7 days rotation)${shopVendorPortrait("blacksmithNpc", "Blacksmith")}</p>
@@ -4382,7 +4386,7 @@ function renderPlazaView(room) {
   const npc = state.talkNpcId ? talkNpc(state.talkNpcId) : null;
   if (!npc) {
     root.innerHTML = `
-      ${vendorHead("town", "Town Center", "Setra Village goes about its day. Its folk have time to talk.")}
+      <p class="plaza-title">Town Center</p>
       <div class="shop-grid">${npcs.map((n) => `
         <button type="button" class="npc-card" data-npc="${escapeHtml(n.id)}">
           <span class="npc-portrait" data-img="${escapeHtml(n.image || "")}" data-variant="${escapeHtml(n.id)}"></span>

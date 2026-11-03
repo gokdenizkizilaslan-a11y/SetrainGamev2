@@ -363,6 +363,9 @@
         box.dataset.url = url;
       }
       box.classList.add("has-photo");
+      // Resim degistiginde katmanlar hazir oldugu an goster; boylece eski
+      // ekranin fotografi (orn. town) bir anlik gorunmez.
+      box.style.opacity = "";
     } else {
       cur.style.opacity = "0";
       next.style.opacity = "0";
