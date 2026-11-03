@@ -14,7 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/style.css?v=20261103ui1" />
+    <link rel="stylesheet" href="/style.css?v=20261103ui3" />
   </head>
   <body>
 <!-- ============================================================
@@ -211,16 +211,20 @@
                   <p class="eyebrow">The Town</p>
                   <h2>Setra Village</h2>
                 </div>
-                <div class="town-day" style="display:flex;align-items:center;gap:0.5rem">
-                  <span id="town-omen" class="day-omen" title="Today's omen"></span>
-                  <button type="button" id="btn-quests" class="btn btn--ghost" style="padding:0.4rem 0.7rem;font-size:0.85rem" title="Quests">📜 Quests</button>
-                  <button type="button" id="btn-guide" class="btn btn--ghost" style="padding:0.4rem 0.7rem;font-size:0.85rem" title="How to play">📖 Guide</button>
-                  <button type="button" id="btn-skilltree" class="btn btn--ghost" style="padding:0.4rem 0.7rem;font-size:0.85rem" title="Open Skill Tree">✦ Skill Tree</button>
-                  <div style="text-align:center">
-                    <span class="day-label">Day</span>
-                    <span id="town-day" class="day-value">1</span>
+                <div class="town-day">
+                  <div class="town-day__info">
+                    <span id="town-omen" class="day-omen" title="Today's omen"></span>
+                    <div class="town-day__day">
+                      <span class="day-label">Day</span>
+                      <span id="town-day" class="day-value">1</span>
+                    </div>
                   </div>
-                  <button type="button" id="btn-map" class="btn btn--ghost" style="padding:0.4rem 0.6rem;font-size:0.9rem" title="Open Map">🗺️</button>
+                  <div class="town-day__actions">
+                    <button type="button" id="btn-quests" class="btn btn--ghost town-day__btn" title="Quests">📜 Quests</button>
+                    <button type="button" id="btn-guide" class="btn btn--ghost town-day__btn" title="How to play">📖 Guide</button>
+                    <button type="button" id="btn-skilltree" class="btn btn--ghost town-day__btn" title="Open Skill Tree">✦ Skill Tree</button>
+                    <button type="button" id="btn-map" class="btn btn--ghost town-day__btn" title="Open Map">🗺️ Map</button>
+                  </div>
                 </div>
               </div>
 
@@ -436,7 +440,7 @@
     <script src="/egg_animation.js"></script>
     <script src="/js/screens.js?v=20261103cine3"></script>
     <script src="/js/bgfx.js?v=20260912k"></script>
-    <script src="/js/client.js?v=20260912k"></script>
+    <script src="/js/client.js?v=20261103ui3"></script>
 
 <!-- ============================================================
   THE SETRA GAME - DUNGEON CHEST & 3D LOOT OPENING MODULE

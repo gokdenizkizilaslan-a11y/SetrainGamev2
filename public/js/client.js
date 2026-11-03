@@ -101,6 +101,9 @@ function renderTown(room) {
     const ui = (CATALOG.images && CATALOG.images.ui) || {};
     const panelBg = ui.townPanelBg || "";
     if (panelEl && typeof setCardBg === "function") setCardBg(panelEl, panelBg || "");
+    // Gün/quest kutucuğu arka planı (editör: UI → townDayBg).
+    const dayEl = document.querySelector("#screen-town .town-day");
+    if (dayEl && typeof setCardBg === "function") setCardBg(dayEl, ui.townDayBg || "");
     const clamp01 = (v) => {
       const n = parseFloat(v);
       if (!isFinite(n)) return null;

@@ -10938,6 +10938,7 @@ const CONTENT = {
     "ui": {
       "panel": "/images/ui/panel.png",
       "townPanelBg": "/images/ui/townpanelbg.webp?v=mw018w38",
+      "townDayBg": "",
       "merchantBg": "",
       "merchantChests": "",
       "merchantPotions": "",

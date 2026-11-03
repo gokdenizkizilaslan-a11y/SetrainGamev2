@@ -509,6 +509,7 @@ const pages = [
     kind: "form",
     fields: [
       { path: "images.ui.townPanelBg", label: "Town panel bg (blank = default)", type: "image", folder: "ui" },
+      { path: "images.ui.townDayBg", label: "Town day/quest box bg (blank = default)", type: "image", folder: "ui" },
       { path: "images.ui.profileBg", label: "Profile card bg (blank = glass)", type: "image", folder: "ui" },
       { path: "images.ui.tavernBg", label: "Tavern background - behind everything (blank = CSS)", type: "image", folder: "ui" },
       { path: "images.ui.tavernPortrait", label: "Tavernkeeper portrait (blank = placeholder)", type: "image", folder: "ui" },
