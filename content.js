@@ -36,30 +36,38 @@ const CONTENT = {
     "intro": {
       "speaker": "Mira",
       "image": "/images/npcs/mira.png",
+      "bgGrass": "",
+      "bgStanding": "",
       "lines": [
         {
           "who": "narrator",
-          "text": "Cold grass. Birdsong. A shadow falls across your face, and a woman kneels beside you."
+          "text": "Cold grass. Birdsong. A shadow falls across your face, and a woman kneels beside you.",
+          "scene": "grass"
         },
         {
           "who": "npc",
-          "text": "Easy. You are breathing, that is the important part. I found you in the hollow with empty hands and emptier eyes. What is your name, wanderer?"
+          "text": "Easy. You are breathing, that is the important part. I found you in the hollow with empty hands and emptier eyes. What is your name, wanderer?",
+          "scene": "grass"
         },
         {
           "who": "you",
-          "text": "I... cannot remember. Only the road, and then nothing."
+          "text": "I... cannot remember. Only the road, and then nothing.",
+          "scene": "grass"
         },
         {
           "who": "npc",
-          "text": "Then Setra Village will have to do as a beginning. I am Mira. I keep a small house and a smaller purse. Take this — fifty gold and ten days of food. It is nearly all I have, so spend it like it matters."
+          "text": "Then Setra Village will have to do as a beginning. I am Mira. I keep a small house and a smaller purse. Take this — fifty gold and ten days of food. It is nearly all I have, so spend it like it matters.",
+          "scene": "standing"
         },
         {
           "who": "you",
-          "text": "Why help a stranger with no past?"
+          "text": "Why help a stranger with no past?",
+          "scene": "standing"
         },
         {
           "who": "npc",
-          "text": "Because someone once did the same for me. And because Palendio has little kindness left to spare these days — the crowns quarrel, the roads grow unsafe. Grow strong, find work at the forge or the market, and sleep with a roof when you can afford it. Now stand. The village waits."
+          "text": "Because someone once did the same for me. And because Palendio has little kindness left to spare these days — the crowns quarrel, the roads grow unsafe. Grow strong, find work at the forge or the market, and sleep with a roof when you can afford it. Now stand. The village waits.",
+          "scene": "standing"
         }
       ],
       "rewardNote": "Mira presses 50 gold and 10 food into your hands."

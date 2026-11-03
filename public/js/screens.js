@@ -816,60 +816,159 @@ function showStoryIntro() {
   const cta = story.cta || "Set Forth";
   const intro = story.intro || null;
   const lines = intro && Array.isArray(intro.lines) ? intro.lines : [];
-  el.classList.remove("hidden");
 
-  // Arka plan: Setra meydani/koy gorseli (Theme UI'dan degistirilebilir; town fallback).
-  const imgs = CATALOG.images || {};
-  const bgs = imgs.backgrounds || {};
-  const ui = imgs.ui || {};
-  setCardBg(el, ui.storyBg || bgs.town || "");
-
-  // Konuşan oyuncunun adı + sınıf portresi (Mira gibi) gösterilebilsin.
+  // Konuşan oyuncunun adı + sınıf portresi (Mira gibi).
   const me = state.room ? state.room.players.find((p) => p.id === state.playerId) : null;
   const playerName = (me && me.name) || "You";
   const playerImg = me ? imgFor(me.character, "class") : "";
+  const npcName = (intro && intro.speaker) || "Stranger";
+  const npcImg = (intro && intro.image) || "";
+  // İki sinematik sahne görseli (editörden yüklenir). Yoksa CSS zemini görünür.
+  const bgGrass = (intro && intro.bgGrass) || "";
+  const bgStanding = (intro && intro.bgStanding) || "";
 
-  // Sabit boyutlu sahne: her adımda yalnızca içerik değişir; kart ve devam
-  // butonu hep aynı yerde kalır, böylece aynı noktaya tıklayarak ilerlenir.
-  const stage = (bodyHtml, btnLabel, onNext) => {
-    el.innerHTML = `<div class="notice-card story-card story-stage talk-fade">
-      <div class="story-stage-body">${bodyHtml}</div>
-      <div class="story-stage-foot"><button type="button" class="btn btn--gold" id="btn-story-next">${escapeHtml(btnLabel)}</button></div>
-    </div>`;
-    initImages(el);
-    const btn = el.querySelector("#btn-story-next");
-    if (btn) btn.addEventListener("click", onNext);
+  // Önceki oturumdan kalan dinleyicileri temizle (tekrar açılırsa üst üste binmez).
+  if (typeof el._storyCleanup === "function") {
+    try { el._storyCleanup(); } catch (e) { /* yok say */ }
+  }
+
+  el.classList.remove("hidden");
+  el.classList.add("story-cine-on");
+  el.innerHTML = `
+    <div class="story-scene" data-scene="grass"><span class="story-scene__img"></span></div>
+    <div class="story-scene" data-scene="standing"><span class="story-scene__img"></span></div>
+    <div class="story-vignette"></div>
+    <div class="story-cine" id="story-cine-stage"></div>`;
+  const layerGrass = el.querySelector('[data-scene="grass"]');
+  const layerStanding = el.querySelector('[data-scene="standing"]');
+  const stageRoot = el.querySelector("#story-cine-stage");
+
+  // Sahne değişimi: görsel katmanı değişir, iki katman arasında yumuşak geçiş.
+  let activeScene = "";
+  const sceneUrl = (name) => (name === "standing" ? (bgStanding || bgGrass) : (bgGrass || bgStanding));
+  const applyScene = (name) => {
+    if (name === activeScene) return;
+    activeScene = name;
+    const on = name === "standing" ? layerStanding : layerGrass;
+    const off = name === "standing" ? layerGrass : layerStanding;
+    const url = sceneUrl(name);
+    const reveal = () => {
+      on.classList.add("is-active");
+      off.classList.remove("is-active");
+    };
+    const img = on && on.querySelector(".story-scene__img");
+    if (!img) { reveal(); return; }
+    if (url) {
+      img.style.backgroundImage = `url("${String(url).replace(/"/g, "%22")}")`;
+      const probe = new Image();
+      probe.onload = reveal;
+      probe.onerror = reveal;
+      probe.src = url;
+    } else {
+      img.style.backgroundImage = "";
+      reveal();
+    }
+  };
+  // Bir satırın sahnesi: kendi scene'i yoksa önceki sahnede kalır.
+  const sceneForLine = (idx) => {
+    for (let i = idx; i >= 0; i--) {
+      const s = (lines[i] && lines[i].scene) || "";
+      if (s === "standing") return "standing";
+      if (s === "grass" || s === "lying") return "grass";
+    }
+    return "grass";
   };
 
+  // İlerletme: buton, sahneye tıklama ve Enter/Space aynı adımı tetikler.
+  let currentNext = null;
+  let lastAdvance = 0;
+  const advance = () => {
+    const now = Date.now();
+    if (now - lastAdvance < 220) return;
+    lastAdvance = now;
+    if (typeof currentNext === "function") currentNext();
+  };
+  const onElClick = (e) => {
+    if (e.target && e.target.closest && e.target.closest("button")) return;
+    advance();
+  };
+  const onKey = (e) => {
+    if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+      e.preventDefault();
+      advance();
+    }
+  };
+  const cleanup = () => {
+    el.removeEventListener("click", onElClick);
+    document.removeEventListener("keydown", onKey);
+  };
+  el._storyCleanup = cleanup;
+  el.addEventListener("click", onElClick);
+  document.addEventListener("keydown", onKey);
+
+  const finish = () => {
+    cleanup();
+    el._storyCleanup = null;
+    el.classList.add("hidden");
+    el.classList.remove("story-cine-on");
+  };
+
+  // Sabit sahne: her adımda yalnızca içerik değişir, görsel katmanlar sabit kalır.
+  const stage = (bodyHtml, btnLabel, onNext) => {
+    currentNext = onNext;
+    stageRoot.innerHTML = `${bodyHtml}
+      <div class="story-cine__foot"><button type="button" class="btn btn--gold" id="btn-story-next">${escapeHtml(btnLabel)}</button></div>`;
+    initImages(stageRoot);
+    const btn = stageRoot.querySelector("#btn-story-next");
+    if (btn) btn.addEventListener("click", (e) => { e.stopPropagation(); advance(); });
+  };
+
+  const figure = (side, name, img, text, active) => `
+    <div class="story-fig story-fig--${side}${active ? " is-active" : ""}">
+      <span class="story-fig__portrait" data-img="${escapeHtml(img || "")}" title="${escapeHtml(name || "")}"></span>
+      <span class="story-fig__name">${escapeHtml(name || "")}</span>
+      ${text ? `<p class="story-fig__text">${escapeHtml(text)}</p>` : ""}
+    </div>`;
+
   const showParagraphs = () => {
+    applyScene("grass");
     stage(
-      `<h2 class="story-title">${escapeHtml(title)}</h2>` +
-        paragraphs.map((p) => `<p class="story-text">${escapeHtml(p)}</p>`).join(""),
+      `<div class="story-prologue">
+        <h2 class="story-prologue__title">${escapeHtml(title)}</h2>
+        ${paragraphs.map((p) => `<p class="story-prologue__para">${escapeHtml(p)}</p>`).join("")}
+      </div>`,
       lines.length ? "Wake Up" : cta,
       () => {
         if (lines.length) showLine(0);
-        else el.classList.add("hidden");
+        else finish();
       }
     );
   };
+
   const showLine = (idx) => {
-    const ln = lines[idx];
-    const isNpc = ln.who === "npc";
-    const isYou = ln.who === "you";
-    const tag = isNpc ? escapeHtml(intro.speaker || "Stranger") : isYou ? escapeHtml(playerName) : "";
-    const portrait = isYou
-      ? `<span class="talk-portrait" data-img="${escapeHtml(playerImg)}" data-variant="${escapeHtml(me ? me.character : "")}" title="${escapeHtml(playerName)}"></span>`
-      : isNpc
-      ? `<span class="talk-portrait" data-img="${escapeHtml(intro.image || "")}" data-variant="intro" title="${escapeHtml(intro.speaker || "")}"></span>`
-      : "";
+    const ln = lines[idx] || {};
+    const who = ln.who || "narrator";
+    applyScene(sceneForLine(idx));
+    let body;
+    if (who === "you") {
+      body = `<div class="story-dlg">
+        ${figure("you", playerName, playerImg, ln.text || "", true)}
+        ${figure("npc", npcName, npcImg, "", false)}
+      </div>`;
+    } else if (who === "npc") {
+      body = `<div class="story-dlg">
+        ${figure("you", playerName, playerImg, "", false)}
+        ${figure("npc", npcName, npcImg, ln.text || "", true)}
+      </div>`;
+    } else {
+      body = `<div class="story-dlg story-dlg--narrator">
+        ${figure("you", playerName, playerImg, "", false)}
+        ${figure("npc", npcName, npcImg, "", false)}
+        <p class="story-narrator">${escapeHtml(ln.text || "")}</p>
+      </div>`;
+    }
     stage(
-      `<div class="talk-panel">
-        <div class="talk-main">
-          ${tag ? `<p class="talk-name">${tag}</p>` : ""}
-          <p class="talk-text">${escapeHtml(ln.text || "")}</p>
-        </div>
-        ${portrait}
-      </div>`,
+      body,
       idx < lines.length - 1 ? "Continue" : cta,
       () => {
         if (idx < lines.length - 1) showLine(idx + 1);
@@ -877,14 +976,18 @@ function showStoryIntro() {
       }
     );
   };
+
   const showReward = () => {
     stage(
-      `<h2 class="story-title">${escapeHtml(title)}</h2>` +
-        (intro.rewardNote ? `<p class="story-text"><em>${escapeHtml(intro.rewardNote)}</em></p>` : ""),
+      `<div class="story-prologue story-prologue--reward">
+        <h2 class="story-prologue__title">${escapeHtml(title)}</h2>
+        ${intro && intro.rewardNote ? `<p class="story-prologue__para"><em>${escapeHtml(intro.rewardNote)}</em></p>` : ""}
+      </div>`,
       cta,
-      () => el.classList.add("hidden")
+      finish
     );
   };
+
   showParagraphs();
 }
 

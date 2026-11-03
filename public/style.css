@@ -4886,6 +4886,191 @@ input:focus {
   height: 12rem;
 }
 
+/* ---- Story intro: cinematic (kart/kutu yok) ---- */
+/* Giriş ekranı: tam ekran sahne görseli + üstüne yazı. Kutu, çerçeve, kart YOK. */
+#story-overlay.story-cine-on {
+  padding: 0;
+  background: #060301;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  overflow: hidden;
+  cursor: pointer;
+}
+.story-scene {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1.15s ease;
+  pointer-events: none;
+  overflow: hidden;
+}
+.story-scene.is-active {
+  opacity: 1;
+}
+.story-scene__img {
+  position: absolute;
+  inset: -3%;
+  background-color: #0a0704;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transform: scale(1.03);
+  animation: story-kenburns 28s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes story-kenburns {
+  from { transform: scale(1.02); }
+  to { transform: scale(1.09); }
+}
+.story-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(125% 95% at 50% 38%, rgba(0, 0, 0, 0) 34%, rgba(0, 0, 0, 0.62) 100%),
+    linear-gradient(to top, rgba(4, 2, 1, 0.94) 0%, rgba(4, 2, 1, 0.42) 26%, rgba(4, 2, 1, 0) 58%);
+}
+.story-cine {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.story-cine__foot {
+  position: absolute;
+  right: clamp(1.1rem, 4vw, 3rem);
+  bottom: clamp(1.1rem, 4vh, 2.4rem);
+  z-index: 3;
+  pointer-events: auto;
+}
+.story-cine__foot .btn {
+  min-width: 9.5rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.55);
+}
+/* Prolog (başlık + paragraflar): kutusuz, ortada */
+.story-prologue {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  text-align: center;
+  padding: 3rem 7vw 7rem;
+}
+.story-prologue__title {
+  margin: 0;
+  font-family: "Cinzel", serif;
+  font-size: clamp(2rem, 4.6vw, 3.4rem);
+  letter-spacing: 0.06em;
+  color: var(--gold-bright);
+  text-shadow: 0 4px 26px #000, 0 0 2px #000;
+  animation: story-rise 0.8s cubic-bezier(0.16, 0.9, 0.24, 1) both;
+}
+.story-prologue__para {
+  margin: 0;
+  max-width: min(80vw, 760px);
+  font-size: clamp(1rem, 1.5vw, 1.22rem);
+  line-height: 1.7;
+  color: var(--ink);
+  text-shadow: 0 2px 12px #000, 0 0 2px #000;
+  animation: story-rise 0.8s cubic-bezier(0.16, 0.9, 0.24, 1) both;
+}
+.story-prologue__para:nth-child(2) { animation-delay: 0.12s; }
+.story-prologue__para:nth-child(3) { animation-delay: 0.24s; }
+.story-prologue__para:nth-child(4) { animation-delay: 0.36s; }
+.story-prologue--reward .story-prologue__para em { color: var(--ink-soft); }
+/* Diyalog: oyuncu solda, NPC (Mira) sağda; kutu yok */
+.story-dlg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(1rem, 4vw, 5rem);
+  padding: clamp(1.4rem, 5vh, 4rem) clamp(1.2rem, 5vw, 5rem) clamp(6rem, 17vh, 10rem);
+}
+.story-fig {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: min(40vw, 360px);
+  opacity: 0.4;
+  filter: saturate(0.55) brightness(0.75);
+  transform: translateY(14px);
+  transition: opacity 0.6s ease, filter 0.6s ease, transform 0.6s cubic-bezier(0.16, 0.9, 0.24, 1);
+}
+.story-fig.is-active {
+  opacity: 1;
+  filter: none;
+  transform: none;
+  animation: story-rise 0.6s cubic-bezier(0.16, 0.9, 0.24, 1) both;
+}
+.story-fig--you { align-items: flex-start; text-align: left; }
+.story-fig--npc { align-items: flex-end; text-align: right; }
+.story-fig__portrait {
+  display: block;
+  width: clamp(104px, 15vw, 190px);
+  aspect-ratio: 3 / 4;
+  border-radius: 14px 14px 10px 10px;
+  background-color: rgba(20, 12, 6, 0.6);
+  background-size: cover;
+  background-position: center top;
+  border: 1px solid var(--glass-line);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), inset 0 0 40px rgba(0, 0, 0, 0.35);
+}
+.story-fig.is-active .story-fig__portrait {
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(232, 183, 108, 0.55), 0 0 26px rgba(232, 183, 108, 0.28);
+}
+.story-fig__portrait.portrait--missing {
+  background-image:
+    radial-gradient(80% 60% at 50% 30%, rgba(232, 183, 108, 0.18), rgba(0, 0, 0, 0) 70%),
+    linear-gradient(180deg, #140d06, #0a0704);
+}
+.story-fig__name {
+  font-family: "Cinzel", serif;
+  font-size: clamp(0.86rem, 1.2vw, 1.05rem);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+  text-shadow: 0 2px 8px #000, 0 0 2px #000;
+}
+.story-fig__text {
+  margin: 0;
+  max-width: 100%;
+  font-size: clamp(0.98rem, 1.35vw, 1.16rem);
+  line-height: 1.55;
+  color: var(--ink);
+  text-shadow: 0 2px 10px #000, 0 0 2px #000;
+}
+.story-dlg--narrator .story-fig { opacity: 0.26; filter: saturate(0.4) brightness(0.6); }
+.story-narrator {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(6rem, 18vh, 10rem);
+  margin: 0 auto;
+  max-width: min(82vw, 780px);
+  text-align: center;
+  font-style: italic;
+  font-size: clamp(1.05rem, 1.8vw, 1.4rem);
+  line-height: 1.6;
+  color: var(--ink-soft);
+  text-shadow: 0 2px 14px #000, 0 0 2px #000;
+  animation: story-rise 0.7s cubic-bezier(0.16, 0.9, 0.24, 1) both;
+}
+@keyframes story-rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (max-width: 620px) {
+  .story-dlg { padding-left: 1rem; padding-right: 1rem; }
+  .story-fig { width: 44vw; }
+  .story-fig__portrait { width: clamp(84px, 26vw, 130px); }
+  .story-narrator { font-size: 1rem; bottom: 6.5rem; }
+}
+
 /* ---- Town Center + dialogue ---- */
 
 .npc-card {

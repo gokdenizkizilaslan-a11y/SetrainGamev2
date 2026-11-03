@@ -1,0 +1,110 @@
+====================================================================
+ SETRA — GİRİŞ (STORY INTRO) GÖRSEL PROMPTLARI
+====================================================================
+
+Bu dosya, oyunun girişinde (story intro) kullanılacak 2 sinematik sahne
+görselini üretmek için hazırlanmış promptları içerir.
+
+Nereye yüklenecek?
+  GameCraft Studio > "Hikâye Metni" sekmesi > "Giriş Sahnesi Görselleri"
+    1. Kare  -> story-intro-grass   (çimde yatarken / kalkarken)
+    2. Kare  -> story-intro-standing (kalktıktan sonra Mira'ya bakarken)
+  Mira portresi -> aynı sekmedeki "Mira portresi" alanı (npcs klasörü)
+
+Oyun bu görselleri tam ekran, kenarları taşacak şekilde (cover) gösterir.
+Bu yüzden kompozisyonun merkezi ve alt kısmı yazı için nispeten sakin olsun.
+
+
+--------------------------------------------------------------------
+GENEL STİL (iki görselde de aynı — tutarlılık için)
+--------------------------------------------------------------------
+"Painterly semi-realistic dark fantasy RPG key art, cinematic lighting,
+soft volumetric light, muted earthy palette (deep forest green, moss,
+warm morning gold, misty blue), fine brush texture, subtle film grain,
+atmospheric depth, high detail, no text, no watermark, no UI, 16:9
+widescreen composition, characters occupying the sides so the center and
+lower third stay readable for subtitles."
+
+NEGATIVE PROMPT (ortak):
+"text, letters, watermark, logo, UI, frame, border, cartoon, anime,
+chibi, oversaturated colors, neon, modern clothing, guns, low quality,
+blurry, distorted hands, extra limbs, deformed face, crowd in center"
+
+KARAKTER TUTARLILIĞI (iki karede de aynı kişiler):
+- Mira: genç kadın, 20'li yaşların başı, sıcak kahverengi dalgalı saçlar
+  (gevşek örgü/topuz), açık ten, nazik yüz, günlük Ortaçağ köylü kıyafeti
+  (toprak tonları, deri yelek, keten gömlek, otlar için küçük deri çanta).
+- Oyuncu (sen): isimsiz gezgin, sırtüstü çimenlerde, yıpranmış yol
+  kıyafetleri, birkaç çizik ve kir, henüz silahı yok.
+
+--------------------------------------------------------------------
+1. KARE — "story-intro-grass.webp" / "story-intro-grass.png"
+   (Çimde yatarken, Mira yanına diz çökmüş / kalkarken)
+--------------------------------------------------------------------
+PROMPT (EN):
+"Dark fantasy RPG cinematic key art. First-person-adjacent low angle:
+a nameless wanderer lying on their back in cold dewy grass at early dawn,
+crumpled and half-conscious, weathered travel clothes, faint scratches,
+one hand loosely at their side. Beside them Mira — a gentle young woman
+in her early twenties with warm wavy brown hair loosely tied, fair skin,
+kind worried eyes, rustic medieval villager clothes in earth tones, a
+small leather herb satchel — kneels close and leans over the fallen
+wanderer, one hand reaching toward their shoulder, a warm lantern glow
+on her face. A quiet misty valley with tall grass, wildflowers, a few
+birch trees and soft rolling hills in the background, distant village
+rooftops barely visible through morning haze. Volumetric god rays through
+mist, soft golden rim light, deep green and warm gold palette, painterly
+semi-realistic brushwork, fine grain, shallow depth of field, cinematic
+16:9, characters on the left and center-left, the right side and lower
+third calm for subtitles, no text."
+
+KOMPOZİSYON NOTU: Mira sağda/üstte, yerde yatan oyuncu solda/altta olsun;
+altta ve sağ altta metin için boş nefes alanı bırak.
+
+--------------------------------------------------------------------
+2. KARE — "story-intro-standing.webp" / "story-intro-standing.png"
+   (Kalktıktan sonra Mira'ya bakarken, konuşurken)
+--------------------------------------------------------------------
+PROMPT (EN):
+"Dark fantasy RPG cinematic key art, same characters and same morning as
+the previous frame. The nameless wanderer now stands on unsteady feet in
+the tall grass, seen from behind three-quarter view on the left, looking
+toward Mira. Mira stands a few steps away on the right, facing the
+wanderer, warm wavy brown hair, rustic earth-tone medieval villager
+clothes and leather herb satchel, holding out a small cloth bundle of
+bread and a coin pouch, expression soft and reassuring. Setra village
+behind them: thatched wooden houses, a modest stone well, flower boxes,
+thin chimney smoke, a pale sun rising over forested hills. Dew on grass,
+golden hour backlight, gentle mist, volumetric light, deep forest green
+and warm gold palette, painterly semi-realistic brushwork, fine grain,
+cinematic 16:9, wanderer left, Mira right, center and lower third calm
+and uncluttered for subtitles, no text."
+
+KOMPOZİSYON NOTU: Oyuncu solda (sırt/yan görünüm), Mira sağda; ikisi de
+alt üçte birin üstünde dursun. Arka planda Setra köyü seçilsin.
+
+--------------------------------------------------------------------
+3. (OPSİYONEL) MİRA PORTESİ — "mira.png" (diyalog portresi)
+   GameCraft > Hikâye Metni > "Mira portresi" alanı
+--------------------------------------------------------------------
+PROMPT (EN):
+"Vertical 3:4 character portrait, painterly semi-realistic dark fantasy
+RPG style. Mira: gentle young woman in her early twenties, warm wavy
+brown hair loosely tied, fair skin, kind expressive eyes, subtle smile,
+rustic medieval villager clothing in earth tones, leather herb satchel
+strap, soft warm key light from one side, dark blurred forest background,
+cinematic rim light, fine brush texture, subtle grain, no text, no
+watermark."
+
+NEGATIVE (portre): "text, watermark, logo, frame, border, anime, chibi,
+oversaturated, modern clothing, deformed hands, extra fingers, low
+quality, blurry face"
+
+--------------------------------------------------------------------
+KONTROL LİSTESİ
+--------------------------------------------------------------------
+[ ] İki sahne de 16:9 (ör. 1920x1080 veya 2560x1440).
+[ ] Görsellerde yazı/harf/logo yok.
+[ ] Mira iki karede de aynı kişi gibi görünüyor.
+[ ] Alt ve sağ alt bölge görece sade (yazılar okunabilsin).
+[ ] Dosyaları GameCraft'tan yükledikten sonra "Oyuna Uygula" + "Commit & Push".

@@ -125,6 +125,7 @@ const IMG_FOLDERS = new Set([
   "items",
   "skills",
   "pets",
+  "npcs",
   "ui",
 ]);
 const IMG_EXT_RE = /^\.(png|jpe?g|webp|gif|svg)$/i;
