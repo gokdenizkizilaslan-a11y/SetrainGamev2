@@ -1821,18 +1821,14 @@ function renderActionCards(room, selfId) {
     if (a.id === "rest") a.sub = restLeft > 0 ? `+${restAmt} stamina · ${restLeft}/${restMax} left today` : `No rests left today`;
   });
   el.innerHTML = ACTIONS.map((a) => {
-    // Editördeki kasaba buton görselleri (images.ui.*Button) varsa IKON KUTUSUNDA
-    // gösterilir; yok/bozuksa SVG ikon (eski görünüm, oyun kırılmaz).
-    // Bos string + trim kontrolu: " " gibi degerler img denemez.
-    const uiKey = { blacksmith: "blacksmithButton", tavern: "tavernButton", merchant: "merchantButton", temple: "templeButton", dungeon: "dungeonButton", plaza: "plazaButton", rest: "restButton", sleep: "sleepButton" }[a.id] || "";
+    // Kasaba buton görselleri (images.ui.*Button) KARTIN TAMAMINI kaplar;
+    // yazı görselin üstünde durur. Küçük ikon kutusu artık gösterilmez.
+    // Boş string + trim kontrolü: " " gibi değerler img denemez.
+    const uiKey = { blacksmith: "blacksmithButton", tavern: "tavernButton", merchant: "merchantButton", temple: "templeButton", dungeon: "dungeonButton", plaza: "searchButton", rest: "restButton", sleep: "sleepButton" }[a.id] || "";
     const rawImg = uiKey && CATALOG.images && CATALOG.images.ui ? CATALOG.images.ui[uiKey] : "";
     const uiImg = typeof rawImg === "string" ? rawImg.trim() : "";
-    const iconHtml = uiImg
-      ? `<span class="action-icon action-icon--img" data-img="${escapeHtml(uiImg)}" data-variant="${escapeHtml(a.id)}"></span>`
-      : `<span class="action-icon">${icon(a.icon)}</span>`;
     return `
-    <button type="button" class="action-card${a.id === "dungeon" ? " action-card--hero" : ""}${canAct ? "" : " action-card--locked"}" data-action="${a.id}">
-      ${iconHtml}
+    <button type="button" class="action-card${a.id === "dungeon" ? " action-card--hero" : ""}${canAct ? "" : " action-card--locked"}" data-action="${a.id}"${uiImg ? ` data-card-img="${escapeHtml(uiImg)}"` : ""}>
       <span class="action-body">
         <span class="action-title-text">${escapeHtml(a.title)}</span>
         <span class="action-sub">${escapeHtml(a.sub)}</span>
@@ -1840,6 +1836,7 @@ function renderActionCards(room, selfId) {
       <span class="action-arrow">${icon("chevron")}</span>
     </button>`; }).join("");
   initImages(el);
+  el.querySelectorAll("[data-card-img]").forEach((b) => setCardBg(b, b.getAttribute("data-card-img")));
   el.querySelectorAll("[data-action]").forEach((b) => {
     b.addEventListener("click", () => {
       if (isDead) {
