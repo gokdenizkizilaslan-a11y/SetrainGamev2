@@ -4922,6 +4922,36 @@ input:focus {
   from { transform: scale(1.02); }
   to { transform: scale(1.09); }
 }
+/* Prolog slaytları: görseli hafif yakınlaştırıp yavaşça kaydır (hikâye anlatımı). */
+.story-scene__img.slide-pan-lr {
+  inset: -14%;
+  animation: story-pan-lr 26s ease-in-out both;
+}
+.story-scene__img.slide-pan-rl {
+  inset: -14%;
+  animation: story-pan-rl 26s ease-in-out both;
+}
+.story-scene__img.slide-pan-zoom {
+  inset: -3%;
+  animation: story-zoom-in 22s ease-in-out both;
+}
+.story-scene__img.slide-pan-none {
+  inset: -3%;
+  transform: scale(1.03);
+  animation: none;
+}
+@keyframes story-pan-lr {
+  from { transform: translateX(-8%) scale(1.12); }
+  to { transform: translateX(8%) scale(1.12); }
+}
+@keyframes story-pan-rl {
+  from { transform: translateX(8%) scale(1.12); }
+  to { transform: translateX(-8%) scale(1.12); }
+}
+@keyframes story-zoom-in {
+  from { transform: scale(1.02); }
+  to { transform: scale(1.17); }
+}
 .story-vignette {
   position: absolute;
   inset: 0;
@@ -4981,6 +5011,17 @@ input:focus {
 .story-prologue__para:nth-child(3) { animation-delay: 0.24s; }
 .story-prologue__para:nth-child(4) { animation-delay: 0.36s; }
 .story-prologue--reward .story-prologue__para em { color: var(--ink-soft); }
+/* Sinematik prolog slaytı: metin altta (altyazı gibi), görseli kapatmasın. */
+.story-slide {
+  justify-content: flex-end;
+  gap: 0.7rem;
+  padding-bottom: clamp(6rem, 17vh, 10rem);
+}
+.story-slide .story-prologue__para {
+  max-width: min(72vw, 660px);
+  font-size: clamp(1.05rem, 1.7vw, 1.32rem);
+  line-height: 1.65;
+}
 /* Diyalog: oyuncu solda, NPC (Mira) sağda; kutu yok */
 .story-dlg {
   position: absolute;

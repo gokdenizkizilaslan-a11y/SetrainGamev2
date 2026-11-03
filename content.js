@@ -38,6 +38,23 @@ const CONTENT = {
       "image": "/images/npcs/mira.png",
       "bgGrass": "",
       "bgStanding": "",
+      "slides": [
+        {
+          "text": "The world is Krein. It has turned for five billion years, and for five billion years it has carried the tread of men.",
+          "image": "",
+          "pan": "lr"
+        },
+        {
+          "text": "In the green kingdom of Palendio, among warring crowns and old banners, lies a quiet village named Setra.",
+          "image": "",
+          "pan": "lr"
+        },
+        {
+          "text": "You wake in the grass of a valley you do not know, with a name you chose and a past you cannot recall.",
+          "image": "",
+          "pan": "zoom"
+        }
+      ],
       "lines": [
         {
           "who": "narrator",
@@ -10920,7 +10937,7 @@ const CONTENT = {
     },
     "ui": {
       "panel": "/images/ui/panel.png",
-      "townPanelBg": "/images/ui/townpanelbg.webp?v=mvzwm5t7",
+      "townPanelBg": "/images/ui/townpanelbg.webp?v=mw018w38",
       "merchantBg": "",
       "merchantChests": "",
       "merchantPotions": "",
@@ -10934,7 +10951,7 @@ const CONTENT = {
       "tavernButton": "",
       "merchantButton": "",
       "templeButton": "",
-      "dungeonButton": "",
+      "dungeonButton": "/images/ui/dungeonbutton.webp?v=mw019oxb",
       "searchButton": "",
       "restButton": "",
       "sleepButton": "",

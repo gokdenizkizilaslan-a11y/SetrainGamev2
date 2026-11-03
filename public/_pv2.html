@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8" />
+<link rel="stylesheet" href="/style.css?v=20261103cine3" />
+</head>
+<body>
+<div id="story-overlay" class="hidden"></div>
+<script src="/js/screens.js?v=20261103cine3"></script>
+<script>
+window.state = { room: null, playerId: "p1", talkNpcId: null, talkNodeId: null };
+CATALOG.story = {
+  title: "The Setra Game",
+  paragraphs: ["a","b","c"],
+  cta: "Wake Up",
+  intro: {
+    speaker: "Mira",
+    image: "/images/npcs/mira.png",
+    bgGrass: "/images/backgrounds/lobby.webp",
+    bgStanding: "/images/backgrounds/town.webp",
+    slides: [
+      { text: "The world is Krein. It has turned for five billion years, and for five billion years it has carried the tread of men.", image: "/images/backgrounds/menu.webp", pan: "lr" },
+      { text: "In the green kingdom of Palendio, among warring crowns and old banners, lies a quiet village named Setra.", image: "/images/backgrounds/town.webp", pan: "lr" },
+      { text: "You wake in the grass of a valley you do not know, with a name you chose and a past you cannot recall.", image: "/images/backgrounds/lobby.webp", pan: "zoom" }
+    ],
+    lines: [
+      { who:"narrator", text:"Cold grass. Birdsong. A shadow falls across your face, and a woman kneels beside you.", scene:"grass" },
+      { who:"npc", text:"Easy. You are breathing, that is the important part. What is your name, wanderer?", scene:"grass" },
+      { who:"you", text:"I... cannot remember. Only the road, and then nothing.", scene:"grass" }
+    ],
+    rewardNote: "Mira presses 50 gold and 10 food into your hands."
+  }
+};
+CATALOG.npcs = [];
+showStoryIntro();
+const n = parseInt((location.hash.match(/adv=(\d+)/) || [])[1] || "0", 10);
+let k = 0;
+if (n > 0) setInterval(() => {
+  if (k++ >= n) return;
+  document.getElementById("story-overlay").dispatchEvent(new MouseEvent("click", { bubbles: true }));
+}, 500);
+</script>
+</body></html>

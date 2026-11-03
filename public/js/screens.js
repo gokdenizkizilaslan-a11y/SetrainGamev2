@@ -826,6 +826,10 @@ function showStoryIntro() {
   // İki sinematik sahne görseli (editörden yüklenir). Yoksa CSS zemini görünür.
   const bgGrass = (intro && intro.bgGrass) || "";
   const bgStanding = (intro && intro.bgStanding) || "";
+  // Sinematik prolog slaytları: her paragrafın kendi görseli + kaydırma yönü.
+  const slides = (intro && Array.isArray(intro.slides)) ? intro.slides : [];
+  // Resim yüklenmemişse eski tek-ekran (paragraflar) görünümü korunur.
+  const useSlides = slides.length > 0 && slides.some((s) => s && s.image);
 
   // Önceki oturumdan kalan dinleyicileri temizle (tekrar açılırsa üst üste binmez).
   if (typeof el._storyCleanup === "function") {
@@ -846,28 +850,32 @@ function showStoryIntro() {
   // Sahne değişimi: görsel katmanı değişir, iki katman arasında yumuşak geçiş.
   let activeScene = "";
   const sceneUrl = (name) => (name === "standing" ? (bgStanding || bgGrass) : (bgGrass || bgStanding));
+  const bgUrl = (url) => `url("${String(url).replace(/"/g, "%22")}")`;
+  // Katmana görsel + kaydırma animasyonu uygular. pan: "" | "lr" | "rl" | "zoom".
+  const paintLayer = (layer, url, pan) => {
+    const img = layer && layer.querySelector(".story-scene__img");
+    if (!img) return;
+    img.className = "story-scene__img" + (pan ? " slide-pan-" + pan : "");
+    img.style.backgroundImage = url ? bgUrl(url) : "";
+    // Animasyonu baştan çalıştır (aynı katman yeniden kullanılınca).
+    img.style.animation = "none";
+    void img.offsetWidth;
+    img.style.animation = "";
+  };
+  const crossFade = (on, off) => { on.classList.add("is-active"); off.classList.remove("is-active"); };
   const applyScene = (name) => {
     if (name === activeScene) return;
     activeScene = name;
     const on = name === "standing" ? layerStanding : layerGrass;
     const off = name === "standing" ? layerGrass : layerStanding;
     const url = sceneUrl(name);
-    const reveal = () => {
-      on.classList.add("is-active");
-      off.classList.remove("is-active");
-    };
     const img = on && on.querySelector(".story-scene__img");
-    if (!img) { reveal(); return; }
-    if (url) {
-      img.style.backgroundImage = `url("${String(url).replace(/"/g, "%22")}")`;
-      const probe = new Image();
-      probe.onload = reveal;
-      probe.onerror = reveal;
-      probe.src = url;
-    } else {
-      img.style.backgroundImage = "";
-      reveal();
-    }
+    paintLayer(on, url, "");
+    if (!img || !url) { crossFade(on, off); return; }
+    const probe = new Image();
+    probe.onload = () => crossFade(on, off);
+    probe.onerror = () => crossFade(on, off);
+    probe.src = url;
   };
   // Bir satırın sahnesi: kendi scene'i yoksa önceki sahnede kalır.
   const sceneForLine = (idx) => {
@@ -930,7 +938,47 @@ function showStoryIntro() {
       ${text ? `<p class="story-fig__text">${escapeHtml(text)}</p>` : ""}
     </div>`;
 
+  const afterPrologue = () => {
+    activeScene = ""; // bir sonraki sahnenin zorla kurulmasını sağla
+    if (lines.length) showLine(0);
+    else finish();
+  };
+
+  // Sinematik prolog: her paragraf kendi görseliyle (sol→sağ kaydırma/zoom) geçer.
+  let slideFlip = false;
+  const showSlide = (idx) => {
+    const s = slides[idx] || {};
+    const url = s.image || "";
+    const pan = url ? (s.pan || "lr") : "";
+    slideFlip = !slideFlip;
+    const on = slideFlip ? layerGrass : layerStanding;
+    const off = slideFlip ? layerStanding : layerGrass;
+    if (url) {
+      paintLayer(on, url, pan);
+      on.classList.add("is-active"); // hemen göster: yüklenince görsel belirir, koyu ekran beklemez
+      const probe = new Image();
+      const done = () => { off.classList.remove("is-active"); activeScene = ""; };
+      probe.onload = done;
+      probe.onerror = done;
+      probe.src = url;
+    }
+    const isLast = idx >= slides.length - 1;
+    const label = isLast ? (lines.length ? "Wake Up" : cta) : "Continue";
+    stage(
+      `<div class="story-prologue story-slide">
+        ${idx === 0 ? `<h2 class="story-prologue__title">${escapeHtml(title)}</h2>` : ""}
+        <p class="story-prologue__para">${escapeHtml(s.text || "")}</p>
+      </div>`,
+      label,
+      () => {
+        if (isLast) afterPrologue();
+        else showSlide(idx + 1);
+      }
+    );
+  };
+
   const showParagraphs = () => {
+    if (useSlides) { showSlide(0); return; }
     applyScene("grass");
     stage(
       `<div class="story-prologue">
@@ -938,10 +986,7 @@ function showStoryIntro() {
         ${paragraphs.map((p) => `<p class="story-prologue__para">${escapeHtml(p)}</p>`).join("")}
       </div>`,
       lines.length ? "Wake Up" : cta,
-      () => {
-        if (lines.length) showLine(0);
-        else finish();
-      }
+      afterPrologue
     );
   };
 
