@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Setra Travel</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#120d0a;--panel:#1d1510;--edge:#6b4a24;--gold:#d3a24b;--ink:#eadcc2;--muted:#9d8a6c;--red:#b8392f;--blue:#4a86b8;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#120d0a;--panel:#1d1510;--edge:#6b4a24;--gold:#d3a24b;--ink:#eadcc2;--muted:#9d8a6c}}
+:root[data-theme="dark"]{--bg:#120d0a;--panel:#1d1510;--edge:#6b4a24;--gold:#d3a24b;--ink:#eadcc2;--muted:#9d8a6c}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,'Times New Roman',serif;overflow:hidden}
+#app{height:100%;display:flex;flex-direction:column}
+header{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding:8px 12px;background:var(--panel);border-bottom:1px solid var(--edge)}
+h1{font:700 18px 'Cinzel',Georgia,serif;margin:0;color:var(--gold);letter-spacing:.04em}
+.bar{display:flex;align-items:center;gap:6px;font-size:13px}
+.track{width:90px;height:8px;background:#000;border:1px solid var(--edge);border-radius:4px;overflow:hidden}
+.fill{height:100%;transition:width .25s}
+.sp{flex:1}
+button{font:600 13px 'Cinzel',Georgia,serif;color:var(--ink);background:#2a1d12;border:1px solid var(--edge);border-radius:6px;padding:8px 12px;cursor:pointer}
+button:hover:not(:disabled){background:#3a2819;border-color:var(--gold)}
+button:disabled{opacity:.4;cursor:default}
+button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+#stage{position:relative;flex:1;min-height:0}
+canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#hint{position:absolute;left:12px;bottom:12px;font-size:13px;color:var(--muted);background:#000a;padding:6px 10px;border-radius:6px;pointer-events:none}
+#pad{position:absolute;right:14px;bottom:14px;display:none;grid-template-columns:repeat(3,52px);grid-template-rows:repeat(3,52px);gap:4px}
+#pad button{padding:0;font-size:20px;touch-action:none}
+@media (pointer:coarse){#pad{display:grid}#hint{display:none}}
+#fight{position:absolute;inset:0;background:#000c;display:none;align-items:center;justify-content:center;padding:12px}
+#fight.on{display:flex}
+.card{width:min(520px,100%);background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:18px;box-shadow:0 0 0 3px #0008}
+.card h2{font:700 20px 'Cinzel',Georgia,serif;margin:0 0 4px;color:var(--gold)}
+.foe{font-size:64px;text-align:center;margin:6px 0;transition:transform .12s}
+.foe.hit{transform:translateX(8px);filter:brightness(2) sepia(1) hue-rotate(-30deg)}
+.row{display:flex;justify-content:space-between;font-size:13px;margin:8px 0 3px}
+.track.w{width:100%;height:10px}
+#log{height:92px;overflow:auto;font-size:14px;line-height:1.45;margin:12px 0;padding:8px;background:#0006;border-radius:6px}
+#acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+  <h1>Setra Travel</h1>
+  <div class="bar">HP <div class="track"><div class="fill" id="hpF" style="background:var(--red)"></div></div><span id="hpT"></span></div>
+  <div class="bar">Mana <div class="track"><div class="fill" id="mpF" style="background:var(--blue)"></div></div><span id="mpT"></span></div>
+  <div class="bar">XP <div class="track"><div class="fill" id="xpF" style="background:var(--gold)"></div></div><span id="lvT"></span></div>
+  <div class="bar" id="goldT"></div>
+  <div class="sp"></div>
+  <div class="bar" id="seedT" style="color:var(--muted)"></div>
+  <button id="newMap">New map</button>
+</header>
+<div id="stage">
+  <canvas id="cv"></canvas>
+  <div id="hint">Move with WASD or arrow keys. Touch a creature to fight.</div>
+  <div id="pad">
+    <span></span><button data-k="up" aria-label="Up">▲</button><span></span>
+    <button data-k="left" aria-label="Left">◀</button><span></span><button data-k="right" aria-label="Right">▶</button>
+    <span></span><button data-k="down" aria-label="Down">▼</button><span></span>
+  </div>
+  <div id="fight"><div class="card">
+    <h2 id="fName"></h2>
+    <div class="foe" id="fIcon"></div>
+    <div class="row"><span>Enemy</span><span id="fHpT"></span></div>
+    <div class="track w"><div class="fill" id="fHpF" style="background:var(--red)"></div></div>
+    <div class="row"><span>You</span><span id="pHpT"></span></div>
+    <div class="track w"><div class="fill" id="pHpF" style="background:var(--red)"></div></div>
+    <div id="log" aria-live="polite"></div>
+    <div id="acts">
+      <button id="aAtk">Attack</button>
+      <button id="aSkill">Arrow Rain (12 mana)</button>
+      <button id="aHeal">Potion (<span id="potN"></span>)</button>
+      <button id="aFlee">Flee</button>
+    </div>
+  </div></div>
+</div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const cv=$('cv'),ctx=cv.getContext('2d');
+const TW=64,TH=32,N=44;
+function rng(s){return function(){s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+
+const MON={
+  wolf:{name:'Gray Wolf',icon:'🐺',hp:40,atk:[6,11],xp:15,gold:5,col:'#8a8a90'},
+  goblin:{name:'Goblin Raider',icon:'👺',hp:55,atk:[8,13],xp:22,gold:9,col:'#5f8f3a'},
+  skeleton:{name:'Restless Bones',icon:'💀',hp:70,atk:[10,16],xp:30,gold:14,col:'#d8d2bd'}
+};
+const P={x:0,y:0,lvl:1,xp:0,hp:120,mp:30,gold:50,pot:3,moving:0};
+const maxHp=()=>100+P.lvl*20, maxMp=()=>30+P.lvl*5;
+let seed,R,grid,deco,mons,start,combat=null,keys={};
+
+function gen(sd){
+  seed=sd;R=rng(sd);
+  let g=Array.from({length:N},(_,y)=>Array.from({length:N},(_,x)=>(x==0||y==0||x==N-1||y==N-1||R()<.4)?1:0));
+  for(let i=0;i<4;i++)g=g.map((row,y)=>row.map((_,x)=>{let n=0;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++)if(dx||dy)n+=(g[y+dy]?.[x+dx]??1);return n>=5?1:0}));
+  const seen=Array.from({length:N},()=>Array(N).fill(false));let best=[];
+  for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(!g[y][x]&&!seen[y][x]){
+    const reg=[],st=[[x,y]];seen[y][x]=true;
+    while(st.length){const[cx,cy]=st.pop();reg.push([cx,cy]);
+      for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const nx=cx+dx,ny=cy+dy;if(g[ny]?.[nx]===0&&!seen[ny][nx]){seen[ny][nx]=true;st.push([nx,ny])}}}
+    if(reg.length>best.length)best=reg}
+  const open=new Set(best.map(([x,y])=>x+','+y));
+  for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(!g[y][x]&&!open.has(x+','+y))g[y][x]=1;
+  grid=g;
+  deco=grid.map(row=>row.map(()=>({k:R()<.72?0:1,v:R()})));
+  const cells=best.slice().sort(()=>R()-.5);
+  start=cells[0];P.x=start[0]+.5;P.y=start[1]+.5;
+  mons=[];const types=Object.keys(MON);
+  const far=cells.filter(([x,y])=>Math.hypot(x-start[0],y-start[1])>8);
+  for(let i=0;i<5&&far.length;i++){
+    const[cx,cy]=far[Math.floor(R()*far.length)],t=types[Math.floor(R()*3)];
+    const n=1+Math.floor(R()*3);
+    for(let j=0;j<n;j++){
+      const x=cx+(j?(R()<.5?-1:1):0),y=cy+(j>1?1:0);
+      if(grid[y]?.[x]===0&&!mons.some(m=>Math.floor(m.x)==x&&Math.floor(m.y)==y))
+        mons.push({t,x:x+.5,y:y+.5,hp:MON[t].hp,tx:x+.5,ty:y+.5,cool:0,ph:R()*6})}
+  }
+  $('seedT').textContent='Seed '+seed;
+}
+const free=(x,y)=>grid[Math.floor(y)]?.[Math.floor(x)]===0;
+function canStand(x,y,r=.22){return free(x-r,y-r)&&free(x+r,y-r)&&free(x-r,y+r)&&free(x+r,y+r)}
+
+// input
+const KM={ArrowUp:'up',w:'up',W:'up',ArrowDown:'down',s:'down',S:'down',ArrowLeft:'left',a:'left',A:'left',ArrowRight:'right',d:'right',D:'right'};
+addEventListener('keydown',e=>{if(KM[e.key]){keys[KM[e.key]]=true;e.preventDefault()}});
+addEventListener('keyup',e=>{if(KM[e.key])keys[KM[e.key]]=false});
+document.querySelectorAll('#pad button').forEach(b=>{
+  const k=b.dataset.k;
+  b.addEventListener('pointerdown',e=>{keys[k]=true;e.preventDefault()});
+  ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,()=>keys[k]=false));
+});
+
+// screen helpers: screen up = (-1,-1) in grid space
+let W=0,H=0,cx=0,cy=0;
+const sx=(x,y)=>W/2+(x-y)*TW/2-cx;
+const sy=(x,y)=>H/2+(x+y)*TH/2-cy;
+function resize(){const d=devicePixelRatio||1;W=cv.clientWidth;H=cv.clientHeight;cv.width=W*d;cv.height=H*d;ctx.setTransform(d,0,0,d,0,0)}
+addEventListener('resize',resize);
+
+function update(dt){
+  if(combat)return;
+  let ix=(keys.right?1:0)-(keys.left?1:0),iy=(keys.down?1:0)-(keys.up?1:0);
+  P.moving=ix||iy;
+  if(P.moving){
+    let vx=ix+iy,vy=iy-ix;const l=Math.hypot(vx,vy);vx/=l;vy/=l;
+    const sp=3.2*dt;
+    if(canStand(P.x+vx*sp,P.y))P.x+=vx*sp;
+    if(canStand(P.x,P.y+vy*sp))P.y+=vy*sp;
+  }
+  for(const m of mons){
+    m.cool=Math.max(0,m.cool-dt);
+    if(Math.hypot(m.tx-m.x,m.ty-m.y)<.1&&R()<dt*.5){
+      const nx=m.x+(R()-.5)*4,ny=m.y+(R()-.5)*4;if(free(nx,ny)){m.tx=nx;m.ty=ny}}
+    const dx=m.tx-m.x,dy=m.ty-m.y,d=Math.hypot(dx,dy);
+    if(d>.05){const s=.7*dt,nx=m.x+dx/d*s,ny=m.y+dy/d*s;if(free(nx,ny)){m.x=nx;m.y=ny}else{m.tx=m.x;m.ty=m.y}}
+    if(!m.cool&&Math.hypot(P.x-m.x,P.y-m.y)<.7){startFight(m);break}
+  }
+  const tx=(P.x-P.y)*TW/2,ty=(P.x+P.y)*TH/2;
+  cx+=(tx-cx)*Math.min(1,dt*6);cy+=(ty-cy)*Math.min(1,dt*6);
+}
+
+function diamond(i,j,col){
+  ctx.beginPath();ctx.moveTo(sx(i,j),sy(i,j));ctx.lineTo(sx(i+1,j),sy(i+1,j));
+  ctx.lineTo(sx(i+1,j+1),sy(i+1,j+1));ctx.lineTo(sx(i,j+1),sy(i,j+1));ctx.closePath();
+  ctx.fillStyle=col;ctx.fill();
+}
+function tree(x,y,v){
+  const px=sx(x,y),py=sy(x,y),h=34+v*22;
+  ctx.fillStyle='#0004';ctx.beginPath();ctx.ellipse(px,py,20,9,0,0,7);ctx.fill();
+  ctx.fillStyle='#4a3220';ctx.fillRect(px-3,py-12,6,12);
+  for(let k=0;k<3;k++){
+    const by=py-10-k*h*.28,w=22-k*5;
+    ctx.fillStyle=`hsl(${105+k*6} 38% ${17+k*5}%)`;
+    ctx.beginPath();ctx.moveTo(px,by-h*.4);ctx.lineTo(px+w,by+4);ctx.lineTo(px-w,by+4);ctx.closePath();ctx.fill();
+  }
+}
+function rock(x,y,v){
+  const px=sx(x,y),py=sy(x,y),s=14+v*10;
+  ctx.fillStyle='#0004';ctx.beginPath();ctx.ellipse(px,py,s*1.1,s*.5,0,0,7);ctx.fill();
+  ctx.fillStyle='#5b5750';ctx.beginPath();ctx.moveTo(px-s,py);ctx.lineTo(px-s*.6,py-s*.9);ctx.lineTo(px+s*.3,py-s*1.1);ctx.lineTo(px+s,py-s*.2);ctx.lineTo(px+s*.7,py+2);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#7a766c';ctx.beginPath();ctx.moveTo(px-s*.6,py-s*.9);ctx.lineTo(px+s*.3,py-s*1.1);ctx.lineTo(px,py-s*.4);ctx.closePath();ctx.fill();
+}
+function body(px,py,col,r,t){
+  ctx.fillStyle='#0005';ctx.beginPath();ctx.ellipse(px,py,r*1.2,r*.55,0,0,7);ctx.fill();
+  ctx.fillStyle=col;ctx.beginPath();ctx.ellipse(px,py-r-t,r,r*1.15,0,0,7);ctx.fill();
+}
+function drawPlayer(tm){
+  const px=sx(P.x,P.y),py=sy(P.x,P.y),b=P.moving?Math.abs(Math.sin(tm*10))*4:0;
+  body(px,py,'#2f6b5e',11,b);
+  ctx.fillStyle='#e0b98a';ctx.beginPath();ctx.arc(px,py-31-b,6,0,7);ctx.fill();
+  ctx.fillStyle='#1f4a40';ctx.beginPath();ctx.arc(px,py-33-b,7,Math.PI,0);ctx.fill();
+  ctx.strokeStyle='#d3a24b';ctx.lineWidth=2;ctx.beginPath();ctx.arc(px+12,py-20-b,10,-1.2,1.2);ctx.stroke();
+}
+function drawMon(m,tm){
+  const d=MON[m.t],px=sx(m.x,m.y),py=sy(m.x,m.y),b=Math.abs(Math.sin(tm*3+m.ph))*3;
+  body(px,py,d.col,10,b);
+  ctx.fillStyle='#d33';ctx.fillRect(px-5,py-24-b,3,3);ctx.fillRect(px+2,py-24-b,3,3);
+  if(m.t=='wolf'){ctx.fillStyle=d.col;ctx.beginPath();ctx.moveTo(px-8,py-30-b);ctx.lineTo(px-4,py-38-b);ctx.lineTo(px-1,py-30-b);ctx.fill();ctx.beginPath();ctx.moveTo(px+8,py-30-b);ctx.lineTo(px+4,py-38-b);ctx.lineTo(px+1,py-30-b);ctx.fill()}
+  if(Math.hypot(P.x-m.x,P.y-m.y)<4){ctx.fillStyle='#eadcc2';ctx.font='11px Georgia';ctx.textAlign='center';ctx.fillText(d.name,px,py-44-b)}
+}
+function draw(tm){
+  ctx.fillStyle='#120d0a';ctx.fillRect(0,0,W,H);
+  const list=[];
+  for(let j=0;j<N;j++)for(let i=0;i<N;i++){
+    const x=sx(i+.5,j+.5),y=sy(i+.5,j+.5);
+    if(x<-80||x>W+80||y<-90||y>H+90)continue;
+    const c=deco[j][i],sh=Math.floor(c.v*10);
+    diamond(i,j,grid[j][i]?`hsl(110 28% ${14+sh*.6}%)`:`hsl(${88+sh} 26% ${24+sh}%)`);
+    if(grid[j][i]&&i>0&&j>0&&i<N-1&&j<N-1)list.push({d:i+j+1,f:()=>c.k?rock(i+.5,j+.5,c.v):tree(i+.5,j+.5,c.v)});
+  }
+  list.push({d:P.x+P.y,f:()=>drawPlayer(tm)});
+  for(const m of mons)list.push({d:m.x+m.y,f:()=>drawMon(m,tm)});
+  list.sort((a,b)=>a.d-b.d).forEach(o=>o.f());
+  const g=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*.3,W/2,H/2,Math.max(W,H)*.75);
+  g.addColorStop(0,'#0000');g.addColorStop(1,'#000d');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+}
+
+// HUD
+function hud(){
+  const hp=maxHp(),mp=maxMp(),need=50*P.lvl;
+  $('hpF').style.width=P.hp/hp*100+'%';$('hpT').textContent=Math.ceil(P.hp)+'/'+hp;
+  $('mpF').style.width=P.mp/mp*100+'%';$('mpT').textContent=P.mp+'/'+mp;
+  $('xpF').style.width=P.xp/need*100+'%';$('lvT').textContent='Lv '+P.lvl;
+  $('goldT').textContent='Gold '+P.gold;$('potN').textContent=P.pot;
+}
+
+// combat (turn based)
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+function say(t){const l=$('log');l.innerHTML+=t+'<br>';l.scrollTop=l.scrollHeight}
+function startFight(m){
+  combat={m,busy:false};const d=MON[m.t];
+  $('fName').textContent=d.name;$('fIcon').textContent=d.icon;$('log').innerHTML='';
+  say('A '+d.name.toLowerCase()+' blocks your path.');
+  fightUI();$('fight').classList.add('on');
+}
+function fightUI(){
+  const m=combat.m,d=MON[m.t];
+  $('fHpF').style.width=Math.max(0,m.hp/d.hp*100)+'%';$('fHpT').textContent=Math.max(0,m.hp)+'/'+d.hp;
+  $('pHpF').style.width=Math.max(0,P.hp/maxHp()*100)+'%';$('pHpT').textContent=Math.max(0,Math.ceil(P.hp))+'/'+maxHp();
+  $('aSkill').disabled=combat.busy||P.mp<12;$('aHeal').disabled=combat.busy||P.pot<1;
+  $('aAtk').disabled=$('aFlee').disabled=combat.busy;hud();
+}
+function hitFoe(){const f=$('fIcon');f.classList.add('hit');setTimeout(()=>f.classList.remove('hit'),140)}
+function act(kind){
+  if(!combat||combat.busy)return;
+  const m=combat.m;combat.busy=true;
+  if(kind=='atk'||kind=='skill'){
+    let dmg=kind=='atk'?ri(10,18)+P.lvl*2:ri(22,32)+P.lvl*3,crit=Math.random()<.15;
+    if(kind=='skill')P.mp-=12;if(crit)dmg*=2;
+    m.hp-=dmg;hitFoe();
+    say((kind=='atk'?'You shoot':'Arrows rain down')+' for '+dmg+(crit?' (critical!)':'')+'.');
+  }else if(kind=='heal'){
+    const h=45;P.pot--;P.hp=Math.min(maxHp(),P.hp+h);say('You drink a potion and recover '+h+' HP.');
+  }else if(kind=='flee'){
+    if(Math.random()<.55){say('You slip away.');m.cool=4;setTimeout(endFight,500);fightUI();return}
+    say('You fail to escape.');
+  }
+  fightUI();
+  if(m.hp<=0){setTimeout(win,500);return}
+  setTimeout(()=>{
+    const d=MON[m.t],dmg=ri(d.atk[0],d.atk[1]);P.hp-=dmg;say(d.name+' strikes you for '+dmg+'.');
+    if(P.hp<=0){setTimeout(lose,500);fightUI();return}
+    combat.busy=false;fightUI();
+  },600);
+}
+function win(){
+  const m=combat.m,d=MON[m.t];say('The '+d.name.toLowerCase()+' falls. +'+d.xp+' XP, +'+d.gold+' gold.');
+  P.xp+=d.xp;P.gold+=d.gold;P.mp=Math.min(maxMp(),P.mp+4);
+  while(P.xp>=50*P.lvl){P.xp-=50*P.lvl;P.lvl++;P.hp=maxHp();P.mp=maxMp();say('Level up! You are now level '+P.lvl+'.')}
+  mons=mons.filter(x=>x!==m);hud();setTimeout(endFight,1100);
+}
+function lose(){
+  say('You collapse. You wake at the edge of the path.');
+  P.hp=Math.ceil(maxHp()/2);P.x=start[0]+.5;P.y=start[1]+.5;combat.m.hp=MON[combat.m.t].hp;combat.m.cool=5;
+  setTimeout(endFight,1400);
+}
+function endFight(){combat=null;$('fight').classList.remove('on');hud()}
+$('aAtk').onclick=()=>act('atk');$('aSkill').onclick=()=>act('skill');
+$('aHeal').onclick=()=>act('heal');$('aFlee').onclick=()=>act('flee');
+$('newMap').onclick=()=>{gen(Math.floor(Math.random()*99999));cx=(P.x-P.y)*TW/2;cy=(P.x+P.y)*TH/2;P.hp=maxHp()};
+
+let last=0;
+function loop(t){
+  const dt=Math.min(.05,(t-last)/1000);last=t;
+  update(dt);draw(t/1000);requestAnimationFrame(loop);
+}
+resize();gen(Math.floor(Math.random()*99999));
+cx=(P.x-P.y)*TW/2;cy=(P.x+P.y)*TH/2;P.hp=maxHp();hud();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

@@ -1,0 +1,313 @@
+{
+  "599": {
+    "inputs": {
+      "add_noise": "enable",
+      "noise_seed": [
+        "851",
+        0
+      ],
+      "steps": 8,
+      "cfg": 1,
+      "sampler_name": "euler_ancestral",
+      "scheduler": "beta",
+      "start_at_step": 0,
+      "end_at_step": 8,
+      "return_with_leftover_noise": "enable",
+      "model": [
+        "869",
+        0
+      ],
+      "positive": [
+        "627",
+        0
+      ],
+      "negative": [
+        "763",
+        0
+      ],
+      "latent_image": [
+        "698",
+        0
+      ]
+    },
+    "class_type": "KSamplerAdvanced",
+    "_meta": {
+      "title": "KSampler (Advanced)"
+    }
+  },
+  "627": {
+    "inputs": {
+      "text": "cinematic key art, realistic fantasy book like style, bright and\nuplifting mood. Extreme low angle shot from ground level, camera\npointing steeply upward at a single character: Mira, a gentle 20 years\nold young woman with warm messy short brown hair with bangs, big\nbreasts, white fair skin, kind worried eyes, rustic medieval villager\nclothes in earth tones. She is standing on her feet with both legs\nstraight, bent forward at the waist like someone leaning over to look\nat something small on the ground, both hands resting on her knees, arms\nstraight. Her face is pointed at the camera and her gaze is fixed on the\ncamera lens: wide open eyes, eyelids fully open, upper eyelids raised,\nwhites of the eyes visible, irises clearly visible and centered, both\npupils aligned and looking straight into the lens, symmetrical eyes,\nintense direct eye contact with the viewer, curious and slightly\nworried expression, eyebrows slightly raised. Loose strands of her hair\nhang forward without covering her eyes. She is just on top of the\ncamera looking down at the camera. Framing from the thighs up,\nforeshortened from below, very low angle, her face and chin closest to\nthe lens, her face filling about a quarter of the frame, her hands on\nher knees visible at the lower left of the frame. A small leather herb\nsatchel strap crosses her chest. Warm sunlight falling on her face. Her\nfigure is placed center-left.\n\nOnly one person in the entire image. The camera sits low in a lush\nsunlit meadow at midday, so vibrant green grass blades and small\nwildflowers (white daisies, yellow buttercups, a few blue flowers) rise\nat the bottom and edges of the frame, backlit by the sun, glowing\ntranslucent green, slightly out of focus. Behind and above her: a clear\nbright blue sky with soft white clouds, tall reeds swaying at the edges,\na few birch trees and gentle green hills softly blurred in the distance.\n\nWarm golden sunlight with soft lens flare, light rim glow on her hair,\nfresh emerald green and sky blue palette with warm gold highlights,\npainterly semi-realistic brushwork, fine grain, shallow depth of field\nwith Mira's eyes in sharp focus and the background softly blurred,\ncinematic 16:9, Mira on the left and center-left, the right side and\nlower third calm and empty for subtitles, no text.",
+      "clip": [
+        "755",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "698": {
+    "inputs": {
+      "width": [
+        "857",
+        0
+      ],
+      "height": [
+        "857",
+        1
+      ],
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "Empty Latent Image (Base Dimensions) 初始大小"
+    }
+  },
+  "755": {
+    "inputs": {
+      "clip_name": "qwen3vl_4b_fp8_scaled.safetensors",
+      "type": "krea2",
+      "device": "default"
+    },
+    "class_type": "CLIPLoader",
+    "_meta": {
+      "title": "Load CLIP"
+    }
+  },
+  "757": {
+    "inputs": {
+      "vae_name": "qwen_image_vae.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "Load VAE"
+    }
+  },
+  "761": {
+    "inputs": {
+      "unet_name": "krea2TurboFP8_krea2TURBO.safetensors",
+      "weight_dtype": "default"
+    },
+    "class_type": "UNETLoader",
+    "_meta": {
+      "title": "Load Diffusion Model"
+    }
+  },
+  "763": {
+    "inputs": {
+      "conditioning": [
+        "627",
+        0
+      ]
+    },
+    "class_type": "ConditioningZeroOut",
+    "_meta": {
+      "title": "Conditioning Zero Out"
+    }
+  },
+  "828": {
+    "inputs": {
+      "images": [
+        "829",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview Image"
+    }
+  },
+  "829": {
+    "inputs": {
+      "samples": [
+        "599",
+        0
+      ],
+      "vae": [
+        "757",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "851": {
+    "inputs": {
+      "seed": 677691643859558
+    },
+    "class_type": "SeedNode",
+    "_meta": {
+      "title": "Seed"
+    }
+  },
+  "854": {
+    "inputs": {
+      "lora_name": "MAXGUZELKREA2.safetensors",
+      "strength_model": 0,
+      "model": [
+        "761",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "Load LoRA"
+    }
+  },
+  "857": {
+    "inputs": {
+      "aspect_ratio": "16:9 (Widescreen)",
+      "megapixels": 1,
+      "multiple": 32
+    },
+    "class_type": "ResolutionSelector",
+    "_meta": {
+      "title": "Resolution Selector"
+    }
+  },
+  "859": {
+    "inputs": {
+      "lora_name": "gregMedievalkrea2.safetensors",
+      "strength_model": 0.85,
+      "model": [
+        "854",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "Load LoRA"
+    }
+  },
+  "860": {
+    "inputs": {
+      "lora_name": "GotikKrea2.safetensors",
+      "strength_model": 0,
+      "model": [
+        "859",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "Load LoRA"
+    }
+  },
+  "861": {
+    "inputs": {
+      "lora_name": "Krea2_Kulenovicstyle_v1.0edene.safetensors",
+      "strength_model": 0.75,
+      "model": [
+        "860",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "Load LoRA"
+    }
+  },
+  "862": {
+    "inputs": {
+      "lora_name": "LuisKrea2goth.safetensors",
+      "strength_model": 0,
+      "model": [
+        "861",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "Load LoRA"
+    }
+  },
+  "863": {
+    "inputs": {
+      "lora_name": "Krea2AM0khovStyle.safetensors",
+      "strength_model": 0,
+      "model": [
+        "862",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "Load LoRA"
+    }
+  },
+  "864": {
+    "inputs": {
+      "lora_name": "Kutsalkrea2holymucha.safetensors",
+      "strength_model": 0.63,
+      "model": [
+        "863",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "Load LoRA"
+    }
+  },
+  "865": {
+    "inputs": {
+      "lora_name": "pussykrea2.safetensors",
+      "strength_model": 0,
+      "model": [
+        "864",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "Load LoRA"
+    }
+  },
+  "867": {
+    "inputs": {
+      "filename_prefix": "image",
+      "output_folder": "C:\\Users\\bahad\\Desktop\\uisetrain",
+      "caption_file_extension": ".txt",
+      "images": [
+        "828",
+        0
+      ]
+    },
+    "class_type": "SaveImageKJ",
+    "_meta": {
+      "title": "Save Image KJ"
+    }
+  },
+  "868": {
+    "inputs": {
+      "lora_name": "Krea2_TextFusion_Refusal_Reduction.safetensors",
+      "strength_model": 1,
+      "model": [
+        "865",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "Load LoRA"
+    }
+  },
+  "869": {
+    "inputs": {
+      "lora_name": "Detailer-KREA2.safetensors",
+      "strength_model": 1,
+      "model": [
+        "868",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "Load LoRA"
+    }
+  }
+}

@@ -10997,7 +10997,7 @@ const CONTENT = {
       "tavernButton": "",
       "merchantButton": "",
       "templeButton": "",
-      "dungeonButton": "/images/ui/dungeonbutton.webp?v=mw019oxb",
+      "dungeonButton": "/images/ui/dungeonbutton.webp?v=mw2ad97j",
       "searchButton": "",
       "restButton": "",
       "sleepButton": "",
