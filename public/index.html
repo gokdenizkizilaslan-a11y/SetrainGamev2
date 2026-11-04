@@ -3,7 +3,44 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="setra-build" content="20261104ui15" />
     <title>The Setra Game</title>
+    <script>
+      // Gorunur hata paneli: bir JS hatasi oyunu bos ekrana dusururse sebebini yazar.
+      (function () {
+        function show(msg) {
+          try {
+            var box = document.getElementById("js-error-banner");
+            if (!box) {
+              box = document.createElement("div");
+              box.id = "js-error-banner";
+              box.style.cssText =
+                "position:fixed;left:10px;right:10px;bottom:10px;z-index:2147483647;background:#3a1414;color:#ffd7d7;border:1px solid #a33;border-radius:10px;padding:10px 14px;font:12px/1.45 monospace;white-space:pre-wrap;max-height:45vh;overflow:auto;box-shadow:0 8px 30px rgba(0,0,0,.6)";
+              (document.documentElement || document.body).appendChild(box);
+            }
+            box.textContent =
+              "Oyun hatasi: " + msg + "\n\nSayfayi Ctrl+F5 ile yenileyin. Surum: " +
+              (document.querySelector('meta[name="setra-build"]') || {}).content;
+          } catch (e) {}
+        }
+        window.__setraShowError = show;
+        window.addEventListener(
+          "error",
+          function (e) {
+            if (!(e instanceof ErrorEvent)) return; // 404 gorsel/ses hatalarini yok say
+            show(
+              (e.message || "bilinmeyen") +
+                (e.filename ? "  (" + e.filename.split("/").pop() + ":" + e.lineno + ")" : "")
+            );
+          },
+          true
+        );
+        window.addEventListener("unhandledrejection", function (e) {
+          var r = e && e.reason;
+          show((r && (r.stack || r.message)) || String(r));
+        });
+      })();
+    </script>
     <link
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23543b21'/%3E%3Ctext x='16' y='23' font-size='20' text-anchor='middle' fill='%23e8c15a' font-family='serif' font-weight='bold'%3ES%3C/text%3E%3C/svg%3E"
@@ -14,7 +51,7 @@
       href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/style.css?v=20261103ui7" />
+    <link rel="stylesheet" href="/style.css?v=20261104ui15" />
   </head>
   <body>
 <!-- ============================================================
@@ -324,6 +361,14 @@
           </div>
           <div id="pets-content"></div>
         </div>
+
+        <div id="travel-view" class="overlay-view hidden">
+          <div class="overlay-head">
+            <p class="eyebrow">Travel</p>
+            <button type="button" class="btn btn--ghost" id="btn-travel-close">Back to Town</button>
+          </div>
+          <div id="travel-content"></div>
+        </div>
       </div>
       <div id="map-overlay" class="overlay-dark hidden" style="z-index:90">
         <div class="map-modal">
@@ -438,9 +483,10 @@
     <script src="/effects.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/egg_animation.js"></script>
-    <script src="/js/screens.js?v=20261103ui7"></script>
+    <script src="/js/screens.js?v=20261104ui15"></script>
     <script src="/js/bgfx.js?v=20260912k"></script>
-    <script src="/js/client.js?v=20261103ui7"></script>
+    <script src="/js/client.js?v=20261104ui15"></script>
+    <script src="/js/travel.js?v=20261104ui15"></script>
 
 <!-- ============================================================
   THE SETRA GAME - DUNGEON CHEST & 3D LOOT OPENING MODULE

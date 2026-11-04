@@ -536,6 +536,7 @@ const pages = [
       { path: "images.ui.searchButton", label: "Town Center button background - fills the card (blank = plain)", type: "image", folder: "ui" },
       { path: "images.ui.restButton", label: "Rest button background - fills the card (blank = plain)", type: "image", folder: "ui" },
       { path: "images.ui.sleepButton", label: "Sleep button background - fills the card (blank = plain)", type: "image", folder: "ui" },
+      { path: "images.ui.travelButton", label: "Travel button background - fills the card (blank = plain)", type: "image", folder: "ui" },
       { path: "images.ui.restNight", label: "Rest / sleep transition image (blank = CSS night sky)", type: "image", folder: "ui" },
       { path: "images.ui.actionCardOpacity", label: "Action card opacity 0..1 (blank = default)", type: "string" },
       { path: "images.ui.bgPhotoOpacity", label: "Background photo opacity 0..1 (blank = default)", type: "string" },

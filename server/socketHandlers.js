@@ -17,6 +17,7 @@ const quests = require("./quests");
 const sessions = require("./sessions");
 const pvp = require("./pvp");
 const pets = require("./pets");
+const travel = require("./travel");
 const { onNewDay, equipItem, unequipSlot, setSkillLoadout, learnTreeNode } = require("./players");
 const { publicCatalog, getClass } = require("../content");
 
@@ -833,6 +834,89 @@ function registerSocketHandlers(io) {
       } catch (err) {
         emitError(socket, err);
       }
+    });
+
+    // ---- Travel (shared world map) ----
+    socket.on("travel:enter", (payload = {}) => {
+      try {
+        const { room, player } = gameContext(socket);
+        requireAlive(player);
+        town.requirePlaying(room, player);
+        const d = dungeon.dungeonFor(room, player);
+        if (d && dungeon.delveUnderway(d)) throw new Error("Finish or leave the delve first.");
+        if (player.bossId || player.pvpId) throw new Error("Finish your current battle first.");
+        travel.enterTravel(room, player, payload.type, payload.size);
+        socket.emit("travel:map", travel.publicMap(room));
+        room.log = { type: "travel", text: `${player.name} sets out into the wilds.`, ts: Date.now() };
+        emitRoomState(io, room);
+      } catch (err) { emitError(socket, err); }
+    });
+
+    socket.on("travel:sync", () => {
+      try {
+        const { room, player } = gameContext(socket);
+        const t = travel.activeTravel(room);
+        if (t && t.members.includes(player.id)) socket.emit("travel:map", travel.publicMap(room));
+      } catch (err) { /* ignore */ }
+    });
+
+    socket.on("travel:leave", () => {
+      try {
+        const { room, player } = gameContext(socket);
+        travel.leaveTravel(room, player);
+        emitRoomState(io, room);
+      } catch (err) { emitError(socket, err); }
+    });
+
+    socket.on("travel:pos", (payload = {}) => {
+      try {
+        const { room, player } = gameContext(socket);
+        const t = travel.activeTravel(room);
+        if (!t || !t.members.includes(player.id)) return;
+        const x = Number(payload.x), y = Number(payload.y);
+        if (!Number.isFinite(x) || !Number.isFinite(y)) return;
+        t.pos[player.id] = { x: Math.max(0, Math.min(t.w, x)), y: Math.max(0, Math.min(t.h, y)) };
+        io.to(room.id).emit("travel:pos", { id: player.id, x: t.pos[player.id].x, y: t.pos[player.id].y });
+        const revealed = travel.revealAround(t, t.pos[player.id].x, t.pos[player.id].y, 6);
+        if (revealed && revealed.length) io.to(room.id).emit("travel:explored", { add: revealed });
+        if (travel.tryAutoJoin(room, player)) emitRoomState(io, room);
+      } catch (err) { /* movement is best-effort */ }
+    });
+
+    socket.on("travel:interact", (payload = {}) => {
+      try {
+        const { room, player } = gameContext(socket);
+        requireAlive(player);
+        const res = travel.interact(room, player, payload.poiId);
+        if (res.loot) socket.emit("travel:reward", { kind: "chest", loot: res.loot, poiId: res.poi.id });
+        else if (res.gold) socket.emit("travel:reward", { kind: "gold", gold: res.gold, poiId: res.poi.id });
+        else if (res.reveal) io.to(room.id).emit("travel:reveal", {});
+        room.log = { type: "travel", text: res.text, ts: Date.now() };
+        emitRoomState(io, room);
+      } catch (err) { emitError(socket, err); }
+    });
+
+    socket.on("travel:accept", () => {
+      try {
+        const { room, player } = gameContext(socket);
+        requireAlive(player);
+        const res = travel.acceptInvite(room, player);
+        socket.emit("travel:teleport", { x: res.pos.x, y: res.pos.y, poiId: res.poi.id });
+        room.log = { type: "travel", text: res.text, ts: Date.now() };
+        emitRoomState(io, room);
+      } catch (err) { emitError(socket, err); }
+    });
+
+    socket.on("travel:start", (payload = {}) => {
+      try {
+        const { room, player } = gameContext(socket);
+        requireAlive(player);
+        town.requirePlaying(room, player);
+        room.broadcast = () => { emitCombatFx(io, room); emitRoomState(io, room); };
+        travel.startEncounter(room, player, payload.poiId);
+        room.log = { type: "dungeon", text: `${player.name} leads the party into battle!` };
+        emitRoomState(io, room);
+      } catch (err) { emitError(socket, err); }
     });
 
     // ---- Boss ----

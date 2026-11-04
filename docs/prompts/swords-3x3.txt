@@ -1,0 +1,168 @@
+================================================================
+SETRA - SWORD ICON GRIDS (KREA2)  -  45 SWORDS / 5 GRIDS
+================================================================
+NASIL KULLANILIR:
+- Her GRID tek bir gorsel uretir (SQUARE 1:1) ve TAM 3x3'dur.
+- Uretince gorseli 3x3 esit parca olarak kes; hucreleri soldan saga,
+  yukaridan asagiya (cell1..cell9) ilgili id ile kaydet:
+  public/images/items/<id>.webp
+- Sonra content.js -> items icindeki id ile eslesir (id'ler asagida hazir).
+
+KREA2 KURALLARI (grid bozulmasin diye):
+- SQUARE 1:1. TEK bir grid, TAM 3 satir x 3 sutun, hucreler esit boyut.
+- Her hucrede SADECE 1 nesne; nesne hucre icine tam sigar, kenardan tasmaz.
+- Nesne hucrenin ~%75'ini kaplar, ortada durur, kucuk bosluk kalir.
+- Hucreler arasinda ince koyu cizgi/bosluk var; hucreler birlesmez.
+- Arka plan sade ve koyu (her hucrede ayni ton), dis cerceve YOK.
+- Yazi/rakam/harf/etiket/watermark ASLA yok.
+- Sira: cell1 sol-ust ... cell9 sag-alt.
+- Grid'i bozarsa 2x2 yedek grid uret (notlar dosya sonunda).
+
+GLOBAL STYLE (her promptun başına ekle):
+"single centered object per cell, dark medieval fantasy oil-painting
+game icon, warm torchlit palette of muted gold-grey stone, parchment
+browns, deep shadow blacks and ember-orange accents, visible brushwork,
+cinematic volumetric rim light, strong readable silhouette, high
+detail, fully inside its cell with a small margin, isolated on a plain
+dark neutral background, no text, no letters, no numbers"
+
+NEGATIVE (her prompta ekle):
+"text, letters, numbers, typography, watermark, signature, logo, UI
+labels, multiple objects in one cell, cropped subject, cut off edges,
+spilling out of cell, merged cells, blurred cell borders, blurry, low
+resolution, flat vector, clean 3D render, plastic, cartoon,
+oversaturated, busy background, frame, border, grid lines too thick"
+
+================================================================
+GRID SW1 - COMMON (9 kılıç)   [save: public/images/items/<id>.webp]
+----------------------------------------------------------------
+PROMPT:
+SQUARE 1:1, a clean 3x3 grid of nine different common sword icons with
+thin dark gaps between cells, one sword per cell, each sword fully
+inside its cell with a small margin, plain dark neutral background,
+no text. Cell 1 (sword_duskwood): simple straight chipped blade, brown
+stained wooden grip, rough iron crossguard. Cell 2 (sword_reed): short
+curved single-edge blade, cord-wrapped grip, small leather nub at the
+pommel. Cell 3 (sword_ironleaf): flat leaf-shaped blade with a faint
+green leaf etching, plain oval guard. Cell 4 (sword_patrol): slightly
+curved saber with a brass knuckle guard and worn leather wrap. Cell 5
+(sword_tin): stubby broad shortsword, riveted leather grip, blunt tip,
+patched dull metal. Cell 6 (sword_militia): mass-produced arming sword,
+simple disc pommel, unscratched but dull steel. Cell 7 (sword_boar):
+cleaver-like blade tapering like a boar tusk, bone grip, hide strap.
+Cell 8 (sword_salt): pitted salt-rusted blade, cracked grip, salt
+crystals crusting the edge. Cell 9 (sword_coal): sooty blackened heavy
+blade, rag-wrapped grip, faint ash dust.
+
+IDS (kopyala-yapistir):
+cell1: sword_duskwood, cell2: sword_reed, cell3: sword_ironleaf, cell4: sword_patrol, cell5: sword_tin, cell6: sword_militia, cell7: sword_boar, cell8: sword_salt, cell9: sword_coal,
+
+================================================================
+GRID SW2 - UNCOMMON (9 kılıç)
+----------------------------------------------------------------
+PROMPT:
+SQUARE 1:1, a clean 3x3 grid of nine different uncommon sword icons with
+thin dark gaps, one sword per cell, fully inside its cell with a small
+margin, plain dark neutral background, no text. Cell 1 (sword_bronzeguard):
+bronze-fitted steel arming sword, engraved crossguard, dark walnut grip.
+Cell 2 (sword_mossbrand): blade with moss creeping up the fuller and a
+faint green glowing vein, bark-textured grip. Cell 3 (sword_tide):
+wave-etched curved blade of blue-tinted steel, shell-shaped pommel. Cell 4
+(sword_ashen): grey-black blade with smoldering ember cracks, ash-grey
+wrapped grip. Cell 5 (sword_watch): clean cavalry saber with a silvered
+knuckle bow and polished brass guard. Cell 6 (sword_glade): slim sylvan
+leaf blade with a soft silver-green glow, vine-wrapped grip. Cell 7
+(sword_emberwood): dark hardwood-core blade with an ember glow along the
+core, brass pins. Cell 8 (sword_frostpin): icy mottled blue blade with
+frost forming on the edge, wolf-head pommel. Cell 9 (sword_mason): wide
+heavy mason's broadsword, star-shaped pommel, iron bands on the grip.
+
+IDS (kopyala-yapistir):
+cell1: sword_bronzeguard, cell2: sword_mossbrand, cell3: sword_tide, cell4: sword_ashen, cell5: sword_watch, cell6: sword_glade, cell7: sword_emberwood, cell8: sword_frostpin, cell9: sword_mason,
+
+================================================================
+GRID SW3 - RARE (9 kılıç)
+----------------------------------------------------------------
+PROMPT:
+SQUARE 1:1, a clean 3x3 grid of nine different rare sword icons with thin
+dark gaps, one sword per cell, fully inside its cell with a small margin,
+plain dark neutral background, no text. Cell 1 (sword_stormhilt): storm-grey
+steel blade trailing small lightning arcs, hammered crossguard. Cell 2
+(sword_runeblade): pale steel blade with glowing blue runes down the
+fuller, elegant silver crossguard. Cell 3 (sword_glacier): translucent
+glacial blade with icy shards along the edge and a cold frost aura.
+Cell 4 (sword_venom): green serpentine blade dripping venom, fanged
+crossguard, bone grip. Cell 5 (sword_brass): gilded brass blade with
+ridged talon-like fuller and a feather-shaped guard. Cell 6 (sword_shadow):
+black blade that seems to drink the light, thorn-wrapped guard, a thin
+red slit of glow. Cell 7 (sword_coral): coral-encrusted pale blade with
+a sea-blue glow and pearl pommel. Cell 8 (sword_grave): cursed rusted
+blade wreathed in spectral green aura, bone crossguard, skull pommel.
+Cell 9 (sword_sun): golden curved saber with solar flame along the back
+edge and a sun-disc guard.
+
+IDS (kopyala-yapistir):
+cell1: sword_stormhilt, cell2: sword_runeblade, cell3: sword_glacier, cell4: sword_venom, cell5: sword_brass, cell6: sword_shadow, cell7: sword_coral, cell8: sword_grave, cell9: sword_sun,
+
+================================================================
+GRID SW4 - EPIC (9 kılıç)
+----------------------------------------------------------------
+PROMPT:
+SQUARE 1:1, a clean 3x3 grid of nine different epic two-handed sword icons
+with thin dark gaps, one sword per cell, fully inside its cell with a small
+margin, plain dark neutral background, no text, dramatic glow. Cell 1
+(sword_emberforged): massive greatsword with molten seams, ember eruption
+along the blade, dragon-wing guard. Cell 2 (sword_glacial): greatsword of
+layered blue ice, frozen heart pommel, small blizzard swirling around the
+blade. Cell 3 (sword_thunder): runed greatsword with rolling thunder and
+lightning along the blade, storm-forged guard. Cell 4 (sword_crimson):
+blood-gold greatsword with a vampiric red edge and oath-script etching.
+Cell 5 (sword_voidsteel): black-violet blade that cuts a faint rift, a
+starfield shimmering inside the metal. Cell 6 (sword_seraph): radiant
+white-gold blade with a feathered winged guard and a holy glow. Cell 7
+(sword_nightbloom): dark blade blooming with luminous pale night flowers,
+silver thorn guard. Cell 8 (sword_tidecaller): blue-green wave greatsword
+with water swirling around it and a trident-shaped crossguard. Cell 9
+(sword_runic): etched runic greatsword with amber rune-glow and a carved
+bone grip.
+
+IDS (kopyala-yapistir):
+cell1: sword_emberforged, cell2: sword_glacial, cell3: sword_thunder, cell4: sword_crimson, cell5: sword_voidsteel, cell6: sword_seraph, cell7: sword_nightbloom, cell8: sword_tidecaller, cell9: sword_runic,
+
+================================================================
+GRID SW5 - LEGENDARY + MYTHIC + ANCIENT RELIC (3+3+3)
+----------------------------------------------------------------
+PROMPT:
+SQUARE 1:1, a clean 3x3 grid of nine legendary, mythic and ancient-relic
+sword icons with thin dark gaps, one sword per cell, fully inside its cell
+with a small margin, plain dark neutral background, no text, divine and
+cosmic glow. Cell 1 (sword_dragonfang): legendary greatsword forged from
+a dragon's fang, scaled guard, faint fire-breath glow. Cell 2 (sword_phoenix):
+legendary blade of cycling flame, phoenix-wing guard, rebirth embers.
+Cell 3 (sword_worldtree): legendary living blade of silverbark and steel
+with glowing sap veins and a leaf-shaped guard. Cell 4 (sword_voidheart):
+mythic colossal obsidian cleaver with a beating void-heart set in the
+guard, reality bending at the edge. Cell 5 (sword_astral): mythic
+star-metal blade that severs starlight, constellation etched along the
+blade, floating shards. Cell 6 (sword_bloodmoon): mythic crimson
+greatsword under an eclipsed bloodmoon motif, red mist and dripping glow.
+Cell 7 (sword_setra): ANCIENT RELIC, golden-white dawnblade, sunburst
+guard, glowing holy script along the blade, ancient and pristine, epic.
+Cell 8 (sword_firstborn): ANCIENT RELIC, primordial stone-and-light
+sword, titanic engraved world-runes on the blade, immense ornate hilt,
+epic. Cell 9 (sword_worldheart): ANCIENT RELIC, ultimate cosmic blade
+holding a tiny galaxy inside the steel, cracks of un-reality along the
+edge, ornate gold-bone guard, awe-inspiring, epic.
+
+IDS (kopyala-yapistir):
+cell1: sword_dragonfang, cell2: sword_phoenix, cell3: sword_worldtree, cell4: sword_voidheart, cell5: sword_astral, cell6: sword_bloodmoon, cell7: sword_setra, cell8: sword_firstborn, cell9: sword_worldheart,
+
+================================================================
+KAYIT YOLLARI (hepsi public/images/items/): her id + .webp
+Ornek: sword_duskwood -> public/images/items/sword_duskwood.webp
+(Oyuna eklenen id'lerle birebir aynidir; content.js items icinde hazir.)
+
+------------------------------------------------------------------------
+YEDEK (grid bozulursa): ayni 9 kilici 2x2 YERINE 3x3 yerle; olmuyorsa
+3 gruba bol (3+3+3) ayni 3x3 kurallariyla. Asla hucre birlestirme.
+------------------------------------------------------------------------

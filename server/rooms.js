@@ -61,6 +61,7 @@ function publicRoomState(room) {
     bossParties: boss,
     pvpDuels: pvp,
     pvpInvites,
+    travel: (() => { try { return require("./travel").publicTravel(room); } catch (e) { return null; } })(),
     players: room.players.map(publicPlayer),
   };
 }
@@ -117,6 +118,7 @@ function createRoom({ socketId, name, character, mode, roomName }) {
     bossParties: [],
     pvpDuels: [],
     pvpInvites: [],
+    travel: null,
     chat: [],
     players: [host],
   };
@@ -243,6 +245,9 @@ function leaveRoom(socketId) {
     }
   }
   try { require("./pvp").cleanupInvitesFor(room, socketId); } catch (e) {}
+  if (room.travel) {
+    try { require("./travel").leaveTravel(room, { id: socketId }); } catch (e) {}
+  }
 
   room.players = room.players.filter((p) => p.id !== socketId);
   socketToRoom.delete(socketId);
@@ -300,6 +305,7 @@ function startGame(socketId) {
   room.bossParties = [];
   room.pvpDuels = [];
   room.pvpInvites = [];
+  room.travel = null;
   stock.init(room);
   room.log = { type: "day", text: "Day 1 — the town stirs. Spend your stamina wisely." };
   for (const p of room.players) {
@@ -344,6 +350,22 @@ function rebindSocket(oldSocketId, newSocketId) {
   for (const inv of room.pvpInvites || []) {
     if (inv.fromId === oldSocketId) inv.fromId = newSocketId;
     if (inv.toId === oldSocketId) inv.toId = newSocketId;
+  }
+  if (room.travel) {
+    const remap = (id) => (id === oldSocketId ? newSocketId : id);
+    room.travel.members = (room.travel.members || []).map(remap);
+    if (room.travel.pos && room.travel.pos[oldSocketId]) {
+      room.travel.pos[newSocketId] = room.travel.pos[oldSocketId];
+      delete room.travel.pos[oldSocketId];
+    }
+    if (room.travel.invites && room.travel.invites[oldSocketId]) {
+      room.travel.invites[newSocketId] = room.travel.invites[oldSocketId];
+      delete room.travel.invites[oldSocketId];
+    }
+    for (const party of Object.values(room.travel.parties || {})) {
+      party.memberIds = (party.memberIds || []).map(remap);
+      if (party.leaderId === oldSocketId) party.leaderId = newSocketId;
+    }
   }
   return room;
 }

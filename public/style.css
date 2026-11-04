@@ -2975,10 +2975,9 @@ input:focus {
 .skill-slot--disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  pointer-events: none;
 }
 .skill-slot--used {
-  pointer-events: none;
+  cursor: default;
 }
 
 .skill-slot--picked {
@@ -3812,7 +3811,8 @@ input:focus {
 .bag-socket,
 .pet-socket {
   width: 100%;
-  height: 7rem;
+  height: auto;
+  aspect-ratio: 1 / 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3830,6 +3830,9 @@ input:focus {
   height: 100%;
   margin: 0;
   border-radius: 10px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 .equip-slot-placeholder {
   display: flex;
@@ -3944,6 +3947,17 @@ input:focus {
   gap: 0.25rem;
   justify-content: center;
   min-height: 0;
+}
+
+.bag-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+  justify-content: center;
+}
+.bag-stats .stat-chip {
+  font-size: 0.6rem;
+  padding: 0.1rem 0.35rem;
 }
 
 /* Sell seçeneği: satırın üstüne gelince altta küçük belirir. */
@@ -6429,25 +6443,26 @@ input:focus {
   height: auto;
   overflow: visible;
 }
-.bag-card { min-height: clamp(14rem, 18vw, 17rem); }
-.equip-slot--filled { min-height: clamp(13rem, 17vw, 16rem); }
-.shop-card { min-height: clamp(16rem, 20vw, 18rem); }
-.pet-card { min-height: clamp(14rem, 18vw, 17rem); }
+.bag-card { min-height: 0; }
+.equip-slot--filled { min-height: 0; }
+.shop-card { min-height: 0; }
+.pet-card { min-height: 0; }
 
 .bag-card > .bag-socket,
 .equip-slot--filled > .equip-socket,
 .pet-card > .pet-socket {
-  position: absolute;
-  inset: 0;
+  position: relative;
+  inset: auto;
   width: 100%;
-  height: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
   z-index: 0;
-  margin: 0;
+  margin: 0 auto 0.4rem;
   overflow: hidden;
-  border: 0;
-  border-radius: inherit;
-  background: transparent;
-  box-shadow: none;
+  border: 1px solid rgba(232, 183, 108, 0.25);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.45);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
   pointer-events: none;
 }
 .bag-card > .bag-socket .item-icon,
@@ -6456,22 +6471,25 @@ input:focus {
   width: 100%;
   height: 100%;
   margin: 0;
-  border-radius: 0;
+  border-radius: 8px;
   box-shadow: none;
-  background-size: cover;
+  background-size: contain;
+  background-repeat: no-repeat;
   background-position: center;
 }
 .shop-card > .item-icon {
-  position: absolute;
-  inset: 0;
+  position: relative;
+  inset: auto;
   width: 100%;
-  height: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
   z-index: 0;
-  margin: 0;
-  border-radius: inherit;
-  box-shadow: none;
+  margin: 0 auto 0.4rem;
+  border-radius: 10px;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
   pointer-events: none;
-  background-size: cover;
+  background-size: contain;
+  background-repeat: no-repeat;
   background-position: center;
 }
 .shop-card > .item-icon--chest svg {
@@ -6491,10 +6509,9 @@ input:focus {
   pointer-events: none;
   background: linear-gradient(
     180deg,
-    rgba(5, 3, 2, 0.12) 0%,
-    rgba(5, 3, 2, 0.3) 34%,
-    rgba(5, 3, 2, 0.78) 72%,
-    rgba(5, 3, 2, 0.94) 100%
+    rgba(5, 3, 2, 0) 0%,
+    rgba(5, 3, 2, 0) 55%,
+    rgba(5, 3, 2, 0.35) 100%
   );
   box-shadow: inset 0 0 0 1px rgba(232, 183, 108, 0.14);
 }
@@ -9095,3 +9112,119 @@ input:focus {
     animation: none !important;
   }
 }
+
+/* ---- Setra Travel (shared world map) ---- */
+#travel-view { display: flex; flex-direction: column; min-height: 0; }
+/* #travel-content is the flex item that must consume the remaining height so
+   the map shell (which has only absolutely-positioned children) does not
+   collapse to 0px. Without this the map renders "invisible" and only the town
+   panel background shows through. */
+#travel-content { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; overflow-y: auto; }
+#travel-content > .tv-shell { flex: 1 1 0; }
+.tv-shell { position: relative; flex: 1; min-height: 0; border-radius: 14px; overflow: hidden; background: #0b0908; }
+.tv-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.tv-top { position: absolute; top: 10px; left: 12px; right: 12px; display: flex; justify-content: space-between; gap: 10px; pointer-events: none; }
+.tv-title { font: 600 15px Georgia, serif; color: #ffd9a0; background: #0009; border: 1px solid #6b4a24; border-radius: 10px; padding: 6px 12px; }
+.tv-stats { font: 600 13px Georgia, serif; color: #eadcc2; background: #0009; border: 1px solid #6b4a24; border-radius: 10px; padding: 6px 12px; }
+.tv-help { position: absolute; left: 12px; bottom: 12px; font-size: 12px; color: #9d8a6c; background: #000a; padding: 6px 10px; border-radius: 8px; pointer-events: none; }
+.tv-invite { position: absolute; top: 56px; left: 12px; display: flex; align-items: center; gap: 10px; background: #1d1510ee; border: 1px solid #c9933f; border-radius: 10px; padding: 8px 12px; color: #eadcc2; z-index: 5; }
+.tv-party { position: absolute; bottom: 56px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 14px; background: #1d1510ee; border: 1px solid #6b4a24; border-radius: 10px; padding: 10px 14px; color: #eadcc2; z-index: 5; }
+.tv-party-members { font-size: 12px; color: #9d8a6c; }
+.tv-prompt { position: absolute; bottom: 56px; left: 50%; transform: translateX(-50%); background: #1d1510ee; border: 1px solid #c9933f; border-radius: 10px; padding: 8px 14px; color: #eadcc2; cursor: pointer; z-index: 5; }
+.tv-key { display: inline-block; min-width: 18px; padding: 1px 6px; margin: 0 2px; background: #3f2c14; border: 1px solid #d3a24b; border-radius: 6px; color: #ffdca6; font: 700 12px Georgia, serif; }
+.tv-toast { position: absolute; top: 56px; right: 12px; background: #1d1510ee; border: 1px solid #c9933f; border-radius: 10px; padding: 8px 12px; color: #ffd9a0; z-index: 6; }
+.tv-start { max-width: 560px; margin: 6vh auto 0; padding: 24px; background: #1d1510; border: 1px solid #6b4a24; border-radius: 14px; color: #eadcc2; display: flex; flex-direction: column; gap: 14px; }
+.tv-start-title { font: 700 22px Georgia, serif; color: #d3a24b; margin: 0; }
+.tv-start-sub { margin: 0; color: #c8b79a; }
+.tv-pick { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.tv-pick-label { min-width: 54px; color: #9d8a6c; font-size: 13px; }
+.btn--mini.is-active { border-color: #d3a24b; background: #3a2819; }
+
+/* Travel expedition chooser */
+.tv-start { max-width: 640px; margin: 4vh auto; padding: 26px 26px 22px; background: linear-gradient(180deg, #241a12, #17100b); border: 1px solid #6b4a24; border-radius: 16px; box-shadow: 0 18px 50px #000a, inset 0 0 0 1px #ffffff0a; color: #eadcc2; display: flex; flex-direction: column; gap: 16px; }
+.tv-start-head { display: flex; gap: 16px; align-items: center; }
+.tv-start-emblem { font-size: 40px; line-height: 1; filter: drop-shadow(0 2px 6px #000a); }
+.tv-start-title { font: 700 24px Georgia, serif; color: #e8b45c; margin: 0; letter-spacing: .02em; }
+.tv-start-sub { margin: 4px 0 0; color: #c8b79a; font-size: 13px; line-height: 1.45; }
+.tv-field { display: flex; align-items: center; gap: 12px; }
+.tv-field-label { width: 52px; flex: none; color: #9d8a6c; font: 600 12px Georgia, serif; letter-spacing: .08em; text-transform: uppercase; }
+.tv-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.tv-chip { font: 600 13px Georgia, serif; color: #e6d6ba; background: #2a1d12; border: 1px solid #4a3620; border-radius: 999px; padding: 8px 14px; cursor: pointer; transition: all .15s ease; }
+.tv-chip:hover { border-color: #8a6231; background: #33240f; }
+.tv-chip.is-active { border-color: #d3a24b; background: #3f2c14; color: #ffdca6; box-shadow: 0 0 0 1px #d3a24b, 0 4px 14px #d3a24b33; }
+.tv-summary { background: #00000055; border: 1px solid #3d2c1a; border-radius: 12px; padding: 12px 16px; }
+.tv-summary-main { font: 700 18px Georgia, serif; color: #ffd9a0; }
+.tv-summary-sub { color: #9d8a6c; font-size: 12.5px; margin-top: 2px; }
+.tv-start-actions { display: flex; flex-direction: column; gap: 10px; }
+.tv-go { font-size: 16px; padding: 12px 20px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
+.tv-go-cost { font: 600 11px Georgia, serif; color: #1c1206; background: #d3a24b; border-radius: 999px; padding: 3px 9px; }
+.tv-go[disabled] { opacity: .5; cursor: not-allowed; }
+.tv-warn { color: #ff9a7b; font-size: 12.5px; margin: 0; }
+
+/* ===== Shop cards: square, rarity-framed tiles (minimal; details on hover) =====
+   Rarity is shown by the coloured frame (--rarity) instead of a text badge.
+   The item art fills the tile and the name / price / button sit over a
+   bottom gradient. Full stats + description live in the hover title. */
+.shop-grid { grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); gap: 0.7rem; }
+.market-grid .shop-card { min-height: 0; }
+
+.shop-card {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  padding: 0;
+  gap: 0.22rem;
+  overflow: hidden;
+  justify-content: flex-end;
+  border: 2px solid var(--rarity, var(--glass-line));
+  border-radius: 14px;
+  background: radial-gradient(120% 90% at 50% 18%, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.38) 72%), var(--glass-2);
+}
+
+.shop-card > .item-icon {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  margin: 0;
+  padding: 15% 15% 40%;
+  box-sizing: border-box;
+  border-radius: 0;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 0;
+}
+.shop-card > .item-icon--chest svg { width: 42%; height: 42%; }
+
+.shop-card::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 60%;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(to top, rgba(4, 3, 2, 0.96) 6%, rgba(4, 3, 2, 0.7) 46%, rgba(4, 3, 2, 0) 100%);
+}
+
+.shop-card > :not(.item-icon) { position: relative; z-index: 2; }
+.shop-card .shop-card-top { padding: 0 0.4rem; }
+.shop-card .shop-card-name { text-align: center; font-size: 0.84rem; line-height: 1.15; }
+.shop-card .shop-card-stats { display: flex; flex-wrap: wrap; gap: 0.2rem; justify-content: center; }
+.shop-card .shop-card-stats .stat-chip { font-size: 0.6rem; padding: 0.1rem 0.35rem; }
+.shop-card .shop-card-desc { display: none; }
+.shop-card .shop-card-badges { justify-content: center; margin: 0; }
+.shop-card .shop-card-price { justify-content: center; margin-top: 0; }
+.shop-card .price-chip { font-size: 0.72rem; padding: 0.12rem 0.5rem; }
+.shop-card > .btn { width: calc(100% - 1rem); margin: 0.1rem 0.5rem 0.5rem; }
+
+.shop-card:hover {
+  border-color: var(--rarity, var(--gold-bright));
+  box-shadow: 0 0 0 2px var(--rarity, var(--gold-bright)), 0 10px 26px rgba(0, 0, 0, 0.45);
+}
+.shop-card--sold { opacity: 0.5; }
+

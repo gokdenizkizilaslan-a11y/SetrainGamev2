@@ -18,6 +18,7 @@ const state = {
   inventoryOpen: false,
   pvpOpen: false,
   petsOpen: false,
+  travelOpen: false,
   skillTreeOpen: false,
   guideOpen: false,
   skillTreeTab: "global",
@@ -188,7 +189,12 @@ function renderTown(room) {
     state._deadShown = false;
   }
 
-  const inOverlay = state.dungeonOpen || state.plazaOpen || state.tavernOpen || state.blacksmithOpen || state.merchantOpen || state.templeOpen || state.inventoryOpen || state.pvpOpen || state.petsOpen || state.skillTreeOpen || state.guideOpen;
+  // Eski (onbellekten gelen) index.html'de travel-view yoksa ekrani bosaltma.
+  if (state.travelOpen && !$("travel-view")) {
+    state.travelOpen = false;
+    if (typeof showToast === "function") showToast("Arayüz eski sürümde. Sayfayı Ctrl+F5 ile yenileyin.");
+  }
+  const inOverlay = state.dungeonOpen || state.plazaOpen || state.tavernOpen || state.blacksmithOpen || state.merchantOpen || state.templeOpen || state.inventoryOpen || state.pvpOpen || state.petsOpen || state.travelOpen || state.skillTreeOpen || state.guideOpen;
   $("town-main").classList.toggle("hidden", inOverlay);
   $("skilltree-view").classList.toggle("hidden", !state.skillTreeOpen);
   const guideEl = $("guide-view");
@@ -210,6 +216,12 @@ function renderTown(room) {
   if (pvpEl) pvpEl.classList.toggle("hidden", !state.pvpOpen);
   const petsEl = $("pets-view");
   if (petsEl) petsEl.classList.toggle("hidden", !state.petsOpen);
+  const travelEl = $("travel-view");
+  if (travelEl) travelEl.classList.toggle("hidden", !state.travelOpen);
+  if (!state.travelOpen && window.SetraTravel && SetraTravel.ready) SetraTravel.pause();
+  const tEnc = (typeof myTravelEncounter === "function") ? myTravelEncounter(room) : null;
+  const travelCloseEl = $("btn-travel-close");
+  if (travelCloseEl) travelCloseEl.style.display = (tEnc && (tEnc.status === "fighting" || tEnc.status === "done")) ? "none" : "";
 
   // Right sidebar (multiplayer town only)
   if (typeof renderRightPlayers === "function") renderRightPlayers(room);
@@ -256,6 +268,8 @@ function renderTown(room) {
     if (typeof renderPvpView === "function") renderPvpView(room);
   } else if (state.petsOpen) {
     if (typeof renderPetsView === "function") renderPetsView(room);
+  } else if (state.travelOpen) {
+    renderTravelView(room);
   }
 }
 
@@ -305,7 +319,13 @@ function onRoomState(room) {
     const myD = myDungeon(room);
     const inCombat = myD && (myD.status === "fighting" || myD.status === "done");
     const inBoss = myD && myD.bossId;
-    if (inCombat || inBoss) state.dungeonOpen = true;
+    const isTravelEnc = myD && myD.travel;
+    if (isTravelEnc) {
+      state.dungeonOpen = false;
+      if (inCombat || myD.status === "waiting") state.travelOpen = true;
+    } else if (inCombat || inBoss) {
+      state.dungeonOpen = true;
+    }
     const myPvp = (room.pvpDuels||[]).find(d=> d.memberIds.includes(state.playerId));
     if (myPvp && (myPvp.status==="fighting" || myPvp.status==="done")) {
       // Düelloya girince zindan lobisi kapanır — iki overlay aynı anda açılmaz.
@@ -484,6 +504,8 @@ $("btn-quests").addEventListener("click", () => {
   state.inventoryOpen = false;
   state.pvpOpen = false;
   state.petsOpen = false;
+  state.travelOpen = false;
+  if (window.SetraTravel) SetraTravel.close();
   renderTown(state.room);
 });
 
@@ -534,6 +556,13 @@ if (petsCloseBtn) petsCloseBtn.addEventListener("click", () => {
   state.petsOpen = false;
   renderTown(state.room);
 });
+const travelCloseBtn = $("btn-travel-close");
+if (travelCloseBtn) travelCloseBtn.addEventListener("click", () => {
+  socket.emit("travel:leave");
+  state.travelOpen = false;
+  if (window.SetraTravel) SetraTravel.close();
+  renderTown(state.room);
+});
 
 $("chat-send").addEventListener("click", sendChat);
 $("chat-text").addEventListener("keydown", (e) => {
@@ -554,6 +583,8 @@ function leaveToMainMenu() {
   state.merchantOpen = false;
   state.templeOpen = false;
   state.inventoryOpen = false;
+  state.travelOpen = false;
+  if (window.SetraTravel) SetraTravel.close();
   state.skillTreeOpen = false; state.guideOpen = false;
   state.pendingFx = [];
   stopCombatTimer();
@@ -718,6 +749,8 @@ socket.on("room:left", () => {
   state.merchantOpen = false;
   state.templeOpen = false;
   state.inventoryOpen = false;
+  state.travelOpen = false;
+  if (window.SetraTravel) SetraTravel.close();
   state.skillTreeOpen = false; state.guideOpen = false;
   state.pendingFx = [];
   stopCombatTimer();
@@ -741,6 +774,29 @@ socket.on("server:error", (payload) => {
 socket.on("shop:buyResult", (payload) => {
   sfxPlay("lootsound");
   showNotice("buy", "Purchase", payload && payload.text ? payload.text : "Item purchased.");
+});
+
+socket.on("travel:map", (map) => {
+  if (!window.SetraTravel || !map) return;
+  state.travelPending = 0;
+  SetraTravel.setMap(map);
+  state.travelOpen = true;
+  SetraTravel.open();
+  if (state.room) renderTown(state.room);
+});
+socket.on("travel:pos", (p) => { if (window.SetraTravel && p) SetraTravel.setOtherPos(p.id, p.x, p.y); });
+socket.on("travel:teleport", (p) => { if (window.SetraTravel && p) SetraTravel.teleport(p.x, p.y); });
+socket.on("travel:reveal", () => { if (window.SetraTravel) SetraTravel.reveal(); });
+socket.on("travel:explored", (p) => { if (window.SetraTravel && p && p.add) SetraTravel.addExplored(p.add); });
+socket.on("travel:reward", (p) => {
+  if (!window.SetraTravel || !p) return;
+  if (p.kind === "chest" && p.loot) {
+    const it = (CATALOG.items || []).find((x) => x.id === p.loot.itemId);
+    const nm = it ? it.name : (p.loot.name || "reward");
+    SetraTravel.toast(p.loot.chest ? `Found a chest: ${nm} — open it in your Pack` : `Found: ${nm}`);
+  } else if (p.kind === "gold") {
+    SetraTravel.toast(`+${p.gold} gold`);
+  }
 });
 
 function chestItemName(itemId) {
@@ -795,6 +851,8 @@ socket.on("session:expired", () => {
   state.merchantOpen = false;
   state.templeOpen = false;
   state.inventoryOpen = false;
+  state.travelOpen = false;
+  if (window.SetraTravel) SetraTravel.close();
   state.skillTreeOpen = false; state.guideOpen = false;
   state.pendingFx = [];
   stopCombatTimer();

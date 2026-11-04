@@ -1,0 +1,186 @@
+================================================================
+SETRA - ARMOR SET ICON GRIDS (KREA2)  -  10 SETS / 6 GRIDS
+================================================================
+Toplam 54 parca = TAM 6 grid x 9 hucre (3x3).
+Setler:
+  1 Duskhide (common)          = 5 parca
+  2 Bronzeforge (uncommon)     = 5 parca
+  3 Mosswarden (uncommon)      = 5 parca
+  4 Stormtouched (rare)        = 5 parca
+  5 Runebound (rare)           = 5 parca
+  6 Emberforged (epic)         = 5 parca
+  7 Frostbound (epic)          = 5 parca
+  8 Dragonblood (legendary)    = 5 parca
+  9 Voidweave (mythic)         = 5 parca
+ 10 Setra's Chosen (ancient)   = 9 parca (tek gridde: AR6)
+
+NASIL KULLANILIR:
+- Her GRID tek gorsel uretir (SQUARE 1:1), TAM 3x3.
+- Uretince 3x3 kes; hucreleri soldan saga, yukaridan asagiya (cell1..cell9)
+  ilgili id ile kaydet: public/images/items/<id>.webp
+- id'ler content.js items icinde hazirdir (asagida birebir yazili).
+
+KREA2 KURALLARI (grid bozulmasin diye):
+- SQUARE 1:1. TEK grid, TAM 3 satir x 3 sutun, esit hucreler.
+- Her hucrede SADECE 1 nesne (tek zirh parcasi veya tek silah).
+- Nesne hucre icine tam sigar, kenardan tasmaz, ortada, ~%75 doluluk.
+- Ince koyu hucre araliklari; hucreler birlesmez.
+- Sade koyu arka plan (tum hucrelerde ayni ton), dis cerceve YOK.
+- Yazi/rakam/harf/etiket/watermark ASLA yok.
+- Zirh parcalari icin: parca bir "item icon" gibi tek basina dursun
+  (giyilmis figür DEGIL), hafif 3/4 aci, net siluet.
+- Sira: cell1 sol-ust ... cell9 sag-alt.
+
+GLOBAL STYLE (her promptun başına ekle):
+"single centered object per cell, dark medieval fantasy oil-painting
+game icon, warm torchlit palette of muted gold-grey stone, parchment
+browns, deep shadow blacks and ember-orange accents, visible brushwork,
+cinematic volumetric rim light, strong readable silhouette, high
+detail, fully inside its cell with a small margin, isolated on a plain
+dark neutral background, no text, no letters, no numbers"
+
+NEGATIVE (her prompta ekle):
+"text, letters, numbers, typography, watermark, signature, logo, UI
+labels, multiple objects in one cell, cropped subject, cut off edges,
+spilling out of cell, merged cells, blurred cell borders, blurry, low
+resolution, flat vector, clean 3D render, plastic, cartoon,
+oversaturated, busy background, frame, border, grid lines too thick,
+worn on a body, mannequin, character"
+
+================================================================
+GRID AR1 - Duskhide tam seti + Bronzeforge 4 parca
+----------------------------------------------------------------
+PROMPT:
+SQUARE 1:1, a clean 3x3 grid of nine armor and weapon icons with thin dark
+gaps, one object per cell, fully inside its cell with a small margin, plain
+dark neutral background, no text. Cell 1 (duskhide_helm): dark brown leather
+hood-helm with a stitched brim, twilight tones. Cell 2 (duskhide_chest):
+dark leather chestpiece with a simple buckle strap. Cell 3 (duskhide_legs):
+dark leather leg guards, plain. Cell 4 (duskhide_boots): soft dark leather
+boots with wrapped laces. Cell 5 (duskhide_blade): simple dark iron dagger-
+sized shortsword with a leather grip. Cell 6 (bronzeforge_helm): steel helm
+with bronze trim and a small nose guard. Cell 7 (bronzeforge_chest): steel
+breastplate with bronze rivets and a small bronze pauldron. Cell 8
+(bronzeforge_legs): steel greaves with bronze knee caps. Cell 9
+(bronzeforge_boots): steel-toed boots with bronze buckles.
+
+IDS (kopyala-yapistir):
+cell1: duskhide_helm, cell2: duskhide_chest, cell3: duskhide_legs, cell4: duskhide_boots, cell5: duskhide_blade, cell6: bronzeforge_helm, cell7: bronzeforge_chest, cell8: bronzeforge_legs, cell9: bronzeforge_boots,
+
+================================================================
+GRID AR2 - Bronzeforge kilici + Mosswarden tam seti + Stormtouched 3 parca
+----------------------------------------------------------------
+PROMPT:
+SQUARE 1:1, a clean 3x3 grid of nine armor and weapon icons with thin dark
+gaps, one object per cell, fully inside its cell with a small margin, plain
+dark neutral background, no text. Cell 1 (bronzeforge_blade): broad steel
+sword with a bronze crossguard and a leather-wrapped grip. Cell 2
+(mosswarden_helm): living bark-and-leather helm with moss and a small sprout.
+Cell 3 (mosswarden_chest): bark plate chestpiece wrapped in moss and vines.
+Cell 4 (mosswarden_legs): bark greaves with hanging moss. Cell 5
+(mosswarden_boots): root-like boots with soft green glow at the soles. Cell 6
+(mosswarden_blade): curved blade of polished bark-steel with a small leaf
+guard. Cell 7 (stormtouched_helm): blue-grey steel helm with a faint
+lightning crack on the side. Cell 8 (stormtouched_chest): storm-blue plate
+with silver trim and crackling arc lines. Cell 9 (stormtouched_legs):
+storm-blue greaves with a small lightning etching.
+
+IDS (kopyala-yapistir):
+cell1: bronzeforge_blade, cell2: mosswarden_helm, cell3: mosswarden_chest, cell4: mosswarden_legs, cell5: mosswarden_boots, cell6: mosswarden_blade, cell7: stormtouched_helm, cell8: stormtouched_chest, cell9: stormtouched_legs,
+
+================================================================
+GRID AR3 - Stormtouched 2 parca + Runebound tam seti + Emberforged 2 parca
+----------------------------------------------------------------
+PROMPT:
+SQUARE 1:1, a clean 3x3 grid of nine armor and weapon icons with thin dark
+gaps, one object per cell, fully inside its cell with a small margin, plain
+dark neutral background, no text. Cell 1 (stormtouched_boots): storm-blue
+boots with a silver buckle and small static sparks. Cell 2
+(stormtouched_blade): lightning-forged saber with arcs along the edge. Cell 3
+(runebound_helm): pale steel helm with a single glowing blue rune. Cell 4
+(runebound_chest): runed steel breastplate with etched glowing blue runes.
+Cell 5 (runebound_legs): runed steel greaves with a glowing rune at the knee.
+Cell 6 (runebound_boots): runed steel boots with faint blue glow in the
+seams. Cell 7 (runebound_blade): pale steel sword with a row of glowing blue
+runes down the fuller. Cell 8 (emberforged_helm): blackened steel helm with
+molten ember seams glowing orange. Cell 9 (emberforged_chest): blackened
+plate chestpiece with glowing molten cracks.
+
+IDS (kopyala-yapistir):
+cell1: stormtouched_boots, cell2: stormtouched_blade, cell3: runebound_helm, cell4: runebound_chest, cell5: runebound_legs, cell6: runebound_boots, cell7: runebound_blade, cell8: emberforged_helm, cell9: emberforged_chest,
+
+================================================================
+GRID AR4 - Emberforged 3 parca + Frostbound tam seti + Dragonblood 1 parca
+----------------------------------------------------------------
+PROMPT:
+SQUARE 1:1, a clean 3x3 grid of nine armor and weapon icons with thin dark
+gaps, one object per cell, fully inside its cell with a small margin, plain
+dark neutral background, no text. Cell 1 (emberforged_legs): blackened
+greaves with molten ember lines. Cell 2 (emberforged_boots): blackened boots
+with glowing ember soles. Cell 3 (emberforged_blade): massive greatsword
+with molten seams and an ember eruption along the blade. Cell 4
+(frostbound_helm): pale ice-blue helm with frost forming on the rim. Cell 5
+(frostbound_chest): ice-blue plate with a frozen core glow. Cell 6
+(frostbound_legs): ice-blue greaves crusted with frost. Cell 7
+(frostbound_boots): ice-blue boots with frost mist at the ankles. Cell 8
+(frostbound_blade): translucent glacial sword trailing cold frost. Cell 9
+(dragonblood_helm): crimson scale-covered helm with a draconic crest.
+
+IDS (kopyala-yapistir):
+cell1: emberforged_legs, cell2: emberforged_boots, cell3: emberforged_blade, cell4: frostbound_helm, cell5: frostbound_chest, cell6: frostbound_legs, cell7: frostbound_boots, cell8: frostbound_blade, cell9: dragonblood_helm,
+
+================================================================
+GRID AR5 - Dragonblood 4 parca + Voidweave tam seti
+----------------------------------------------------------------
+PROMPT:
+SQUARE 1:1, a clean 3x3 grid of nine armor and weapon icons with thin dark
+gaps, one object per cell, fully inside its cell with a small margin, plain
+dark neutral background, no text. Cell 1 (dragonblood_chest): crimson dragon-
+scale breastplate with a molten heart glow at the center. Cell 2
+(dragonblood_legs): crimson dragon-scale greaves with clawed knee caps.
+Cell 3 (dragonblood_boots): crimson scaled boots with talon toes. Cell 4
+(dragonblood_blade): immense dragonbone greatsword with fire breath along the
+edge. Cell 5 (voidweave_helm): black-violet void hood-helm, light bending at
+its edges. Cell 6 (voidweave_chest): void plate chestpiece with a starfield
+patterned interior and violet glow. Cell 7 (voidweave_legs): void greaves
+that fade into shadow at the ankles. Cell 8 (voidweave_boots): void boots
+with a faint violet rift under the soles. Cell 9 (voidweave_blade): black-
+violet blade that cuts a faint rift, a starfield shimmering inside the metal.
+
+IDS (kopyala-yapistir):
+cell1: dragonblood_chest, cell2: dragonblood_legs, cell3: dragonblood_boots, cell4: dragonblood_blade, cell5: voidweave_helm, cell6: voidweave_chest, cell7: voidweave_legs, cell8: voidweave_boots, cell9: voidweave_blade,
+
+================================================================
+GRID AR6 - SETRA'S CHOSEN (ANCIENT RELIC, 9 parca, EPIC)
+----------------------------------------------------------------
+PROMPT:
+SQUARE 1:1, a clean 3x3 grid of nine pieces of a single legendary golden-
+white ANCIENT RELIC armor set, thin dark gaps, one object per cell, fully
+inside its cell with a small margin, plain dark neutral background, no text,
+divine holy glow, extremely ornate and epic, matching set. Cell 1
+(setras_chosen_helm): radiant golden-white winged helm with a glowing halo
+crest and ancient script. Cell 2 (setras_chosen_chest): ornate golden-white
+breastplate with a sunburst engravings and a radiant core. Cell 3
+(setras_chosen_legs): ornate golden-white greaves with engraved scripture.
+Cell 4 (setras_chosen_boots): golden-white boots with winged ankle guards.
+Cell 5 (setras_chosen_blade): masterwork dawnblade, golden-white, sunburst
+guard, glowing holy script along the blade. Cell 6 (setras_chosen_amulet):
+ornate golden amulet with a glowing dawnstone. Cell 7 (setras_chosen_ring):
+golden ring engraved with runes and a tiny radiant gem. Cell 8
+(setras_chosen_book): gilded holy tome with a glowing sigil on the cover.
+Cell 9 (setras_chosen_stone): luminous golden runestone hovering faintly,
+ancient carvings, holy glow.
+
+IDS (kopyala-yapistir):
+cell1: setras_chosen_helm, cell2: setras_chosen_chest, cell3: setras_chosen_legs, cell4: setras_chosen_boots, cell5: setras_chosen_blade, cell6: setras_chosen_amulet, cell7: setras_chosen_ring, cell8: setras_chosen_book, cell9: setras_chosen_stone,
+
+================================================================
+KAYIT YOLLARI (hepsi public/images/items/): her id + .webp
+Ornek: duskhide_helm -> public/images/items/duskhide_helm.webp
+(id'ler content.js items + itemSets icinde birebir hazir.)
+
+------------------------------------------------------------------------
+YEDEK (grid bozulursa): ayni 9 parcayi 2x2 yerine 3x3 tut; hala bozuksa
+3 parcaya bol (3+3+3) ayni kurallarla. Asla hucre birlestirme, asla
+figur/mannequin cizdirme.
+------------------------------------------------------------------------

@@ -28,6 +28,17 @@ app.use((req, res, next) => {
 // boylece eski cached bir build'den kaynakli 404 / bos ekran yasanmaz.
 app.get("/", (req, res, next) => {
   res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+  // Eski bir index.html/js önbellekte kalırsa oyun boş ekrana düşüyordu.
+  // Tarayıcı önbelleğini otomatik temizle (localStorage/session korunur).
+  res.setHeader("Clear-Site-Data", '"cache"');
+  next();
+});
+
+// HTML/JS/CSS asla önbellekte tutulmasın: her yenilemede güncel sürüm gelsin.
+app.use((req, res, next) => {
+  if (req.method === "GET" && /\.(?:html?|js|css)$/i.test(req.path)) {
+    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+  }
   next();
 });
 

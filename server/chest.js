@@ -15,6 +15,12 @@ const RANK_TO_CHEST = {
   ss: "mythic_chest",
   ssplus: "mythic_chest",
   fast: "wooden_chest",
+  t1: "gold_chest",
+  t2: "emerald_chest",
+  t3: "obsidian_chest",
+  t4: "mythic_chest",
+  t5: "mythic_chest",
+  t6: "mythic_chest",
 };
 
 function weightedPick(weights) {

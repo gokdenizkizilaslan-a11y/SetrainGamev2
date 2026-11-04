@@ -16,6 +16,7 @@ function poolFor(kind) {
     if (!rarities.includes(i.rarity)) return false;
     if (i.craftOnly) return false; // craftables not sold
     if (i.dungeonOnly) return false; // dungeon drops never sold
+    if (i.travelOnly) return false; // travel-only drops never sold
     if (i.bossWeapon) return false;
     // Blueprints: pinned blacksmith stock (always there), never at the merchant.
     if (i.blueprint) return kind !== "merchant";

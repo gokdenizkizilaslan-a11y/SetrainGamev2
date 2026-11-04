@@ -1939,7 +1939,7 @@ const ACTIONS = [
   { id: "merchant", icon: "merchant", title: "Merchant", sub: "Chests, potions & materials", kind: "open" },
   { id: "tavern", icon: "tavern", title: "Tavern", sub: "Bet gold · Coin flip, blackjack & food", kind: "open" },
     { id: "temple", icon: "temple", title: "Ancient Temple", sub: "Ascend, mend hearts & rebirth", kind: "open" },
-  { id: "rest", icon: "rest", title: "Rest", sub: null, kind: "emit", event: "town:rest" },
+  { id: "travel", icon: "travel", title: "Travel", sub: "Explore the wilds · 10 stamina", kind: "open" },
   { id: "sleep", icon: "rest", title: "Sleep Outside", sub: "End the day · Cold stars, small risk", kind: "emit", event: "town:sleepOutside" },
 ];
 
@@ -1948,17 +1948,11 @@ function renderActionCards(room, selfId) {
   const me = room.players.find((p) => p.id === selfId);
   const isDead = me && me.lives <= 0;
   const canAct = me && !me.endedDay && !isDead;
-  const restAmt = (CATALOG.town && CATALOG.town.rest && CATALOG.town.rest.stamina) || 4;
-  const restMax = (CATALOG.town && CATALOG.town.rest && CATALOG.town.rest.maxPerDay) || 3;
-  const restLeft = Math.max(0, restMax - (me.restCount || 0));
-  ACTIONS.forEach((a) => {
-    if (a.id === "rest") a.sub = restLeft > 0 ? `+${restAmt} stamina · ${restLeft}/${restMax} left today` : `No rests left today`;
-  });
   el.innerHTML = ACTIONS.map((a) => {
     // Kasaba buton görselleri (images.ui.*Button) KARTIN TAMAMINI kaplar;
     // yazı görselin üstünde durur. Küçük ikon kutusu artık gösterilmez.
     // Boş string + trim kontrolü: " " gibi değerler img denemez.
-    const uiKey = { blacksmith: "blacksmithButton", tavern: "tavernButton", merchant: "merchantButton", temple: "templeButton", dungeon: "dungeonButton", plaza: "searchButton", rest: "restButton", sleep: "sleepButton" }[a.id] || "";
+    const uiKey = { blacksmith: "blacksmithButton", tavern: "tavernButton", merchant: "merchantButton", temple: "templeButton", dungeon: "dungeonButton", plaza: "searchButton", travel: "travelButton", sleep: "sleepButton" }[a.id] || "";
     const rawImg = uiKey && CATALOG.images && CATALOG.images.ui ? CATALOG.images.ui[uiKey] : "";
     const uiImg = typeof rawImg === "string" ? rawImg.trim() : "";
     return `
@@ -1986,12 +1980,16 @@ function renderActionCards(room, selfId) {
         const openSfx = { dungeon: "action.dungeon", blacksmith: "action.blacksmith", merchant: "action.merchant", temple: "action.temple" };
         if (openSfx[a.id]) sfxEvent(openSfx[a.id], 0.45);
         state.skillTreeOpen = false;
+        state.guideOpen = false;
+        state.pvpOpen = false;
+        state.petsOpen = false;
         state.dungeonOpen = a.id === "dungeon";
         state.plazaOpen = a.id === "plaza";
         state.tavernOpen = a.id === "tavern";
         state.blacksmithOpen = a.id === "blacksmith";
         state.merchantOpen = a.id === "merchant";
         state.templeOpen = a.id === "temple";
+        state.travelOpen = a.id === "travel";
         if (a.id === "merchant") state.merchantCat = "chest";
         if (a.id === "temple") state.templeTab = "ascend";
         state.inventoryOpen = false;
@@ -1999,18 +1997,6 @@ function renderActionCards(room, selfId) {
       } else if (a.id === "sleep") {
         state.justSlept = true;
         playNightTransition("Night falls", "You sleep beneath the cold stars. Stamina returns at dawn.", () => socket.emit(a.event));
-      } else if (a.id === "rest") {
-        if (restLeft <= 0) {
-          if (typeof showToast === "function") showToast("No rests left today. Sleep to end the day.");
-          return;
-        }
-        sfxEvent("action.rest");
-        playNightTransition(
-          "You rest",
-          "You catch your breath — your strength returns.",
-          () => socket.emit(a.event),
-          { eyebrow: "A Moment's Respite", variant: "rest" }
-        );
       } else {
         socket.emit(a.event);
       }
@@ -2776,9 +2762,107 @@ function myPvp(room){
   if(!room||!state.playerId) return null;
   return (room.pvpDuels||[]).find(d=> d.memberIds.includes(state.playerId))||null;
 }
+function rankedDungeons() {
+  return (CATALOG.dungeons || []).filter((d) => d && !d.travel);
+}
 function ensureDungeonState() {
-  if (state.selectedDungeonRank == null) state.selectedDungeonRank = (CATALOG.dungeons[0] && CATALOG.dungeons[0].rank) || null;
+  if (state.selectedDungeonRank == null) state.selectedDungeonRank = (rankedDungeons()[0] && rankedDungeons()[0].rank) || null;
   if (state.selectedPartySize == null) state.selectedPartySize = (CATALOG.sizes[0] && CATALOG.sizes[0].id) || "normal";
+}
+
+function myTravelEncounter(room) {
+  if (!room || !state.playerId) return null;
+  return (room.dungeons || []).find((d) => d.travel && (d.memberIds || []).includes(state.playerId)) || null;
+}
+const TRAVEL_TYPES = [["verdant", "Verdant Wilds"], ["ashen", "Ashen Wastes"], ["frost", "Frozen Tundra"], ["swamp", "Mirefen Marsh"], ["cursed", "Cursed Reach"]];
+const TRAVEL_SIZES = [["small", "Small"], ["normal", "Normal"], ["large", "Large"], ["huge", "Huge"], ["colossal", "Colossal"]];
+const TRAVEL_EMBLEM = "\u{1F9ED}";
+function renderTravelView(room) {
+  const root = $("travel-content");
+  if (!root) return;
+  try {
+    renderTravelViewInner(room, root);
+  } catch (e) {
+    console.error("Travel render failed:", e);
+    root.innerHTML = `<div class="tv-start"><div class="tv-start-head"><span class="tv-start-emblem">!</span><div><h3 class="tv-start-title">Travel could not open</h3><p class="tv-start-sub">${escapeHtml(e && e.message ? e.message : "Unknown error")}</p></div></div><div class="tv-start-actions"><button type="button" class="btn btn--gold" id="btn-travel-reload">Reload game</button></div></div>`;
+    const rb = root.querySelector("#btn-travel-reload");
+    if (rb) rb.addEventListener("click", () => location.reload());
+  }
+}
+function renderTravelViewInner(room, root) {
+  const me = room.players.find((p) => p.id === state.playerId);
+  const tv = room.travel;
+  const enc = myTravelEncounter(room);
+  if (enc && (enc.status === "fighting" || enc.status === "done")) {
+    if (window.SetraTravel) SetraTravel.close();
+    return renderCombat(room, root);
+  }
+  const isMember = !!(tv && tv.active && (tv.members || []).includes(state.playerId));
+  if (!tv || !tv.active || !isMember) {
+    if (!state.travelType) state.travelType = "verdant";
+    if (!state.travelSize) state.travelSize = "normal";
+    const joinMode = !!(tv && tv.active);
+    const stamina = me ? me.stamina : 0;
+    const cannot = !joinMode && stamina < 10;
+    const pickedType = (TRAVEL_TYPES.find(([id]) => id === state.travelType) || TRAVEL_TYPES[0])[1];
+    const pickedSize = (TRAVEL_SIZES.find(([id]) => id === state.travelSize) || TRAVEL_SIZES[1])[1];
+    root.innerHTML = `
+      <div class="tv-start">
+        <div class="tv-start-head">
+          <span class="tv-start-emblem">${TRAVEL_EMBLEM}</span>
+          <div>
+            <h3 class="tv-start-title">${joinMode ? "Join the expedition" : "Set out on an expedition"}</h3>
+            <p class="tv-start-sub">A shared, randomly generated world. Explore together, find dungeons, dens and lost treasure.</p>
+          </div>
+        </div>
+        ${joinMode ? `
+          <div class="tv-summary">
+            <div class="tv-summary-main">${escapeHtml(tv.typeLabel || "Unknown wilds")}</div>
+            <div class="tv-summary-sub">${escapeHtml(tv.sizeLabel || "Normal")} land &middot; ${(tv.members || []).length} explorer${(tv.members || []).length === 1 ? "" : "s"} &middot; ${(tv.pois || []).length} landmarks</div>
+          </div>` : `
+          <div class="tv-field">
+            <span class="tv-field-label">Land</span>
+            <div class="tv-chips">
+              ${TRAVEL_TYPES.map(([id, l]) => `<button type="button" class="tv-chip${state.travelType === id ? " is-active" : ""}" data-tt="${id}">${escapeHtml(l)}</button>`).join("")}
+            </div>
+          </div>
+          <div class="tv-field">
+            <span class="tv-field-label">Size</span>
+            <div class="tv-chips">
+              ${TRAVEL_SIZES.map(([id, l]) => `<button type="button" class="tv-chip${state.travelSize === id ? " is-active" : ""}" data-ts="${id}">${escapeHtml(l)}</button>`).join("")}
+            </div>
+          </div>
+          <div class="tv-summary">
+            <div class="tv-summary-main">${escapeHtml(pickedType)}</div>
+            <div class="tv-summary-sub">${escapeHtml(pickedSize)} land &middot; every explorer pays <b>10 stamina</b></div>
+          </div>`}
+        <div class="tv-start-actions">
+          <button type="button" class="btn btn--gold tv-go" id="btn-travel-go"${cannot ? " disabled" : ""}>${joinMode ? "Join expedition" : "Set out"} <span class="tv-go-cost">10 stamina</span></button>
+          ${cannot ? `<p class="tv-warn">You need at least 10 stamina. Rest at the tavern or sleep to recover it.</p>` : ""}
+        </div>
+      </div>`;
+    root.querySelectorAll("[data-tt]").forEach((b) => b.addEventListener("click", () => { state.travelType = b.getAttribute("data-tt"); renderTravelView(room); }));
+    root.querySelectorAll("[data-ts]").forEach((b) => b.addEventListener("click", () => { state.travelSize = b.getAttribute("data-ts"); renderTravelView(room); }));
+    const go = root.querySelector("#btn-travel-go");
+    if (go) go.addEventListener("click", () => {
+      if (go.disabled) return;
+      go.disabled = true;
+      go.textContent = "Generating world...";
+      state.travelPending = Date.now();
+      socket.emit("travel:enter", { type: state.travelType, size: state.travelSize });
+      setTimeout(() => {
+        if (!state.travelPending) return;
+        const g = root.querySelector("#btn-travel-go");
+        if (g) { g.disabled = false; g.innerHTML = `${joinMode ? "Join expedition" : "Set out"} <span class="tv-go-cost">10 stamina</span>`; }
+        showToast("Sunucu yanit vermedi. Oyun sunucusunu yeniden baslat (basla.bat) ve tekrar dene.");
+      }, 3500);
+    });
+    return;
+  }
+  SetraTravel.ensure(root);
+  SetraTravel.update(room);
+  SetraTravel.open();
+  if (!SetraTravel.hasMap()) socket.emit("travel:sync", {});
 }
 
 function renderDungeonView(room) {
@@ -2868,7 +2952,7 @@ function renderDungeonBrowser(room, root) {
   const leftHtml = `<aside class="dg-ranks">
     <p class="dg-ranks-title">Dungeons</p>
     <div class="dg-rank-list">
-      ${CATALOG.dungeons.map((dg) => {
+      ${rankedDungeons().map((dg) => {
         const top = [...dungeonDrops(dg.rank).odds].sort((a,b)=>b.pct-a.pct).slice(0,2);
         const hint = top.map(o=>`${escapeHtml(rarityMetaOf(o.rarity).label||o.rarity)} ${o.pct}%`).join(" · ");
         const sel = dg.rank === selectedRank ? " is-selected" : "";
@@ -3432,7 +3516,7 @@ function renderCombat(room, root) {
       const id = b.getAttribute("data-skill");
       const basic = (CATALOG.classes.find((c) => c.slug === me.character) || {}).basicAttack;
       const chosen = basic && basic.id === id ? { ...basic, target: "enemy", mana: 0 } : CATALOG.skills.find((s) => s.id === id);
-      if (!chosen || !canAct || me.mana < (chosen.mana || 0) || usedIds.includes(id)) return;
+      if (!chosen || !canAct || me.mana < (chosen.mana || 0) || usedIds.includes(id) || (cdMap[id] || 0) > 0) return;
       if (chosen.target === "self" || chosen.target === "party") {
         if (!state.pendingUsedSkills) state.pendingUsedSkills = new Set();
         state.pendingUsedSkills.add(chosen.id);
@@ -3646,7 +3730,7 @@ function renderPvpView(room){
   root.querySelectorAll("[data-pskill]").forEach(b=>{
     b.addEventListener("click",()=>{
       const sid=b.getAttribute("data-pskill");
-      if(!canAct) return;
+      if(!canAct || usedIds.includes(sid) || (cdMap[sid]||0) > 0) return;
       if (!state.pendingUsedSkills) state.pendingUsedSkills = new Set();
       state.pendingUsedSkills.add(sid);
       socket.emit("pvp:act",{skillId:sid});
@@ -3707,6 +3791,7 @@ function applyTavernArt(root, ui) {
     [".coin-image-placeholder", ui.tavernCoin],
     [".playing-card-image-placeholder", ui.tavernCards],
     [".door-image-placeholder", ui.tavernLeave],
+    [".rest-image-placeholder", ui.restButton],
   ];
   map.forEach(([selector, url]) => {
     const el = root.querySelector(selector);
@@ -3907,6 +3992,9 @@ function renderTavernView(room) {
   const prov = (CATALOG.town && CATALOG.town.tavern && CATALOG.town.tavern.provisions) || { foodPrice: 10, foodAmount: 2 };
   const sleepPrice = (CATALOG.town && CATALOG.town.tavern && CATALOG.town.tavern.sleep && CATALOG.town.tavern.sleep.price) || 15;
   const canSleep = me.gold >= sleepPrice;
+  const restAmt = (CATALOG.town && CATALOG.town.rest && CATALOG.town.rest.stamina) || 4;
+  const restMax = (CATALOG.town && CATALOG.town.rest && CATALOG.town.rest.maxPerDay) || 3;
+  const restLeft = Math.max(0, restMax - (me.restCount || 0));
   const bets = (CATALOG.town && CATALOG.town.tavern && CATALOG.town.tavern.bets) || [25, 100, 500, 700];
   root.innerHTML = `
     <div class="tavern-shell">
@@ -3981,11 +4069,18 @@ function renderTavernView(room) {
           <span class="tavern-card-desc">${prov.foodAmount} FOOD</span>
         </div>
         <button type="button" class="btn btn--bronze btn--mini" id="btn-buy-food">Buy (${prov.foodPrice} gold)</button>
+        <button type="button" class="btn btn--bronze btn--mini" id="btn-tavern-rest"${restLeft > 0 ? "" : " disabled"}>Rest +${restAmt} stamina${restLeft > 0 ? ` (${restLeft}/${restMax})` : " (0 left)"}</button>
       </div>
     </div>`;
   applyTavernArt(root, tavernArt);
   root.querySelector("#btn-tavern-sleep").addEventListener("click", () => {
     playNightTransition("Night falls", "You sleep safely at the tavern. Stamina returns at dawn.", () => socket.emit("tavern:sleep"));
+  });
+  const restBtn = root.querySelector("#btn-tavern-rest");
+  if (restBtn) restBtn.addEventListener("click", () => {
+    if (restLeft <= 0) { showToast("No rests left today. Sleep to end the day."); return; }
+    sfxEvent("action.rest");
+    playNightTransition("You rest", "You catch your breath — your strength returns.", () => socket.emit("town:rest"), { eyebrow: "A Moment's Respite", variant: "rest" });
   });
   const leaveBtn = root.querySelector("#btn-tavern-leave");
   if (leaveBtn) leaveBtn.addEventListener("click", () => {
@@ -4421,12 +4516,18 @@ function shopCardHtml(me, staminaOk, item, buyEvent, isSold) {
     ? `<span class="purchased-badge">${equipped ? "Equipped" : `Owned ×${owned}`}</span>`
     : "";
   const chestRates = item.slot === "chest" ? chestRatesHtml(item) : "";
-  return `<div class="shop-card ${isSold ? "shop-card--sold" : ""}" style="--rarity:${rarityColor(item.rarity)}">
+  const statsHtml = (item.stats && item.slot !== "chest")
+    ? `<span class="shop-card-stats">${Object.entries(item.stats).map(([k, v]) => `<span class="stat-chip"><em>${escapeHtml(statLabel(k))}</em><b>${escapeHtml(String(v))}${k === "omnivamp" ? "%" : ""}</b></span>`).join("")}</span>`
+    : "";
+  const statTxt = item.stats ? Object.entries(item.stats).map(([k, v]) => `${statLabel(k)} ${v > 0 ? "+" : ""}${v}${k === "omnivamp" ? "%" : ""}`).join(", ") : "";
+  const chestPlainTip = chestRates.replace(/<[^>]*>/g, "");
+  const tip = `${escapeHtml(item.name)}${statTxt ? " — " + escapeHtml(statTxt) : ""}${item.description ? " — " + escapeHtml(item.description) : ""}${chestPlainTip ? " — " + escapeHtml(chestPlainTip) : ""}`;
+  return `<div class="shop-card ${isSold ? "shop-card--sold" : ""}" title="${tip}" style="--rarity:${rarityColor(item.rarity)}">
     ${itemIconEl(item)}
     <span class="shop-card-top"><span class="shop-card-name">${escapeHtml(item.name)}</span></span>
-    <span class="shop-card-badges">${rarityBadge(item)}<span class="purchased-badge">${escapeHtml(slotLabel(item.slot))}</span>${ownedBadge}${soldBadge}</span>
-    <span class="shop-card-desc">${escapeHtml(item.description)}</span>
-    ${chestRates ? `<span class="shop-card-desc" style="font-size:0.68rem;color:var(--muted)">${chestRates}</span>` : ""}
+    ${statsHtml}
+    ${chestRates ? `<span class="shop-card-desc" style="font-size:0.66rem;color:var(--muted)">${chestRates}</span>` : ""}
+    ${(ownedBadge || soldBadge) ? `<span class="shop-card-badges">${ownedBadge}${soldBadge}</span>` : ""}
     <span class="shop-card-price">
       <span class="price-chip">${icon("gold")}<span>${item.price.gold}</span></span>
       ${item.price.wood ? `<span class="price-chip price-chip--wood">${icon("wood")}<span>${item.price.wood}</span></span>` : ""}
@@ -4916,6 +5017,12 @@ function renderInventory(room) {
       .map(([k, v]) => `<span class="stat-chip"><em>${escapeHtml(statLabel(k))}</em><b>${escapeHtml(String(v))}${k === "omnivamp" ? "%" : ""}</b></span>`)
       .join("");
   }
+  function statPlain(item) {
+    if (!item || !item.stats) return "";
+    return Object.entries(item.stats)
+      .map(([k, v]) => `${statLabel(k)} ${v > 0 ? "+" : ""}${v}${k === "omnivamp" ? "%" : ""}`)
+      .join(", ");
+  }
   function renderSlot(id) {
     const slot = (CATALOG.equipmentSlots || []).find((s)=>s.id===id);
     if (!slot) return "";
@@ -4924,7 +5031,8 @@ function renderInventory(room) {
     const chips = statChips(item);
     const isStone = id==="stone";
     const stoneTip = isStone && item ? `<span class="stat-chip"><em>Stack</em><b>Omni ${item.stats.omnivamp || 0}%</b></span>` : "";
-    const tip = item ? `${escapeHtml(item.name)}${item.description ? " — " + escapeHtml(item.description) : ""}` : slot.label + " (empty)";
+    const statTxt = statPlain(item);
+    const tip = item ? `${escapeHtml(item.name)}${statTxt ? " — " + escapeHtml(statTxt) : ""}${item.description ? " — " + escapeHtml(item.description) : ""}` : slot.label + " (empty)";
     return `<div class="equip-slot${item ? " equip-slot--filled" : " equip-slot--empty"}" title="${tip}"${item ? ` style="--rarity:${rarityColor(item.rarity)}"` : ""}>
         <span class="equip-slot-label">${escapeHtml(slot.label)}</span>
         <span class="equip-socket">${item ? itemIconEl(item) : `<span class="equip-slot-placeholder">${icon(slotGlyphs[id] || "weapon")}</span>`}</span>
@@ -4962,11 +5070,14 @@ function renderInventory(room) {
         : `${sellBtns}`;
       const chestRates = item.slot === "chest" ? chestRatesHtml(item) : "";
       const chestPlain = chestRates.replace(/<[^>]*>/g, "");
-      const tip = `${escapeHtml(item.name)}${item.description ? " — " + escapeHtml(item.description) : ""}${chestPlain ? " — " + escapeHtml(chestPlain) : ""}`;
+      const statsHtml = item.slot === "chest" || item.slot === "material" ? "" : statChips(item);
+      const statTxt = statPlain(item);
+      const tip = `${escapeHtml(item.name)}${statTxt ? " — " + escapeHtml(statTxt) : ""}${item.description ? " — " + escapeHtml(item.description) : ""}${chestPlain ? " — " + escapeHtml(chestPlain) : ""}`;
       return `<div class="bag-row bag-card" title="${tip}" style="--rarity:${rarityColor(item.rarity)}">
         <span class="bag-socket">${itemIconEl(item)}</span>
         <span class="bag-name">${escapeHtml(item.name)} <span class="bag-qty">×${inv.qty}</span></span>
         <span class="bag-badges">${rarityBadge(item)}</span>
+        ${statsHtml ? `<span class="bag-stats">${statsHtml}</span>` : ""}
         <span class="bag-desc">${escapeHtml(item.description)}</span>
         ${chestRates ? `<span class="bag-rates" title="${escapeHtml(chestPlain)}">${chestRates}</span>` : ""}
         ${action}

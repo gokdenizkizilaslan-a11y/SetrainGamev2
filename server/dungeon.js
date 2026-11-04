@@ -309,6 +309,8 @@ function publicDungeon(d) {
     id: d.id,
     rank: d.rank,
     size: d.size,
+    travel: d.travel || false,
+    poiId: d.poiId || null,
     label: def ? def.label : null,
     image: def ? def.image : null,
     stamina: sizeDef ? sizeDef.stamina : null,

@@ -8546,6 +8546,19 @@ const CONTENT = {
       "description": "A chest of legend. Great odds of mythic loot."
     },
     {
+      "id": "buried_treasure",
+      "name": "Buried Treasure",
+      "slot": "chest",
+      "rarity": "epic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "chestTier": "b",
+      "image": "/images/items/buried_treasure.png",
+      "description": "A dirt-caked hoard dug up on the road. Lucky find, honest loot."
+    },
+    {
       "id": "sturdy_club",
       "name": "Sturdy Club",
       "rarity": "common",
@@ -9273,6 +9286,1743 @@ const CONTENT = {
       "setId": "blood",
       "image": "/images/items/blood_tome.webp",
       "description": "+14 Magic Power, +8 Heal Power. Written in red."
+    },
+    {
+      "id": "sword_duskwood",
+      "name": "Duskwood Blade",
+      "slot": "weapon",
+      "rarity": "common",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 8
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_duskwood.webp",
+      "description": "Duskwood Blade."
+    },
+    {
+      "id": "sword_reed",
+      "name": "Reedcutter",
+      "slot": "weapon",
+      "rarity": "common",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 8
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_reed.webp",
+      "description": "Reedcutter."
+    },
+    {
+      "id": "sword_ironleaf",
+      "name": "Ironleaf Sword",
+      "slot": "weapon",
+      "rarity": "common",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 8
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_ironleaf.webp",
+      "description": "Ironleaf Sword."
+    },
+    {
+      "id": "sword_patrol",
+      "name": "Patrol Saber",
+      "slot": "weapon",
+      "rarity": "common",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 8
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_patrol.webp",
+      "description": "Patrol Saber."
+    },
+    {
+      "id": "sword_tin",
+      "name": "Tinker's Shortsword",
+      "slot": "weapon",
+      "rarity": "common",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 8
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_tin.webp",
+      "description": "Tinker's Shortsword."
+    },
+    {
+      "id": "sword_militia",
+      "name": "Militia Sword",
+      "slot": "weapon",
+      "rarity": "common",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 8
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_militia.webp",
+      "description": "Militia Sword."
+    },
+    {
+      "id": "sword_boar",
+      "name": "Boar Tusk Blade",
+      "slot": "weapon",
+      "rarity": "common",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 8
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_boar.webp",
+      "description": "Boar Tusk Blade."
+    },
+    {
+      "id": "sword_salt",
+      "name": "Salt-Rusted Sword",
+      "slot": "weapon",
+      "rarity": "common",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 8
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_salt.webp",
+      "description": "Salt-Rusted Sword."
+    },
+    {
+      "id": "sword_coal",
+      "name": "Charcoal Cutter",
+      "slot": "weapon",
+      "rarity": "common",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 8
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_coal.webp",
+      "description": "Charcoal Cutter."
+    },
+    {
+      "id": "sword_bronzeguard",
+      "name": "Bronzeguard",
+      "slot": "weapon",
+      "rarity": "uncommon",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 12
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_bronzeguard.webp",
+      "description": "Bronzeguard."
+    },
+    {
+      "id": "sword_mossbrand",
+      "name": "Mossbrand",
+      "slot": "weapon",
+      "rarity": "uncommon",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 12
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_mossbrand.webp",
+      "description": "Mossbrand."
+    },
+    {
+      "id": "sword_tide",
+      "name": "Tidecutter",
+      "slot": "weapon",
+      "rarity": "uncommon",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 12
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_tide.webp",
+      "description": "Tidecutter."
+    },
+    {
+      "id": "sword_ashen",
+      "name": "Ashen Edge",
+      "slot": "weapon",
+      "rarity": "uncommon",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 12
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_ashen.webp",
+      "description": "Ashen Edge."
+    },
+    {
+      "id": "sword_watch",
+      "name": "Watchman's Sabre",
+      "slot": "weapon",
+      "rarity": "uncommon",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 12
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_watch.webp",
+      "description": "Watchman's Sabre."
+    },
+    {
+      "id": "sword_glade",
+      "name": "Glade Whisper",
+      "slot": "weapon",
+      "rarity": "uncommon",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 12
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_glade.webp",
+      "description": "Glade Whisper."
+    },
+    {
+      "id": "sword_emberwood",
+      "name": "Emberwood Blade",
+      "slot": "weapon",
+      "rarity": "uncommon",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 12
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_emberwood.webp",
+      "description": "Emberwood Blade."
+    },
+    {
+      "id": "sword_frostpin",
+      "name": "Frostpin",
+      "slot": "weapon",
+      "rarity": "uncommon",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 12
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_frostpin.webp",
+      "description": "Frostpin."
+    },
+    {
+      "id": "sword_mason",
+      "name": "Mason's Broadsword",
+      "slot": "weapon",
+      "rarity": "uncommon",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 12
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_mason.webp",
+      "description": "Mason's Broadsword."
+    },
+    {
+      "id": "sword_stormhilt",
+      "name": "Stormhilt",
+      "slot": "weapon",
+      "rarity": "rare",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 18,
+        "critChance": 2
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_stormhilt.webp",
+      "description": "Stormhilt."
+    },
+    {
+      "id": "sword_runeblade",
+      "name": "Runeblade",
+      "slot": "weapon",
+      "rarity": "rare",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 18,
+        "critChance": 2
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_runeblade.webp",
+      "description": "Runeblade."
+    },
+    {
+      "id": "sword_glacier",
+      "name": "Glacier Fang",
+      "slot": "weapon",
+      "rarity": "rare",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 18,
+        "critChance": 2
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_glacier.webp",
+      "description": "Glacier Fang."
+    },
+    {
+      "id": "sword_venom",
+      "name": "Venomfang",
+      "slot": "weapon",
+      "rarity": "rare",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 18,
+        "critChance": 2
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_venom.webp",
+      "description": "Venomfang."
+    },
+    {
+      "id": "sword_brass",
+      "name": "Brass Talon",
+      "slot": "weapon",
+      "rarity": "rare",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 18,
+        "critChance": 2
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_brass.webp",
+      "description": "Brass Talon."
+    },
+    {
+      "id": "sword_shadow",
+      "name": "Shadowthorn",
+      "slot": "weapon",
+      "rarity": "rare",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 18,
+        "critChance": 2
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_shadow.webp",
+      "description": "Shadowthorn."
+    },
+    {
+      "id": "sword_coral",
+      "name": "Coral Reaver",
+      "slot": "weapon",
+      "rarity": "rare",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 18,
+        "critChance": 2
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_coral.webp",
+      "description": "Coral Reaver."
+    },
+    {
+      "id": "sword_grave",
+      "name": "Graverust Sword",
+      "slot": "weapon",
+      "rarity": "rare",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 18,
+        "critChance": 2
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_grave.webp",
+      "description": "Graverust Sword."
+    },
+    {
+      "id": "sword_sun",
+      "name": "Sunflare Sabre",
+      "slot": "weapon",
+      "rarity": "rare",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 18,
+        "critChance": 2
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_sun.webp",
+      "description": "Sunflare Sabre."
+    },
+    {
+      "id": "sword_emberforged",
+      "name": "Emberforged Greatsword",
+      "slot": "weapon",
+      "rarity": "epic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 27,
+        "critChance": 4
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_emberforged.webp",
+      "description": "Emberforged Greatsword."
+    },
+    {
+      "id": "sword_glacial",
+      "name": "Glacial Requiem",
+      "slot": "weapon",
+      "rarity": "epic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 27,
+        "critChance": 4
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_glacial.webp",
+      "description": "Glacial Requiem."
+    },
+    {
+      "id": "sword_thunder",
+      "name": "Thunderbrand",
+      "slot": "weapon",
+      "rarity": "epic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 27,
+        "critChance": 4
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_thunder.webp",
+      "description": "Thunderbrand."
+    },
+    {
+      "id": "sword_crimson",
+      "name": "Crimson Oath",
+      "slot": "weapon",
+      "rarity": "epic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 27,
+        "critChance": 4
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_crimson.webp",
+      "description": "Crimson Oath."
+    },
+    {
+      "id": "sword_voidsteel",
+      "name": "Voidsteel Edge",
+      "slot": "weapon",
+      "rarity": "epic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 27,
+        "critChance": 4
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_voidsteel.webp",
+      "description": "Voidsteel Edge."
+    },
+    {
+      "id": "sword_seraph",
+      "name": "Seraph's Wing",
+      "slot": "weapon",
+      "rarity": "epic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 27,
+        "critChance": 4
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_seraph.webp",
+      "description": "Seraph's Wing."
+    },
+    {
+      "id": "sword_nightbloom",
+      "name": "Nightbloom Blade",
+      "slot": "weapon",
+      "rarity": "epic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 27,
+        "critChance": 4
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_nightbloom.webp",
+      "description": "Nightbloom Blade."
+    },
+    {
+      "id": "sword_tidecaller",
+      "name": "Tidecaller",
+      "slot": "weapon",
+      "rarity": "epic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 27,
+        "critChance": 4
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_tidecaller.webp",
+      "description": "Tidecaller."
+    },
+    {
+      "id": "sword_runic",
+      "name": "Runic Warblade",
+      "slot": "weapon",
+      "rarity": "epic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 27,
+        "critChance": 4
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_runic.webp",
+      "description": "Runic Warblade."
+    },
+    {
+      "id": "sword_dragonfang",
+      "name": "Dragonfang Blade",
+      "slot": "weapon",
+      "rarity": "legendary",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 38,
+        "critChance": 6,
+        "speed": 2
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_dragonfang.webp",
+      "description": "Dragonfang Blade."
+    },
+    {
+      "id": "sword_phoenix",
+      "name": "Phoenix Ember Sword",
+      "slot": "weapon",
+      "rarity": "legendary",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 38,
+        "critChance": 6,
+        "speed": 2
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_phoenix.webp",
+      "description": "Phoenix Ember Sword."
+    },
+    {
+      "id": "sword_worldtree",
+      "name": "Worldtree Blade",
+      "slot": "weapon",
+      "rarity": "legendary",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 38,
+        "critChance": 6,
+        "speed": 2
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_worldtree.webp",
+      "description": "Worldtree Blade."
+    },
+    {
+      "id": "sword_voidheart",
+      "name": "Voidheart Cleaver",
+      "slot": "weapon",
+      "rarity": "mythic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 52,
+        "critChance": 8,
+        "speed": 3,
+        "omnivamp": 4
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_voidheart.webp",
+      "description": "Voidheart Cleaver."
+    },
+    {
+      "id": "sword_astral",
+      "name": "Astral Sever",
+      "slot": "weapon",
+      "rarity": "mythic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 52,
+        "critChance": 8,
+        "speed": 3,
+        "omnivamp": 4
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_astral.webp",
+      "description": "Astral Sever."
+    },
+    {
+      "id": "sword_bloodmoon",
+      "name": "Bloodmoon Greatsword",
+      "slot": "weapon",
+      "rarity": "mythic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 52,
+        "critChance": 8,
+        "speed": 3,
+        "omnivamp": 4
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_bloodmoon.webp",
+      "description": "Bloodmoon Greatsword."
+    },
+    {
+      "id": "sword_setra",
+      "name": "Setra's Dawnblade",
+      "slot": "weapon",
+      "rarity": "ancient_relic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 70,
+        "critChance": 10,
+        "speed": 4,
+        "omnivamp": 6
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_setra.webp",
+      "description": "Setra's Dawnblade."
+    },
+    {
+      "id": "sword_firstborn",
+      "name": "Edge of the Firstborn",
+      "slot": "weapon",
+      "rarity": "ancient_relic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 70,
+        "critChance": 10,
+        "speed": 4,
+        "omnivamp": 6
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_firstborn.webp",
+      "description": "Edge of the Firstborn."
+    },
+    {
+      "id": "sword_worldheart",
+      "name": "Worldheart, the Unmaking",
+      "slot": "weapon",
+      "rarity": "ancient_relic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 70,
+        "critChance": 10,
+        "speed": 4,
+        "omnivamp": 6
+      },
+      "travelOnly": true,
+      "image": "/images/items/sword_worldheart.webp",
+      "description": "Worldheart, the Unmaking."
+    },
+    {
+      "id": "duskhide_helm",
+      "setId": "duskhide",
+      "name": "Duskhide Helm",
+      "slot": "head",
+      "rarity": "common",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 35,
+        "resistance": 5
+      },
+      "travelOnly": true,
+      "image": "/images/items/duskhide_helm.webp",
+      "description": "Duskhide helm."
+    },
+    {
+      "id": "duskhide_chest",
+      "setId": "duskhide",
+      "name": "Duskhide Chest",
+      "slot": "armor",
+      "rarity": "common",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 35,
+        "resistance": 5
+      },
+      "travelOnly": true,
+      "image": "/images/items/duskhide_chest.webp",
+      "description": "Duskhide chest."
+    },
+    {
+      "id": "duskhide_legs",
+      "setId": "duskhide",
+      "name": "Duskhide Legs",
+      "slot": "legs",
+      "rarity": "common",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 42,
+        "resistance": 6
+      },
+      "travelOnly": true,
+      "image": "/images/items/duskhide_legs.webp",
+      "description": "Duskhide legs."
+    },
+    {
+      "id": "duskhide_boots",
+      "setId": "duskhide",
+      "name": "Duskhide Boots",
+      "slot": "boots",
+      "rarity": "common",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 32,
+        "resistance": 5
+      },
+      "travelOnly": true,
+      "image": "/images/items/duskhide_boots.webp",
+      "description": "Duskhide boots."
+    },
+    {
+      "id": "duskhide_blade",
+      "setId": "duskhide",
+      "name": "Duskhide Blade",
+      "slot": "weapon",
+      "rarity": "common",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 8
+      },
+      "travelOnly": true,
+      "image": "/images/items/duskhide_blade.webp",
+      "description": "Duskhide blade."
+    },
+    {
+      "id": "bronzeforge_helm",
+      "setId": "bronzeforge",
+      "name": "Bronzeforge Helm",
+      "slot": "head",
+      "rarity": "uncommon",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 55,
+        "resistance": 8
+      },
+      "travelOnly": true,
+      "image": "/images/items/bronzeforge_helm.webp",
+      "description": "Bronzeforge helm."
+    },
+    {
+      "id": "bronzeforge_chest",
+      "setId": "bronzeforge",
+      "name": "Bronzeforge Chest",
+      "slot": "armor",
+      "rarity": "uncommon",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 55,
+        "resistance": 8
+      },
+      "travelOnly": true,
+      "image": "/images/items/bronzeforge_chest.webp",
+      "description": "Bronzeforge chest."
+    },
+    {
+      "id": "bronzeforge_legs",
+      "setId": "bronzeforge",
+      "name": "Bronzeforge Legs",
+      "slot": "legs",
+      "rarity": "uncommon",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 66,
+        "resistance": 9
+      },
+      "travelOnly": true,
+      "image": "/images/items/bronzeforge_legs.webp",
+      "description": "Bronzeforge legs."
+    },
+    {
+      "id": "bronzeforge_boots",
+      "setId": "bronzeforge",
+      "name": "Bronzeforge Boots",
+      "slot": "boots",
+      "rarity": "uncommon",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 50,
+        "resistance": 7
+      },
+      "travelOnly": true,
+      "image": "/images/items/bronzeforge_boots.webp",
+      "description": "Bronzeforge boots."
+    },
+    {
+      "id": "bronzeforge_blade",
+      "setId": "bronzeforge",
+      "name": "Bronzeforge Blade",
+      "slot": "weapon",
+      "rarity": "uncommon",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 12
+      },
+      "travelOnly": true,
+      "image": "/images/items/bronzeforge_blade.webp",
+      "description": "Bronzeforge blade."
+    },
+    {
+      "id": "mosswarden_helm",
+      "setId": "mosswarden",
+      "name": "Mosswarden Helm",
+      "slot": "head",
+      "rarity": "uncommon",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 55,
+        "resistance": 8
+      },
+      "travelOnly": true,
+      "image": "/images/items/mosswarden_helm.webp",
+      "description": "Mosswarden helm."
+    },
+    {
+      "id": "mosswarden_chest",
+      "setId": "mosswarden",
+      "name": "Mosswarden Chest",
+      "slot": "armor",
+      "rarity": "uncommon",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 55,
+        "resistance": 8
+      },
+      "travelOnly": true,
+      "image": "/images/items/mosswarden_chest.webp",
+      "description": "Mosswarden chest."
+    },
+    {
+      "id": "mosswarden_legs",
+      "setId": "mosswarden",
+      "name": "Mosswarden Legs",
+      "slot": "legs",
+      "rarity": "uncommon",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 66,
+        "resistance": 9
+      },
+      "travelOnly": true,
+      "image": "/images/items/mosswarden_legs.webp",
+      "description": "Mosswarden legs."
+    },
+    {
+      "id": "mosswarden_boots",
+      "setId": "mosswarden",
+      "name": "Mosswarden Boots",
+      "slot": "boots",
+      "rarity": "uncommon",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 50,
+        "resistance": 7
+      },
+      "travelOnly": true,
+      "image": "/images/items/mosswarden_boots.webp",
+      "description": "Mosswarden boots."
+    },
+    {
+      "id": "mosswarden_blade",
+      "setId": "mosswarden",
+      "name": "Mosswarden Blade",
+      "slot": "weapon",
+      "rarity": "uncommon",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 12
+      },
+      "travelOnly": true,
+      "image": "/images/items/mosswarden_blade.webp",
+      "description": "Mosswarden blade."
+    },
+    {
+      "id": "stormtouched_helm",
+      "setId": "stormtouched",
+      "name": "Stormtouched Helm",
+      "slot": "head",
+      "rarity": "rare",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 85,
+        "resistance": 13
+      },
+      "travelOnly": true,
+      "image": "/images/items/stormtouched_helm.webp",
+      "description": "Stormtouched helm."
+    },
+    {
+      "id": "stormtouched_chest",
+      "setId": "stormtouched",
+      "name": "Stormtouched Chest",
+      "slot": "armor",
+      "rarity": "rare",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 85,
+        "resistance": 13
+      },
+      "travelOnly": true,
+      "image": "/images/items/stormtouched_chest.webp",
+      "description": "Stormtouched chest."
+    },
+    {
+      "id": "stormtouched_legs",
+      "setId": "stormtouched",
+      "name": "Stormtouched Legs",
+      "slot": "legs",
+      "rarity": "rare",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 102,
+        "resistance": 14
+      },
+      "travelOnly": true,
+      "image": "/images/items/stormtouched_legs.webp",
+      "description": "Stormtouched legs."
+    },
+    {
+      "id": "stormtouched_boots",
+      "setId": "stormtouched",
+      "name": "Stormtouched Boots",
+      "slot": "boots",
+      "rarity": "rare",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 77,
+        "resistance": 12
+      },
+      "travelOnly": true,
+      "image": "/images/items/stormtouched_boots.webp",
+      "description": "Stormtouched boots."
+    },
+    {
+      "id": "stormtouched_blade",
+      "setId": "stormtouched",
+      "name": "Stormtouched Blade",
+      "slot": "weapon",
+      "rarity": "rare",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 18,
+        "critChance": 2
+      },
+      "travelOnly": true,
+      "image": "/images/items/stormtouched_blade.webp",
+      "description": "Stormtouched blade."
+    },
+    {
+      "id": "runebound_helm",
+      "setId": "runebound",
+      "name": "Runebound Helm",
+      "slot": "head",
+      "rarity": "rare",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 85,
+        "resistance": 13
+      },
+      "travelOnly": true,
+      "image": "/images/items/runebound_helm.webp",
+      "description": "Runebound helm."
+    },
+    {
+      "id": "runebound_chest",
+      "setId": "runebound",
+      "name": "Runebound Chest",
+      "slot": "armor",
+      "rarity": "rare",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 85,
+        "resistance": 13
+      },
+      "travelOnly": true,
+      "image": "/images/items/runebound_chest.webp",
+      "description": "Runebound chest."
+    },
+    {
+      "id": "runebound_legs",
+      "setId": "runebound",
+      "name": "Runebound Legs",
+      "slot": "legs",
+      "rarity": "rare",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 102,
+        "resistance": 14
+      },
+      "travelOnly": true,
+      "image": "/images/items/runebound_legs.webp",
+      "description": "Runebound legs."
+    },
+    {
+      "id": "runebound_boots",
+      "setId": "runebound",
+      "name": "Runebound Boots",
+      "slot": "boots",
+      "rarity": "rare",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 77,
+        "resistance": 12
+      },
+      "travelOnly": true,
+      "image": "/images/items/runebound_boots.webp",
+      "description": "Runebound boots."
+    },
+    {
+      "id": "runebound_blade",
+      "setId": "runebound",
+      "name": "Runebound Blade",
+      "slot": "weapon",
+      "rarity": "rare",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 18,
+        "critChance": 2
+      },
+      "travelOnly": true,
+      "image": "/images/items/runebound_blade.webp",
+      "description": "Runebound blade."
+    },
+    {
+      "id": "emberforged_helm",
+      "setId": "emberforged",
+      "name": "Emberforged Helm",
+      "slot": "head",
+      "rarity": "epic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 130,
+        "resistance": 20
+      },
+      "travelOnly": true,
+      "image": "/images/items/emberforged_helm.webp",
+      "description": "Emberforged helm."
+    },
+    {
+      "id": "emberforged_chest",
+      "setId": "emberforged",
+      "name": "Emberforged Chest",
+      "slot": "armor",
+      "rarity": "epic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 130,
+        "resistance": 20
+      },
+      "travelOnly": true,
+      "image": "/images/items/emberforged_chest.webp",
+      "description": "Emberforged chest."
+    },
+    {
+      "id": "emberforged_legs",
+      "setId": "emberforged",
+      "name": "Emberforged Legs",
+      "slot": "legs",
+      "rarity": "epic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 156,
+        "resistance": 22
+      },
+      "travelOnly": true,
+      "image": "/images/items/emberforged_legs.webp",
+      "description": "Emberforged legs."
+    },
+    {
+      "id": "emberforged_boots",
+      "setId": "emberforged",
+      "name": "Emberforged Boots",
+      "slot": "boots",
+      "rarity": "epic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 117,
+        "resistance": 18
+      },
+      "travelOnly": true,
+      "image": "/images/items/emberforged_boots.webp",
+      "description": "Emberforged boots."
+    },
+    {
+      "id": "emberforged_blade",
+      "setId": "emberforged",
+      "name": "Emberforged Blade",
+      "slot": "weapon",
+      "rarity": "epic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 27,
+        "critChance": 4
+      },
+      "travelOnly": true,
+      "image": "/images/items/emberforged_blade.webp",
+      "description": "Emberforged blade."
+    },
+    {
+      "id": "frostbound_helm",
+      "setId": "frostbound",
+      "name": "Frostbound Helm",
+      "slot": "head",
+      "rarity": "epic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 130,
+        "resistance": 20
+      },
+      "travelOnly": true,
+      "image": "/images/items/frostbound_helm.webp",
+      "description": "Frostbound helm."
+    },
+    {
+      "id": "frostbound_chest",
+      "setId": "frostbound",
+      "name": "Frostbound Chest",
+      "slot": "armor",
+      "rarity": "epic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 130,
+        "resistance": 20
+      },
+      "travelOnly": true,
+      "image": "/images/items/frostbound_chest.webp",
+      "description": "Frostbound chest."
+    },
+    {
+      "id": "frostbound_legs",
+      "setId": "frostbound",
+      "name": "Frostbound Legs",
+      "slot": "legs",
+      "rarity": "epic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 156,
+        "resistance": 22
+      },
+      "travelOnly": true,
+      "image": "/images/items/frostbound_legs.webp",
+      "description": "Frostbound legs."
+    },
+    {
+      "id": "frostbound_boots",
+      "setId": "frostbound",
+      "name": "Frostbound Boots",
+      "slot": "boots",
+      "rarity": "epic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 117,
+        "resistance": 18
+      },
+      "travelOnly": true,
+      "image": "/images/items/frostbound_boots.webp",
+      "description": "Frostbound boots."
+    },
+    {
+      "id": "frostbound_blade",
+      "setId": "frostbound",
+      "name": "Frostbound Blade",
+      "slot": "weapon",
+      "rarity": "epic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 27,
+        "critChance": 4
+      },
+      "travelOnly": true,
+      "image": "/images/items/frostbound_blade.webp",
+      "description": "Frostbound blade."
+    },
+    {
+      "id": "dragonblood_helm",
+      "setId": "dragonblood",
+      "name": "Dragonblood Helm",
+      "slot": "head",
+      "rarity": "legendary",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 190,
+        "resistance": 28
+      },
+      "travelOnly": true,
+      "image": "/images/items/dragonblood_helm.webp",
+      "description": "Dragonblood helm."
+    },
+    {
+      "id": "dragonblood_chest",
+      "setId": "dragonblood",
+      "name": "Dragonblood Chest",
+      "slot": "armor",
+      "rarity": "legendary",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 190,
+        "resistance": 28
+      },
+      "travelOnly": true,
+      "image": "/images/items/dragonblood_chest.webp",
+      "description": "Dragonblood chest."
+    },
+    {
+      "id": "dragonblood_legs",
+      "setId": "dragonblood",
+      "name": "Dragonblood Legs",
+      "slot": "legs",
+      "rarity": "legendary",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 228,
+        "resistance": 31
+      },
+      "travelOnly": true,
+      "image": "/images/items/dragonblood_legs.webp",
+      "description": "Dragonblood legs."
+    },
+    {
+      "id": "dragonblood_boots",
+      "setId": "dragonblood",
+      "name": "Dragonblood Boots",
+      "slot": "boots",
+      "rarity": "legendary",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 171,
+        "resistance": 25
+      },
+      "travelOnly": true,
+      "image": "/images/items/dragonblood_boots.webp",
+      "description": "Dragonblood boots."
+    },
+    {
+      "id": "dragonblood_blade",
+      "setId": "dragonblood",
+      "name": "Dragonblood Blade",
+      "slot": "weapon",
+      "rarity": "legendary",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 38,
+        "critChance": 6,
+        "speed": 2
+      },
+      "travelOnly": true,
+      "image": "/images/items/dragonblood_blade.webp",
+      "description": "Dragonblood blade."
+    },
+    {
+      "id": "voidweave_helm",
+      "setId": "voidweave",
+      "name": "Voidweave Helm",
+      "slot": "head",
+      "rarity": "mythic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 260,
+        "resistance": 38
+      },
+      "travelOnly": true,
+      "image": "/images/items/voidweave_helm.webp",
+      "description": "Voidweave helm."
+    },
+    {
+      "id": "voidweave_chest",
+      "setId": "voidweave",
+      "name": "Voidweave Chest",
+      "slot": "armor",
+      "rarity": "mythic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 260,
+        "resistance": 38
+      },
+      "travelOnly": true,
+      "image": "/images/items/voidweave_chest.webp",
+      "description": "Voidweave chest."
+    },
+    {
+      "id": "voidweave_legs",
+      "setId": "voidweave",
+      "name": "Voidweave Legs",
+      "slot": "legs",
+      "rarity": "mythic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 312,
+        "resistance": 42
+      },
+      "travelOnly": true,
+      "image": "/images/items/voidweave_legs.webp",
+      "description": "Voidweave legs."
+    },
+    {
+      "id": "voidweave_boots",
+      "setId": "voidweave",
+      "name": "Voidweave Boots",
+      "slot": "boots",
+      "rarity": "mythic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 234,
+        "resistance": 34
+      },
+      "travelOnly": true,
+      "image": "/images/items/voidweave_boots.webp",
+      "description": "Voidweave boots."
+    },
+    {
+      "id": "voidweave_blade",
+      "setId": "voidweave",
+      "name": "Voidweave Blade",
+      "slot": "weapon",
+      "rarity": "mythic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 52,
+        "critChance": 8,
+        "speed": 3,
+        "omnivamp": 4
+      },
+      "travelOnly": true,
+      "image": "/images/items/voidweave_blade.webp",
+      "description": "Voidweave blade."
+    },
+    {
+      "id": "setras_chosen_helm",
+      "setId": "setras_chosen",
+      "name": "Setra's Chosen Helm",
+      "slot": "head",
+      "rarity": "ancient_relic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 360,
+        "resistance": 52
+      },
+      "travelOnly": true,
+      "image": "/images/items/setras_chosen_helm.webp",
+      "description": "Setra's Chosen helm."
+    },
+    {
+      "id": "setras_chosen_chest",
+      "setId": "setras_chosen",
+      "name": "Setra's Chosen Chest",
+      "slot": "armor",
+      "rarity": "ancient_relic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 360,
+        "resistance": 52
+      },
+      "travelOnly": true,
+      "image": "/images/items/setras_chosen_chest.webp",
+      "description": "Setra's Chosen chest."
+    },
+    {
+      "id": "setras_chosen_legs",
+      "setId": "setras_chosen",
+      "name": "Setra's Chosen Legs",
+      "slot": "legs",
+      "rarity": "ancient_relic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 432,
+        "resistance": 57
+      },
+      "travelOnly": true,
+      "image": "/images/items/setras_chosen_legs.webp",
+      "description": "Setra's Chosen legs."
+    },
+    {
+      "id": "setras_chosen_boots",
+      "setId": "setras_chosen",
+      "name": "Setra's Chosen Boots",
+      "slot": "boots",
+      "rarity": "ancient_relic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "maxHp": 324,
+        "resistance": 47
+      },
+      "travelOnly": true,
+      "image": "/images/items/setras_chosen_boots.webp",
+      "description": "Setra's Chosen boots."
+    },
+    {
+      "id": "setras_chosen_blade",
+      "setId": "setras_chosen",
+      "name": "Setra's Chosen Blade",
+      "slot": "weapon",
+      "rarity": "ancient_relic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 70,
+        "critChance": 10,
+        "speed": 4,
+        "omnivamp": 6
+      },
+      "travelOnly": true,
+      "image": "/images/items/setras_chosen_blade.webp",
+      "description": "Setra's Chosen blade."
+    },
+    {
+      "id": "setras_chosen_amulet",
+      "setId": "setras_chosen",
+      "name": "Setra's Chosen Amulet",
+      "slot": "amulet",
+      "rarity": "ancient_relic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "magicPower": 16,
+        "healPower": 8,
+        "mana": 360
+      },
+      "travelOnly": true,
+      "image": "/images/items/setras_chosen_amulet.webp",
+      "description": "Setra's Chosen amulet."
+    },
+    {
+      "id": "setras_chosen_ring",
+      "setId": "setras_chosen",
+      "name": "Setra's Chosen Ring",
+      "slot": "ring",
+      "rarity": "ancient_relic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "attack": 28,
+        "critChance": 10
+      },
+      "travelOnly": true,
+      "image": "/images/items/setras_chosen_ring.webp",
+      "description": "Setra's Chosen ring."
+    },
+    {
+      "id": "setras_chosen_book",
+      "setId": "setras_chosen",
+      "name": "Setra's Chosen Book",
+      "slot": "book",
+      "rarity": "ancient_relic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "magicPower": 16,
+        "healPower": 16
+      },
+      "travelOnly": true,
+      "image": "/images/items/setras_chosen_book.webp",
+      "description": "Setra's Chosen book."
+    },
+    {
+      "id": "setras_chosen_stone",
+      "setId": "setras_chosen",
+      "name": "Setra's Chosen Stone",
+      "slot": "stone",
+      "rarity": "ancient_relic",
+      "price": {
+        "gold": 0,
+        "wood": 0
+      },
+      "stats": {
+        "resistance": 31,
+        "maxHp": 216
+      },
+      "travelOnly": true,
+      "image": "/images/items/setras_chosen_stone.webp",
+      "description": "Setra's Chosen stone."
     }
   ],
   "itemSets": [
@@ -9423,6 +11173,224 @@ const CONTENT = {
             "attack": 30,
             "maxHp": 60,
             "omnivamp": 5
+          }
+        }
+      ]
+    },
+    {
+      "id": "duskhide",
+      "name": "Duskhide",
+      "description": "Dark leather for quiet roads.",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "stats": {
+            "maxHp": 30
+          }
+        },
+        {
+          "pieces": 4,
+          "stats": {
+            "maxHp": 40,
+            "resistance": 4
+          }
+        }
+      ]
+    },
+    {
+      "id": "bronzeforge",
+      "name": "Bronzeforge",
+      "description": "Steel breast and bronze trim.",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "stats": {
+            "attack": 4,
+            "resistance": 4
+          }
+        },
+        {
+          "pieces": 4,
+          "stats": {
+            "attack": 8,
+            "maxHp": 60
+          }
+        }
+      ]
+    },
+    {
+      "id": "mosswarden",
+      "name": "Mosswarden",
+      "description": "Bark and moss grown armour.",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "stats": {
+            "attack": 4,
+            "resistance": 4
+          }
+        },
+        {
+          "pieces": 4,
+          "stats": {
+            "attack": 8,
+            "maxHp": 60
+          }
+        }
+      ]
+    },
+    {
+      "id": "stormtouched",
+      "name": "Stormtouched",
+      "description": "Forged in a thunderstorm.",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "stats": {
+            "attack": 7,
+            "magicPower": 5
+          }
+        },
+        {
+          "pieces": 4,
+          "stats": {
+            "attack": 14,
+            "speed": 5
+          }
+        }
+      ]
+    },
+    {
+      "id": "runebound",
+      "name": "Runebound",
+      "description": "Etched with living runes.",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "stats": {
+            "attack": 7,
+            "magicPower": 5
+          }
+        },
+        {
+          "pieces": 4,
+          "stats": {
+            "attack": 14,
+            "speed": 5
+          }
+        }
+      ]
+    },
+    {
+      "id": "emberforged",
+      "name": "Emberforged",
+      "description": "Black steel veined with molten ember.",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "stats": {
+            "attack": 12,
+            "resistance": 8
+          }
+        },
+        {
+          "pieces": 4,
+          "stats": {
+            "attack": 22,
+            "maxHp": 120
+          }
+        }
+      ]
+    },
+    {
+      "id": "frostbound",
+      "name": "Frostbound",
+      "description": "Armour of enduring winter.",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "stats": {
+            "attack": 12,
+            "resistance": 8
+          }
+        },
+        {
+          "pieces": 4,
+          "stats": {
+            "attack": 22,
+            "maxHp": 120
+          }
+        }
+      ]
+    },
+    {
+      "id": "dragonblood",
+      "name": "Dragonblood",
+      "description": "Dragonscale burning with a molten heart.",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "stats": {
+            "attack": 18,
+            "critChance": 3
+          }
+        },
+        {
+          "pieces": 4,
+          "stats": {
+            "attack": 32,
+            "critDamage": 15
+          }
+        }
+      ]
+    },
+    {
+      "id": "voidweave",
+      "name": "Voidweave",
+      "description": "Cloth of the lightless void.",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "stats": {
+            "attack": 26,
+            "magicPower": 20
+          }
+        },
+        {
+          "pieces": 4,
+          "stats": {
+            "attack": 44,
+            "magicPower": 36,
+            "speed": 6
+          }
+        }
+      ]
+    },
+    {
+      "id": "setras_chosen",
+      "name": "Setra's Chosen",
+      "description": "The relic panoply of the first chosen.",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "stats": {
+            "attack": 18,
+            "magicPower": 18
+          }
+        },
+        {
+          "pieces": 4,
+          "stats": {
+            "resistance": 25,
+            "maxHp": 80
+          }
+        },
+        {
+          "pieces": 6,
+          "stats": {
+            "attack": 40,
+            "magicPower": 40,
+            "speed": 10
           }
         }
       ]
@@ -10952,6 +12920,169 @@ const CONTENT = {
       "materialPool": [
         "the_essence_of_life"
       ]
+    },
+    {
+      "rank": "t1",
+      "label": "Verdant Ruins",
+      "image": "/images/dungeons/t1.png",
+      "stamina": 3,
+      "xpReward": 90,
+      "goldScale": 0.8,
+      "woodScale": 0.7,
+      "goldBase": 55,
+      "woodBase": 35,
+      "monsterPool": [
+        "goblin_warrior",
+        "skeleton",
+        "dire_wolf",
+        "crystal_golem",
+        "cursed_knight",
+        "iron_ogre",
+        "golem",
+        "wraith",
+        "manticore",
+        "harpy"
+      ],
+      "monsterCount": 3,
+      "monsterPower": 1.5,
+      "sizeProfile": "more",
+      "travel": true
+    },
+    {
+      "rank": "t2",
+      "label": "Sunken Cistern",
+      "image": "/images/dungeons/t2.png",
+      "stamina": 3,
+      "xpReward": 140,
+      "goldScale": 1,
+      "woodScale": 0.9,
+      "goldBase": 80,
+      "woodBase": 50,
+      "monsterPool": [
+        "stone_warden",
+        "manticore",
+        "ogre",
+        "dark_knight",
+        "witch",
+        "iron_ogre",
+        "crystal_golem",
+        "wyvern",
+        "frost_wyvern",
+        "void_golem",
+        "elder_treant"
+      ],
+      "monsterCount": 3,
+      "monsterPower": 1.9,
+      "sizeProfile": "more",
+      "travel": true
+    },
+    {
+      "rank": "t3",
+      "label": "Ashen War Camp",
+      "image": "/images/dungeons/t3.png",
+      "stamina": 4,
+      "xpReward": 210,
+      "goldScale": 1.25,
+      "woodScale": 1.1,
+      "goldBase": 110,
+      "woodBase": 70,
+      "monsterPool": [
+        "crystal_golem",
+        "cursed_knight",
+        "stone_titan",
+        "wyvern",
+        "ancient_golem",
+        "frost_wyvern",
+        "void_golem",
+        "storm_lich",
+        "nether_hydra",
+        "dusk_manticore"
+      ],
+      "monsterCount": 4,
+      "monsterPower": 2.4,
+      "sizeProfile": "more",
+      "travel": true
+    },
+    {
+      "rank": "t4",
+      "label": "Frozen Sanctum",
+      "image": "/images/dungeons/t4.png",
+      "stamina": 4,
+      "xpReward": 300,
+      "goldScale": 1.5,
+      "woodScale": 1.3,
+      "goldBase": 150,
+      "woodBase": 95,
+      "monsterPool": [
+        "wyvern",
+        "frost_wyvern",
+        "void_golem",
+        "storm_lich",
+        "nether_hydra",
+        "ancient_golem",
+        "lich",
+        "doom_lord",
+        "abyss_wraith",
+        "flame_witch"
+      ],
+      "monsterCount": 4,
+      "monsterPower": 3,
+      "sizeProfile": "more",
+      "travel": true
+    },
+    {
+      "rank": "t5",
+      "label": "Void Rift",
+      "image": "/images/dungeons/t5.png",
+      "stamina": 5,
+      "xpReward": 420,
+      "goldScale": 1.8,
+      "woodScale": 1.55,
+      "goldBase": 200,
+      "woodBase": 125,
+      "monsterPool": [
+        "ancient_golem",
+        "wyvern",
+        "storm_lich",
+        "void_golem",
+        "lich",
+        "doom_lord",
+        "world_eater",
+        "hydra",
+        "frost_wyvern",
+        "nether_hydra"
+      ],
+      "monsterCount": 5,
+      "monsterPower": 3.7,
+      "sizeProfile": "more",
+      "travel": true
+    },
+    {
+      "rank": "t6",
+      "label": "Worldroot Abyss",
+      "image": "/images/dungeons/t6.png",
+      "stamina": 6,
+      "xpReward": 600,
+      "goldScale": 2.15,
+      "woodScale": 1.85,
+      "goldBase": 270,
+      "woodBase": 170,
+      "monsterPool": [
+        "lich",
+        "hydra",
+        "doom_lord",
+        "world_eater",
+        "void_golem",
+        "storm_lich",
+        "nether_hydra",
+        "ancient_golem",
+        "frost_wyvern",
+        "world_eater"
+      ],
+      "monsterCount": 5,
+      "monsterPower": 4.5,
+      "sizeProfile": "more",
+      "travel": true
     }
   ],
   "combat": {
@@ -12359,6 +14490,60 @@ const CONTENT = {
         "mythic": 30,
         "ancient_relic": 1.2
       },
+      "t1": {
+        "common": 35,
+        "uncommon": 35,
+        "rare": 22,
+        "epic": 10.4,
+        "legendary": 2.25,
+        "mythic": 0.48,
+        "ancient_relic": 0.03
+      },
+      "t2": {
+        "common": 25,
+        "uncommon": 38.5,
+        "rare": 30,
+        "epic": 18.2,
+        "legendary": 4.5,
+        "mythic": 1.28,
+        "ancient_relic": 0.08
+      },
+      "t3": {
+        "common": 15,
+        "uncommon": 35,
+        "rare": 38,
+        "epic": 28.6,
+        "legendary": 9,
+        "mythic": 2.56,
+        "ancient_relic": 0.19
+      },
+      "t4": {
+        "common": 7.5,
+        "uncommon": 28,
+        "rare": 45,
+        "epic": 41.6,
+        "legendary": 15,
+        "mythic": 4.8,
+        "ancient_relic": 0.4
+      },
+      "t5": {
+        "common": 4,
+        "uncommon": 21,
+        "rare": 48,
+        "epic": 54.6,
+        "legendary": 22.5,
+        "mythic": 8,
+        "ancient_relic": 0.8
+      },
+      "t6": {
+        "common": 2.5,
+        "uncommon": 15.4,
+        "rare": 50,
+        "epic": 71.5,
+        "legendary": 33,
+        "mythic": 12.8,
+        "ancient_relic": 1.6
+      },
       "fast": {
         "common": 100,
         "uncommon": 30,
@@ -12425,7 +14610,7 @@ const CONTENT = {
       "name": "Ember King",
       "image": "/images/bosses/ember_king.png",
       "hp": 9000,
-      "attack": 42,
+      "attack": 460,
       "speed": 6,
       "element": "fire",
       "rarity": "mythic",
@@ -12460,7 +14645,7 @@ const CONTENT = {
       "name": "Glacier Doomlord",
       "image": "/images/bosses/frost_titan.png",
       "hp": 16000,
-      "attack": 52,
+      "attack": 640,
       "speed": 5,
       "element": "frost",
       "rarity": "mythic",
@@ -12495,7 +14680,7 @@ const CONTENT = {
       "name": "Eternal Abyss Herald",
       "image": "/images/bosses/void_herald.png",
       "hp": 26000,
-      "attack": 62,
+      "attack": 820,
       "speed": 7,
       "element": "shadow",
       "rarity": "mythic",
@@ -12530,7 +14715,7 @@ const CONTENT = {
       "name": "Thunder Tyrant",
       "image": "/images/bosses/storm_colossus.png",
       "hp": 40000,
-      "attack": 72,
+      "attack": 1000,
       "speed": 6,
       "element": "arcane",
       "rarity": "mythic",
@@ -12565,7 +14750,7 @@ const CONTENT = {
       "name": "Oblivion Devourer",
       "image": "/images/bosses/world_eater.png",
       "hp": 55000,
-      "attack": 85,
+      "attack": 1200,
       "speed": 5,
       "element": "physical",
       "rarity": "mythic",
@@ -15719,6 +17904,7 @@ function publicCatalog() {
       image: d.image,
       battleImage: d.battleImage || "",
       monsterPool: d.monsterPool || [],
+      travel: d.travel || false,
     })),
     skills: CONTENT.skills.map((s) => ({
       id: s.id,
@@ -15763,6 +17949,8 @@ function publicCatalog() {
       bossWeapon: i.bossWeapon || null,
       blueprint: i.blueprint || null,
       chestDrop: i.chestDrop || null,
+      dungeonOnly: i.dungeonOnly || null,
+      travelOnly: i.travelOnly || null,
       image: i.image,
       description: i.description || "",
     })),
