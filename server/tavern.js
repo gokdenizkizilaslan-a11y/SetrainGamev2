@@ -9,11 +9,22 @@ function validBet(bet) {
   return n;
 }
 
+const CARD_SUITS = [
+  { suit: "spades", symbol: "\u2660", color: "black" },
+  { suit: "hearts", symbol: "\u2665", color: "red" },
+  { suit: "diamonds", symbol: "\u2666", color: "red" },
+  { suit: "clubs", symbol: "\u2663", color: "black" },
+];
+
 function drawCard() {
   const v = 1 + Math.floor(Math.random() * 13);
-  if (v === 1) return { rank: "A", value: 11 };
-  if (v >= 11) return { rank: ["J", "Q", "K"][v - 11], value: 10 };
-  return { rank: String(v), value: v };
+  const s = CARD_SUITS[Math.floor(Math.random() * CARD_SUITS.length)];
+  let rank;
+  let value;
+  if (v === 1) { rank = "A"; value = 11; }
+  else if (v >= 11) { rank = ["J", "Q", "K"][v - 11]; value = 10; }
+  else { rank = String(v); value = v; }
+  return { rank, value, suit: s.suit, suitSymbol: s.symbol, color: s.color };
 }
 
 function handTotal(hand) {
@@ -72,6 +83,7 @@ function startBlackjack(player, bet) {
     dealerHand,
     dealerShown: false,
     status: "playing",
+    result: null,
     message: "Hit or stand.",
   };
   const p = handTotal(playerHand);
@@ -88,6 +100,7 @@ function settleBlackjack(player, result) {
   const bet = player.tavern.bet;
   player.tavern.dealerShown = true;
   player.tavern.status = "done";
+  player.tavern.result = result;
   player.tavern.won =
     result === "win" || result === "blackjack" ? true : result === "push" ? null : false;
   if (result === "blackjack") {

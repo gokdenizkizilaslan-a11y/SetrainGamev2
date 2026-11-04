@@ -694,6 +694,16 @@ function registerSocketHandlers(io) {
       }
     });
 
+    socket.on("tavern:clear", () => {
+      try {
+        const { room, player } = gameContext(socket);
+        player.tavern = null;
+        emitRoomState(io, room);
+      } catch (err) {
+        emitError(socket, err);
+      }
+    });
+
     socket.on("tavern:sleep", () => {
       try {
         const { room, player } = gameContext(socket);

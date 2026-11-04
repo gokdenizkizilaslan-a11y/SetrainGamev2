@@ -91,6 +91,11 @@ function renderLobby(room) {
 }
 
 function renderTown(room) {
+  if (state.bjTableEl && state.bjTableEl.parentNode) {
+    state.bjTableEl.parentNode.removeChild(state.bjTableEl);
+    state.bjTableEl = null;
+    state.bjTableSig = "";
+  }
   showScreen("screen-town");
 
   // Kasaba paneli arka planı (editör: UI → townPanelBg). Yoksa varsayılan zemin.
@@ -152,7 +157,7 @@ function renderTown(room) {
     } else if (room.log.rebirth) {
       showRebirthCinematic(room.log.rebirth, room.log.text);
     } else {
-      sfxPlay("neutralascension");
+      sfxEvent("cinematic.ascend");
       showNotice("temple", "Ascension", room.log.text);
     }
   }
@@ -160,7 +165,7 @@ function renderTown(room) {
     state.dayNoticeKey = room.log.ts;
     const slept = state.justSlept;
     state.justSlept = false;
-    sfxPlay("aftersleepnewdaysound");
+    sfxEvent("cinematic.newDay");
     showNotice("day", `Day ${room.day}`, slept ? "You slept through the night. Stamina is restored." : "A new day dawns. Stamina is restored.");
   }
 
@@ -191,6 +196,11 @@ function renderTown(room) {
   $("dungeon-view").classList.toggle("hidden", !state.dungeonOpen);
   const plazaEl = $("plaza-view");
   if (plazaEl) plazaEl.classList.toggle("hidden", !state.plazaOpen);
+  if (!state.tavernOpen && state.bjTableEl && state.bjTableEl.parentNode) {
+    state.bjTableEl.parentNode.removeChild(state.bjTableEl);
+    state.bjTableEl = null;
+    state.bjTableSig = "";
+  }
   $("tavern-view").classList.toggle("hidden", !state.tavernOpen);
   $("blacksmith-view").classList.toggle("hidden", !state.blacksmithOpen);
   $("merchant-view").classList.toggle("hidden", !state.merchantOpen);

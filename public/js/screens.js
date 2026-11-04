@@ -72,14 +72,23 @@ function showScreen(id) {
 
 function showToast(message) {
   const toast = $("toast");
+  if (!toast) return;
   toast.textContent = message;
-  toast.classList.remove("hidden");
+  toast.classList.remove("hidden", "toast--leaving");
+  void toast.offsetWidth;
   clearTimeout(showToast._t);
-  showToast._t = setTimeout(() => toast.classList.add("hidden"), 3200);
+  clearTimeout(showToast._hide);
+  showToast._t = setTimeout(() => {
+    toast.classList.add("toast--leaving");
+    showToast._hide = setTimeout(() => {
+      toast.classList.add("hidden");
+      toast.classList.remove("toast--leaving");
+    }, 240);
+  }, 3200);
 }
 
 let nightTransitionBusy = false;
-function playNightTransition(title, sub, onCovered) {
+function playNightTransition(title, sub, onCovered, opts) {
   const el = $("night-transition");
   if (!el) {
     if (onCovered) onCovered();
@@ -92,8 +101,12 @@ function playNightTransition(title, sub, onCovered) {
   const art = el.querySelector(".night-transition__art");
   const titleEl = el.querySelector(".night-transition__title");
   const subEl = el.querySelector(".night-transition__sub");
+  const eyebrowEl = el.querySelector(".night-transition__eyebrow");
+  const variant = (opts && opts.variant) === "rest" ? "rest" : "night";
   const rawImg = typeof ui.restNight === "string" ? ui.restNight.trim() : "";
   if (art) art.style.backgroundImage = rawImg ? `url("${rawImg.replace(/"/g, "%22")}")` : "none";
+  el.classList.toggle("is-rest", variant === "rest");
+  if (eyebrowEl) eyebrowEl.textContent = (opts && opts.eyebrow) || "The day ends";
   if (titleEl) titleEl.textContent = title || "Night falls";
   if (subEl) subEl.textContent = sub || "";
 
@@ -262,6 +275,65 @@ async function loadSounds() {
   }
 }
 loadSounds();
+
+// ---- Named sound events (content.sfx overrides) ----
+// Keys are resolved from CATALOG.sfx (dot path). An empty/missing value falls
+// back to SFX_DEFAULTS; the literal string "none" silences the event.
+const SFX_DEFAULTS = {
+  "ui.click": "clicksound",
+  "ui.hover": "hoversound",
+  "ui.win": "winningsound",
+  "ui.lose": "losingsound",
+  "ui.search": "lootsound",
+  "action.rest": "healingmagic",
+  "action.sleepOutside": "aftersleepnewdaysound",
+  "action.tavernSleep": "aftersleepnewdaysound",
+  "action.search": "lootsound",
+  "action.blacksmith": "strongattack1",
+  "action.merchant": "inventorysound",
+  "action.temple": "neutralascension",
+  "action.dungeon": "monstersound",
+  "action.eat": "eatingsound",
+  "action.potion": "potiondrinksound",
+  "action.revive": "revivesound",
+  "item.loot": "lootsound",
+  "item.inventory": "inventorysound",
+  "item.coin": "clicksound",
+  "cinematic.ascend": "holy-ascensionsound",
+  "cinematic.rebirth": "neutralascension",
+  "cinematic.newDay": "aftersleepnewdaysound",
+  "cinematic.nightFall": "monstersound",
+  "combat.win": "winningsound",
+  "combat.lose": "losingsound",
+  "combat.crit": "skull_crush",
+  "tavern.deal": "inventorysound",
+  "tavern.hit": "inventorysound",
+  "tavern.flip": "clicksound",
+  "tavern.win": "winningsound",
+  "tavern.lose": "losingsound",
+  "tavern.push": "clicksound",
+  "tavern.chip": "clicksound",
+};
+
+function sfxResolve(key) {
+  const table = (typeof CATALOG !== "undefined" && CATALOG && CATALOG.sfx) || {};
+  let node = table;
+  for (const part of String(key).split(".")) {
+    if (node && typeof node === "object" && part in node) node = node[part];
+    else { node = undefined; break; }
+  }
+  if (node === "none") return "none";
+  if (node == null || node === "") node = SFX_DEFAULTS[key];
+  return node == null || node === "" ? null : node;
+}
+
+function sfxEvent(key, vol) {
+  if (!sfxEnabled) return;
+  const val = sfxResolve(key);
+  if (!val || val === "none") return;
+  sfxPlay(val, vol);
+}
+
 let vfx = null;
 function initVfx(){
   try{ if(window.SetraEffects && document.getElementById('gameVfxCanvas')) vfx = new SetraEffects('gameVfxCanvas'); }catch(e){ console.warn("vfx init failed", e); }
@@ -299,7 +371,7 @@ document.addEventListener("mouseover", (e) => {
     const now = performance.now();
     if (now - lastHoverSfxTime >= HOVER_SFX_COOLDOWN_MS) {
       lastHoverSfxTime = now;
-      sfxPlay("hoversound", 0.25 + Math.random() * 0.1);
+      sfxEvent("ui.hover", 0.25 + Math.random() * 0.1);
     }
   }
 });
@@ -310,7 +382,7 @@ document.addEventListener("mouseout", (e) => {
 document.addEventListener("click", (e) => {
   if (!sfxEnabled) return;
   const el = e.target && e.target.closest ? e.target.closest(INTERACTIVE_SELECTOR) : null;
-  if (el) sfxPlay("clicksound");
+  if (el) sfxEvent("ui.click");
 });
 
 function spawnPopup(el, text, kind, color) {
@@ -610,11 +682,11 @@ function drainCombatFx(root) {
       continue;
     }
     if (ev.type === "loot") {
-      sfxPlay("lootsound");
+      sfxEvent("item.loot");
       continue;
     }
     if (ev.type === "chest") {
-      sfxPlay("lootsound");
+      sfxEvent("item.loot");
       continue;
     }
     let el = null;
@@ -707,7 +779,7 @@ function drainCombatFx(root) {
       spawnPopup(el, "🛡️ +" + ev.amount, "heal", "#7fb4ff");
       sfxPlay("shield");
     } else if (ev.type === "egg") {
-      sfxPlay("lootsound");
+      sfxEvent("item.loot");
       spawnPopup(root, "🥚 Egg!", "heal", "#ffe14d");
     } else if (ev.type === "buff") {
       const meta = BUFF_META[ev.kind] || { label: ev.kind || "Buff", color: "#8fe08a" };
@@ -723,27 +795,114 @@ function drainCombatFx(root) {
   const last = fx[fx.length - 1];
   if (last && last.type === "result") {
     if (last.outcome === "victory") {
-      sfxPlay(["winningsound"]);
+      sfxEvent("combat.win");
       try { if (typeof playVictorySting === "function") playVictorySting(); } catch (e) {}
     }
-    else sfxPlay(["losingsound"]);
+    else sfxEvent("combat.lose");
   }
 }
+
+const NOTICE_ICONS = {
+  win: "🏆",
+  lose: "💀",
+  push: "⚖️",
+  search: "🔍",
+  party: "👥",
+  flee: "🏃",
+  info: "✦",
+};
 
 function showNotice(kind, title, subtitle) {
   const el = $("notice");
   if (!el) return;
-  el.innerHTML = `<div class="notice-card notice-card--${escapeHtml(kind)}">
+  const k = String(kind || "info");
+  const ico = NOTICE_ICONS[k] || NOTICE_ICONS.info;
+  el.innerHTML = `<div class="notice-card notice-card--${escapeHtml(k)}" role="dialog" aria-modal="true" aria-label="${escapeHtml(title)}">
+    <span class="notice-card__icon" aria-hidden="true">${ico}</span>
     <h3>${escapeHtml(title)}</h3>
     <p>${escapeHtml(subtitle)}</p>
     <button type="button" class="btn btn--gold" id="btn-notice-ok">Continue</button>
   </div>`;
   el.classList.remove("hidden");
+  const onKey = (ev) => { if (ev.key === "Escape") close(); };
+  const onBackdrop = (ev) => { if (ev.target === el) close(); };
+  const close = () => {
+    el.classList.add("hidden");
+    document.removeEventListener("keydown", onKey);
+    el.removeEventListener("click", onBackdrop);
+  };
   const ok = el.querySelector("#btn-notice-ok");
-  if (ok) ok.addEventListener("click", () => el.classList.add("hidden"));
-  if (kind === "win") playSfx("win");
-  else if (kind === "lose") playSfx("lose");
-  else if (kind === "search") playSfx("coin");
+  if (ok) {
+    ok.addEventListener("click", close);
+    ok.focus({ preventScroll: true });
+  }
+  document.addEventListener("keydown", onKey);
+  el.addEventListener("click", onBackdrop);
+  if (kind === "win") sfxEvent("ui.win");
+  else if (kind === "lose") sfxEvent("ui.lose");
+  else if (kind === "search") sfxEvent("ui.search");
+}
+
+// Deterministik kor alanı: altarın çevresine altın-açı dağılımıyla saçılır.
+function cineMotes() {
+  return Array.from({ length: 34 }, (_, i) => {
+    const a = (i * 137.508) % 360;
+    const rad = 11 + (i % 9) * 6.2;
+    const x = 50 + Math.cos((a * Math.PI) / 180) * rad;
+    const y = 57 + Math.sin((a * Math.PI) / 180) * rad * 0.72;
+    const s = 1.5 + (i % 5) * 0.7;
+    const d = ((i % 12) * 0.17).toFixed(2);
+    const t = (3.4 + (i % 6) * 0.6).toFixed(2);
+    return `<span class="rb-mote" style="left:${x.toFixed(2)}%;top:${y.toFixed(2)}%;width:${s.toFixed(2)}px;height:${s.toFixed(2)}px;--d:${d}s;--t:${t}s"></span>`;
+  }).join("");
+}
+
+function cineRunes() {
+  const glyphs = ["✦", "✧", "◆", "❖", "⟡", "✶", "◇", "✹", "✵", "❉", "✺", "✷"];
+  return Array.from({ length: 12 }, (_, i) =>
+    `<span class="rb-rune" style="--a:${i * 30}deg">${glyphs[i % glyphs.length]}</span>`
+  ).join("");
+}
+
+// Paylaşılan premium sinematik sahne: kor çekirdeği toplanır, ışık sütunu
+// patlar, ardından süslü kart süzülerek belirir. Hem rebirth hem ascension
+// aynı dili kullanır; `--cine-shift` ile zaman çizgisi kaydırılabilir.
+function cineScene(opts) {
+  const o = opts || {};
+  return `<div class="rb-atmosphere"></div>
+    <div class="rb-motes">${cineMotes()}</div>
+    <div class="rb-vignette"></div>
+    <div class="rb-altar" aria-hidden="true">
+      <span class="rb-ring rb-ring--1"></span>
+      <span class="rb-ring rb-ring--2"></span>
+      <span class="rb-ring rb-ring--3"></span>
+      <span class="rb-runes">${cineRunes()}</span>
+      <span class="rb-core"></span>
+      <span class="rb-pillar"></span>
+      <span class="rb-shockwave"></span>
+    </div>
+    <div class="rb-card" role="document">
+      <span class="rb-card-glow" aria-hidden="true"></span>
+      <span class="rb-card-shine" aria-hidden="true"></span>
+      <span class="rb-corner rb-corner--tl" aria-hidden="true"></span>
+      <span class="rb-corner rb-corner--tr" aria-hidden="true"></span>
+      <span class="rb-corner rb-corner--bl" aria-hidden="true"></span>
+      <span class="rb-corner rb-corner--br" aria-hidden="true"></span>
+      <p class="rb-kicker">${o.kicker || ""}</p>
+      <p class="rb-sub">${o.sub || ""}</p>
+      <h2 class="rb-name">${o.name || ""}</h2>
+      <span class="rb-divider" aria-hidden="true"><i></i><b>✦</b><i></i></span>
+      ${o.note ? `<p class="rb-note">${o.note}</p>` : ""}
+      ${o.extra || ""}
+      <button type="button" class="btn btn--gold rb-continue" id="btn-notice-ok">Continue</button>
+    </div>`;
+}
+
+function attachCineContinue(el) {
+  const ok = el.querySelector("#btn-notice-ok");
+  if (!ok) return;
+  ok.addEventListener("click", () => el.classList.add("hidden"));
+  try { ok.focus({ preventScroll: true }); } catch (e) { /* yok say */ }
 }
 
 function showAscendCinematic(ascend, fallbackText) {
@@ -753,27 +912,25 @@ function showAscendCinematic(ascend, fallbackText) {
   const color = typeof a.color === "string" && /^#[0-9a-fA-F]{6}$/.test(a.color) ? a.color : "#e8c547";
   const title = a.title || fallbackText || "You have ascended!";
   const label = a.label || "";
-  // 1) Önce 2 sn fullscreen ışık patlaması (class renginde), sonra kart.
+  // 1) Önce 2 sn fullscreen ışık patlaması (class renginde), sonra sahne.
   const token = (el._ascendToken = (el._ascendToken || 0) + 1);
   el.innerHTML = `<div class="ascend-overlay ascend-burst" style="--ascend:${color}"><div class="ascend-flash"></div></div>`;
   el.classList.remove("hidden");
   if (a.sound) sfxPlay(a.sound);
-  else sfxPlay("neutralascension");
+  else sfxEvent("cinematic.ascend");
   // İkinci ses varsa kısa gecikmeyle katmanlanır (aynı anda üst üste biner).
   if (a.sound2) setTimeout(() => { if (el._ascendToken === token) sfxPlay(a.sound2); }, 300);
   setTimeout(() => {
     if (el._ascendToken !== token || !el.querySelector(".ascend-burst")) return;
-    el.innerHTML = `<div class="ascend-overlay" style="--ascend:${color}">
-      <div class="ascend-rays"></div>
-      <div class="ascend-card">
-        <div class="ascend-kicker">✦ ASCENSION ✦</div>
-        <h2>${escapeHtml(title)}</h2>
-        ${label ? `<p class="ascend-class">${escapeHtml(label)}</p>` : ""}
-        <button type="button" class="btn btn--gold" id="btn-notice-ok">Continue</button>
-      </div>
+    el.innerHTML = `<div class="ascend-overlay ascend-reveal" style="--ascend:${color};--ascend-soft:${color}">
+      ${cineScene({
+        kicker: "✦&nbsp;&nbsp;ASCENSION&nbsp;&nbsp;✦",
+        sub: "You have transcended into",
+        name: escapeHtml(title),
+        extra: label ? `<p class="rb-class">${escapeHtml(label)}</p>` : "",
+      })}
     </div>`;
-    const ok = el.querySelector("#btn-notice-ok");
-    if (ok) ok.addEventListener("click", () => el.classList.add("hidden"));
+    attachCineContinue(el);
   }, 2000);
 }
 
@@ -786,25 +943,19 @@ function showRebirthCinematic(rb, fallbackText) {
   // Vitrin rengi: glow varsa o (nadir ırklarda glowing black hissi), yoksa ırk rengi.
   const display = isHex(r.glow) ? r.glow : color;
   const name = r.name || fallbackText || "Unknown Blood";
-  const token = (el._ascendToken = (el._ascendToken || 0) + 1);
-  // 1) Önce 2 sn fullscreen ışık patlaması (ırk renginde), sonra kart.
-  el.innerHTML = `<div class="ascend-overlay ascend-burst" style="--ascend:${display}"><div class="ascend-flash"></div></div>`;
+
+  el.innerHTML = `<div class="rebirth-cine" style="--ascend:${display};--ascend-soft:${color}">
+    ${cineScene({
+      kicker: "✦&nbsp;&nbsp;REBIRTH&nbsp;&nbsp;✦",
+      sub: "You are reborn in the flesh of",
+      name: escapeHtml(name),
+      note: "A new blood stirs within you.",
+    })}
+  </div>`;
   el.classList.remove("hidden");
-  sfxPlay("neutralascension");
-  setTimeout(() => {
-    if (el._ascendToken !== token || !el.querySelector(".ascend-burst")) return;
-    el.innerHTML = `<div class="ascend-overlay" style="--ascend:${display}">
-      <div class="ascend-rays"></div>
-      <div class="ascend-card rebirth-card">
-        <div class="ascend-kicker">✦ REBIRTH ✦</div>
-        <p class="rebirth-sub">You are reborn in the flesh of</p>
-        <h2 class="rebirth-name" style="color:${display};text-shadow:0 0 18px ${display}, 0 0 52px ${display}">${escapeHtml(name)}</h2>
-        <button type="button" class="btn btn--gold" id="btn-notice-ok">Continue</button>
-      </div>
-    </div>`;
-    const ok = el.querySelector("#btn-notice-ok");
-    if (ok) ok.addEventListener("click", () => el.classList.add("hidden"));
-  }, 2000);
+  if (soundMap.has("rebirthsound")) sfxPlay("rebirthsound");
+  else sfxEvent("cinematic.rebirth");
+  attachCineContinue(el);
 }
 
 function showStoryIntro() {
@@ -1644,7 +1795,7 @@ function renderProfileCard(room, selfId) {
   const invBtn = el.querySelector("#btn-open-inventory");
   if (invBtn) {
     invBtn.addEventListener("click", () => {
-      sfxPlay("inventorysound");
+      sfxEvent("item.inventory");
       state.inventoryOpen = true;
       state.petsTab = false;
       renderTown(state.room);
@@ -1653,7 +1804,7 @@ function renderProfileCard(room, selfId) {
   const petsBtn = el.querySelector("#btn-open-pets");
   if (petsBtn) {
     petsBtn.addEventListener("click", () => {
-      sfxPlay("inventorysound");
+      sfxEvent("item.inventory");
       state.petsOpen = true;
       state.inventoryOpen = false;
       renderTown(state.room);
@@ -1849,6 +2000,8 @@ function renderActionCards(room, selfId) {
       }
       const a = ACTIONS.find((x) => x.id === b.getAttribute("data-action"));
       if (a.kind === "open") {
+        const openSfx = { dungeon: "action.dungeon", blacksmith: "action.blacksmith", merchant: "action.merchant", temple: "action.temple" };
+        if (openSfx[a.id]) sfxEvent(openSfx[a.id], 0.45);
         state.skillTreeOpen = false;
         state.dungeonOpen = a.id === "dungeon";
         state.plazaOpen = a.id === "plaza";
@@ -1862,9 +2015,20 @@ function renderActionCards(room, selfId) {
         renderTown(state.room);
       } else if (a.id === "sleep") {
         state.justSlept = true;
+        sfxEvent("action.sleepOutside");
         playNightTransition("Night falls", "You sleep beneath the cold stars. Stamina returns at dawn.", () => socket.emit(a.event));
       } else if (a.id === "rest") {
-        playNightTransition("You rest", "The stars wheel overhead while your strength returns.", () => socket.emit(a.event));
+        if (restLeft <= 0) {
+          if (typeof showToast === "function") showToast("No rests left today. Sleep to end the day.");
+          return;
+        }
+        sfxEvent("action.rest");
+        playNightTransition(
+          "You rest",
+          "You catch your breath — your strength returns.",
+          () => socket.emit(a.event),
+          { eyebrow: "A Moment's Respite", variant: "rest" }
+        );
       } else {
         socket.emit(a.event);
       }
@@ -2638,6 +2802,7 @@ function ensureDungeonState() {
 function renderDungeonView(room) {
   const d = myDungeon(room);
   const root = $("dungeon-content");
+  root.classList.remove("dg-browse-mode");
   if (!d) return renderDungeonBrowser(room, root);
   if (d.bossId) {
     if (d.status === "fighting" || d.status === "done") return renderCombat(room, root);
@@ -2716,28 +2881,28 @@ function renderDungeonBrowser(room, root) {
     ? `<p class="muted" title="${escapeHtml(omen.desc || "")}">Today: ${escapeHtml(omen.icon || "✦")} <strong>${escapeHtml(omen.name)}</strong></p>`
     : "";
 
-  const leftHtml = `<div class="dungeon-browser-left">
-    <p class="subhead">Dungeons</p>
-    <div class="dungeon-list-col">
+  const leftHtml = `<aside class="dg-ranks">
+    <p class="dg-ranks-title">Dungeons</p>
+    <div class="dg-rank-list">
       ${CATALOG.dungeons.map((dg) => {
         const top = [...dungeonDrops(dg.rank).odds].sort((a,b)=>b.pct-a.pct).slice(0,2);
         const hint = top.map(o=>`${escapeHtml(rarityMetaOf(o.rarity).label||o.rarity)} ${o.pct}%`).join(" · ");
         const sel = dg.rank === selectedRank ? " is-selected" : "";
-        return `<button type="button" class="dungeon-list-item${sel}" data-rank="${dg.rank}">
-          <span class="portrait portrait--dungeon dungeon-list-tile" data-img="${dg.image}" data-variant="dungeon"></span>
-          <span class="dungeon-list-meta">
-            <span class="dungeon-list-label">${escapeHtml(dg.label)}</span>
-            <span class="dungeon-list-hint">${hint}</span>
+        return `<button type="button" class="dg-rank${sel}" data-rank="${dg.rank}">
+          <span class="dg-rank-art" data-img="${escapeHtml(dg.image||"")}" data-variant="dungeon"></span>
+          <span class="dg-rank-body">
+            <span class="dg-rank-label">${escapeHtml(dg.label)}</span>
+            <span class="dg-rank-hint">${hint}</span>
           </span>
         </button>`;
       }).join("")}
     </div>
-  </div>`;
+  </aside>`;
 
   // Right side
   let rightHtml = "";
   if (!dgDef) {
-    rightHtml = `<div class="dungeon-browser-right"><p class="muted">Select a dungeon on the left.</p></div>`;
+    rightHtml = `<div class="dg-empty">Select a dungeon on the left to begin.</div>`;
   } else {
     const drops = dungeonDrops(selectedRank);
     const chip = (o, text) => `<span class="drop-chip" style="--drop:${rarityMetaOf(o.rarity).color || "#9aa7b5"}">${escapeHtml(text)}</span>`;
@@ -2758,13 +2923,13 @@ function renderDungeonBrowser(room, root) {
           const members = (d.memberIds||[]).map((id)=>room.players.find((p)=>p.id===id)).filter(Boolean);
           const sizeDef = CATALOG.sizes.find((s)=>s.id===d.size);
           const canJoin = !isDead && d.memberIds.length < room.maxPlayers && d.open;
-          return `<div class="party-card">
-            <div class="party-card-head">
-              <span class="party-card-title">${escapeHtml(d.label || dgDef.label)} — ${escapeHtml(sizeLabel(d.size))}</span>
-              <span class="muted">Stamina ${d.stamina != null ? d.stamina : sizeDef ? sizeDef.stamina : "?"}</span>
+          return `<div class="dg-party">
+            <div class="dg-party-head">
+              <span class="dg-party-title">${escapeHtml(d.label || dgDef.label)}</span>
+              <span class="dg-party-stam">${icon("stamina")} ${d.stamina != null ? d.stamina : sizeDef ? sizeDef.stamina : "?"}</span>
             </div>
-            <div class="party-card-leader">Leader: ${leader ? escapeHtml(leader.name) : "Unknown"} · ${members.length}/${room.maxPlayers}</div>
-            <div class="party-card-members">
+            <div class="dg-party-leader">${escapeHtml(sizeLabel(d.size))} · Leader ${leader ? escapeHtml(leader.name) : "Unknown"} · ${members.length}/${room.maxPlayers}</div>
+            <div class="dg-party-members">
               ${members.map((m)=>{
                 const frame = m.anomaly ? ` style="--frame:${m.anomaly.frameColor}"` : "";
                 return `<span class="party-chip${m.id===d.leaderId?" party-chip--leader":""}" title="${escapeHtml(m.name)}">
@@ -2773,10 +2938,14 @@ function renderDungeonBrowser(room, root) {
                 </span>`;
               }).join("")}
             </div>
-            <button type="button" class="btn btn--bronze btn--mini party-join-btn" data-join="${d.id}" ${canJoin ? "" : "disabled"}>${isDead ? "Dead" : canJoin ? "Join Party" : "Full"}</button>
+            <button type="button" class="btn btn--bronze btn--mini dg-join" data-join="${d.id}" ${canJoin ? "" : "disabled"}>${isDead ? "Dead" : canJoin ? "Join Party" : "Full"}</button>
           </div>`;
         }).join("")
-      : `<div class="muted">No parties yet for ${escapeHtml(dgDef.label)}. Create one below.</div>`;
+      : `<div class="dg-empty-parties">
+          <span class="dg-empty-ico">${icon("dungeon")}</span>
+          <span>No parties yet for ${escapeHtml(dgDef.label)}.</span>
+          <span class="muted">Be the first — create one below.</span>
+        </div>`;
 
     const sizeOpts = CATALOG.sizes.map((s)=>{
       const sel = s.id === state.selectedPartySize ? " is-selected" : "";
@@ -2786,24 +2955,34 @@ function renderDungeonBrowser(room, root) {
       </button>`;
     }).join("");
 
-    rightHtml = `<div class="dungeon-browser-right">
-      ${deadBanner}
-      <div class="dungeon-browser-right-head">
-        <p class="subhead">${escapeHtml(dgDef.label)} — Parties</p>
-        <span class="muted">${parties.length} party${parties.length===1?"":"s"} available</span>
+    rightHtml = `<header class="dg-detail-head">
+      <div class="dg-detail-titlewrap">
+        <p class="dg-detail-kicker">Ranked Delve</p>
+        <h3 class="dg-detail-title">${escapeHtml(dgDef.label)}</h3>
+        <p class="dg-detail-sub">${parties.length} part${parties.length===1?"y":"ies"} forming · ${escapeHtml(sizeLabel(state.selectedPartySize))}</p>
       </div>
-      <div class="party-grid">${partyCards}</div>
+    </header>
+    ${deadBanner}
+    <div class="dg-scroll">
+      <div class="dg-party-grid">${partyCards}</div>
       ${dropPanel}
-      <div class="create-party-section">
-        <p class="subhead">Create a Party</p>
-        <div class="size-grid">${sizeOpts}</div>
-        <button type="button" class="btn btn--gold" id="btn-create-party" ${isDead ? "disabled" : ""}>Create Party — ${escapeHtml(dgDef.label)} (${escapeHtml(sizeLabel(state.selectedPartySize))})</button>
-        <p class="hint">${isDead ? "You have fallen — cannot create parties." : "You will become the leader. Only the leader can start the delve."}</p>
-      </div>
-    </div>`;
+    </div>
+    <footer class="dg-create">
+      <p class="dg-create-title">Create a Party</p>
+      <div class="size-grid dg-size-grid">${sizeOpts}</div>
+      <button type="button" class="btn btn--gold dg-create-btn" id="btn-create-party" ${isDead ? "disabled" : ""}>Create Party — ${escapeHtml(dgDef.label)} (${escapeHtml(sizeLabel(state.selectedPartySize))})</button>
+      <p class="hint">${isDead ? "You have fallen — cannot create parties." : "You will become the leader. Only the leader can start the delve."}</p>
+    </footer>`;
   }
 
-  root.innerHTML = `${omenLine}<div class="dungeon-browser">${leftHtml}${rightHtml}</div>`;
+  root.classList.add("dg-browse-mode");
+  root.innerHTML = `<div class="dg-shell">
+    <div class="dg-topline">${omenLine || `<p class="muted">Choose a delve and gather your party.</p>`}</div>
+    <div class="dg-layout">
+      ${leftHtml}
+      <section class="dg-detail">${rightHtml}</section>
+    </div>
+  </div>`;
   initImages(root);
   root.querySelectorAll("[data-rank]").forEach((b)=>{
     b.addEventListener("click", ()=>{
@@ -3308,8 +3487,8 @@ function renderCombat(room, root) {
       if (!canAct) return;
       const itemId = b.getAttribute("data-item");
       socket.emit("combat:useItem", { itemId });
-      if (itemId === "food") sfxPlay("eatingsound");
-      else sfxPlay("potiondrinksound");
+      if (itemId === "food") sfxEvent("action.eat");
+      else sfxEvent("action.potion");
       state.timerReset = true;
     });
   });
@@ -3341,7 +3520,7 @@ function renderCombat(room, root) {
   const openChestBtn = root.querySelector("#btn-result-open-chest");
   if (openChestBtn) {
     openChestBtn.addEventListener("click", () => {
-      sfxPlay("lootsound");
+      sfxEvent("item.loot");
       socket.emit("chest:open", { itemId: openChestBtn.getAttribute("data-chest-id") });
     });
   }
@@ -3551,9 +3730,57 @@ function applyTavernArt(root, ui) {
   });
 }
 
+const BJ_SUIT_FALLBACK = { spades: "\u2660", hearts: "\u2665", diamonds: "\u2666", clubs: "\u2663" };
+const BJ_RESULT_META = {
+  blackjack: { title: "BLACKJACK", cls: "blackjack" },
+  win: { title: "YOU WIN", cls: "win" },
+  push: { title: "PUSH", cls: "push" },
+  bust: { title: "BUST", cls: "lose" },
+  lose: { title: "DEALER WINS", cls: "lose" },
+};
+
+function bjHandTotal(hand) {
+  const cards = hand || [];
+  let total = cards.reduce((s, c) => s + (Number(c.value) || 0), 0);
+  let aces = cards.filter((c) => c.rank === "A").length;
+  while (total > 21 && aces > 0) {
+    total -= 10;
+    aces -= 1;
+  }
+  return total;
+}
+
+function bjCardHtml(card, opts) {
+  const o = opts || {};
+  if (!card) return "";
+  if (o.hidden) {
+    return `<span class="bj-card bj-card--back" style="--i:${o.i || 0}" aria-label="Hidden card"><span class="bj-card__pattern" aria-hidden="true"></span></span>`;
+  }
+  const sym = card.suitSymbol || BJ_SUIT_FALLBACK[card.suit] || "";
+  const red = card.color === "red" || card.suit === "hearts" || card.suit === "diamonds";
+  const rank = escapeHtml(String(card.rank || ""));
+  const cls = `bj-card${red ? " is-red" : ""}${o.reveal ? " bj-card--reveal" : ""}`;
+  return `<span class="${cls}" style="--i:${o.i || 0}" data-card="${rank}${escapeHtml(sym)}">
+    <span class="bj-card__corner bj-card__corner--tl"><b>${rank}</b><i>${sym}</i></span>
+    <span class="bj-card__pip" aria-hidden="true">${sym}</span>
+    <span class="bj-card__corner bj-card__corner--br"><b>${rank}</b><i>${sym}</i></span>
+  </span>`;
+}
+
+function bjDeckHtml() {
+  return `<div class="bj-deck" aria-hidden="true">
+    <span class="bj-deck__card bj-deck__card--3"></span>
+    <span class="bj-deck__card bj-deck__card--2"></span>
+    <span class="bj-deck__card bj-deck__card--1"></span>
+    <span class="bj-deck__mark">✦</span>
+  </div>`;
+}
+
 function renderTavernView(room) {
   const me = room.players.find((p) => p.id === state.playerId);
   const root = $("tavern-content");
+  if (state.bjTableEl && state.bjTableEl.parentNode) state.bjTableEl.parentNode.removeChild(state.bjTableEl);
+  state.bjTableEl = null;
   if (!me) {
     root.innerHTML = "";
     return;
@@ -3561,7 +3788,11 @@ function renderTavernView(room) {
   const tavernArt = (CATALOG.images && CATALOG.images.ui) || {};
   setCardBg($("tavern-view"), tavernArt.tavernBg || "");
   const t = me.tavern;
-  if (t && t.status === "done" && t.won !== undefined) {
+  const bjKey = t ? `bj:${t.bet}:${t.result || ""}:${t.message || ""}` : "";
+  const bjDismissed = !!bjKey && state.bjDismissedKey === bjKey;
+  const showBjTable = t && t.game === "blackjack" && (t.status === "playing" || (t.status === "done" && t.result && !bjDismissed));
+
+  if (t && t.game !== "blackjack" && t.status === "done" && t.won !== undefined) {
     const key = t.game + ":" + (t.message || "");
     if (state.tavernResultKey !== key) {
       state.tavernResultKey = key;
@@ -3569,27 +3800,118 @@ function renderTavernView(room) {
       showNotice(t.won ? "win" : t.won === null ? "push" : "lose", title, t.message || "");
     }
   }
-  const inGame = t && t.game === "blackjack" && t.status === "playing";
 
-  if (inGame) {
-    const handHtml = (hand) => (hand || []).map((c) => `<span class="card">${escapeHtml(c.rank)}</span>`).join("");
+  if (showBjTable) {
     const dealerShown = t.dealerShown || t.status === "done";
-    const dealerCards = dealerShown ? t.dealerHand : t.dealerHand.slice(0, 1);
-    root.innerHTML = `
-      <div class="tavern-blackjack">
-        <p class="subhead">Blackjack — ${t.bet} gold</p>
-        <div class="card-area">
-          <div class="card-row"><span class="muted">Dealer:</span> ${handHtml(dealerCards)}</div>
-          <div class="card-row"><span class="muted">You:</span> ${handHtml(t.playerHand)}</div>
+    const pTotal = bjHandTotal(t.playerHand);
+    const dTotal = bjHandTotal(t.dealerHand);
+    const visibleDealer = dealerShown ? t.dealerHand : (t.dealerHand || []).slice(0, 1);
+    const visibleTotal = dealerShown ? dTotal : bjHandTotal(visibleDealer);
+    const resultMeta = BJ_RESULT_META[t.result] || BJ_RESULT_META.lose;
+
+    const dealerCards = (t.dealerHand || [])
+      .map((c, i) => bjCardHtml(c, { hidden: !dealerShown && i > 0, reveal: dealerShown && i > 0, i }))
+      .join("");
+    const playerCards = (t.playerHand || [])
+      .map((c, i) => bjCardHtml(c, { i }))
+      .join("");
+
+    const playerBust = pTotal > 21;
+    const playing = t.status === "playing";
+
+    if (playing) {
+      if (!state.bjDealPlayed) {
+        sfxEvent("tavern.deal");
+        state.bjDealPlayed = true;
+        state.bjPlayerCount = (t.playerHand || []).length;
+      } else {
+        const pc = (t.playerHand || []).length;
+        if (state.bjPlayerCount != null && pc > state.bjPlayerCount) sfxEvent("tavern.hit");
+        state.bjPlayerCount = pc;
+      }
+      state.bjResultKey = "";
+    } else if (state.bjResultKey !== bjKey) {
+      state.bjResultKey = bjKey;
+      if (t.result === "win" || t.result === "blackjack") sfxEvent("tavern.win");
+      else if (t.result === "push") sfxEvent("tavern.push");
+      else sfxEvent("tavern.lose");
+      state.bjDealPlayed = false;
+      state.bjPlayerCount = null;
+    }
+
+    const tableSig = `${(t.playerHand || []).map((c) => c.rank + (c.suit || "")).join(",")}|${(t.dealerHand || []).map((c) => c.rank + (c.suit || "")).join(",")}|${dealerShown ? 1 : 0}|${t.status}`;
+    const animateTable = state.bjTableSig !== tableSig;
+    state.bjTableSig = tableSig;
+
+    root.innerHTML = "";
+    const host = document.createElement("div");
+    host.innerHTML = `
+      <div class="bj-table${animateTable ? "" : " bj-table--static"}" role="dialog" aria-modal="true" aria-label="Blackjack table">
+        <div class="bj-felt">
+          <div class="bj-top">
+            <span class="bj-brand">BLACKJACK</span>
+            <span class="bj-wager"><i class="bj-chip" aria-hidden="true"></i>${escapeHtml(String(t.bet))} GOLD</span>
+          </div>
+          ${bjDeckHtml()}
+          <div class="bj-hand bj-hand--dealer">
+            <div class="bj-hand__label">Dealer <b>${escapeHtml(String(visibleTotal))}</b>${dealerShown ? "" : " <em>+ ?</em>"}</div>
+            <div class="bj-cards">${dealerCards}</div>
+          </div>
+          <div class="bj-center">
+            ${playing
+              ? `<span class="bj-medallion" aria-hidden="true">\u2660</span>`
+              : `<div class="bj-result bj-result--${resultMeta.cls}">
+                  <span class="bj-result__kicker">${escapeHtml(t.message || "")}</span>
+                  <h2 class="bj-result__title">${resultMeta.title}</h2>
+                </div>`}
+          </div>
+          <div class="bj-hand bj-hand--player">
+            <div class="bj-cards">${playerCards}</div>
+            <div class="bj-hand__label">You <b>${escapeHtml(String(pTotal))}</b>${playerBust ? " <em>BUST</em>" : ""}</div>
+          </div>
+          <div class="bj-actions">
+            ${playing
+              ? `<button type="button" class="btn bj-btn" id="btn-hit">Hit</button>
+                 <button type="button" class="btn btn--bronze bj-btn" id="btn-stand">Stand</button>`
+              : `<button type="button" class="btn bj-btn" id="btn-bj-again">Play again</button>
+                 <button type="button" class="btn btn--bronze bj-btn" id="btn-bj-wager">Change wager</button>
+                 <button type="button" class="btn btn--ghost bj-btn" id="btn-bj-leave">Leave</button>`}
+          </div>
         </div>
-        <div class="btn-row">
-          <button type="button" class="btn" id="btn-hit">Hit</button>
-          <button type="button" class="btn btn--bronze" id="btn-stand">Stand</button>
-        </div>
-        <div class="log-line">${escapeHtml(t.message || "")}</div>
       </div>`;
-    root.querySelector("#btn-hit").addEventListener("click", () => socket.emit("tavern:move", { move: "hit" }));
-    root.querySelector("#btn-stand").addEventListener("click", () => socket.emit("tavern:move", { move: "stand" }));
+    const tableEl = host.firstElementChild;
+    document.body.appendChild(tableEl);
+    state.bjTableEl = tableEl;
+
+    const hit = tableEl.querySelector("#btn-hit");
+    if (hit) hit.addEventListener("click", () => { sfxEvent("tavern.hit"); socket.emit("tavern:move", { move: "hit" }); });
+    const stand = tableEl.querySelector("#btn-stand");
+    if (stand) stand.addEventListener("click", () => { sfxEvent("tavern.flip"); socket.emit("tavern:move", { move: "stand" }); });
+
+    const again = tableEl.querySelector("#btn-bj-again");
+    if (again) again.addEventListener("click", () => {
+      sfxEvent("tavern.chip");
+      state.bjDismissedKey = "";
+      state.bjResultKey = "";
+      socket.emit("tavern:start", { game: "blackjack", bet: t.bet });
+    });
+    const change = tableEl.querySelector("#btn-bj-wager");
+    if (change) change.addEventListener("click", () => {
+      state.bjDismissedKey = bjKey;
+      state.bjTableSig = "";
+      if (state.bjTableEl) { state.bjTableEl.remove(); state.bjTableEl = null; }
+      socket.emit("tavern:clear");
+      renderTavernView(room);
+    });
+    const leave = tableEl.querySelector("#btn-bj-leave");
+    if (leave) leave.addEventListener("click", () => {
+      state.bjDismissedKey = bjKey;
+      state.bjTableSig = "";
+      state.tavernOpen = false;
+      if (state.bjTableEl) { state.bjTableEl.remove(); state.bjTableEl = null; }
+      socket.emit("tavern:clear");
+      renderTown(state.room);
+    });
     return;
   }
 
@@ -3675,6 +3997,7 @@ function renderTavernView(room) {
     </div>`;
   applyTavernArt(root, tavernArt);
   root.querySelector("#btn-tavern-sleep").addEventListener("click", () => {
+    sfxEvent("action.tavernSleep");
     playNightTransition("Night falls", "You sleep safely at the tavern. Stamina returns at dawn.", () => socket.emit("tavern:sleep"));
   });
   const leaveBtn = root.querySelector("#btn-tavern-leave");
@@ -3689,9 +4012,18 @@ function renderTavernView(room) {
       renderTavernView(room);
     })
   );
-  root.querySelector("#btn-flip").addEventListener("click", () => socket.emit("tavern:start", { game: "coinflip", bet: state.bet }));
-  root.querySelector("#btn-bj").addEventListener("click", () => socket.emit("tavern:start", { game: "blackjack", bet: state.bet }));
-  root.querySelector("#btn-buy-food").addEventListener("click", () => socket.emit("tavern:buyFood"));
+  root.querySelector("#btn-flip").addEventListener("click", () => {
+    sfxEvent("tavern.flip");
+    socket.emit("tavern:start", { game: "coinflip", bet: state.bet });
+  });
+  root.querySelector("#btn-bj").addEventListener("click", () => {
+    sfxEvent("tavern.chip");
+    socket.emit("tavern:start", { game: "blackjack", bet: state.bet });
+  });
+  root.querySelector("#btn-buy-food").addEventListener("click", () => {
+    sfxEvent("action.eat");
+    socket.emit("tavern:buyFood");
+  });
 }
 
 // ---- Ancient Temple ----
@@ -3874,7 +4206,7 @@ function renderCraftBench(room, me, root, backTo) {
   const take = root.querySelector("[data-craft-take]");
   if (take) take.addEventListener("click", () => {
     state.craftSlots = [null, null, null];
-    sfxPlay("lootsound");
+    sfxEvent("item.loot");
     socket.emit("temple:craft", { recipeId: take.getAttribute("data-craft-take") });
   });
 }
@@ -4010,14 +4342,12 @@ function renderTempleView(room) {
     { id: "hearts", label: "Mend a Heart", ico: "lives", count: Math.max(0, maxLives - me.lives), note: `${me.lives}/${maxLives} hearts`, art: ui.templeHearts },
     { id: "rebirth", label: "Rebirth", ico: "rest", count: stoneQty, note: `${stoneQty} stone${stoneQty === 1 ? "" : "s"}`, art: ui.templeRebirth },
     { id: "revive", label: "Revive Ally", ico: "heal", count: deadAllies.length, note: deadAllies.length ? `${deadAllies.length} fallen` : "No fallen", art: ui.templeRevive },
-  ].map((t) => `<button type="button" class="market-cat${templeTab === t.id ? " market-cat--active" : ""}" data-temple-tab="${t.id}" role="tab" aria-selected="${templeTab === t.id}"${templeTab === t.id ? ' aria-current="page"' : ""}>
-      <span class="market-art" data-img="${escapeHtml(t.art || "")}" data-variant="temple-${t.id}">
-        <span class="market-art-hint market-art-hint--ico" aria-hidden="true">${icon(t.ico)}</span>
-      </span>
-      <span class="market-cat-body">
-        <span class="market-cat-kicker">Sacred Rite</span>
-        <span class="market-cat-title">${escapeHtml(t.label)}</span>
-        <span class="market-cat-count">${escapeHtml(t.note)}</span>
+  ].map((t) => `<button type="button" class="temple-rite${templeTab === t.id ? " temple-rite--active" : ""}" data-temple-tab="${t.id}" role="tab" aria-selected="${templeTab === t.id}"${templeTab === t.id ? ' aria-current="page"' : ""} data-rite-img="${escapeHtml(t.art || "")}">
+      <span class="temple-rite__mark" aria-hidden="true">${icon(t.ico)}</span>
+      <span class="temple-rite__body">
+        <span class="temple-rite__kicker">Sacred Rite</span>
+        <span class="temple-rite__title">${escapeHtml(t.label)}</span>
+        <span class="temple-rite__note">${escapeHtml(t.note)}</span>
       </span>
     </button>`).join("");
 
@@ -4044,6 +4374,10 @@ function renderTempleView(room) {
       </section>
     </div>`;
   initImages(root);
+  root.querySelectorAll("[data-rite-img]").forEach((b) => {
+    const url = (b.getAttribute("data-rite-img") || "").trim();
+    if (url && typeof setCardBg === "function") setCardBg(b, url);
+  });
 
   root.querySelectorAll("[data-temple-tab]").forEach((b) =>
     b.addEventListener("click", () => {
@@ -4066,7 +4400,10 @@ function renderTempleView(room) {
     b.addEventListener("click", () => socket.emit("temple:craft", { recipeId: b.getAttribute("data-craft") }))
   );
   root.querySelectorAll("[data-revive]").forEach((b) =>
-    b.addEventListener("click", () => socket.emit("temple:revive", { targetId: b.getAttribute("data-revive") }))
+    b.addEventListener("click", () => {
+      sfxEvent("action.revive");
+      socket.emit("temple:revive", { targetId: b.getAttribute("data-revive") });
+    })
   );
 }
 
@@ -4224,12 +4561,12 @@ function renderBlacksmithView(room) {
   wireTalk(root, () => renderBlacksmithView(room));
   root.querySelectorAll("[data-equip]").forEach((b) =>
     b.addEventListener("click", () => {
-      sfxPlay("inventorysound");
+      sfxEvent("item.inventory");
       socket.emit("inventory:equip", { itemId: b.getAttribute("data-equip") });
     })
   );
   root.querySelector("#btn-shop-inventory").addEventListener("click", () => {
-    sfxPlay("inventorysound");
+    sfxEvent("item.inventory");
     state.blacksmithOpen = false;
     state.inventoryOpen = true;
     renderTown(state.room);
@@ -4325,13 +4662,13 @@ function renderMerchantView(room) {
   );
   root.querySelectorAll("[data-equip]").forEach((b) =>
     b.addEventListener("click", () => {
-      sfxPlay("inventorysound");
+      sfxEvent("item.inventory");
       socket.emit("inventory:equip", { itemId: b.getAttribute("data-equip") });
     })
   );
   const invBtn = root.querySelector("#btn-merchant-inventory");
   if (invBtn) invBtn.addEventListener("click", () => {
-    sfxPlay("inventorysound");
+    sfxEvent("item.inventory");
     state.merchantOpen = false;
     state.inventoryOpen = true;
     renderTown(state.room);
@@ -4667,25 +5004,25 @@ function renderInventory(room) {
 
   root.querySelectorAll("[data-unequip]").forEach((b) =>
     b.addEventListener("click", () => {
-      sfxPlay("inventorysound");
+      sfxEvent("item.inventory");
       socket.emit("inventory:unequip", { slot: b.getAttribute("data-unequip") });
     })
   );
   root.querySelectorAll("[data-equip]").forEach((b) =>
     b.addEventListener("click", () => {
-      sfxPlay("inventorysound");
+      sfxEvent("item.inventory");
       socket.emit("inventory:equip", { itemId: b.getAttribute("data-equip") });
     })
   );
   root.querySelectorAll("[data-open-chest]").forEach((b) =>
     b.addEventListener("click", () => {
-      sfxPlay("lootsound");
+      sfxEvent("item.loot");
       socket.emit("chest:open", { itemId: b.getAttribute("data-open-chest") });
     })
   );
   root.querySelectorAll("[data-sell]").forEach((b) =>
     b.addEventListener("click", () => {
-      sfxPlay("inventorysound");
+      sfxEvent("item.inventory");
       socket.emit("merchant:sell", { itemId: b.getAttribute("data-sell"), qty: Number(b.getAttribute("data-qty")) || 1 });
     })
   );
@@ -4704,9 +5041,9 @@ function renderInventory(room) {
         const petName=petDef? petDisplayName(petDef, 1) : petId;
         const petImg=petDef? petImageForLevel(petDef, 1) : "";
         if(window.playEggAnimation){
-          window.playEggAnimation(eggId, petId, petName, petImg).then(()=>{ sfxPlay("lootsound"); });
+          window.playEggAnimation(eggId, petId, petName, petImg).then(()=>{ sfxEvent("item.loot"); });
         } else {
-          sfxPlay("lootsound");
+          sfxEvent("item.loot");
           showNotice("hatch", "Hatched!", petName+" hatched from "+(eggDef?eggDef.name:eggId)+"!");
         }
       });
@@ -4809,7 +5146,7 @@ function renderPetsView(room){
       if(cbFired) return;
       console.warn("[hatch] cb timeout, playing anim without pet");
       if(window.playEggAnimation){
-        window.playEggAnimation(eggId, null, "Mystery Pet", "").then(()=>{ sfxPlay("lootsound"); });
+        window.playEggAnimation(eggId, null, "Mystery Pet", "").then(()=>{ sfxEvent("item.loot"); });
       }
     }, 1500);
     socket.emit("pet:hatch", {eggId}, (res)=>{
@@ -4825,11 +5162,11 @@ function renderPetsView(room){
         if(window.playEggAnimation){
           console.log("[hatch] playing anim");
           const p=window.playEggAnimation(eggId, petId, petName, petImg);
-          if(p && p.then) p.then(()=>{ console.log("[hatch] anim done"); sfxPlay("lootsound"); });
+          if(p && p.then) p.then(()=>{ console.log("[hatch] anim done"); sfxEvent("item.loot"); });
           else console.log("[hatch] no promise");
         } else {
           console.warn("playEggAnimation missing");
-          sfxPlay("lootsound");
+          sfxEvent("item.loot");
           showNotice("hatch","Hatched!", petName+" hatched from "+eggId+"!");
         }
       }catch(e){ console.error("anim error", e); showNotice("hatch","Hatched!", petName+" hatched!"); }

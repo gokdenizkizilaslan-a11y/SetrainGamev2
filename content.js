@@ -25,6 +25,53 @@ const CONTENT = {
     "xpExponent": 1.45,
     "growthScale": 0.02
   },
+  "sfx": {
+    "ui": {
+      "click": "clicksound",
+      "hover": "hoversound",
+      "win": "winningsound",
+      "lose": "losingsound",
+      "search": "lootsound"
+    },
+    "action": {
+      "rest": "healingmagic",
+      "sleepOutside": "aftersleepnewdaysound",
+      "tavernSleep": "aftersleepnewdaysound",
+      "search": "lootsound",
+      "blacksmith": "strongattack1",
+      "merchant": "inventorysound",
+      "temple": "neutralascension",
+      "dungeon": "monstersound",
+      "eat": "eatingsound",
+      "potion": "potiondrinksound",
+      "revive": "revivesound"
+    },
+    "item": {
+      "loot": "lootsound",
+      "inventory": "inventorysound",
+      "coin": "clicksound"
+    },
+    "cinematic": {
+      "ascend": "holy-ascensionsound",
+      "rebirth": "neutralascension",
+      "newDay": "aftersleepnewdaysound",
+      "nightFall": "monstersound"
+    },
+    "combat": {
+      "win": "winningsound",
+      "lose": "losingsound",
+      "crit": "skull_crush"
+    },
+    "tavern": {
+      "deal": "inventorysound",
+      "hit": "inventorysound",
+      "flip": "clicksound",
+      "win": "winningsound",
+      "lose": "losingsound",
+      "push": "clicksound",
+      "chip": "clicksound"
+    }
+  },
   "story": {
     "title": "The Setra Game",
     "paragraphs": [
@@ -15609,6 +15656,7 @@ function publicCatalog() {
     })),
     ui: CONTENT.ui || {},
     images: CONTENT.images,
+    sfx: CONTENT.sfx || {},
     town: {
       search: { stamina: CONTENT.town.search.stamina },
       blacksmith: { stamina: CONTENT.town.blacksmith.stamina },
