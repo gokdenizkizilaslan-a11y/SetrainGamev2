@@ -6,7 +6,7 @@ const CATALOG = {
   dungeons: [],
   elements: [],
   races: [],
-  town: { tavern: { bets: [5, 10, 25] } },
+  town: { tavern: { bets: [25, 100, 500, 700] } },
 };
 
 function elemDef(id) {
@@ -285,14 +285,6 @@ const SFX_DEFAULTS = {
   "ui.win": "winningsound",
   "ui.lose": "losingsound",
   "ui.search": "lootsound",
-  "action.rest": "healingmagic",
-  "action.sleepOutside": "aftersleepnewdaysound",
-  "action.tavernSleep": "aftersleepnewdaysound",
-  "action.search": "lootsound",
-  "action.blacksmith": "strongattack1",
-  "action.merchant": "inventorysound",
-  "action.temple": "neutralascension",
-  "action.dungeon": "monstersound",
   "action.eat": "eatingsound",
   "action.potion": "potiondrinksound",
   "action.revive": "revivesound",
@@ -301,18 +293,9 @@ const SFX_DEFAULTS = {
   "item.coin": "clicksound",
   "cinematic.ascend": "holy-ascensionsound",
   "cinematic.rebirth": "neutralascension",
-  "cinematic.newDay": "aftersleepnewdaysound",
-  "cinematic.nightFall": "monstersound",
   "combat.win": "winningsound",
   "combat.lose": "losingsound",
   "combat.crit": "skull_crush",
-  "tavern.deal": "inventorysound",
-  "tavern.hit": "inventorysound",
-  "tavern.flip": "clicksound",
-  "tavern.win": "winningsound",
-  "tavern.lose": "losingsound",
-  "tavern.push": "clicksound",
-  "tavern.chip": "clicksound",
 };
 
 function sfxResolve(key) {
@@ -2015,7 +1998,6 @@ function renderActionCards(room, selfId) {
         renderTown(state.room);
       } else if (a.id === "sleep") {
         state.justSlept = true;
-        sfxEvent("action.sleepOutside");
         playNightTransition("Night falls", "You sleep beneath the cold stars. Stamina returns at dawn.", () => socket.emit(a.event));
       } else if (a.id === "rest") {
         if (restLeft <= 0) {
@@ -2802,6 +2784,8 @@ function ensureDungeonState() {
 function renderDungeonView(room) {
   const d = myDungeon(room);
   const root = $("dungeon-content");
+  const dgUi = (CATALOG.images && CATALOG.images.ui) || {};
+  setCardBg($("dungeon-view"), dgUi.dungeonBg || "");
   root.classList.remove("dg-browse-mode");
   if (!d) return renderDungeonBrowser(room, root);
   if (d.bossId) {
@@ -3788,9 +3772,13 @@ function renderTavernView(room) {
   const tavernArt = (CATALOG.images && CATALOG.images.ui) || {};
   setCardBg($("tavern-view"), tavernArt.tavernBg || "");
   const t = me.tavern;
-  const bjKey = t ? `bj:${t.bet}:${t.result || ""}:${t.message || ""}` : "";
+  if (t && t.status === "playing") state.bjDismissedKey = "";
+  const bjOutcome = t
+    ? t.result || (t.status === "done" ? (t.won === true ? "win" : t.won === null ? "push" : "lose") : "")
+    : "";
+  const bjKey = t ? `bj:${t.bet}:${bjOutcome}:${t.message || ""}` : "";
   const bjDismissed = !!bjKey && state.bjDismissedKey === bjKey;
-  const showBjTable = t && t.game === "blackjack" && (t.status === "playing" || (t.status === "done" && t.result && !bjDismissed));
+  const showBjTable = t && t.game === "blackjack" && (t.status === "playing" || (t.status === "done" && !bjDismissed));
 
   if (t && t.game !== "blackjack" && t.status === "done" && t.won !== undefined) {
     const key = t.game + ":" + (t.message || "");
@@ -3807,7 +3795,7 @@ function renderTavernView(room) {
     const dTotal = bjHandTotal(t.dealerHand);
     const visibleDealer = dealerShown ? t.dealerHand : (t.dealerHand || []).slice(0, 1);
     const visibleTotal = dealerShown ? dTotal : bjHandTotal(visibleDealer);
-    const resultMeta = BJ_RESULT_META[t.result] || BJ_RESULT_META.lose;
+    const resultMeta = BJ_RESULT_META[bjOutcome] || BJ_RESULT_META.lose;
 
     const dealerCards = (t.dealerHand || [])
       .map((c, i) => bjCardHtml(c, { hidden: !dealerShown && i > 0, reveal: dealerShown && i > 0, i }))
@@ -3832,8 +3820,8 @@ function renderTavernView(room) {
       state.bjResultKey = "";
     } else if (state.bjResultKey !== bjKey) {
       state.bjResultKey = bjKey;
-      if (t.result === "win" || t.result === "blackjack") sfxEvent("tavern.win");
-      else if (t.result === "push") sfxEvent("tavern.push");
+      if (bjOutcome === "win" || bjOutcome === "blackjack") sfxEvent("tavern.win");
+      else if (bjOutcome === "push") sfxEvent("tavern.push");
       else sfxEvent("tavern.lose");
       state.bjDealPlayed = false;
       state.bjPlayerCount = null;
@@ -3919,7 +3907,7 @@ function renderTavernView(room) {
   const prov = (CATALOG.town && CATALOG.town.tavern && CATALOG.town.tavern.provisions) || { foodPrice: 10, foodAmount: 2 };
   const sleepPrice = (CATALOG.town && CATALOG.town.tavern && CATALOG.town.tavern.sleep && CATALOG.town.tavern.sleep.price) || 15;
   const canSleep = me.gold >= sleepPrice;
-  const bets = (CATALOG.town && CATALOG.town.tavern && CATALOG.town.tavern.bets) || [5, 10, 25];
+  const bets = (CATALOG.town && CATALOG.town.tavern && CATALOG.town.tavern.bets) || [25, 100, 500, 700];
   root.innerHTML = `
     <div class="tavern-shell">
       ${tavernDialogueHtml()}
@@ -3997,7 +3985,6 @@ function renderTavernView(room) {
     </div>`;
   applyTavernArt(root, tavernArt);
   root.querySelector("#btn-tavern-sleep").addEventListener("click", () => {
-    sfxEvent("action.tavernSleep");
     playNightTransition("Night falls", "You sleep safely at the tavern. Stamina returns at dawn.", () => socket.emit("tavern:sleep"));
   });
   const leaveBtn = root.querySelector("#btn-tavern-leave");
@@ -4017,6 +4004,9 @@ function renderTavernView(room) {
     socket.emit("tavern:start", { game: "coinflip", bet: state.bet });
   });
   root.querySelector("#btn-bj").addEventListener("click", () => {
+    state.bjDismissedKey = "";
+    state.bjResultKey = "";
+    state.bjTableSig = "";
     sfxEvent("tavern.chip");
     socket.emit("tavern:start", { game: "blackjack", bet: state.bet });
   });

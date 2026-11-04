@@ -34,14 +34,12 @@ const CONTENT = {
       "search": "lootsound"
     },
     "action": {
-      "rest": "healingmagic",
-      "sleepOutside": "aftersleepnewdaysound",
-      "tavernSleep": "aftersleepnewdaysound",
-      "search": "lootsound",
-      "blacksmith": "strongattack1",
-      "merchant": "inventorysound",
-      "temple": "neutralascension",
-      "dungeon": "monstersound",
+      "rest": "",
+      "search": "",
+      "blacksmith": "",
+      "merchant": "",
+      "temple": "",
+      "dungeon": "",
       "eat": "eatingsound",
       "potion": "potiondrinksound",
       "revive": "revivesound"
@@ -54,8 +52,8 @@ const CONTENT = {
     "cinematic": {
       "ascend": "holy-ascensionsound",
       "rebirth": "neutralascension",
-      "newDay": "aftersleepnewdaysound",
-      "nightFall": "monstersound"
+      "newDay": "",
+      "nightFall": ""
     },
     "combat": {
       "win": "winningsound",
@@ -63,13 +61,13 @@ const CONTENT = {
       "crit": "skull_crush"
     },
     "tavern": {
-      "deal": "inventorysound",
-      "hit": "inventorysound",
-      "flip": "clicksound",
-      "win": "winningsound",
-      "lose": "losingsound",
-      "push": "clicksound",
-      "chip": "clicksound"
+      "deal": "",
+      "hit": "",
+      "flip": "",
+      "win": "",
+      "lose": "",
+      "push": "",
+      "chip": ""
     }
   },
   "story": {
@@ -11089,9 +11087,10 @@ const CONTENT = {
     "tavern": {
       "stamina": 1,
       "bets": [
-        5,
-        10,
-        25
+        25,
+        100,
+        500,
+        700
       ],
       "provisions": {
         "foodPrice": 10,

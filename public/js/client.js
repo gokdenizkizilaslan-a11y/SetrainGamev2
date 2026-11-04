@@ -6,7 +6,7 @@ const state = {
   playerId: null,
   room: null,
   selectedSkill: null,
-  bet: 5,
+  bet: 25,
   dungeonOpen: false,
   plazaOpen: false,
   tavernOpen: false,
