@@ -1,0 +1,173 @@
+[
+  {
+    "id": "physical",
+    "name": "Physical",
+    "palette": [
+      "#ffffff",
+      "#fde047",
+      "#94a3b8"
+    ],
+    "gravity": 0.16,
+    "sound": "slash1",
+    "effect": "rising_katana_slash",
+    "travel": "piercing_rapier_thrust",
+    "description": "Plain weapon strikes and brute force."
+  },
+  {
+    "id": "arcane",
+    "name": "Arcane",
+    "palette": [
+      "#a78bfa",
+      "#7c3aed",
+      "#e0e7ff"
+    ],
+    "gravity": 0.02,
+    "sound": "normalmagic",
+    "effect": "frost_crystal_spear",
+    "travel": "ball_lightning_plasma",
+    "description": "Raw magical energy and eldritch plasma."
+  },
+  {
+    "id": "shadow",
+    "name": "Shadow",
+    "palette": [
+      "#6b7280",
+      "#4b5563",
+      "#374151"
+    ],
+    "gravity": -0.05,
+    "sound": "bloodmagic1",
+    "effect": "shadow_scythe_reap",
+    "travel": "dark_matter_orb",
+    "description": "Darkness and cold moonlight arts."
+  },
+  {
+    "id": "holy",
+    "name": "Holy",
+    "palette": [
+      "#facc15",
+      "#ffffff",
+      "#fde047"
+    ],
+    "gravity": -0.04,
+    "sound": "normalmagic",
+    "effect": "holy_pillar_smite",
+    "travel": "holy_lance_projectile",
+    "description": "Divine light and radiant judgement."
+  },
+  {
+    "id": "frost",
+    "name": "Frost",
+    "palette": [
+      "#38bdf8",
+      "#7dd3fc",
+      "#0ea5e9",
+      "#e0f2fe"
+    ],
+    "gravity": 0.13,
+    "sound": "frostmagic",
+    "effect": "frost_crystal_spear",
+    "travel": "frost_crystal_spear",
+    "description": "Ice, cold and glacial shards."
+  },
+  {
+    "id": "fire",
+    "name": "Fire",
+    "palette": [
+      "#f97316",
+      "#ef4444",
+      "#fde047"
+    ],
+    "gravity": -0.08,
+    "sound": "firemagic",
+    "effect": "fire_meteor_crash",
+    "travel": "fireball_streak",
+    "description": "Burning flame and searing heat."
+  },
+  {
+    "id": "water",
+    "name": "Water",
+    "palette": [
+      "#3b82f6",
+      "#2563eb",
+      "#0ea5e9"
+    ],
+    "gravity": 0.1,
+    "sound": "frostmagic",
+    "effect": "tidal_wave_water",
+    "travel": "frost_crystal_spear",
+    "description": "Flowing currents and crushing waves."
+  },
+  {
+    "id": "earth",
+    "name": "Earth",
+    "palette": [
+      "#854d0e",
+      "#a16207",
+      "#713f12",
+      "#57534e"
+    ],
+    "gravity": 0.25,
+    "sound": "battleaxe",
+    "effect": "earth_fissure_rupture",
+    "travel": "rock_avalanche_barrage",
+    "description": "Stone, soil and bedrock."
+  },
+  {
+    "id": "nature",
+    "name": "Nature",
+    "palette": [
+      "#4ade80",
+      "#22c55e",
+      "#15803d",
+      "#bef264"
+    ],
+    "gravity": 0.08,
+    "sound": "normalmagic",
+    "effect": "nature_vine_burst",
+    "travel": "nature_vine_projectile",
+    "description": "Growth, vines, thorns and the living forest."
+  },
+  {
+    "id": "lightning",
+    "name": "Lightning",
+    "palette": [
+      "#facc15",
+      "#fef08a",
+      "#ffffff"
+    ],
+    "gravity": 0.06,
+    "sound": "normalmagic",
+    "effect": "lightning_strike_heavy",
+    "travel": "storm_spear_throw",
+    "description": "Storms, thunder and electric surges."
+  },
+  {
+    "id": "blood",
+    "name": "Blood",
+    "palette": [
+      "#dc2626",
+      "#b91c1c",
+      "#7f1d1d"
+    ],
+    "gravity": 0.22,
+    "sound": "bloodmagic1",
+    "effect": "blood_scythe",
+    "travel": "blood_drain",
+    "description": "Crimson hemomancy and life-stealing arts."
+  },
+  {
+    "id": "dark",
+    "name": "Dark",
+    "palette": [
+      "#a855f7",
+      "#7c3aed",
+      "#4c1d95"
+    ],
+    "gravity": -0.05,
+    "sound": "bloodmagic2",
+    "effect": "shadow_scythe_reap",
+    "travel": "dark_matter_orb",
+    "description": "Void, abyss and forbidden power."
+  }
+]

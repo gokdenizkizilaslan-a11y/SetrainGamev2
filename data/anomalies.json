@@ -1,0 +1,78 @@
+{
+  "anomalyChance": 0.06,
+  "pureBloodChance": 0.02,
+  "traits": [
+    {
+      "id": "sanguine_thirst",
+      "name": "Sanguine Thirst",
+      "pureBlood": false,
+      "rarity": "rare",
+      "frameColor": "#c45c6a",
+      "description": "Heal for 10% of all damage dealt.",
+      "effect": {
+        "type": "lifesteal",
+        "percent": 0.1
+      }
+    },
+    {
+      "id": "iron_bark",
+      "name": "Iron Bark",
+      "pureBlood": false,
+      "rarity": "uncommon",
+      "frameColor": "#7a9e6a",
+      "description": "Gain a little extra resistance.",
+      "effect": {
+        "type": "resistanceBonus",
+        "amount": 8
+      }
+    },
+    {
+      "id": "ember_well",
+      "name": "Ember Well",
+      "pureBlood": false,
+      "rarity": "rare",
+      "frameColor": "#d4893a",
+      "description": "Mana recovers more generously in town rest.",
+      "effect": {
+        "type": "manaOnDay",
+        "amount": 12
+      }
+    },
+    {
+      "id": "arcane_reservoir",
+      "name": "Arcane Reservoir",
+      "pureBlood": false,
+      "rarity": "rare",
+      "frameColor": "#7a9ec4",
+      "description": "Mana regenerates a little faster each round.",
+      "effect": {
+        "type": "manaRegenBonus",
+        "amount": 1
+      }
+    },
+    {
+      "id": "primeval_bloodlust",
+      "name": "Primeval Bloodlust",
+      "pureBlood": true,
+      "rarity": "pureblood",
+      "frameColor": "#e8c547",
+      "description": "Heal for 20% of all damage dealt.",
+      "effect": {
+        "type": "lifesteal",
+        "percent": 0.2
+      }
+    },
+    {
+      "id": "first_dawn",
+      "name": "First Dawn",
+      "pureBlood": true,
+      "rarity": "pureblood",
+      "frameColor": "#f4e6a8",
+      "description": "Start each day with bonus stamina.",
+      "effect": {
+        "type": "staminaOnDay",
+        "amount": 1
+      }
+    }
+  ]
+}

@@ -1675,6 +1675,31 @@ function statLabel(key) {
   return map[key] || key;
 }
 
+// Kısa istatistik satırı: "Atk +18 · Crit +2". Envanter/sandık kartlarında
+// görseli veya açıklaması olmayan yeni itemlar da sayılarını göstersin diye.
+function itemStatSummary(item) {
+  if (!item || !item.stats) return "";
+  return Object.entries(item.stats)
+    .filter(([, v]) => Number(v))
+    .map(([k, v]) => `${statLabel(k)} ${v > 0 ? "+" : ""}${v}${k === "omnivamp" ? "%" : ""}`)
+    .join(" · ");
+}
+
+// Açıklamasında istatistik yazmayan itemlara stat satırını ekler. Eski
+// itemların açıklamaları zaten "+45 maxHp" gibi değer içeriyor, onlara
+// dokunmaz (çift yazım olmasın).
+function itemDescText(item) {
+  const raw = String((item && item.description) || "").trim();
+  const summary = itemStatSummary(item);
+  if (!summary) return raw;
+  const lower = raw.toLowerCase();
+  const hasStats = /\+\s*\d/.test(raw) || /(maxhp|attack|resistance|magicpower|healpower|critchance|critdamage|omnivamp|manaregen)/.test(lower);
+  if (hasStats) return raw;
+  const bare = !raw || raw.replace(/[.!]+$/, "").trim().toLowerCase() === String((item && item.name) || "").trim().toLowerCase();
+  if (bare) return summary;
+  return `${raw} · ${summary}`;
+}
+
 function slotLabel(slot) {
   const map = {
     weapon: "Weapon", head: "Head", armor: "Armor", legs: "Legs", boots: "Boots",
@@ -5028,18 +5053,16 @@ function renderInventory(room) {
     if (!slot) return "";
     const itemId = me.equipment[id];
     const item = itemId ? CATALOG.items.find((x)=>x.id===itemId) : null;
-    const chips = statChips(item);
     const isStone = id==="stone";
-    const stoneTip = isStone && item ? `<span class="stat-chip"><em>Stack</em><b>Omni ${item.stats.omnivamp || 0}%</b></span>` : "";
-    const statTxt = statPlain(item);
-    const tip = item ? `${escapeHtml(item.name)}${statTxt ? " — " + escapeHtml(statTxt) : ""}${item.description ? " — " + escapeHtml(item.description) : ""}` : slot.label + " (empty)";
+    const statTxt = statPlain(item) + (isStone && item && item.stats.omnivamp ? `, Omni ${item.stats.omnivamp}%` : "");
+    const tip = item
+      ? `${escapeHtml(item.name)}${statTxt ? " — " + escapeHtml(statTxt) : ""}${item.description ? " — " + escapeHtml(item.description) : ""}`
+      : escapeHtml(slot.label + " (empty)");
     return `<div class="equip-slot${item ? " equip-slot--filled" : " equip-slot--empty"}" title="${tip}"${item ? ` style="--rarity:${rarityColor(item.rarity)}"` : ""}>
-        <span class="equip-slot-label">${escapeHtml(slot.label)}</span>
         <span class="equip-socket">${item ? itemIconEl(item) : `<span class="equip-slot-placeholder">${icon(slotGlyphs[id] || "weapon")}</span>`}</span>
-        <span class="equip-slot-item">${item ? escapeHtml(item.name) : '<span class="muted">— Empty —</span>'}</span>
-        <span class="equip-slot-badges">${item ? rarityBadge(item) : ""}</span>
-        <span class="equip-slot-stats">${chips}${stoneTip}</span>
-        ${item ? `<button type="button" class="btn btn--mini" data-unequip="${id}">Unequip</button>` : ""}
+        <span class="equip-slot-label">${escapeHtml(slot.label)}</span>
+        ${item ? `<span class="equip-slot-stats">${escapeHtml(itemStatSummary(item))}</span>` : ""}
+        ${item ? `<button type="button" class="equip-unequip" data-unequip="${id}" title="Unequip ${escapeHtml(item.name)}" aria-label="Unequip ${escapeHtml(item.name)}">×</button>` : ""}
       </div>`;
   }
   const leftCol = slotOrder.left.map(renderSlot).join("");
@@ -5078,7 +5101,7 @@ function renderInventory(room) {
         <span class="bag-name">${escapeHtml(item.name)} <span class="bag-qty">×${inv.qty}</span></span>
         <span class="bag-badges">${rarityBadge(item)}</span>
         ${statsHtml ? `<span class="bag-stats">${statsHtml}</span>` : ""}
-        <span class="bag-desc">${escapeHtml(item.description)}</span>
+        <span class="bag-desc">${escapeHtml(itemDescText(item))}</span>
         ${chestRates ? `<span class="bag-rates" title="${escapeHtml(chestPlain)}">${chestRates}</span>` : ""}
         ${action}
       </div>`;

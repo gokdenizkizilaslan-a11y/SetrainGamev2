@@ -1,0 +1,52 @@
+[
+  {
+    "id": "bountiful_dawn",
+    "name": "Bountiful Dawn",
+    "icon": "🌾",
+    "desc": "+15% gold and wood from dungeon victories.",
+    "goldMult": 1.15,
+    "xpMult": 1,
+    "playerCritBonus": 0,
+    "monsterHpMult": 1
+  },
+  {
+    "id": "echoes",
+    "name": "Echoes",
+    "icon": "🔮",
+    "desc": "+15% XP from dungeon victories.",
+    "goldMult": 1,
+    "xpMult": 1.15,
+    "playerCritBonus": 0,
+    "monsterHpMult": 1
+  },
+  {
+    "id": "keen_edge",
+    "name": "Keen Edge",
+    "icon": "⚔️",
+    "desc": "+5% crit chance for heroes in dungeons.",
+    "goldMult": 1,
+    "xpMult": 1,
+    "playerCritBonus": 0.05,
+    "monsterHpMult": 1
+  },
+  {
+    "id": "iron_trial",
+    "name": "Iron Trial",
+    "icon": "🛡️",
+    "desc": "Monsters +10% HP, but victories grant +10% XP.",
+    "goldMult": 1,
+    "xpMult": 1.1,
+    "playerCritBonus": 0,
+    "monsterHpMult": 1.1
+  },
+  {
+    "id": "calm_day",
+    "name": "Calm Day",
+    "icon": "☀️",
+    "desc": "A quiet day. No omens stir.",
+    "goldMult": 1,
+    "xpMult": 1,
+    "playerCritBonus": 0,
+    "monsterHpMult": 1
+  }
+]

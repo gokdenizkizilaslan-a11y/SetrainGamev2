@@ -1,0 +1,9 @@
+{
+  "classSelect": {
+    "title": "Create Character",
+    "subtitle": "Choose a class",
+    "hint": "Attributes are forged when the quest begins.",
+    "starterKitHead": "Starter kit",
+    "defaultLore": "A wandering soul answering the call of Setra. Their legend is yet unwritten."
+  }
+}

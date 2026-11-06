@@ -1,0 +1,44 @@
+[
+  {
+    "id": "head",
+    "label": "Helmet"
+  },
+  {
+    "id": "armor",
+    "label": "Armor"
+  },
+  {
+    "id": "legs",
+    "label": "Pants"
+  },
+  {
+    "id": "boots",
+    "label": "Boots"
+  },
+  {
+    "id": "weapon",
+    "label": "Weapon"
+  },
+  {
+    "id": "amulet",
+    "label": "Amulet"
+  },
+  {
+    "id": "ring1",
+    "label": "Ring 1",
+    "ring": true
+  },
+  {
+    "id": "ring2",
+    "label": "Ring 2",
+    "ring": true
+  },
+  {
+    "id": "book",
+    "label": "Book"
+  },
+  {
+    "id": "stone",
+    "label": "Stone"
+  }
+]

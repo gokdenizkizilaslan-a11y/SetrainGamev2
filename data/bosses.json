@@ -1,0 +1,177 @@
+[
+  {
+    "id": "boss_ember_king",
+    "label": "Ember King",
+    "name": "Ember King",
+    "image": "/images/bosses/ember_king.png",
+    "hp": 9000,
+    "attack": 460,
+    "speed": 6,
+    "element": "fire",
+    "rarity": "mythic",
+    "weaponId": "boss_weapon_ember",
+    "chestId": "boss_chest_ember",
+    "unlockAfter": null,
+    "resistance": 20,
+    "phases": 3,
+    "phaseSkills": {
+      "1": [
+        "boss_ember_skill1",
+        "boss_ember_skill2"
+      ],
+      "2": [
+        "boss_ember_skill3",
+        "boss_ember_skill4",
+        "boss_ember_skill5"
+      ],
+      "3": [
+        "boss_ember_skill2",
+        "boss_ember_skill5",
+        "boss_ember_skill6"
+      ]
+    },
+    "tags": [
+      "elemental"
+    ]
+  },
+  {
+    "id": "boss_frost_titan",
+    "label": "Glacier Doomlord",
+    "name": "Glacier Doomlord",
+    "image": "/images/bosses/frost_titan.png",
+    "hp": 16000,
+    "attack": 640,
+    "speed": 5,
+    "element": "frost",
+    "rarity": "mythic",
+    "weaponId": "boss_weapon_frost",
+    "chestId": "boss_chest_frost",
+    "unlockAfter": "boss_ember_king",
+    "resistance": 25,
+    "phases": 3,
+    "phaseSkills": {
+      "1": [
+        "boss_frost_skill1",
+        "boss_frost_skill2"
+      ],
+      "2": [
+        "boss_frost_skill3",
+        "boss_frost_skill4",
+        "boss_frost_skill5"
+      ],
+      "3": [
+        "boss_frost_skill2",
+        "boss_frost_skill5",
+        "boss_frost_skill6"
+      ]
+    },
+    "tags": [
+      "elemental"
+    ]
+  },
+  {
+    "id": "boss_void_herald",
+    "label": "Eternal Abyss Herald",
+    "name": "Eternal Abyss Herald",
+    "image": "/images/bosses/void_herald.png",
+    "hp": 26000,
+    "attack": 820,
+    "speed": 7,
+    "element": "shadow",
+    "rarity": "mythic",
+    "weaponId": "boss_weapon_void",
+    "chestId": "boss_chest_void",
+    "unlockAfter": "boss_frost_titan",
+    "resistance": 30,
+    "phases": 3,
+    "phaseSkills": {
+      "1": [
+        "boss_void_skill1",
+        "boss_void_skill2"
+      ],
+      "2": [
+        "boss_void_skill3",
+        "boss_void_skill4",
+        "boss_void_skill5"
+      ],
+      "3": [
+        "boss_void_skill2",
+        "boss_void_skill5",
+        "boss_void_skill6"
+      ]
+    },
+    "tags": [
+      "demon"
+    ]
+  },
+  {
+    "id": "boss_storm_colossus",
+    "label": "Thunder Tyrant",
+    "name": "Thunder Tyrant",
+    "image": "/images/bosses/storm_colossus.png",
+    "hp": 40000,
+    "attack": 1000,
+    "speed": 6,
+    "element": "arcane",
+    "rarity": "mythic",
+    "weaponId": "boss_weapon_storm",
+    "chestId": "boss_chest_storm",
+    "unlockAfter": "boss_void_herald",
+    "resistance": 35,
+    "phases": 3,
+    "phaseSkills": {
+      "1": [
+        "boss_storm_skill1",
+        "boss_storm_skill2"
+      ],
+      "2": [
+        "boss_storm_skill3",
+        "boss_storm_skill4",
+        "boss_storm_skill5"
+      ],
+      "3": [
+        "boss_storm_skill2",
+        "boss_storm_skill5",
+        "boss_storm_skill6"
+      ]
+    },
+    "tags": [
+      "elemental"
+    ]
+  },
+  {
+    "id": "boss_world_eater",
+    "label": "Oblivion Devourer",
+    "name": "Oblivion Devourer",
+    "image": "/images/bosses/world_eater.png",
+    "hp": 55000,
+    "attack": 1200,
+    "speed": 5,
+    "element": "physical",
+    "rarity": "mythic",
+    "weaponId": "boss_weapon_world",
+    "chestId": "boss_chest_world",
+    "unlockAfter": "boss_storm_colossus",
+    "resistance": 45,
+    "phases": 3,
+    "phaseSkills": {
+      "1": [
+        "boss_world_skill1",
+        "boss_world_skill2"
+      ],
+      "2": [
+        "boss_world_skill3",
+        "boss_world_skill4",
+        "boss_world_skill5"
+      ],
+      "3": [
+        "boss_world_skill2",
+        "boss_world_skill5",
+        "boss_world_skill6"
+      ]
+    },
+    "tags": [
+      "dragon"
+    ]
+  }
+]

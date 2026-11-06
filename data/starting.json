@@ -1,0 +1,8 @@
+{
+  "lives": 3,
+  "wood": 0,
+  "gold": 50,
+  "food": 10,
+  "stamina": 10,
+  "maxStamina": 10
+}

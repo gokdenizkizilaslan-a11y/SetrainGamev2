@@ -1,0 +1,371 @@
+[
+  {
+    "id": "void",
+    "name": "Voidcaller",
+    "description": "Gear steeped in the lightless void. It hums when whole.",
+    "bonuses": [
+      {
+        "pieces": 2,
+        "stats": {
+          "attack": 12,
+          "magicPower": 12
+        }
+      },
+      {
+        "pieces": 4,
+        "stats": {
+          "attack": 30,
+          "magicPower": 30,
+          "speed": 5
+        }
+      }
+    ]
+  },
+  {
+    "id": "shadow",
+    "name": "Nightshade",
+    "description": "Eclipse-dark garb for those who strike unseen.",
+    "bonuses": [
+      {
+        "pieces": 2,
+        "stats": {
+          "attack": 8,
+          "speed": 2
+        }
+      },
+      {
+        "pieces": 4,
+        "stats": {
+          "attack": 20,
+          "speed": 5,
+          "critChance": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": "ranger",
+    "name": "Wildstrider",
+    "description": "Scout gear of the deep woods. Light feet, true aim.",
+    "bonuses": [
+      {
+        "pieces": 2,
+        "stats": {
+          "attack": 6,
+          "speed": 2
+        }
+      },
+      {
+        "pieces": 4,
+        "stats": {
+          "attack": 15,
+          "maxHp": 30,
+          "speed": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": "dragon",
+    "name": "Dragonscale",
+    "description": "Plate cut from elder wyrms. Heavy, proud, unbroken.",
+    "bonuses": [
+      {
+        "pieces": 2,
+        "stats": {
+          "maxHp": 20,
+          "resistance": 5
+        }
+      },
+      {
+        "pieces": 4,
+        "stats": {
+          "maxHp": 60,
+          "resistance": 12,
+          "attack": 10
+        }
+      }
+    ]
+  },
+  {
+    "id": "leather",
+    "name": "Trailworn",
+    "description": "Honest stitched leather for the road.",
+    "bonuses": [
+      {
+        "pieces": 2,
+        "stats": {
+          "maxHp": 15
+        }
+      },
+      {
+        "pieces": 4,
+        "stats": {
+          "maxHp": 40,
+          "resistance": 4
+        }
+      }
+    ]
+  },
+  {
+    "id": "iron",
+    "name": "Ironclad",
+    "description": "Plain iron, honestly forged.",
+    "bonuses": [
+      {
+        "pieces": 2,
+        "stats": {
+          "maxHp": 12,
+          "resistance": 2
+        }
+      },
+      {
+        "pieces": 4,
+        "stats": {
+          "maxHp": 30,
+          "resistance": 6
+        }
+      }
+    ]
+  },
+  {
+    "id": "blood",
+    "name": "Sanguine",
+    "description": "Vampiric relics that thirst together. Two pieces wake them; four unleash them.",
+    "bonuses": [
+      {
+        "pieces": 2,
+        "stats": {
+          "attack": 12,
+          "maxHp": 25
+        }
+      },
+      {
+        "pieces": 4,
+        "stats": {
+          "attack": 30,
+          "maxHp": 60,
+          "omnivamp": 5
+        }
+      }
+    ]
+  },
+  {
+    "id": "duskhide",
+    "name": "Duskhide",
+    "description": "Dark leather for quiet roads.",
+    "bonuses": [
+      {
+        "pieces": 2,
+        "stats": {
+          "maxHp": 30
+        }
+      },
+      {
+        "pieces": 4,
+        "stats": {
+          "maxHp": 40,
+          "resistance": 4
+        }
+      }
+    ]
+  },
+  {
+    "id": "bronzeforge",
+    "name": "Bronzeforge",
+    "description": "Steel breast and bronze trim.",
+    "bonuses": [
+      {
+        "pieces": 2,
+        "stats": {
+          "attack": 4,
+          "resistance": 4
+        }
+      },
+      {
+        "pieces": 4,
+        "stats": {
+          "attack": 8,
+          "maxHp": 60
+        }
+      }
+    ]
+  },
+  {
+    "id": "mosswarden",
+    "name": "Mosswarden",
+    "description": "Bark and moss grown armour.",
+    "bonuses": [
+      {
+        "pieces": 2,
+        "stats": {
+          "attack": 4,
+          "resistance": 4
+        }
+      },
+      {
+        "pieces": 4,
+        "stats": {
+          "attack": 8,
+          "maxHp": 60
+        }
+      }
+    ]
+  },
+  {
+    "id": "stormtouched",
+    "name": "Stormtouched",
+    "description": "Forged in a thunderstorm.",
+    "bonuses": [
+      {
+        "pieces": 2,
+        "stats": {
+          "attack": 7,
+          "magicPower": 5
+        }
+      },
+      {
+        "pieces": 4,
+        "stats": {
+          "attack": 14,
+          "speed": 5
+        }
+      }
+    ]
+  },
+  {
+    "id": "runebound",
+    "name": "Runebound",
+    "description": "Etched with living runes.",
+    "bonuses": [
+      {
+        "pieces": 2,
+        "stats": {
+          "attack": 7,
+          "magicPower": 5
+        }
+      },
+      {
+        "pieces": 4,
+        "stats": {
+          "attack": 14,
+          "speed": 5
+        }
+      }
+    ]
+  },
+  {
+    "id": "emberforged",
+    "name": "Emberforged",
+    "description": "Black steel veined with molten ember.",
+    "bonuses": [
+      {
+        "pieces": 2,
+        "stats": {
+          "attack": 12,
+          "resistance": 8
+        }
+      },
+      {
+        "pieces": 4,
+        "stats": {
+          "attack": 22,
+          "maxHp": 120
+        }
+      }
+    ]
+  },
+  {
+    "id": "frostbound",
+    "name": "Frostbound",
+    "description": "Armour of enduring winter.",
+    "bonuses": [
+      {
+        "pieces": 2,
+        "stats": {
+          "attack": 12,
+          "resistance": 8
+        }
+      },
+      {
+        "pieces": 4,
+        "stats": {
+          "attack": 22,
+          "maxHp": 120
+        }
+      }
+    ]
+  },
+  {
+    "id": "dragonblood",
+    "name": "Dragonblood",
+    "description": "Dragonscale burning with a molten heart.",
+    "bonuses": [
+      {
+        "pieces": 2,
+        "stats": {
+          "attack": 18,
+          "critChance": 3
+        }
+      },
+      {
+        "pieces": 4,
+        "stats": {
+          "attack": 32,
+          "critDamage": 15
+        }
+      }
+    ]
+  },
+  {
+    "id": "voidweave",
+    "name": "Voidweave",
+    "description": "Cloth of the lightless void.",
+    "bonuses": [
+      {
+        "pieces": 2,
+        "stats": {
+          "attack": 26,
+          "magicPower": 20
+        }
+      },
+      {
+        "pieces": 4,
+        "stats": {
+          "attack": 44,
+          "magicPower": 36,
+          "speed": 6
+        }
+      }
+    ]
+  },
+  {
+    "id": "setras_chosen",
+    "name": "Setra's Chosen",
+    "description": "The relic panoply of the first chosen.",
+    "bonuses": [
+      {
+        "pieces": 2,
+        "stats": {
+          "attack": 18,
+          "magicPower": 18
+        }
+      },
+      {
+        "pieces": 4,
+        "stats": {
+          "resistance": 25,
+          "maxHp": 80
+        }
+      },
+      {
+        "pieces": 6,
+        "stats": {
+          "attack": 40,
+          "magicPower": 40,
+          "speed": 10
+        }
+      }
+    ]
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "damageVariance": 0.2,
+  "resistanceMitigation": 0.25,
+  "manaRegenPerRound": 3,
+  "turnTimeoutMs": 15000,
+  "critChance": 0.12,
+  "critMult": 1.6,
+  "monsterScale": 5,
+  "monsterAttackDelayMs": 900
+}

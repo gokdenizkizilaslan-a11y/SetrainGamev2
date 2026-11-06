@@ -1,0 +1,181 @@
+[
+  {
+    "id": "egg_red",
+    "label": "Red Egg",
+    "rarity": "common",
+    "dropRate": 0.1,
+    "dungeons": [
+      "f",
+      "fast"
+    ],
+    "pets": [
+      "pet_direwolf",
+      "pet_ember_pup",
+      "pet_cinder_cub",
+      "pet_slime",
+      "pet_sprout",
+      "pet_flame_sprite"
+    ]
+  },
+  {
+    "id": "egg_green",
+    "label": "Green Egg",
+    "rarity": "common",
+    "dropRate": 0.05,
+    "dungeons": [
+      "f",
+      "d"
+    ],
+    "pets": [
+      "pet_mossling",
+      "pet_vine_pup",
+      "pet_thorn_whelp",
+      "pet_grove_sprite",
+      "pet_slime_king",
+      "pet_forest_cub",
+      "pet_natureling"
+    ]
+  },
+  {
+    "id": "egg_blue",
+    "label": "Blue Egg",
+    "rarity": "uncommon",
+    "dropRate": 0.03,
+    "dungeons": [
+      "d",
+      "c"
+    ],
+    "pets": [
+      "pet_frost_pup",
+      "pet_ice_whelp",
+      "pet_snow_cub",
+      "pet_glacierling",
+      "pet_chill_sprite",
+      "pet_frost_drake"
+    ]
+  },
+  {
+    "id": "egg_brown",
+    "label": "Brown Egg",
+    "rarity": "uncommon",
+    "dropRate": 0.02,
+    "dungeons": [
+      "c",
+      "b"
+    ],
+    "pets": [
+      "pet_stone_pup",
+      "pet_rockling",
+      "pet_boulder_cub",
+      "pet_crystal_sprite",
+      "pet_golem_whelp",
+      "pet_granite_pup"
+    ]
+  },
+  {
+    "id": "egg_yellow",
+    "label": "Yellow Egg",
+    "rarity": "rare",
+    "dropRate": 0.015,
+    "dungeons": [
+      "b",
+      "a"
+    ],
+    "pets": [
+      "pet_storm_pup",
+      "pet_thunder_cub",
+      "pet_lightning_drake",
+      "pet_wind_sprite",
+      "pet_gale_whelp",
+      "pet_storm_hatchling"
+    ]
+  },
+  {
+    "id": "egg_purple",
+    "label": "Purple Egg",
+    "rarity": "rare",
+    "dropRate": 0.01,
+    "dungeons": [
+      "a",
+      "s"
+    ],
+    "pets": [
+      "pet_shadow_pup",
+      "pet_voidling",
+      "pet_dusk_whelp",
+      "pet_night_cub",
+      "pet_shade_sprite",
+      "pet_umbra_drake"
+    ]
+  },
+  {
+    "id": "egg_cyan",
+    "label": "Cyan Egg",
+    "rarity": "epic",
+    "dropRate": 0.008,
+    "dungeons": [
+      "s",
+      "ss"
+    ],
+    "pets": [
+      "pet_crystal_drake",
+      "pet_arcane_pup",
+      "pet_mana_sprite",
+      "pet_spell_whelp",
+      "pet_runeling",
+      "pet_crystal_hound"
+    ]
+  },
+  {
+    "id": "egg_dark",
+    "label": "Dark Egg",
+    "rarity": "epic",
+    "dropRate": 0.006,
+    "dungeons": [
+      "ss",
+      "ssplus"
+    ],
+    "pets": [
+      "pet_void_pup",
+      "pet_abyssling",
+      "pet_nether_cub",
+      "pet_shadow_drake",
+      "pet_dark_hound",
+      "pet_void_sprite"
+    ]
+  },
+  {
+    "id": "egg_orange",
+    "label": "Orange Egg",
+    "rarity": "legendary",
+    "dropRate": 0.004,
+    "dungeons": [
+      "special7"
+    ],
+    "pets": [
+      "pet_phoenix_hatchling",
+      "pet_ember_drake",
+      "pet_flame_hound",
+      "pet_inferno_pup",
+      "pet_blaze_drake",
+      "pet_phoenix_chick"
+    ]
+  },
+  {
+    "id": "egg_gold",
+    "label": "Gold Egg",
+    "rarity": "mythic",
+    "dropRate": 0.002,
+    "dungeons": [
+      "ssplus"
+    ],
+    "pets": [
+      "pet_mythic_drake",
+      "pet_gold_pup",
+      "pet_radiant_cub",
+      "pet_divine_whelp",
+      "pet_light_sprite",
+      "pet_mythic_hound"
+    ]
+  }
+]

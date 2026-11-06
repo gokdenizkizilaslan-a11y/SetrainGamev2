@@ -1,0 +1,17 @@
+[
+  {
+    "id": "vampire_rite",
+    "name": "The Progenitor's Thirst",
+    "giver": "uncle",
+    "classes": [
+      "assassin",
+      "mage"
+    ],
+    "monsterTag": "humanoid",
+    "requiredKills": 50,
+    "requiredItem": "primeval_cruor",
+    "requiredItemCount": 10,
+    "cruorDropChance": 0.2,
+    "description": "Slay 50 humanoid foes and gather 10 Drops of Primeval Cruor for Old Vesryn. Completing the rite opens the vampire paths: Bloodspawn (physical, assassin Lv20, through Vesryn), Gloomspawn (magic, mage Lv20, through Vesryn), then Bloodlord and Sanguine Lord (Lv40, temple, vampire blood only)."
+  }
+]

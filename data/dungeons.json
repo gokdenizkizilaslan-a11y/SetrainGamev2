@@ -1,0 +1,735 @@
+[
+  {
+    "rank": "f",
+    "label": "F-Rank",
+    "image": "/images/dungeons/f.png",
+    "stamina": 4,
+    "xpReward": 40,
+    "goldScale": 0.4,
+    "woodScale": 0.4,
+    "goldBase": 30,
+    "woodBase": 20,
+    "monsterPool": [
+      "slime",
+      "goblin",
+      "giant_rat",
+      "cave_bat",
+      "wolf",
+      "kobold",
+      "forest_mite",
+      "grove_sprite",
+      "ember_sprite",
+      "vine_lurker",
+      "vine_wraith",
+      "thornback_boar"
+    ],
+    "monsterCount": 2,
+    "monsterPower": 1,
+    "sizeProfile": "more",
+    "loot": {
+      "legendary": 0.5,
+      "epic": 1.5,
+      "mythic": 0.2,
+      "remnant": 0.05
+    }
+  },
+  {
+    "rank": "d",
+    "label": "D-Rank",
+    "image": "/images/dungeons/d.png",
+    "stamina": 4,
+    "xpReward": 70,
+    "goldScale": 0.6,
+    "woodScale": 0.55,
+    "goldBase": 45,
+    "woodBase": 30,
+    "monsterPool": [
+      "iron_goblin",
+      "bone_archer",
+      "frost_wolf",
+      "ash_spider",
+      "brigand_captain",
+      "marsh_crawler",
+      "ember_sprite",
+      "abyss_wraith",
+      "storm_harpy",
+      "flame_witch"
+    ],
+    "monsterCount": 2,
+    "monsterPower": 1.3,
+    "sizeProfile": "more",
+    "loot": {
+      "legendary": 1,
+      "epic": 3,
+      "mythic": 0.4,
+      "remnant": 0.08
+    }
+  },
+  {
+    "rank": "c",
+    "label": "C-Rank",
+    "image": "/images/dungeons/c.png",
+    "stamina": 4,
+    "xpReward": 110,
+    "goldScale": 0.8,
+    "woodScale": 0.7,
+    "goldBase": 70,
+    "woodBase": 45,
+    "monsterPool": [
+      "goblin_warrior",
+      "skeleton",
+      "dire_wolf",
+      "crystal_golem",
+      "cursed_knight",
+      "iron_ogre",
+      "golem",
+      "wraith",
+      "manticore",
+      "harpy"
+    ],
+    "monsterCount": 3,
+    "monsterPower": 1.6,
+    "sizeProfile": "more",
+    "loot": {
+      "legendary": 2,
+      "epic": 5,
+      "mythic": 0.8,
+      "remnant": 0.12
+    }
+  },
+  {
+    "rank": "b",
+    "label": "B-Rank",
+    "image": "/images/dungeons/b.png",
+    "stamina": 4,
+    "xpReward": 160,
+    "goldScale": 1,
+    "woodScale": 0.9,
+    "goldBase": 100,
+    "woodBase": 60,
+    "monsterPool": [
+      "stone_warden",
+      "manticore",
+      "ogre",
+      "dark_knight",
+      "witch",
+      "iron_ogre",
+      "crystal_golem",
+      "wyvern",
+      "frost_wyvern",
+      "void_golem",
+      "elder_treant"
+    ],
+    "monsterCount": 3,
+    "monsterPower": 2,
+    "sizeProfile": "more",
+    "loot": {
+      "legendary": 3.5,
+      "epic": 8,
+      "mythic": 1.5,
+      "remnant": 0.2
+    }
+  },
+  {
+    "rank": "a",
+    "label": "A-Rank",
+    "image": "/images/dungeons/a.png",
+    "stamina": 4,
+    "xpReward": 230,
+    "goldScale": 1.3,
+    "woodScale": 1.1,
+    "goldBase": 150,
+    "woodBase": 85,
+    "monsterPool": [
+      "crystal_golem",
+      "cursed_knight",
+      "stone_titan",
+      "wyvern",
+      "ancient_golem",
+      "frost_wyvern",
+      "void_golem",
+      "storm_lich",
+      "nether_hydra",
+      "dusk_manticore"
+    ],
+    "monsterCount": 3,
+    "monsterPower": 2.6,
+    "sizeProfile": "more",
+    "loot": {
+      "legendary": 6,
+      "epic": 12,
+      "mythic": 3,
+      "remnant": 0.4
+    }
+  },
+  {
+    "rank": "s",
+    "label": "S-Rank",
+    "image": "/images/dungeons/s.png",
+    "stamina": 4,
+    "xpReward": 320,
+    "goldScale": 1.7,
+    "woodScale": 1.3,
+    "goldBase": 220,
+    "woodBase": 110,
+    "monsterPool": [
+      "wyvern",
+      "frost_wyvern",
+      "void_golem",
+      "storm_lich",
+      "nether_hydra",
+      "ancient_golem",
+      "lich",
+      "doom_lord",
+      "abyss_wraith",
+      "flame_witch"
+    ],
+    "monsterCount": 4,
+    "monsterPower": 3.3,
+    "sizeProfile": "fewerStronger",
+    "loot": {
+      "legendary": 10,
+      "epic": 18,
+      "mythic": 6,
+      "remnant": 0.8
+    }
+  },
+  {
+    "rank": "ss",
+    "label": "SS-Rank",
+    "image": "/images/dungeons/ss.png",
+    "stamina": 4,
+    "xpReward": 430,
+    "goldScale": 2.1,
+    "woodScale": 1.6,
+    "goldBase": 320,
+    "woodBase": 150,
+    "monsterPool": [
+      "ancient_golem",
+      "wyvern",
+      "storm_lich",
+      "void_golem",
+      "lich",
+      "doom_lord",
+      "world_eater",
+      "hydra",
+      "frost_wyvern",
+      "nether_hydra"
+    ],
+    "monsterCount": 4,
+    "monsterPower": 4.2,
+    "sizeProfile": "fewerStronger",
+    "loot": {
+      "legendary": 14,
+      "epic": 24,
+      "mythic": 10,
+      "remnant": 1.4
+    }
+  },
+  {
+    "rank": "ssplus",
+    "label": "SS+",
+    "image": "/images/dungeons/ssplus.png",
+    "stamina": 4,
+    "xpReward": 560,
+    "goldScale": 2.6,
+    "woodScale": 1.9,
+    "goldBase": 460,
+    "woodBase": 200,
+    "monsterPool": [
+      "lich",
+      "hydra",
+      "doom_lord",
+      "world_eater",
+      "void_golem",
+      "storm_lich",
+      "nether_hydra",
+      "ancient_golem",
+      "frost_wyvern",
+      "world_eater"
+    ],
+    "monsterCount": 5,
+    "monsterPower": 5.5,
+    "sizeProfile": "fewerStronger",
+    "loot": {
+      "legendary": 18,
+      "epic": 30,
+      "mythic": 14,
+      "remnant": 2.2
+    }
+  },
+  {
+    "rank": "fast",
+    "label": "Fast Dungeon",
+    "image": "/images/dungeons/fast.png",
+    "stamina": 2,
+    "xpReward": 55,
+    "goldScale": 0.5,
+    "woodScale": 0.45,
+    "goldBase": 25,
+    "woodBase": 15,
+    "monsterPool": [
+      "slime",
+      "goblin",
+      "goblin_archer",
+      "kobold",
+      "forest_mite"
+    ],
+    "monsterCount": 1,
+    "monsterPower": 1,
+    "sizeProfile": "more",
+    "loot": {
+      "legendary": 0.8,
+      "epic": 2,
+      "mythic": 0.3,
+      "remnant": 0.06
+    }
+  },
+  {
+    "rank": "special1",
+    "label": "Ember Hollow",
+    "image": "/images/dungeons/ember_hollow.png",
+    "stamina": 4,
+    "xpReward": 180,
+    "goldScale": 1.2,
+    "woodScale": 1,
+    "goldBase": 120,
+    "woodBase": 70,
+    "monsterPool": [
+      "molten_behemoth",
+      "flame_witch",
+      "ember_sprite"
+    ],
+    "monsterCount": 1,
+    "monsterPower": 3.5,
+    "sizeProfile": "fewerStronger",
+    "isSpecial": true,
+    "materialPool": [
+      "fire_essence",
+      "heart_of_fire"
+    ]
+  },
+  {
+    "rank": "special2",
+    "label": "Frost Crypt",
+    "image": "/images/dungeons/frost_crypt.png",
+    "stamina": 4,
+    "xpReward": 180,
+    "goldScale": 1.2,
+    "woodScale": 1,
+    "goldBase": 120,
+    "woodBase": 70,
+    "monsterPool": [
+      "frost_titan",
+      "frost_wolf",
+      "stone_titan"
+    ],
+    "monsterCount": 1,
+    "monsterPower": 3.5,
+    "sizeProfile": "fewerStronger",
+    "isSpecial": true,
+    "materialPool": [
+      "frost_essence"
+    ]
+  },
+  {
+    "rank": "special3",
+    "label": "Shadow Sanctum",
+    "image": "/images/dungeons/shadow_sanctum.png",
+    "stamina": 4,
+    "xpReward": 180,
+    "goldScale": 1.2,
+    "woodScale": 1,
+    "goldBase": 120,
+    "woodBase": 70,
+    "monsterPool": [
+      "void_herald",
+      "abyss_wraith",
+      "cursed_knight"
+    ],
+    "monsterCount": 1,
+    "monsterPower": 3.5,
+    "sizeProfile": "fewerStronger",
+    "isSpecial": true,
+    "materialPool": [
+      "shadow_essence",
+      "shadow_sigil"
+    ]
+  },
+  {
+    "rank": "special4",
+    "label": "Storm Bastion",
+    "image": "/images/dungeons/storm_bastion.png",
+    "stamina": 4,
+    "xpReward": 180,
+    "goldScale": 1.2,
+    "woodScale": 1,
+    "goldBase": 120,
+    "woodBase": 70,
+    "monsterPool": [
+      "storm_colossus",
+      "storm_harpy",
+      "griffin"
+    ],
+    "monsterCount": 1,
+    "monsterPower": 3.5,
+    "sizeProfile": "fewerStronger",
+    "isSpecial": true,
+    "materialPool": [
+      "arcane_essence",
+      "arcane_seal"
+    ]
+  },
+  {
+    "rank": "special5",
+    "label": "Void Maw",
+    "image": "/images/dungeons/void_maw.png",
+    "stamina": 5,
+    "xpReward": 220,
+    "goldScale": 1.5,
+    "woodScale": 1.2,
+    "goldBase": 150,
+    "woodBase": 90,
+    "monsterPool": [
+      "void_golem",
+      "world_eater",
+      "abyss_wraith"
+    ],
+    "monsterCount": 1,
+    "monsterPower": 4,
+    "sizeProfile": "fewerStronger",
+    "isSpecial": true,
+    "materialPool": [
+      "shadow_essence",
+      "arcane_essence"
+    ]
+  },
+  {
+    "rank": "special6",
+    "label": "Ancient Foundry",
+    "image": "/images/dungeons/ancient_foundry.png",
+    "stamina": 5,
+    "xpReward": 220,
+    "goldScale": 1.5,
+    "woodScale": 1.2,
+    "goldBase": 150,
+    "woodBase": 90,
+    "monsterPool": [
+      "ancient_golem",
+      "stone_titan",
+      "crystal_golem"
+    ],
+    "monsterCount": 1,
+    "monsterPower": 4,
+    "sizeProfile": "fewerStronger",
+    "isSpecial": true,
+    "materialPool": [
+      "golem_heart",
+      "fire_essence",
+      "arcane_essence",
+      "war_crest"
+    ]
+  },
+  {
+    "rank": "special7",
+    "label": "Phoenix Sanctum",
+    "image": "/images/dungeons/phoenix_sanctum.png",
+    "stamina": 5,
+    "xpReward": 250,
+    "goldScale": 1.6,
+    "woodScale": 1.3,
+    "goldBase": 180,
+    "woodBase": 110,
+    "monsterPool": [
+      "phoenix_canary",
+      "molten_behemoth",
+      "frost_titan"
+    ],
+    "monsterCount": 1,
+    "monsterPower": 4.5,
+    "sizeProfile": "fewerStronger",
+    "isSpecial": true,
+    "materialPool": [
+      "the_essence_of_life",
+      "fire_essence"
+    ]
+  },
+  {
+    "rank": "boss_ember_king",
+    "label": "Ember King",
+    "image": "/images/dungeons/boss_ember_king.png",
+    "stamina": 4,
+    "xpReward": 300,
+    "goldScale": 1.4,
+    "woodScale": 1.1,
+    "goldBase": 150,
+    "woodBase": 90,
+    "monsterPool": [
+      "boss_ember_king"
+    ],
+    "monsterCount": 1,
+    "monsterPower": 0.22,
+    "sizeProfile": "fewerStronger",
+    "unlockAfter": null,
+    "isBoss": true,
+    "isSpecial": true,
+    "materialPool": [
+      "the_essence_of_life"
+    ]
+  },
+  {
+    "rank": "boss_frost_titan",
+    "label": "Glacier Doomlord",
+    "image": "/images/dungeons/boss_frost_titan.png",
+    "stamina": 5,
+    "xpReward": 400,
+    "goldScale": 1.5,
+    "woodScale": 1.2,
+    "goldBase": 180,
+    "woodBase": 110,
+    "monsterPool": [
+      "boss_frost_titan"
+    ],
+    "monsterCount": 1,
+    "monsterPower": 0.22,
+    "sizeProfile": "fewerStronger",
+    "unlockAfter": "boss_ember_king",
+    "isBoss": true,
+    "isSpecial": true,
+    "materialPool": [
+      "the_essence_of_life"
+    ]
+  },
+  {
+    "rank": "boss_void_herald",
+    "label": "Eternal Abyss Herald",
+    "image": "/images/dungeons/boss_void_herald.png",
+    "stamina": 5,
+    "xpReward": 500,
+    "goldScale": 1.6,
+    "woodScale": 1.3,
+    "goldBase": 220,
+    "woodBase": 130,
+    "monsterPool": [
+      "boss_void_herald"
+    ],
+    "monsterCount": 1,
+    "monsterPower": 0.22,
+    "sizeProfile": "fewerStronger",
+    "unlockAfter": "boss_frost_titan",
+    "isBoss": true,
+    "isSpecial": true,
+    "materialPool": [
+      "the_essence_of_life"
+    ]
+  },
+  {
+    "rank": "boss_storm_colossus",
+    "label": "Thunder Tyrant",
+    "image": "/images/dungeons/boss_storm_colossus.png",
+    "stamina": 6,
+    "xpReward": 600,
+    "goldScale": 1.7,
+    "woodScale": 1.4,
+    "goldBase": 260,
+    "woodBase": 150,
+    "monsterPool": [
+      "boss_storm_colossus"
+    ],
+    "monsterCount": 1,
+    "monsterPower": 0.22,
+    "sizeProfile": "fewerStronger",
+    "unlockAfter": "boss_void_herald",
+    "isBoss": true,
+    "isSpecial": true,
+    "materialPool": [
+      "the_essence_of_life"
+    ]
+  },
+  {
+    "rank": "boss_world_eater",
+    "label": "Oblivion Devourer",
+    "image": "/images/dungeons/boss_world_eater.png",
+    "stamina": 6,
+    "xpReward": 800,
+    "goldScale": 1.8,
+    "woodScale": 1.5,
+    "goldBase": 320,
+    "woodBase": 180,
+    "monsterPool": [
+      "boss_world_eater"
+    ],
+    "monsterCount": 1,
+    "monsterPower": 0.22,
+    "sizeProfile": "fewerStronger",
+    "unlockAfter": "boss_storm_colossus",
+    "isBoss": true,
+    "isSpecial": true,
+    "materialPool": [
+      "the_essence_of_life"
+    ]
+  },
+  {
+    "rank": "t1",
+    "label": "Verdant Ruins",
+    "image": "/images/dungeons/t1.png",
+    "stamina": 3,
+    "xpReward": 90,
+    "goldScale": 0.8,
+    "woodScale": 0.7,
+    "goldBase": 55,
+    "woodBase": 35,
+    "monsterPool": [
+      "goblin_warrior",
+      "skeleton",
+      "dire_wolf",
+      "crystal_golem",
+      "cursed_knight",
+      "iron_ogre",
+      "golem",
+      "wraith",
+      "manticore",
+      "harpy"
+    ],
+    "monsterCount": 3,
+    "monsterPower": 1.5,
+    "sizeProfile": "more",
+    "travel": true
+  },
+  {
+    "rank": "t2",
+    "label": "Sunken Cistern",
+    "image": "/images/dungeons/t2.png",
+    "stamina": 3,
+    "xpReward": 140,
+    "goldScale": 1,
+    "woodScale": 0.9,
+    "goldBase": 80,
+    "woodBase": 50,
+    "monsterPool": [
+      "stone_warden",
+      "manticore",
+      "ogre",
+      "dark_knight",
+      "witch",
+      "iron_ogre",
+      "crystal_golem",
+      "wyvern",
+      "frost_wyvern",
+      "void_golem",
+      "elder_treant"
+    ],
+    "monsterCount": 3,
+    "monsterPower": 1.9,
+    "sizeProfile": "more",
+    "travel": true
+  },
+  {
+    "rank": "t3",
+    "label": "Ashen War Camp",
+    "image": "/images/dungeons/t3.png",
+    "stamina": 4,
+    "xpReward": 210,
+    "goldScale": 1.25,
+    "woodScale": 1.1,
+    "goldBase": 110,
+    "woodBase": 70,
+    "monsterPool": [
+      "crystal_golem",
+      "cursed_knight",
+      "stone_titan",
+      "wyvern",
+      "ancient_golem",
+      "frost_wyvern",
+      "void_golem",
+      "storm_lich",
+      "nether_hydra",
+      "dusk_manticore"
+    ],
+    "monsterCount": 4,
+    "monsterPower": 2.4,
+    "sizeProfile": "more",
+    "travel": true
+  },
+  {
+    "rank": "t4",
+    "label": "Frozen Sanctum",
+    "image": "/images/dungeons/t4.png",
+    "stamina": 4,
+    "xpReward": 300,
+    "goldScale": 1.5,
+    "woodScale": 1.3,
+    "goldBase": 150,
+    "woodBase": 95,
+    "monsterPool": [
+      "wyvern",
+      "frost_wyvern",
+      "void_golem",
+      "storm_lich",
+      "nether_hydra",
+      "ancient_golem",
+      "lich",
+      "doom_lord",
+      "abyss_wraith",
+      "flame_witch"
+    ],
+    "monsterCount": 4,
+    "monsterPower": 3,
+    "sizeProfile": "more",
+    "travel": true
+  },
+  {
+    "rank": "t5",
+    "label": "Void Rift",
+    "image": "/images/dungeons/t5.png",
+    "stamina": 5,
+    "xpReward": 420,
+    "goldScale": 1.8,
+    "woodScale": 1.55,
+    "goldBase": 200,
+    "woodBase": 125,
+    "monsterPool": [
+      "ancient_golem",
+      "wyvern",
+      "storm_lich",
+      "void_golem",
+      "lich",
+      "doom_lord",
+      "world_eater",
+      "hydra",
+      "frost_wyvern",
+      "nether_hydra"
+    ],
+    "monsterCount": 5,
+    "monsterPower": 3.7,
+    "sizeProfile": "more",
+    "travel": true
+  },
+  {
+    "rank": "t6",
+    "label": "Worldroot Abyss",
+    "image": "/images/dungeons/t6.png",
+    "stamina": 6,
+    "xpReward": 600,
+    "goldScale": 2.15,
+    "woodScale": 1.85,
+    "goldBase": 270,
+    "woodBase": 170,
+    "monsterPool": [
+      "lich",
+      "hydra",
+      "doom_lord",
+      "world_eater",
+      "void_golem",
+      "storm_lich",
+      "nether_hydra",
+      "ancient_golem",
+      "frost_wyvern",
+      "world_eater"
+    ],
+    "monsterCount": 5,
+    "monsterPower": 4.5,
+    "sizeProfile": "more",
+    "travel": true
+  }
+]

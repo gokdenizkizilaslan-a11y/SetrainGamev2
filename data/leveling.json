@@ -1,0 +1,6 @@
+{
+  "maxLevel": 50,
+  "xpBase": 500,
+  "xpExponent": 1.45,
+  "growthScale": 0.02
+}

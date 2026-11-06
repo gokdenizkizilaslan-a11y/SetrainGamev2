@@ -1,0 +1,304 @@
+{
+  "buyable": [
+    "common",
+    "uncommon",
+    "rare"
+  ],
+  "rarityOrder": [
+    "common",
+    "uncommon",
+    "rare",
+    "epic",
+    "legendary",
+    "mythic",
+    "ancient_relic"
+  ],
+  "rarityMeta": {
+    "common": {
+      "label": "Common",
+      "color": "#9aa7b5"
+    },
+    "uncommon": {
+      "label": "Uncommon",
+      "color": "#6fbf6a"
+    },
+    "rare": {
+      "label": "Rare",
+      "color": "#4aa3d6"
+    },
+    "epic": {
+      "label": "Epic",
+      "color": "#b07fe8"
+    },
+    "legendary": {
+      "label": "Legendary",
+      "color": "#ffb347"
+    },
+    "mythic": {
+      "label": "Mythic",
+      "color": "#ff5c8a"
+    },
+    "ancient_relic": {
+      "label": "Ancient Relic",
+      "color": "#ff2323"
+    }
+  },
+  "dropChance": {
+    "common": 0.2,
+    "uncommon": 0.28,
+    "rare": 0.36,
+    "epic": 0.45,
+    "legendary": 0.55,
+    "mythic": 0.65,
+    "ancient_relic": 0.75
+  },
+  "gradeWeights": {
+    "f": {
+      "common": 100,
+      "uncommon": 35,
+      "rare": 10,
+      "epic": 2,
+      "legendary": 0.4,
+      "mythic": 0,
+      "ancient_relic": 0
+    },
+    "d": {
+      "common": 90,
+      "uncommon": 45,
+      "rare": 15,
+      "epic": 4,
+      "legendary": 0.8,
+      "mythic": 0.1,
+      "ancient_relic": 0
+    },
+    "c": {
+      "common": 70,
+      "uncommon": 50,
+      "rare": 22,
+      "epic": 8,
+      "legendary": 1.5,
+      "mythic": 0.3,
+      "ancient_relic": 0.02
+    },
+    "b": {
+      "common": 50,
+      "uncommon": 55,
+      "rare": 30,
+      "epic": 14,
+      "legendary": 3,
+      "mythic": 0.8,
+      "ancient_relic": 0.05
+    },
+    "a": {
+      "common": 30,
+      "uncommon": 50,
+      "rare": 38,
+      "epic": 22,
+      "legendary": 6,
+      "mythic": 1.6,
+      "ancient_relic": 0.12
+    },
+    "s": {
+      "common": 15,
+      "uncommon": 40,
+      "rare": 45,
+      "epic": 32,
+      "legendary": 10,
+      "mythic": 3,
+      "ancient_relic": 0.25
+    },
+    "ss": {
+      "common": 8,
+      "uncommon": 30,
+      "rare": 48,
+      "epic": 42,
+      "legendary": 15,
+      "mythic": 5,
+      "ancient_relic": 0.5
+    },
+    "ssplus": {
+      "common": 5,
+      "uncommon": 22,
+      "rare": 50,
+      "epic": 55,
+      "legendary": 22,
+      "mythic": 8,
+      "ancient_relic": 1
+    },
+    "special1": {
+      "common": 10,
+      "uncommon": 30,
+      "rare": 35,
+      "epic": 25,
+      "legendary": 12,
+      "mythic": 4,
+      "ancient_relic": 0.3
+    },
+    "special2": {
+      "common": 10,
+      "uncommon": 30,
+      "rare": 35,
+      "epic": 25,
+      "legendary": 12,
+      "mythic": 4,
+      "ancient_relic": 0.3
+    },
+    "special3": {
+      "common": 10,
+      "uncommon": 30,
+      "rare": 35,
+      "epic": 25,
+      "legendary": 12,
+      "mythic": 4,
+      "ancient_relic": 0.3
+    },
+    "special4": {
+      "common": 8,
+      "uncommon": 28,
+      "rare": 35,
+      "epic": 28,
+      "legendary": 14,
+      "mythic": 5,
+      "ancient_relic": 0.4
+    },
+    "special5": {
+      "common": 5,
+      "uncommon": 25,
+      "rare": 32,
+      "epic": 30,
+      "legendary": 16,
+      "mythic": 6,
+      "ancient_relic": 0.5
+    },
+    "special6": {
+      "common": 5,
+      "uncommon": 22,
+      "rare": 30,
+      "epic": 32,
+      "legendary": 18,
+      "mythic": 7,
+      "ancient_relic": 0.6
+    },
+    "special7": {
+      "common": 4,
+      "uncommon": 20,
+      "rare": 28,
+      "epic": 34,
+      "legendary": 20,
+      "mythic": 8,
+      "ancient_relic": 0.7
+    },
+    "boss_ember_king": {
+      "common": 0,
+      "uncommon": 5,
+      "rare": 20,
+      "epic": 35,
+      "legendary": 30,
+      "mythic": 10,
+      "ancient_relic": 0.5
+    },
+    "boss_frost_titan": {
+      "common": 0,
+      "uncommon": 3,
+      "rare": 15,
+      "epic": 32,
+      "legendary": 35,
+      "mythic": 15,
+      "ancient_relic": 0.7
+    },
+    "boss_void_herald": {
+      "common": 0,
+      "uncommon": 2,
+      "rare": 10,
+      "epic": 28,
+      "legendary": 40,
+      "mythic": 20,
+      "ancient_relic": 0.9
+    },
+    "boss_storm_colossus": {
+      "common": 0,
+      "uncommon": 1,
+      "rare": 8,
+      "epic": 25,
+      "legendary": 42,
+      "mythic": 24,
+      "ancient_relic": 1
+    },
+    "boss_world_eater": {
+      "common": 0,
+      "uncommon": 0,
+      "rare": 5,
+      "epic": 20,
+      "legendary": 45,
+      "mythic": 30,
+      "ancient_relic": 1.2
+    },
+    "t1": {
+      "common": 35,
+      "uncommon": 35,
+      "rare": 22,
+      "epic": 10.4,
+      "legendary": 2.25,
+      "mythic": 0.48,
+      "ancient_relic": 0.03
+    },
+    "t2": {
+      "common": 25,
+      "uncommon": 38.5,
+      "rare": 30,
+      "epic": 18.2,
+      "legendary": 4.5,
+      "mythic": 1.28,
+      "ancient_relic": 0.08
+    },
+    "t3": {
+      "common": 15,
+      "uncommon": 35,
+      "rare": 38,
+      "epic": 28.6,
+      "legendary": 9,
+      "mythic": 2.56,
+      "ancient_relic": 0.19
+    },
+    "t4": {
+      "common": 7.5,
+      "uncommon": 28,
+      "rare": 45,
+      "epic": 41.6,
+      "legendary": 15,
+      "mythic": 4.8,
+      "ancient_relic": 0.4
+    },
+    "t5": {
+      "common": 4,
+      "uncommon": 21,
+      "rare": 48,
+      "epic": 54.6,
+      "legendary": 22.5,
+      "mythic": 8,
+      "ancient_relic": 0.8
+    },
+    "t6": {
+      "common": 2.5,
+      "uncommon": 15.4,
+      "rare": 50,
+      "epic": 71.5,
+      "legendary": 33,
+      "mythic": 12.8,
+      "ancient_relic": 1.6
+    },
+    "fast": {
+      "common": 100,
+      "uncommon": 30,
+      "rare": 8,
+      "epic": 2,
+      "legendary": 0.5,
+      "mythic": 0,
+      "ancient_relic": 0
+    }
+  },
+  "categoryWeights": {
+    "material": 60,
+    "gear": 40
+  }
+}

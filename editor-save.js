@@ -288,19 +288,56 @@ function validateReferences(data) {
   }
 }
 
-// Returns { ok: true, backup?: <name> } or throws on validation failure.
+// Backups live OUTSIDE the repo so they never bloat indexing/git:
+//   default -> ../ForSetrain/backups (Desktop\ForSetrain\backups)
+//   override with env SETRA_BACKUP_DIR
+//   fallback -> ./.backups if the outside folder cannot be created
+function resolveBackupDir() {
+  const candidates = [];
+  if (process.env.SETRA_BACKUP_DIR) candidates.push(path.resolve(process.env.SETRA_BACKUP_DIR));
+  candidates.push(path.join(__dirname, "..", "ForSetrain", "backups"));
+  candidates.push(path.join(__dirname, ".backups"));
+  for (const dir of candidates) {
+    try {
+      fs.mkdirSync(dir, { recursive: true });
+      return dir;
+    } catch (e) {
+      // try next candidate
+    }
+  }
+  return __dirname;
+}
+
+// Returns { ok: true, backup?: <path>, backupName?: <file> } or throws on validation failure.
 function writeContent(data, opts = {}) {
   validateReferences(data);
   const content = buildContentFile(data);
   validateContentJs(content);
+  const current = fs.readFileSync(CONTENT_FILE, "utf8");
+  if (opts.skipIfSame && content === current) {
+    return { ok: true, unchanged: true, backup: null, backupName: null };
+  }
+  let backupPath = null;
   let backupName = null;
   if (opts.backup !== false) {
     const stamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
     backupName = `content.backup-${stamp}.js`;
-    fs.copyFileSync(CONTENT_FILE, path.join(__dirname, backupName));
+    backupPath = path.join(resolveBackupDir(), backupName);
+    fs.copyFileSync(CONTENT_FILE, backupPath);
   }
   fs.writeFileSync(CONTENT_FILE, content, "utf8");
-  return { ok: true, backup: backupName };
+  // Keep the data/*.json mirror in sync after every save so agent sessions
+  // never read stale data. Best-effort: a failure must not fail the save.
+  try {
+    spawnSync(process.execPath, [path.join(__dirname, "extract_content.js")], {
+      cwd: __dirname,
+      encoding: "utf8",
+      timeout: 30000,
+    });
+  } catch (e) {
+    // non-fatal
+  }
+  return { ok: true, backup: backupPath, backupName };
 }
 
 module.exports = { CONTENT_FILE, buildContentFile, validateContentJs, validateReferences, writeContent };

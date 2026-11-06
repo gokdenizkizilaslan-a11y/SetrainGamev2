@@ -1,0 +1,66 @@
+[
+  {
+    "id": "overcharge",
+    "name": "Overcharge",
+    "when": "wet",
+    "ifElement": "lightning",
+    "mult": 1.5,
+    "desc": "Lightning surges through soaked foes, dealing +50% damage to wet targets."
+  },
+  {
+    "id": "deep_freeze",
+    "name": "Deep Freeze",
+    "when": "wet",
+    "ifElement": "frost",
+    "mult": 1.4,
+    "desc": "Frost latches onto moisture, dealing +40% damage to wet targets."
+  },
+  {
+    "id": "shatter",
+    "name": "Shatter",
+    "when": "frozen",
+    "ifElement": "physical",
+    "mult": 1.6,
+    "desc": "Physical blows shatter frozen enemies, dealing +60% damage."
+  },
+  {
+    "id": "burning",
+    "name": "Burning Blaze",
+    "when": "dot",
+    "ifElement": "fire",
+    "mult": 1.6,
+    "desc": "Fire erupts on burning foes, dealing +60% damage to poisoned targets."
+  },
+  {
+    "id": "break_guard",
+    "name": "Break Guard",
+    "when": "expose",
+    "ifElement": "physical",
+    "mult": 1.35,
+    "desc": "Exposed enemies take +35% physical damage."
+  },
+  {
+    "id": "overwhelm",
+    "name": "Overwhelm",
+    "when": "weaken",
+    "ifElement": "physical",
+    "mult": 1.2,
+    "desc": "Weakened enemies crumble, taking +20% physical damage."
+  },
+  {
+    "id": "rend",
+    "name": "Rend",
+    "when": "dot",
+    "ifElement": "physical",
+    "mult": 1.3,
+    "desc": "Steel tears bleeding foes, dealing +30% physical damage to poisoned targets."
+  },
+  {
+    "id": "backstab",
+    "name": "Backstab",
+    "when": "expose",
+    "ifElement": "shadow",
+    "mult": 1.4,
+    "desc": "Shadow finds the cracks, dealing +40% shadow damage to exposed targets."
+  }
+]

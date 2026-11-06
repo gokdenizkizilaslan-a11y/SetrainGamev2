@@ -1,0 +1,156 @@
+{
+  "restore": {
+    "item": "golem_heart",
+    "itemName": "Heart of Golem",
+    "text": "Offer a Heart of Golem to mend a lost heart."
+  },
+  "origin": {
+    "item": "origin_stone",
+    "price": 250,
+    "startQty": 5
+  },
+  "recipes": [
+    {
+      "id": "fire_ash_sword",
+      "name": "Fire Ash Sword",
+      "inputs": [
+        {
+          "item": "stone_ash_sword",
+          "qty": 1
+        },
+        {
+          "item": "fire_essence",
+          "qty": 1
+        }
+      ],
+      "output": {
+        "item": "fire_ash_sword",
+        "qty": 1
+      },
+      "cost": {
+        "gold": 25,
+        "wood": 0
+      },
+      "description": "Forge a sword that still smoulders."
+    },
+    {
+      "id": "molten_cleaver",
+      "name": "Molten Cleaver",
+      "inputs": [
+        {
+          "item": "fire_ash_sword",
+          "qty": 1
+        },
+        {
+          "item": "heart_of_fire",
+          "qty": 1
+        }
+      ],
+      "output": {
+        "item": "molten_cleaver",
+        "qty": 1
+      },
+      "cost": {
+        "gold": 60,
+        "wood": 10
+      },
+      "description": "Bond the heart of a fire spirit to the blade."
+    },
+    {
+      "id": "frost_gladius",
+      "name": "Frost Gladius",
+      "inputs": [
+        {
+          "item": "stone_ash_sword",
+          "qty": 1
+        },
+        {
+          "item": "frost_essence",
+          "qty": 1
+        }
+      ],
+      "output": {
+        "item": "frost_gladius",
+        "qty": 1
+      },
+      "cost": {
+        "gold": 25,
+        "wood": 0
+      },
+      "description": "Temper the blade in hoarfrost."
+    },
+    {
+      "id": "arcane_rod",
+      "name": "Arcane Rod",
+      "inputs": [
+        {
+          "item": "apprentice_staff",
+          "qty": 1
+        },
+        {
+          "item": "arcane_essence",
+          "qty": 1
+        }
+      ],
+      "output": {
+        "item": "arcane_rod",
+        "qty": 1
+      },
+      "cost": {
+        "gold": 30,
+        "wood": 0
+      },
+      "description": "Weave raw magic into the staff."
+    },
+    {
+      "id": "shadow_knife",
+      "name": "Shadow Knife",
+      "inputs": [
+        {
+          "item": "poison_dagger",
+          "qty": 1
+        },
+        {
+          "item": "shadow_essence",
+          "qty": 1
+        }
+      ],
+      "output": {
+        "item": "shadow_knife",
+        "qty": 1
+      },
+      "cost": {
+        "gold": 30,
+        "wood": 0
+      },
+      "description": "Fold shadow itself into the edge."
+    },
+    {
+      "id": "stone_blood",
+      "name": "Stone of Blood",
+      "inputs": [
+        {
+          "item": "heart_of_fire",
+          "qty": 1
+        },
+        {
+          "item": "shadow_essence",
+          "qty": 2
+        },
+        {
+          "item": "golem_heart",
+          "qty": 1
+        }
+      ],
+      "output": {
+        "item": "stone_blood",
+        "qty": 1
+      },
+      "cost": {
+        "gold": 120,
+        "wood": 30
+      },
+      "description": "Forge a stone that drinks blood - 10% omnivamp."
+    }
+  ]
+}

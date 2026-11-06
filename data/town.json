@@ -1,0 +1,109 @@
+{
+  "search": {
+    "stamina": 1,
+    "xp": 0,
+    "outcomes": [
+      {
+        "weight": 30,
+        "gold": [
+          8,
+          16
+        ],
+        "wood": [
+          0,
+          2
+        ],
+        "text": "You find a pouch of coins in the grass."
+      },
+      {
+        "weight": 25,
+        "gold": [
+          0,
+          6
+        ],
+        "wood": [
+          3,
+          7
+        ],
+        "text": "A fallen branch yields useful timber."
+      },
+      {
+        "weight": 15,
+        "gold": [
+          12,
+          22
+        ],
+        "wood": [
+          0,
+          0
+        ],
+        "text": "You push through thorns and find a glint of gold."
+      },
+      {
+        "weight": 15,
+        "gold": [
+          0,
+          4
+        ],
+        "wood": [
+          0,
+          1
+        ],
+        "text": "A passing shade leads you to forgotten coin."
+      },
+      {
+        "weight": 15,
+        "gold": [
+          0,
+          2
+        ],
+        "wood": [
+          0,
+          1
+        ],
+        "food": [
+          1,
+          2
+        ],
+        "text": "You forage and find edible roots."
+      }
+    ]
+  },
+  "blacksmith": {
+    "stamina": 1
+  },
+  "merchant": {
+    "stamina": 1
+  },
+  "tavern": {
+    "stamina": 1,
+    "bets": [
+      25,
+      100,
+      500,
+      700
+    ],
+    "provisions": {
+      "foodPrice": 10,
+      "foodAmount": 2
+    },
+    "sleep": {
+      "price": 15
+    }
+  },
+  "rest": {
+    "stamina": 4,
+    "maxPerDay": 3
+  },
+  "temple": {
+    "stamina": 1
+  },
+  "sleepOutside": {
+    "lifeLossChance": 0.04
+  },
+  "endDay": {},
+  "dungeon": {
+    "rankedStamina": 4,
+    "fastStamina": 2
+  }
+}

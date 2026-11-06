@@ -623,11 +623,13 @@ function closeSettings() {
   }
 }
 
-function updateSoundButton(on) {
+function updateMusicButton() {
   const btn = $("btn-sound");
-  btn.textContent = on ? "♪ On" : "♪ Off";
-  btn.classList.toggle("sound-off", !on);
-  btn.title = on ? "Toggle sound effects" : "Toggle sound effects (currently off)";
+  if (!btn) return;
+  btn.textContent = music.playing ? "♪ On" : "♪ Off";
+  btn.classList.toggle("sound-off", !music.playing);
+  btn.title = music.playing ? "Music: on — click to pause" : "Music: off — click to play";
+  btn.setAttribute("aria-pressed", music.playing ? "true" : "false");
 }
 
 $("btn-main-menu").addEventListener("click", openSettings);
@@ -655,7 +657,6 @@ $("settings-music-toggle").addEventListener("click", () => {
 
 $("settings-sfx-toggle").addEventListener("click", () => {
   setSfxEnabled(!sfxEnabled);
-  updateSoundButton(sfxEnabled);
   updateSettingsToggles();
   if (sfxEnabled) playSfx("coin");
 });
@@ -690,12 +691,25 @@ if (secretClearBtn) secretClearBtn.addEventListener("click", () => {
 });
 
 $("btn-sound").addEventListener("click", () => {
-  setSfxEnabled(!sfxEnabled);
-  updateSoundButton(sfxEnabled);
-  if (sfxEnabled) playSfx("coin");
+  const audio = $("music-audio");
+  // Otomatik oynatma engellendiyse (durum On ama ses duraklatılmış) ilk
+  // tıklama kapatmak yerine sesi geri getirir.
+  if (music.playing && audio && audio.paused) {
+    resumeBlockedMusic();
+    return;
+  }
+  if (music.playing) pauseMusic();
+  else playMusic();
 });
 
-updateSoundButton(sfxEnabled);
+const nextTrackBtn = $("btn-next-track");
+if (nextTrackBtn) {
+  nextTrackBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    nextTrack();
+    if (!music.playing) playMusic();
+  });
+}
 
 socket.on("catalog", (cat) => {
   applyCatalog(cat);
@@ -817,13 +831,19 @@ function lootItemIcon(item) {
 
 socket.on("chest:loot", (payload) => {
   if (!payload) return;
-  const items = (payload.items || []).map((it) => ({
-    name: it.name,
-    rarity: it.rarity,
-    description: it.description,
-    image: it.image || "",
-    icon: lootItemIcon(it),
-  }));
+  const items = (payload.items || []).map((it) => {
+    const full = (CATALOG.items || []).find((x) => x.id === it.id);
+    return {
+      id: it.id,
+      name: it.name,
+      rarity: it.rarity,
+      description: it.description,
+      image: it.image || "",
+      icon: lootItemIcon(it),
+      // Sandık kartı da itemın statlarını (Atk / HP ...) gösterebilsin.
+      stats: (full && full.stats) || {},
+    };
+  });
   ChestSystem.open({
     title: chestItemName(payload.itemId),
     tier: "gold",
@@ -947,6 +967,36 @@ function playAudioSafe(audio) {
   } catch (e) { /* older browser: play started synchronously */ }
 }
 
+// Tarayıcı otomatik oynatmayı engellediğinde ses sessiz kalır. İlk kullanıcı
+// etkileşiminde kaldığı yerden devam ettir (aç/kapa yapmaya gerek kalmaz).
+function playAudioReport(audio) {
+  try {
+    const pr = audio.play();
+    if (pr && typeof pr.catch === "function") pr.catch(() => {});
+  } catch (e) { /* ignore */ }
+}
+
+function resumeBlockedMusic() {
+  if (!music.playing) return;
+  const audio = $("music-audio");
+  if (!audio || !audio.paused) return;
+  audio.volume = 0;
+  playAudioReport(audio);
+  fadeAudioTo(audio, musicTargetVolume(), FADE_IN_MS);
+}
+
+function onFirstUserGesture(e) {
+  // Ses aç/kapa butonuna basıldıysa kendi işleyicisi halletsin.
+  if (e && e.target && e.target.closest && e.target.closest("#btn-sound")) return;
+  window.removeEventListener("pointerdown", onFirstUserGesture, true);
+  window.removeEventListener("keydown", onFirstUserGesture, true);
+  window.removeEventListener("touchstart", onFirstUserGesture, true);
+  resumeBlockedMusic();
+}
+window.addEventListener("pointerdown", onFirstUserGesture, true);
+window.addEventListener("keydown", onFirstUserGesture, true);
+window.addEventListener("touchstart", onFirstUserGesture, true);
+
 function playMusic() {
   const audio = $("music-audio");
   const list = musicList();
@@ -956,7 +1006,7 @@ function playMusic() {
   playAudioSafe(audio);
   fadeAudioTo(audio, musicTargetVolume(), FADE_IN_MS);
   music.playing = true;
-  $("music-toggle").textContent = "⏸";
+  updateMusicButton();
   localStorage.setItem("setra-music-playing", "1");
 }
 
@@ -964,7 +1014,7 @@ function pauseMusic() {
   const audio = $("music-audio");
   fadeAudioTo(audio, 0, 500, () => audio.pause());
   music.playing = false;
-  $("music-toggle").textContent = "▶";
+  updateMusicButton();
   localStorage.setItem("setra-music-playing", "0");
 }
 
@@ -1040,14 +1090,17 @@ async function loadMusic() {
     music.combat = [];
     music.tracks = [];
   }
-  if (!music.town.length && !music.combat.length) return;
-  $("music").classList.remove("hidden");
+  if (!music.town.length && !music.combat.length) {
+    updateMusicButton();
+    return;
+  }
   updateMusicTrack();
   const savedVolume = Number(localStorage.getItem("setra-music-volume"));
   if (!Number.isNaN(savedVolume)) {
     $("music-volume").value = savedVolume;
   }
   $("music-audio").volume = $("music-volume").value / 100;
+  updateMusicButton();
   if (localStorage.getItem("setra-music-playing") === "1") {
     playMusic();
   }

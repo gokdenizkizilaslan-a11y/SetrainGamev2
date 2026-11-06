@@ -1,0 +1,74 @@
+[
+  {
+    "id": "preset_flame_bite",
+    "name": "Flame Bite",
+    "kind": "attack",
+    "value": 0.6,
+    "interval": 2,
+    "element": "fire",
+    "desc": "Fire attack every 2 turns."
+  },
+  {
+    "id": "preset_aqua_mend",
+    "name": "Aqua Mend",
+    "kind": "heal",
+    "value": 0.15,
+    "interval": 2,
+    "element": "water",
+    "desc": "Heal 15% max HP every 2 turns."
+  },
+  {
+    "id": "preset_stone_ward",
+    "name": "Stone Ward",
+    "kind": "shield",
+    "value": 35,
+    "interval": 3,
+    "element": "earth",
+    "desc": "35 shield every 3 turns (1 turn)."
+  },
+  {
+    "id": "preset_frostbite",
+    "name": "Frostbite",
+    "kind": "frozen",
+    "value": 0,
+    "interval": 3,
+    "element": "frost",
+    "desc": "Freeze the foe every 3 turns."
+  },
+  {
+    "id": "preset_volt_zap",
+    "name": "Volt Zap",
+    "kind": "attack",
+    "value": 0.5,
+    "interval": 1,
+    "element": "lightning",
+    "desc": "Fast lightning attack every turn."
+  },
+  {
+    "id": "preset_vine_leech",
+    "name": "Vine Leech",
+    "kind": "weaken",
+    "value": 0.15,
+    "interval": 2,
+    "element": "nature",
+    "desc": "Weaken the foe every 2 turns."
+  },
+  {
+    "id": "preset_dusk_curse",
+    "name": "Dusk Curse",
+    "kind": "weaken",
+    "value": 0.2,
+    "interval": 3,
+    "element": "dark",
+    "desc": "Heavy weaken every 3 turns."
+  },
+  {
+    "id": "preset_bloom",
+    "name": "Bloom",
+    "kind": "heal",
+    "value": 0.12,
+    "interval": 1,
+    "element": "nature",
+    "desc": "Small heal every turn."
+  }
+]

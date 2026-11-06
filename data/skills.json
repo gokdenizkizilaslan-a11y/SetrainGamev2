@@ -1,0 +1,1659 @@
+[
+  {
+    "id": "boss_ember_skill1",
+    "name": "Ember Strike",
+    "target": "enemy",
+    "mana": 6,
+    "power": 1.6,
+    "element": "fire",
+    "effect": "fire_meteor_crash",
+    "image": "/images/skills/boss_ember_skill1.webp",
+    "description": "Deals 45 + 1.6× magic damage.",
+    "baseDamage": 45
+  },
+  {
+    "id": "boss_ember_king",
+    "name": "Ember King",
+    "hp": 9000,
+    "attack": 42,
+    "speed": 6,
+    "rarity": "mythic",
+    "element": "fire",
+    "image": "/images/bosses/ember_king.png"
+  },
+  {
+    "id": "boss_frost_titan",
+    "name": "Frost Titan",
+    "hp": 16000,
+    "attack": 52,
+    "speed": 5,
+    "rarity": "mythic",
+    "element": "frost",
+    "image": "/images/bosses/frost_titan.png"
+  },
+  {
+    "id": "boss_void_herald",
+    "name": "Void Herald",
+    "hp": 26000,
+    "attack": 62,
+    "speed": 7,
+    "rarity": "mythic",
+    "element": "shadow",
+    "image": "/images/bosses/void_herald.png"
+  },
+  {
+    "id": "boss_storm_colossus",
+    "name": "Storm Colossus",
+    "hp": 40000,
+    "attack": 72,
+    "speed": 6,
+    "rarity": "mythic",
+    "element": "arcane",
+    "image": "/images/bosses/storm_colossus.png"
+  },
+  {
+    "id": "boss_world_eater",
+    "name": "World Eater",
+    "hp": 55000,
+    "attack": 85,
+    "speed": 5,
+    "rarity": "mythic",
+    "element": "physical",
+    "image": "/images/bosses/world_eater.png"
+  },
+  {
+    "id": "boss_ember_skill2",
+    "name": "Ember Heavy",
+    "target": "enemy",
+    "mana": 10,
+    "power": 2.4,
+    "element": "fire",
+    "effect": "heavy_hammer_slam",
+    "image": "/images/skills/boss_ember_skill2.webp",
+    "description": "Deals 60 + 2.4× magic damage.",
+    "baseDamage": 60
+  },
+  {
+    "id": "boss_ember_skill3",
+    "name": "Ember Weaken",
+    "target": "enemy",
+    "mana": 8,
+    "buffs": [
+      {
+        "kind": "weaken",
+        "value": 0.35
+      }
+    ],
+    "duration": 2,
+    "element": "fire",
+    "effect": "fire_meteor_crash",
+    "image": "/images/skills/boss_ember_skill3.webp",
+    "description": "Ember weaken 35% 2t"
+  },
+  {
+    "id": "boss_ember_skill4",
+    "name": "Ember Fortify",
+    "target": "self",
+    "mana": 8,
+    "buffs": [
+      {
+        "kind": "defense",
+        "value": 0.45
+      }
+    ],
+    "duration": 2,
+    "element": "fire",
+    "effect": "fire_meteor_crash",
+    "image": "/images/skills/boss_ember_skill4.webp",
+    "description": "Ember fortify 45% 2t"
+  },
+  {
+    "id": "boss_ember_skill5",
+    "name": "Ember Venom",
+    "target": "enemy",
+    "mana": 9,
+    "power": 0.9,
+    "element": "fire",
+    "effect": "fire_meteor_crash",
+    "buffs": [
+      {
+        "kind": "dot",
+        "value": 0.07
+      }
+    ],
+    "duration": 3,
+    "image": "/images/skills/boss_ember_skill5.webp",
+    "description": "Deals 30 + 0.9× magic damage.",
+    "baseDamage": 30
+  },
+  {
+    "id": "boss_ember_skill6",
+    "name": "Ember Heal",
+    "target": "self",
+    "mana": 10,
+    "effect": "heal_aura_fountain",
+    "healSelfPct": 0.25,
+    "image": "/images/skills/boss_ember_skill6.webp",
+    "description": "Ember heal 25%"
+  },
+  {
+    "id": "boss_frost_skill1",
+    "name": "Frost Strike",
+    "target": "enemy",
+    "mana": 6,
+    "power": 1.6,
+    "element": "frost",
+    "effect": "frost_crystal_spear",
+    "image": "/images/skills/boss_frost_skill1.webp",
+    "description": "Deals 45 + 1.6× magic damage.",
+    "baseDamage": 45
+  },
+  {
+    "id": "boss_frost_skill2",
+    "name": "Frost Heavy",
+    "target": "enemy",
+    "mana": 10,
+    "power": 2.4,
+    "element": "frost",
+    "effect": "heavy_hammer_slam",
+    "image": "/images/skills/boss_frost_skill2.webp",
+    "description": "Deals 60 + 2.4× magic damage.",
+    "baseDamage": 60
+  },
+  {
+    "id": "boss_frost_skill3",
+    "name": "Frost Weaken",
+    "target": "enemy",
+    "mana": 8,
+    "buffs": [
+      {
+        "kind": "weaken",
+        "value": 0.35
+      }
+    ],
+    "duration": 2,
+    "element": "frost",
+    "effect": "frost_crystal_spear",
+    "image": "/images/skills/boss_frost_skill3.webp",
+    "description": "Frost weaken 35% 2t"
+  },
+  {
+    "id": "boss_frost_skill4",
+    "name": "Frost Fortify",
+    "target": "self",
+    "mana": 8,
+    "buffs": [
+      {
+        "kind": "defense",
+        "value": 0.45
+      }
+    ],
+    "duration": 2,
+    "element": "frost",
+    "effect": "frost_crystal_spear",
+    "image": "/images/skills/boss_frost_skill4.webp",
+    "description": "Frost fortify 45% 2t"
+  },
+  {
+    "id": "boss_frost_skill5",
+    "name": "Frost Venom",
+    "target": "enemy",
+    "mana": 9,
+    "power": 0.9,
+    "element": "frost",
+    "effect": "frost_crystal_spear",
+    "buffs": [
+      {
+        "kind": "dot",
+        "value": 0.06
+      }
+    ],
+    "duration": 3,
+    "image": "/images/skills/boss_frost_skill5.webp",
+    "description": "Deals 30 + 0.9× magic damage.",
+    "baseDamage": 30
+  },
+  {
+    "id": "boss_frost_skill6",
+    "name": "Frost Heal",
+    "target": "self",
+    "mana": 10,
+    "effect": "heal_aura_fountain",
+    "healSelfPct": 0.25,
+    "image": "/images/skills/boss_frost_skill6.webp",
+    "description": "Frost heal 25%"
+  },
+  {
+    "id": "boss_void_skill1",
+    "name": "Void Strike",
+    "target": "enemy",
+    "mana": 6,
+    "power": 1.7,
+    "element": "shadow",
+    "effect": "shadow_scythe_reap",
+    "image": "/images/skills/boss_void_skill1.webp",
+    "description": "Deals 45 + 1.7× magic damage.",
+    "baseDamage": 45
+  },
+  {
+    "id": "boss_void_skill2",
+    "name": "Void Heavy",
+    "target": "enemy",
+    "mana": 10,
+    "power": 2.5,
+    "element": "shadow",
+    "effect": "heavy_hammer_slam",
+    "image": "/images/skills/boss_void_skill2.webp",
+    "description": "Deals 60 + 2.5× magic damage.",
+    "baseDamage": 60
+  },
+  {
+    "id": "boss_void_skill3",
+    "name": "Void Weaken",
+    "target": "enemy",
+    "mana": 8,
+    "buffs": [
+      {
+        "kind": "expose",
+        "value": 0.3
+      }
+    ],
+    "duration": 2,
+    "element": "shadow",
+    "effect": "shadow_scythe_reap",
+    "image": "/images/skills/boss_void_skill3.webp",
+    "description": "Void expose 30% 2t"
+  },
+  {
+    "id": "boss_void_skill4",
+    "name": "Void Fortify",
+    "target": "self",
+    "mana": 8,
+    "buffs": [
+      {
+        "kind": "defense",
+        "value": 0.5
+      }
+    ],
+    "duration": 2,
+    "element": "shadow",
+    "effect": "shadow_scythe_reap",
+    "image": "/images/skills/boss_void_skill4.webp",
+    "description": "Void fortify 50% 2t"
+  },
+  {
+    "id": "boss_void_skill5",
+    "name": "Void Venom",
+    "target": "enemy",
+    "mana": 9,
+    "power": 0.85,
+    "element": "shadow",
+    "effect": "shadow_scythe_reap",
+    "buffs": [
+      {
+        "kind": "dot",
+        "value": 0.08
+      }
+    ],
+    "duration": 3,
+    "image": "/images/skills/boss_void_skill5.webp",
+    "description": "Deals 30 + 0.85× magic damage.",
+    "baseDamage": 30
+  },
+  {
+    "id": "boss_void_skill6",
+    "name": "Void Heal",
+    "target": "self",
+    "mana": 10,
+    "effect": "heal_aura_fountain",
+    "healSelfPct": 0.3,
+    "image": "/images/skills/boss_void_skill6.webp",
+    "description": "Void heal 30%"
+  },
+  {
+    "id": "boss_storm_skill1",
+    "name": "Storm Strike",
+    "target": "enemy",
+    "mana": 6,
+    "power": 1.7,
+    "element": "arcane",
+    "effect": "frost_crystal_spear",
+    "image": "/images/skills/boss_storm_skill1.webp",
+    "description": "Deals 45 + 1.7× magic damage.",
+    "baseDamage": 45
+  },
+  {
+    "id": "boss_storm_skill2",
+    "name": "Storm Heavy",
+    "target": "enemy",
+    "mana": 10,
+    "power": 2.5,
+    "element": "arcane",
+    "effect": "heavy_hammer_slam",
+    "image": "/images/skills/boss_storm_skill2.webp",
+    "description": "Deals 60 + 2.5× magic damage.",
+    "baseDamage": 60
+  },
+  {
+    "id": "boss_storm_skill3",
+    "name": "Storm Weaken",
+    "target": "enemy",
+    "mana": 8,
+    "buffs": [
+      {
+        "kind": "weaken",
+        "value": 0.3
+      },
+      {
+        "kind": "expose",
+        "value": 0.2
+      }
+    ],
+    "duration": 2,
+    "element": "arcane",
+    "effect": "frost_crystal_spear",
+    "image": "/images/skills/boss_storm_skill3.webp",
+    "description": "Storm weaken+expose 2t"
+  },
+  {
+    "id": "boss_storm_skill4",
+    "name": "Storm Fortify",
+    "target": "self",
+    "mana": 8,
+    "buffs": [
+      {
+        "kind": "defense",
+        "value": 0.4
+      }
+    ],
+    "duration": 2,
+    "element": "arcane",
+    "effect": "frost_crystal_spear",
+    "image": "/images/skills/boss_storm_skill4.webp",
+    "description": "Storm fortify 40% 2t"
+  },
+  {
+    "id": "boss_storm_skill5",
+    "name": "Storm Venom",
+    "target": "enemy",
+    "mana": 9,
+    "power": 0.9,
+    "element": "arcane",
+    "effect": "frost_crystal_spear",
+    "buffs": [
+      {
+        "kind": "dot",
+        "value": 0.07
+      }
+    ],
+    "duration": 3,
+    "image": "/images/skills/boss_storm_skill5.webp",
+    "description": "Deals 30 + 0.9× magic damage.",
+    "baseDamage": 30
+  },
+  {
+    "id": "boss_storm_skill6",
+    "name": "Storm Heal",
+    "target": "self",
+    "mana": 10,
+    "effect": "heal_aura_fountain",
+    "healSelfPct": 0.25,
+    "image": "/images/skills/boss_storm_skill6.webp",
+    "description": "Storm heal 25%"
+  },
+  {
+    "id": "boss_world_skill1",
+    "name": "World Strike",
+    "target": "enemy",
+    "mana": 6,
+    "power": 1.8,
+    "element": "physical",
+    "effect": "heavy_hammer_slam",
+    "image": "/images/skills/boss_world_skill1.webp",
+    "description": "Deals 60 + 1.8× attack damage.",
+    "baseDamage": 60
+  },
+  {
+    "id": "boss_world_skill2",
+    "name": "World Heavy",
+    "target": "enemy",
+    "mana": 10,
+    "power": 2.6,
+    "element": "physical",
+    "effect": "heavy_hammer_slam",
+    "image": "/images/skills/boss_world_skill2.webp",
+    "description": "Deals 60 + 2.6× attack damage.",
+    "baseDamage": 60
+  },
+  {
+    "id": "boss_world_skill3",
+    "name": "World Weaken",
+    "target": "enemy",
+    "mana": 8,
+    "buffs": [
+      {
+        "kind": "weaken",
+        "value": 0.4
+      }
+    ],
+    "duration": 2,
+    "element": "physical",
+    "effect": "heavy_hammer_slam",
+    "image": "/images/skills/boss_world_skill3.webp",
+    "description": "World weaken 40% 2t"
+  },
+  {
+    "id": "boss_world_skill4",
+    "name": "World Fortify",
+    "target": "self",
+    "mana": 8,
+    "buffs": [
+      {
+        "kind": "attack",
+        "value": 0.4
+      }
+    ],
+    "duration": 2,
+    "element": "physical",
+    "effect": "heavy_hammer_slam",
+    "image": "/images/skills/boss_world_skill4.webp",
+    "description": "World frenzy 40% 2t"
+  },
+  {
+    "id": "boss_world_skill5",
+    "name": "World Venom",
+    "target": "enemy",
+    "mana": 9,
+    "power": 1,
+    "element": "physical",
+    "effect": "rising_katana_slash",
+    "buffs": [
+      {
+        "kind": "dot",
+        "value": 0.09
+      }
+    ],
+    "duration": 3,
+    "image": "/images/skills/boss_world_skill5.webp",
+    "description": "Deals 30 + 1× attack damage.",
+    "baseDamage": 30
+  },
+  {
+    "id": "boss_world_skill6",
+    "name": "World Heal",
+    "target": "self",
+    "mana": 10,
+    "effect": "heal_aura_fountain",
+    "healSelfPct": 0.35,
+    "image": "/images/skills/boss_world_skill6.webp",
+    "description": "World heal 35%"
+  },
+  {
+    "id": "heavy_strike",
+    "name": "Heavy Strike",
+    "target": "enemy",
+    "mana": 6,
+    "power": 1.6,
+    "element": "physical",
+    "effect": "heavy_hammer_slam",
+    "image": "/images/skills/heavy_strike.webp",
+    "description": "Deals 30 + 1.6× attack damage.",
+    "baseDamage": 30
+  },
+  {
+    "id": "defend",
+    "name": "Defend",
+    "target": "self",
+    "mana": 4,
+    "defense": 0.5,
+    "image": "/images/skills/defend.webp",
+    "description": "Block 50% of incoming damage this round."
+  },
+  {
+    "id": "arcane_barrage",
+    "cooldown": 2,
+    "name": "Arcane Barrage",
+    "target": "enemy",
+    "mana": 8,
+    "power": 1.9,
+    "element": "arcane",
+    "image": "/images/skills/arcane_barrage.webp",
+    "description": "Deals 45 + 1.9× magic damage.",
+    "baseDamage": 45
+  },
+  {
+    "id": "mana_shield",
+    "name": "Mana Shield",
+    "target": "self",
+    "mana": 6,
+    "defense": 0.55,
+    "image": "/images/skills/mana_shield.webp",
+    "description": "Block 55% of incoming damage this round."
+  },
+  {
+    "id": "aimed_shot",
+    "cooldown": 2,
+    "name": "Aimed Shot",
+    "target": "enemy",
+    "mana": 10,
+    "power": 2,
+    "element": "physical",
+    "image": "/images/skills/aimed_shot.webp",
+    "description": "Deals 45 + 2× attack damage.",
+    "baseDamage": 45
+  },
+  {
+    "id": "piercing_shot",
+    "name": "Piercing Shot",
+    "target": "enemy",
+    "mana": 5,
+    "power": 1.3,
+    "element": "physical",
+    "image": "/images/skills/piercing_shot.webp",
+    "description": "Deals 30 + 1.3× attack damage.",
+    "baseDamage": 30
+  },
+  {
+    "id": "vampiric_strike",
+    "cooldown": 3,
+    "name": "Vampiric Strike",
+    "target": "enemy",
+    "mana": 9,
+    "power": 2,
+    "lifesteal": 0.5,
+    "element": "shadow",
+    "effect": "shadow_scythe_reap",
+    "image": "/images/skills/vampiric_strike.webp",
+    "description": "Deals 45 + 2× magic damage. Heals for half the damage dealt.",
+    "baseDamage": 45
+  },
+  {
+    "id": "shadow_meld",
+    "name": "Shadow Meld",
+    "target": "self",
+    "mana": 5,
+    "defense": 0.5,
+    "image": "/images/skills/shadow_meld.webp",
+    "description": "Block 50% of incoming damage this round."
+  },
+  {
+    "id": "holy_strike",
+    "name": "Holy Strike",
+    "target": "enemy",
+    "mana": 7,
+    "power": 1.5,
+    "element": "holy",
+    "image": "/images/skills/holy_strike.webp",
+    "description": "Deals 30 + 1.5× attack damage.",
+    "baseDamage": 30
+  },
+  {
+    "id": "divine_guard",
+    "name": "Divine Guard",
+    "target": "self",
+    "mana": 6,
+    "defense": 0.6,
+    "image": "/images/skills/divine_guard.webp",
+    "description": "Block 60% of incoming damage this round."
+  },
+  {
+    "id": "execute",
+    "cooldown": 3,
+    "name": "Execute",
+    "target": "enemy",
+    "mana": 12,
+    "power": 2.5,
+    "element": "shadow",
+    "effect": "shadow_scythe_reap",
+    "image": "/images/skills/execute.webp",
+    "description": "Deals 65 + 2.5x magic TRUE damage. Exact — ignores all reductions.",
+    "baseDamage": 65,
+    "trueDamage": true
+  },
+  {
+    "id": "shadow_step",
+    "name": "Shadow Step",
+    "target": "self",
+    "mana": 5,
+    "defense": 0.5,
+    "image": "/images/skills/shadow_step.webp",
+    "description": "Block 50% of incoming damage this round."
+  },
+  {
+    "id": "mend",
+    "cooldown": 2,
+    "name": "Mend",
+    "target": "ally",
+    "mana": 8,
+    "heal": 0.35,
+    "image": "/images/skills/mend.webp",
+    "description": "Restore 35% of an ally's max HP."
+  },
+  {
+    "id": "greater_mend",
+    "cooldown": 3,
+    "name": "Greater Mend",
+    "target": "ally",
+    "mana": 14,
+    "heal": 0.55,
+    "image": "/images/skills/greater_mend.webp",
+    "description": "Restore 55% of an ally's max HP."
+  },
+  {
+    "id": "fortify",
+    "name": "Fortify",
+    "target": "self",
+    "mana": 6,
+    "defense": 0.6,
+    "image": "/images/skills/fortify.webp",
+    "description": "Block 60% of incoming damage this round."
+  },
+  {
+    "id": "war_banner",
+    "name": "War Banner",
+    "target": "self",
+    "mana": 5,
+    "defense": 0.5,
+    "image": "/images/skills/war_banner.webp",
+    "description": "Block 50% of incoming damage this round."
+  },
+  {
+    "id": "cleave",
+    "name": "Cleave",
+    "target": "enemy",
+    "mana": 7,
+    "power": 1.5,
+    "element": "physical",
+    "effect": "axe_cleave_horizontal",
+    "image": "/images/skills/cleave.webp",
+    "description": "Deals 30 + 1.5× attack damage.",
+    "baseDamage": 30
+  },
+  {
+    "id": "shield_wall",
+    "cooldown": 2,
+    "name": "Shield Wall",
+    "target": "self",
+    "mana": 7,
+    "defense": 0.7,
+    "image": "/images/skills/shield_wall.webp",
+    "description": "Block 70% of incoming damage this round."
+  },
+  {
+    "id": "spirit_surge",
+    "cooldown": 3,
+    "name": "Spirit Surge",
+    "target": "party",
+    "mana": 6,
+    "manaRestorePct": 0.3,
+    "image": "/images/skills/spirit_surge.webp",
+    "description": "Restore 30% of each ally's max mana."
+  },
+  {
+    "id": "war_cry",
+    "cooldown": 3,
+    "name": "War Cry",
+    "target": "enemy",
+    "mana": 10,
+    "power": 2.6,
+    "element": "physical",
+    "effect": "heavy_hammer_slam",
+    "image": "/images/skills/war_cry.webp",
+    "description": "Deals 65 + 2.6× attack damage.",
+    "baseDamage": 65
+  },
+  {
+    "id": "volley",
+    "cooldown": 3,
+    "name": "Volley",
+    "target": "enemy",
+    "mana": 12,
+    "power": 2.4,
+    "element": "physical",
+    "image": "/images/skills/volley.webp",
+    "description": "Deals 65 + 2.4× attack damage.",
+    "baseDamage": 65
+  },
+  {
+    "id": "meteor",
+    "cooldown": 4,
+    "name": "Meteor",
+    "target": "enemy",
+    "mana": 14,
+    "power": 2.8,
+    "element": "arcane",
+    "effect": "heavy_hammer_slam",
+    "image": "/images/skills/meteor.webp",
+    "description": "Deals 65 + 2.8× magic damage.",
+    "baseDamage": 65
+  },
+  {
+    "id": "shadow_veil",
+    "cooldown": 3,
+    "name": "Shadow Veil",
+    "target": "enemy",
+    "mana": 10,
+    "power": 2.6,
+    "lifesteal": 0.4,
+    "element": "shadow",
+    "effect": "shadow_scythe_reap",
+    "image": "/images/skills/shadow_veil.webp",
+    "description": "Deals 65 + 2.6× magic damage. Heals for 40% of the damage dealt.",
+    "baseDamage": 65
+  },
+  {
+    "id": "holy_judgement",
+    "cooldown": 3,
+    "name": "Holy Judgement",
+    "target": "enemy",
+    "mana": 10,
+    "power": 2.2,
+    "healSelfPct": 0.4,
+    "element": "holy",
+    "image": "/images/skills/holy_judgement.webp",
+    "description": "Deals 45 + 2.2× attack damage. Restores 40% of your max HP.",
+    "baseDamage": 45
+  },
+  {
+    "id": "death_mark",
+    "cooldown": 4,
+    "name": "Death Mark",
+    "target": "enemy",
+    "mana": 14,
+    "power": 3,
+    "element": "shadow",
+    "effect": "shadow_scythe_reap",
+    "image": "/images/skills/death_mark.webp",
+    "description": "Deals 85 + 3x magic damage.",
+    "baseDamage": 85
+  },
+  {
+    "id": "divine_blessing",
+    "cooldown": 4,
+    "name": "Divine Blessing",
+    "target": "party",
+    "mana": 16,
+    "heal": 0.45,
+    "image": "/images/skills/divine_blessing.webp",
+    "description": "Restore 45% of each ally's max HP."
+  },
+  {
+    "id": "bastion",
+    "cooldown": 3,
+    "name": "Bastion",
+    "target": "self",
+    "mana": 8,
+    "defense": 0.85,
+    "image": "/images/skills/bastion.webp",
+    "description": "Block 85% of incoming damage this round."
+  },
+  {
+    "id": "cataclysm",
+    "cooldown": 4,
+    "name": "Cataclysm",
+    "target": "enemy",
+    "mana": 16,
+    "power": 3,
+    "element": "physical",
+    "effect": "heavy_hammer_slam",
+    "image": "/images/skills/cataclysm.webp",
+    "description": "Deals 85 + 3× attack damage.",
+    "baseDamage": 85
+  },
+  {
+    "id": "storm_barrage",
+    "cooldown": 4,
+    "name": "Storm Barrage",
+    "target": "enemy",
+    "mana": 15,
+    "power": 2.9,
+    "element": "physical",
+    "image": "/images/skills/storm_barrage.webp",
+    "description": "Deals 85 + 2.9× attack damage.",
+    "baseDamage": 85
+  },
+  {
+    "id": "comet",
+    "cooldown": 4,
+    "name": "Comet",
+    "target": "enemy",
+    "mana": 18,
+    "power": 3.2,
+    "element": "arcane",
+    "effect": "heavy_hammer_slam",
+    "image": "/images/skills/comet.webp",
+    "description": "Deals 85 + 3.2× magic damage.",
+    "baseDamage": 85
+  },
+  {
+    "id": "soul_thief",
+    "cooldown": 4,
+    "name": "Soul Thief",
+    "target": "enemy",
+    "mana": 14,
+    "power": 3,
+    "lifesteal": 0.5,
+    "element": "shadow",
+    "effect": "shadow_scythe_reap",
+    "image": "/images/skills/soul_thief.webp",
+    "description": "Deals 85 + 3× magic damage. Heals for half the damage dealt.",
+    "baseDamage": 85
+  },
+  {
+    "id": "radiance",
+    "cooldown": 3,
+    "name": "Radiance",
+    "target": "enemy",
+    "mana": 14,
+    "power": 2.5,
+    "healSelfPct": 0.6,
+    "element": "holy",
+    "image": "/images/skills/radiance.webp",
+    "description": "Deals 65 + 2.5× attack damage. Restores 60% of your max HP.",
+    "baseDamage": 65
+  },
+  {
+    "id": "soul_reap",
+    "cooldown": 5,
+    "name": "Soul Reap",
+    "target": "enemy",
+    "mana": 18,
+    "power": 3.4,
+    "element": "shadow",
+    "effect": "shadow_scythe_reap",
+    "image": "/images/skills/soul_reap.webp",
+    "description": "Deals 85 + 3.4× magic damage.",
+    "baseDamage": 85
+  },
+  {
+    "id": "resurgence",
+    "cooldown": 5,
+    "name": "Resurgence",
+    "target": "party",
+    "mana": 20,
+    "heal": 0.6,
+    "manaRestorePct": 0.2,
+    "image": "/images/skills/resurgence.webp",
+    "description": "Restore 60% of each ally's max HP and 20% of their max mana."
+  },
+  {
+    "id": "exsanguinate",
+    "cooldown": 4,
+    "name": "Exsanguinate",
+    "target": "enemy",
+    "mana": 16,
+    "power": 3.2,
+    "lifesteal": 0.6,
+    "element": "blood",
+    "scaling": "attack",
+    "effect": "blood_scythe",
+    "hitShake": 3,
+    "image": "/images/skills/exsanguinate.webp",
+    "description": "Deals 90 + 3.2× attack damage. Heals you for 60% of the damage dealt.",
+    "baseDamage": 90
+  },
+  {
+    "id": "bloodbath",
+    "cooldown": 5,
+    "name": "Bloodbath",
+    "target": "enemy",
+    "mana": 20,
+    "power": 3.6,
+    "lifesteal": 0.4,
+    "element": "blood",
+    "scaling": "attack",
+    "effect": "blood_scythe",
+    "hitShake": 3,
+    "image": "/images/skills/bloodbath.webp",
+    "description": "Deals 95 + 3.6× attack damage. Heals you for 40% of the damage dealt.",
+    "baseDamage": 95
+  },
+  {
+    "id": "crimson_rebirth",
+    "cooldown": 5,
+    "name": "Crimson Rebirth",
+    "target": "party",
+    "mana": 22,
+    "heal": 0.45,
+    "manaRestorePct": 0.15,
+    "element": "blood",
+    "hitShake": 0,
+    "image": "/images/skills/crimson_rebirth.webp",
+    "description": "Restore 45% of each ally's max HP and 15% of their max mana with first blood."
+  },
+  {
+    "id": "immovable",
+    "cooldown": 4,
+    "name": "Immovable",
+    "target": "self",
+    "mana": 10,
+    "defense": 0.95,
+    "image": "/images/skills/immovable.webp",
+    "description": "Block 95% of incoming damage this round."
+  },
+  {
+    "id": "seismic_slam",
+    "cooldown": 3,
+    "name": "Seismic Slam",
+    "target": "enemy",
+    "mana": 12,
+    "power": 0,
+    "baseDamage": {
+      "stat": "maxHp",
+      "mult": 0.08
+    },
+    "element": "physical",
+    "effect": "heavy_hammer_slam",
+    "hitShake": 2,
+    "image": "/images/skills/seismic_slam.webp",
+    "description": "Slam the ground with your whole weight: 8% of your max HP as damage."
+  },
+  {
+    "id": "colossal_crash",
+    "cooldown": 4,
+    "name": "Colossal Crash",
+    "target": "enemy",
+    "mana": 18,
+    "power": 0,
+    "baseDamage": {
+      "stat": "maxHp",
+      "mult": 0.12
+    },
+    "element": "physical",
+    "effect": "heavy_hammer_slam",
+    "hitShake": 3,
+    "image": "/images/skills/colossal_crash.webp",
+    "description": "Crash down like a mountain: 12% of your max HP as damage."
+  },
+  {
+    "id": "battle_fury",
+    "cooldown": 3,
+    "name": "Battle Fury",
+    "target": "self",
+    "mana": 8,
+    "buffs": [
+      {
+        "kind": "attack",
+        "value": 0.3
+      }
+    ],
+    "duration": 2,
+    "image": "/images/skills/battle_fury.webp",
+    "description": "Increase your damage by 30% for 2 rounds."
+  },
+  {
+    "id": "iron_wall",
+    "cooldown": 3,
+    "name": "Iron Wall",
+    "target": "self",
+    "mana": 8,
+    "buffs": [
+      {
+        "kind": "defense",
+        "value": 0.4
+      }
+    ],
+    "duration": 2,
+    "image": "/images/skills/iron_wall.webp",
+    "description": "Block 40% of incoming damage for 2 rounds."
+  },
+  {
+    "id": "group_guard",
+    "cooldown": 3,
+    "name": "Group Guard",
+    "target": "party",
+    "mana": 10,
+    "buffs": [
+      {
+        "kind": "defense",
+        "value": 0.25
+      }
+    ],
+    "duration": 2,
+    "image": "/images/skills/group_guard.webp",
+    "description": "The whole party blocks 25% of incoming damage for 2 rounds."
+  },
+  {
+    "id": "cripple",
+    "cooldown": 3,
+    "name": "Cripple",
+    "target": "enemy",
+    "mana": 8,
+    "buffs": [
+      {
+        "kind": "weaken",
+        "value": 0.3
+      },
+      {
+        "kind": "expose",
+        "value": 0.2
+      }
+    ],
+    "duration": 2,
+    "image": "/images/skills/cripple.webp",
+    "description": "A monster deals 30% less damage and takes 20% more for 2 rounds."
+  },
+  {
+    "id": "venom_strike",
+    "name": "Venom Strike",
+    "target": "enemy",
+    "mana": 9,
+    "power": 0.6,
+    "element": "physical",
+    "buffs": [
+      {
+        "kind": "dot",
+        "value": 0.05
+      }
+    ],
+    "duration": 3,
+    "image": "/images/skills/venom_strike.webp",
+    "description": "Deals 15 + 0.6× attack damage. Poisons the monster for 3 rounds.",
+    "baseDamage": 15
+  },
+  {
+    "id": "rejuvenate",
+    "name": "Rejuvenate",
+    "target": "ally",
+    "mana": 8,
+    "buffs": [
+      {
+        "kind": "regen",
+        "value": 0.08
+      }
+    ],
+    "duration": 3,
+    "image": "/images/skills/rejuvenate.webp",
+    "description": "An ally regains 8% of max HP each round for 3 rounds."
+  },
+  {
+    "id": "monster_physical_attack",
+    "name": "Savage Blow",
+    "target": "enemy",
+    "kind": "attack",
+    "power": 1.05,
+    "element": "physical",
+    "monster": true,
+    "description": "Deals 10 + 1.05× attack damage.",
+    "baseDamage": 10
+  },
+  {
+    "id": "monster_shadow_attack",
+    "name": "Shadow Claw",
+    "target": "enemy",
+    "kind": "attack",
+    "power": 1.15,
+    "element": "shadow",
+    "monster": true,
+    "description": "Deals 10 + 1.15× magic damage.",
+    "baseDamage": 10
+  },
+  {
+    "id": "monster_arcane_attack",
+    "name": "Arcane Surge",
+    "target": "enemy",
+    "kind": "attack",
+    "power": 1.15,
+    "element": "arcane",
+    "monster": true,
+    "description": "Deals 10 + 1.15× magic damage.",
+    "baseDamage": 10
+  },
+  {
+    "id": "monster_heavy_blow",
+    "name": "Heavy Blow",
+    "target": "enemy",
+    "kind": "attack",
+    "power": 1.5,
+    "element": "physical",
+    "monster": true,
+    "description": "Deals 10 + 1.5× attack damage.",
+    "baseDamage": 10
+  },
+  {
+    "id": "monster_shadow_bolt",
+    "name": "Shadow Bolt",
+    "target": "enemy",
+    "kind": "attack",
+    "power": 1.5,
+    "element": "shadow",
+    "monster": true,
+    "description": "Deals 10 + 1.5× magic damage.",
+    "baseDamage": 10
+  },
+  {
+    "id": "monster_arcane_storm",
+    "name": "Arcane Storm",
+    "target": "enemy",
+    "kind": "attack",
+    "power": 1.5,
+    "element": "arcane",
+    "monster": true,
+    "description": "Deals 10 + 1.5× magic damage.",
+    "baseDamage": 10
+  },
+  {
+    "id": "monster_frenzy",
+    "name": "Frenzy",
+    "target": "self",
+    "kind": "buff",
+    "buffs": [
+      {
+        "kind": "attack",
+        "value": 0.3
+      }
+    ],
+    "duration": 2,
+    "monster": true,
+    "description": "The monster deals 30% more damage for 2 rounds."
+  },
+  {
+    "id": "monster_stoneskin",
+    "name": "Stoneskin",
+    "target": "self",
+    "kind": "buff",
+    "buffs": [
+      {
+        "kind": "defense",
+        "value": 0.3
+      }
+    ],
+    "duration": 2,
+    "monster": true,
+    "description": "The monster blocks 30% of damage for 2 rounds."
+  },
+  {
+    "id": "monster_regen",
+    "name": "Regenerate",
+    "target": "self",
+    "kind": "buff",
+    "buffs": [
+      {
+        "kind": "regen",
+        "value": 0.05
+      }
+    ],
+    "duration": 3,
+    "monster": true,
+    "description": "The monster heals 5% of max HP each round for 3 rounds."
+  },
+  {
+    "id": "monster_weaken",
+    "name": "Crushing Aura",
+    "target": "enemy",
+    "kind": "debuff",
+    "buffs": [
+      {
+        "kind": "weaken",
+        "value": 0.25
+      }
+    ],
+    "duration": 2,
+    "monster": true,
+    "description": "A hero deals 25% less damage for 2 rounds."
+  },
+  {
+    "id": "monster_vulnerable",
+    "name": "Expose Weakness",
+    "target": "enemy",
+    "kind": "debuff",
+    "buffs": [
+      {
+        "kind": "expose",
+        "value": 0.25
+      }
+    ],
+    "duration": 2,
+    "monster": true,
+    "description": "A hero takes 25% more damage for 2 rounds."
+  },
+  {
+    "id": "monster_poison",
+    "name": "Venom",
+    "target": "enemy",
+    "kind": "debuff",
+    "buffs": [
+      {
+        "kind": "dot",
+        "value": 0.06
+      }
+    ],
+    "duration": 3,
+    "monster": true,
+    "description": "A hero takes damage each round for 3 rounds."
+  },
+  {
+    "id": "aegis",
+    "name": "Aegis",
+    "target": "self",
+    "mana": 6,
+    "buffs": [
+      {
+        "kind": "shield",
+        "value": 60
+      }
+    ],
+    "duration": 2,
+    "image": "/images/skills/aegis.webp",
+    "description": "Gain 60 shield for 2 rounds."
+  },
+  {
+    "id": "barrier",
+    "cooldown": 3,
+    "name": "Barrier",
+    "target": "party",
+    "mana": 10,
+    "buffs": [
+      {
+        "kind": "shield",
+        "value": 35
+      }
+    ],
+    "duration": 2,
+    "image": "/images/skills/barrier.webp",
+    "description": "All allies gain 35 shield for 2 rounds."
+  },
+  {
+    "id": "stone_skin",
+    "cooldown": 3,
+    "name": "Stone Skin",
+    "target": "self",
+    "mana": 7,
+    "buffs": [
+      {
+        "kind": "shield",
+        "value": 80
+      },
+      {
+        "kind": "defense",
+        "value": 0.15
+      }
+    ],
+    "duration": 2,
+    "image": "/images/skills/stone_skin.webp",
+    "description": "Gain 80 shield and 15% damage reduction."
+  },
+  {
+    "id": "holy_ward",
+    "cooldown": 2,
+    "name": "Holy Ward",
+    "target": "ally",
+    "mana": 8,
+    "buffs": [
+      {
+        "kind": "shield",
+        "value": 50
+      }
+    ],
+    "duration": 2,
+    "image": "/images/skills/holy_ward.webp",
+    "description": "Give an ally 50 shield for 2 rounds."
+  },
+  {
+    "id": "dark_veil",
+    "cooldown": 2,
+    "name": "Dark Veil",
+    "target": "self",
+    "mana": 8,
+    "buffs": [
+      {
+        "kind": "shield",
+        "value": 45
+      },
+      {
+        "kind": "weaken",
+        "value": 0.15
+      }
+    ],
+    "duration": 2,
+    "image": "/images/skills/dark_veil.webp",
+    "description": "Gain 45 shield and weaken attacker 15%."
+  },
+  {
+    "id": "monster_heal",
+    "name": "Graft",
+    "target": "self",
+    "kind": "heal",
+    "amount": 0.15,
+    "monster": true,
+    "description": "The monster restores 15% of max HP."
+  },
+  {
+    "id": "frost_bolt",
+    "cooldown": 2,
+    "name": "Frost Bolt",
+    "target": "enemy",
+    "mana": 8,
+    "power": 2,
+    "element": "frost",
+    "image": "/images/skills/frost_bolt.webp",
+    "description": "Deals 45 + 2× magic damage. May freeze the target.",
+    "baseDamage": 45
+  },
+  {
+    "id": "frost_nova",
+    "cooldown": 2,
+    "name": "Frost Nova",
+    "target": "enemy",
+    "mana": 10,
+    "power": 1.8,
+    "element": "frost",
+    "buffs": [
+      {
+        "kind": "frozen",
+        "value": 0
+      }
+    ],
+    "duration": 1,
+    "image": "/images/skills/frost_nova.webp",
+    "description": "Deals 45 + 1.8× magic damage. Freezes the target for 1 turn.",
+    "baseDamage": 45
+  },
+  {
+    "id": "water_splash",
+    "name": "Water Splash",
+    "target": "enemy",
+    "mana": 6,
+    "power": 1.5,
+    "element": "water",
+    "buffs": [
+      {
+        "kind": "wet",
+        "value": 0
+      }
+    ],
+    "duration": 2,
+    "image": "/images/skills/water_splash.webp",
+    "description": "Deals 30 + 1.5× magic damage. Soaks the target for 2 turns (wet).",
+    "baseDamage": 30
+  },
+  {
+    "id": "lightning_bolt",
+    "cooldown": 2,
+    "name": "Lightning Bolt",
+    "target": "enemy",
+    "mana": 9,
+    "power": 1.8,
+    "element": "lightning",
+    "image": "/images/skills/lightning_bolt.webp",
+    "description": "Deals 45 + 1.8× magic damage. +50% vs wet (Overcharge).",
+    "baseDamage": 45
+  },
+  {
+    "id": "war_heal",
+    "name": "War Heal",
+    "target": "ally",
+    "mana": 10,
+    "heal": {
+      "stat": "attack",
+      "mult": 1.3
+    },
+    "image": "/images/skills/war_heal.webp",
+    "description": "Heals 1.3× attack power. Scales with healPower."
+  },
+  {
+    "id": "magic_mend",
+    "name": "Magic Mend",
+    "target": "ally",
+    "mana": 10,
+    "heal": {
+      "stat": "magicPower",
+      "mult": 2
+    },
+    "image": "/images/skills/magic_mend.webp",
+    "description": "Heals 2× magicPower. Scales with healPower."
+  },
+  {
+    "id": "scorch_mark",
+    "name": "Scorch Mark",
+    "target": "enemy",
+    "mana": 6,
+    "power": 1.1,
+    "element": "fire",
+    "buffs": [
+      {
+        "kind": "dot",
+        "value": 0.04
+      }
+    ],
+    "duration": 3,
+    "effect": "fire_slash_arc",
+    "image": "/images/skills/scorch_mark.webp",
+    "description": "Deals 30 + 1.1× magic damage. Sets the foe burning.",
+    "baseDamage": 30
+  },
+  {
+    "id": "ember_storm",
+    "cooldown": 2,
+    "name": "Ember Storm",
+    "target": "enemy",
+    "mana": 10,
+    "power": 1.6,
+    "element": "fire",
+    "buffs": [
+      {
+        "kind": "dot",
+        "value": 0.03
+      }
+    ],
+    "duration": 3,
+    "effect": "ember_whirlwind",
+    "image": "/images/skills/ember_storm.webp",
+    "description": "Deals 30 + 1.6× magic damage. Leaves the foe burning.",
+    "baseDamage": 30
+  },
+  {
+    "id": "blaze_rupture",
+    "cooldown": 3,
+    "name": "Blaze Rupture",
+    "target": "enemy",
+    "mana": 12,
+    "power": 2.3,
+    "element": "fire",
+    "effect": "magma_eruption_burst",
+    "image": "/images/skills/blaze_rupture.webp",
+    "description": "Deals 65 + 2.3× magic damage. Burning targets take +60%.",
+    "baseDamage": 65
+  },
+  {
+    "id": "cold_snap",
+    "cooldown": 2,
+    "name": "Cold Snap",
+    "target": "enemy",
+    "mana": 7,
+    "power": 1.3,
+    "element": "frost",
+    "buffs": [
+      {
+        "kind": "frozen",
+        "value": 0
+      }
+    ],
+    "duration": 2,
+    "effect": "frost_crystal_spear",
+    "image": "/images/skills/cold_snap.webp",
+    "description": "Deals 30 + 1.3× magic damage. Freezes the target for 2 rounds.",
+    "baseDamage": 30
+  },
+  {
+    "id": "glacial_shatter",
+    "cooldown": 3,
+    "name": "Glacial Shatter",
+    "target": "enemy",
+    "mana": 11,
+    "power": 2.4,
+    "element": "frost",
+    "effect": "ice_spikes_ground",
+    "image": "/images/skills/glacial_shatter.webp",
+    "description": "Deals 65 + 2.4× magic damage. Frozen targets take +65%.",
+    "baseDamage": 65
+  },
+  {
+    "id": "volt_conduit",
+    "name": "Volt Conduit",
+    "target": "enemy",
+    "mana": 8,
+    "power": 1.2,
+    "element": "lightning",
+    "buffs": [
+      {
+        "kind": "dot",
+        "value": 0.03
+      }
+    ],
+    "duration": 3,
+    "effect": "electric_sparks_shower",
+    "image": "/images/skills/volt_conduit.webp",
+    "description": "Deals 30 + 1.2× magic damage. Electrifies the target.",
+    "baseDamage": 30
+  },
+  {
+    "id": "static_overload",
+    "cooldown": 2,
+    "name": "Static Overload",
+    "target": "enemy",
+    "mana": 11,
+    "power": 2.2,
+    "element": "lightning",
+    "effect": "lightning_strike_heavy",
+    "image": "/images/skills/static_overload.webp",
+    "description": "Deals 45 + 2.2× magic damage. Wet targets take +50%.",
+    "baseDamage": 45
+  },
+  {
+    "id": "toxin_drench",
+    "name": "Toxin Drench",
+    "target": "enemy",
+    "mana": 6,
+    "power": 0.9,
+    "element": "physical",
+    "buffs": [
+      {
+        "kind": "dot",
+        "value": 0.06
+      }
+    ],
+    "duration": 3,
+    "effect": "mud_splash_entangle",
+    "image": "/images/skills/toxin_drench.webp",
+    "description": "Deals 15 + 0.9× attack damage. Poisons the foe.",
+    "baseDamage": 15
+  },
+  {
+    "id": "venom_burst",
+    "cooldown": 2,
+    "name": "Venom Burst",
+    "target": "enemy",
+    "mana": 11,
+    "power": 2.2,
+    "element": "physical",
+    "effect": "earth_fissure_rupture",
+    "image": "/images/skills/venom_burst.webp",
+    "description": "Deals 45 + 2.2× attack damage. Poisoned targets take +50%.",
+    "baseDamage": 45
+  },
+  {
+    "id": "broken_guard",
+    "cooldown": 2,
+    "name": "Broken Guard",
+    "target": "enemy",
+    "mana": 7,
+    "power": 1,
+    "element": "physical",
+    "buffs": [
+      {
+        "kind": "expose",
+        "value": 0.25
+      },
+      {
+        "kind": "weaken",
+        "value": 0.2
+      }
+    ],
+    "duration": 2,
+    "effect": "shield_bash_shock",
+    "image": "/images/skills/broken_guard.webp",
+    "description": "Deals 15 + 1× attack damage. Foe takes 25% more, deals 20% less (2 rounds).",
+    "baseDamage": 15
+  },
+  {
+    "id": "shatter_point",
+    "name": "Shatter Point",
+    "target": "enemy",
+    "mana": 8,
+    "power": 1.6,
+    "element": "physical",
+    "effect": "piercing_rapier_thrust",
+    "image": "/images/skills/shatter_point.webp",
+    "description": "Deals 30 + 1.6× attack damage. Exposed targets take +80%.",
+    "baseDamage": 30
+  },
+  {
+    "id": "devastate",
+    "cooldown": 3,
+    "name": "Devastate",
+    "target": "enemy",
+    "mana": 12,
+    "power": 2.6,
+    "element": "physical",
+    "effect": "heavy_hammer_slam",
+    "image": "/images/skills/devastate.webp",
+    "description": "Deals 65 + 2.6× attack damage. Weakened targets take +35%.",
+    "baseDamage": 65
+  },
+  {
+    "id": "vine_lash",
+    "name": "Vine Lash",
+    "target": "enemy",
+    "mana": 6,
+    "power": 1.4,
+    "element": "nature",
+    "effect": "nature_vine_burst",
+    "image": "/images/skills/vine_lash.webp",
+    "description": "Deals 30 + 1.4× magic damage.",
+    "baseDamage": 30
+  },
+  {
+    "id": "thorn_volley",
+    "cooldown": 2,
+    "name": "Thorn Volley",
+    "target": "enemy",
+    "mana": 9,
+    "power": 1.9,
+    "element": "nature",
+    "effect": "nature_vine_projectile",
+    "buffs": [
+      {
+        "kind": "dot",
+        "value": 0.05
+      }
+    ],
+    "duration": 3,
+    "image": "/images/skills/thorn_volley.webp",
+    "description": "Deals 45 + 1.9× magic damage.",
+    "baseDamage": 45
+  },
+  {
+    "id": "forest_renewal",
+    "name": "Forest Renewal",
+    "target": "self",
+    "mana": 10,
+    "element": "nature",
+    "effect": "heal_aura_fountain",
+    "healSelfPct": 0.3,
+    "image": "/images/skills/forest_renewal.webp",
+    "description": "Bloom with nature's blessing, restoring 30% of your max HP."
+  },
+  {
+    "id": "beast_bite",
+    "name": "Beast Bite",
+    "target": "enemy",
+    "mana": 6,
+    "power": 1.3,
+    "baseDamage": 25,
+    "element": "physical",
+    "effect": "rising_katana_slash",
+    "image": "/images/skills/beast_bite.webp",
+    "description": "Deals 25 + 1.3× attack damage. Your companion tears into the foe."
+  }
+]

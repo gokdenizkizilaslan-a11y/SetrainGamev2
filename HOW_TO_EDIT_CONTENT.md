@@ -1,6 +1,6 @@
 # How to add or change content
 
-**Easiest way: the web editor.** With the server running, open **http://localhost:3000/editor** in a browser. You get clickable forms for Classes, Monsters, Items & Shop, Skills, Dungeons, Loot & Drop Rates, Combat, Starting values, Anomalies and Story text — no terminal needed. Changes apply to `content.js` when you press **Save to content.js** (each save makes a backup first). Restart the server (`npm start`) afterwards.
+**Easiest way: the web editor.** With the server running, open **http://localhost:3000/editor** in a browser. You get clickable forms for Classes, Monsters, Items & Shop, Skills, Dungeons, Loot & Drop Rates, Combat, Starting values, Anomalies and Story text — no terminal needed. Changes apply to `content.js` when you press **Save to content.js** (each save makes a backup first, saved outside the repo in `Desktop\ForSetrain\backups`). Restart the server (`npm start`) afterwards.
 
 Two other ways to edit:
 

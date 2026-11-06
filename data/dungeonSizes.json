@@ -1,0 +1,46 @@
+[
+  {
+    "id": "small",
+    "label": "Small",
+    "stamina": 3,
+    "count": 0.6,
+    "fewerCount": 1.5,
+    "power": 0.85,
+    "goldScale": 0.8,
+    "woodScale": 0.8,
+    "xpScale": 0.8
+  },
+  {
+    "id": "normal",
+    "label": "Normal",
+    "stamina": 3,
+    "count": 1,
+    "fewerCount": 1,
+    "power": 1,
+    "goldScale": 1,
+    "woodScale": 1,
+    "xpScale": 1
+  },
+  {
+    "id": "big",
+    "label": "Big",
+    "stamina": 3,
+    "count": 1.6,
+    "fewerCount": 0.7,
+    "power": 1.15,
+    "goldScale": 1.2,
+    "woodScale": 1.2,
+    "xpScale": 1.2
+  },
+  {
+    "id": "huge",
+    "label": "Huge",
+    "stamina": 3,
+    "count": 2.2,
+    "fewerCount": 0.5,
+    "power": 1.3,
+    "goldScale": 1.5,
+    "woodScale": 1.5,
+    "xpScale": 1.5
+  }
+]

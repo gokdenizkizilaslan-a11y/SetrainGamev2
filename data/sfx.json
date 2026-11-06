@@ -1,0 +1,45 @@
+{
+  "ui": {
+    "click": "clicksound",
+    "hover": "hoversound",
+    "win": "winningsound",
+    "lose": "losingsound",
+    "search": "lootsound"
+  },
+  "action": {
+    "rest": "",
+    "search": "",
+    "blacksmith": "",
+    "merchant": "",
+    "temple": "",
+    "dungeon": "",
+    "eat": "eatingsound",
+    "potion": "potiondrinksound",
+    "revive": "revivesound"
+  },
+  "item": {
+    "loot": "lootsound",
+    "inventory": "inventorysound",
+    "coin": "clicksound"
+  },
+  "cinematic": {
+    "ascend": "holy-ascensionsound",
+    "rebirth": "neutralascension",
+    "newDay": "",
+    "nightFall": ""
+  },
+  "combat": {
+    "win": "winningsound",
+    "lose": "losingsound",
+    "crit": "skull_crush"
+  },
+  "tavern": {
+    "deal": "",
+    "hit": "",
+    "flip": "",
+    "win": "",
+    "lose": "",
+    "push": "",
+    "chip": ""
+  }
+}

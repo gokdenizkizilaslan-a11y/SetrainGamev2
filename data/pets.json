@@ -1,0 +1,1535 @@
+[
+  {
+    "id": "fire_wolf",
+    "name": "Fire Wolf",
+    "image": "/images/pets/fire_wolf.png",
+    "element": "fire",
+    "stats": {
+      "attack": 5
+    },
+    "description": "A loyal ember pup. +5 Attack.",
+    "egg": ""
+  },
+  {
+    "id": "water_sprite",
+    "name": "Water Sprite",
+    "image": "/images/pets/water_sprite.png",
+    "element": "water",
+    "stats": {
+      "magicPower": 6
+    },
+    "description": "A bubbling companion. +6 Magic Power.",
+    "egg": ""
+  },
+  {
+    "id": "pet_direwolf",
+    "name": "Direwolf",
+    "image": "/images/pets/pet_direwolf.png",
+    "element": "fire",
+    "stats": {
+      "attack": 4
+    },
+    "description": "Direwolf from Red Egg",
+    "egg": "egg_red"
+  },
+  {
+    "id": "pet_ember_pup",
+    "name": "Ember Pup",
+    "image": "/images/pets/pet_ember_pup.png",
+    "element": "fire",
+    "stats": {
+      "attack": 7
+    },
+    "description": "Ember Pup from Red Egg",
+    "egg": "egg_red"
+  },
+  {
+    "id": "pet_cinder_cub",
+    "name": "Cinder Cub",
+    "image": "/images/pets/pet_cinder_cub.png",
+    "element": "fire",
+    "stats": {
+      "attack": 6
+    },
+    "description": "Cinder Cub from Red Egg",
+    "egg": "egg_red"
+  },
+  {
+    "id": "pet_slime",
+    "name": "Slime",
+    "image": "/images/pets/pet_slime.png",
+    "element": "fire",
+    "stats": {
+      "attack": 3
+    },
+    "description": "Slime from Red Egg",
+    "egg": "egg_red"
+  },
+  {
+    "id": "pet_sprout",
+    "name": "Sprout",
+    "image": "/images/pets/pet_sprout.png",
+    "element": "nature",
+    "stats": {
+      "attack": 3
+    },
+    "description": "Sprout from Red Egg",
+    "egg": "egg_red"
+  },
+  {
+    "id": "pet_flame_sprite",
+    "name": "Flame Sprite",
+    "image": "/images/pets/pet_flame_sprite.png",
+    "element": "fire",
+    "stats": {
+      "attack": 3
+    },
+    "description": "Flame Sprite from Red Egg",
+    "egg": "egg_red"
+  },
+  {
+    "id": "pet_mossling",
+    "name": "Mossling",
+    "image": "/images/pets/pet_mossling.png",
+    "element": "earth",
+    "stats": {
+      "attack": 4
+    },
+    "description": "Mossling from Green Egg",
+    "egg": "egg_green"
+  },
+  {
+    "id": "pet_vine_pup",
+    "name": "Vine Pup",
+    "image": "/images/pets/pet_vine_pup.png",
+    "element": "earth",
+    "stats": {
+      "attack": 5
+    },
+    "description": "Vine Pup from Green Egg",
+    "egg": "egg_green"
+  },
+  {
+    "id": "pet_thorn_whelp",
+    "name": "Thorn Whelp",
+    "image": "/images/pets/pet_thorn_whelp.png",
+    "element": "earth",
+    "stats": {
+      "attack": 4
+    },
+    "description": "Thorn Whelp from Green Egg",
+    "egg": "egg_green"
+  },
+  {
+    "id": "pet_grove_sprite",
+    "name": "Grove Sprite",
+    "image": "/images/pets/pet_grove_sprite.png",
+    "element": "earth",
+    "stats": {
+      "attack": 4
+    },
+    "description": "Grove Sprite from Green Egg",
+    "egg": "egg_green"
+  },
+  {
+    "id": "pet_slime_king",
+    "name": "Slime King",
+    "image": "/images/pets/pet_slime_king.png",
+    "element": "earth",
+    "stats": {
+      "attack": 6
+    },
+    "description": "Slime King from Green Egg",
+    "egg": "egg_green"
+  },
+  {
+    "id": "pet_forest_cub",
+    "name": "Forest Cub",
+    "image": "/images/pets/pet_forest_cub.png",
+    "element": "earth",
+    "stats": {
+      "attack": 5
+    },
+    "description": "Forest Cub from Green Egg",
+    "egg": "egg_green"
+  },
+  {
+    "id": "pet_natureling",
+    "name": "Natureling",
+    "image": "/images/pets/pet_natureling.png",
+    "element": "nature",
+    "stats": {
+      "attack": 3
+    },
+    "description": "A budding nature spirit from the Green Egg.",
+    "egg": "egg_green"
+  },
+  {
+    "id": "pet_frost_pup",
+    "name": "Frost Pup",
+    "image": "/images/pets/pet_frost_pup.png",
+    "element": "water",
+    "stats": {
+      "attack": 7,
+      "magicPower": 3
+    },
+    "description": "Frost Pup from Blue Egg",
+    "egg": "egg_blue",
+    "buffKind": "magicBoost"
+  },
+  {
+    "id": "pet_ice_whelp",
+    "name": "Ice Whelp",
+    "image": "/images/pets/pet_ice_whelp.png",
+    "element": "water",
+    "stats": {
+      "attack": 3,
+      "magicPower": 3
+    },
+    "description": "Ice Whelp from Blue Egg",
+    "egg": "egg_blue",
+    "buffKind": "magicBoost"
+  },
+  {
+    "id": "pet_snow_cub",
+    "name": "Snow Cub",
+    "image": "/images/pets/pet_snow_cub.png",
+    "element": "water",
+    "stats": {
+      "attack": 5,
+      "magicPower": 7
+    },
+    "description": "Snow Cub from Blue Egg",
+    "egg": "egg_blue",
+    "buffKind": "magicBoost"
+  },
+  {
+    "id": "pet_glacierling",
+    "name": "Glacierling",
+    "image": "/images/pets/pet_glacierling.png",
+    "element": "water",
+    "stats": {
+      "attack": 5,
+      "magicPower": 6
+    },
+    "description": "Glacierling from Blue Egg",
+    "egg": "egg_blue",
+    "buffKind": "magicBoost"
+  },
+  {
+    "id": "pet_chill_sprite",
+    "name": "Chill Sprite",
+    "image": "/images/pets/pet_chill_sprite.png",
+    "element": "water",
+    "stats": {
+      "attack": 3,
+      "magicPower": 7
+    },
+    "description": "Chill Sprite from Blue Egg",
+    "egg": "egg_blue",
+    "buffKind": "magicBoost"
+  },
+  {
+    "id": "pet_frost_drake",
+    "name": "Frost Drake",
+    "image": "/images/pets/pet_frost_drake.png",
+    "element": "water",
+    "stats": {
+      "attack": 5,
+      "magicPower": 7
+    },
+    "description": "Frost Drake from Blue Egg",
+    "egg": "egg_blue",
+    "buffKind": "magicBoost"
+  },
+  {
+    "id": "pet_stone_pup",
+    "name": "Stone Pup",
+    "image": "/images/pets/pet_stone_pup.png",
+    "element": "earth",
+    "stats": {
+      "attack": 5,
+      "magicPower": 7,
+      "resistance": 3
+    },
+    "description": "Stone Pup from Brown Egg",
+    "egg": "egg_brown",
+    "buffKind": "attack"
+  },
+  {
+    "id": "pet_rockling",
+    "name": "Rockling",
+    "image": "/images/pets/pet_rockling.png",
+    "element": "earth",
+    "stats": {
+      "attack": 4,
+      "magicPower": 6,
+      "resistance": 3
+    },
+    "description": "Rockling from Brown Egg",
+    "egg": "egg_brown",
+    "buffKind": "attack"
+  },
+  {
+    "id": "pet_boulder_cub",
+    "name": "Boulder Cub",
+    "image": "/images/pets/pet_boulder_cub.png",
+    "element": "earth",
+    "stats": {
+      "attack": 7,
+      "magicPower": 6,
+      "resistance": 3
+    },
+    "description": "Boulder Cub from Brown Egg",
+    "egg": "egg_brown",
+    "buffKind": "attack"
+  },
+  {
+    "id": "pet_crystal_sprite",
+    "name": "Crystal Sprite",
+    "image": "/images/pets/pet_crystal_sprite.png",
+    "element": "earth",
+    "stats": {
+      "attack": 5,
+      "magicPower": 4,
+      "resistance": 3
+    },
+    "description": "Crystal Sprite from Brown Egg",
+    "egg": "egg_brown",
+    "buffKind": "attack"
+  },
+  {
+    "id": "pet_golem_whelp",
+    "name": "Golem Whelp",
+    "image": "/images/pets/pet_golem_whelp.png",
+    "element": "earth",
+    "stats": {
+      "attack": 6,
+      "magicPower": 6,
+      "resistance": 3
+    },
+    "description": "Golem Whelp from Brown Egg",
+    "egg": "egg_brown",
+    "buffKind": "attack"
+  },
+  {
+    "id": "pet_granite_pup",
+    "name": "Granite Pup",
+    "image": "/images/pets/pet_granite_pup.png",
+    "element": "earth",
+    "stats": {
+      "attack": 7,
+      "magicPower": 3,
+      "resistance": 3
+    },
+    "description": "Granite Pup from Brown Egg",
+    "egg": "egg_brown",
+    "buffKind": "attack"
+  },
+  {
+    "id": "pet_storm_pup",
+    "name": "Storm Pup",
+    "image": "/images/pets/pet_storm_pup.png",
+    "element": "lightning",
+    "stats": {
+      "attack": 3,
+      "magicPower": 4
+    },
+    "description": "Storm Pup from Yellow Egg",
+    "egg": "egg_yellow",
+    "buffKind": "magicBoost"
+  },
+  {
+    "id": "pet_thunder_cub",
+    "name": "Thunder Cub",
+    "image": "/images/pets/pet_thunder_cub.png",
+    "element": "lightning",
+    "stats": {
+      "attack": 7,
+      "magicPower": 4
+    },
+    "description": "Thunder Cub from Yellow Egg",
+    "egg": "egg_yellow",
+    "buffKind": "magicBoost"
+  },
+  {
+    "id": "pet_lightning_drake",
+    "name": "Lightning Drake",
+    "image": "/images/pets/pet_lightning_drake.png",
+    "element": "lightning",
+    "stats": {
+      "attack": 5,
+      "magicPower": 4
+    },
+    "description": "Lightning Drake from Yellow Egg",
+    "egg": "egg_yellow",
+    "buffKind": "magicBoost"
+  },
+  {
+    "id": "pet_wind_sprite",
+    "name": "Wind Sprite",
+    "image": "/images/pets/pet_wind_sprite.png",
+    "element": "lightning",
+    "stats": {
+      "attack": 3,
+      "magicPower": 3
+    },
+    "description": "Wind Sprite from Yellow Egg",
+    "egg": "egg_yellow",
+    "buffKind": "magicBoost"
+  },
+  {
+    "id": "pet_gale_whelp",
+    "name": "Gale Whelp",
+    "image": "/images/pets/pet_gale_whelp.png",
+    "element": "lightning",
+    "stats": {
+      "attack": 7,
+      "magicPower": 6
+    },
+    "description": "Gale Whelp from Yellow Egg",
+    "egg": "egg_yellow",
+    "buffKind": "magicBoost"
+  },
+  {
+    "id": "pet_storm_hatchling",
+    "name": "Storm Hatchling",
+    "image": "/images/pets/pet_storm_hatchling.png",
+    "element": "lightning",
+    "stats": {
+      "attack": 6,
+      "magicPower": 5
+    },
+    "description": "Storm Hatchling from Yellow Egg",
+    "egg": "egg_yellow",
+    "buffKind": "magicBoost"
+  },
+  {
+    "id": "pet_shadow_pup",
+    "name": "Shadow Pup",
+    "image": "/images/pets/pet_shadow_pup.png",
+    "element": "dark",
+    "stats": {
+      "attack": 4,
+      "magicPower": 3
+    },
+    "description": "Shadow Pup from Purple Egg",
+    "egg": "egg_purple",
+    "petSkills": [
+      {
+        "kind": "weaken",
+        "value": 0.55,
+        "interval": 2,
+        "element": "dark"
+      }
+    ]
+  },
+  {
+    "id": "pet_voidling",
+    "name": "Voidling",
+    "image": "/images/pets/pet_voidling.png",
+    "element": "dark",
+    "stats": {
+      "attack": 6,
+      "magicPower": 3
+    },
+    "description": "Voidling from Purple Egg",
+    "egg": "egg_purple",
+    "petSkills": [
+      {
+        "kind": "weaken",
+        "value": 0.55,
+        "interval": 2,
+        "element": "dark"
+      }
+    ]
+  },
+  {
+    "id": "pet_dusk_whelp",
+    "name": "Dusk Whelp",
+    "image": "/images/pets/pet_dusk_whelp.png",
+    "element": "dark",
+    "stats": {
+      "attack": 7,
+      "magicPower": 5
+    },
+    "description": "Dusk Whelp from Purple Egg",
+    "egg": "egg_purple",
+    "petSkills": [
+      {
+        "kind": "weaken",
+        "value": 0.55,
+        "interval": 2,
+        "element": "dark"
+      }
+    ]
+  },
+  {
+    "id": "pet_night_cub",
+    "name": "Night Cub",
+    "image": "/images/pets/pet_night_cub.png",
+    "element": "dark",
+    "stats": {
+      "attack": 6,
+      "magicPower": 7
+    },
+    "description": "Night Cub from Purple Egg",
+    "egg": "egg_purple",
+    "petSkills": [
+      {
+        "kind": "weaken",
+        "value": 0.55,
+        "interval": 2,
+        "element": "dark"
+      }
+    ]
+  },
+  {
+    "id": "pet_shade_sprite",
+    "name": "Shade Sprite",
+    "image": "/images/pets/pet_shade_sprite.png",
+    "element": "dark",
+    "stats": {
+      "attack": 4,
+      "magicPower": 4
+    },
+    "description": "Shade Sprite from Purple Egg",
+    "egg": "egg_purple",
+    "petSkills": [
+      {
+        "kind": "weaken",
+        "value": 0.55,
+        "interval": 2,
+        "element": "dark"
+      }
+    ]
+  },
+  {
+    "id": "pet_umbra_drake",
+    "name": "Umbra Drake",
+    "image": "/images/pets/pet_umbra_drake.png",
+    "element": "dark",
+    "stats": {
+      "attack": 7,
+      "magicPower": 3
+    },
+    "description": "Umbra Drake from Purple Egg",
+    "egg": "egg_purple",
+    "petSkills": [
+      {
+        "kind": "weaken",
+        "value": 0.55,
+        "interval": 2,
+        "element": "dark"
+      }
+    ]
+  },
+  {
+    "id": "pet_crystal_drake",
+    "name": "Crystal Drake",
+    "image": "/images/pets/pet_crystal_drake.png",
+    "element": "water",
+    "stats": {
+      "attack": 5,
+      "magicPower": 4
+    },
+    "description": "Crystal Drake from Cyan Egg",
+    "egg": "egg_cyan",
+    "petSkills": [
+      {
+        "kind": "heal",
+        "value": 0.55,
+        "interval": 2,
+        "element": "water"
+      }
+    ]
+  },
+  {
+    "id": "pet_arcane_pup",
+    "name": "Arcane Pup",
+    "image": "/images/pets/pet_arcane_pup.png",
+    "element": "water",
+    "stats": {
+      "attack": 5,
+      "magicPower": 6
+    },
+    "description": "Arcane Pup from Cyan Egg",
+    "egg": "egg_cyan",
+    "petSkills": [
+      {
+        "kind": "heal",
+        "value": 0.55,
+        "interval": 2,
+        "element": "water"
+      }
+    ]
+  },
+  {
+    "id": "pet_mana_sprite",
+    "name": "Mana Sprite",
+    "image": "/images/pets/pet_mana_sprite.png",
+    "element": "water",
+    "stats": {
+      "attack": 5,
+      "magicPower": 7
+    },
+    "description": "Mana Sprite from Cyan Egg",
+    "egg": "egg_cyan",
+    "petSkills": [
+      {
+        "kind": "heal",
+        "value": 0.55,
+        "interval": 2,
+        "element": "water"
+      }
+    ]
+  },
+  {
+    "id": "pet_spell_whelp",
+    "name": "Spell Whelp",
+    "image": "/images/pets/pet_spell_whelp.png",
+    "element": "water",
+    "stats": {
+      "attack": 6,
+      "magicPower": 7
+    },
+    "description": "Spell Whelp from Cyan Egg",
+    "egg": "egg_cyan",
+    "petSkills": [
+      {
+        "kind": "heal",
+        "value": 0.55,
+        "interval": 2,
+        "element": "water"
+      }
+    ]
+  },
+  {
+    "id": "pet_runeling",
+    "name": "Runeling",
+    "image": "/images/pets/pet_runeling.png",
+    "element": "water",
+    "stats": {
+      "attack": 4,
+      "magicPower": 4
+    },
+    "description": "Runeling from Cyan Egg",
+    "egg": "egg_cyan",
+    "petSkills": [
+      {
+        "kind": "heal",
+        "value": 0.55,
+        "interval": 2,
+        "element": "water"
+      }
+    ]
+  },
+  {
+    "id": "pet_crystal_hound",
+    "name": "Crystal Hound",
+    "image": "/images/pets/pet_crystal_hound.png",
+    "element": "water",
+    "stats": {
+      "attack": 4,
+      "magicPower": 6
+    },
+    "description": "Crystal Hound from Cyan Egg",
+    "egg": "egg_cyan",
+    "petSkills": [
+      {
+        "kind": "heal",
+        "value": 0.55,
+        "interval": 2,
+        "element": "water"
+      }
+    ]
+  },
+  {
+    "id": "pet_void_pup",
+    "name": "Void Pup",
+    "image": "/images/pets/pet_void_pup.png",
+    "element": "dark",
+    "stats": {
+      "attack": 5,
+      "magicPower": 7
+    },
+    "description": "Void Pup from Dark Egg",
+    "egg": "egg_dark",
+    "petSkills": [
+      {
+        "kind": "weaken",
+        "value": 0.55,
+        "interval": 2,
+        "element": "dark"
+      }
+    ]
+  },
+  {
+    "id": "pet_abyssling",
+    "name": "Abyssling",
+    "image": "/images/pets/pet_abyssling.png",
+    "element": "dark",
+    "stats": {
+      "attack": 6,
+      "magicPower": 3
+    },
+    "description": "Abyssling from Dark Egg",
+    "egg": "egg_dark",
+    "petSkills": [
+      {
+        "kind": "weaken",
+        "value": 0.55,
+        "interval": 2,
+        "element": "dark"
+      }
+    ]
+  },
+  {
+    "id": "pet_nether_cub",
+    "name": "Nether Cub",
+    "image": "/images/pets/pet_nether_cub.png",
+    "element": "dark",
+    "stats": {
+      "attack": 4,
+      "magicPower": 4
+    },
+    "description": "Nether Cub from Dark Egg",
+    "egg": "egg_dark",
+    "petSkills": [
+      {
+        "kind": "weaken",
+        "value": 0.55,
+        "interval": 2,
+        "element": "dark"
+      }
+    ]
+  },
+  {
+    "id": "pet_shadow_drake",
+    "name": "Shadow Drake",
+    "image": "/images/pets/pet_shadow_drake.png",
+    "element": "dark",
+    "stats": {
+      "attack": 4,
+      "magicPower": 4
+    },
+    "description": "Shadow Drake from Dark Egg",
+    "egg": "egg_dark",
+    "petSkills": [
+      {
+        "kind": "weaken",
+        "value": 0.55,
+        "interval": 2,
+        "element": "dark"
+      }
+    ]
+  },
+  {
+    "id": "pet_dark_hound",
+    "name": "Dark Hound",
+    "image": "/images/pets/pet_dark_hound.png",
+    "element": "dark",
+    "stats": {
+      "attack": 4,
+      "magicPower": 6
+    },
+    "description": "Dark Hound from Dark Egg",
+    "egg": "egg_dark",
+    "petSkills": [
+      {
+        "kind": "weaken",
+        "value": 0.55,
+        "interval": 2,
+        "element": "dark"
+      }
+    ]
+  },
+  {
+    "id": "pet_void_sprite",
+    "name": "Void Sprite",
+    "image": "/images/pets/pet_void_sprite.png",
+    "element": "dark",
+    "stats": {
+      "attack": 6,
+      "magicPower": 5
+    },
+    "description": "Void Sprite from Dark Egg",
+    "egg": "egg_dark",
+    "petSkills": [
+      {
+        "kind": "weaken",
+        "value": 0.55,
+        "interval": 2,
+        "element": "dark"
+      }
+    ]
+  },
+  {
+    "id": "pet_phoenix_hatchling",
+    "name": "Phoenix Hatchling",
+    "image": "/images/pets/pet_phoenix_hatchling.png",
+    "element": "fire",
+    "stats": {
+      "attack": 5,
+      "magicPower": 7
+    },
+    "description": "Phoenix Hatchling from Orange Egg",
+    "egg": "egg_orange",
+    "petSkills": [
+      {
+        "kind": "attack",
+        "value": 0.65,
+        "interval": 2,
+        "element": "fire"
+      },
+      {
+        "kind": "shield",
+        "value": 0.4,
+        "interval": 3,
+        "element": "fire"
+      }
+    ]
+  },
+  {
+    "id": "pet_ember_drake",
+    "name": "Ember Drake",
+    "image": "/images/pets/pet_ember_drake.png",
+    "element": "fire",
+    "stats": {
+      "attack": 4,
+      "magicPower": 4
+    },
+    "description": "Ember Drake from Orange Egg",
+    "egg": "egg_orange",
+    "petSkills": [
+      {
+        "kind": "attack",
+        "value": 0.65,
+        "interval": 2,
+        "element": "fire"
+      },
+      {
+        "kind": "shield",
+        "value": 0.4,
+        "interval": 3,
+        "element": "fire"
+      }
+    ]
+  },
+  {
+    "id": "pet_flame_hound",
+    "name": "Flame Hound",
+    "image": "/images/pets/pet_flame_hound.png",
+    "element": "fire",
+    "stats": {
+      "attack": 4,
+      "magicPower": 7
+    },
+    "description": "Flame Hound from Orange Egg",
+    "egg": "egg_orange",
+    "petSkills": [
+      {
+        "kind": "attack",
+        "value": 0.65,
+        "interval": 2,
+        "element": "fire"
+      },
+      {
+        "kind": "shield",
+        "value": 0.4,
+        "interval": 3,
+        "element": "fire"
+      }
+    ]
+  },
+  {
+    "id": "pet_inferno_pup",
+    "name": "Inferno Pup",
+    "image": "/images/pets/pet_inferno_pup.png",
+    "element": "fire",
+    "stats": {
+      "attack": 5,
+      "magicPower": 3
+    },
+    "description": "Inferno Pup from Orange Egg",
+    "egg": "egg_orange",
+    "petSkills": [
+      {
+        "kind": "attack",
+        "value": 0.65,
+        "interval": 2,
+        "element": "fire"
+      },
+      {
+        "kind": "shield",
+        "value": 0.4,
+        "interval": 3,
+        "element": "fire"
+      }
+    ]
+  },
+  {
+    "id": "pet_blaze_drake",
+    "name": "Blaze Drake",
+    "image": "/images/pets/pet_blaze_drake.png",
+    "element": "fire",
+    "stats": {
+      "attack": 4,
+      "magicPower": 3
+    },
+    "description": "Blaze Drake from Orange Egg",
+    "egg": "egg_orange",
+    "petSkills": [
+      {
+        "kind": "attack",
+        "value": 0.65,
+        "interval": 2,
+        "element": "fire"
+      },
+      {
+        "kind": "shield",
+        "value": 0.4,
+        "interval": 3,
+        "element": "fire"
+      }
+    ]
+  },
+  {
+    "id": "pet_phoenix_chick",
+    "name": "Phoenix Chick",
+    "image": "/images/pets/pet_phoenix_chick.png",
+    "element": "fire",
+    "stats": {
+      "attack": 3,
+      "magicPower": 5
+    },
+    "description": "Phoenix Chick from Orange Egg",
+    "egg": "egg_orange",
+    "petSkills": [
+      {
+        "kind": "attack",
+        "value": 0.65,
+        "interval": 2,
+        "element": "fire"
+      },
+      {
+        "kind": "shield",
+        "value": 0.4,
+        "interval": 3,
+        "element": "fire"
+      }
+    ]
+  },
+  {
+    "id": "pet_mythic_drake",
+    "name": "Mythic Drake",
+    "image": "/images/pets/pet_mythic_drake.png",
+    "element": "physical",
+    "stats": {
+      "attack": 7,
+      "magicPower": 7
+    },
+    "description": "Mythic Drake from Gold Egg",
+    "egg": "egg_gold",
+    "petSkills": [
+      {
+        "kind": "attack",
+        "value": 0.65,
+        "interval": 2,
+        "element": "physical"
+      },
+      {
+        "kind": "shield",
+        "value": 0.4,
+        "interval": 3,
+        "element": "physical"
+      }
+    ]
+  },
+  {
+    "id": "pet_gold_pup",
+    "name": "Gold Pup",
+    "image": "/images/pets/pet_gold_pup.png",
+    "element": "physical",
+    "stats": {
+      "attack": 7,
+      "magicPower": 7
+    },
+    "description": "Gold Pup from Gold Egg",
+    "egg": "egg_gold",
+    "petSkills": [
+      {
+        "kind": "attack",
+        "value": 0.65,
+        "interval": 2,
+        "element": "physical"
+      },
+      {
+        "kind": "shield",
+        "value": 0.4,
+        "interval": 3,
+        "element": "physical"
+      }
+    ]
+  },
+  {
+    "id": "pet_radiant_cub",
+    "name": "Radiant Cub",
+    "image": "/images/pets/pet_radiant_cub.png",
+    "element": "physical",
+    "stats": {
+      "attack": 3,
+      "magicPower": 6
+    },
+    "description": "Radiant Cub from Gold Egg",
+    "egg": "egg_gold",
+    "petSkills": [
+      {
+        "kind": "attack",
+        "value": 0.65,
+        "interval": 2,
+        "element": "physical"
+      },
+      {
+        "kind": "shield",
+        "value": 0.4,
+        "interval": 3,
+        "element": "physical"
+      }
+    ]
+  },
+  {
+    "id": "pet_divine_whelp",
+    "name": "Divine Whelp",
+    "image": "/images/pets/pet_divine_whelp.png",
+    "element": "physical",
+    "stats": {
+      "attack": 3,
+      "magicPower": 5
+    },
+    "description": "Divine Whelp from Gold Egg",
+    "egg": "egg_gold",
+    "petSkills": [
+      {
+        "kind": "attack",
+        "value": 0.65,
+        "interval": 2,
+        "element": "physical"
+      },
+      {
+        "kind": "shield",
+        "value": 0.4,
+        "interval": 3,
+        "element": "physical"
+      }
+    ]
+  },
+  {
+    "id": "pet_light_sprite",
+    "name": "Light Sprite",
+    "image": "/images/pets/pet_light_sprite.png",
+    "element": "physical",
+    "stats": {
+      "attack": 4,
+      "magicPower": 7
+    },
+    "description": "Light Sprite from Gold Egg",
+    "egg": "egg_gold",
+    "petSkills": [
+      {
+        "kind": "attack",
+        "value": 0.65,
+        "interval": 2,
+        "element": "physical"
+      },
+      {
+        "kind": "shield",
+        "value": 0.4,
+        "interval": 3,
+        "element": "physical"
+      }
+    ]
+  },
+  {
+    "id": "pet_mythic_hound",
+    "name": "Mythic Hound",
+    "image": "/images/pets/pet_mythic_hound.png",
+    "element": "physical",
+    "stats": {
+      "attack": 6,
+      "magicPower": 5
+    },
+    "description": "Mythic Hound from Gold Egg",
+    "egg": "egg_gold",
+    "petSkills": [
+      {
+        "kind": "attack",
+        "value": 0.65,
+        "interval": 2,
+        "element": "physical"
+      },
+      {
+        "kind": "shield",
+        "value": 0.4,
+        "interval": 3,
+        "element": "physical"
+      }
+    ]
+  },
+  {
+    "id": "pet_rage_pup_100",
+    "name": "Rage Pup",
+    "image": "/images/pets/pet_rage_pup_100.png",
+    "element": "fire",
+    "stats": {
+      "attack": 5
+    },
+    "description": "Rage Pup - grants attack buff. From egg_red",
+    "egg": "egg_red",
+    "buffKind": "attack"
+  },
+  {
+    "id": "pet_fury_cub_101",
+    "name": "Fury Cub",
+    "image": "/images/pets/pet_fury_cub_101.png",
+    "element": "water",
+    "stats": {
+      "magicPower": 6
+    },
+    "description": "Fury Cub - grants magicBoost buff. From egg_green",
+    "egg": "egg_green",
+    "buffKind": "magicBoost"
+  },
+  {
+    "id": "pet_berserk_whelp_102",
+    "name": "Berserk Whelp",
+    "image": "/images/pets/pet_berserk_whelp_102.png",
+    "element": "earth",
+    "stats": {
+      "resistance": 5
+    },
+    "description": "Berserk Whelp - grants defense buff. From egg_blue",
+    "egg": "egg_blue",
+    "buffKind": "defense"
+  },
+  {
+    "id": "pet_war_hound_103",
+    "name": "War Hound",
+    "image": "/images/pets/pet_war_hound_103.png",
+    "element": "lightning",
+    "stats": {
+      "attack": 4
+    },
+    "description": "War Hound - grants attack buff. From egg_brown",
+    "egg": "egg_brown",
+    "buffKind": "attack"
+  },
+  {
+    "id": "pet_battle_pup_104",
+    "name": "Battle Pup",
+    "image": "/images/pets/pet_battle_pup_104.png",
+    "element": "dark",
+    "stats": {
+      "magicPower": 6
+    },
+    "description": "Battle Pup - grants magicBoost buff. From egg_yellow",
+    "egg": "egg_yellow",
+    "buffKind": "magicBoost"
+  },
+  {
+    "id": "pet_might_cub_105",
+    "name": "Might Cub",
+    "image": "/images/pets/pet_might_cub_105.png",
+    "element": "physical",
+    "stats": {
+      "resistance": 5
+    },
+    "description": "Might Cub - grants defense buff. From egg_purple",
+    "egg": "egg_purple",
+    "buffKind": "defense"
+  },
+  {
+    "id": "pet_arcane_pup_106",
+    "name": "Arcane Pup",
+    "image": "/images/pets/pet_arcane_pup_106.png",
+    "element": "frost",
+    "stats": {
+      "attack": 6
+    },
+    "description": "Arcane Pup - grants attack buff. From egg_cyan",
+    "egg": "egg_cyan",
+    "buffKind": "attack"
+  },
+  {
+    "id": "pet_mana_sprite_107",
+    "name": "Mana Sprite",
+    "image": "/images/pets/pet_mana_sprite_107.png",
+    "element": "arcane",
+    "stats": {
+      "magicPower": 5
+    },
+    "description": "Mana Sprite - grants magicBoost buff. From egg_dark",
+    "egg": "egg_dark",
+    "buffKind": "magicBoost"
+  },
+  {
+    "id": "pet_spell_whelp_108",
+    "name": "Spell Whelp",
+    "image": "/images/pets/pet_spell_whelp_108.png",
+    "element": "holy",
+    "stats": {
+      "resistance": 4
+    },
+    "description": "Spell Whelp - grants defense buff. From egg_orange",
+    "egg": "egg_orange",
+    "buffKind": "defense"
+  },
+  {
+    "id": "pet_mystic_cub_109",
+    "name": "Mystic Cub",
+    "image": "/images/pets/pet_mystic_cub_109.png",
+    "element": "shadow",
+    "stats": {
+      "attack": 5
+    },
+    "description": "Mystic Cub - grants attack buff. From egg_gold",
+    "egg": "egg_gold",
+    "buffKind": "attack"
+  },
+  {
+    "id": "pet_rune_pup_110",
+    "name": "Rune Pup",
+    "image": "/images/pets/pet_rune_pup_110.png",
+    "element": "fire",
+    "stats": {
+      "magicPower": 4
+    },
+    "description": "Rune Pup - grants magicBoost buff. From egg_red",
+    "egg": "egg_red",
+    "buffKind": "magicBoost"
+  },
+  {
+    "id": "pet_gale_sprite_111",
+    "name": "Gale Sprite",
+    "image": "/images/pets/pet_gale_sprite_111.png",
+    "element": "water",
+    "stats": {
+      "resistance": 4
+    },
+    "description": "Gale Sprite - grants defense buff. From egg_green",
+    "egg": "egg_green",
+    "buffKind": "defense"
+  },
+  {
+    "id": "pet_stone_guardian_112",
+    "name": "Stone Guardian",
+    "image": "/images/pets/pet_stone_guardian_112.png",
+    "element": "earth",
+    "stats": {
+      "attack": 6
+    },
+    "description": "Stone Guardian - grants attack buff. From egg_blue",
+    "egg": "egg_blue",
+    "buffKind": "attack"
+  },
+  {
+    "id": "pet_iron_pup_113",
+    "name": "Iron Pup",
+    "image": "/images/pets/pet_iron_pup_113.png",
+    "element": "lightning",
+    "stats": {
+      "magicPower": 5
+    },
+    "description": "Iron Pup - grants magicBoost buff. From egg_brown",
+    "egg": "egg_brown",
+    "buffKind": "magicBoost"
+  },
+  {
+    "id": "pet_granite_whelp_114",
+    "name": "Granite Whelp",
+    "image": "/images/pets/pet_granite_whelp_114.png",
+    "element": "dark",
+    "stats": {
+      "resistance": 5
+    },
+    "description": "Granite Whelp - grants defense buff. From egg_yellow",
+    "egg": "egg_yellow",
+    "buffKind": "defense"
+  },
+  {
+    "id": "pet_crystal_pup_115",
+    "name": "Crystal Pup",
+    "image": "/images/pets/pet_crystal_pup_115.png",
+    "element": "physical",
+    "stats": {
+      "attack": 4
+    },
+    "description": "Crystal Pup - grants attack buff. From egg_purple",
+    "egg": "egg_purple",
+    "buffKind": "attack"
+  },
+  {
+    "id": "pet_boulder_cub_116",
+    "name": "Boulder Cub",
+    "image": "/images/pets/pet_boulder_cub_116.png",
+    "element": "frost",
+    "stats": {
+      "magicPower": 5
+    },
+    "description": "Boulder Cub - grants magicBoost buff. From egg_cyan",
+    "egg": "egg_cyan",
+    "buffKind": "magicBoost"
+  },
+  {
+    "id": "pet_rock_sprite_117",
+    "name": "Rock Sprite",
+    "image": "/images/pets/pet_rock_sprite_117.png",
+    "element": "arcane",
+    "stats": {
+      "resistance": 3
+    },
+    "description": "Rock Sprite - grants defense buff. From egg_dark",
+    "egg": "egg_dark",
+    "buffKind": "defense"
+  },
+  {
+    "id": "pet_frost_lynx_118",
+    "name": "Frost Lynx",
+    "image": "/images/pets/pet_frost_lynx_118.png",
+    "element": "holy",
+    "stats": {
+      "attack": 4
+    },
+    "description": "Frost Lynx - grants attack buff. From egg_orange",
+    "egg": "egg_orange",
+    "buffKind": "attack"
+  },
+  {
+    "id": "pet_glacier_pup_119",
+    "name": "Glacier Pup",
+    "image": "/images/pets/pet_glacier_pup_119.png",
+    "element": "shadow",
+    "stats": {
+      "magicPower": 6
+    },
+    "description": "Glacier Pup - grants magicBoost buff. From egg_gold",
+    "egg": "egg_gold",
+    "buffKind": "magicBoost"
+  },
+  {
+    "id": "pet_snow_hound_120",
+    "name": "Snow Hound",
+    "image": "/images/pets/pet_snow_hound_120.png",
+    "element": "fire",
+    "stats": {
+      "resistance": 3
+    },
+    "description": "Snow Hound - grants defense buff. From egg_red",
+    "egg": "egg_red",
+    "buffKind": "defense"
+  },
+  {
+    "id": "pet_ice_cub_121",
+    "name": "Ice Cub",
+    "image": "/images/pets/pet_ice_cub_121.png",
+    "element": "water",
+    "stats": {
+      "attack": 6
+    },
+    "description": "Ice Cub - grants attack buff. From egg_green",
+    "egg": "egg_green",
+    "buffKind": "attack"
+  },
+  {
+    "id": "pet_chill_whelp_122",
+    "name": "Chill Whelp",
+    "image": "/images/pets/pet_chill_whelp_122.png",
+    "element": "earth",
+    "stats": {
+      "magicPower": 6
+    },
+    "description": "Chill Whelp - grants magicBoost buff. From egg_blue",
+    "egg": "egg_blue",
+    "buffKind": "magicBoost"
+  },
+  {
+    "id": "pet_frost_kit_123",
+    "name": "Frost Kit",
+    "image": "/images/pets/pet_frost_kit_123.png",
+    "element": "lightning",
+    "stats": {
+      "resistance": 4
+    },
+    "description": "Frost Kit - grants defense buff. From egg_brown",
+    "egg": "egg_brown",
+    "buffKind": "defense"
+  },
+  {
+    "id": "pet_ember_lynx_124",
+    "name": "Ember Lynx",
+    "image": "/images/pets/pet_ember_lynx_124.png",
+    "element": "dark",
+    "stats": {
+      "attack": 6
+    },
+    "description": "Ember Lynx - grants attack buff. From egg_yellow",
+    "egg": "egg_yellow",
+    "buffKind": "attack"
+  },
+  {
+    "id": "pet_flame_hound_125",
+    "name": "Flame Hound",
+    "image": "/images/pets/pet_flame_hound_125.png",
+    "element": "physical",
+    "stats": {
+      "magicPower": 6
+    },
+    "description": "Flame Hound - grants magicBoost buff. From egg_purple",
+    "egg": "egg_purple",
+    "buffKind": "magicBoost"
+  },
+  {
+    "id": "pet_cinder_pup_126",
+    "name": "Cinder Pup",
+    "image": "/images/pets/pet_cinder_pup_126.png",
+    "element": "frost",
+    "stats": {
+      "resistance": 3
+    },
+    "description": "Cinder Pup - grants defense buff. From egg_cyan",
+    "egg": "egg_cyan",
+    "buffKind": "defense"
+  },
+  {
+    "id": "pet_blaze_cub_127",
+    "name": "Blaze Cub",
+    "image": "/images/pets/pet_blaze_cub_127.png",
+    "element": "arcane",
+    "stats": {
+      "attack": 5
+    },
+    "description": "Blaze Cub - grants attack buff. From egg_dark",
+    "egg": "egg_dark",
+    "buffKind": "attack"
+  },
+  {
+    "id": "pet_inferno_whelp_128",
+    "name": "Inferno Whelp",
+    "image": "/images/pets/pet_inferno_whelp_128.png",
+    "element": "holy",
+    "stats": {
+      "magicPower": 6
+    },
+    "description": "Inferno Whelp - grants magicBoost buff. From egg_orange",
+    "egg": "egg_orange",
+    "buffKind": "magicBoost"
+  },
+  {
+    "id": "pet_fire_sprite_129",
+    "name": "Fire Sprite",
+    "image": "/images/pets/pet_fire_sprite_129.png",
+    "element": "shadow",
+    "stats": {
+      "resistance": 5
+    },
+    "description": "Fire Sprite - grants defense buff. From egg_gold",
+    "egg": "egg_gold",
+    "buffKind": "defense"
+  },
+  {
+    "id": "pet_storm_hawk_130",
+    "name": "Storm Hawk",
+    "image": "/images/pets/pet_storm_hawk_130.png",
+    "element": "fire",
+    "stats": {
+      "attack": 5
+    },
+    "description": "Storm Hawk - grants attack buff. From egg_red",
+    "egg": "egg_red",
+    "buffKind": "attack"
+  },
+  {
+    "id": "pet_thunder_pup_131",
+    "name": "Thunder Pup",
+    "image": "/images/pets/pet_thunder_pup_131.png",
+    "element": "water",
+    "stats": {
+      "magicPower": 6
+    },
+    "description": "Thunder Pup - grants magicBoost buff. From egg_green",
+    "egg": "egg_green",
+    "buffKind": "magicBoost"
+  },
+  {
+    "id": "pet_gale_cub_132",
+    "name": "Gale Cub",
+    "image": "/images/pets/pet_gale_cub_132.png",
+    "element": "earth",
+    "stats": {
+      "resistance": 3
+    },
+    "description": "Gale Cub - grants defense buff. From egg_blue",
+    "egg": "egg_blue",
+    "buffKind": "defense"
+  },
+  {
+    "id": "pet_wind_sprite_133",
+    "name": "Wind Sprite",
+    "image": "/images/pets/pet_wind_sprite_133.png",
+    "element": "lightning",
+    "stats": {
+      "attack": 4
+    },
+    "description": "Wind Sprite - grants attack buff. From egg_brown",
+    "egg": "egg_brown",
+    "buffKind": "attack"
+  },
+  {
+    "id": "pet_lightning_pup_134",
+    "name": "Lightning Pup",
+    "image": "/images/pets/pet_lightning_pup_134.png",
+    "element": "dark",
+    "stats": {
+      "magicPower": 5
+    },
+    "description": "Lightning Pup - grants magicBoost buff. From egg_yellow",
+    "egg": "egg_yellow",
+    "buffKind": "magicBoost"
+  },
+  {
+    "id": "pet_tempest_whelp_135",
+    "name": "Tempest Whelp",
+    "image": "/images/pets/pet_tempest_whelp_135.png",
+    "element": "physical",
+    "stats": {
+      "resistance": 3
+    },
+    "description": "Tempest Whelp - grants defense buff. From egg_purple",
+    "egg": "egg_purple",
+    "buffKind": "defense"
+  },
+  {
+    "id": "pet_shadow_cat_136",
+    "name": "Shadow Cat",
+    "image": "/images/pets/pet_shadow_cat_136.png",
+    "element": "frost",
+    "stats": {
+      "attack": 6
+    },
+    "description": "Shadow Cat - grants attack buff. From egg_cyan",
+    "egg": "egg_cyan",
+    "buffKind": "attack"
+  },
+  {
+    "id": "pet_void_pup_137",
+    "name": "Void Pup",
+    "image": "/images/pets/pet_void_pup_137.png",
+    "element": "arcane",
+    "stats": {
+      "magicPower": 5
+    },
+    "description": "Void Pup - grants magicBoost buff. From egg_dark",
+    "egg": "egg_dark",
+    "buffKind": "magicBoost"
+  }
+]

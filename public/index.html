@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="setra-build" content="20261104ui15" />
+    <meta name="setra-build" content="20261106stat1" />
     <title>The Setra Game</title>
     <script>
       // Gorunur hata paneli: bir JS hatasi oyunu bos ekrana dusururse sebebini yazar.
@@ -51,7 +51,7 @@
       href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/style.css?v=20261104ui15" />
+    <link rel="stylesheet" href="/style.css?v=20261106stat1" />
   </head>
   <body>
 <!-- ============================================================
@@ -435,9 +435,14 @@
       <button type="button" id="btn-main-menu" class="edge-btn edge-btn--menu" title="Open settings">
         ☰ Menu
       </button>
-      <button type="button" id="btn-sound" class="edge-btn edge-btn--sound" title="Toggle sound effects">
-        ♪ On
-      </button>
+      <div class="edge-music" id="edge-music">
+        <button type="button" id="btn-sound" class="edge-btn edge-btn--sound" title="Music: on — click to pause" aria-pressed="true">
+          ♪ On
+        </button>
+        <button type="button" id="btn-next-track" class="edge-btn edge-btn--next" title="Next song" aria-label="Next song">
+          ⏭
+        </button>
+      </div>
     </div>
 
     <div id="settings-overlay" class="overlay-dark overlay-dark--top hidden">
@@ -483,10 +488,10 @@
     <script src="/effects.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/egg_animation.js"></script>
-    <script src="/js/screens.js?v=20261104ui15"></script>
+    <script src="/js/screens.js?v=20261106stat1"></script>
     <script src="/js/bgfx.js?v=20260912k"></script>
-    <script src="/js/client.js?v=20261104ui15"></script>
-    <script src="/js/travel.js?v=20261104ui15"></script>
+    <script src="/js/client.js?v=20261106stat1"></script>
+    <script src="/js/travel.js?v=20261106stat1"></script>
 
 <!-- ============================================================
   THE SETRA GAME - DUNGEON CHEST & 3D LOOT OPENING MODULE
@@ -609,9 +614,12 @@
   display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin-top: 20px;
 }
 .loot-card {
-  width: 160px; height: 220px; border-radius: 12px; background: #16110d; border: 2px solid #444;
+  width: 160px; min-height: 220px; height: auto; border-radius: 12px; background: #16110d; border: 2px solid #444;
   padding: 12px; display: flex; flex-direction: column; align-items: center; justify-content: space-between;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.8); animation: cardPop 0.5s ease-out;
+  gap: 4px; box-shadow: 0 8px 25px rgba(0,0,0,0.8); animation: cardPop 0.5s ease-out;
+}
+.loot-card-stats {
+  font-size: 11px; color: #e8c27a; font-weight: 700; text-align: center; line-height: 1.3;
 }
 @keyframes cardPop {
   0% { opacity: 0; transform: scale(0.5) translateY(40px); }
@@ -660,13 +668,24 @@ window.ChestSystem = {
     const item = s.items[s.revealed];
     const card = document.createElement('div');
     card.className = `loot-card ${item.rarity || 'common'}`;
+    // Itemın statları (Atk / HP ...) — açıklaması stat içermeyen yeni
+    // itemlar da diğerleri gibi değerlerini göstersin.
+    const label = (k) => (typeof statLabel === "function" ? statLabel(k) : k);
+    const stats = item.stats || {};
+    const statTxt = Object.entries(stats)
+      .filter(([, v]) => Number(v))
+      .map(([k, v]) => `${label(k)} ${v > 0 ? "+" : ""}${v}${k === "omnivamp" ? "%" : ""}`)
+      .join(" · ");
+    const descTxt = item.description || "";
+    const descHasStats = /\+\s*\d/.test(descTxt) || /(maxhp|attack|resistance|magicpower|healpower|critchance|omnivamp|manaregen)/i.test(descTxt);
     card.innerHTML = `
       <span style="font-size: 10px; text-transform: uppercase; color: #aaa; font-weight: bold;">${item.rarity || 'Item'}</span>
       <div style="width:110px;height:110px;margin:8px auto;border-radius:12px;overflow:hidden;position:relative;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:40px;">${item.icon || '🎁'}
         ${item.image ? `<img src="${item.image}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.remove()">` : ""}
       </div>
       <strong style="font-size: 13px; color: #fff;">${item.name}</strong>
-      <small style="font-size: 11px; color: #aaa; margin-top: 4px;">${item.description || ''}</small>
+      ${statTxt && !descHasStats ? `<small class="loot-card-stats">${statTxt}</small>` : ""}
+      <small style="font-size: 11px; color: #aaa; margin-top: 4px;">${descTxt}</small>
     `;
     container.appendChild(card);
     s.revealed++;

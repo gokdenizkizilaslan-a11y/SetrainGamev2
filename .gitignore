@@ -5,12 +5,27 @@ npm-debug.log*
 .env.*
 .DS_Store
 content.backup-*.js
+.backups/
 ai_editor_pack/
 for_ai/
 .aider*
 gamecraft-rpg-studiov1/
 oldassets/
+itemsetrain/
 skilllersetrain/
 opencode-ip-rotator/
 *.tmp
 Thumbs.db
+
+# Derleme / onbellek / yedek dosyalar
+dist/
+build/
+coverage/
+.vite/
+.cache/
+*.bak
+*.orig
+*.rej
+*.old
+
+
