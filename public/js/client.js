@@ -802,6 +802,48 @@ socket.on("travel:pos", (p) => { if (window.SetraTravel && p) SetraTravel.setOth
 socket.on("travel:teleport", (p) => { if (window.SetraTravel && p) SetraTravel.teleport(p.x, p.y); });
 socket.on("travel:reveal", () => { if (window.SetraTravel) SetraTravel.reveal(); });
 socket.on("travel:explored", (p) => { if (window.SetraTravel && p && p.add) SetraTravel.addExplored(p.add); });
+socket.on("travel:hp", (p) => { if (window.SetraTravel && p && p.hp != null) SetraTravel.setHp(p.hp); });
+socket.on("travel:downed", (p) => {
+  // Can bitti ama kalbi kaldı: yere yattı, lobiye atılmadan "downed" ekranı açılır.
+  state.travelOpen = true;
+  if (window.SetraTravel && SetraTravel.enterDowned) SetraTravel.enterDowned(p || {});
+});
+socket.on("travel:revived", (p) => {
+  if (!window.SetraTravel || !p) return;
+  if (p.id === state.playerId) {
+    if (SetraTravel.leaveDowned) SetraTravel.leaveDowned(p.hp);
+    showToast(p.byName ? `${p.byName} revived you!` : "You were revived!");
+  }
+});
+socket.on("travel:allyDowned", (p) => {
+  if (!window.SetraTravel || !p) return;
+  if (p.id !== state.playerId && SetraTravel.toast) {
+    SetraTravel.toast(`${p.name || "An ally"} is down! Move close and press E to revive.`);
+  }
+});
+socket.on("travel:reviveFx", (p) => {
+  if (!p || !window.SetraTravel) return;
+  if (p.byId === state.playerId && SetraTravel.toast) SetraTravel.toast("You revived your ally!");
+});
+socket.on("travel:fallen", () => {
+  if (!window.SetraTravel) return;
+  state.travelOpen = false;
+  SetraTravel.close();
+  if (state.room) renderTown(state.room);
+  showToast("You have fallen. Return to the temple to be revived.");
+});
+socket.on("travel:returned", (p) => {
+  // Can bitti: 1 kalp düştü ve sefer sona erdi. Oyuncu kasabada uyanır.
+  state.travelOpen = false;
+  if (window.SetraTravel) SetraTravel.close();
+  if (state.room) renderTown(state.room);
+  showToast((p && p.text) || "You lost 1 heart. You wake up back in town.");
+});
+socket.on("travel:notice", (p) => {
+  if (!window.SetraTravel || !p) return;
+  if (p.party && SetraTravel.noteParty) SetraTravel.noteParty(p.poiId);
+  SetraTravel.toast(p.text || "");
+});
 socket.on("travel:reward", (p) => {
   if (!window.SetraTravel || !p) return;
   if (p.kind === "chest" && p.loot) {
@@ -811,6 +853,11 @@ socket.on("travel:reward", (p) => {
   } else if (p.kind === "gold") {
     SetraTravel.toast(`+${p.gold} gold`);
   }
+});
+// Mana rengi roll sonucu: tek renk; yenisi öncekinin yerine geçer.
+socket.on("skins:rolled", (p) => {
+  if (!p || !p.skin) return;
+  if (typeof showToast === "function") showToast(`Mana hue: ${p.skin.name} (${p.skin.rarity}) — the old hue fades.`);
 });
 
 function chestItemName(itemId) {

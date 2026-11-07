@@ -41,5 +41,22 @@
     "lose": "",
     "push": "",
     "chip": ""
+  },
+  "travel": {
+    "slash": "",
+    "shoot": "",
+    "hit": "",
+    "crit": "",
+    "dash": "",
+    "kill": "",
+    "ultimate": "",
+    "revive": "",
+    "downed": "",
+    "loot": "",
+    "footstep": "",
+    "ambience_day": "",
+    "ambience_night": "",
+    "ambience_rain": "",
+    "ambience_storm": ""
   }
 }

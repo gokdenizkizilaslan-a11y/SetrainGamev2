@@ -63,6 +63,7 @@ function publicRoomState(room) {
     pvpInvites,
     travel: (() => { try { return require("./travel").publicTravel(room); } catch (e) { return null; } })(),
     travels: (() => { try { return require("./travel").publicTravels(room); } catch (e) { return {}; } })(),
+    expeditions: (() => { try { return require("./travel").publicExpeditions(room); } catch (e) { return {}; } })(),
     players: room.players.map(publicPlayer),
   };
 }
@@ -121,6 +122,7 @@ function createRoom({ socketId, name, character, mode, roomName }) {
     pvpInvites: [],
     travel: null,
     travels: {},
+    expeditions: {},
     chat: [],
     players: [host],
   };
@@ -310,6 +312,7 @@ function startGame(socketId) {
   room.pvpInvites = [];
   room.travel = null;
   room.travels = {};
+  room.expeditions = {};
   stock.init(room);
   room.log = { type: "day", text: "Day 1 — the town stirs. Spend your stamina wisely." };
   for (const p of room.players) {

@@ -68,6 +68,40 @@ const CONTENT = {
       "lose": "",
       "push": "",
       "chip": ""
+    },
+    "travel": {
+      "slash": "",
+      "shoot": "",
+      "hit": "",
+      "crit": "",
+      "dash": "",
+      "kill": "",
+      "ultimate": "",
+      "revive": "",
+      "downed": "",
+      "loot": "",
+      "footstep": "",
+      "ambience_day": "",
+      "ambience_night": "",
+      "ambience_rain": "",
+      "ambience_storm": ""
+    }
+  },
+  "travel": {
+    "weather": {
+      "enabled": true,
+      "rainChance": 0.4,
+      "minDelay": 50,
+      "maxDelay": 160,
+      "rainVolume": 0.28,
+      "dayVolume": 0.22
+    },
+    "downed": {
+      "enabled": true,
+      "reviveRange": 110
+    },
+    "sound": {
+      "master": 0.85
     }
   },
   "story": {
@@ -1583,7 +1617,8 @@ const CONTENT = {
           "desc": "+10% damage.",
           "mult": 0.1
         }
-      ]
+      ],
+      "attackSpeed": 6
     },
     {
       "slug": "ranger",
@@ -1683,7 +1718,8 @@ const CONTENT = {
           "aboveHpPct": 0.6,
           "mult": 0.2
         }
-      ]
+      ],
+      "attackSpeed": 18
     },
     {
       "slug": "mage",
@@ -1777,7 +1813,8 @@ const CONTENT = {
           "stat": "magicPower",
           "pct": 0.1
         }
-      ]
+      ],
+      "attackSpeed": -4
     },
     {
       "slug": "rogue",
@@ -1877,7 +1914,8 @@ const CONTENT = {
           "belowHpPct": 0.5,
           "mult": 0.25
         }
-      ]
+      ],
+      "attackSpeed": 22
     },
     {
       "slug": "paladin",
@@ -1984,7 +2022,8 @@ const CONTENT = {
           "pct": 0.2,
           "turns": 4
         }
-      ]
+      ],
+      "attackSpeed": 0
     },
     {
       "slug": "assassin",
@@ -2083,7 +2122,8 @@ const CONTENT = {
           "desc": "Your hits execute targets at or below 10% HP.",
           "finishBelowHpPct": 0.1
         }
-      ]
+      ],
+      "attackSpeed": 20
     },
     {
       "slug": "support",
@@ -2184,7 +2224,8 @@ const CONTENT = {
           "desc": "+20% healing.",
           "mult": 0.2
         }
-      ]
+      ],
+      "attackSpeed": -6
     },
     {
       "slug": "tank",
@@ -2291,7 +2332,8 @@ const CONTENT = {
           "desc": "Take 10% less damage (true damage excluded).",
           "mult": -0.1
         }
-      ]
+      ],
+      "attackSpeed": -12
     },
     {
       "slug": "tamer",
@@ -2361,7 +2403,8 @@ const CONTENT = {
       "tagline": "Beast Tamer",
       "lore": "A tamer fighting beside wild companions. Hunts with Beast Bite, endures with War Heal. Strength in the pack, never alone.",
       "petSlots": 3,
-      "petPowerMult": 2
+      "petPowerMult": 2,
+      "attackSpeed": 8
     },
     {
       "slug": "beastmaster",
@@ -2443,7 +2486,8 @@ const CONTENT = {
         "magicPower": 4
       },
       "petSlots": 3,
-      "petPowerMult": 2
+      "petPowerMult": 2,
+      "attackSpeed": 9
     },
     {
       "slug": "anima_lorde",
@@ -2528,7 +2572,8 @@ const CONTENT = {
         "magicPower": 5
       },
       "petSlots": 4,
-      "petPowerMult": 2
+      "petPowerMult": 2,
+      "attackSpeed": 12
     },
     {
       "slug": "gardener",
@@ -2609,7 +2654,8 @@ const CONTENT = {
           "pct": 0.5,
           "turns": 3
         }
-      ]
+      ],
+      "attackSpeed": 2
     },
     {
       "slug": "rootbinder",
@@ -2703,7 +2749,8 @@ const CONTENT = {
         "resistance": 5,
         "magicPower": 8,
         "healPower": 2
-      }
+      },
+      "attackSpeed": 14
     },
     {
       "slug": "lifeweaver",
@@ -2797,7 +2844,8 @@ const CONTENT = {
         "resistance": 6,
         "magicPower": 10,
         "healPower": 3
-      }
+      },
+      "attackSpeed": -2
     },
     {
       "slug": "moderator",
@@ -2872,7 +2920,8 @@ const CONTENT = {
       "critDamage": {
         "min": 40,
         "max": 80
-      }
+      },
+      "attackSpeed": 4
     },
     {
       "slug": "ultra_moderator",
@@ -2970,7 +3019,8 @@ const CONTENT = {
         "resistance": 15,
         "magicPower": 20,
         "healPower": 5
-      }
+      },
+      "attackSpeed": 6
     },
     {
       "slug": "tester",
@@ -3040,7 +3090,8 @@ const CONTENT = {
       "critDamage": {
         "min": 40,
         "max": 80
-      }
+      },
+      "attackSpeed": 10
     },
     {
       "slug": "warlord",
@@ -3119,7 +3170,8 @@ const CONTENT = {
         "mana": 10,
         "resistance": 6,
         "magicPower": 3
-      }
+      },
+      "attackSpeed": 2
     },
     {
       "slug": "warden",
@@ -3200,7 +3252,8 @@ const CONTENT = {
         "mana": 12,
         "resistance": 4,
         "magicPower": 4
-      }
+      },
+      "attackSpeed": 10
     },
     {
       "slug": "archmage",
@@ -3282,7 +3335,8 @@ const CONTENT = {
         "mana": 25,
         "resistance": 3,
         "magicPower": 10
-      }
+      },
+      "attackSpeed": 0
     },
     {
       "slug": "nightblade",
@@ -3363,7 +3417,8 @@ const CONTENT = {
         "mana": 10,
         "resistance": 3,
         "magicPower": 3
-      }
+      },
+      "attackSpeed": 24
     },
     {
       "slug": "crusader",
@@ -3445,7 +3500,8 @@ const CONTENT = {
         "resistance": 7,
         "magicPower": 5,
         "healPower": 1
-      }
+      },
+      "attackSpeed": -2
     },
     {
       "slug": "reaper",
@@ -3525,7 +3581,8 @@ const CONTENT = {
         "mana": 8,
         "resistance": 3,
         "magicPower": 3
-      }
+      },
+      "attackSpeed": 18
     },
     {
       "slug": "high_priest",
@@ -3607,7 +3664,8 @@ const CONTENT = {
         "resistance": 4,
         "magicPower": 7,
         "healPower": 3
-      }
+      },
+      "attackSpeed": -6
     },
     {
       "slug": "juggernaut",
@@ -3688,7 +3746,8 @@ const CONTENT = {
         "mana": 8,
         "resistance": 9,
         "magicPower": 2
-      }
+      },
+      "attackSpeed": -14
     },
     {
       "slug": "war_emperor",
@@ -3770,7 +3829,8 @@ const CONTENT = {
         "mana": 12,
         "resistance": 8,
         "magicPower": 4
-      }
+      },
+      "attackSpeed": 0
     },
     {
       "slug": "storm_warden",
@@ -3848,7 +3908,8 @@ const CONTENT = {
         "mana": 15,
         "resistance": 5,
         "magicPower": 5
-      }
+      },
+      "attackSpeed": 16
     },
     {
       "slug": "archon",
@@ -3926,7 +3987,8 @@ const CONTENT = {
         "mana": 30,
         "resistance": 4,
         "magicPower": 13
-      }
+      },
+      "attackSpeed": 4
     },
     {
       "slug": "shade_king",
@@ -4003,7 +4065,8 @@ const CONTENT = {
         "mana": 12,
         "resistance": 4,
         "magicPower": 4
-      }
+      },
+      "attackSpeed": 20
     },
     {
       "slug": "lightbringer",
@@ -4088,7 +4151,8 @@ const CONTENT = {
         "resistance": 9,
         "magicPower": 6,
         "healPower": 1
-      }
+      },
+      "attackSpeed": 0
     },
     {
       "slug": "death_lord",
@@ -4172,7 +4236,8 @@ const CONTENT = {
         "mana": 10,
         "resistance": 4,
         "magicPower": 4
-      }
+      },
+      "attackSpeed": 16
     },
     {
       "slug": "bloodspawn",
@@ -4272,7 +4337,8 @@ const CONTENT = {
         "requiredItemCount": 5,
         "requirementType": "level_and_item",
         "requiresVampire": true
-      }
+      },
+      "attackSpeed": 22
     },
     {
       "slug": "bloodlord",
@@ -4359,7 +4425,8 @@ const CONTENT = {
         "resistance": 5,
         "magicPower": 5,
         "healPower": 3
-      }
+      },
+      "attackSpeed": 14
     },
     {
       "slug": "gloomspawn",
@@ -4466,7 +4533,8 @@ const CONTENT = {
         "requiredItemCount": 5,
         "requirementType": "level_and_item",
         "requiresVampire": true
-      }
+      },
+      "attackSpeed": 8
     },
     {
       "slug": "sanguine_lord",
@@ -4553,7 +4621,8 @@ const CONTENT = {
         "resistance": 3,
         "magicPower": 14,
         "healPower": 4
-      }
+      },
+      "attackSpeed": 12
     },
     {
       "slug": "divine_saint",
@@ -4637,7 +4706,8 @@ const CONTENT = {
         "resistance": 5,
         "magicPower": 9,
         "healPower": 4
-      }
+      },
+      "attackSpeed": -4
     },
     {
       "slug": "colossus",
@@ -4722,7 +4792,8 @@ const CONTENT = {
         "mana": 10,
         "resistance": 11,
         "magicPower": 3
-      }
+      },
+      "attackSpeed": -16
     }
   ],
   "baseSkills": [
@@ -6546,7 +6617,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 6,
-        "speed": 1
+        "speed": 1,
+        "attackSpeed": 2
       },
       "image": "/images/items/rusty_sword.webp",
       "description": "+6 Attack, +1 Speed"
@@ -6613,7 +6685,8 @@ const CONTENT = {
         "wood": 8
       },
       "stats": {
-        "speed": 1
+        "speed": 1,
+        "attackSpeed": 1
       },
       "image": "/images/items/leather_boots.webp",
       "description": "+1 Speed"
@@ -6630,7 +6703,8 @@ const CONTENT = {
       },
       "stats": {
         "mana": 10,
-        "magicPower": 3
+        "magicPower": 3,
+        "attackSpeed": 2
       },
       "image": "/images/items/iron_amulet.webp",
       "description": "+10 Mana, +3 Magic Power"
@@ -6647,7 +6721,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 2,
-        "mana": 5
+        "mana": 5,
+        "attackSpeed": 1
       },
       "image": "/images/items/iron_ring.webp",
       "description": "+2 Attack, +5 Mana"
@@ -6663,7 +6738,8 @@ const CONTENT = {
       },
       "stats": {
         "mana": 20,
-        "manaRegen": 1
+        "manaRegen": 1,
+        "attackSpeed": 3
       },
       "image": "/images/items/mana_talisman.webp",
       "description": "+20 Mana, +1 Mana Regen"
@@ -6678,7 +6754,8 @@ const CONTENT = {
         "wood": 15
       },
       "stats": {
-        "attack": 8
+        "attack": 8,
+        "attackSpeed": 2
       },
       "image": "/images/items/battle_axe.webp",
       "description": "+8 Attack"
@@ -6693,7 +6770,8 @@ const CONTENT = {
         "wood": 20
       },
       "stats": {
-        "attack": 12
+        "attack": 12,
+        "attackSpeed": 2
       },
       "image": "/images/items/war_hammer.webp",
       "description": "+12 Attack"
@@ -6709,7 +6787,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 7,
-        "speed": 1
+        "speed": 1,
+        "attackSpeed": 2
       },
       "image": "/images/items/longbow.webp",
       "description": "+7 Attack, +1 Speed"
@@ -6725,7 +6804,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 5,
-        "speed": 2
+        "speed": 2,
+        "attackSpeed": 2
       },
       "image": "/images/items/shortbow.webp",
       "description": "+5 Attack, +2 Speed"
@@ -6740,7 +6820,8 @@ const CONTENT = {
         "wood": 15
       },
       "stats": {
-        "magicPower": 8
+        "magicPower": 8,
+        "attackSpeed": 2
       },
       "image": "/images/items/apprentice_staff.webp",
       "description": "+8 Magic Power"
@@ -6756,7 +6837,8 @@ const CONTENT = {
       },
       "stats": {
         "magicPower": 14,
-        "mana": 10
+        "mana": 10,
+        "attackSpeed": 3
       },
       "image": "/images/items/archon_staff.webp",
       "description": "+14 Magic Power, +10 Mana"
@@ -6772,7 +6854,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 5,
-        "speed": 2
+        "speed": 2,
+        "attackSpeed": 2
       },
       "image": "/images/items/dagger.webp",
       "description": "+5 Attack, +2 Speed"
@@ -6787,7 +6870,8 @@ const CONTENT = {
         "wood": 12
       },
       "stats": {
-        "attack": 7
+        "attack": 7,
+        "attackSpeed": 2
       },
       "image": "/images/items/poison_dagger.webp",
       "description": "+7 Attack"
@@ -6803,7 +6887,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 6,
-        "magicPower": 3
+        "magicPower": 3,
+        "attackSpeed": 2
       },
       "image": "/images/items/mace.webp",
       "description": "+6 Attack, +3 Magic Power"
@@ -6819,7 +6904,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 8,
-        "magicPower": 5
+        "magicPower": 5,
+        "attackSpeed": 3
       },
       "image": "/images/items/holy_sword.webp",
       "description": "+8 Attack, +5 Magic Power"
@@ -6834,7 +6920,8 @@ const CONTENT = {
         "wood": 22
       },
       "stats": {
-        "attack": 10
+        "attack": 10,
+        "attackSpeed": 3
       },
       "image": "/images/items/kris_blade.webp",
       "description": "+10 Attack"
@@ -6850,7 +6937,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 8,
-        "speed": 2
+        "speed": 2,
+        "attackSpeed": 3
       },
       "image": "/images/items/whisper_blade.webp",
       "description": "+8 Attack, +2 Speed"
@@ -6866,7 +6954,8 @@ const CONTENT = {
       },
       "stats": {
         "magicPower": 10,
-        "healPower": 2
+        "healPower": 2,
+        "attackSpeed": 3
       },
       "image": "/images/items/scepter.webp",
       "description": "+10 Magic Power, +2 Heal Power"
@@ -6882,7 +6971,8 @@ const CONTENT = {
       },
       "stats": {
         "magicPower": 12,
-        "healPower": 4
+        "healPower": 4,
+        "attackSpeed": 5
       },
       "image": "/images/items/cleric_staff.webp",
       "description": "+12 Magic Power, +4 Heal Power"
@@ -6898,7 +6988,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 11,
-        "maxHp": 20
+        "maxHp": 20,
+        "attackSpeed": 2
       },
       "image": "/images/items/maul.webp",
       "description": "+11 Attack, +20 Max HP"
@@ -6914,7 +7005,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 8,
-        "resistance": 5
+        "resistance": 5,
+        "attackSpeed": 3
       },
       "image": "/images/items/bulwark_hammer.webp",
       "description": "+8 Attack, +5 Resistance"
@@ -6930,7 +7022,8 @@ const CONTENT = {
         "wood": 10
       },
       "stats": {
-        "attack": 8
+        "attack": 8,
+        "attackSpeed": 2
       },
       "image": "/images/items/stone_ash_sword.webp",
       "description": "+8 Attack. A base for temple crafting."
@@ -7115,7 +7208,8 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 16
+        "attack": 16,
+        "attackSpeed": 3
       },
       "image": "/images/items/fire_ash_sword.webp",
       "craftOnly": true,
@@ -7131,7 +7225,8 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 28
+        "attack": 28,
+        "attackSpeed": 5
       },
       "image": "/images/items/molten_cleaver.webp",
       "craftOnly": true,
@@ -7148,7 +7243,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 18,
-        "resistance": 6
+        "resistance": 6,
+        "attackSpeed": 3
       },
       "image": "/images/items/frost_gladius.webp",
       "craftOnly": true,
@@ -7165,7 +7261,8 @@ const CONTENT = {
       },
       "stats": {
         "magicPower": 20,
-        "mana": 15
+        "mana": 15,
+        "attackSpeed": 3
       },
       "image": "/images/items/arcane_rod.webp",
       "craftOnly": true,
@@ -7183,7 +7280,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 18,
-        "speed": 3
+        "speed": 3,
+        "attackSpeed": 3
       },
       "image": "/images/items/shadow_knife.webp",
       "craftOnly": true,
@@ -7199,7 +7297,8 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 26
+        "attack": 26,
+        "attackSpeed": 7
       },
       "image": "/images/items/ember_sword.webp",
       "description": "+26 Attack. Found only in the deep ruins."
@@ -7215,7 +7314,8 @@ const CONTENT = {
       },
       "stats": {
         "magicPower": 30,
-        "healPower": 6
+        "healPower": 6,
+        "attackSpeed": 10
       },
       "image": "/images/items/phoenix_staff.webp",
       "description": "+30 Magic Power, +6 Heal Power."
@@ -7231,7 +7331,8 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 42
+        "attack": 42,
+        "attackSpeed": 13
       },
       "image": "/images/items/void_cleaver.webp",
       "description": "+42 Attack. The edge drinks the dark."
@@ -7312,7 +7413,8 @@ const CONTENT = {
         "wood": 10
       },
       "stats": {
-        "attack": 12
+        "attack": 12,
+        "attackSpeed": 2
       },
       "image": "/images/items/iron_greatsword.webp",
       "description": "+12 attack"
@@ -7327,7 +7429,8 @@ const CONTENT = {
         "wood": 10
       },
       "stats": {
-        "attack": 14
+        "attack": 14,
+        "attackSpeed": 2
       },
       "image": "/images/items/steel_blade.webp",
       "description": "+14 attack"
@@ -7344,7 +7447,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 16,
-        "speed": 1
+        "speed": 1,
+        "attackSpeed": 3
       },
       "image": "/images/items/ranger_bow.webp",
       "description": "+16 attack, +1 speed"
@@ -7360,7 +7464,8 @@ const CONTENT = {
       },
       "stats": {
         "magicPower": 16,
-        "mana": 12
+        "mana": 12,
+        "attackSpeed": 3
       },
       "image": "/images/items/arcane_scepter.webp",
       "description": "+16 magicPower, +12 mana"
@@ -7377,7 +7482,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 20,
-        "speed": 2
+        "speed": 2,
+        "attackSpeed": 5
       },
       "image": "/images/items/shadow_dagger.webp",
       "description": "+20 attack, +2 speed"
@@ -7394,7 +7500,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 22,
-        "speed": 1
+        "speed": 1,
+        "attackSpeed": 5
       },
       "image": "/images/items/dragon_spear.webp",
       "description": "+22 attack, +1 speed"
@@ -7409,7 +7516,8 @@ const CONTENT = {
         "wood": 60
       },
       "stats": {
-        "attack": 26
+        "attack": 26,
+        "attackSpeed": 7
       },
       "image": "/images/items/titan_hammer.webp",
       "description": "+26 attack"
@@ -7425,7 +7533,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 24,
-        "speed": 2
+        "speed": 2,
+        "attackSpeed": 7
       },
       "image": "/images/items/storm_bow.webp",
       "description": "+24 attack, +2 speed"
@@ -7442,7 +7551,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 32,
-        "speed": 1
+        "speed": 1,
+        "attackSpeed": 10
       },
       "image": "/images/items/void_blade.webp",
       "description": "+32 attack, +1 speed"
@@ -7458,7 +7568,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 46,
-        "maxHp": 20
+        "maxHp": 20,
+        "attackSpeed": 13
       },
       "image": "/images/items/world_breaker.webp",
       "description": "+46 attack, +20 Max HP"
@@ -7886,7 +7997,8 @@ const CONTENT = {
         "wood": 8
       },
       "stats": {
-        "speed": 1
+        "speed": 1,
+        "attackSpeed": 1
       },
       "image": "/images/items/worn_boots.webp",
       "description": "+1 speed"
@@ -7904,7 +8016,8 @@ const CONTENT = {
       "stats": {
         "maxHp": 20,
         "resistance": 4,
-        "speed": 1
+        "speed": 1,
+        "attackSpeed": 1
       },
       "image": "/images/items/iron_boots.webp",
       "description": "+20 maxHp, +4 resistance, +1 speed"
@@ -7921,7 +8034,8 @@ const CONTENT = {
       },
       "stats": {
         "maxHp": 20,
-        "speed": 2
+        "speed": 2,
+        "attackSpeed": 2
       },
       "image": "/images/items/ranger_boots.webp",
       "description": "+20 Max HP, +2 speed"
@@ -7937,7 +8051,8 @@ const CONTENT = {
       },
       "stats": {
         "mana": 12,
-        "magicPower": 6
+        "magicPower": 6,
+        "attackSpeed": 2
       },
       "image": "/images/items/sorcery_boots.webp",
       "description": "+12 mana, +6 magicPower"
@@ -7954,7 +8069,8 @@ const CONTENT = {
       "stats": {
         "maxHp": 40,
         "resistance": 8,
-        "speed": 1
+        "speed": 1,
+        "attackSpeed": 3
       },
       "image": "/images/items/knight_boots.webp",
       "description": "+40 maxHp, +8 resistance, +1 speed"
@@ -7972,7 +8088,8 @@ const CONTENT = {
       "stats": {
         "maxHp": 60,
         "resistance": 12,
-        "speed": 2
+        "speed": 2,
+        "attackSpeed": 4
       },
       "image": "/images/items/void_boots.webp",
       "description": "+60 maxHp, +12 resistance, +2 speed"
@@ -7988,7 +8105,8 @@ const CONTENT = {
       },
       "stats": {
         "mana": 8,
-        "magicPower": 4
+        "magicPower": 4,
+        "attackSpeed": 1
       },
       "image": "/images/items/copper_amulet.webp",
       "description": "+8 mana, +4 magicPower"
@@ -8004,7 +8122,8 @@ const CONTENT = {
       },
       "stats": {
         "mana": 14,
-        "magicPower": 7
+        "magicPower": 7,
+        "attackSpeed": 2
       },
       "image": "/images/items/silver_amulet.webp",
       "description": "+14 mana, +7 magicPower"
@@ -8021,7 +8140,8 @@ const CONTENT = {
       "stats": {
         "mana": 20,
         "magicPower": 12,
-        "healPower": 4
+        "healPower": 4,
+        "attackSpeed": 3
       },
       "image": "/images/items/ruby_amulet.webp",
       "description": "+20 mana, +12 magicPower, +4 healPower"
@@ -8038,7 +8158,8 @@ const CONTENT = {
       "stats": {
         "mana": 30,
         "magicPower": 18,
-        "manaRegen": 2
+        "manaRegen": 2,
+        "attackSpeed": 4
       },
       "image": "/images/items/sapphire_amulet.webp",
       "description": "+30 mana, +18 magicPower, +2 manaRegen"
@@ -8056,7 +8177,8 @@ const CONTENT = {
       "stats": {
         "mana": 40,
         "magicPower": 24,
-        "healPower": 8
+        "healPower": 8,
+        "attackSpeed": 6
       },
       "image": "/images/items/void_amulet.webp",
       "description": "+40 mana, +24 magicPower, +8 healPower"
@@ -8071,7 +8193,8 @@ const CONTENT = {
         "wood": 8
       },
       "stats": {
-        "attack": 3
+        "attack": 3,
+        "attackSpeed": 1
       },
       "image": "/images/items/copper_ring.webp",
       "description": "+3 attack"
@@ -8087,7 +8210,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 5,
-        "mana": 8
+        "mana": 8,
+        "attackSpeed": 2
       },
       "image": "/images/items/silver_ring.webp",
       "description": "+5 attack, +8 mana"
@@ -8103,7 +8227,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 8,
-        "critChance": 5
+        "critChance": 5,
+        "attackSpeed": 3
       },
       "image": "/images/items/ruby_ring.webp",
       "description": "+8 attack, +5 critChance"
@@ -8120,7 +8245,8 @@ const CONTENT = {
       "stats": {
         "attack": 12,
         "magicPower": 10,
-        "critChance": 7
+        "critChance": 7,
+        "attackSpeed": 4
       },
       "image": "/images/items/sapphire_ring.webp",
       "description": "+12 attack, +10 magicPower, +7 critChance"
@@ -8138,7 +8264,8 @@ const CONTENT = {
       "stats": {
         "attack": 16,
         "magicPower": 14,
-        "critDamage": 15
+        "critDamage": 15,
+        "attackSpeed": 6
       },
       "image": "/images/items/void_ring.webp",
       "description": "+16 attack, +14 magicPower, +15 critDamage"
@@ -8327,7 +8454,8 @@ const CONTENT = {
       },
       "stats": {
         "omnivamp": 5,
-        "attack": 4
+        "attack": 4,
+        "attackSpeed": 3
       },
       "image": "/images/items/vampiric_ring.webp",
       "description": "+5% Omnivamp, +4 Attack."
@@ -8343,7 +8471,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 24,
-        "omnivamp": 4
+        "omnivamp": 4,
+        "attackSpeed": 7
       },
       "image": "/images/items/crimson_blade.webp",
       "description": "+24 Attack, +4% Omnivamp."
@@ -8393,7 +8522,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 36,
-        "critChance": 5
+        "critChance": 5,
+        "attackSpeed": 7
       },
       "image": "/images/items/boss_weapon_ember.webp",
       "bossWeapon": true,
@@ -8410,7 +8540,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 36,
-        "resistance": 8
+        "resistance": 8,
+        "attackSpeed": 7
       },
       "image": "/images/items/boss_weapon_frost.webp",
       "bossWeapon": true,
@@ -8427,7 +8558,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 40,
-        "omnivamp": 4
+        "omnivamp": 4,
+        "attackSpeed": 10
       },
       "image": "/images/items/boss_weapon_void.webp",
       "bossWeapon": true,
@@ -8444,7 +8576,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 44,
-        "speed": 1
+        "speed": 1,
+        "attackSpeed": 10
       },
       "image": "/images/items/boss_weapon_storm.webp",
       "bossWeapon": true,
@@ -8461,7 +8594,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 48,
-        "critDamage": 15
+        "critDamage": 15,
+        "attackSpeed": 13
       },
       "image": "/images/items/boss_weapon_world.webp",
       "bossWeapon": true,
@@ -8564,7 +8698,8 @@ const CONTENT = {
       "rarity": "common",
       "slot": "weapon",
       "stats": {
-        "attack": 11
+        "attack": 11,
+        "attackSpeed": 2
       },
       "description": "A dependable oaken club.",
       "value": 25,
@@ -8588,7 +8723,8 @@ const CONTENT = {
       "rarity": "common",
       "slot": "ring",
       "stats": {
-        "resistance": 6
+        "resistance": 6,
+        "attackSpeed": 1
       },
       "description": "Carved from a dire wolf fang.",
       "value": 24,
@@ -8601,7 +8737,8 @@ const CONTENT = {
       "slot": "boots",
       "stats": {
         "maxHp": 25,
-        "speed": 1
+        "speed": 1,
+        "attackSpeed": 1
       },
       "description": "Worn soles, swift steps.",
       "value": 26,
@@ -8613,7 +8750,8 @@ const CONTENT = {
       "rarity": "uncommon",
       "slot": "weapon",
       "stats": {
-        "attack": 17
+        "attack": 17,
+        "attackSpeed": 3
       },
       "description": "A woodsman's heavy axe.",
       "value": 70,
@@ -8665,7 +8803,8 @@ const CONTENT = {
       "slot": "boots",
       "stats": {
         "maxHp": 50,
-        "resistance": 8
+        "resistance": 8,
+        "attackSpeed": 2
       },
       "description": "Still warm from the forge.",
       "value": 72,
@@ -8678,7 +8817,8 @@ const CONTENT = {
       "slot": "amulet",
       "stats": {
         "mana": 25,
-        "magicPower": 4
+        "magicPower": 4,
+        "attackSpeed": 2
       },
       "description": "Drinks in moonlight.",
       "value": 70,
@@ -8690,7 +8830,8 @@ const CONTENT = {
       "rarity": "uncommon",
       "slot": "ring",
       "stats": {
-        "attack": 6
+        "attack": 6,
+        "attackSpeed": 2
       },
       "description": "A coiled silver serpent.",
       "value": 66,
@@ -8702,7 +8843,8 @@ const CONTENT = {
       "rarity": "uncommon",
       "slot": "weapon",
       "stats": {
-        "magicPower": 18
+        "magicPower": 18,
+        "attackSpeed": 3
       },
       "description": "Heartwood humming with mana.",
       "value": 74,
@@ -8714,7 +8856,8 @@ const CONTENT = {
       "rarity": "rare",
       "slot": "weapon",
       "stats": {
-        "attack": 24
+        "attack": 24,
+        "attackSpeed": 5
       },
       "description": "Its edge never thaws.",
       "value": 200,
@@ -8768,7 +8911,8 @@ const CONTENT = {
       "slot": "amulet",
       "stats": {
         "attack": 14,
-        "speed": 2
+        "speed": 2,
+        "attackSpeed": 3
       },
       "description": "A bottled thunderstorm.",
       "value": 195,
@@ -8781,7 +8925,8 @@ const CONTENT = {
       "slot": "ring",
       "stats": {
         "resistance": 14,
-        "maxHp": 40
+        "maxHp": 40,
+        "attackSpeed": 3
       },
       "description": "Oath-bound silver.",
       "value": 188,
@@ -8794,7 +8939,8 @@ const CONTENT = {
       "slot": "weapon",
       "stats": {
         "attack": 22,
-        "speed": 1
+        "speed": 1,
+        "attackSpeed": 5
       },
       "description": "Runes guide every shaft.",
       "value": 205,
@@ -8807,7 +8953,8 @@ const CONTENT = {
       "rarity": "epic",
       "slot": "weapon",
       "stats": {
-        "attack": 34
+        "attack": 34,
+        "attackSpeed": 7
       },
       "description": "It hungers between swings.",
       "value": 500,
@@ -8845,7 +8992,8 @@ const CONTENT = {
       "rarity": "epic",
       "slot": "weapon",
       "stats": {
-        "magicPower": 38
+        "magicPower": 38,
+        "attackSpeed": 7
       },
       "description": "Points at clouds; clouds obey.",
       "value": 530,
@@ -8857,7 +9005,8 @@ const CONTENT = {
       "rarity": "legendary",
       "slot": "weapon",
       "stats": {
-        "attack": 48
+        "attack": 48,
+        "attackSpeed": 10
       },
       "description": "Ended a dynasty.",
       "value": 1200,
@@ -8882,7 +9031,8 @@ const CONTENT = {
       "rarity": "mythic",
       "slot": "weapon",
       "stats": {
-        "attack": 62
+        "attack": 62,
+        "attackSpeed": 13
       },
       "description": "The ground remembers it.",
       "value": 2500,
@@ -9142,7 +9292,8 @@ const CONTENT = {
         "wood": 60
       },
       "stats": {
-        "attack": 28
+        "attack": 28,
+        "attackSpeed": 7
       },
       "setId": "blood",
       "image": "/images/items/blood_blade.webp",
@@ -9159,7 +9310,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 18,
-        "speed": 2
+        "speed": 2,
+        "attackSpeed": 5
       },
       "setId": "blood",
       "image": "/images/items/blood_fang.webp",
@@ -9229,7 +9381,8 @@ const CONTENT = {
       "stats": {
         "maxHp": 45,
         "resistance": 10,
-        "speed": 2
+        "speed": 2,
+        "attackSpeed": 3
       },
       "setId": "blood",
       "image": "/images/items/blood_boots.webp",
@@ -9246,7 +9399,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 10,
-        "omnivamp": 5
+        "omnivamp": 5,
+        "attackSpeed": 4
       },
       "setId": "blood",
       "image": "/images/items/blood_ring.webp",
@@ -9264,7 +9418,8 @@ const CONTENT = {
       "stats": {
         "mana": 20,
         "magicPower": 10,
-        "omnivamp": 3
+        "omnivamp": 3,
+        "attackSpeed": 3
       },
       "setId": "blood",
       "image": "/images/items/blood_amulet.webp",
@@ -9297,7 +9452,8 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 8
+        "attack": 8,
+        "attackSpeed": 2
       },
       "travelOnly": true,
       "image": "/images/items/sword_duskwood.webp",
@@ -9313,7 +9469,8 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 8
+        "attack": 8,
+        "attackSpeed": 2
       },
       "travelOnly": true,
       "image": "/images/items/sword_reed.webp",
@@ -9329,7 +9486,8 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 8
+        "attack": 8,
+        "attackSpeed": 2
       },
       "travelOnly": true,
       "image": "/images/items/sword_ironleaf.webp",
@@ -9345,7 +9503,8 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 8
+        "attack": 8,
+        "attackSpeed": 2
       },
       "travelOnly": true,
       "image": "/images/items/sword_patrol.webp",
@@ -9361,7 +9520,8 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 8
+        "attack": 8,
+        "attackSpeed": 2
       },
       "travelOnly": true,
       "image": "/images/items/sword_tin.webp",
@@ -9377,7 +9537,8 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 8
+        "attack": 8,
+        "attackSpeed": 2
       },
       "travelOnly": true,
       "image": "/images/items/sword_militia.webp",
@@ -9393,7 +9554,8 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 8
+        "attack": 8,
+        "attackSpeed": 2
       },
       "travelOnly": true,
       "image": "/images/items/sword_boar.webp",
@@ -9409,7 +9571,8 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 8
+        "attack": 8,
+        "attackSpeed": 2
       },
       "travelOnly": true,
       "image": "/images/items/sword_salt.webp",
@@ -9425,7 +9588,8 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 8
+        "attack": 8,
+        "attackSpeed": 2
       },
       "travelOnly": true,
       "image": "/images/items/sword_coal.webp",
@@ -9441,7 +9605,8 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 12
+        "attack": 12,
+        "attackSpeed": 3
       },
       "travelOnly": true,
       "image": "/images/items/sword_bronzeguard.webp",
@@ -9457,7 +9622,8 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 12
+        "attack": 12,
+        "attackSpeed": 3
       },
       "travelOnly": true,
       "image": "/images/items/sword_mossbrand.webp",
@@ -9473,7 +9639,8 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 12
+        "attack": 12,
+        "attackSpeed": 3
       },
       "travelOnly": true,
       "image": "/images/items/sword_tide.webp",
@@ -9489,7 +9656,8 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 12
+        "attack": 12,
+        "attackSpeed": 3
       },
       "travelOnly": true,
       "image": "/images/items/sword_ashen.webp",
@@ -9505,7 +9673,8 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 12
+        "attack": 12,
+        "attackSpeed": 3
       },
       "travelOnly": true,
       "image": "/images/items/sword_watch.webp",
@@ -9521,7 +9690,8 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 12
+        "attack": 12,
+        "attackSpeed": 3
       },
       "travelOnly": true,
       "image": "/images/items/sword_glade.webp",
@@ -9537,7 +9707,8 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 12
+        "attack": 12,
+        "attackSpeed": 3
       },
       "travelOnly": true,
       "image": "/images/items/sword_emberwood.webp",
@@ -9553,7 +9724,8 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 12
+        "attack": 12,
+        "attackSpeed": 3
       },
       "travelOnly": true,
       "image": "/images/items/sword_frostpin.webp",
@@ -9569,7 +9741,8 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 12
+        "attack": 12,
+        "attackSpeed": 3
       },
       "travelOnly": true,
       "image": "/images/items/sword_mason.webp",
@@ -9586,7 +9759,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 18,
-        "critChance": 2
+        "critChance": 2,
+        "attackSpeed": 5
       },
       "travelOnly": true,
       "image": "/images/items/sword_stormhilt.webp",
@@ -9603,7 +9777,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 18,
-        "critChance": 2
+        "critChance": 2,
+        "attackSpeed": 5
       },
       "travelOnly": true,
       "image": "/images/items/sword_runeblade.webp",
@@ -9620,7 +9795,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 18,
-        "critChance": 2
+        "critChance": 2,
+        "attackSpeed": 5
       },
       "travelOnly": true,
       "image": "/images/items/sword_glacier.webp",
@@ -9637,7 +9813,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 18,
-        "critChance": 2
+        "critChance": 2,
+        "attackSpeed": 5
       },
       "travelOnly": true,
       "image": "/images/items/sword_venom.webp",
@@ -9654,7 +9831,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 18,
-        "critChance": 2
+        "critChance": 2,
+        "attackSpeed": 5
       },
       "travelOnly": true,
       "image": "/images/items/sword_brass.webp",
@@ -9671,7 +9849,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 18,
-        "critChance": 2
+        "critChance": 2,
+        "attackSpeed": 5
       },
       "travelOnly": true,
       "image": "/images/items/sword_shadow.webp",
@@ -9688,7 +9867,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 18,
-        "critChance": 2
+        "critChance": 2,
+        "attackSpeed": 5
       },
       "travelOnly": true,
       "image": "/images/items/sword_coral.webp",
@@ -9705,7 +9885,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 18,
-        "critChance": 2
+        "critChance": 2,
+        "attackSpeed": 5
       },
       "travelOnly": true,
       "image": "/images/items/sword_grave.webp",
@@ -9722,7 +9903,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 18,
-        "critChance": 2
+        "critChance": 2,
+        "attackSpeed": 5
       },
       "travelOnly": true,
       "image": "/images/items/sword_sun.webp",
@@ -9739,7 +9921,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 27,
-        "critChance": 4
+        "critChance": 4,
+        "attackSpeed": 7
       },
       "travelOnly": true,
       "image": "/images/items/sword_emberforged.webp",
@@ -9756,7 +9939,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 27,
-        "critChance": 4
+        "critChance": 4,
+        "attackSpeed": 7
       },
       "travelOnly": true,
       "image": "/images/items/sword_glacial.webp",
@@ -9773,7 +9957,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 27,
-        "critChance": 4
+        "critChance": 4,
+        "attackSpeed": 7
       },
       "travelOnly": true,
       "image": "/images/items/sword_thunder.webp",
@@ -9790,7 +9975,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 27,
-        "critChance": 4
+        "critChance": 4,
+        "attackSpeed": 7
       },
       "travelOnly": true,
       "image": "/images/items/sword_crimson.webp",
@@ -9807,7 +9993,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 27,
-        "critChance": 4
+        "critChance": 4,
+        "attackSpeed": 7
       },
       "travelOnly": true,
       "image": "/images/items/sword_voidsteel.webp",
@@ -9824,7 +10011,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 27,
-        "critChance": 4
+        "critChance": 4,
+        "attackSpeed": 7
       },
       "travelOnly": true,
       "image": "/images/items/sword_seraph.webp",
@@ -9841,7 +10029,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 27,
-        "critChance": 4
+        "critChance": 4,
+        "attackSpeed": 7
       },
       "travelOnly": true,
       "image": "/images/items/sword_nightbloom.webp",
@@ -9858,7 +10047,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 27,
-        "critChance": 4
+        "critChance": 4,
+        "attackSpeed": 7
       },
       "travelOnly": true,
       "image": "/images/items/sword_tidecaller.webp",
@@ -9875,7 +10065,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 27,
-        "critChance": 4
+        "critChance": 4,
+        "attackSpeed": 7
       },
       "travelOnly": true,
       "image": "/images/items/sword_runic.webp",
@@ -9893,7 +10084,8 @@ const CONTENT = {
       "stats": {
         "attack": 38,
         "critChance": 6,
-        "speed": 2
+        "speed": 2,
+        "attackSpeed": 10
       },
       "travelOnly": true,
       "image": "/images/items/sword_dragonfang.webp",
@@ -9911,7 +10103,8 @@ const CONTENT = {
       "stats": {
         "attack": 38,
         "critChance": 6,
-        "speed": 2
+        "speed": 2,
+        "attackSpeed": 10
       },
       "travelOnly": true,
       "image": "/images/items/sword_phoenix.webp",
@@ -9929,7 +10122,8 @@ const CONTENT = {
       "stats": {
         "attack": 38,
         "critChance": 6,
-        "speed": 2
+        "speed": 2,
+        "attackSpeed": 10
       },
       "travelOnly": true,
       "image": "/images/items/sword_worldtree.webp",
@@ -9948,7 +10142,8 @@ const CONTENT = {
         "attack": 52,
         "critChance": 8,
         "speed": 3,
-        "omnivamp": 4
+        "omnivamp": 4,
+        "attackSpeed": 13
       },
       "travelOnly": true,
       "image": "/images/items/sword_voidheart.webp",
@@ -9967,7 +10162,8 @@ const CONTENT = {
         "attack": 52,
         "critChance": 8,
         "speed": 3,
-        "omnivamp": 4
+        "omnivamp": 4,
+        "attackSpeed": 13
       },
       "travelOnly": true,
       "image": "/images/items/sword_astral.webp",
@@ -9986,7 +10182,8 @@ const CONTENT = {
         "attack": 52,
         "critChance": 8,
         "speed": 3,
-        "omnivamp": 4
+        "omnivamp": 4,
+        "attackSpeed": 13
       },
       "travelOnly": true,
       "image": "/images/items/sword_bloodmoon.webp",
@@ -10005,7 +10202,8 @@ const CONTENT = {
         "attack": 70,
         "critChance": 10,
         "speed": 4,
-        "omnivamp": 6
+        "omnivamp": 6,
+        "attackSpeed": 16
       },
       "travelOnly": true,
       "image": "/images/items/sword_setra.webp",
@@ -10024,7 +10222,8 @@ const CONTENT = {
         "attack": 70,
         "critChance": 10,
         "speed": 4,
-        "omnivamp": 6
+        "omnivamp": 6,
+        "attackSpeed": 16
       },
       "travelOnly": true,
       "image": "/images/items/sword_firstborn.webp",
@@ -10043,7 +10242,8 @@ const CONTENT = {
         "attack": 70,
         "critChance": 10,
         "speed": 4,
-        "omnivamp": 6
+        "omnivamp": 6,
+        "attackSpeed": 16
       },
       "travelOnly": true,
       "image": "/images/items/sword_worldheart.webp",
@@ -10115,7 +10315,8 @@ const CONTENT = {
       },
       "stats": {
         "maxHp": 32,
-        "resistance": 5
+        "resistance": 5,
+        "attackSpeed": 1
       },
       "travelOnly": true,
       "image": "/images/items/duskhide_boots.webp",
@@ -10132,7 +10333,8 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 8
+        "attack": 8,
+        "attackSpeed": 2
       },
       "travelOnly": true,
       "image": "/images/items/duskhide_blade.webp",
@@ -10204,7 +10406,8 @@ const CONTENT = {
       },
       "stats": {
         "maxHp": 50,
-        "resistance": 7
+        "resistance": 7,
+        "attackSpeed": 2
       },
       "travelOnly": true,
       "image": "/images/items/bronzeforge_boots.webp",
@@ -10221,7 +10424,8 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 12
+        "attack": 12,
+        "attackSpeed": 3
       },
       "travelOnly": true,
       "image": "/images/items/bronzeforge_blade.webp",
@@ -10293,7 +10497,8 @@ const CONTENT = {
       },
       "stats": {
         "maxHp": 50,
-        "resistance": 7
+        "resistance": 7,
+        "attackSpeed": 2
       },
       "travelOnly": true,
       "image": "/images/items/mosswarden_boots.webp",
@@ -10310,7 +10515,8 @@ const CONTENT = {
         "wood": 0
       },
       "stats": {
-        "attack": 12
+        "attack": 12,
+        "attackSpeed": 3
       },
       "travelOnly": true,
       "image": "/images/items/mosswarden_blade.webp",
@@ -10382,7 +10588,8 @@ const CONTENT = {
       },
       "stats": {
         "maxHp": 77,
-        "resistance": 12
+        "resistance": 12,
+        "attackSpeed": 3
       },
       "travelOnly": true,
       "image": "/images/items/stormtouched_boots.webp",
@@ -10400,7 +10607,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 18,
-        "critChance": 2
+        "critChance": 2,
+        "attackSpeed": 5
       },
       "travelOnly": true,
       "image": "/images/items/stormtouched_blade.webp",
@@ -10472,7 +10680,8 @@ const CONTENT = {
       },
       "stats": {
         "maxHp": 77,
-        "resistance": 12
+        "resistance": 12,
+        "attackSpeed": 3
       },
       "travelOnly": true,
       "image": "/images/items/runebound_boots.webp",
@@ -10490,7 +10699,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 18,
-        "critChance": 2
+        "critChance": 2,
+        "attackSpeed": 5
       },
       "travelOnly": true,
       "image": "/images/items/runebound_blade.webp",
@@ -10562,7 +10772,8 @@ const CONTENT = {
       },
       "stats": {
         "maxHp": 117,
-        "resistance": 18
+        "resistance": 18,
+        "attackSpeed": 4
       },
       "travelOnly": true,
       "image": "/images/items/emberforged_boots.webp",
@@ -10580,7 +10791,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 27,
-        "critChance": 4
+        "critChance": 4,
+        "attackSpeed": 7
       },
       "travelOnly": true,
       "image": "/images/items/emberforged_blade.webp",
@@ -10652,7 +10864,8 @@ const CONTENT = {
       },
       "stats": {
         "maxHp": 117,
-        "resistance": 18
+        "resistance": 18,
+        "attackSpeed": 4
       },
       "travelOnly": true,
       "image": "/images/items/frostbound_boots.webp",
@@ -10670,7 +10883,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 27,
-        "critChance": 4
+        "critChance": 4,
+        "attackSpeed": 7
       },
       "travelOnly": true,
       "image": "/images/items/frostbound_blade.webp",
@@ -10742,7 +10956,8 @@ const CONTENT = {
       },
       "stats": {
         "maxHp": 171,
-        "resistance": 25
+        "resistance": 25,
+        "attackSpeed": 6
       },
       "travelOnly": true,
       "image": "/images/items/dragonblood_boots.webp",
@@ -10761,7 +10976,8 @@ const CONTENT = {
       "stats": {
         "attack": 38,
         "critChance": 6,
-        "speed": 2
+        "speed": 2,
+        "attackSpeed": 10
       },
       "travelOnly": true,
       "image": "/images/items/dragonblood_blade.webp",
@@ -10833,7 +11049,8 @@ const CONTENT = {
       },
       "stats": {
         "maxHp": 234,
-        "resistance": 34
+        "resistance": 34,
+        "attackSpeed": 8
       },
       "travelOnly": true,
       "image": "/images/items/voidweave_boots.webp",
@@ -10853,7 +11070,8 @@ const CONTENT = {
         "attack": 52,
         "critChance": 8,
         "speed": 3,
-        "omnivamp": 4
+        "omnivamp": 4,
+        "attackSpeed": 13
       },
       "travelOnly": true,
       "image": "/images/items/voidweave_blade.webp",
@@ -10925,7 +11143,8 @@ const CONTENT = {
       },
       "stats": {
         "maxHp": 324,
-        "resistance": 47
+        "resistance": 47,
+        "attackSpeed": 10
       },
       "travelOnly": true,
       "image": "/images/items/setras_chosen_boots.webp",
@@ -10945,7 +11164,8 @@ const CONTENT = {
         "attack": 70,
         "critChance": 10,
         "speed": 4,
-        "omnivamp": 6
+        "omnivamp": 6,
+        "attackSpeed": 16
       },
       "travelOnly": true,
       "image": "/images/items/setras_chosen_blade.webp",
@@ -10964,7 +11184,8 @@ const CONTENT = {
       "stats": {
         "magicPower": 16,
         "healPower": 8,
-        "mana": 360
+        "mana": 360,
+        "attackSpeed": 10
       },
       "travelOnly": true,
       "image": "/images/items/setras_chosen_amulet.webp",
@@ -10982,7 +11203,8 @@ const CONTENT = {
       },
       "stats": {
         "attack": 28,
-        "critChance": 10
+        "critChance": 10,
+        "attackSpeed": 10
       },
       "travelOnly": true,
       "image": "/images/items/setras_chosen_ring.webp",
@@ -17436,7 +17658,9 @@ const CONTENT = {
       "name": "Human",
       "desc": "Adaptable and ambitious. +10% gold from victories.",
       "chance": 10,
-      "stats": {},
+      "stats": {
+        "attackSpeed": 3
+      },
       "passives": [
         {
           "kind": "victoryGold",
@@ -17454,7 +17678,8 @@ const CONTENT = {
       "chance": 10,
       "stats": {
         "maxMana": 12,
-        "speed": 1
+        "speed": 1,
+        "attackSpeed": 6
       },
       "passives": []
     },
@@ -17466,7 +17691,8 @@ const CONTENT = {
       "chance": 10,
       "stats": {
         "maxHp": 30,
-        "resistance": 6
+        "resistance": 6,
+        "attackSpeed": -3
       },
       "passives": []
     },
@@ -17477,7 +17703,8 @@ const CONTENT = {
       "desc": "Brutal and strong. +6 attack.",
       "chance": 10,
       "stats": {
-        "attack": 6
+        "attack": 6,
+        "attackSpeed": 2
       },
       "passives": []
     },
@@ -17489,7 +17716,8 @@ const CONTENT = {
       "chance": 8.75,
       "stats": {
         "speed": 2,
-        "attack": 3
+        "attack": 3,
+        "attackSpeed": 7
       },
       "passives": []
     },
@@ -17499,7 +17727,9 @@ const CONTENT = {
       "name": "Wyvernkin",
       "desc": "Sky hunters. 5% dodge chance.",
       "chance": 8.75,
-      "stats": {},
+      "stats": {
+        "attackSpeed": 4
+      },
       "passives": [
         {
           "kind": "dodge",
@@ -17516,7 +17746,8 @@ const CONTENT = {
       "desc": "Ancient magic in the blood. +8 magic power.",
       "chance": 8.75,
       "stats": {
-        "magicPower": 8
+        "magicPower": 8,
+        "attackSpeed": 5
       },
       "passives": []
     },
@@ -17527,7 +17758,8 @@ const CONTENT = {
       "desc": "A gaze of stone. Reflects 10% damage, +4 resistance.",
       "chance": 8.75,
       "stats": {
-        "resistance": 4
+        "resistance": 4,
+        "attackSpeed": 1
       },
       "passives": [
         {
@@ -17544,7 +17776,9 @@ const CONTENT = {
       "name": "Demonblood",
       "desc": "Burning heritage. +15% damage, but takes 30% more holy damage.",
       "chance": 7,
-      "stats": {},
+      "stats": {
+        "attackSpeed": 3
+      },
       "passives": [
         {
           "kind": "damageBonus",
@@ -17567,7 +17801,9 @@ const CONTENT = {
       "name": "Lightborn",
       "desc": "Blessed radiance. +15% healing, but takes 30% more shadow damage.",
       "chance": 7,
-      "stats": {},
+      "stats": {
+        "attackSpeed": 0
+      },
       "passives": [
         {
           "kind": "healBonus",
@@ -17590,7 +17826,9 @@ const CONTENT = {
       "name": "Voidborn",
       "desc": "Touched by the void. 8% dodge, but takes 20% more holy damage.",
       "chance": 7,
-      "stats": {},
+      "stats": {
+        "attackSpeed": 2
+      },
       "passives": [
         {
           "kind": "dodge",
@@ -17614,7 +17852,9 @@ const CONTENT = {
       "name": "Daemonkin",
       "desc": "Pure demon royalty. +20% damage and +10% lifesteal.",
       "chance": 1,
-      "stats": {},
+      "stats": {
+        "attackSpeed": 2
+      },
       "passives": [
         {
           "kind": "damageBonus",
@@ -17637,7 +17877,9 @@ const CONTENT = {
       "name": "Dragonborn",
       "desc": "Scales of the wyrms. Take 15% less damage.",
       "chance": 1,
-      "stats": {},
+      "stats": {
+        "attackSpeed": 1
+      },
       "passives": [
         {
           "kind": "damageTaken",
@@ -17654,7 +17896,9 @@ const CONTENT = {
       "name": "Arch-Vampyr",
       "desc": "Ancient predator. Heal 12% of all damage dealt.",
       "chance": 1,
-      "stats": {},
+      "stats": {
+        "attackSpeed": 5
+      },
       "passives": [
         {
           "kind": "lifesteal",
@@ -17671,7 +17915,9 @@ const CONTENT = {
       "name": "Archangel",
       "desc": "Celestial guardian. +25% healing and start combat with a 10% shield (3 turns).",
       "chance": 1,
-      "stats": {},
+      "stats": {
+        "attackSpeed": 0
+      },
       "passives": [
         {
           "kind": "healBonus",
@@ -17774,7 +18020,3291 @@ const CONTENT = {
     "plant",
     "slime",
     "spirit"
-  ]
+  ],
+  "arpgSkills": {
+    "warrior": {
+      "atkSpd": 6,
+      "auto": {
+        "element": "physical"
+      },
+      "q": {
+        "name": "Cleaving Arc",
+        "element": "physical",
+        "kind": "arc",
+        "cd": 4.5,
+        "power": 1.7,
+        "color": "#9fd8ff",
+        "desc": "",
+        "radius": 100,
+        "arc": 1.1
+      },
+      "e": {
+        "name": "Swordstorm",
+        "element": "physical",
+        "kind": "swing",
+        "cd": 10,
+        "power": 0.62,
+        "color": "#9fd8ff",
+        "desc": "",
+        "radius": 122,
+        "hits": 3,
+        "interval": 0.2,
+        "arc": 1.65,
+        "status": {
+          "type": "bleed",
+          "duration": 2,
+          "dps": 8
+        }
+      },
+      "r": {
+        "name": "Blade Tempest",
+        "element": "physical",
+        "kind": "orbit",
+        "cd": 16,
+        "power": 2.7,
+        "color": "#9fd8ff",
+        "desc": "",
+        "radius": 120,
+        "duration": 3.4,
+        "tick": 0.35,
+        "count": 8,
+        "speed": 4.4
+      }
+    },
+    "ranger": {
+      "atkSpd": 18,
+      "auto": {
+        "element": "physical"
+      },
+      "q": {
+        "name": "Triple Shot",
+        "element": "physical",
+        "kind": "fan",
+        "cd": 4,
+        "power": 0.9,
+        "color": "#9fd8ff",
+        "desc": "",
+        "count": 3,
+        "spread": 0.2,
+        "speed": 620,
+        "radius": 7
+      },
+      "e": {
+        "name": "Piercing Bolt",
+        "element": "physical",
+        "kind": "beam",
+        "cd": 8,
+        "power": 2,
+        "color": "#9fd8ff",
+        "desc": "",
+        "range": 300,
+        "width": 22
+      },
+      "r": {
+        "name": "Rain of Arrows",
+        "element": "physical",
+        "kind": "barrage",
+        "cd": 15,
+        "power": 2.2,
+        "color": "#9fd8ff",
+        "desc": "",
+        "count": 16,
+        "interval": 0.055,
+        "speed": 900,
+        "radius": 6,
+        "spread": 0.13
+      }
+    },
+    "mage": {
+      "atkSpd": -4,
+      "auto": {
+        "element": "arcane",
+        "magic": true
+      },
+      "q": {
+        "name": "Arcane Rift",
+        "element": "arcane",
+        "kind": "chain",
+        "cd": 4.5,
+        "power": 1,
+        "color": "#c77dff",
+        "desc": "",
+        "radius": 330,
+        "jumps": 4,
+        "chainRange": 205,
+        "status": {
+          "type": "shock",
+          "duration": 2,
+          "dps": 7
+        }
+      },
+      "e": {
+        "name": "Frost Vortex",
+        "element": "frost",
+        "kind": "vortex",
+        "cd": 9,
+        "power": 1.15,
+        "color": "#8fe4ff",
+        "desc": "",
+        "radius": 132,
+        "duration": 2.8,
+        "tick": 0.35,
+        "pull": 135,
+        "status": {
+          "type": "freeze",
+          "duration": 1.3
+        },
+        "range": 320,
+        "knockback": 130
+      },
+      "r": {
+        "name": "Meteor Storm",
+        "element": "fire",
+        "kind": "meteor",
+        "cd": 17,
+        "power": 3,
+        "color": "#ff8a65",
+        "desc": "",
+        "radius": 148,
+        "delay": 0.35,
+        "count": 3,
+        "stagger": 0.16,
+        "spreadRadius": 120,
+        "status": {
+          "type": "burn",
+          "duration": 3,
+          "dps": 18
+        },
+        "range": 340
+      }
+    },
+    "rogue": {
+      "atkSpd": 22,
+      "auto": {
+        "element": "physical"
+      },
+      "q": {
+        "name": "Fan of Knives",
+        "element": "shadow",
+        "kind": "fan",
+        "cd": 4,
+        "power": 0.8,
+        "color": "#b388ff",
+        "desc": "",
+        "count": 5,
+        "spread": 0.16,
+        "speed": 720,
+        "radius": 6
+      },
+      "e": {
+        "name": "Smoke Bomb",
+        "element": "shadow",
+        "kind": "ground",
+        "cd": 9,
+        "power": 0.7,
+        "color": "#b388ff",
+        "desc": "",
+        "radius": 92,
+        "duration": 2.8,
+        "tick": 0.45,
+        "status": {
+          "type": "slow",
+          "duration": 2.2,
+          "slow": 0.55
+        },
+        "dot": 8
+      },
+      "r": {
+        "name": "Shadow Dance",
+        "element": "shadow",
+        "kind": "orbit",
+        "cd": 15,
+        "power": 2.6,
+        "color": "#b388ff",
+        "desc": "",
+        "radius": 118,
+        "duration": 3.6,
+        "tick": 0.28,
+        "count": 10,
+        "speed": 5.2,
+        "status": {
+          "type": "bleed",
+          "duration": 2.5,
+          "dps": 9
+        }
+      }
+    },
+    "paladin": {
+      "atkSpd": 0,
+      "auto": {
+        "element": "holy"
+      },
+      "q": {
+        "name": "Dawn Strike",
+        "element": "holy",
+        "kind": "arc",
+        "cd": 4.5,
+        "power": 1.7,
+        "color": "#ffe082",
+        "desc": "",
+        "radius": 100,
+        "arc": 1
+      },
+      "e": {
+        "name": "Aegis of Dawn",
+        "element": "holy",
+        "kind": "shield",
+        "cd": 10,
+        "power": 0,
+        "color": "#ffe082",
+        "desc": "",
+        "shieldPct": 28,
+        "duration": 5
+      },
+      "r": {
+        "name": "Judgment",
+        "element": "holy",
+        "kind": "meteor",
+        "cd": 16,
+        "power": 2.9,
+        "color": "#ffe082",
+        "desc": "",
+        "radius": 135,
+        "delay": 0.4,
+        "status": {
+          "type": "stun",
+          "duration": 0.9
+        },
+        "range": 340
+      }
+    },
+    "assassin": {
+      "atkSpd": 20,
+      "auto": {
+        "element": "physical"
+      },
+      "q": {
+        "name": "Throat Cut",
+        "element": "physical",
+        "kind": "arc",
+        "cd": 3.5,
+        "power": 1.9,
+        "color": "#9fd8ff",
+        "desc": "",
+        "radius": 85,
+        "arc": 0.8
+      },
+      "e": {
+        "name": "Blood Mark",
+        "element": "blood",
+        "kind": "beam",
+        "cd": 7,
+        "power": 2.1,
+        "color": "#ff5370",
+        "desc": "",
+        "range": 210,
+        "width": 26,
+        "status": {
+          "type": "bleed",
+          "duration": 3,
+          "dps": 12
+        }
+      },
+      "r": {
+        "name": "Crimson Reaping",
+        "element": "blood",
+        "kind": "teleport",
+        "cd": 15,
+        "power": 2.9,
+        "color": "#ff5370",
+        "desc": "",
+        "range": 200,
+        "radius": 120,
+        "status": {
+          "type": "bleed",
+          "duration": 4,
+          "dps": 18
+        }
+      }
+    },
+    "support": {
+      "atkSpd": -6,
+      "auto": {
+        "element": "holy",
+        "magic": true
+      },
+      "q": {
+        "name": "Holy Bolt",
+        "element": "holy",
+        "kind": "projectile",
+        "cd": 3,
+        "power": 1.2,
+        "color": "#ffe082",
+        "desc": "",
+        "speed": 600,
+        "radius": 9
+      },
+      "e": {
+        "name": "Sanctuary",
+        "element": "holy",
+        "kind": "shield",
+        "cd": 10,
+        "power": 0,
+        "color": "#ffe082",
+        "desc": "",
+        "shieldPct": 24,
+        "duration": 5,
+        "healPct": 8
+      },
+      "r": {
+        "name": "Radiant Chorus",
+        "element": "holy",
+        "kind": "heal",
+        "cd": 16,
+        "power": 0,
+        "color": "#ffe082",
+        "desc": "",
+        "healPct": 35,
+        "radius": 155
+      }
+    },
+    "tank": {
+      "atkSpd": -12,
+      "auto": {
+        "element": "physical"
+      },
+      "q": {
+        "name": "Shield Bash",
+        "element": "physical",
+        "kind": "arc",
+        "cd": 4,
+        "power": 1.4,
+        "color": "#9fd8ff",
+        "desc": "",
+        "radius": 85,
+        "arc": 0.9,
+        "knockback": 120,
+        "status": {
+          "type": "stun",
+          "duration": 0.5
+        }
+      },
+      "e": {
+        "name": "Iron Bulwark",
+        "element": "earth",
+        "kind": "shield",
+        "cd": 11,
+        "power": 0,
+        "color": "#c9a227",
+        "desc": "",
+        "shieldPct": 35,
+        "duration": 5
+      },
+      "r": {
+        "name": "Shockwave",
+        "element": "earth",
+        "kind": "quake",
+        "cd": 16,
+        "power": 2.5,
+        "color": "#c9a227",
+        "desc": "",
+        "radius": 150,
+        "pulses": 3,
+        "interval": 0.22,
+        "knockback": 200
+      }
+    },
+    "tamer": {
+      "atkSpd": 8,
+      "auto": {
+        "element": "nature"
+      },
+      "q": {
+        "name": "Beast Fang",
+        "element": "nature",
+        "kind": "projectile",
+        "cd": 3.5,
+        "power": 1.3,
+        "color": "#9ccc65",
+        "desc": "",
+        "speed": 640,
+        "radius": 9,
+        "pet": true
+      },
+      "e": {
+        "name": "Spirit Howl",
+        "element": "nature",
+        "kind": "nova",
+        "cd": 8,
+        "power": 1.5,
+        "color": "#9ccc65",
+        "desc": "",
+        "radius": 125,
+        "status": {
+          "type": "slow",
+          "duration": 2.2,
+          "slow": 0.55
+        },
+        "pet": true
+      },
+      "r": {
+        "name": "Stampede",
+        "element": "nature",
+        "kind": "aoe",
+        "cd": 16,
+        "power": 2.7,
+        "color": "#9ccc65",
+        "desc": "",
+        "radius": 145,
+        "offset": 40,
+        "knockback": 160,
+        "pet": true
+      }
+    },
+    "gardener": {
+      "atkSpd": 2,
+      "auto": {
+        "element": "nature"
+      },
+      "q": {
+        "name": "Thorn Volley",
+        "element": "nature",
+        "kind": "fan",
+        "cd": 4,
+        "power": 0.8,
+        "color": "#9ccc65",
+        "desc": "",
+        "count": 4,
+        "spread": 0.2,
+        "speed": 620,
+        "radius": 7
+      },
+      "e": {
+        "name": "Entangling Roots",
+        "element": "nature",
+        "kind": "ground",
+        "cd": 9,
+        "power": 0.9,
+        "color": "#9ccc65",
+        "desc": "",
+        "radius": 78,
+        "duration": 3,
+        "tick": 0.5,
+        "status": {
+          "type": "root",
+          "duration": 2.2
+        },
+        "dot": 10,
+        "range": 340
+      },
+      "r": {
+        "name": "Bloom",
+        "element": "nature",
+        "kind": "ground",
+        "cd": 15,
+        "power": 2,
+        "color": "#9ccc65",
+        "desc": "",
+        "radius": 130,
+        "duration": 4,
+        "tick": 0.5,
+        "status": {
+          "type": "root",
+          "duration": 1.2
+        },
+        "dot": 12,
+        "range": 340
+      }
+    },
+    "moderator": {
+      "atkSpd": 4,
+      "auto": {
+        "element": "arcane",
+        "magic": true
+      },
+      "q": {
+        "name": "Debug Beam",
+        "element": "arcane",
+        "kind": "beam",
+        "cd": 4,
+        "power": 1.6,
+        "color": "#c77dff",
+        "desc": "",
+        "range": 230,
+        "width": 26
+      },
+      "e": {
+        "name": "Null Field",
+        "element": "arcane",
+        "kind": "ground",
+        "cd": 9,
+        "power": 0.8,
+        "color": "#c77dff",
+        "desc": "",
+        "radius": 85,
+        "duration": 3,
+        "tick": 0.5,
+        "status": {
+          "type": "slow",
+          "duration": 2.5,
+          "slow": 0.4
+        },
+        "dot": 12,
+        "range": 340
+      },
+      "r": {
+        "name": "Overclock",
+        "element": "arcane",
+        "kind": "chain",
+        "cd": 16,
+        "power": 3,
+        "color": "#c77dff",
+        "desc": "",
+        "radius": 320,
+        "jumps": 5,
+        "chainRange": 190
+      }
+    },
+    "tester": {
+      "atkSpd": 10,
+      "auto": {
+        "element": "physical"
+      },
+      "q": {
+        "name": "Test Strike",
+        "element": "physical",
+        "kind": "arc",
+        "cd": 3,
+        "power": 1.6,
+        "color": "#9fd8ff",
+        "desc": "",
+        "radius": 90,
+        "arc": 0.9
+      },
+      "e": {
+        "name": "Bug Sweep",
+        "element": "physical",
+        "kind": "nova",
+        "cd": 7,
+        "power": 1.7,
+        "color": "#9fd8ff",
+        "desc": "",
+        "radius": 115
+      },
+      "r": {
+        "name": "Crash",
+        "element": "arcane",
+        "kind": "vortex",
+        "cd": 15,
+        "power": 3.2,
+        "color": "#c77dff",
+        "desc": "",
+        "radius": 155,
+        "duration": 2.6,
+        "tick": 0.4,
+        "pull": 110,
+        "range": 320
+      }
+    },
+    "beastmaster": {
+      "atkSpd": 9,
+      "auto": {
+        "element": "nature"
+      },
+      "q": {
+        "name": "Savage Bite",
+        "element": "nature",
+        "kind": "projectile",
+        "cd": 6,
+        "power": 1.83,
+        "color": "#9ccc65",
+        "desc": "",
+        "speed": 650,
+        "radius": 10,
+        "pet": true
+      },
+      "e": {
+        "name": "Pack Call",
+        "element": "nature",
+        "kind": "nova",
+        "cd": 6.8,
+        "power": 1.95,
+        "color": "#9ccc65",
+        "desc": "",
+        "radius": 134,
+        "status": {
+          "type": "slow",
+          "duration": 2,
+          "slow": 0.5
+        },
+        "pet": true
+      },
+      "r": {
+        "name": "Primal Stampede",
+        "element": "nature",
+        "kind": "barrage",
+        "cd": 13.6,
+        "power": 2.93,
+        "color": "#9ccc65",
+        "desc": "",
+        "count": 12,
+        "interval": 0.08,
+        "speed": 700,
+        "radius": 10,
+        "spread": 0.2,
+        "pet": true,
+        "knockback": 140
+      }
+    },
+    "anima_lorde": {
+      "atkSpd": 12,
+      "auto": {
+        "element": "nature"
+      },
+      "q": {
+        "name": "Spirit Bolt",
+        "element": "nature",
+        "kind": "projectile",
+        "cd": 6,
+        "power": 2.07,
+        "color": "#9ccc65",
+        "desc": "",
+        "speed": 660,
+        "radius": 10
+      },
+      "e": {
+        "name": "Anima Shield",
+        "element": "nature",
+        "kind": "shield",
+        "cd": 8.5,
+        "power": 0,
+        "color": "#9ccc65",
+        "desc": "",
+        "shieldPct": 24,
+        "duration": 5,
+        "healPct": 10
+      },
+      "r": {
+        "name": "Wild Hunt",
+        "element": "nature",
+        "kind": "orbit",
+        "cd": 14.5,
+        "power": 3.9,
+        "color": "#9ccc65",
+        "desc": "",
+        "radius": 146,
+        "duration": 3.6,
+        "tick": 0.35,
+        "count": 9,
+        "speed": 4
+      }
+    },
+    "rootbinder": {
+      "atkSpd": 14,
+      "auto": {
+        "element": "nature"
+      },
+      "q": {
+        "name": "Thorn Lance",
+        "element": "nature",
+        "kind": "beam",
+        "cd": 6,
+        "power": 2.07,
+        "color": "#9ccc65",
+        "desc": "",
+        "range": 242,
+        "width": 26
+      },
+      "e": {
+        "name": "Grasping Roots",
+        "element": "nature",
+        "kind": "ground",
+        "cd": 7.7,
+        "power": 1.22,
+        "color": "#9ccc65",
+        "desc": "",
+        "radius": 92,
+        "duration": 3,
+        "tick": 0.5,
+        "status": {
+          "type": "root",
+          "duration": 2.4
+        },
+        "dot": 11,
+        "range": 340
+      },
+      "r": {
+        "name": "Overgrowth",
+        "element": "nature",
+        "kind": "ground",
+        "cd": 13.6,
+        "power": 3.54,
+        "color": "#9ccc65",
+        "desc": "",
+        "radius": 179,
+        "duration": 4,
+        "tick": 0.45,
+        "status": {
+          "type": "root",
+          "duration": 1.6
+        },
+        "dot": 14,
+        "range": 340
+      }
+    },
+    "lifeweaver": {
+      "atkSpd": -2,
+      "auto": {
+        "element": "holy",
+        "magic": true
+      },
+      "q": {
+        "name": "Life Bolt",
+        "element": "holy",
+        "kind": "projectile",
+        "cd": 6,
+        "power": 1.83,
+        "color": "#ffe082",
+        "desc": "",
+        "speed": 620,
+        "radius": 10
+      },
+      "e": {
+        "name": "Living Bark",
+        "element": "nature",
+        "kind": "shield",
+        "cd": 7.7,
+        "power": 0,
+        "color": "#9ccc65",
+        "desc": "",
+        "shieldPct": 24,
+        "duration": 5,
+        "healPct": 15
+      },
+      "r": {
+        "name": "Renewal",
+        "element": "holy",
+        "kind": "heal",
+        "cd": 13.6,
+        "power": 0,
+        "color": "#ffe082",
+        "desc": "",
+        "healPct": 50,
+        "radius": 179
+      }
+    },
+    "ultra_moderator": {
+      "atkSpd": 6,
+      "auto": {
+        "element": "arcane",
+        "magic": true
+      },
+      "q": {
+        "name": "Admin Beam",
+        "element": "arcane",
+        "kind": "beam",
+        "cd": 6,
+        "power": 2.44,
+        "color": "#c77dff",
+        "desc": "",
+        "range": 286,
+        "width": 26
+      },
+      "e": {
+        "name": "Ban Field",
+        "element": "arcane",
+        "kind": "ground",
+        "cd": 7.7,
+        "power": 1.1,
+        "color": "#c77dff",
+        "desc": "",
+        "radius": 103,
+        "duration": 3,
+        "tick": 0.5,
+        "status": {
+          "type": "stun",
+          "duration": 0.7
+        },
+        "dot": 14,
+        "range": 340
+      },
+      "r": {
+        "name": "Server Crash",
+        "element": "arcane",
+        "kind": "quake",
+        "cd": 15.3,
+        "power": 4.64,
+        "color": "#c77dff",
+        "desc": "",
+        "radius": 213,
+        "pulses": 4,
+        "interval": 0.18
+      }
+    },
+    "warlord": {
+      "atkSpd": 2,
+      "auto": {
+        "element": "fire"
+      },
+      "q": {
+        "name": "Warlord Cleave",
+        "element": "fire",
+        "kind": "arc",
+        "cd": 6,
+        "power": 2.32,
+        "color": "#ff8a65",
+        "desc": "",
+        "radius": 121,
+        "arc": 1.15,
+        "status": {
+          "type": "burn",
+          "duration": 2,
+          "dps": 8
+        }
+      },
+      "e": {
+        "name": "War Banner",
+        "element": "fire",
+        "kind": "shield",
+        "cd": 8.5,
+        "power": 0,
+        "color": "#ff8a65",
+        "desc": "",
+        "shieldPct": 20,
+        "duration": 5
+      },
+      "r": {
+        "name": "Executioner",
+        "element": "fire",
+        "kind": "arc",
+        "cd": 13.6,
+        "power": 3.9,
+        "color": "#ff8a65",
+        "desc": "",
+        "radius": 168,
+        "arc": 1.4,
+        "knockback": 160,
+        "status": {
+          "type": "burn",
+          "duration": 3,
+          "dps": 20
+        }
+      }
+    },
+    "warden": {
+      "atkSpd": 10,
+      "auto": {
+        "element": "nature"
+      },
+      "q": {
+        "name": "Bramble Shot",
+        "element": "nature",
+        "kind": "projectile",
+        "cd": 6,
+        "power": 1.83,
+        "color": "#9ccc65",
+        "desc": "",
+        "speed": 660,
+        "radius": 10
+      },
+      "e": {
+        "name": "Verdant Snare",
+        "element": "nature",
+        "kind": "ground",
+        "cd": 6.8,
+        "power": 1.22,
+        "color": "#9ccc65",
+        "desc": "",
+        "radius": 95,
+        "duration": 3,
+        "tick": 0.5,
+        "status": {
+          "type": "root",
+          "duration": 2.2
+        },
+        "dot": 12,
+        "range": 340
+      },
+      "r": {
+        "name": "Wildstorm",
+        "element": "nature",
+        "kind": "fan",
+        "cd": 13.6,
+        "power": 1.95,
+        "color": "#9ccc65",
+        "desc": "",
+        "count": 10,
+        "spread": 0.22,
+        "speed": 760,
+        "radius": 8
+      }
+    },
+    "archmage": {
+      "atkSpd": 0,
+      "auto": {
+        "element": "arcane",
+        "magic": true
+      },
+      "q": {
+        "name": "Arcane Lance",
+        "element": "arcane",
+        "kind": "chain",
+        "cd": 6,
+        "power": 2.26,
+        "color": "#c77dff",
+        "desc": "",
+        "radius": 392,
+        "jumps": 5,
+        "chainRange": 220,
+        "status": {
+          "type": "shock",
+          "duration": 2.5,
+          "dps": 10
+        }
+      },
+      "e": {
+        "name": "Glacial Prison",
+        "element": "frost",
+        "kind": "vortex",
+        "cd": 7.7,
+        "power": 1.71,
+        "color": "#8fe4ff",
+        "desc": "",
+        "radius": 157,
+        "duration": 3,
+        "tick": 0.32,
+        "pull": 150,
+        "status": {
+          "type": "freeze",
+          "duration": 2
+        },
+        "range": 320
+      },
+      "r": {
+        "name": "Cataclysm",
+        "element": "fire",
+        "kind": "meteor",
+        "cd": 15.3,
+        "power": 4.27,
+        "color": "#ff8a65",
+        "desc": "",
+        "radius": 193,
+        "delay": 0.4,
+        "count": 5,
+        "stagger": 0.18,
+        "spreadRadius": 150,
+        "status": {
+          "type": "burn",
+          "duration": 4,
+          "dps": 20
+        },
+        "range": 340
+      }
+    },
+    "nightblade": {
+      "atkSpd": 24,
+      "auto": {
+        "element": "shadow"
+      },
+      "q": {
+        "name": "Umbral Slash",
+        "element": "shadow",
+        "kind": "arc",
+        "cd": 6,
+        "power": 2.44,
+        "color": "#b388ff",
+        "desc": "",
+        "radius": 101,
+        "arc": 0.85
+      },
+      "e": {
+        "name": "Shadow Veil",
+        "element": "shadow",
+        "kind": "teleport",
+        "cd": 6,
+        "power": 2.07,
+        "color": "#b388ff",
+        "desc": "",
+        "range": 175,
+        "radius": 84
+      },
+      "r": {
+        "name": "Nightfall",
+        "element": "shadow",
+        "kind": "teleport",
+        "cd": 13.6,
+        "power": 3.66,
+        "color": "#b388ff",
+        "desc": "",
+        "range": 210,
+        "radius": 146,
+        "status": {
+          "type": "stun",
+          "duration": 0.5
+        }
+      }
+    },
+    "crusader": {
+      "atkSpd": -2,
+      "auto": {
+        "element": "holy"
+      },
+      "q": {
+        "name": "Crusader's Blow",
+        "element": "holy",
+        "kind": "arc",
+        "cd": 6,
+        "power": 2.2,
+        "color": "#ffe082",
+        "desc": "",
+        "radius": 112,
+        "arc": 1.05
+      },
+      "e": {
+        "name": "Divine Aegis",
+        "element": "holy",
+        "kind": "shield",
+        "cd": 8.5,
+        "power": 0,
+        "color": "#ffe082",
+        "desc": "",
+        "shieldPct": 30,
+        "duration": 5
+      },
+      "r": {
+        "name": "Hammerfall",
+        "element": "holy",
+        "kind": "arc",
+        "cd": 13.6,
+        "power": 3.54,
+        "color": "#ffe082",
+        "desc": "",
+        "radius": 162,
+        "arc": 1.5,
+        "knockback": 150,
+        "status": {
+          "type": "stun",
+          "duration": 0.6
+        }
+      }
+    },
+    "reaper": {
+      "atkSpd": 18,
+      "auto": {
+        "element": "shadow"
+      },
+      "q": {
+        "name": "Soul Reap",
+        "element": "shadow",
+        "kind": "arc",
+        "cd": 6,
+        "power": 2.56,
+        "color": "#b388ff",
+        "desc": "",
+        "radius": 106,
+        "arc": 1.2
+      },
+      "e": {
+        "name": "Death Grip",
+        "element": "shadow",
+        "kind": "beam",
+        "cd": 6.8,
+        "power": 2.32,
+        "color": "#b388ff",
+        "desc": "",
+        "range": 231,
+        "width": 26,
+        "status": {
+          "type": "slow",
+          "duration": 1.8,
+          "slow": 0.45
+        }
+      },
+      "r": {
+        "name": "Scythe Storm",
+        "element": "blood",
+        "kind": "orbit",
+        "cd": 13.6,
+        "power": 3.78,
+        "color": "#ff5370",
+        "desc": "",
+        "radius": 140,
+        "duration": 3.4,
+        "tick": 0.35,
+        "count": 7,
+        "speed": 4.2,
+        "status": {
+          "type": "bleed",
+          "duration": 2,
+          "dps": 10
+        }
+      }
+    },
+    "high_priest": {
+      "atkSpd": -6,
+      "auto": {
+        "element": "holy",
+        "magic": true
+      },
+      "q": {
+        "name": "Smite",
+        "element": "holy",
+        "kind": "projectile",
+        "cd": 6,
+        "power": 1.95,
+        "color": "#ffe082",
+        "desc": "",
+        "speed": 640,
+        "radius": 10
+      },
+      "e": {
+        "name": "Blessing",
+        "element": "holy",
+        "kind": "shield",
+        "cd": 7.7,
+        "power": 0,
+        "color": "#ffe082",
+        "desc": "",
+        "shieldPct": 22,
+        "duration": 5,
+        "healPct": 19
+      },
+      "r": {
+        "name": "Divine Judgment",
+        "element": "holy",
+        "kind": "beam",
+        "cd": 13.6,
+        "power": 3.54,
+        "color": "#ffe082",
+        "desc": "",
+        "range": 352,
+        "width": 42
+      }
+    },
+    "juggernaut": {
+      "atkSpd": -14,
+      "auto": {
+        "element": "earth"
+      },
+      "q": {
+        "name": "Crushing Blow",
+        "element": "earth",
+        "kind": "arc",
+        "cd": 6,
+        "power": 2.44,
+        "color": "#c9a227",
+        "desc": "",
+        "radius": 118,
+        "arc": 1.15
+      },
+      "e": {
+        "name": "Fortress",
+        "element": "earth",
+        "kind": "shield",
+        "cd": 9.4,
+        "power": 0,
+        "color": "#c9a227",
+        "desc": "",
+        "shieldPct": 42,
+        "duration": 5
+      },
+      "r": {
+        "name": "Earthquake",
+        "element": "earth",
+        "kind": "quake",
+        "cd": 14.5,
+        "power": 3.66,
+        "color": "#c9a227",
+        "desc": "",
+        "radius": 202,
+        "pulses": 4,
+        "interval": 0.2,
+        "knockback": 200
+      }
+    },
+    "war_emperor": {
+      "atkSpd": 0,
+      "auto": {
+        "element": "fire"
+      },
+      "q": {
+        "name": "Emperor's Edge",
+        "element": "fire",
+        "kind": "arc",
+        "cd": 6,
+        "power": 2.56,
+        "color": "#ff8a65",
+        "desc": "",
+        "radius": 123,
+        "arc": 1.1,
+        "status": {
+          "type": "burn",
+          "duration": 2.5,
+          "dps": 10
+        }
+      },
+      "e": {
+        "name": "Crown of Flame",
+        "element": "fire",
+        "kind": "nova",
+        "cd": 7.7,
+        "power": 2.32,
+        "color": "#ff8a65",
+        "desc": "",
+        "radius": 146,
+        "status": {
+          "type": "burn",
+          "duration": 3,
+          "dps": 14
+        }
+      },
+      "r": {
+        "name": "Worldbreaker",
+        "element": "fire",
+        "kind": "meteor",
+        "cd": 15.3,
+        "power": 4.39,
+        "color": "#ff8a65",
+        "desc": "",
+        "radius": 190,
+        "delay": 0.45,
+        "status": {
+          "type": "burn",
+          "duration": 3,
+          "dps": 22
+        },
+        "range": 340
+      }
+    },
+    "storm_warden": {
+      "atkSpd": 16,
+      "auto": {
+        "element": "lightning"
+      },
+      "q": {
+        "name": "Storm Arrow",
+        "element": "lightning",
+        "kind": "projectile",
+        "cd": 6,
+        "power": 2.07,
+        "color": "#fff176",
+        "desc": "",
+        "speed": 720,
+        "radius": 10
+      },
+      "e": {
+        "name": "Thunder Cage",
+        "element": "lightning",
+        "kind": "ground",
+        "cd": 7.7,
+        "power": 1.22,
+        "color": "#fff176",
+        "desc": "",
+        "radius": 99,
+        "duration": 3,
+        "tick": 0.5,
+        "status": {
+          "type": "shock",
+          "duration": 2.4,
+          "dps": 12
+        },
+        "dot": 10,
+        "range": 340
+      },
+      "r": {
+        "name": "Tempest",
+        "element": "lightning",
+        "kind": "chain",
+        "cd": 13.6,
+        "power": 3.66,
+        "color": "#fff176",
+        "desc": "",
+        "radius": 381,
+        "jumps": 6,
+        "chainRange": 200,
+        "status": {
+          "type": "shock",
+          "duration": 1.6
+        }
+      }
+    },
+    "archon": {
+      "atkSpd": 4,
+      "auto": {
+        "element": "arcane",
+        "magic": true
+      },
+      "q": {
+        "name": "Arcane Spear",
+        "element": "arcane",
+        "kind": "beam",
+        "cd": 6,
+        "power": 2.32,
+        "color": "#c77dff",
+        "desc": "",
+        "range": 281,
+        "width": 26
+      },
+      "e": {
+        "name": "Chrono Field",
+        "element": "arcane",
+        "kind": "ground",
+        "cd": 8.5,
+        "power": 1.1,
+        "color": "#c77dff",
+        "desc": "",
+        "radius": 106,
+        "duration": 3,
+        "tick": 0.5,
+        "status": {
+          "type": "slow",
+          "duration": 2.6,
+          "slow": 0.35
+        },
+        "dot": 10,
+        "range": 340
+      },
+      "r": {
+        "name": "Singularity",
+        "element": "arcane",
+        "kind": "vortex",
+        "cd": 15.3,
+        "power": 4.27,
+        "color": "#c77dff",
+        "desc": "",
+        "radius": 179,
+        "duration": 2.8,
+        "tick": 0.4,
+        "pull": 150,
+        "range": 320
+      }
+    },
+    "shade_king": {
+      "atkSpd": 20,
+      "auto": {
+        "element": "shadow"
+      },
+      "q": {
+        "name": "King's Edict",
+        "element": "shadow",
+        "kind": "arc",
+        "cd": 6,
+        "power": 2.68,
+        "color": "#b388ff",
+        "desc": "",
+        "radius": 112,
+        "arc": 1.1
+      },
+      "e": {
+        "name": "Umbra Gate",
+        "element": "shadow",
+        "kind": "teleport",
+        "cd": 6.8,
+        "power": 2.07,
+        "color": "#b388ff",
+        "desc": "",
+        "range": 185,
+        "radius": 95
+      },
+      "r": {
+        "name": "Reign of Shadows",
+        "element": "shadow",
+        "kind": "nova",
+        "cd": 14.5,
+        "power": 4.03,
+        "color": "#b388ff",
+        "desc": "",
+        "radius": 185,
+        "status": {
+          "type": "slow",
+          "duration": 2,
+          "slow": 0.45
+        }
+      }
+    },
+    "lightbringer": {
+      "atkSpd": 0,
+      "auto": {
+        "element": "holy"
+      },
+      "q": {
+        "name": "Radiant Strike",
+        "element": "holy",
+        "kind": "arc",
+        "cd": 6,
+        "power": 2.44,
+        "color": "#ffe082",
+        "desc": "",
+        "radius": 118,
+        "arc": 1.05
+      },
+      "e": {
+        "name": "Aegis of Light",
+        "element": "holy",
+        "kind": "shield",
+        "cd": 8.5,
+        "power": 0,
+        "color": "#ffe082",
+        "desc": "",
+        "shieldPct": 32,
+        "duration": 5
+      },
+      "r": {
+        "name": "Solar Flare",
+        "element": "holy",
+        "kind": "beam",
+        "cd": 14.5,
+        "power": 3.9,
+        "color": "#ffe082",
+        "desc": "",
+        "range": 374,
+        "width": 46
+      }
+    },
+    "death_lord": {
+      "atkSpd": 16,
+      "auto": {
+        "element": "shadow"
+      },
+      "q": {
+        "name": "Reaper's Toll",
+        "element": "shadow",
+        "kind": "arc",
+        "cd": 6,
+        "power": 2.81,
+        "color": "#b388ff",
+        "desc": "",
+        "radius": 121,
+        "arc": 1.2
+      },
+      "e": {
+        "name": "Grave Chains",
+        "element": "shadow",
+        "kind": "beam",
+        "cd": 6.8,
+        "power": 2.44,
+        "color": "#b388ff",
+        "desc": "",
+        "range": 242,
+        "width": 26,
+        "status": {
+          "type": "root",
+          "duration": 1.8
+        }
+      },
+      "r": {
+        "name": "Army of the Dead",
+        "element": "shadow",
+        "kind": "barrage",
+        "cd": 15.3,
+        "power": 2.68,
+        "color": "#b388ff",
+        "desc": "",
+        "count": 14,
+        "interval": 0.08,
+        "speed": 680,
+        "radius": 9,
+        "spread": 0.3
+      }
+    },
+    "bloodspawn": {
+      "atkSpd": 22,
+      "auto": {
+        "element": "blood"
+      },
+      "q": {
+        "name": "Blood Claw",
+        "element": "blood",
+        "kind": "arc",
+        "cd": 3.5,
+        "power": 1.9,
+        "color": "#ff5370",
+        "desc": "",
+        "radius": 90,
+        "arc": 0.95,
+        "status": {
+          "type": "bleed",
+          "duration": 2,
+          "dps": 8
+        }
+      },
+      "e": {
+        "name": "Crimson Rush",
+        "element": "blood",
+        "kind": "dash",
+        "cd": 7,
+        "power": 1.9,
+        "color": "#ff5370",
+        "desc": "",
+        "range": 175,
+        "radius": 70,
+        "status": {
+          "type": "bleed",
+          "duration": 2,
+          "dps": 10
+        }
+      },
+      "r": {
+        "name": "Blood Tide",
+        "element": "blood",
+        "kind": "ground",
+        "cd": 16,
+        "power": 3,
+        "color": "#ff5370",
+        "desc": "",
+        "radius": 150,
+        "duration": 4,
+        "tick": 0.45,
+        "status": {
+          "type": "slow",
+          "duration": 2,
+          "slow": 0.4
+        },
+        "dot": 16,
+        "range": 340
+      }
+    },
+    "bloodlord": {
+      "atkSpd": 14,
+      "auto": {
+        "element": "blood"
+      },
+      "q": {
+        "name": "Sanguine Slash",
+        "element": "blood",
+        "kind": "arc",
+        "cd": 6,
+        "power": 2.68,
+        "color": "#ff5370",
+        "desc": "",
+        "radius": 118,
+        "arc": 1.1,
+        "status": {
+          "type": "bleed",
+          "duration": 2.5,
+          "dps": 12
+        }
+      },
+      "e": {
+        "name": "Blood Pact",
+        "element": "blood",
+        "kind": "shield",
+        "cd": 8.5,
+        "power": 0,
+        "color": "#ff5370",
+        "desc": "",
+        "shieldPct": 25,
+        "duration": 5,
+        "healPct": 13
+      },
+      "r": {
+        "name": "Crimson Cataclysm",
+        "element": "blood",
+        "kind": "vortex",
+        "cd": 15.3,
+        "power": 4.27,
+        "color": "#ff5370",
+        "desc": "",
+        "radius": 196,
+        "duration": 2.6,
+        "tick": 0.4,
+        "pull": 140,
+        "status": {
+          "type": "bleed",
+          "duration": 4,
+          "dps": 22
+        },
+        "range": 320
+      }
+    },
+    "gloomspawn": {
+      "atkSpd": 8,
+      "auto": {
+        "element": "shadow",
+        "magic": true
+      },
+      "q": {
+        "name": "Gloom Bolt",
+        "element": "shadow",
+        "kind": "projectile",
+        "cd": 3,
+        "power": 1.7,
+        "color": "#b388ff",
+        "desc": "",
+        "speed": 620,
+        "radius": 9
+      },
+      "e": {
+        "name": "Shadow Well",
+        "element": "shadow",
+        "kind": "ground",
+        "cd": 9,
+        "power": 0.9,
+        "color": "#b388ff",
+        "desc": "",
+        "radius": 88,
+        "duration": 3,
+        "tick": 0.5,
+        "status": {
+          "type": "slow",
+          "duration": 2.4,
+          "slow": 0.4
+        },
+        "dot": 12,
+        "range": 340
+      },
+      "r": {
+        "name": "Eclipse",
+        "element": "shadow",
+        "kind": "orbit",
+        "cd": 17,
+        "power": 3.2,
+        "color": "#b388ff",
+        "desc": "",
+        "radius": 120,
+        "duration": 3.6,
+        "tick": 0.35,
+        "count": 6,
+        "speed": 3.8
+      }
+    },
+    "sanguine_lord": {
+      "atkSpd": 12,
+      "auto": {
+        "element": "blood"
+      },
+      "q": {
+        "name": "Blood Reign",
+        "element": "blood",
+        "kind": "arc",
+        "cd": 6,
+        "power": 2.81,
+        "color": "#ff5370",
+        "desc": "",
+        "radius": 123,
+        "arc": 1.15
+      },
+      "e": {
+        "name": "Veil of Blood",
+        "element": "blood",
+        "kind": "shield",
+        "cd": 9.4,
+        "power": 0,
+        "color": "#ff5370",
+        "desc": "",
+        "shieldPct": 30,
+        "duration": 5
+      },
+      "r": {
+        "name": "Exsanguinate",
+        "element": "blood",
+        "kind": "beam",
+        "cd": 15.3,
+        "power": 4.39,
+        "color": "#ff5370",
+        "desc": "",
+        "range": 330,
+        "width": 38,
+        "healPct": 8
+      }
+    },
+    "divine_saint": {
+      "atkSpd": -4,
+      "auto": {
+        "element": "holy",
+        "magic": true
+      },
+      "q": {
+        "name": "Holy Lance",
+        "element": "holy",
+        "kind": "beam",
+        "cd": 6,
+        "power": 2.32,
+        "color": "#ffe082",
+        "desc": "",
+        "range": 259,
+        "width": 26
+      },
+      "e": {
+        "name": "Sacred Aegis",
+        "element": "holy",
+        "kind": "shield",
+        "cd": 7.7,
+        "power": 0,
+        "color": "#ffe082",
+        "desc": "",
+        "shieldPct": 26,
+        "duration": 5,
+        "healPct": 13
+      },
+      "r": {
+        "name": "Ascension",
+        "element": "holy",
+        "kind": "shield",
+        "cd": 15.3,
+        "power": 0,
+        "color": "#ffe082",
+        "desc": "",
+        "shieldPct": 30,
+        "duration": 6,
+        "healPct": 19
+      }
+    },
+    "colossus": {
+      "atkSpd": -16,
+      "auto": {
+        "element": "earth"
+      },
+      "q": {
+        "name": "Titanic Fist",
+        "element": "earth",
+        "kind": "arc",
+        "cd": 6,
+        "power": 2.81,
+        "color": "#c9a227",
+        "desc": "",
+        "radius": 129,
+        "arc": 1.2
+      },
+      "e": {
+        "name": "Colossal Guard",
+        "element": "earth",
+        "kind": "shield",
+        "cd": 9.4,
+        "power": 0,
+        "color": "#c9a227",
+        "desc": "",
+        "shieldPct": 45,
+        "duration": 5
+      },
+      "r": {
+        "name": "World Quake",
+        "element": "earth",
+        "kind": "quake",
+        "cd": 15.3,
+        "power": 4.15,
+        "color": "#c9a227",
+        "desc": "",
+        "radius": 224,
+        "pulses": 4,
+        "interval": 0.2,
+        "knockback": 220
+      }
+    }
+  },
+  "travelBiomes": {
+    "verdant": {
+      "id": "verdant",
+      "label": "Verdant Wilds",
+      "slogan": "Lush, alive, and never truly safe.",
+      "palette": {
+        "ground": "#4f8f3a",
+        "fog": "#9bd47a",
+        "sky": "#1a2e14",
+        "accent": "#9ccc65",
+        "grade": 0.08
+      },
+      "ambient": {
+        "color": "#b8e986",
+        "color2": "#ffd54f",
+        "leaf": true,
+        "fog": 0.16
+      },
+      "spawn": {
+        "count": 3,
+        "max": 6,
+        "respawn": 9,
+        "eliteChance": 0.14
+      },
+      "monsters": [
+        {
+          "painter": "goblin",
+          "element": "nature",
+          "weight": 26,
+          "elite": false,
+          "attackCooldown": 1.5,
+          "exp": 48,
+          "gold": 8,
+          "speed": 138,
+          "radius": 16,
+          "kind": "thorn_goblin",
+          "name": "Thornback Skirmisher",
+          "color": "#6aa84f",
+          "accent": "#d9f99d",
+          "hp": 267,
+          "damage": 39,
+          "aggroRange": 290,
+          "skills": [
+            {
+              "id": "lunge",
+              "kind": "dash",
+              "cd": 6.5,
+              "range": 250,
+              "windup": 0.55,
+              "dist": 130,
+              "power": 1.15,
+              "radius": 34
+            }
+          ]
+        },
+        {
+          "painter": "treant",
+          "element": "nature",
+          "weight": 14,
+          "elite": false,
+          "attackCooldown": 1.8,
+          "exp": 106,
+          "gold": 18,
+          "speed": 82,
+          "radius": 26,
+          "kind": "moss_treant",
+          "name": "Elder Moss Treant",
+          "color": "#3f6b2a",
+          "accent": "#a3e635",
+          "hp": 638,
+          "damage": 71,
+          "aggroRange": 290,
+          "skills": [
+            {
+              "id": "slam",
+              "kind": "slam",
+              "cd": 8.5,
+              "range": 190,
+              "windup": 1,
+              "radius": 110,
+              "power": 1.4
+            }
+          ]
+        },
+        {
+          "painter": "wraith",
+          "element": "shadow",
+          "weight": 18,
+          "elite": false,
+          "attackCooldown": 1.2,
+          "exp": 64,
+          "gold": 11,
+          "speed": 176,
+          "radius": 15,
+          "kind": "gloom_wraith",
+          "name": "Gloom Wraith",
+          "color": "#7b4dce",
+          "accent": "#e9d5ff",
+          "hp": 232,
+          "damage": 48,
+          "aggroRange": 290,
+          "skills": [
+            {
+              "id": "bolt",
+              "kind": "shot",
+              "cd": 4.5,
+              "range": 340,
+              "windup": 0.55,
+              "power": 1.1
+            }
+          ]
+        },
+        {
+          "painter": "spider",
+          "element": "nature",
+          "weight": 18,
+          "elite": false,
+          "attackCooldown": 1.5,
+          "exp": 57,
+          "gold": 10,
+          "speed": 150,
+          "radius": 17,
+          "kind": "venomfang",
+          "name": "Venomfang Spider",
+          "color": "#3f6212",
+          "accent": "#bef264",
+          "hp": 249,
+          "damage": 35,
+          "status": {
+            "type": "poison",
+            "duration": 3,
+            "dps": 10,
+            "chance": 0.5
+          },
+          "aggroRange": 290,
+          "skills": [
+            {
+              "id": "web",
+              "kind": "slam",
+              "cd": 7.5,
+              "range": 200,
+              "windup": 0.7,
+              "radius": 80,
+              "power": 0.9,
+              "status": {
+                "type": "slow",
+                "duration": 2,
+                "slow": 0.5
+              }
+            }
+          ]
+        },
+        {
+          "painter": "treant",
+          "element": "nature",
+          "weight": 3,
+          "elite": true,
+          "attackCooldown": 2,
+          "exp": 242,
+          "gold": 55,
+          "speed": 90,
+          "radius": 30,
+          "kind": "ancient_guardian",
+          "name": "Ancient Grove Guardian",
+          "color": "#2f4f1f",
+          "accent": "#fde68a",
+          "hp": 1178,
+          "damage": 101,
+          "ability": "nova",
+          "aggroRange": 340,
+          "skills": [
+            {
+              "id": "slam",
+              "kind": "slam",
+              "cd": 8.5,
+              "range": 190,
+              "windup": 1,
+              "radius": 110,
+              "power": 1.4
+            },
+            {
+              "id": "quake",
+              "kind": "slam",
+              "cd": 6.5,
+              "range": 210,
+              "windup": 0.85,
+              "radius": 130,
+              "power": 1.45
+            }
+          ]
+        }
+      ]
+    },
+    "ashen": {
+      "id": "ashen",
+      "label": "Ashen Wastes",
+      "slogan": "Cinders, crags, and things that burn.",
+      "palette": {
+        "ground": "#5a4030",
+        "fog": "#ffb27a",
+        "sky": "#2a1408",
+        "accent": "#ff8a50",
+        "grade": 0.12
+      },
+      "ambient": {
+        "color": "#ffb74d",
+        "color2": "#ff7043",
+        "ember": true,
+        "fog": 0.24
+      },
+      "spawn": {
+        "count": 3,
+        "max": 6,
+        "respawn": 11,
+        "eliteChance": 0.16
+      },
+      "monsters": [
+        {
+          "painter": "goblin",
+          "element": "fire",
+          "weight": 26,
+          "elite": false,
+          "attackCooldown": 1.15,
+          "exp": 55,
+          "gold": 9,
+          "speed": 160,
+          "radius": 14,
+          "kind": "cinder_imp",
+          "name": "Cinder Imp",
+          "color": "#c2410c",
+          "accent": "#fde68a",
+          "hp": 226,
+          "damage": 46,
+          "aggroRange": 290,
+          "skills": [
+            {
+              "id": "lunge",
+              "kind": "dash",
+              "cd": 6.5,
+              "range": 250,
+              "windup": 0.55,
+              "dist": 130,
+              "power": 1.15,
+              "radius": 34
+            }
+          ]
+        },
+        {
+          "painter": "knight",
+          "element": "fire",
+          "weight": 18,
+          "elite": false,
+          "attackCooldown": 1.5,
+          "exp": 86,
+          "gold": 15,
+          "speed": 108,
+          "radius": 18,
+          "kind": "ash_revenant",
+          "name": "Ash Revenant",
+          "color": "#6b4f3a",
+          "accent": "#ff8a65",
+          "hp": 418,
+          "damage": 60,
+          "status": {
+            "type": "burn",
+            "duration": 2.5,
+            "dps": 9,
+            "chance": 0.4
+          },
+          "aggroRange": 290,
+          "skills": [
+            {
+              "id": "charge",
+              "kind": "dash",
+              "cd": 7,
+              "range": 280,
+              "windup": 0.65,
+              "dist": 155,
+              "power": 1.3,
+              "radius": 38
+            }
+          ]
+        },
+        {
+          "painter": "golem",
+          "element": "fire",
+          "weight": 10,
+          "elite": false,
+          "attackCooldown": 2.1,
+          "exp": 165,
+          "gold": 30,
+          "speed": 70,
+          "radius": 30,
+          "kind": "magma_behemoth",
+          "name": "Magma Behemoth",
+          "color": "#7f1d1d",
+          "accent": "#f97316",
+          "hp": 870,
+          "damage": 97,
+          "aggroRange": 290,
+          "skills": [
+            {
+              "id": "slam",
+              "kind": "slam",
+              "cd": 8,
+              "range": 170,
+              "windup": 0.95,
+              "radius": 100,
+              "power": 1.5
+            }
+          ]
+        },
+        {
+          "painter": "wraith",
+          "element": "fire",
+          "weight": 24,
+          "elite": false,
+          "attackCooldown": 1,
+          "exp": 37,
+          "gold": 6,
+          "speed": 210,
+          "radius": 12,
+          "kind": "cinder_bat",
+          "name": "Cinder Bat",
+          "color": "#9a3412",
+          "accent": "#fdba74",
+          "hp": 174,
+          "damage": 32,
+          "aggroRange": 290,
+          "skills": [
+            {
+              "id": "bolt",
+              "kind": "shot",
+              "cd": 4.5,
+              "range": 340,
+              "windup": 0.55,
+              "power": 1.1
+            }
+          ]
+        },
+        {
+          "painter": "golem",
+          "element": "fire",
+          "weight": 3,
+          "elite": true,
+          "attackCooldown": 1.9,
+          "exp": 308,
+          "gold": 70,
+          "speed": 84,
+          "radius": 34,
+          "kind": "emberlord",
+          "name": "Emberlord Vulkarr",
+          "color": "#450a0a",
+          "accent": "#fbbf24",
+          "hp": 1488,
+          "damage": 124,
+          "ability": "nova",
+          "status": {
+            "type": "burn",
+            "duration": 4,
+            "dps": 20,
+            "chance": 0.6
+          },
+          "aggroRange": 340,
+          "skills": [
+            {
+              "id": "slam",
+              "kind": "slam",
+              "cd": 8,
+              "range": 170,
+              "windup": 0.95,
+              "radius": 100,
+              "power": 1.5
+            },
+            {
+              "id": "quake",
+              "kind": "slam",
+              "cd": 6.5,
+              "range": 210,
+              "windup": 0.85,
+              "radius": 130,
+              "power": 1.45
+            }
+          ]
+        }
+      ]
+    },
+    "frost": {
+      "id": "frost",
+      "label": "Frozen Tundra",
+      "slogan": "Where the wind bites and the dead do not sleep.",
+      "palette": {
+        "ground": "#e8f7ff",
+        "fog": "#d7f2ff",
+        "sky": "#0d2230",
+        "accent": "#8fe4ff",
+        "grade": 0.1
+      },
+      "ambient": {
+        "color": "#d7f2ff",
+        "color2": "#a5d8ff",
+        "snow": true,
+        "fog": 0.2
+      },
+      "spawn": {
+        "count": 3,
+        "max": 6,
+        "respawn": 10,
+        "eliteChance": 0.16
+      },
+      "monsters": [
+        {
+          "painter": "beast",
+          "element": "frost",
+          "weight": 26,
+          "elite": false,
+          "attackCooldown": 1.15,
+          "exp": 62,
+          "gold": 10,
+          "speed": 190,
+          "radius": 17,
+          "kind": "frost_wolf",
+          "name": "Frost Wolf",
+          "color": "#93c5fd",
+          "accent": "#e0f2fe",
+          "hp": 278,
+          "damage": 44,
+          "aggroRange": 290,
+          "skills": [
+            {
+              "id": "pounce",
+              "kind": "dash",
+              "cd": 6,
+              "range": 300,
+              "windup": 0.6,
+              "dist": 165,
+              "power": 1.25,
+              "radius": 40
+            }
+          ]
+        },
+        {
+          "painter": "wraith",
+          "element": "frost",
+          "weight": 18,
+          "elite": false,
+          "attackCooldown": 1.5,
+          "exp": 70,
+          "gold": 12,
+          "speed": 150,
+          "radius": 15,
+          "kind": "ice_wraith",
+          "name": "Ice Wraith",
+          "color": "#3b82f6",
+          "accent": "#e0f2fe",
+          "hp": 255,
+          "damage": 53,
+          "status": {
+            "type": "freeze",
+            "duration": 1.1,
+            "chance": 0.28
+          },
+          "aggroRange": 290,
+          "skills": [
+            {
+              "id": "bolt",
+              "kind": "shot",
+              "cd": 4.5,
+              "range": 340,
+              "windup": 0.55,
+              "power": 1.1
+            }
+          ]
+        },
+        {
+          "painter": "golem",
+          "element": "frost",
+          "weight": 10,
+          "elite": false,
+          "attackCooldown": 2.2,
+          "exp": 165,
+          "gold": 28,
+          "speed": 72,
+          "radius": 30,
+          "kind": "glacier_golem",
+          "name": "Glacier Golem",
+          "color": "#1e40af",
+          "accent": "#bfdbfe",
+          "hp": 957,
+          "damage": 90,
+          "status": {
+            "type": "slow",
+            "duration": 2,
+            "slow": 0.5,
+            "chance": 0.5
+          },
+          "aggroRange": 290,
+          "skills": [
+            {
+              "id": "slam",
+              "kind": "slam",
+              "cd": 8,
+              "range": 170,
+              "windup": 0.95,
+              "radius": 100,
+              "power": 1.5
+            }
+          ]
+        },
+        {
+          "painter": "spider",
+          "element": "frost",
+          "weight": 22,
+          "elite": false,
+          "attackCooldown": 1.5,
+          "exp": 53,
+          "gold": 9,
+          "speed": 168,
+          "radius": 16,
+          "kind": "snow_stalker",
+          "name": "Snow Stalker",
+          "color": "#bfdbfe",
+          "accent": "#ffffff",
+          "hp": 244,
+          "damage": 39,
+          "aggroRange": 290,
+          "skills": [
+            {
+              "id": "web",
+              "kind": "slam",
+              "cd": 7.5,
+              "range": 200,
+              "windup": 0.7,
+              "radius": 80,
+              "power": 0.9,
+              "status": {
+                "type": "slow",
+                "duration": 2,
+                "slow": 0.5
+              }
+            }
+          ]
+        },
+        {
+          "painter": "beast",
+          "element": "frost",
+          "weight": 3,
+          "elite": true,
+          "attackCooldown": 1.8,
+          "exp": 330,
+          "gold": 75,
+          "speed": 104,
+          "radius": 36,
+          "kind": "permafrost_wyrm",
+          "name": "Permafrost Wyrm",
+          "color": "#1d4ed8",
+          "accent": "#f0f9ff",
+          "hp": 1612,
+          "damage": 117,
+          "ability": "nova",
+          "status": {
+            "type": "freeze",
+            "duration": 1.6,
+            "chance": 0.5
+          },
+          "aggroRange": 340,
+          "skills": [
+            {
+              "id": "pounce",
+              "kind": "dash",
+              "cd": 6,
+              "range": 300,
+              "windup": 0.6,
+              "dist": 165,
+              "power": 1.25,
+              "radius": 40
+            },
+            {
+              "id": "quake",
+              "kind": "slam",
+              "cd": 6.5,
+              "range": 210,
+              "windup": 0.85,
+              "radius": 130,
+              "power": 1.45
+            }
+          ]
+        },
+        {
+          "painter": "archer",
+          "element": "frost",
+          "weight": 16,
+          "elite": false,
+          "attackCooldown": 1.6,
+          "exp": 97,
+          "gold": 18,
+          "speed": 128,
+          "radius": 15,
+          "kind": "rime_archer",
+          "name": "Rime Archer",
+          "color": "#7dd3fc",
+          "accent": "#f0f9ff",
+          "hp": 360,
+          "damage": 53,
+          "ability": "ranged",
+          "aggroRange": 290,
+          "skills": [
+            {
+              "id": "aimed",
+              "kind": "shot",
+              "cd": 3.6,
+              "range": 380,
+              "windup": 0.75,
+              "power": 1.15
+            },
+            {
+              "id": "volley",
+              "kind": "volley",
+              "cd": 6.5,
+              "range": 360,
+              "windup": 0.7,
+              "power": 0.9,
+              "count": 3,
+              "spread": 0.22
+            }
+          ]
+        },
+        {
+          "painter": "archer",
+          "element": "frost",
+          "weight": 14,
+          "elite": false,
+          "attackCooldown": 1.6,
+          "exp": 101,
+          "gold": 19,
+          "speed": 126,
+          "radius": 15,
+          "kind": "grave_archer",
+          "name": "Grave Archer",
+          "color": "#9ca3af",
+          "accent": "#a7f3d0",
+          "hp": 371,
+          "damage": 55,
+          "ability": "ranged",
+          "aggroRange": 290,
+          "skills": [
+            {
+              "id": "aimed",
+              "kind": "shot",
+              "cd": 3.6,
+              "range": 380,
+              "windup": 0.75,
+              "power": 1.15
+            },
+            {
+              "id": "volley",
+              "kind": "volley",
+              "cd": 6.5,
+              "range": 360,
+              "windup": 0.7,
+              "power": 0.9,
+              "count": 3,
+              "spread": 0.22
+            }
+          ]
+        }
+      ]
+    },
+    "swamp": {
+      "id": "swamp",
+      "label": "Mirefen Marsh",
+      "slogan": "Every step squelches. Something is always watching.",
+      "palette": {
+        "ground": "#3f5a34",
+        "fog": "#9bbf6b",
+        "sky": "#141f12",
+        "accent": "#84cc16",
+        "grade": 0.14
+      },
+      "ambient": {
+        "color": "#bef264",
+        "color2": "#65a30d",
+        "bubble": true,
+        "fog": 0.3
+      },
+      "spawn": {
+        "count": 3,
+        "max": 7,
+        "respawn": 9,
+        "eliteChance": 0.15
+      },
+      "monsters": [
+        {
+          "painter": "goblin",
+          "element": "poison",
+          "weight": 26,
+          "elite": false,
+          "attackCooldown": 1.5,
+          "exp": 51,
+          "gold": 8,
+          "speed": 140,
+          "radius": 16,
+          "kind": "bog_lurker",
+          "name": "Bog Lurker",
+          "color": "#4d7c0f",
+          "accent": "#d9f99d",
+          "hp": 255,
+          "damage": 41,
+          "status": {
+            "type": "poison",
+            "duration": 3,
+            "dps": 9,
+            "chance": 0.45
+          },
+          "aggroRange": 290,
+          "skills": [
+            {
+              "id": "lunge",
+              "kind": "dash",
+              "cd": 6.5,
+              "range": 250,
+              "windup": 0.55,
+              "dist": 130,
+              "power": 1.15,
+              "radius": 34
+            }
+          ]
+        },
+        {
+          "painter": "wraith",
+          "element": "poison",
+          "weight": 18,
+          "elite": false,
+          "attackCooldown": 1.5,
+          "exp": 79,
+          "gold": 14,
+          "speed": 120,
+          "radius": 16,
+          "kind": "mire_hag",
+          "name": "Mire Hag",
+          "color": "#6d28d9",
+          "accent": "#a3e635",
+          "hp": 302,
+          "damage": 55,
+          "ability": "ranged",
+          "status": {
+            "type": "poison",
+            "duration": 4,
+            "dps": 12,
+            "chance": 0.55
+          },
+          "aggroRange": 290,
+          "skills": [
+            {
+              "id": "bolt",
+              "kind": "shot",
+              "cd": 4.5,
+              "range": 340,
+              "windup": 0.55,
+              "power": 1.1
+            },
+            {
+              "id": "volley",
+              "kind": "volley",
+              "cd": 6.5,
+              "range": 360,
+              "windup": 0.7,
+              "power": 0.9,
+              "count": 3,
+              "spread": 0.22
+            }
+          ]
+        },
+        {
+          "painter": "treant",
+          "element": "nature",
+          "weight": 12,
+          "elite": false,
+          "attackCooldown": 1.9,
+          "exp": 121,
+          "gold": 20,
+          "speed": 76,
+          "radius": 27,
+          "kind": "rot_treant",
+          "name": "Rot Treant",
+          "color": "#3f4a1f",
+          "accent": "#84cc16",
+          "hp": 725,
+          "damage": 76,
+          "aggroRange": 290,
+          "skills": [
+            {
+              "id": "slam",
+              "kind": "slam",
+              "cd": 8.5,
+              "range": 190,
+              "windup": 1,
+              "radius": 110,
+              "power": 1.4
+            }
+          ]
+        },
+        {
+          "painter": "spider",
+          "element": "blood",
+          "weight": 22,
+          "elite": false,
+          "attackCooldown": 1.5,
+          "exp": 44,
+          "gold": 7,
+          "speed": 180,
+          "radius": 14,
+          "kind": "leech_swarm",
+          "name": "Leech Swarm",
+          "color": "#7f1d1d",
+          "accent": "#fecaca",
+          "hp": 197,
+          "damage": 32,
+          "status": {
+            "type": "bleed",
+            "duration": 3,
+            "dps": 8,
+            "chance": 0.5
+          },
+          "aggroRange": 290,
+          "skills": [
+            {
+              "id": "web",
+              "kind": "slam",
+              "cd": 7.5,
+              "range": 200,
+              "windup": 0.7,
+              "radius": 80,
+              "power": 0.9,
+              "status": {
+                "type": "slow",
+                "duration": 2,
+                "slow": 0.5
+              }
+            }
+          ]
+        },
+        {
+          "painter": "knight",
+          "element": "poison",
+          "weight": 3,
+          "elite": true,
+          "attackCooldown": 1.8,
+          "exp": 297,
+          "gold": 68,
+          "speed": 92,
+          "radius": 32,
+          "kind": "plaguebringer",
+          "name": "Plaguebringer Morvane",
+          "color": "#3b3a1a",
+          "accent": "#a3e635",
+          "hp": 1364,
+          "damage": 110,
+          "ability": "nova",
+          "status": {
+            "type": "poison",
+            "duration": 5,
+            "dps": 18,
+            "chance": 0.7
+          },
+          "aggroRange": 340,
+          "skills": [
+            {
+              "id": "charge",
+              "kind": "dash",
+              "cd": 7,
+              "range": 280,
+              "windup": 0.65,
+              "dist": 155,
+              "power": 1.3,
+              "radius": 38
+            },
+            {
+              "id": "quake",
+              "kind": "slam",
+              "cd": 6.5,
+              "range": 210,
+              "windup": 0.85,
+              "radius": 130,
+              "power": 1.45
+            }
+          ]
+        }
+      ]
+    },
+    "cursed": {
+      "id": "cursed",
+      "label": "Cursed Reach",
+      "slogan": "The sky is wrong here. So is everything below it.",
+      "palette": {
+        "ground": "#3a2c4a",
+        "fog": "#c084fc",
+        "sky": "#120a1c",
+        "accent": "#c084fc",
+        "grade": 0.16
+      },
+      "ambient": {
+        "color": "#c084fc",
+        "color2": "#f472b6",
+        "void": true,
+        "fog": 0.34
+      },
+      "spawn": {
+        "count": 3,
+        "max": 7,
+        "respawn": 10,
+        "eliteChance": 0.18
+      },
+      "monsters": [
+        {
+          "painter": "knight",
+          "element": "shadow",
+          "weight": 24,
+          "elite": false,
+          "attackCooldown": 1.5,
+          "exp": 92,
+          "gold": 16,
+          "speed": 116,
+          "radius": 19,
+          "kind": "hollow_knight",
+          "name": "Hollow Knight",
+          "color": "#3f3f46",
+          "accent": "#a78bfa",
+          "hp": 441,
+          "damage": 64,
+          "aggroRange": 290,
+          "skills": [
+            {
+              "id": "charge",
+              "kind": "dash",
+              "cd": 7,
+              "range": 280,
+              "windup": 0.65,
+              "dist": 155,
+              "power": 1.3,
+              "radius": 38
+            }
+          ]
+        },
+        {
+          "painter": "wraith",
+          "element": "blood",
+          "weight": 18,
+          "elite": false,
+          "attackCooldown": 1.5,
+          "exp": 88,
+          "gold": 15,
+          "speed": 128,
+          "radius": 16,
+          "kind": "blood_seer",
+          "name": "Blood Seer",
+          "color": "#7f1d1d",
+          "accent": "#fb7185",
+          "hp": 302,
+          "damage": 62,
+          "ability": "ranged",
+          "status": {
+            "type": "bleed",
+            "duration": 3,
+            "dps": 12,
+            "chance": 0.5
+          },
+          "aggroRange": 290,
+          "skills": [
+            {
+              "id": "bolt",
+              "kind": "shot",
+              "cd": 4.5,
+              "range": 340,
+              "windup": 0.55,
+              "power": 1.1
+            },
+            {
+              "id": "volley",
+              "kind": "volley",
+              "cd": 6.5,
+              "range": 360,
+              "windup": 0.7,
+              "power": 0.9,
+              "count": 3,
+              "spread": 0.22
+            }
+          ]
+        },
+        {
+          "painter": "knight",
+          "element": "shadow",
+          "weight": 12,
+          "elite": false,
+          "attackCooldown": 2,
+          "exp": 154,
+          "gold": 26,
+          "speed": 88,
+          "radius": 28,
+          "kind": "bone_warden",
+          "name": "Bone Warden",
+          "color": "#4b3f2f",
+          "accent": "#fde68a",
+          "hp": 812,
+          "damage": 85,
+          "aggroRange": 290,
+          "skills": [
+            {
+              "id": "charge",
+              "kind": "dash",
+              "cd": 7,
+              "range": 280,
+              "windup": 0.65,
+              "dist": 155,
+              "power": 1.3,
+              "radius": 38
+            }
+          ]
+        },
+        {
+          "painter": "wraith",
+          "element": "shadow",
+          "weight": 22,
+          "elite": false,
+          "attackCooldown": 1.1,
+          "exp": 73,
+          "gold": 12,
+          "speed": 196,
+          "radius": 15,
+          "kind": "nightmare",
+          "name": "Nightmare",
+          "color": "#4c1d95",
+          "accent": "#e879f9",
+          "hp": 273,
+          "damage": 51,
+          "aggroRange": 290,
+          "skills": [
+            {
+              "id": "bolt",
+              "kind": "shot",
+              "cd": 4.5,
+              "range": 340,
+              "windup": 0.55,
+              "power": 1.1
+            }
+          ]
+        },
+        {
+          "painter": "golem",
+          "element": "shadow",
+          "weight": 3,
+          "elite": true,
+          "attackCooldown": 1.7,
+          "exp": 374,
+          "gold": 85,
+          "speed": 96,
+          "radius": 36,
+          "kind": "dread_sovereign",
+          "name": "Dread Sovereign",
+          "color": "#1e1b4b",
+          "accent": "#c084fc",
+          "hp": 1860,
+          "damage": 136,
+          "ability": "nova",
+          "status": {
+            "type": "stun",
+            "duration": 0.8,
+            "chance": 0.4
+          },
+          "aggroRange": 340,
+          "skills": [
+            {
+              "id": "slam",
+              "kind": "slam",
+              "cd": 8,
+              "range": 170,
+              "windup": 0.95,
+              "radius": 100,
+              "power": 1.5
+            },
+            {
+              "id": "quake",
+              "kind": "slam",
+              "cd": 6.5,
+              "range": 210,
+              "windup": 0.85,
+              "radius": 130,
+              "power": 1.45
+            }
+          ]
+        },
+        {
+          "painter": "archer",
+          "element": "shadow",
+          "weight": 16,
+          "elite": false,
+          "attackCooldown": 1.55,
+          "exp": 106,
+          "gold": 20,
+          "speed": 124,
+          "radius": 15,
+          "kind": "bone_archer",
+          "name": "Bone Archer",
+          "color": "#a8a29e",
+          "accent": "#c084fc",
+          "hp": 406,
+          "damage": 60,
+          "ability": "ranged",
+          "aggroRange": 290,
+          "skills": [
+            {
+              "id": "aimed",
+              "kind": "shot",
+              "cd": 3.6,
+              "range": 380,
+              "windup": 0.75,
+              "power": 1.15
+            },
+            {
+              "id": "volley",
+              "kind": "volley",
+              "cd": 6.5,
+              "range": 360,
+              "windup": 0.7,
+              "power": 0.9,
+              "count": 3,
+              "spread": 0.22
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "skillSkins": {
+    "ashen_ember": {
+      "id": "ashen_ember",
+      "name": "Ashen Ember",
+      "rarity": "common",
+      "primary": "#ffb74d",
+      "secondary": "#ff7043",
+      "glow": "#ffa726",
+      "fx": "flame"
+    },
+    "forest_leaf": {
+      "id": "forest_leaf",
+      "name": "Forest Leaf",
+      "rarity": "common",
+      "primary": "#9ccc65",
+      "secondary": "#558b2f",
+      "glow": "#aed581",
+      "fx": "petal"
+    },
+    "spring_water": {
+      "id": "spring_water",
+      "name": "Spring Water",
+      "rarity": "common",
+      "primary": "#4fc3f7",
+      "secondary": "#0288d1",
+      "glow": "#81d4fa",
+      "fx": "water"
+    },
+    "cobble_dust": {
+      "id": "cobble_dust",
+      "name": "Cobble Dust",
+      "rarity": "common",
+      "primary": "#bdbdbd",
+      "secondary": "#757575",
+      "glow": "#e0e0e0",
+      "fx": "plain"
+    },
+    "candlelight": {
+      "id": "candlelight",
+      "name": "Candlelight",
+      "rarity": "common",
+      "primary": "#ffe082",
+      "secondary": "#ffb300",
+      "glow": "#ffd54f",
+      "fx": "ember"
+    },
+    "bog_moss": {
+      "id": "bog_moss",
+      "name": "Bog Moss",
+      "rarity": "common",
+      "primary": "#8d9e4b",
+      "secondary": "#4e6b26",
+      "glow": "#aee571",
+      "fx": "bubble"
+    },
+    "iron_grey": {
+      "id": "iron_grey",
+      "name": "Iron Grey",
+      "rarity": "common",
+      "primary": "#90a4ae",
+      "secondary": "#546e7a",
+      "glow": "#cfd8dc",
+      "fx": "plain"
+    },
+    "pale_blue": {
+      "id": "pale_blue",
+      "name": "Pale Blue",
+      "rarity": "common",
+      "primary": "#b3e5fc",
+      "secondary": "#4fc3f7",
+      "glow": "#e1f5fe",
+      "fx": "plain"
+    },
+    "harvest_amber": {
+      "id": "harvest_amber",
+      "name": "Harvest Amber",
+      "rarity": "common",
+      "primary": "#ffca28",
+      "secondary": "#f57f17",
+      "glow": "#ffd54f",
+      "fx": "plain"
+    },
+    "rust_red": {
+      "id": "rust_red",
+      "name": "Rust Red",
+      "rarity": "common",
+      "primary": "#e57373",
+      "secondary": "#b71c1c",
+      "glow": "#ff8a80",
+      "fx": "plain"
+    },
+    "pale_rose": {
+      "id": "pale_rose",
+      "name": "Pale Rose",
+      "rarity": "common",
+      "primary": "#f8bbd0",
+      "secondary": "#c2185b",
+      "glow": "#ffd1dc",
+      "fx": "petal"
+    },
+    "seafoam": {
+      "id": "seafoam",
+      "name": "Seafoam",
+      "rarity": "common",
+      "primary": "#80cbc4",
+      "secondary": "#00695c",
+      "glow": "#b2dfdb",
+      "fx": "bubble"
+    },
+    "toadstone": {
+      "id": "toadstone",
+      "name": "Toadstone",
+      "rarity": "common",
+      "primary": "#9e9d24",
+      "secondary": "#4e4a00",
+      "glow": "#d4e157",
+      "fx": "plain"
+    },
+    "chalk_white": {
+      "id": "chalk_white",
+      "name": "Chalk White",
+      "rarity": "common",
+      "primary": "#eceff1",
+      "secondary": "#90a4ae",
+      "glow": "#ffffff",
+      "fx": "plain"
+    },
+    "frostbite": {
+      "id": "frostbite",
+      "name": "Frostbite",
+      "rarity": "uncommon",
+      "primary": "#81d4fa",
+      "secondary": "#0277bd",
+      "glow": "#e1f5fe",
+      "fx": "frost"
+    },
+    "sunlit_gold": {
+      "id": "sunlit_gold",
+      "name": "Sunlit Gold",
+      "rarity": "uncommon",
+      "primary": "#ffd54f",
+      "secondary": "#ff8f00",
+      "glow": "#fff59d",
+      "fx": "holy"
+    },
+    "blood_red": {
+      "id": "blood_red",
+      "name": "Blood Red",
+      "rarity": "uncommon",
+      "primary": "#ef5350",
+      "secondary": "#7f0000",
+      "glow": "#ff8a80",
+      "fx": "blood"
+    },
+    "violet_mist": {
+      "id": "violet_mist",
+      "name": "Violet Mist",
+      "rarity": "uncommon",
+      "primary": "#ba68c8",
+      "secondary": "#4a148c",
+      "glow": "#e1bee7",
+      "fx": "smoke"
+    },
+    "storm_spark": {
+      "id": "storm_spark",
+      "name": "Storm Spark",
+      "rarity": "uncommon",
+      "primary": "#4dd0e1",
+      "secondary": "#006064",
+      "glow": "#b2ebf2",
+      "fx": "storm"
+    },
+    "moon_silver": {
+      "id": "moon_silver",
+      "name": "Moon Silver",
+      "rarity": "uncommon",
+      "primary": "#e0e0e0",
+      "secondary": "#7986cb",
+      "glow": "#f5f5f5",
+      "fx": "moon"
+    },
+    "thorn_green": {
+      "id": "thorn_green",
+      "name": "Thorn Green",
+      "rarity": "uncommon",
+      "primary": "#7cb342",
+      "secondary": "#33691e",
+      "glow": "#aed581",
+      "fx": "thorn"
+    },
+    "marsh_teal": {
+      "id": "marsh_teal",
+      "name": "Marsh Teal",
+      "rarity": "uncommon",
+      "primary": "#26a69a",
+      "secondary": "#004d40",
+      "glow": "#80cbc4",
+      "fx": "bubble"
+    },
+    "cinder_orange": {
+      "id": "cinder_orange",
+      "name": "Cinder Orange",
+      "rarity": "uncommon",
+      "primary": "#ff8a65",
+      "secondary": "#bf360c",
+      "glow": "#ffab91",
+      "fx": "ember"
+    },
+    "pale_amethyst": {
+      "id": "pale_amethyst",
+      "name": "Pale Amethyst",
+      "rarity": "uncommon",
+      "primary": "#b39ddb",
+      "secondary": "#512da8",
+      "glow": "#d1c4e9",
+      "fx": "plain"
+    },
+    "poison_lime": {
+      "id": "poison_lime",
+      "name": "Poison Lime",
+      "rarity": "rare",
+      "primary": "#c6ff00",
+      "secondary": "#33691e",
+      "glow": "#eeff41",
+      "fx": "venom"
+    },
+    "crystal_blue": {
+      "id": "crystal_blue",
+      "name": "Crystal Blue",
+      "rarity": "rare",
+      "primary": "#4fc3f7",
+      "secondary": "#01579b",
+      "glow": "#b3e5fc",
+      "fx": "crystal"
+    },
+    "sandstorm": {
+      "id": "sandstorm",
+      "name": "Sandstorm",
+      "rarity": "rare",
+      "primary": "#d4a373",
+      "secondary": "#7f5539",
+      "glow": "#ffe0b2",
+      "fx": "sand"
+    },
+    "rune_cyan": {
+      "id": "rune_cyan",
+      "name": "Rune Cyan",
+      "rarity": "rare",
+      "primary": "#00e5ff",
+      "secondary": "#006064",
+      "glow": "#84ffff",
+      "fx": "rune"
+    },
+    "obsidian": {
+      "id": "obsidian",
+      "name": "Obsidian",
+      "rarity": "rare",
+      "primary": "#5c6bc0",
+      "secondary": "#1a237e",
+      "glow": "#9fa8da",
+      "fx": "shadow"
+    },
+    "royal_purple": {
+      "id": "royal_purple",
+      "name": "Royal Purple",
+      "rarity": "rare",
+      "primary": "#ce93d8",
+      "secondary": "#6a1b9a",
+      "glow": "#e1bee7",
+      "fx": "plain"
+    },
+    "bloodmoon_rose": {
+      "id": "bloodmoon_rose",
+      "name": "Bloodmoon Rose",
+      "rarity": "rare",
+      "primary": "#f06292",
+      "secondary": "#880e4f",
+      "glow": "#ff8a80",
+      "fx": "blood"
+    },
+    "sunfire": {
+      "id": "sunfire",
+      "name": "Sunfire",
+      "rarity": "rare",
+      "primary": "#ffd740",
+      "secondary": "#ff6d00",
+      "glow": "#fff8e1",
+      "fx": "flame"
+    },
+    "glitch_green": {
+      "id": "glitch_green",
+      "name": "Glitch Green",
+      "rarity": "epic",
+      "primary": "#76ff03",
+      "secondary": "#ff00e6",
+      "glow": "#b2ff59",
+      "fx": "glitch"
+    },
+    "spectre_teal": {
+      "id": "spectre_teal",
+      "name": "Spectre Teal",
+      "rarity": "epic",
+      "primary": "#1de9b6",
+      "secondary": "#004d40",
+      "glow": "#a7ffeb",
+      "fx": "ghost"
+    },
+    "emberstorm": {
+      "id": "emberstorm",
+      "name": "Emberstorm",
+      "rarity": "epic",
+      "primary": "#ff7043",
+      "secondary": "#d84315",
+      "glow": "#ffab91",
+      "fx": "ember"
+    },
+    "frostbloom": {
+      "id": "frostbloom",
+      "name": "Frostbloom",
+      "rarity": "epic",
+      "primary": "#80deea",
+      "secondary": "#00838f",
+      "glow": "#e0f7fa",
+      "fx": "ice"
+    },
+    "starfall": {
+      "id": "starfall",
+      "name": "Starfall",
+      "rarity": "epic",
+      "primary": "#fff59d",
+      "secondary": "#3949ab",
+      "glow": "#ffffff",
+      "fx": "star"
+    },
+    "pitch_black": {
+      "id": "pitch_black",
+      "name": "Pitch Black",
+      "rarity": "legendary",
+      "primary": "#0a0a0a",
+      "secondary": "#6a1b9a",
+      "glow": "#b388ff",
+      "fx": "void"
+    },
+    "galaxy": {
+      "id": "galaxy",
+      "name": "Galaxy",
+      "rarity": "legendary",
+      "primary": "#7c4dff",
+      "secondary": "#00bcd4",
+      "glow": "#e040fb",
+      "fx": "galaxy"
+    },
+    "aurora": {
+      "id": "aurora",
+      "name": "Aurora",
+      "rarity": "legendary",
+      "primary": "#69f0ae",
+      "secondary": "#7c4dff",
+      "glow": "#b9f6ca",
+      "fx": "prism"
+    },
+    "bat_swarm": {
+      "id": "bat_swarm",
+      "name": "Bat Swarm",
+      "rarity": "legendary",
+      "primary": "#b71c1c",
+      "secondary": "#12005e",
+      "glow": "#ff5252",
+      "fx": "bats"
+    },
+    "void_heart": {
+      "id": "void_heart",
+      "name": "Void Heart",
+      "rarity": "mythic",
+      "primary": "#000000",
+      "secondary": "#d500f9",
+      "glow": "#ea80fc",
+      "fx": "void"
+    }
+  }
 };
 
 function getClass(slug) {
@@ -17841,6 +21371,7 @@ function publicCatalog() {
       petPowerMult: c.petPowerMult != null ? c.petPowerMult : null,
       // Stat ranges drive the class-select detail panel (HP/ATK/MAG/RES/SPD bars).
       speed: c.speed || 0,
+      attackSpeed: c.attackSpeed || 0,
       hp: c.hp || null,
       attack: c.attack || null,
       mana: c.mana || null,
@@ -17853,6 +21384,10 @@ function publicCatalog() {
     ui: CONTENT.ui || {},
     images: CONTENT.images,
     sfx: CONTENT.sfx || {},
+    travel: CONTENT.travel || {},
+    arpgSkills: CONTENT.arpgSkills || {},
+    travelBiomes: CONTENT.travelBiomes || {},
+    skillSkins: CONTENT.skillSkins || {},
     town: {
       search: { stamina: CONTENT.town.search.stamina },
       blacksmith: { stamina: CONTENT.town.blacksmith.stamina },

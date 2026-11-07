@@ -199,6 +199,7 @@ function revive(room, player, targetId) {
   removeItem(player, "the_essence_of_life", 1);
   target.lives = 1;
   target.hp = target.maxHp;
+  target.downed = false;
   target.mana = target.maxMana;
   target.endedDay = false;
   return { type: "temple", text: `${player.name} revives ${target.name} with The Essence of Life!` };

@@ -73,6 +73,15 @@
     return n - Math.floor(n);
   }
 
+  // Yumuşak değer gürültüsü: orman/kaya kümeleri için (sıra sıra dizilimi önler).
+  function valueNoise(x, y) {
+    const xi = Math.floor(x), yi = Math.floor(y);
+    const xf = x - xi, yf = y - yi;
+    const a = hash2(xi, yi), b = hash2(xi + 1, yi), c = hash2(xi, yi + 1), d = hash2(xi + 1, yi + 1);
+    const u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
+    return (a * (1 - u) + b * u) * (1 - v) + (c * (1 - u) + d * u) * v;
+  }
+
   function mulberry32(a) {
     return function () {
       a |= 0; a = (a + 0x6D2B79F5) | 0;
@@ -158,8 +167,34 @@
     kill: { w: 'triangle', f0: 300, f1: 80, fd: 0.25, g: 0.25, gd: 0.25 }
   };
 
+  // Ses anahtarı -> dosya id adayları (public/sounds/<id>.mp3). İlk bulunan çalar.
+  // Yeni ses ekledikçe buraya id yazın veya `engine.sound.assign('slash', [...])` ile atayın.
+  const SOUND_IDS = {
+    slash: ['slash1', 'slash2', 'slash3', 'slash4', 'travel_attack_melee'],
+    shoot: ['travel_attack_ranged'],
+    hit: ['travel_hit_light', 'travel_monster_hit', 'strongattack1'],
+    crit: ['skull_crush', 'travel_crit', 'strongattack2'],
+    dash: ['travel_dash'],
+    kill: ['travel_monster_death', 'monstersound'],
+    ultimate: ['evilascension', 'travel_ult'],
+    revive: ['revivesound', 'travel_revive'],
+    downed: ['losingsound', 'travel_player_death'],
+    loot: ['lootsound', 'travel_loot_drop'],
+    footstep: ['travel_footstep_grass'],
+    ambience_day: ['travel_ambience_day'],
+    ambience_night: ['travel_ambience_night'],
+    ambience_rain: ['travel_ambience_rain', 'rain_loop'],
+    ambience_storm: ['travel_ambience_storm'],
+  };
+
   class SoundFX {
-    constructor() { this.ctx = null; this.enabled = true; }
+    constructor() {
+      this.ctx = null; this.enabled = true; this.vol = 0.85;
+      this.map = Object.assign({}, SOUND_IDS);
+      this.slug = null;
+      this.loopEl = null; this.loopId = null;
+      this._ambienceStarted = false;
+    }
     init() {
       if (!this.ctx && (window.AudioContext || window.webkitAudioContext)) {
         const AC = window.AudioContext || window.webkitAudioContext;
@@ -167,9 +202,36 @@
       }
       if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
     }
+    // Gelecekteki sınıfa özel skill dosyaları için (travel_<slug>_q/e/r).
+    setClass(slug) { this.slug = String(slug || '').toLowerCase(); }
+    // Kullanıcı/ayar tarafından ses atama: engine.sound.assign('slash', ['slash2']).
+    assign(type, ids) { this.map[type] = Array.isArray(ids) ? ids : [ids]; }
+    // Genel ses seviyesi (0-1). Editörden ayarlanır.
+    setMaster(v) {
+      const n = Number(v);
+      if (Number.isFinite(n)) this.vol = Math.max(0, Math.min(1, n));
+      if (this.loopEl) { try { this.loopEl.volume = Math.max(0, Math.min(1, (this._loopBase != null ? this._loopBase : 0.3) * this.vol)); } catch (e) {} }
+    }
+    _file(ids) {
+      try {
+        if (typeof soundMap === 'undefined' || !soundMap || !ids || !ids.length) return null;
+        const hits = ids.filter((id) => soundMap.has(id));
+        return hits.length ? hits[Math.floor(Math.random() * hits.length)] : null;
+      } catch (e) { return null; }
+    }
     play(type) {
       if (!this.enabled) return;
       this.init();
+      // Ambiyans döngüsünü ilk kullanıcı etkileşiminden sonra başlat.
+      if (!this._ambienceStarted) { this._ambienceStarted = true; this.loop('ambience_day'); }
+      const ids = this.map[type];
+      if (ids && ids.length) {
+        const id = this._file(ids);
+        if (id && typeof window !== 'undefined' && typeof window.sfxPlay === 'function') {
+          window.sfxPlay([id], this.vol);
+          return;
+        }
+      }
       if (!this.ctx) return;
       try {
         const t = this.ctx.currentTime;
@@ -197,6 +259,34 @@
         osc.start(t); osc.stop(t + s.gd + 0.01);
       } catch (e) { /* ses hatası yoksay */ }
     }
+    // Ambiyans / yağmur gibi kesintisiz döngüler.
+    loop(type, volume) {
+      if (!this.enabled) return;
+      const ids = this.map[type];
+      if (!ids) return;
+      const id = this._file(ids);
+      if (!id) return; // dosya yoksa sessizce atla
+      const base = volume == null ? 0.32 : volume;
+      this._loopBase = base;
+      if (this.loopId === id && this.loopEl && !this.loopEl.paused) {
+        try { this.loopEl.volume = Math.max(0, Math.min(1, base * this.vol)); } catch (e) {}
+        return;
+      }
+      this.stopLoop();
+      try {
+        const src = (typeof soundMap !== 'undefined' && soundMap && soundMap.get) ? soundMap.get(id) : null;
+        if (!src) return;
+        const a = new Audio(src);
+        a.loop = true;
+        a.volume = Math.max(0, Math.min(1, base * this.vol));
+        a.play().catch(() => {});
+        this.loopEl = a; this.loopId = id;
+      } catch (e) { /* döngü hatası yoksay */ }
+    }
+    stopLoop() {
+      if (this.loopEl) { try { this.loopEl.pause(); } catch (e) {} }
+      this.loopEl = null; this.loopId = null;
+    }
   }
 
   // ==========================================================================
@@ -211,9 +301,9 @@
   [
     [ARCHETYPES.MELEE, ['warrior', 'paladin', 'tank', 'colossus', 'juggernaut', 'knight', 'barbarian', 'berserker', 'guardian', 'crusader', 'gladiator', 'warmaster', 'sentinel', 'warlord', 'waremperor', 'lightbringer', 'tester']],
     [ARCHETYPES.RANGED, ['archer', 'warden', 'stormwarden', 'rootbinder', 'gardener', 'hunter', 'ranger', 'sniper', 'bowmaster', 'marksman']],
-    [ARCHETYPES.MAGE, ['mage', 'archmage', 'archon', 'healer', 'highpriest', 'divinesaint', 'lifeweaver', 'moderator', 'ultramoderator', 'elementalist', 'sorcerer', 'pyromancer', 'chronomancer', 'wizard', 'cleric']],
+    [ARCHETYPES.MAGE, ['mage', 'archmage', 'archon', 'healer', 'support', 'highpriest', 'divinesaint', 'lifeweaver', 'moderator', 'ultramoderator', 'elementalist', 'sorcerer', 'pyromancer', 'chronomancer', 'wizard', 'cleric']],
     [ARCHETYPES.SHADOW, ['rogue', 'assassin', 'nightblade', 'reaper', 'shadeking', 'deathlord', 'bloodspawn', 'bloodlord', 'gloomspawn', 'sanguinelord', 'ninja', 'shadowblade', 'bloodknight']],
-    [ARCHETYPES.TAMER, ['tamer', 'beastmaster', 'alphatamer', 'druid', 'summoner']]
+    [ARCHETYPES.TAMER, ['tamer', 'beastmaster', 'alphatamer', 'animalorde', 'druid', 'summoner']]
   ].forEach(([arch, names]) => names.forEach((n) => { CLASS_MAP[n] = arch; }));
 
   function getArchetype(className) {
@@ -1746,7 +1836,7 @@
       this.timeouts = new Set();
 
       this.playerData = options.player || {
-        name: 'Kahraman',
+        name: 'Adventurer',
         class: 'Warrior',
         level: 12,
         stats: {
@@ -1761,6 +1851,9 @@
       this.onStatsChange = options.onStatsChange || null;
 
       this.camera = { x: 0, y: 0, targetX: 0, targetY: 0 };
+      this.zoom = 1;
+      this.zoomTarget = 1;
+      this._errLogged = false;
       this.shake = { trauma: 0, x: 0, y: 0 };
       this.hurt = 0;
       this.dustTimer = 0;
@@ -1780,12 +1873,29 @@
         baseSpeed: this.playerData.stats.speed || 200,
         archetype,
         style: getClassStyle(this.playerData.class),
-        isDashing: false, dashTimer: 0, dashDuration: 0.22, dashCooldown: 0.85, dashCooldownTimer: 0, dashVx: 0, dashVy: 0,
-        attackCooldown: 0.28, attackCooldownTimer: 0, isAttacking: false, attackAnimTimer: 0,
+        isDashing: false, dashTimer: 0, dashDuration: 0.22, dashCooldown: 0.85, dashCooldownTimer: 0, dashVx: 0, dashVy: 0, channel: null,
+        attackCooldown: 1 / this.computeAttackPerSecond(), attackCooldownTimer: 0, isAttacking: false, attackAnimTimer: 0,
         cooldowns: { q: { max: 4.0, current: 0 }, e: { max: 7.0, current: 0 }, r: { max: 14.0, current: 0 } },
         ghostTrails: [], footprintTimer: 0,
         walkPhase: 0, swingDir: 1
       };
+      // Travel-only combat state (never touched by turn-based combat).
+      this.arpgSkills = {};
+      this.travelBiomes = {};
+      // Mana rengi (skill görünümü): sahip olunan/aktif efekt.
+      this.skins = {};
+      this.skin = null;
+      this.biome = 'verdant';
+      this.biomeDef = null;
+      this.playerShield = 0;
+      this.playerShieldMax = 0;
+      this.playerShieldTimer = 0;
+      this.playerStatuses = {};
+      this.playerSlowMult = 1;
+      this._respawnQueue = [];
+      // Yeni ultimate türleri (R): yörüngede dönen silahlar + zincir şimşeği.
+      this.orbitAura = null;
+      this.chainFx = [];
 
       this.companion = {
         active: archetype === ARCHETYPES.TAMER,
@@ -1799,7 +1909,9 @@
 
       this.tileSize = options.tileSize || 64;
       this.tileThickness = 28;
-      this.mapRadius = options.mapRadius || 8;
+      this.mapRadius = options.mapRadius || 14;
+      // Sunucu karosu -> dünya pikseli ölçeği (setWorldBounds gerçek değeri verir).
+      this.worldScale = this.tileSize;
       this.tiles = [];
       this.tileMap = new Map();
       this.scenery = [];
@@ -1812,29 +1924,71 @@
       this.onMove = options.onMove || null;
       this._lastMoveEmit = 0;
       this.onKill = options.onKill || null;
+      this.onHpChange = options.onHpChange || null;
+      this._lastHpSent = null;
+      this._hpSendTimer = 0;
+      this._hpFromServer = false;
+      this._down = false;
+      // Sunucu onaylı yere düşme durumu (yere yatar, hareket/saldırı kapalı).
+      this.downed = false;
+      this.onDown = options.onDown || null;
+      // Yakındaki düşmüş müttefiki diriltme.
+      this.onRevive = options.onRevive || null;
+      this._reviveTarget = null;
+      this._reviveName = null;
 
       this.monsters = [];
+      // Biyom tablosu henüz gelmediyse eski varsayılan akış kullanılır.
       this.spawnMonsters(6);
 
       this.projectiles = [];
       this.slashes = [];
       this.aoeEffects = [];
+      // Menzil göstergeleri (LoL tarzı): tuşa basınca kısa süre zeminde görünür.
+      // Yalnızca yerel oyuncuya çizilir; sunucuya gönderilmez.
+      this.rangePings = [];
       this.damageNumbers = [];
       this.particles = [];
       this.impacts = [];
       this.ambientMotes = [];
       this.initAmbientMotes(35);
 
+      // Hava durumu: zaman zaman yağmur yağar (ses + görsel). Oyunu etkilemez.
+      this.weather = 'clear';
+      this._weatherTimer = 40 + Math.random() * 70;
+      this.rainDrops = [];
+      this._weatherNight = false;
+
       this.snapCamera();
 
       this.lastTime = performance.now();
       this.isRunning = true;
+      this._destroyed = false;
+      // Sekme arka plandayken tarayıcı rAF'i ~1 Hz'e kısar; simülasyonun
+      // tamamen durmaması için küçük bir aralıkla güncellemeye devam et.
+      if (this._bgTimer) clearInterval(this._bgTimer);
+      this._bgTimer = setInterval(() => {
+        if (!this.isRunning || this._destroyed || !document.hidden) return;
+        const now = performance.now();
+        const dt = Math.min((now - this.lastTime) / 1000, 0.25);
+        this.lastTime = now;
+        try { this.update(dt); } catch (e) { /* arka plan hatası oyunu durdurmasın */ }
+      }, 200);
       this.loop = this.loop.bind(this);
+      // İlk kareyi senkron çiz: canvas oluşturulduğu anda boş/siyah kalmasın.
+      try { this.render(); } catch (e) { /* ilk kare hatası döngüyü engellemesin */ }
       requestAnimationFrame(this.loop);
     }
 
     // --- Küçük yardımcılar ---
     iso(wx, wy, wz = 0) { return worldToScreen(wx, wy, wz, this.camera); }
+
+    // Ekran koordinatını (zoom uygulanmış) dünya koordinatına çevirir.
+    screenWorld(sx, sy) {
+      const z = this.zoom || 1;
+      const cx = this.width / 2, cy = this.height / 2;
+      return screenToWorld(cx + (sx - cx) / z, cy + (sy - cy) / z, this.camera);
+    }
 
     later(fn, ms) {
       const id = setTimeout(() => { this.timeouts.delete(id); if (this.isRunning) fn(); }, ms);
@@ -1847,19 +2001,36 @@
     }
 
     snapCamera() {
-      const ts = worldToScreen(this.player.x, this.player.y, 0, { x: 0, y: 0 });
-      this.camera.targetX = this.width / 2 - ts.x;
-      this.camera.targetY = this.height / 2 - ts.y + 40;
+      if (!this.player) return;
+      const px = Number.isFinite(this.player.x) ? this.player.x : 0;
+      const py = Number.isFinite(this.player.y) ? this.player.y : 0;
+      this.player.x = px; this.player.y = py;
+      const ts = worldToScreen(px, py, 0, { x: 0, y: 0 });
+      const w = Number.isFinite(this.width) ? this.width : 800;
+      const h = Number.isFinite(this.height) ? this.height : 600;
+      this.camera.targetX = Number.isFinite(ts.x) ? w / 2 - ts.x : 0;
+      this.camera.targetY = Number.isFinite(ts.y) ? h / 2 - ts.y : 0;
       this.camera.x = this.camera.targetX;
       this.camera.y = this.camera.targetY;
+      this._camShakeX = 0;
+      this._camShakeY = 0;
+      this._walkBobOffset = 0;
     }
 
     // --- BOYUTLANDIRMA ---
-    resize() {
+    resize(force) {
       const rect = this.canvas.getBoundingClientRect();
-      this.width = rect.width || window.innerWidth;
-      this.height = rect.height || window.innerHeight;
+      const parent = this.canvas.parentElement;
+      const pw = (parent && parent.clientWidth) || 0;
+      const ph = (parent && parent.clientHeight) || 0;
+      const w = Math.max(320, Math.round(rect.width || pw || window.innerWidth));
+      const h = Math.max(240, Math.round(rect.height || ph || window.innerHeight));
       const newDpr = Math.min(window.devicePixelRatio || 1, 2);
+      // Boyut değişmediyse canvas buffer'ını yeniden ayırma. Bu hem gereksiz
+      // temizleme/kamera sıçramasını hem de kısa siyah kırpışmayı önler.
+      if (!force && this.width === w && this.height === h && this.dpr === newDpr) return;
+      this.width = w;
+      this.height = h;
       if (newDpr !== this.dpr) this.tileSprites = {};
       this.dpr = newDpr;
       this.canvas.width = Math.floor(this.width * this.dpr);
@@ -1875,6 +2046,11 @@
       for (let i = 0; i < n; i++) {
         this.stars.push({ x: rnd() * this.width, y: rnd() * this.height, r: 0.4 + rnd() * 1.1, a: 0.15 + rnd() * 0.5, tw: rnd() * 6 });
       }
+      // Boyut değişince kamera hedefi de güncellenmeli (oyuncu ortada kalsın).
+      if (this.player) this.snapCamera();
+      // Buffer yeniden ayrıldığında bir sonraki kareyi beklemeden çiz:
+      // yeniden boyutlandırma sırasında kısa siyah kırpışmayı önler.
+      if (this.isRunning) { try { this.render(); } catch (e) {} }
     }
 
     // --- GİRDİ ---
@@ -1882,9 +2058,13 @@
       this._onKeyDown = (e) => {
         this.keys[e.key.toLowerCase()] = true;
         this.keys[e.code] = true;
+        // Basılı tutma (repeat) yetenekleri tekrar tekrar tetiklemesin.
+        if (e.repeat) return;
         if (e.code === 'Space') { e.preventDefault(); this.triggerDash(); }
         if (e.key.toLowerCase() === 'q') this.triggerSkill('q');
         if (e.key.toLowerCase() === 'e') {
+          // Önce yakındaki düşmüş müttefiki dirilt.
+          if (this._reviveTarget) { const id = this._reviveTarget; this._reviveTarget = null; if (this.onRevive) this.onRevive(id); return; }
           if (this.checkInteractionNearPlayer()) this.onInteract(this._interactTarget || null);
           else this.triggerSkill('e');
         }
@@ -1898,7 +2078,7 @@
         const rect = this.canvas.getBoundingClientRect();
         this.mouse.screenX = e.clientX - rect.left;
         this.mouse.screenY = e.clientY - rect.top;
-        const w = screenToWorld(this.mouse.screenX, this.mouse.screenY, this.camera);
+        const w = this.screenWorld(this.mouse.screenX, this.mouse.screenY);
         this.mouse.worldX = w.x;
         this.mouse.worldY = w.y;
       };
@@ -1907,6 +2087,10 @@
       };
       this._onMouseUp = (e) => { if (e.button === 0) this.mouse.isDown = false; };
       this._onContext = (e) => e.preventDefault();
+      this._onWheel = (e) => {
+        e.preventDefault();
+        this.zoomTarget = clamp(this.zoomTarget + (e.deltaY > 0 ? -0.1 : 0.1), 0.65, 2.2);
+      };
 
       window.addEventListener('keydown', this._onKeyDown);
       window.addEventListener('keyup', this._onKeyUp);
@@ -1914,8 +2098,22 @@
       this.canvas.addEventListener('mousedown', this._onMouseDown);
       this.canvas.addEventListener('mouseup', this._onMouseUp);
       this.canvas.addEventListener('contextmenu', this._onContext);
+      this.canvas.addEventListener('wheel', this._onWheel, { passive: false });
       this._prevCursor = this.canvas.style ? this.canvas.style.cursor : '';
       if (this.canvas.style) this.canvas.style.cursor = 'none';
+
+      // Sekme arka plana alınıp geri dönünce oyun devam etsin: rAF durur,
+      // dönüşte büyük dt sıçraması yapmadan zamanı sıfırla (tarayıcı rAF'i
+      // kendisi devam ettirir; ikinci bir döngü başlatmayız).
+      this._onVisibility = () => {
+        if (document.hidden) return;
+        this.lastTime = performance.now();
+        if (this.isRunning && this.canvas && this.canvas.width > 0) {
+          try { this.update(0.0001); this.render(); } catch (e) {}
+        }
+      };
+      document.addEventListener('visibilitychange', this._onVisibility);
+      window.addEventListener('focus', this._onVisibility);
     }
 
     // ======================================================================
@@ -1925,7 +2123,10 @@
       this.tiles = [];
       this.tileMap = new Map();
       this.scenery = [];
-      const R = this.mapRadius;
+      this.solids = [];
+      // Bozuk/eksik yarıçap gelirse güvenli varsayılana dön.
+      const R = Number.isFinite(this.mapRadius) ? Math.max(6, Math.min(70, Math.floor(this.mapRadius))) : 14;
+      this.mapRadius = R;
 
       for (let gx = -R; gx <= R; gx++) {
         for (let gy = -R; gy <= R; gy++) {
@@ -1937,11 +2138,9 @@
 
           let type = 'grass';
           const isPath = Math.abs(gx + gy) <= 1 || (Math.abs(gx - gy) <= 1 && dist < 4);
-          const isMountain = gx < -1 && gy < -1 && dist < 6;
           if (isPath) type = 'path';
-          else if (isMountain) type = 'rock';
 
-          const elevation = isMountain ? 22 : 0;
+          const elevation = 0;
           const tile = {
             gx, gy, wx, wy, wz: elevation, type,
             shade: (Math.sin(gx * 7 + gy * 13) + 1) * 0.08,
@@ -1951,32 +2150,81 @@
           this.tiles.push(tile);
           this.tileMap.set(gx * 1000 + gy, tile);
 
-          if (type === 'grass' && dist > 1.8) {
-            const hash = Math.sin(gx * 99 + gy * 33);
-            if (hash > 0.45 && !isMountain) {
+          if (type === 'grass' && dist > 2.2) {
+            // Doğal kümelenme: düşük frekanslı gürültü ormanları, kayalıkları
+            // ve dağ sırtlarını oluşturur; konumlar hafifçe titretilir.
+            const px = wx + (hash2(gx, gy) - 0.5) * this.tileSize * 0.85;
+            const py = wy + (hash2(gy * 1.7, gx * 2.3) - 0.5) * this.tileSize * 0.85;
+            const forest = valueNoise(gx * 0.30 + 11.3, gy * 0.30 + 7.9);
+            const stones = valueNoise(gx * 0.38 - 5.1, gy * 0.38 + 3.7);
+            const ridge = valueNoise(gx * 0.19 + 41.2, gy * 0.19 + 12.8);
+            const r = hash2(gx * 3.1 + 0.5, gy * 5.7 + 0.25);
+
+            if (ridge > 0.72 && dist > 4 && r > 0.4) {
+              const big = r > 0.6;
+              // Dağ yok: aynı ölçekte, çok yüzlü 3D kaya kütlesi (kaya sırtı).
               this.scenery.push({
-                type: 'tree', wx: wx + (hash * 20 - 10), wy: wy + (hash * 15 - 7.5),
-                scale: 0.85 + Math.abs(hash) * 0.35, swayOffset: Math.random() * TAU, tone: hash2(gx, gy)
+                type: 'mountain', wx: px, wy: py,
+                scale: big ? 1.15 + r * 0.45 : 0.85 + r * 0.3,
+                solidRadius: big ? 0.38 : 0.26,
               });
-            } else if (hash < -0.6) {
-              this.scenery.push({ type: 'boulder', wx: wx + (hash * 15), wy: wy - (hash * 10), scale: 0.7 + Math.abs(hash) * 0.4 });
-            } else if (hash2(gx * 5.3, gy * 9.1) > 0.93) {
-              this.scenery.push({ type: 'mushroom', wx: wx + 8, wy: wy - 6, scale: 0.8 + hash2(gx, gy * 2) * 0.5 });
+            } else if (forest > 0.57 && r > 0.2) {
+              const big = r > 0.72;
+              this.scenery.push({
+                type: 'tree', wx: px, wy: py,
+                scale: big ? 1.35 + r * 0.5 : 0.8 + forest * 0.45,
+                // Hitbox sadece gövde: artık ağaçların arasından rahatça geçilir.
+                solidRadius: big ? 0.22 : 0.14,
+                swayOffset: hash2(gx, gy) * TAU, tone: hash2(gx * 0.7, gy * 0.9),
+              });
+            } else if (stones > 0.64 && r > 0.45) {
+              const big = r > 0.82;
+              this.scenery.push({
+                type: 'boulder', wx: px, wy: py,
+                scale: big ? 1.5 + r * 0.9 : 0.6 + stones * 0.5,
+                // Kaya hitbox'ı görselin çok altında: dar geçitler açılır.
+                solidRadius: big ? 0.28 : 0.16,
+              });
+            } else if (r > 0.94) {
+              // Süs çalıları: 3D hacimli, çarpışmasız (yürümeyi engellemez).
+              this.scenery.push({
+                type: 'bush', wx: px + 5, wy: py - 2,
+                scale: 0.7 + hash2(gx * 1.7, gy * 2.3) * 0.6,
+                swayOffset: hash2(gx, gy) * TAU,
+              });
+            } else if (r > 0.975) {
+              this.scenery.push({ type: 'mushroom', wx: px + 4, wy: py - 3, scale: 0.8 + hash2(gx, gy * 2) * 0.5 });
             }
-          } else if (type === 'path' && dist > 2.5 && hash2(gx * 2.2, gy * 3.3) > 0.86) {
+          } else if (type === 'path' && dist > 2.5 && hash2(gx * 2.2, gy * 3.3) > 0.88) {
             this.scenery.push({ type: 'lantern', wx: wx + 22, wy: wy - 22, scale: 1 });
           }
         }
       }
 
       // Büyük dünyalarda ağaç/taş sayısını sınırla (mobil performansı).
-      const SCENERY_CAP = 1600;
+      const SCENERY_CAP = 1400;
       if (this.scenery.length > SCENERY_CAP) {
-        const keep = [];
         const step = this.scenery.length / SCENERY_CAP;
-        for (let i = 0; i < this.scenery.length; i += step) keep.push(this.scenery[Math.floor(i)]);
+        const keep = [];
+        for (let i = 0; i < SCENERY_CAP; i++) keep.push(this.scenery[Math.floor(i * step)]);
         this.scenery = keep;
       }
+      // Harita kenarını görünür kaya duvarıyla çevir (görünmez sınır yerine).
+      const rimR = (R - 0.42) * this.tileSize;
+      const rimCount = Math.max(24, Math.round(R * 7));
+      for (let i = 0; i < rimCount; i++) {
+        const a = (i / rimCount) * TAU;
+        const rr = rimR + (hash2(i, 3.7) - 0.5) * 14;
+        this.scenery.push({
+          type: 'mountain',
+          wx: Math.cos(a) * rr, wy: Math.sin(a) * rr,
+          scale: 0.9 + hash2(i, 7.1) * 0.35,
+          solidRadius: 0.3,
+        });
+      }
+
+      // Çarpışma listesi kırpmadan SONRA kurulur.
+      this.solids = this.scenery.filter((s) => s.solidRadius > 0);
 
       this.scenery.push({ type: 'shrine', wx: 0, wy: 120, scale: 1.1, interactable: true, label: 'Antik Seyahat Taşı [E]' });
       this.sortRenderables();
@@ -1989,28 +2237,185 @@
     // ======================================================================
     // CANAVARLAR
     // ======================================================================
+    // Verilen noktayı harita diskine kenetler (canavar/mob taşmasın).
+    clampToWorld(x, y, margin = 90) {
+      const R = Math.max(120, (this.mapRadius - 0.5) * this.tileSize - margin);
+      const d = Math.hypot(x, y);
+      if (d <= R) return { x, y };
+      const a = Math.atan2(y, x);
+      return { x: Math.cos(a) * R, y: Math.sin(a) * R };
+    }
+
+    // Oyuncuyu katı nesnelerden (ağaç, kaya, dağ) dışarı iter.
+    resolvePlayerCollision(P) {
+      const solids = this.solids;
+      if (!solids || !solids.length || !P) return;
+      // Oyuncu çarpışma yarıçapı küçültüldü: ağaç/kaya aralarından geçiş rahat.
+      const pr = Math.max(6, this.tileSize * 0.15);
+      for (let pass = 0; pass < 2; pass++) {
+        for (let i = 0; i < solids.length; i++) {
+          const s = solids[i];
+          const sr = (s.solidRadius || 0) * this.tileSize;
+          if (sr <= 0) continue;
+          const dx = P.x - s.wx, dy = P.y - s.wy;
+          const min = sr + pr;
+          const d2 = dx * dx + dy * dy;
+          if (d2 >= min * min) continue;
+          const d = Math.sqrt(d2);
+          if (d < 0.001) { P.x = s.wx + min; P.y = s.wy; continue; }
+          const push = (min - d) / d;
+          P.x += dx * push;
+          P.y += dy * push;
+        }
+      }
+    }
+
+    // ARPG içeriği: { arpgSkills: { classSlug: {q,e,r,auto} }, travelBiomes: {...} }
+    applyContent(cat) {
+      if (!cat || typeof cat !== 'object') return;
+      if (cat.arpgSkills && typeof cat.arpgSkills === 'object') this.arpgSkills = cat.arpgSkills;
+      if (cat.travelBiomes && typeof cat.travelBiomes === 'object') this.travelBiomes = cat.travelBiomes;
+      if (cat.skillSkins && typeof cat.skillSkins === 'object') this.skins = cat.skillSkins;
+    }
+
+    // Aktif "mana rengi"ni uygula (yetenek renkleri + parçacık efekti).
+    setSkin(id) {
+      const s = id && this.skins ? this.skins[id] : null;
+      this.skin = s || null;
+    }
+
+    // Mana rengi parçacıkları (yarasa, galaksi, su, void, glitch...).
+    emitSkinFx(x, y, count = 10) {
+      const skin = this.skin;
+      if (!skin || !skin.fx || skin.fx === 'plain' || !Number.isFinite(x) || !Number.isFinite(y)) return;
+      const fx = skin.fx;
+      for (let i = 0; i < count; i++) {
+        const a = Math.random() * TAU;
+        const sp = 26 + Math.random() * 90;
+        const p = {
+          wx: x + (Math.random() - 0.5) * 22, wy: y + (Math.random() - 0.5) * 22,
+          wz: 14 + Math.random() * 26,
+          vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, vz: 18 + Math.random() * 60,
+          color: Math.random() > 0.5 ? skin.primary : (skin.glow || skin.secondary || skin.primary),
+          size: 2 + Math.random() * 2.2, life: 0.55 + Math.random() * 0.5, grav: -30
+        };
+        if (fx === 'bats') { p.shape = 'bat'; p.size = 2.6 + Math.random() * 2.4; p.life = 1.2; p.grav = -60; p.vz = 30 + Math.random() * 40; }
+        else if (fx === 'galaxy' || fx === 'star' || fx === 'moon') { p.shape = 'star'; p.vz = 50 + Math.random() * 90; p.grav = 30; p.color = Math.random() > 0.6 ? '#ffffff' : p.color; }
+        else if (fx === 'water' || fx === 'bubble') { p.shape = 'bubble'; p.vz = 40 + Math.random() * 40; }
+        else if (fx === 'petal' || fx === 'thorn') { p.shape = 'leaf'; p.grav = -20; p.spin = Math.random() * TAU; }
+        else if (fx === 'void' || fx === 'shadow') { p.shape = 'void'; p.additive = false; p.size += 1.4; p.grav = -10; }
+        else if (fx === 'glitch') { p.shape = 'glitch'; p.additive = false; p.size = 2 + Math.random() * 3; }
+        else if (fx === 'smoke' || fx === 'ghost') { p.shape = 'smoke'; p.additive = false; p.grow = 18; p.grav = -18; }
+        else if (fx === 'frost' || fx === 'ice' || fx === 'crystal' || fx === 'prism') { p.shape = 'shard'; p.spin = Math.random() * TAU; p.grav = 40; }
+        else if (fx === 'flame' || fx === 'ember') { p.vz = 60 + Math.random() * 80; p.grav = 40; }
+        this.addParticle(p);
+      }
+    }
+
+    // Biyom seçimi (sunucu haritasının `type` alanı ile eşleşir).
+    setBiome(id, force) {
+      const bid = String(id || 'verdant');
+      const def = (this.travelBiomes && this.travelBiomes[bid]) || null;
+      const changed = bid !== this.biome || !!force;
+      this.biome = bid;
+      this.biomeDef = def;
+      this.biomePalette = (def && def.palette) || null;
+      this.biomeAmbient = (def && def.ambient) || null;
+      if (this.ambientMotes) this.initAmbientMotes(35);
+      if (!changed) return;
+      // Yeni biyom: karo renkleri değiştiği için sprite önbelleğini boşalt.
+      this.tileSprites = {};
+      // Yeni biyom: eski canavarları temizle, yeni roster'ı doğur.
+      this.monsters = [];
+      this._respawnQueue = [];
+      const sp = (def && def.spawn) || {};
+      this.spawnMonsters(Math.max(3, Number(sp.count) || 6));
+    }
+
+    // Sınıfın ARPG yetenek seti; tanımsızsa jenerik yay/melee'ye düşer.
+    classSkillSet() {
+      const slug = this.playerData && this.playerData.class;
+      if (slug && this.arpgSkills && this.arpgSkills[slug]) return this.arpgSkills[slug];
+      return null;
+    }
+
+    // Saldırı hızı: taban + ATK ölçeği, class/ırk/item attackSpeed yüzdesiyle.
+    computeAttackPerSecond() {
+      const st = (this.playerData && this.playerData.stats) || {};
+      const atk = Number(st.attack) || 0;
+      // Taban 0.62; ATK arttıkça hafifçe hızlanır (LoL benzeri yumuşak eğri).
+      const base = 0.62 + atk * 0.0045;
+      const pct = Number(st.attackSpeed) || 0;
+      const perSec = base * (1 + pct / 100);
+      return Math.max(0.35, Math.min(2.6, perSec));
+    }
+
+    refreshAttackCooldown() {
+      if (!this.player) return;
+      const aps = this.computeAttackPerSecond();
+      this.player.attackCooldown = 1 / aps;
+    }
+
+    pickBiomeMonster() {
+      const def = this.biomeDef;
+      const list = (def && def.monsters) || null;
+      if (!list || !list.length) return null;
+      const eliteChance = (def.spawn && Number(def.spawn.eliteChance)) || 0;
+      const normals = list.filter((m) => !m.elite);
+      const elites = list.filter((m) => m.elite);
+      const useElite = elites.length && Math.random() < eliteChance;
+      const pool = useElite ? elites : (normals.length ? normals : list);
+      const total = pool.reduce((a, m) => a + (Number(m.weight) || 1), 0);
+      let r = Math.random() * total;
+      for (const m of pool) {
+        r -= (Number(m.weight) || 1);
+        if (r <= 0) return m;
+      }
+      return pool[0];
+    }
+
     spawnMonsters(count = 6) {
-      const monsterTypes = [
-        { kind: 'goblin', name: 'Koru Goblini', color: '#56ab2f', hp: 220, maxHp: 220, speed: 130, damage: 24, radius: 16, exp: 45 },
-        { kind: 'treant', name: 'Yozlaşmış Treant', color: '#4a2c11', hp: 480, maxHp: 480, speed: 85, damage: 45, radius: 24, exp: 90 },
-        { kind: 'wraith', name: 'Gölge Avcısı', color: '#7b1fa2', hp: 180, maxHp: 180, speed: 175, damage: 32, radius: 15, exp: 60 }
+      const def = this.biomeDef;
+      const legacy = [
+        { kind: 'goblin', name: 'Koru Goblini', painter: 'goblin', color: '#56ab2f', accent: '#d9f99d', hp: 220, maxHp: 220, speed: 130, damage: 24, radius: 16, exp: 45 },
+        { kind: 'treant', name: 'Yozlaşmış Treant', painter: 'treant', color: '#4a2c11', accent: '#a3e635', hp: 480, maxHp: 480, speed: 85, damage: 45, radius: 24, exp: 90 },
+        { kind: 'wraith', name: 'Gölge Avcısı', painter: 'wraith', color: '#7b1fa2', accent: '#e9d5ff', hp: 180, maxHp: 180, speed: 175, damage: 32, radius: 15, exp: 60 }
       ];
 
       for (let i = 0; i < count; i++) {
-        const type = monsterTypes[i % monsterTypes.length];
-        const angle = (i / count) * TAU + Math.random() * 0.4;
-        const dist = 220 + Math.random() * 160;
-        const px = Math.cos(angle) * dist, py = Math.sin(angle) * dist;
+        const base = (def && this.pickBiomeMonster()) || legacy[i % legacy.length];
+        const angle = (i / Math.max(1, count)) * TAU + Math.random() * 0.4;
+        const dist = 300 + Math.random() * 320;
+        const pcx = this.player ? this.player.x : 0;
+        const pcy = this.player ? this.player.y : 0;
+        const raw = this.clampToWorld(pcx + Math.cos(angle) * dist, pcy + Math.sin(angle) * dist);
+        const px = raw.x, py = raw.y;
+        const scale = base.elite ? 1 : 1;
         this.monsters.push({
           id: Math.random().toString(36).substr(2, 9),
-          ...type,
+          kind: base.kind,
+          name: base.elite ? `★ ${base.name}` : base.name,
+          painter: base.painter || 'goblin',
+          color: base.color || '#56ab2f',
+          accent: base.accent || '#d9f99d',
+          element: base.element || 'physical',
+          elite: !!base.elite,
+          ability: base.ability || null,
+          statusOnHit: base.status || null,
+          hp: Math.round(base.hp * scale), maxHp: Math.round(base.hp * scale),
+          speed: base.speed || 130, damage: base.damage || 24,
+          radius: base.radius || 16, exp: base.exp || 45, gold: base.gold || 6,
           x: px, y: py, z: 0,
           patrolCenterX: px, patrolCenterY: py,
           patrolTimer: Math.random() * 3, patrolTargetX: px, patrolTargetY: py,
           vx: 0, vy: 0, facingAngle: 0,
-          state: 'PATROL', attackTimer: 0, attackCooldown: 1.4,
-          flashTimer: 0, alertTimer: 0,
-          hpGhost: type.hp, walkPhase: Math.random() * 6, deathTimer: 0, dead: false
+          state: 'PATROL', attackTimer: 0, attackCooldown: base.attackCooldown || 1.4,
+          flashTimer: 0, alertTimer: 0, statuses: {},
+          // Yetenekler + menzil: vurulunca aggro'ya girer, bırakınca devriyeye döner.
+          skills: Array.isArray(base.skills) ? base.skills : null,
+          skillCds: (Array.isArray(base.skills) ? base.skills : []).map((s) => (Number(s.cd) || 6) * (0.4 + Math.random() * 0.6)),
+          cast: null, aggroRange: Number(base.aggroRange) || 280, aggroTimer: 0,
+          hpGhost: Math.round(base.hp * scale), walkPhase: Math.random() * 6, deathTimer: 0, dead: false
         });
       }
     }
@@ -2020,22 +2425,182 @@
     // ======================================================================
     initAmbientMotes(count) {
       this.ambientMotes = [];
-      for (let i = 0; i < count; i++) {
+      const amb = this.biomeAmbient || {};
+      const c1 = amb.color || '#b8e986';
+      const c2 = amb.color2 || '#ffd54f';
+      const leaf = !!amb.leaf;
+      const snow = !!amb.snow;
+      const ember = !!amb.ember;
+      const bubble = !!amb.bubble;
+      const voidMote = !!amb.void;
+      const n = snow ? Math.round(count * 2) : count;
+      for (let i = 0; i < n; i++) {
         this.ambientMotes.push({
           x: (Math.random() - 0.5) * 900, y: (Math.random() - 0.5) * 900, z: 10 + Math.random() * 60,
           vx: (Math.random() - 0.5) * 15, vy: (Math.random() - 0.5) * 15,
-          size: 1 + Math.random() * 2.2, alpha: 0.3 + Math.random() * 0.5,
-          color: Math.random() > 0.5 ? '#b8e986' : '#ffd54f', phase: Math.random() * 10, leaf: false
+          size: snow ? 1 + Math.random() * 1.8 : 1 + Math.random() * 2.2,
+          alpha: 0.3 + Math.random() * 0.5,
+          color: Math.random() > 0.5 ? c1 : c2, phase: Math.random() * 10,
+          leaf: leaf, snow, ember, bubble, voidMote
         });
       }
-      for (let i = 0; i < 14; i++) {
-        this.ambientMotes.push({
-          x: (Math.random() - 0.5) * 900, y: (Math.random() - 0.5) * 900, z: Math.random() * 140,
-          vx: 8 + Math.random() * 10, vy: 4 + Math.random() * 8,
-          size: 2.2 + Math.random() * 1.6, alpha: 0.85,
-          color: Math.random() > 0.5 ? '#7cb342' : '#c0a040', phase: Math.random() * 10, leaf: true
-        });
+      if (leaf) {
+        for (let i = 0; i < 14; i++) {
+          this.ambientMotes.push({
+            x: (Math.random() - 0.5) * 900, y: (Math.random() - 0.5) * 900, z: Math.random() * 140,
+            vx: 8 + Math.random() * 10, vy: 4 + Math.random() * 8,
+            size: 2.2 + Math.random() * 1.6, alpha: 0.85,
+            color: Math.random() > 0.5 ? c1 : c2, phase: Math.random() * 10, leaf: true
+          });
+        }
       }
+    }
+
+    // Biyom atmosferi: zemin tonu + sis + parçacık rengi.
+    // Not: bu katman bilinçli olarak TAM EKRAN çizilir (zoom'dan bağımsız).
+    // Daha önce zoom transformu içinde fillRect(0,0,w,h) yapıldığı için
+    // uzaklaştırınca ekranda keskin kenarlı "kare sis" görünüyordu.
+    renderBiomeOverlay(ctx) {
+      const pal = this.biomePalette;
+      if (!pal) return;
+      const t = this.time;
+      const W = this.width, H = this.height;
+      const tint = pal.accent || pal.ground || '#4f8f3a';
+      const grade = Number.isFinite(Number(pal.grade)) ? Number(pal.grade) : 0.10;
+      // Yumuşak renk tonu (multiply) — tüm ekranı kaplar, kenar bırakmaz.
+      // Biyom başına farklı yoğunluk: her diyar kendi rengine boyanır.
+      ctx.save();
+      ctx.globalCompositeOperation = 'multiply';
+      ctx.globalAlpha = grade;
+      ctx.fillStyle = tint;
+      ctx.fillRect(0, 0, W, H);
+      ctx.restore();
+
+      // Tundra: kar görünümü artık karo renklerinden gelir (tileTint).
+      // Ekstra beyaz leke/yuvarlak katmanı yok — daha temiz ve kare atlaması yapmaz.
+      if (this.biomeAmbient && this.biomeAmbient.ember) {
+        // Kül diyarı: sıcak, isli bir ışık.
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.globalAlpha = 0.05;
+        ctx.fillStyle = '#ff8a50';
+        ctx.fillRect(0, 0, W, H);
+        ctx.restore();
+      } else if (this.biomeAmbient && this.biomeAmbient.void) {
+        // Lanetli diyar: mor bir parıltı.
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.globalAlpha = 0.05;
+        ctx.fillStyle = '#a855f7';
+        ctx.fillRect(0, 0, W, H);
+        ctx.restore();
+      }
+
+      const fog = (this.biomeAmbient && Number(this.biomeAmbient.fog)) || 0;
+      if (fog <= 0) return;
+      // Sis: merkezden dışa doğru yumuşak; kenarlarda tek renge kilitlenmez,
+      // hafifçe sürüklenir. Ekran kenarlarına doğru yoğunlaşır (derinlik hissi).
+      const cx = W / 2 + Math.sin(t * 0.06) * W * 0.05;
+      const cy = H / 2 + Math.cos(t * 0.05) * H * 0.04;
+      const maxA = Math.min(0.42, fog);
+      const fogCol = pal.fog || '#ffffff';
+      ctx.save();
+      const g = ctx.createRadialGradient(cx, cy, Math.min(W, H) * 0.18, cx, cy, Math.max(W, H) * 0.78);
+      g.addColorStop(0, rgba(fogCol, 0));
+      g.addColorStop(0.55, rgba(fogCol, maxA * 0.35));
+      g.addColorStop(1, rgba(fogCol, maxA));
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, H);
+      ctx.restore();
+    }
+
+    // ---- Ayarlar (GameCraft editöründen gelir) ----
+    // cfg: { weather:{enabled,rainChance,minDelay,maxDelay,rainVolume,dayVolume},
+    //        downed:{enabled,reviveRange}, sound:{master} }
+    // sfxOverrides: { slash:'slash2', ambience_rain:'travel_ambience_rain', ... }
+    applyConfig(cfg, sfxOverrides) {
+      this.config = Object.assign({
+        weather: { enabled: true, rainChance: 0.4, minDelay: 50, maxDelay: 160, rainVolume: 0.28, dayVolume: 0.22 },
+        downed: { enabled: true, reviveRange: 110 },
+        sound: { master: 0.85 },
+      }, cfg || {});
+      const cw = this.config.weather || {};
+      const cd = this.config.downed || {};
+      this.weatherEnabled = cw.enabled !== false;
+      this.rainChance = clamp(Number(cw.rainChance) || 0, 0, 1);
+      this.weatherMinDelay = Math.max(5, Number(cw.minDelay) || 50);
+      this.weatherMaxDelay = Math.max(this.weatherMinDelay + 1, Number(cw.maxDelay) || 160);
+      this.reviveRange = Math.max(40, Number(cd.reviveRange) || 110);
+      if (this.sound) {
+        this.sound.setMaster((this.config.sound && this.config.sound.master) || 0.85);
+        if (sfxOverrides) {
+          for (const [key, val] of Object.entries(sfxOverrides)) {
+            if (val) this.sound.assign(key, Array.isArray(val) ? val : [val]);
+          }
+        }
+      }
+      if (!this.weatherEnabled) this.setWeather('clear');
+      else if (this.weather === 'rain') this.setWeather('rain');
+    }
+
+    // ---- Hava durumu (yağmur) ----
+    setWeather(w) {
+      const cw = (this.config && this.config.weather) || {};
+      this.weather = (w === 'rain' && this.weatherEnabled !== false) ? 'rain' : 'clear';
+      if (this.weather === 'rain') {
+        this.rainDrops = [];
+        for (let i = 0; i < 130; i++) {
+          this.rainDrops.push({
+            x: Math.random() * (this.width || 800),
+            y: Math.random() * (this.height || 600),
+            len: 8 + Math.random() * 12,
+            sp: 520 + Math.random() * 360,
+            a: 0.18 + Math.random() * 0.32,
+          });
+        }
+        if (this.sound) this.sound.loop('ambience_rain', cw.rainVolume != null ? cw.rainVolume : 0.28);
+      } else {
+        if (this.sound) this.sound.loop('ambience_day', cw.dayVolume != null ? cw.dayVolume : 0.22);
+      }
+    }
+
+    updateWeather(dt) {
+      if (this.weatherEnabled === false) {
+        if (this.weather !== 'clear') this.setWeather('clear');
+        return;
+      }
+      this._weatherTimer -= dt;
+      if (this._weatherTimer <= 0) {
+        const minD = this.weatherMinDelay || 50;
+        const maxD = this.weatherMaxDelay || 160;
+        this._weatherTimer = minD + Math.random() * (maxD - minD);
+        const chance = this.rainChance != null ? this.rainChance : 0.4;
+        this.setWeather(this.weather === 'rain' ? 'clear' : (Math.random() < chance ? 'rain' : 'clear'));
+      }
+      if (this.weather === 'rain') {
+        const w = this.width || 800, h = this.height || 600;
+        for (const d of this.rainDrops) {
+          d.y += d.sp * dt;
+          d.x -= d.sp * 0.22 * dt;
+          if (d.y > h + 20) { d.y = -20; d.x = Math.random() * (w + 120); }
+          if (d.x < -30) d.x = w + Math.random() * 60;
+        }
+      }
+    }
+
+    renderWeather(ctx) {
+      if (this.weather !== 'rain' || !this.rainDrops.length) return;
+      ctx.save();
+      ctx.strokeStyle = 'rgba(174,205,232,0.55)';
+      ctx.lineWidth = 1.1;
+      ctx.beginPath();
+      for (const d of this.rainDrops) {
+        ctx.globalAlpha = d.a;
+        ctx.moveTo(d.x, d.y);
+        ctx.lineTo(d.x - d.len * 0.22, d.y + d.len);
+      }
+      ctx.stroke();
+      ctx.restore();
     }
 
     // ======================================================================
@@ -2050,7 +2615,8 @@
         color: o.color || '#ffffff', size: o.size || 3,
         life, maxLife: life, alpha: 1,
         grav: o.grav === undefined ? 320 : o.grav,
-        additive: o.additive !== false, grow: o.grow || 0, drag: o.drag || 0
+        additive: o.additive !== false, grow: o.grow || 0, drag: o.drag || 0,
+        shape: o.shape || null, spin: o.spin || 0
       });
     }
 
@@ -2058,10 +2624,39 @@
       this.impacts.push({ wx, wy, wz: 18, color, big, timer: 0.22, duration: 0.22, seed: Math.random() * 100 });
     }
 
+    // Sandık / han / harabe etkileşiminde zeminde yumuşak bir ışık halkası.
+    spawnInteractPulse(wx, wy, color) {
+      const col = color || '#ffe08a';
+      this.aoeEffects.push({ x: wx, y: wy, radius: 56, duration: 0.5, timer: 0.5, color: col, ring: true });
+      for (let i = 0; i < 10; i++) {
+        const a = Math.random() * TAU;
+        const sp = 26 + Math.random() * 70;
+        this.addParticle({
+          wx, wy, wz: 12 + Math.random() * 16,
+          vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, vz: 50 + Math.random() * 50,
+          color: i % 2 ? col : '#ffffff', size: 1.6 + Math.random() * 2,
+          life: 0.45 + Math.random() * 0.3, grav: 40, additive: true
+        });
+      }
+    }
+
+    // LoL tarzı menzil göstergesi: zemin decal'i, yalnızca yerel oyuncuya çizilir.
+    // `pre` kısa bir "önizleme" hissi verir; asıl efekt ayrıca oynar.
+    showRangePing(x, y, radius, color, opts = {}) {
+      this.rangePings.push({
+        x, y, radius, color: color || '#80deea',
+        duration: opts.duration || 0.55, timer: opts.duration || 0.55,
+        arc: opts.arc || 0, angle: opts.angle || 0,
+        thin: !!opts.thin,
+        seed: Math.random() * 100,
+      });
+    }
+
     // ======================================================================
     // DASH / SALDIRI / YETENEKLER (mekanikler değişmedi)
     // ======================================================================
     triggerDash() {
+      if (this.downed) return;
       if (this.player.isDashing || this.player.dashCooldownTimer > 0) return;
       this.player.isDashing = true;
       this.player.dashTimer = this.player.dashDuration;
@@ -2077,6 +2672,18 @@
 
       this.addTrauma(0.2);
       this.createGhostTrail();
+      // Dash tozu + zeminde küçük 3D halka dalgası
+      for (let i = 0; i < 12; i++) {
+        const a = Math.random() * TAU;
+        const sp = 40 + Math.random() * 120;
+        this.addParticle({
+          wx: this.player.x, wy: this.player.y, wz: 4 + Math.random() * 10,
+          vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, vz: 20 + Math.random() * 40,
+          color: i % 3 ? '#8d7b62' : '#c9b18e', size: 2 + Math.random() * 3,
+          life: 0.35 + Math.random() * 0.25, grav: 60, additive: false, grow: 8
+        });
+      }
+      this.aoeEffects.push({ x: this.player.x, y: this.player.y, radius: 34, duration: 0.28, timer: 0.28, color: '#cfd8dc', ring: true });
     }
 
     createGhostTrail() {
@@ -2087,6 +2694,7 @@
     }
 
     triggerPrimaryAttack() {
+      if (this.downed) return;
       if (this.player.attackCooldownTimer > 0) return;
 
       const stats = this.playerData.stats;
@@ -2106,18 +2714,19 @@
       if (archetype === ARCHETYPES.MELEE) {
         this.sound.play(isCrit ? 'crit' : 'slash');
         this.addTrauma(isCrit ? 0.35 : 0.2);
+        // Menzil küçültüldü (75 -> 55): yakın dövüş gerçekten yakın olmalı.
         this.slashes.push({
-          x: this.player.x, y: this.player.y, angle: aimAngle, radius: 75, arc: Math.PI * 0.75,
+          x: this.player.x, y: this.player.y, angle: aimAngle, radius: 55, arc: Math.PI * 0.68,
           duration: 0.2, timer: 0.2, color: isCrit ? '#ffb300' : this.player.style.slash, dir: this.player.swingDir
         });
         this.monsters.forEach((m) => {
           if (m.hp <= 0) return;
           const dist = Math.hypot(m.x - this.player.x, m.y - this.player.y);
-          if (dist <= 75 + m.radius) {
+          if (dist <= 55 + m.radius) {
             const angleToM = Math.atan2(m.y - this.player.y, m.x - this.player.x);
             let diff = Math.abs(angleToM - aimAngle);
             while (diff > Math.PI) diff = Math.abs(diff - Math.PI * 2);
-            if (diff <= (Math.PI * 0.75) / 2) this.applyDamageToMonster(m, damage, isCrit, aimAngle, 300);
+            if (diff <= (Math.PI * 0.68) / 2) this.applyDamageToMonster(m, damage, isCrit, aimAngle, 300);
           }
         });
 
@@ -2125,7 +2734,7 @@
         this.sound.play('shoot');
         this.projectiles.push({
           type: 'arrow', x: this.player.x + Math.cos(aimAngle) * 20, y: this.player.y + Math.sin(aimAngle) * 20,
-          vx: Math.cos(aimAngle) * 650, vy: Math.sin(aimAngle) * 650, radius: 6, life: 1.2,
+          vx: Math.cos(aimAngle) * 650, vy: Math.sin(aimAngle) * 650, radius: 6, life: 0.85,
           damage, isCrit, color: this.player.style.proj
         });
 
@@ -2133,24 +2742,25 @@
         this.sound.play('shoot');
         this.projectiles.push({
           type: 'magic_orb', x: this.player.x + Math.cos(aimAngle) * 20, y: this.player.y + Math.sin(aimAngle) * 20,
-          vx: Math.cos(aimAngle) * 520, vy: Math.sin(aimAngle) * 520, radius: 10, life: 1.4,
+          vx: Math.cos(aimAngle) * 520, vy: Math.sin(aimAngle) * 520, radius: 10, life: 1.0,
           damage, isCrit, color: this.player.style.proj
         });
 
       } else if (archetype === ARCHETYPES.SHADOW) {
         this.sound.play(isCrit ? 'crit' : 'slash');
+        // Menzil küçültüldü (65 -> 48).
         this.slashes.push({
-          x: this.player.x, y: this.player.y, angle: aimAngle, radius: 65, arc: Math.PI * 0.6,
+          x: this.player.x, y: this.player.y, angle: aimAngle, radius: 48, arc: Math.PI * 0.55,
           duration: 0.16, timer: 0.16, color: this.player.style.slash, dir: this.player.swingDir
         });
         this.monsters.forEach((m) => {
           if (m.hp <= 0) return;
           const dist = Math.hypot(m.x - this.player.x, m.y - this.player.y);
-          if (dist <= 65 + m.radius) {
+          if (dist <= 48 + m.radius) {
             const angleToM = Math.atan2(m.y - this.player.y, m.x - this.player.x);
             let diff = Math.abs(angleToM - aimAngle);
             while (diff > Math.PI) diff = Math.abs(diff - Math.PI * 2);
-            if (diff <= (Math.PI * 0.6) / 2) this.applyDamageToMonster(m, damage, isCrit, aimAngle, 220);
+            if (diff <= (Math.PI * 0.55) / 2) this.applyDamageToMonster(m, damage, isCrit, aimAngle, 0);
           }
         });
 
@@ -2158,7 +2768,7 @@
         this.sound.play('shoot');
         this.projectiles.push({
           type: 'primal_fang', x: this.player.x + Math.cos(aimAngle) * 20, y: this.player.y + Math.sin(aimAngle) * 20,
-          vx: Math.cos(aimAngle) * 580, vy: Math.sin(aimAngle) * 580, radius: 8, life: 1.2,
+          vx: Math.cos(aimAngle) * 580, vy: Math.sin(aimAngle) * 580, radius: 8, life: 0.9,
           damage, isCrit, color: this.player.style.proj
         });
         this.commandPetAttack();
@@ -2166,9 +2776,621 @@
     }
 
     triggerSkill(key) {
+      if (this.downed) return;
+      const cd = this.player.cooldowns[key];
+      if (!cd) return;
+
+      const skillSet = this.classSkillSet();
+      const sk = skillSet ? skillSet[key] : null;
+
+      // Cooldown'da olsa da menzil/alan göstergesi görünür: oyuncu tuşa bastığında
+      // "bu yetenek nereyi vuruyor" her zaman anlaşılır (LoL tarzı).
+      this.showSkillPreview(key, sk);
+
+      if (cd.current > 0) return;
+
+      if (sk) {
+        cd.max = Math.max(1, Number(sk.cd) || cd.max);
+        cd.current = cd.max;
+        return this.castClassSkill(key, sk);
+      }
+
+      // İçerik gelmediyse eski archetype davranışı aynen korunur.
+      return this.triggerArchetypeSkill(key);
+    }
+
+    // --- Yetenek önizlemesi (cooldown'dan bağımsız) ---
+    skillAim() {
+      return Math.atan2(this.mouse.worldY - this.player.y, this.mouse.worldX - this.player.x);
+    }
+    // Hedefli büyüler için menzil sınırı: imleç çok uzaksa hedefi `range`
+    // yarıçapına çeker. Böylece haritanın öbür ucuna skill atılamaz.
+    castTargetPoint(sk) {
+      const P = this.player;
+      const mx = this.mouse.worldX, my = this.mouse.worldY;
+      const kind = sk && sk.kind;
+      let maxR = sk && sk.range != null ? Number(sk.range) : NaN;
+      if (!Number.isFinite(maxR) || maxR <= 0) {
+        maxR = (kind === 'ground' || kind === 'meteor' || kind === 'vortex') ? 340 : Infinity;
+      }
+      const dx = mx - P.x, dy = my - P.y;
+      const d = Math.hypot(dx, dy);
+      if (!Number.isFinite(maxR) || d <= maxR || d < 0.001) return { x: mx, y: my, maxR, clamped: false };
+      return { x: P.x + (dx / d) * maxR, y: P.y + (dy / d) * maxR, maxR, clamped: true };
+    }
+    // Verilen noktaya en yakın canlı canavar (zincir yetenekleri için).
+    nearestMonster(x, y, range, exclude) {
+      let best = null, bestD = Infinity;
+      for (const m of this.monsters) {
+        if (!m || m.hp <= 0) continue;
+        if (exclude && exclude.has(m.id)) continue;
+        const d = Math.hypot(m.x - x, m.y - y);
+        if (d <= range + (m.radius || 0) && d < bestD) { best = m; bestD = d; }
+      }
+      return best;
+    }
+    skillPowerBonus(sk) {
+      const st = this.playerData.stats || {};
+      const mp = Number(st.magicPower) || 0;
+      const useMagic = sk && sk.magic;
+      return (Number(st.attack) || 0) + (useMagic ? mp * 0.8 : mp * 0.25);
+    }
+    skillDamage(sk) {
+      return Math.max(1, Math.round(this.skillPowerBonus(sk) * (Number(sk.power) || 1)));
+    }
+
+    showSkillPreview(key, sk) {
+      const aim = this.skillAim();
+      const color = (sk && sk.color) || this.getArchetypeColor();
+      if (!sk) {
+        // Fallback önizleme: archetype menzili.
+        const r = this.player.archetype === ARCHETYPES.MELEE ? 80 : 120;
+        const arc = this.player.archetype === ARCHETYPES.MELEE || this.player.archetype === ARCHETYPES.SHADOW ? Math.PI * 0.9 : 0;
+        this.showRangePing(this.player.x, this.player.y, r, color, { arc, angle: aim, duration: 0.45 });
+        return;
+      }
+      const kind = sk.kind;
+      const radius = Number(sk.radius) || 80;
+      if (kind === 'arc') {
+        this.showRangePing(this.player.x, this.player.y, Number(sk.radius) || 100, color, { arc: (Number(sk.arc) || 1.0), angle: aim, duration: 0.45 });
+      } else if (kind === 'aoe' || kind === 'dash' || kind === 'teleport') {
+        const off = Number(sk.offset != null ? sk.offset : (sk.range || 60));
+        const gx = this.player.x + Math.cos(aim) * off;
+        const gy = this.player.y + Math.sin(aim) * off;
+        this.showRangePing(gx, gy, radius, color, { arc: TAU, duration: 0.45 });
+      } else if (kind === 'meteor' || kind === 'ground' || kind === 'vortex') {
+        // Hedef menzile kırpılır; ayrıca "nereye kadar atabilirim" halkası gösterilir.
+        const tp = this.castTargetPoint(sk);
+        if (Number.isFinite(tp.maxR)) {
+          this.showRangePing(this.player.x, this.player.y, tp.maxR, color, { arc: TAU, duration: 0.55, thin: true });
+        }
+        this.showRangePing(tp.x, tp.y, radius, color, { arc: TAU, duration: 0.5 });
+      } else if (kind === 'quake' || kind === 'orbit') {
+        this.showRangePing(this.player.x, this.player.y, radius, color, { arc: TAU, duration: 0.5 });
+      } else if (kind === 'chain') {
+        const r = Number(sk.radius) || 320;
+        this.showRangePing(this.player.x, this.player.y, r, color, { arc: TAU, duration: 0.5, thin: true });
+      } else if (kind === 'nova' || kind === 'shield' || kind === 'heal') {
+        this.showRangePing(this.player.x, this.player.y, radius, color, { arc: TAU, duration: 0.45 });
+      } else if (kind === 'projectile' || kind === 'fan') {
+        this.showRangePing(this.player.x, this.player.y, 24, color, { duration: 0.3 });
+      } else if (kind === 'beam') {
+        this.showRangePing(this.player.x, this.player.y, Number(sk.range) || 220, color, { arc: 0.35, angle: aim, duration: 0.4 });
+      } else {
+        this.showRangePing(this.player.x, this.player.y, radius, color, { arc: TAU, duration: 0.4 });
+      }
+    }
+
+    // --- Sınıf yeteneği uygulama (jenerik türler) ---
+    castClassSkill(key, sk) {
+      const st = this.playerData.stats;
+      const aim = this.skillAim();
+      const dmg = this.skillDamage(sk);
+      const skin = this.skin;
+      const color = (skin && skin.primary) || sk.color || '#9fd8ff';
+      // Mana rengi efekti: yetenek cast anında karakterin çevresinde.
+      this.emitSkinFx(this.player.x, this.player.y, 12);
+      const radius = Number(sk.radius) || 80;
+      const kind = sk.kind;
+      const crit = Math.random() < (st.critChance || 0);
+
+      // Kanal yeteneği (Warrior E - Whirlwind): tuş basılı tutuldukça döner.
+      if (kind === 'channel') {
+        if (this.player.channel) return;
+        this.sound.play('slash');
+        this.player.channel = {
+          skill: sk, key,
+          timer: Math.max(1, Number(sk.duration) || 4),
+          duration: Math.max(1, Number(sk.duration) || 4),
+          tick: Math.max(0.12, Number(sk.tick) || 0.25),
+          tickTimer: 0, angle: aim
+        };
+        this.aoeEffects.push({ x: this.player.x, y: this.player.y, radius: (Number(sk.radius) || 105) * 0.7, duration: 0.35, timer: 0.35, color, ring: true });
+        return;
+      }
+
+      if (kind === 'shield' || sk.shieldPct) {
+        // Kalkan: 5 sn boyunca gelen hasarı yutar (Paladin Aegis dahil).
+        const pct = Number(sk.shieldPct) || 25;
+        this.playerShieldMax = Math.max(1, Math.round((st.maxHp || 100) * pct / 100));
+        this.playerShield = this.playerShieldMax;
+        this.playerShieldTimer = Number(sk.duration) || 5;
+        this.aoeEffects.push({ x: this.player.x, y: this.player.y, radius: 46, duration: 0.6, timer: 0.6, color, ring: true, dome: true });
+        this.spawnExplosionParticles(this.player.x, this.player.y, 20, color);
+        if (sk.healPct) this.healPlayer(st.maxHp * sk.healPct / 100, color);
+      }
+      if (kind === 'heal' || sk.healPct) {
+        this.healPlayer(st.maxHp * (Number(sk.healPct) || 0) / 100 + dmg * 0.5, color);
+        this.aoeEffects.push({ x: this.player.x, y: this.player.y, radius, duration: 0.8, timer: 0.8, color, ring: true });
+      }
+
+      // Kılıç kombosu (Warrior E): karakter silahını gerçekten savurur.
+      // Her vuruşta kol animasyonu + yay şeklinde iz + koni hasarı.
+      if (kind === 'swing') {
+        const hits = Math.max(1, Math.min(6, Number(sk.hits) || 3));
+        const interval = Math.max(0.08, Number(sk.interval) || 0.2);
+        const arc = Number(sk.arc) || 1.6;
+        const reach = radius;
+        for (let i = 0; i < hits; i++) {
+          this.later(() => {
+            const P = this.player;
+            if (!P || this.downed) return;
+            const last = i === hits - 1;
+            const swingAim = this.skillAim();
+            P.facingAngle = swingAim;
+            P.swingDir *= -1;
+            P.attackAnimTimer = 0.22;
+            // Savururken hafif öne atılım.
+            P.x += Math.cos(swingAim) * (last ? 11 : 6);
+            P.y += Math.sin(swingAim) * (last ? 11 : 6);
+            const reachNow = reach * (last ? 1.2 : 1);
+            const arcNow = last ? arc * 1.3 : arc;
+            const hitDmg = Math.max(1, Math.round(dmg * (last ? 1.4 : 0.85)));
+            this.slashes.push({
+              x: P.x, y: P.y, angle: swingAim, radius: reachNow,
+              arc: arcNow, duration: last ? 0.3 : 0.22, timer: last ? 0.3 : 0.22,
+              color, dir: P.swingDir
+            });
+            this.hitCone(P.x, P.y, reachNow, arcNow, swingAim, hitDmg, sk, last ? crit : false);
+            this.sound.play(last ? 'crit' : 'slash');
+            this.addTrauma(last ? 0.34 : 0.14);
+            const fx = P.x + Math.cos(swingAim) * (last ? 58 : 44);
+            const fy = P.y + Math.sin(swingAim) * (last ? 58 : 44);
+            if (last) {
+              this.aoeEffects.push({ x: fx, y: fy, radius: reach * 0.6, duration: 0.5, timer: 0.5, color, ring: true, cracks: true });
+              this.spawnExplosionParticles(fx, fy, 26, color);
+            } else {
+              this.spawnExplosionParticles(fx, fy, 9, color);
+            }
+          }, Math.round(i * interval * 1000));
+        }
+        return;
+      }
+
+      if (kind === 'arc') {
+        this.sound.play('slash');
+        this.addTrauma(0.28);
+        const arc = Number(sk.arc) || 1.0;
+        this.slashes.push({ x: this.player.x, y: this.player.y, angle: aim, radius: radius, arc, duration: 0.22, timer: 0.22, color, dir: this.player.swingDir });
+        this.hitCone(this.player.x, this.player.y, radius, arc, aim, dmg, sk, crit);
+        this.addTrauma(0.15);
+      } else if (kind === 'nova' || kind === 'aoe') {
+        this.sound.play('hit');
+        const off = kind === 'aoe' ? (Number(sk.offset) || 40) : 0;
+        const cx = this.player.x + Math.cos(aim) * off;
+        const cy = this.player.y + Math.sin(aim) * off;
+        this.aoeEffects.push({ x: cx, y: cy, radius, duration: 0.5, timer: 0.5, color, ring: true, cracks: kind === 'aoe' });
+        this.hitEnemiesInRadius(cx, cy, radius, dmg, true, Number(sk.knockback) || 0);
+        this.spawnExplosionParticles(cx, cy, 22, color);
+        this.applyAreaStatus(cx, cy, radius, sk);
+        this.addTrauma(0.3);
+      } else if (kind === 'projectile') {
+        this.sound.play('shoot');
+        const speed = Number(sk.speed) || 620;
+        this.projectiles.push({
+          type: 'magic_orb', x: this.player.x + Math.cos(aim) * 20, y: this.player.y + Math.sin(aim) * 20,
+          vx: Math.cos(aim) * speed, vy: Math.sin(aim) * speed,
+          radius: Number(sk.radius) || 9, life: 1.0, damage: dmg, isCrit: crit, color, skill: sk
+        });
+        if (sk.pet) this.commandPetAttack();
+      } else if (kind === 'fan') {
+        this.sound.play('shoot');
+        const count = Math.max(1, Number(sk.count) || 3);
+        const spread = Number(sk.spread) || 0.18;
+        const speed = Number(sk.speed) || 620;
+        for (let i = 0; i < count; i++) {
+          const a = aim + (i - (count - 1) / 2) * spread;
+          this.projectiles.push({
+            type: 'arrow', x: this.player.x, y: this.player.y,
+            vx: Math.cos(a) * speed, vy: Math.sin(a) * speed,
+            radius: Number(sk.radius) || 6, life: 0.95, damage: dmg, isCrit: crit, color, skill: sk
+          });
+        }
+      } else if (kind === 'beam') {
+        this.sound.play('dash');
+        this.addTrauma(0.3);
+        const range = Number(sk.range) || 220;
+        const width = Number(sk.width) || 26;
+        this.aoeEffects.push({ x: this.player.x, y: this.player.y, radius: range, duration: 0.32, timer: 0.32, color, beam: true, angle: aim, width });
+        this.hitBeam(this.player.x, this.player.y, aim, range, width, dmg, sk, crit);
+      } else if (kind === 'dash') {
+        this.sound.play('dash');
+        this.createGhostTrail();
+        const range = Number(sk.range) || 160;
+        const dx = this.mouse.worldX - this.player.x, dy = this.mouse.worldY - this.player.y;
+        const len = Math.hypot(dx, dy) || 1;
+        const step = Math.min(range, len);
+        this.player.x += (dx / len) * step;
+        this.player.y += (dy / len) * step;
+        this.clampPlayerToWorld();
+        this.aoeEffects.push({ x: this.player.x, y: this.player.y, radius, duration: 0.45, timer: 0.45, color, ring: true });
+        this.hitEnemiesInRadius(this.player.x, this.player.y, radius, dmg, true, Number(sk.knockback) || 0);
+        this.applyAreaStatus(this.player.x, this.player.y, radius, sk);
+        this.spawnExplosionParticles(this.player.x, this.player.y, 18, color);
+      } else if (kind === 'teleport') {
+        this.sound.play('dash');
+        this.createGhostTrail();
+        const range = Number(sk.range) || 175;
+        const dx = this.mouse.worldX - this.player.x, dy = this.mouse.worldY - this.player.y;
+        const len = Math.hypot(dx, dy) || 1;
+        const step = Math.min(range, len);
+        this.aoeEffects.push({ x: this.player.x, y: this.player.y, radius: radius * 0.8, duration: 0.35, timer: 0.35, color, ring: true });
+        this.player.x += (dx / len) * step;
+        this.player.y += (dy / len) * step;
+        this.clampPlayerToWorld();
+        this.aoeEffects.push({ x: this.player.x, y: this.player.y, radius, duration: 0.4, timer: 0.4, color, ring: true });
+        this.hitEnemiesInRadius(this.player.x, this.player.y, radius, dmg, crit, 0);
+        this.applyAreaStatus(this.player.x, this.player.y, radius, sk);
+      } else if (kind === 'ground') {
+        this.sound.play('hit');
+        const tp = this.castTargetPoint(sk);
+        const tx = tp.x, ty = tp.y;
+        this.aoeEffects.push({ x: tx, y: ty, radius, duration: Number(sk.duration) || 3, timer: Number(sk.duration) || 3, color, roots: sk.element === 'nature', zone: true, skill: sk, tickTimer: 0, tick: Number(sk.tick) || 0.5 });
+        this.hitEnemiesInRadius(tx, ty, radius, dmg, false, 0);
+        this.applyAreaStatus(tx, ty, radius, sk);
+      } else if (kind === 'meteor') {
+        // Göktaşı yağmuru: count > 1 ise hedefin çevresine kademeli düşer.
+        this.sound.play('ultimate');
+        const tp = this.castTargetPoint(sk);
+        const tx = tp.x, ty = tp.y;
+        const delay = Number(sk.delay) || 0.35;
+        const count = Math.max(1, Math.min(6, Number(sk.count) || 1));
+        const spreadR = Number(sk.spreadRadius) || radius * 0.85;
+        for (let i = 0; i < count; i++) {
+          let mx = tx, my = ty;
+          if (i > 0) {
+            const a = (i / count) * TAU + Math.random() * 0.5;
+            const rr = spreadR * (0.45 + Math.random() * 0.55);
+            mx = tx + Math.cos(a) * rr;
+            my = ty + Math.sin(a) * rr;
+          }
+          const d = delay + i * (Number(sk.stagger) || 0.14);
+          const mRadius = i === 0 ? radius : Math.round(radius * 0.72);
+          const mDmg = i === 0 ? dmg : Math.round(dmg * 0.62);
+          this.aoeEffects.push({ x: mx, y: my, radius: mRadius, duration: d + 0.45, timer: d + 0.45, color, telegraph: true, pillar: true });
+          this.later(() => {
+            this.aoeEffects.push({ x: mx, y: my, radius: mRadius, duration: 0.5, timer: 0.5, color, ring: true, cracks: true });
+            this.hitEnemiesInRadius(mx, my, mRadius, mDmg, true, 320);
+            this.applyAreaStatus(mx, my, mRadius, sk);
+            this.spawnExplosionParticles(mx, my, i === 0 ? 36 : 22, color);
+            this.addTrauma(i === 0 ? 0.45 : 0.22);
+          }, Math.round(d * 1000));
+        }
+      } else if (kind === 'orbit') {
+        // Etrafta dönen silahlar: süre boyunca oyuncunun çevresine sürekli hasar.
+        this.sound.play('ultimate');
+        this.addTrauma(0.32);
+        const dur = Math.max(0.8, Number(sk.duration) || 3.2);
+        this.orbitAura = {
+          angle: 0, speed: Number(sk.speed) || 3.6, count: Math.max(3, Number(sk.count) || 6),
+          radius: Math.max(40, Number(sk.radius) || 120), timer: dur, duration: dur,
+          tick: Math.max(0.12, Number(sk.tick) || 0.35), tickTimer: 0, damage: dmg, color, sk
+        };
+        this.aoeEffects.push({ x: this.player.x, y: this.player.y, radius: radius * 0.8, duration: 0.5, timer: 0.5, color, ring: true, swirl: true });
+        this.spawnExplosionParticles(this.player.x, this.player.y, 18, color);
+      } else if (kind === 'chain') {
+        // Zincir şimşeği: en yakın hedeften hedefe sıçrar.
+        this.sound.play('ultimate');
+        this.addTrauma(0.3);
+        const maxR = Number(sk.radius) || 320;
+        const jumps = Math.max(1, Number(sk.jumps) || 4);
+        const chainRange = Number(sk.chainRange) || 185;
+        const hitIds = new Set();
+        let from = { x: this.player.x, y: this.player.y };
+        let cur = this.nearestMonster(this.player.x, this.player.y, maxR);
+        let curDmg = dmg;
+        const points = [{ x: this.player.x, y: this.player.y }];
+        for (let j = 0; j < jumps && cur; j++) {
+          points.push({ x: cur.x, y: cur.y });
+          this.applyDamageToMonster(cur, Math.round(curDmg), false, Math.atan2(cur.y - from.y, cur.x - from.x), 120);
+          if (sk.status) this.applyMonsterStatus(cur, sk.status);
+          hitIds.add(cur.id);
+          from = { x: cur.x, y: cur.y };
+          curDmg *= 0.85;
+          cur = this.nearestMonster(from.x, from.y, chainRange, hitIds);
+        }
+        if (points.length > 1) {
+          this.chainFx.push({ points, timer: 0.3, duration: 0.3, color, seed: Math.random() * 1000 });
+          for (const pt of points.slice(1)) this.spawnExplosionParticles(pt.x, pt.y, 8, color);
+        }
+      } else if (kind === 'vortex') {
+        // Girdap: alana çeker, içinde kalanlara sürekli hasar verir.
+        this.sound.play('ultimate');
+        this.addTrauma(0.28);
+        const tp = this.castTargetPoint(sk);
+        const dur = Math.max(0.8, Number(sk.duration) || 2.4);
+        this.aoeEffects.push({
+          x: tp.x, y: tp.y, radius, duration: dur, timer: dur, color,
+          vortex: true, pull: Number(sk.pull) || 95, skill: sk,
+          tick: Math.max(0.15, Number(sk.tick) || 0.4), tickTimer: 0
+        });
+        this.hitEnemiesInRadius(tp.x, tp.y, radius, Math.round(dmg * 0.6), true, 60);
+        this.applyAreaStatus(tp.x, tp.y, radius, sk);
+        this.spawnExplosionParticles(tp.x, tp.y, 20, color);
+      } else if (kind === 'barrage') {
+        // Ardışık mermi yağmuru: kısa aralıklarla çok sayıda atış.
+        this.sound.play('ultimate');
+        const count = Math.max(1, Number(sk.count) || 8);
+        const interval = Math.max(0.02, Number(sk.interval) || 0.07);
+        const speed = Number(sk.speed) || 760;
+        const spread = Number(sk.spread) || 0.17;
+        const baseAim = aim;
+        const isArrow = sk.element === 'physical';
+        for (let i = 0; i < count; i++) {
+          this.later(() => {
+            if (!this.player || this.downed) return;
+            const a = baseAim + (Math.random() - 0.5) * spread;
+            this.projectiles.push({
+              type: isArrow ? 'arrow' : 'magic_orb',
+              x: this.player.x + Math.cos(baseAim) * 18,
+              y: this.player.y + Math.sin(baseAim) * 18,
+              vx: Math.cos(a) * speed, vy: Math.sin(a) * speed,
+              radius: Number(sk.radius) || 7, life: 1.1,
+              damage: Math.max(1, Math.round(dmg * 0.42)),
+              isCrit: Math.random() < (this.playerData.stats.critChance || 0),
+              color, skill: sk
+            });
+            this.sound.play('shoot');
+          }, Math.round(i * interval * 1000));
+        }
+      } else if (kind === 'quake') {
+        // Deprem: oyuncunun çevresinde art arda genişleyen dalgalar.
+        this.sound.play('ultimate');
+        this.addTrauma(0.42);
+        const pulses = Math.max(1, Number(sk.pulses) || 3);
+        const interval = Math.max(0.08, Number(sk.interval) || 0.22);
+        for (let i = 0; i < pulses; i++) {
+          this.later(() => {
+            const r = radius * (0.62 + i * 0.19);
+            this.aoeEffects.push({ x: this.player.x, y: this.player.y, radius: r, duration: 0.45, timer: 0.45, color, ring: true, cracks: true });
+            this.hitEnemiesInRadius(this.player.x, this.player.y, r, Math.max(1, Math.round(dmg * (i === 0 ? 0.8 : 0.45))), i === 0, Number(sk.knockback) || 0);
+            this.applyAreaStatus(this.player.x, this.player.y, r, sk);
+            this.spawnExplosionParticles(this.player.x, this.player.y, 14, color);
+            this.addTrauma(0.18);
+          }, Math.round(i * interval * 1000));
+        }
+      }
+      if (this.onStatsChange) this.onStatsChange(this.playerData.stats);
+    }
+
+    healPlayer(amount, color) {
+      const st = this.playerData.stats || {};
+      const heal = Math.max(1, Math.round(amount));
+      const before = st.currentHp || 0;
+      st.currentHp = Math.min(st.maxHp || 1, before + heal);
+      const gained = Math.round(st.currentHp - before);
+      if (gained > 0) this.spawnDamageNumber(this.player.x, this.player.y, `+${gained}`, color || '#69f0ae');
+    }
+
+    scheduleRespawn(monster) {
+      const def = this.biomeDef || {};
+      const spawn = def.spawn || {};
+      const max = Math.max(4, Number(spawn.max) || 9);
+      const delay = Math.max(3000, (Number(spawn.respawn) || 9) * 1000);
+      const id = monster && monster.id;
+      this.later(() => {
+        if (id) this.monsters = this.monsters.filter((m) => m.id !== id);
+        else this.monsters = this.monsters.filter((m) => m.hp > 0 || m.deathTimer > 0);
+        if (this.monsters.filter((m) => m.hp > 0).length < max) this.spawnMonsters(1);
+      }, delay);
+    }
+
+    // Durum efektinden (zehir/yanma) ölen canavar için ödül + respawn.
+    onMonsterDeath(monster) {
+      const gold = Math.floor(6 + Math.random() * 10) + Math.round((monster.gold || 0) * 0.5);
+      this.playerData.stats.gold += gold;
+      this.later(() => this.spawnDamageNumber(monster.x, monster.y, `+${gold}g`, '#ffd54f'), 150);
+      if (this.onStatsChange) this.onStatsChange(this.playerData.stats);
+      if (this.onKill) this.onKill(monster);
+      this.scheduleRespawn(monster);
+    }
+
+    // Oyuncuya hasar: önce kalkan yutar, sonra can gider.
+    damagePlayer(amount, angle) {
+      // Yere düşmüşken/ölüyken hasar ve vuruş sesi olmasın (canavarlar
+      // ölü bedene vurmaya devam edip ses çıkarmasın).
+      if (this.downed || this._down) return;
+      const st = this.playerData.stats || (this.playerData.stats = {});
+      let dmg = Math.max(1, Math.round(Number(amount) || 0));
+      if (this.playerShield > 0 && this.playerShieldTimer > 0) {
+        const absorbed = Math.min(this.playerShield, dmg);
+        this.playerShield -= absorbed;
+        dmg -= absorbed;
+        if (absorbed > 0) {
+          this.spawnDamageNumber(this.player.x, this.player.y, `-${absorbed}`, '#80deea');
+          this.aoeEffects.push({ x: this.player.x, y: this.player.y, radius: 40, duration: 0.25, timer: 0.25, color: '#80deea', ring: true });
+        }
+        if (this.playerShield <= 0) {
+          this.playerShield = 0;
+          this.spawnExplosionParticles(this.player.x, this.player.y, 16, '#80deea');
+        }
+      }
+      if (dmg > 0) {
+        st.currentHp = Math.max(0, (st.currentHp || 0) - dmg);
+        this.spawnDamageNumber(this.player.x, this.player.y, `-${dmg}`, '#ff5252');
+        this.spawnBloodParticles(this.player.x, this.player.y, angle || 0, 6, '#ff5252');
+      } else {
+        this.spawnDamageNumber(this.player.x, this.player.y, 'BLOCK', '#80deea');
+      }
+      this.addTrauma(0.3);
+      this.hurt = 0.35;
+      this.sound.play('hit');
+      if (this.onStatsChange) this.onStatsChange(st);
+    }
+
+    applyPlayerStatusFromMonster(status) {
+      if (!status || !status.type) return;
+      if (status.chance != null && Math.random() > status.chance) return;
+      const ps = this.playerStatuses || (this.playerStatuses = {});
+      const cur = ps[status.type];
+      ps[status.type] = {
+        type: status.type,
+        timer: Math.max(cur ? cur.timer : 0, Number(status.duration) || 2),
+        dps: Number(status.dps) || 0,
+        slow: Number(status.slow) || 0,
+        tick: 0.5, tickTimer: 0.5,
+      };
+    }
+
+    // Warrior E: basılı tutulan dönen saldırı. Saldırı hızı arttıkça daha hızlı döner.
+    updateChannel(dt) {
+      const ch = this.player && this.player.channel;
+      if (!ch) return;
+      const held = !!(this.keys && this.keys['e']);
+      ch.timer -= dt;
+      const aps = this.computeAttackPerSecond();
+      ch.angle += (Number(ch.skill.spin) || 8) * (0.55 + aps * 0.75) * dt;
+      ch.tickTimer += dt;
+      if (ch.tickTimer >= ch.tick) {
+        ch.tickTimer = 0;
+        const radius = Number(ch.skill.radius) || 105;
+        const dmg = Math.max(1, Math.round(this.skillDamage(ch.skill)));
+        this.hitEnemiesInRadius(this.player.x, this.player.y, radius, dmg, true, 0);
+        this.applyAreaStatus(this.player.x, this.player.y, radius, ch.skill);
+        const col = ch.skill.color || '#ffd54f';
+        this.slashes.push({
+          x: this.player.x, y: this.player.y, angle: ch.angle,
+          radius, arc: 2.2, duration: 0.2, timer: 0.2, color: col, dir: 1
+        });
+        if (Math.random() < 0.6) this.sound.play('slash');
+        this.spawnExplosionParticles(
+          this.player.x + Math.cos(ch.angle) * radius * 0.8,
+          this.player.y + Math.sin(ch.angle) * radius * 0.8, 3, col
+        );
+      }
+      if (!held || ch.timer <= 0 || this.downed) {
+        const radius = Number(ch.skill.radius) || 105;
+        const col = ch.skill.color || '#ffd54f';
+        this.aoeEffects.push({ x: this.player.x, y: this.player.y, radius, duration: 0.45, timer: 0.45, color: col, ring: true });
+        this.player.channel = null;
+      }
+    }
+
+    updatePlayerStatuses(dt) {
+      const ps = this.playerStatuses || {};
+      const st = this.playerData.stats || {};
+      let slowMult = 1;
+      for (const key of Object.keys(ps)) {
+        const s = ps[key];
+        if (!s) continue;
+        s.timer -= dt;
+        if (s.slow > 0) slowMult = Math.min(slowMult, 1 - Math.min(0.7, s.slow));
+        if (s.dps > 0) {
+          s.tickTimer -= dt;
+          if (s.tickTimer <= 0) {
+            s.tickTimer += s.tick || 0.5;
+            const dmg = Math.max(1, Math.round(s.dps * (s.tick || 0.5)));
+            st.currentHp = Math.max(0, (st.currentHp || 0) - dmg);
+            const c = s.type === 'burn' ? '#ff7043' : (s.type === 'bleed' ? '#ff5370' : (s.type === 'shock' ? '#fff176' : '#9ccc65'));
+            this.spawnDamageNumber(this.player.x, this.player.y, `-${dmg}`, c);
+            if (this.onStatsChange) this.onStatsChange(st);
+          }
+        }
+        if (s.timer <= 0) delete ps[key];
+      }
+      this.playerSlowMult = slowMult;
+      if (this.playerShieldTimer > 0) {
+        this.playerShieldTimer -= dt;
+        if (this.playerShieldTimer <= 0) {
+          this.playerShieldTimer = 0;
+          this.playerShield = 0;
+        }
+      }
+    }
+
+    applyAreaStatus(cx, cy, radius, sk) {
+      const status = sk && sk.status;
+      if (!status) return;
+      this.monsters.forEach((m) => {
+        if (m.hp <= 0) return;
+        if (Math.hypot(m.x - cx, m.y - cy) <= radius + m.radius) this.applyMonsterStatus(m, status);
+      });
+    }
+
+    applyMonsterStatus(m, status) {
+      if (!m || !status || !status.type) return;
+      if (status.chance != null && Math.random() > status.chance) return;
+      const st = m.statuses || (m.statuses = {});
+      const cur = st[status.type];
+      st[status.type] = {
+        type: status.type,
+        duration: Math.max(cur ? cur.duration : 0, Number(status.duration) || 1),
+        timer: Math.max(cur ? cur.timer : 0, Number(status.duration) || 1),
+        dps: Number(status.dps) || 0,
+        slow: Number(status.slow) || 0,
+        tick: 0.5,
+        tickTimer: 0.5,
+      };
+      if (status.type === 'freeze' || status.type === 'stun' || status.type === 'root') {
+        m.vx = 0; m.vy = 0;
+      }
+    }
+
+    hitCone(cx, cy, radius, arc, aim, damage, sk, forceCrit) {
+      this.monsters.forEach((m) => {
+        if (m.hp <= 0) return;
+        const dist = Math.hypot(m.x - cx, m.y - cy);
+        if (dist > radius + m.radius) return;
+        let diff = Math.abs(Math.atan2(m.y - cy, m.x - cx) - aim);
+        while (diff > Math.PI) diff = Math.abs(diff - Math.PI * 2);
+        if (diff > arc / 2) return;
+        const isCrit = Math.random() < (this.playerData.stats.critChance || 0);
+        this.applyDamageToMonster(m, Math.round(damage * (isCrit ? 1.6 : 1)), isCrit, aim, Number(sk.knockback) || 0);
+        if (sk.status) this.applyMonsterStatus(m, sk.status);
+      });
+    }
+
+    hitBeam(x, y, angle, range, width, damage, sk, forceCrit) {
+      const ex = x + Math.cos(angle) * range;
+      const ey = y + Math.sin(angle) * range;
+      const vx = ex - x, vy = ey - y;
+      const len2 = vx * vx + vy * vy || 1;
+      this.monsters.forEach((m) => {
+        if (m.hp <= 0) return;
+        const t = Math.max(0, Math.min(1, ((m.x - x) * vx + (m.y - y) * vy) / len2));
+        const px = x + vx * t, py = y + vy * t;
+        if (Math.hypot(m.x - px, m.y - py) <= width / 2 + m.radius) {
+          const isCrit = Math.random() < (this.playerData.stats.critChance || 0);
+          this.applyDamageToMonster(m, Math.round(damage * (isCrit ? 1.6 : 1)), isCrit, angle, Number(sk.knockback) || 0);
+          if (sk.status) this.applyMonsterStatus(m, sk.status);
+        }
+      });
+    }
+
+    clampPlayerToWorld() {
+      const maxDistFromCenter = (this.mapRadius - 0.5) * this.tileSize;
+      const d = Math.hypot(this.player.x, this.player.y);
+      if (d > maxDistFromCenter) {
+        const ang = Math.atan2(this.player.y, this.player.x);
+        this.player.x = Math.cos(ang) * maxDistFromCenter;
+        this.player.y = Math.sin(ang) * maxDistFromCenter;
+      }
+    }
+
+    // --- Eski archetype davranışı (içerik yoksa) ---
+    triggerArchetypeSkill(key) {
       const cd = this.player.cooldowns[key];
       if (!cd || cd.current > 0) return;
-
       const archetype = this.player.archetype;
       const stats = this.playerData.stats;
       const aimAngle = Math.atan2(this.mouse.worldY - this.player.y, this.mouse.worldX - this.player.x);
@@ -2179,29 +3401,35 @@
         this.addTrauma(0.3);
 
         if (archetype === ARCHETYPES.MELEE) {
-          this.aoeEffects.push({ x: this.player.x, y: this.player.y, radius: 110, duration: 0.35, timer: 0.35, color: '#ffd54f', ring: true });
-          this.hitEnemiesInRadius(this.player.x, this.player.y, 110, stats.attack * 1.5, true);
+          // Menzil 110 -> 80; alan zeminde gösterilir.
+          this.showRangePing(this.player.x, this.player.y, 80, '#ffd54f', { arc: TAU });
+          this.aoeEffects.push({ x: this.player.x, y: this.player.y, radius: 80, duration: 0.35, timer: 0.35, color: '#ffd54f', ring: true });
+          this.hitEnemiesInRadius(this.player.x, this.player.y, 80, stats.attack * 1.5, true);
 
         } else if (archetype === ARCHETYPES.RANGED) {
+          this.showRangePing(this.player.x, this.player.y, 24, '#aed581', { duration: 0.3 });
           for (let i = -2; i <= 2; i++) {
             const spread = aimAngle + i * 0.18;
             this.projectiles.push({
               type: 'arrow', x: this.player.x, y: this.player.y,
-              vx: Math.cos(spread) * 620, vy: Math.sin(spread) * 620, radius: 6, life: 1.1,
+              vx: Math.cos(spread) * 620, vy: Math.sin(spread) * 620, radius: 6, life: 0.9,
               damage: stats.attack * 0.9, isCrit: false, color: '#aed581'
             });
           }
 
         } else if (archetype === ARCHETYPES.MAGE) {
-          this.aoeEffects.push({ x: this.player.x, y: this.player.y, radius: 125, duration: 0.4, timer: 0.4, color: '#80deea', ring: true });
-          this.hitEnemiesInRadius(this.player.x, this.player.y, 125, stats.attack * 1.3, false, 350);
+          // Menzil 125 -> 90.
+          this.showRangePing(this.player.x, this.player.y, 90, '#80deea', { arc: TAU });
+          this.aoeEffects.push({ x: this.player.x, y: this.player.y, radius: 90, duration: 0.4, timer: 0.4, color: '#80deea', ring: true });
+          this.hitEnemiesInRadius(this.player.x, this.player.y, 90, stats.attack * 1.3, false, 350);
 
         } else if (archetype === ARCHETYPES.SHADOW) {
+          this.showRangePing(this.player.x, this.player.y, 24, '#f06292', { duration: 0.3 });
           for (let i = -3; i <= 3; i++) {
             const spread = aimAngle + i * 0.16;
             this.projectiles.push({
               type: 'dagger', x: this.player.x, y: this.player.y,
-              vx: Math.cos(spread) * 700, vy: Math.sin(spread) * 700, radius: 5, life: 0.8,
+              vx: Math.cos(spread) * 700, vy: Math.sin(spread) * 700, radius: 5, life: 0.7,
               damage: stats.attack * 0.85, isCrit: true, color: '#f06292'
             });
           }
@@ -2216,38 +3444,47 @@
 
         if (archetype === ARCHETYPES.MELEE) {
           this.sound.play('hit');
-          const gx = this.player.x + Math.cos(aimAngle) * 60, gy = this.player.y + Math.sin(aimAngle) * 60;
-          this.aoeEffects.push({ x: gx, y: gy, radius: 95, duration: 0.45, timer: 0.45, color: '#ff9800', cracks: true });
-          this.hitEnemiesInRadius(gx, gy, 95, stats.attack * 1.6, true, 280);
+          // Yer vuruşu: offset 60 -> 44, menzil 95 -> 70.
+          const gx = this.player.x + Math.cos(aimAngle) * 44, gy = this.player.y + Math.sin(aimAngle) * 44;
+          this.showRangePing(gx, gy, 70, '#ff9800', { arc: TAU });
+          this.aoeEffects.push({ x: gx, y: gy, radius: 70, duration: 0.45, timer: 0.45, color: '#ff9800', cracks: true });
+          this.hitEnemiesInRadius(gx, gy, 70, stats.attack * 1.6, true, 280);
           this.spawnExplosionParticles(gx, gy, 14, '#ffb74d');
 
         } else if (archetype === ARCHETYPES.RANGED) {
-          this.aoeEffects.push({ x: this.mouse.worldX, y: this.mouse.worldY, radius: 80, duration: 1.5, timer: 1.5, color: '#689f38', roots: true });
-          this.hitEnemiesInRadius(this.mouse.worldX, this.mouse.worldY, 80, stats.attack * 1.1, false, 0);
+          // Kök alanı 80 -> 58.
+          this.showRangePing(this.mouse.worldX, this.mouse.worldY, 58, '#689f38', { arc: TAU, duration: 1.2 });
+          this.aoeEffects.push({ x: this.mouse.worldX, y: this.mouse.worldY, radius: 58, duration: 1.5, timer: 1.5, color: '#689f38', roots: true });
+          this.hitEnemiesInRadius(this.mouse.worldX, this.mouse.worldY, 58, stats.attack * 1.1, false, 0);
 
         } else if (archetype === ARCHETYPES.MAGE) {
           this.sound.play('dash');
           this.createGhostTrail();
           const dist = Math.hypot(this.mouse.worldX - this.player.x, this.mouse.worldY - this.player.y);
-          const maxTeleport = Math.min(dist, 220);
+          const maxTeleport = Math.min(dist, 150); // 220 -> 150
           this.player.x += Math.cos(aimAngle) * maxTeleport;
           this.player.y += Math.sin(aimAngle) * maxTeleport;
-          this.aoeEffects.push({ x: this.player.x, y: this.player.y, radius: 85, duration: 0.35, timer: 0.35, color: '#e040fb', ring: true });
-          this.hitEnemiesInRadius(this.player.x, this.player.y, 85, stats.attack * 1.4, true);
+          this.showRangePing(this.player.x, this.player.y, 66, '#e040fb', { arc: TAU });
+          this.aoeEffects.push({ x: this.player.x, y: this.player.y, radius: 66, duration: 0.35, timer: 0.35, color: '#e040fb', ring: true });
+          this.hitEnemiesInRadius(this.player.x, this.player.y, 66, stats.attack * 1.4, true);
 
         } else if (archetype === ARCHETYPES.SHADOW) {
           this.sound.play('slash');
-          const target = this.getClosestMonsterToMouse(120);
+          // Işınlanma hedef araması 120 -> 90.
+          const target = this.getClosestMonsterToMouse(90);
           if (target) {
             this.createGhostTrail();
             this.player.x = target.x - Math.cos(aimAngle) * 35;
             this.player.y = target.y - Math.sin(aimAngle) * 35;
+            this.showRangePing(target.x, target.y, 40, '#f06292', { duration: 0.4 });
             this.applyDamageToMonster(target, stats.attack * 2.2, true, aimAngle, 300);
           }
 
         } else if (archetype === ARCHETYPES.TAMER) {
-          this.aoeEffects.push({ x: this.player.x, y: this.player.y, radius: 140, duration: 0.4, timer: 0.4, color: '#ffb300', ring: true });
-          this.hitEnemiesInRadius(this.player.x, this.player.y, 140, stats.attack * 0.8, false, 400);
+          // 140 -> 100.
+          this.showRangePing(this.player.x, this.player.y, 100, '#ffb300', { arc: TAU });
+          this.aoeEffects.push({ x: this.player.x, y: this.player.y, radius: 100, duration: 0.4, timer: 0.4, color: '#ffb300', ring: true });
+          this.hitEnemiesInRadius(this.player.x, this.player.y, 100, stats.attack * 0.8, false, 400);
         }
 
       } else if (key === 'r') {
@@ -2257,20 +3494,23 @@
 
         const targetX = this.mouse.worldX;
         const targetY = this.mouse.worldY;
+        const ultColor = archetype === ARCHETYPES.MAGE ? '#7c4dff' : (archetype === ARCHETYPES.SHADOW ? '#d50000' : '#ffab00');
+        // Nihai menzil 170 -> 120 ve alan zeminde gösterilir.
+        this.showRangePing(targetX, targetY, 120, ultColor, { arc: TAU, duration: 0.9 });
         this.aoeEffects.push({
-          x: targetX, y: targetY, radius: 170, duration: 0.85, timer: 0.85,
-          color: archetype === ARCHETYPES.MAGE ? '#7c4dff' : (archetype === ARCHETYPES.SHADOW ? '#d50000' : '#ffab00'),
+          x: targetX, y: targetY, radius: 120, duration: 0.85, timer: 0.85,
+          color: ultColor,
           pillar: true
         });
         this.later(() => {
-          this.hitEnemiesInRadius(targetX, targetY, 170, stats.attack * 3.4, true, 450);
+          this.hitEnemiesInRadius(targetX, targetY, 120, stats.attack * 3.4, true, 450);
           this.spawnExplosionParticles(targetX, targetY, 40, '#ffd700');
           this.addTrauma(0.3);
         }, 120);
       }
     }
 
-    hitEnemiesInRadius(cx, cy, radius, damage, canCrit = false, knockback = 200) {
+    hitEnemiesInRadius(cx, cy, radius, damage, canCrit = false, knockback = 0) {
       this.monsters.forEach((m) => {
         if (m.hp <= 0) return;
         const dist = Math.hypot(m.x - cx, m.y - cy);
@@ -2283,13 +3523,21 @@
       });
     }
 
-    applyDamageToMonster(monster, damage, isCrit, hitAngle, knockbackStrength = 200) {
+    applyDamageToMonster(monster, damage, isCrit, hitAngle, knockbackStrength = 0) {
       if (monster.dead) return;
       monster.hp -= damage;
       monster.flashTimer = 0.12;
       monster.state = 'CHASE';
-      monster.vx += Math.cos(hitAngle) * knockbackStrength;
-      monster.vy += Math.sin(hitAngle) * knockbackStrength;
+      // Uzaktan vurulsa bile peşimize düşsün; 7-9 sn sonra (mesafe açılırsa) bırakır.
+      monster.aggroTimer = Math.max(Number(monster.aggroTimer) || 0, monster.elite ? 9 : 7);
+      // Geri tepme artık çok yumuşak: sadece "ağır" yetenekler hafifçe iter.
+      // (Ok/okçu vuruşları canavarı uçurmasın diye varsayılan 0.)
+      const kb = Math.max(0, Number(knockbackStrength) || 0);
+      if (kb > 0 && !monster.elite) {
+        const mag = Math.min(150, kb) * 0.5;
+        monster.vx = clamp(monster.vx + Math.cos(hitAngle) * mag, -220, 220);
+        monster.vy = clamp(monster.vy + Math.sin(hitAngle) * mag, -220, 220);
+      }
 
       const vampRate = this.playerData.stats.omnivamp || 0;
       if (vampRate > 0) {
@@ -2318,17 +3566,13 @@
             color: '#b9f6ca', size: 2 + Math.random() * 2, life: 0.9, grav: -30
           });
         }
-        const gold = Math.floor(10 + Math.random() * 15);
+        const gold = Math.floor(6 + Math.random() * 10) + Math.round((monster.gold || 0) * 0.5);
         this.playerData.stats.gold += gold;
         this.later(() => this.spawnDamageNumber(monster.x, monster.y, `+${gold}g`, '#ffd54f'), 150);
         if (this.onStatsChange) this.onStatsChange(this.playerData.stats);
         // Sunucuya bildir (xp/altın sunucu tarafından sınırlı verilir).
         if (this.onKill) this.onKill(monster);
-
-        this.later(() => {
-          this.monsters = this.monsters.filter((m) => m.id !== monster.id);
-          this.spawnMonsters(1);
-        }, 5000);
+        this.scheduleRespawn();
       }
 
       if (this.onStatsChange) this.onStatsChange(this.playerData.stats);
@@ -2371,7 +3615,7 @@
     }
 
     checkInteractionNearPlayer() {
-      let best = null, bestD = 76;
+      let best = null, bestD = this.interactRadius || 76;
       for (const s of this.scenery || []) {
         if (!s.interactable && s.type !== 'shrine') continue;
         const d = Math.hypot(s.wx - this.player.x, s.wy - this.player.y);
@@ -2379,6 +3623,20 @@
       }
       this._interactTarget = best;
       return !!best;
+    }
+
+    // Yakındaki düşmüş müttefiki bulur (E ile diriltmek için).
+    updateReviveTarget() {
+      this._reviveTarget = null;
+      this._reviveName = null;
+      if (this.downed) return;
+      let best = null, bestD = this.reviveRange || 110;
+      for (const o of Object.values(this.others || {})) {
+        if (!o || !o.downed) continue;
+        const d = Math.hypot((o.wx || 0) - this.player.x, (o.wy || 0) - this.player.y);
+        if (d < bestD) { bestD = d; best = o; }
+      }
+      if (best) { this._reviveTarget = best.id; this._reviveName = best.name || 'Ally'; }
     }
 
     getClosestMonsterToMouse(maxDist = 150) {
@@ -2425,11 +3683,64 @@
     update(dt) {
       this.time += dt;
       const P = this.player;
+      this.updateWeather(dt);
 
-      // Fare dünya koordinatı her karede güncellenir (kamera kayarken nişan kaymasın)
-      const mw = screenToWorld(this.mouse.screenX, this.mouse.screenY, this.camera);
+      // --- Güvenlik ağı: yok olan/NaN koordinatlar siyah ekrana yol açmasın ---
+      if (!P || !Number.isFinite(P.x) || !Number.isFinite(P.y)) {
+        if (P) { P.x = 0; P.y = 0; P.vx = 0; P.vy = 0; }
+        this.snapCamera();
+      }
+      if (!Number.isFinite(this.camera.x) || !Number.isFinite(this.camera.y)) this.snapCamera();
+      if (!Number.isFinite(this.zoom) || this.zoom <= 0) { this.zoom = 1; this.zoomTarget = 1; }
+      if (!Number.isFinite(this.worldScale) || this.worldScale <= 0) this.worldScale = this.tileSize || 64;
+      if (!Array.isArray(this.tiles) || this.tiles.length === 0) { try { this.generateMap(); } catch (e) { this.tiles = this.tiles || []; } }
+      if (!this.playerData.stats) this.playerData.stats = {};
+      this.zoom += (this.zoomTarget - this.zoom) * (1 - Math.exp(-8 * dt));
+      const mw = this.screenWorld(this.mouse.screenX, this.mouse.screenY);
       this.mouse.worldX = mw.x;
       this.mouse.worldY = mw.y;
+
+      // Can değişimini sunucuya bildir (0.25 sn'de bir, sadece değiştiyse).
+      const stt = this.playerData.stats || {};
+      this._hpSendTimer += dt;
+      if (this.onHpChange && !this._hpFromServer) { /* gerçek oda verisi gelene kadar can yazma */ }
+      else if (this.onHpChange && stt.currentHp !== this._lastHpSent && this._hpSendTimer > 0.25) {
+        this._hpSendTimer = 0;
+        this._lastHpSent = stt.currentHp;
+        this.onHpChange(stt.currentHp);
+      }
+
+      // Can bitti: yerel olarak yere düş (tek sefer). Sunucu "downed" ya da "fallen" onaylar.
+      // ÖNEMLİ: Gerçek oda verisi gelmeden (_hpFromServer=false) yerel can 0 ise
+      // bunu ölüm sayma; aksi halde yeni seferde motor eski/boş canla anında ölür.
+      const hpNow = stt.currentHp != null ? stt.currentHp : (stt.maxHp || 1);
+      if (this._hpFromServer && hpNow <= 0 && !this._down) {
+        this._down = true;
+        stt.currentHp = 0;
+        this.downed = true;
+        this.player.vx = 0; this.player.vy = 0; this.player.isDashing = false;
+        this._lastHpSent = 0;
+        this.hurt = 0.85;
+        this.shake.trauma = Math.min(1, this.shake.trauma + 0.85);
+        // Yere düşme: kırmızı kırılma halkası + kıvılcımlar (efekt)
+        this.aoeEffects.push({ x: P.x, y: P.y, radius: 92, duration: 0.55, timer: 0.55, color: '#ff5252', ring: true });
+        for (let i = 0; i < 16; i++) {
+          const a = Math.random() * TAU;
+          const sp = 50 + Math.random() * 150;
+          this.addParticle({
+            wx: P.x, wy: P.y, wz: 20, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, vz: 60 + Math.random() * 60,
+            color: i % 2 ? '#ff5252' : '#ff8a80', size: 2.2 + Math.random() * 2.4,
+            life: 0.5 + Math.random() * 0.35, grav: 120
+          });
+        }
+        for (const m of this.monsters || []) {
+          if (m.hp > 0) { m.state = 'PATROL'; m.alertTimer = 0; m.aggroTimer = 0; m.cast = null; m.patrolCenterX = m.x; m.patrolCenterY = m.y; }
+        }
+        if (this.onDown) this.onDown();
+      } else if (hpNow > 0 && this._down) {
+        this._down = false;
+        this.downed = false;
+      }
 
       // 1. Ekran sarsıntısı
       if (this.shake.trauma > 0) {
@@ -2446,12 +3757,16 @@
       if (this.keys['s'] || this.keys['arrowdown']) moveY += 1;
       if (this.keys['a'] || this.keys['arrowleft']) moveX -= 1;
       if (this.keys['d'] || this.keys['arrowright']) moveX += 1;
+      if (this.downed) { moveX = 0; moveY = 0; }
 
       if (moveX !== 0 || moveY !== 0) {
-        const isoMoveX = moveY * 0.707 + moveX * 0.707;
-        const isoMoveY = moveY * 0.707 - moveX * 0.707;
-        P.vx = isoMoveX * P.baseSpeed;
-        P.vy = isoMoveY * P.baseSpeed;
+        // Girdi vektörünü normalize et: çapraz hareket düz hareketten hızlı olmasın.
+        const len = Math.hypot(moveX, moveY) || 1;
+        const nx = moveX / len, ny = moveY / len;
+        const isoMoveX = ny * 0.707 + nx * 0.707;
+        const isoMoveY = ny * 0.707 - nx * 0.707;
+        P.vx = isoMoveX * P.baseSpeed * (this.playerSlowMult || 1) * (P.channel ? 0.45 : 1);
+        P.vy = isoMoveY * P.baseSpeed * (this.playerSlowMult || 1) * (P.channel ? 0.45 : 1);
       } else { P.vx = 0; P.vy = 0; }
 
       // 3. Dash
@@ -2467,6 +3782,8 @@
       }
 
       const maxDistFromCenter = (this.mapRadius - 0.5) * this.tileSize;
+      // Katı nesnelerden it, sonra harita sınırına kenetle.
+      this.resolvePlayerCollision(P);
       const currentDist = Math.hypot(P.x, P.y);
       if (currentDist > maxDistFromCenter) {
         const ang = Math.atan2(P.y, P.x);
@@ -2501,6 +3818,8 @@
       if (P.dashCooldownTimer > 0) P.dashCooldownTimer -= dt;
       if (P.attackCooldownTimer > 0) P.attackCooldownTimer -= dt;
       if (P.attackAnimTimer > 0) P.attackAnimTimer -= dt;
+      this.updatePlayerStatuses(dt);
+      this.updateChannel(dt);
 
       for (const k in P.cooldowns) {
         if (P.cooldowns[k].current > 0) P.cooldowns[k].current = Math.max(0, P.cooldowns[k].current - dt);
@@ -2556,27 +3875,140 @@
 
         if (m.hp <= 0) { if (m.deathTimer > 0) m.deathTimer -= dt; return; }
 
+        // --- Durum efektleri (freeze/stun/root/slow/poison/burn/bleed/shock) ---
+        let statusSpeedMult = 1;
+        let statusDisabled = false;
+        if (m.statuses) {
+          for (const key of Object.keys(m.statuses)) {
+            const s = m.statuses[key];
+            if (!s) continue;
+            s.timer -= dt;
+            if (s.dps > 0) {
+              s.tickTimer -= dt;
+              if (s.tickTimer <= 0) {
+                s.tickTimer += s.tick || 0.5;
+                const tickDmg = Math.max(1, Math.round(s.dps * (s.tick || 0.5)));
+                m.hp -= tickDmg;
+                m.flashTimer = Math.max(m.flashTimer, 0.06);
+                const c = s.type === 'burn' ? '#ff7043' : (s.type === 'bleed' ? '#ff5370' : (s.type === 'shock' ? '#fff176' : '#9ccc65'));
+                this.spawnDamageNumber(m.x, m.y, `-${tickDmg}`, c);
+                if (m.hp <= 0) {
+                  m.dead = true; m.deathTimer = 0.45; m.state = 'DEAD';
+                  this.sound.play('kill');
+                  this.spawnExplosionParticles(m.x, m.y, 22, m.color);
+                  this.onMonsterDeath(m);
+                  delete m.statuses[key];
+                  return;
+                }
+              }
+            }
+            if (s.type === 'slow') statusSpeedMult *= (1 - Math.min(0.85, s.slow || 0.3));
+            if (s.type === 'freeze' || s.type === 'stun' || s.type === 'root') statusDisabled = true;
+            if (s.timer <= 0) delete m.statuses[key];
+          }
+        }
+
         const distToPlayer = Math.hypot(P.x - m.x, P.y - m.y);
         let walking = false;
 
-        if (distToPlayer < 240) {
+        // Oyuncu çok uzaklaştıysa canavarı yakınına taşı (dünya boş kalmasın).
+        if (distToPlayer > 1500) {
+          const ang = Math.random() * TAU, r = 420 + Math.random() * 360;
+          const np = this.clampToWorld(P.x + Math.cos(ang) * r, P.y + Math.sin(ang) * r);
+          m.x = np.x;
+          m.y = np.y;
+          m.patrolCenterX = m.x; m.patrolCenterY = m.y;
+          m.patrolTargetX = m.x; m.patrolTargetY = m.y;
+          m.vx = 0; m.vy = 0; m.state = 'PATROL';
+          m.hp = m.maxHp; m.hpGhost = m.maxHp;
+          return;
+        }
+
+        // --- Yetenek bekleme süreleri ---
+        if (m.skillCds) {
+          for (let i = 0; i < m.skillCds.length; i++) if (m.skillCds[i] > 0) m.skillCds[i] = Math.max(0, m.skillCds[i] - dt);
+        }
+
+        // Oyuncu yere düştüyse canavarlar saldırmayı bırakıp devriyeye döner.
+        if (this.downed) { m.cast = null; m.aggroTimer = 0; }
+
+        // --- Aggro: vurulunca menzil dışından da peşimize düşer, mesafe açılıp
+        // biraz beklendikten sonra bırakır. ---
+        if (m.aggroTimer > 0) {
+          m.aggroTimer -= dt * (distToPlayer > 620 ? 2.2 : 1);
+          if (m.aggroTimer <= 0) {
+            m.aggroTimer = 0;
+            m.cast = null;
+            m.state = 'PATROL';
+            m.patrolCenterX = m.x; m.patrolCenterY = m.y;
+            m.patrolTargetX = m.x; m.patrolTargetY = m.y;
+          }
+        }
+        const aggroRange = Number(m.aggroRange) || 280;
+        const chasing = !this.downed && (m.aggroTimer > 0 || distToPlayer < aggroRange);
+
+        if (m.cast) {
+          // Telegraph sürüyor: canavar yerinde sabitlenir, oyuncu kaçabilir.
+          m.cast.timer -= dt;
+          m.facingAngle = Math.atan2(m.cast.ty - m.y, m.cast.tx - m.x);
+          if (m.cast.timer <= 0) {
+            this.executeMonsterSkill(m, m.cast);
+            m.cast = null;
+          }
+        } else if (chasing) {
           m.state = 'CHASE';
           const angle = Math.atan2(P.y - m.y, P.x - m.x);
           m.facingAngle = angle;
-          if (distToPlayer > m.radius + P.radius) {
-            m.x += Math.cos(angle) * m.speed * dt;
-            m.y += Math.sin(angle) * m.speed * dt;
-            walking = true;
-          } else if (m.attackTimer <= 0) {
-            m.attackTimer = m.attackCooldown;
-            const monsterDmg = Math.max(5, m.damage - (this.playerData.stats.defense || 0) * 0.3);
-            this.playerData.stats.currentHp = Math.max(0, this.playerData.stats.currentHp - Math.round(monsterDmg));
-            this.addTrauma(0.3);
-            this.hurt = 0.35;
-            this.sound.play('hit');
-            this.spawnDamageNumber(P.x, P.y, `-${Math.round(monsterDmg)}`, '#ff5252');
-            this.spawnBloodParticles(P.x, P.y, angle, 6, '#ff5252');
-            if (this.onStatsChange) this.onStatsChange(this.playerData.stats);
+          const reach = m.radius + P.radius + 6;
+
+          // Menzildeyse ve hazırsa yetenek başlat (kırmızı telegraph).
+          let started = false;
+          if (m.skills && m.skills.length && m.skillCds && !statusDisabled) {
+            for (let i = 0; i < m.skills.length; i++) {
+              if ((m.skillCds[i] || 0) > 0) continue;
+              const sk = m.skills[i];
+              if (distToPlayer > (Number(sk.range) || 240)) continue;
+              if (sk.kind === 'dash' && distToPlayer < 64) continue;
+              const windup = Number(sk.windup) || 0.7;
+              m.cast = { skill: sk, timer: windup, total: windup, x: m.x, y: m.y, tx: P.x, ty: P.y, angle };
+              m.skillCds[i] = Number(sk.cd) || 6;
+              started = true;
+              break;
+            }
+          }
+          if (!started) {
+            if (distToPlayer > reach) {
+              if (!statusDisabled) {
+                m.x += Math.cos(angle) * m.speed * statusSpeedMult * dt;
+                m.y += Math.sin(angle) * m.speed * statusSpeedMult * dt;
+                walking = true;
+              }
+            } else if (m.attackTimer <= 0 && !statusDisabled) {
+              m.attackTimer = m.attackCooldown;
+              const monsterDmg = Math.max(5, m.damage - (this.playerData.stats.defense || 0) * 0.3);
+              if (m.ability === 'ranged') {
+                // Menzilli canavar: oyuncuya doğru mermi gönderir.
+                const spd = 340;
+                this.projectiles.push({
+                  type: 'monster_orb', hostile: true,
+                  x: m.x, y: m.y,
+                  vx: Math.cos(angle) * spd, vy: Math.sin(angle) * spd,
+                  radius: 8, life: 2.0, damage: Math.round(monsterDmg), color: m.accent || m.color || '#b388ff'
+                });
+                this.sound.play('shoot');
+              } else {
+                this.damagePlayer(Math.round(monsterDmg), angle);
+                // Elit yeteneği: yakın alan patlaması.
+                if (m.ability === 'nova') {
+                  this.aoeEffects.push({ x: m.x, y: m.y, radius: m.radius * 2.4, duration: 0.4, timer: 0.4, color: m.accent || '#ff8a65', ring: true });
+                  if (distToPlayer <= m.radius * 2.4 + P.radius) this.damagePlayer(Math.round(monsterDmg * 0.4), angle);
+                }
+              }
+              // Canavara özel durum (biyom tablosu): dondurma, zehir, yanma...
+              if (m.statusOnHit && this.playerData.stats.currentHp > 0) {
+                this.applyPlayerStatusFromMonster(m.statusOnHit);
+              }
+            }
           }
         } else {
           m.patrolTimer -= dt;
@@ -2589,11 +4021,11 @@
           }
           const pdx = m.patrolTargetX - m.x, pdy = m.patrolTargetY - m.y;
           const pd = Math.hypot(pdx, pdy);
-          if (pd > 10) {
+          if (pd > 10 && !statusDisabled) {
             const pAngle = Math.atan2(pdy, pdx);
             m.facingAngle = pAngle;
-            m.x += Math.cos(pAngle) * (m.speed * 0.45) * dt;
-            m.y += Math.sin(pAngle) * (m.speed * 0.45) * dt;
+            m.x += Math.cos(pAngle) * (m.speed * 0.45) * statusSpeedMult * dt;
+            m.y += Math.sin(pAngle) * (m.speed * 0.45) * statusSpeedMult * dt;
             walking = true;
           }
         }
@@ -2618,12 +4050,20 @@
         }
 
         let hit = false;
-        for (const m of this.monsters) {
+        if (p.hostile) {
+          const dp = Math.hypot(P.x - p.x, P.y - p.y);
+          if (dp <= P.radius + p.radius) {
+            hit = true;
+            this.damagePlayer(p.damage, Math.atan2(p.vy, p.vx));
+          }
+        }
+        if (!hit) for (const m of this.monsters) {
           if (m.hp <= 0) continue;
           const d = Math.hypot(m.x - p.x, m.y - p.y);
           if (d <= m.radius + p.radius) {
             hit = true;
-            this.applyDamageToMonster(m, p.damage, p.isCrit, Math.atan2(p.vy, p.vx), 220);
+            this.applyDamageToMonster(m, p.damage, p.isCrit, Math.atan2(p.vy, p.vx), 0);
+            if (p.skill && p.skill.status) this.applyMonsterStatus(m, p.skill.status);
             break;
           }
         }
@@ -2640,6 +4080,29 @@
       for (let i = this.aoeEffects.length - 1; i >= 0; i--) {
         const aoe = this.aoeEffects[i];
         aoe.timer -= dt;
+        // Sürekli hasar veren zemin alanı (ground) ve girdap (vortex).
+        if ((aoe.zone || aoe.vortex) && aoe.skill && aoe.timer > 0) {
+          aoe.tickTimer = (aoe.tickTimer || 0) + dt;
+          if (aoe.vortex && aoe.pull) {
+            // Girdap: yarıçap içindeki canavarları merkeze çeker.
+            for (const m of this.monsters) {
+              if (!m || m.hp <= 0) continue;
+              const dx = aoe.x - m.x, dy = aoe.y - m.y;
+              const d = Math.hypot(dx, dy);
+              if (d > 0.001 && d <= aoe.radius * 1.15) {
+                const step = Math.min((aoe.pull || 90) * dt, Math.max(0, d - 6) * 0.5);
+                m.x += (dx / d) * step;
+                m.y += (dy / d) * step;
+              }
+            }
+          }
+          if (aoe.tickTimer >= (aoe.tick || 0.5)) {
+            aoe.tickTimer = 0;
+            const dmg = Math.max(1, Math.round(this.skillDamage(aoe.skill) * 0.4));
+            this.hitEnemiesInRadius(aoe.x, aoe.y, aoe.radius, dmg, false, 0);
+            if (aoe.skill.status) this.applyAreaStatus(aoe.x, aoe.y, aoe.radius, aoe.skill);
+          }
+        }
         if (aoe.pillar && aoe.timer > 0 && Math.random() < 0.7) {
           const a = Math.random() * TAU, r = Math.random() * aoe.radius * 0.8;
           this.addParticle({
@@ -2650,10 +4113,36 @@
         if (aoe.timer <= 0) this.aoeEffects.splice(i, 1);
       }
 
+      // 8b. Yörünge ultisi (orbit): dönen silahlar çevreye sürekli hasar verir.
+      if (this.orbitAura) {
+        const o = this.orbitAura;
+        o.timer -= dt;
+        o.angle += o.speed * dt;
+        o.tickTimer += dt;
+        if (o.tickTimer >= o.tick) {
+          o.tickTimer = 0;
+          this.hitEnemiesInRadius(this.player.x, this.player.y, o.radius, Math.max(1, Math.round(o.damage * 0.34)), true, Number(o.sk && o.sk.knockback) || 0);
+          if (o.sk && o.sk.status) this.applyAreaStatus(this.player.x, this.player.y, o.radius, o.sk);
+        }
+        if (o.timer <= 0) this.orbitAura = null;
+      }
+
+      // 8c. Zincir şimşeği efektleri.
+      for (let i = this.chainFx.length - 1; i >= 0; i--) {
+        this.chainFx[i].timer -= dt;
+        if (this.chainFx[i].timer <= 0) this.chainFx.splice(i, 1);
+      }
+
       // vuruş patlamaları
       for (let i = this.impacts.length - 1; i >= 0; i--) {
         this.impacts[i].timer -= dt;
         if (this.impacts[i].timer <= 0) this.impacts.splice(i, 1);
+      }
+
+      // menzil göstergeleri (kısa ömürlü, zeminde)
+      for (let i = this.rangePings.length - 1; i >= 0; i--) {
+        this.rangePings[i].timer -= dt;
+        if (this.rangePings[i].timer <= 0) this.rangePings.splice(i, 1);
       }
 
       // 9. Hasar sayıları (ekranda dikey yükselir)
@@ -2685,7 +4174,20 @@
 
       // 11. Ambiyans
       this.ambientMotes.forEach((m) => {
-        if (m.leaf) {
+        if (m.snow) {
+          m.z -= 26 * dt;
+          m.x += Math.sin(this.time * 1.1 + m.phase) * 22 * dt;
+          m.y += 10 * dt;
+          if (m.z < 0) { m.z = 90 + Math.random() * 60; m.x = (Math.random() - 0.5) * 900; m.y = (Math.random() - 0.5) * 900; }
+        } else if (m.ember) {
+          m.z += 22 * dt;
+          m.x += Math.sin(this.time * 2 + m.phase) * 14 * dt;
+          if (m.z > 130) { m.z = 0; m.x = (Math.random() - 0.5) * 900; m.y = (Math.random() - 0.5) * 900; }
+        } else if (m.bubble) {
+          m.z += 12 * dt;
+          m.x += Math.sin(this.time * 1.4 + m.phase) * 10 * dt;
+          if (m.z > 90) { m.z = 0; m.x = (Math.random() - 0.5) * 900; m.y = (Math.random() - 0.5) * 900; }
+        } else if (m.leaf) {
           m.z -= 14 * dt;
           m.x += (m.vx + Math.sin(this.time * 1.5 + m.phase) * 12) * dt;
           m.y += m.vy * dt;
@@ -2703,14 +4205,34 @@
 
       // Etkileşim hedefi (prompt / E tuşu için her karede tazelenir)
       this.checkInteractionNearPlayer();
+      this.updateReviveTarget();
 
       // 12. Kamera (kare hızından bağımsız yumuşak takip)
       const targetScreen = worldToScreen(P.x, P.y, 0, { x: 0, y: 0 });
       this.camera.targetX = this.width / 2 - targetScreen.x;
-      this.camera.targetY = this.height / 2 - targetScreen.y + 40;
+      this.camera.targetY = this.height / 2 - targetScreen.y;
+      // Sarsıntıyı her karede kamera konumuna eklemek birikmeye ve yürürken
+      // "yer titriyor" hissine yol açıyordu. Önce önceki karede uygulanan
+      // offsetleri çıkar, yumuşak takibi uygula, sonra yenilerini ekle.
+      this.camera.x -= (this._camShakeX || 0);
+      this.camera.y -= (this._camShakeY || 0);
+      this.camera.y -= (this._walkBobOffset || 0);
       const camLerp = 1 - Math.exp(-7.6 * dt);
-      this.camera.x += (this.camera.targetX - this.camera.x) * camLerp + this.shake.x;
-      this.camera.y += (this.camera.targetY - this.camera.y) * camLerp + this.shake.y;
+      this.camera.x += (this.camera.targetX - this.camera.x) * camLerp;
+      this.camera.y += (this.camera.targetY - this.camera.y) * camLerp;
+      this._camShakeX = this.shake.x;
+      this._camShakeY = this.shake.y;
+      this.camera.x += this._camShakeX;
+      this.camera.y += this._camShakeY;
+      // Yürüyüş kamera nefesi: çok hafif, sarsıntıdan ayrı offset.
+      const spdNow = Math.hypot(P.vx || 0, P.vy || 0);
+      if (spdNow > 8) {
+        this._walkBob = (this._walkBob || 0) + dt * (4.2 + spdNow * 0.006);
+        this._walkBobOffset = Math.sin(this._walkBob) * Math.min(1.0, spdNow * 0.0032);
+      } else {
+        this._walkBobOffset = (this._walkBobOffset || 0) * Math.max(0, 1 - dt * 8);
+      }
+      this.camera.y += this._walkBobOffset;
     }
 
     // ======================================================================
@@ -2718,38 +4240,86 @@
     // ======================================================================
     render() {
       const ctx = this.ctx;
+      if (!ctx) return;
       ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+      // Önceki kare yarıda kaldıysa tuval durumu kirlenmiş olabilir; sıfırla.
+      ctx.globalAlpha = 1;
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.shadowBlur = 0;
+      ctx.setLineDash([]);
+      if (!Number.isFinite(this.width) || !Number.isFinite(this.height) || this.width <= 0 || this.height <= 0) this.resize();
       ctx.clearRect(0, 0, this.width, this.height);
+
+      // Kamera/veri bozulursa kareyi görünür tut.
+      if (!Number.isFinite(this.camera.x) || !Number.isFinite(this.camera.y) || !Number.isFinite(this.zoom)) this.snapCamera();
+      if (!Array.isArray(this.tiles) || this.tiles.length === 0) { try { this.generateMap(); } catch (e) { this.tiles = this.tiles || []; } }
 
       // Arka plan: derin gece + yıldızlar
       const bg = ctx.createRadialGradient(this.width / 2, this.height / 2, 60, this.width / 2, this.height / 2, Math.max(this.width, this.height) * 0.8);
-      bg.addColorStop(0, '#101a20');
-      bg.addColorStop(0.6, '#070b0e');
-      bg.addColorStop(1, '#020304');
+      bg.addColorStop(0, '#22333d');
+      bg.addColorStop(0.6, '#101a20');
+      bg.addColorStop(1, '#070b0e');
       ctx.fillStyle = bg;
       ctx.fillRect(0, 0, this.width, this.height);
-      for (const s of this.stars) {
+      for (const s of this.stars || []) {
         ctx.globalAlpha = s.a * (0.6 + 0.4 * Math.sin(this.time * 1.2 + s.tw));
         ctx.fillStyle = '#cfe8ff';
         ctx.fillRect(s.x, s.y, s.r, s.r);
       }
       ctx.globalAlpha = 1;
 
+      // Harita hiç yoksa (veri gelmediyse) siyah ekran yerine görünür zemin çiz.
+      if (!this.tiles.length) {
+        ctx.fillStyle = '#2f3d2a';
+        ctx.fillRect(0, 0, this.width, this.height);
+        ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+        ctx.lineWidth = 1;
+        for (let gx = 0; gx < this.width; gx += 64) { ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, this.height); ctx.stroke(); }
+        for (let gy = 0; gy < this.height; gy += 64) { ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(this.width, gy); ctx.stroke(); }
+      }
+
+      // Zoom: dünya katmanı ekran merkezi etrafında ölçeklenir; arka plan ve
+      // vinyet sabit kalır. Biyom tonu/sisi ekran uzayında çizilir (aşağıda),
+      // aksi halde zoom-out'ta tuval dikdörtgeni "kare sis" olarak görünür.
+      const z = this.zoom || 1;
+      const zoomed = Math.abs(z - 1) > 0.001;
+      const applyZoom = () => {
+        if (!zoomed) return;
+        const cx = this.width / 2, cy = this.height / 2;
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.scale(z, z);
+        ctx.translate(-cx, -cy);
+      };
+      applyZoom();
       this.render3DTiles(ctx);
+      if (zoomed) ctx.restore();
+
+      // Biyom rengi + sis: tam ekran, zoom'dan bağımsız.
+      this.renderBiomeOverlay(ctx);
+
+      applyZoom();
       this.renderLighting(ctx);
       this.renderShadows(ctx);
+      this.renderRangePings(ctx);
+      this.renderMonsterTelegraphs(ctx);
       this.renderAoEEffects(ctx);
+      this.renderOrbitAura(ctx);
+      this.renderChannelFx(ctx);
       this.renderSortedEntities(ctx);
       this.renderProjectilesAndSlashes(ctx);
+      this.renderChainFx(ctx);
       this.renderParticles(ctx);
       this.renderDamageNumbers(ctx);
+      if (zoomed) ctx.restore();
       this.renderAtmosphericVignette(ctx);
+      this.renderWeather(ctx);
       this.renderWorldOverlay(ctx);
     }
 
     // ---------------- KAROLAR ----------------
     getTileSprite(type, variant, elev) {
-      const key = type + '|' + variant + '|' + elev;
+      const key = (this.biome || '') + '|' + type + '|' + variant + '|' + elev;
       const cached = this.tileSprites[key];
       if (cached) return cached;
 
@@ -2920,6 +4490,31 @@
       g.strokeStyle = 'rgba(0,0,0,0.30)';
       g.beginPath(); g.moveTo(ox - hw, oy); g.lineTo(ox, oy + hh); g.lineTo(ox + hw, oy); g.stroke();
 
+      // Biyom karo tinti: haritanın kendi renk değerlerini doğrudan değiştirir
+      // (kar biyomunda çim buz/kar rengine döner; ekstra beyaz leke yok).
+      // 'color' karışımı aydınlık/gölge derinliğini korur; desteklenmiyorsa
+      // düz 'source-atop' boyamaya düşer.
+      const tint = this.biomePalette && this.biomePalette.tileTint;
+      if (tint && tint.color) {
+        const amt = Math.max(0, Math.min(1, Number(tint.amount) || 0));
+        g.save();
+        // 1) Renk kayması: hue değişir, gölge/aydınlık korunur.
+        g.globalCompositeOperation = 'color';
+        const keepDepth = g.globalCompositeOperation === 'color';
+        if (!keepDepth) g.globalCompositeOperation = 'source-atop';
+        g.globalAlpha = keepDepth ? amt : Math.min(1, amt + 0.1);
+        g.fillStyle = tint.color;
+        g.fillRect(0, 0, w, h);
+        // 2) Aydınlatma: kar/buz parlaklığı (screen beyazı gölgeleri korur).
+        if (keepDepth) {
+          g.globalCompositeOperation = 'screen';
+          g.globalAlpha = Math.min(0.6, amt * 0.45);
+          g.fillStyle = '#ffffff';
+          g.fillRect(0, 0, w, h);
+        }
+        g.restore();
+      }
+
       const sprite = { canvas: cv, ox, oy, w, h };
       this.tileSprites[key] = sprite;
       return sprite;
@@ -2929,10 +4524,13 @@
       const hw = this.tileSize * COS_30, hh = this.tileSize * SIN_30, th = this.tileThickness;
       for (const t of this.tiles) {
         const p = this.iso(t.wx, t.wy, t.wz);
-        const sx = Math.round(p.x), sy = Math.round(p.y);
+        if (!Number.isFinite(p.x) || !Number.isFinite(p.y)) continue;
+        // Alt-piksel çizim: kamera yumuşak kayarken zemin 1px sıçrayıp titremez.
+        const sx = p.x, sy = p.y;
         if (sx < -120 || sx > this.width + 120 || sy < -120 || sy > this.height + 140) continue;
 
         const sp = this.getTileSprite(t.type, t.variant, t.wz);
+        if (!sp || !sp.canvas || !sp.canvas.width) continue;
         ctx.drawImage(sp.canvas, sx - sp.ox, sy - sp.oy, sp.w, sp.h);
 
         // Ada kenarına doğru kararma (derinlik hissi)
@@ -2994,6 +4592,7 @@
       this.scenery.forEach((s) => {
         if (s.type === 'tree') soft(s.wx, s.wy, 0, 34 * s.scale, 16 * s.scale, 0.6, 7, 3);
         else if (s.type === 'boulder') soft(s.wx, s.wy, 0, 24 * s.scale, 11 * s.scale, 0.55, 4, 2);
+        else if (s.type === 'mountain') soft(s.wx, s.wy, 0, 46 * s.scale, 15 * s.scale, 0.5, 9, 4);
         else if (s.type === 'shrine') soft(s.wx, s.wy, 0, 40, 19, 0.6);
         else if (s.type === 'mushroom') soft(s.wx, s.wy, 0, 12 * s.scale, 6 * s.scale, 0.5);
         else if (s.type === 'lantern') soft(s.wx, s.wy, 0, 12, 6, 0.5);
@@ -3048,7 +4647,213 @@
       ctx.stroke();
       ctx.setLineDash([]);
 
+      // Kalkan baloncuğu (Paladin Aegis / şifa kalkanları): 5 sn sürer.
+      if (this.playerShield > 0 && this.playerShieldTimer > 0) {
+        const pct = clamp(this.playerShield / (this.playerShieldMax || 1), 0, 1);
+        const pulse = 0.72 + Math.sin(this.time * 7) * 0.06;
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        drawGlowEllipse(ctx, c.x, c.y - 22, 30, 34, '#80deea', 0.18 + pct * 0.12);
+        ctx.strokeStyle = `rgba(128,222,234,${0.35 + pct * 0.4})`;
+        ctx.lineWidth = 2.4;
+        ctx.beginPath();
+        ctx.ellipse(c.x, c.y - 24, 26 * pulse, 38 * pulse, 0, 0, TAU);
+        ctx.stroke();
+        // Dönen kalkan dilimleri
+        for (let i = 0; i < 6; i++) {
+          const a = this.time * 1.6 + (i / 6) * TAU;
+          ctx.strokeStyle = `rgba(179,245,255,${0.35 + pct * 0.35})`;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(c.x, c.y - 24, 30, a, a + 0.35);
+          ctx.stroke();
+        }
+        // Kalan süre halkası
+        ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.arc(c.x, c.y - 24, 34, -Math.PI / 2, -Math.PI / 2 + TAU * clamp(this.playerShieldTimer / 5, 0, 1));
+        ctx.stroke();
+        ctx.restore();
+      }
+
       ctx.restore();
+    }
+
+    // ---------------- Menzil göstergeleri (yerel, zeminde) ----------------
+    renderRangePings(ctx) {
+      if (!this.rangePings.length) return;
+      this.rangePings.forEach((rp) => {
+        const c = this.iso(rp.x, rp.y, 0);
+        const prog = clamp(rp.timer / rp.duration, 0, 1); // 1 -> 0
+        const appear = clamp((1 - prog) * 6, 0, 1);       // hızlı büyüme
+        const rx = rp.radius * ISO_RX * (0.6 + 0.4 * appear);
+        const ry = rp.radius * ISO_RY * (0.6 + 0.4 * appear);
+        const col = rp.color;
+        ctx.save();
+        // Yumuşak iç dolgu (alanı belli eder ama gözü yormaz)
+        ctx.globalAlpha = (rp.thin ? 0.07 : 0.20) * prog;
+        ctx.fillStyle = col;
+        const isCone = rp.arc && rp.arc < TAU - 0.01;
+        if (isCone) {
+          // Koni/arc göstergesi: dünya açılarını izometrik konuma çevir.
+          const a0 = (rp.angle || 0) - rp.arc / 2;
+          const a1 = (rp.angle || 0) + rp.arc / 2;
+          const steps = 18;
+          ctx.beginPath();
+          ctx.moveTo(c.x, c.y);
+          for (let i = 0; i <= steps; i++) {
+            const a = a0 + (a1 - a0) * (i / steps);
+            const p = this.iso(rp.x + Math.cos(a) * rp.radius * (0.6 + 0.4 * appear), rp.y + Math.sin(a) * rp.radius * (0.6 + 0.4 * appear), 0);
+            ctx.lineTo(p.x, p.y);
+          }
+          ctx.closePath();
+          ctx.fill();
+          ctx.globalAlpha = 0.85 * prog;
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = rgba(col, 0.95);
+          ctx.stroke();
+        } else {
+          ctx.beginPath(); ctx.ellipse(c.x, c.y, rx, ry, 0, 0, TAU); ctx.fill();
+          // Kenar halkası
+          ctx.globalAlpha = (rp.thin ? 0.5 : 0.85) * prog;
+          ctx.lineWidth = rp.thin ? 1.3 : 2;
+          ctx.strokeStyle = rgba(col, 0.95);
+          if (rp.thin) ctx.setLineDash([8, 8]);
+          ctx.beginPath(); ctx.ellipse(c.x, c.y, rx, ry, 0, 0, TAU); ctx.stroke();
+          if (rp.thin) { ctx.setLineDash([]); ctx.restore(); return; }
+          // Dönen kesikli iç halka (şık, "minik" detay)
+          ctx.setLineDash([5, 6]);
+          ctx.lineDashOffset = -this.time * 30 + rp.seed;
+          ctx.lineWidth = 1.2;
+          ctx.strokeStyle = rgba('#ffffff', 0.6 * prog);
+          ctx.beginPath(); ctx.ellipse(c.x, c.y, rx * 0.82, ry * 0.82, 0, 0, TAU); ctx.stroke();
+          ctx.setLineDash([]);
+        }
+        ctx.restore();
+      });
+    }
+
+    // ---------------- CANAVAR YETENEKLERİ ----------------
+    // Kırmızı telegraph: dash şeridi / slam dairesi / ok çizgisi. Oyuncu
+    // kırmızı alandan çıkarsa hasar almaz (dodge edilebilir).
+    renderMonsterTelegraphs(ctx) {
+      if (!this.monsters || !this.monsters.length) return;
+      ctx.save();
+      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      for (const m of this.monsters) {
+        if (!m.cast || m.hp <= 0 || m.dead) continue;
+        const sk = m.cast.skill || {};
+        const total = Math.max(0.15, m.cast.total || 0.7);
+        const prog = clamp(1 - m.cast.timer / total, 0, 1);
+        const alpha = 0.16 + prog * 0.30;
+        const col = '#ff3b30';
+        if (sk.kind === 'dash') {
+          const a = Math.atan2(m.cast.ty - m.y, m.cast.tx - m.x);
+          const len = Math.min(Number(sk.dist) || 150, Math.hypot(m.cast.tx - m.x, m.cast.ty - m.y) + 40);
+          const w = Number(sk.radius) || 34;
+          const p0 = this.iso(m.x, m.y, 1);
+          const p1 = this.iso(m.x + Math.cos(a) * len, m.y + Math.sin(a) * len, 1);
+          const d = m.radius;
+          ctx.globalAlpha = alpha;
+          ctx.strokeStyle = col;
+          ctx.lineWidth = Math.max(10, w * 1.15);
+          ctx.beginPath(); ctx.moveTo(p0.x, p0.y); ctx.lineTo(p1.x, p1.y); ctx.stroke();
+          ctx.globalAlpha = 0.85;
+          ctx.strokeStyle = '#ff8a80';
+          ctx.lineWidth = 2;
+          ctx.setLineDash([7, 7]);
+          ctx.lineDashOffset = -this.time * 70;
+          ctx.beginPath(); ctx.moveTo(p0.x, p0.y); ctx.lineTo(p1.x, p1.y); ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.fillStyle = '#ff3b30';
+          ctx.globalAlpha = 0.5 + 0.4 * Math.sin(this.time * 12);
+          ctx.beginPath(); ctx.ellipse(p1.x, p1.y, d * 0.9 * ISO_RX, d * 0.9 * ISO_RY, 0, 0, TAU); ctx.fill();
+        } else if (sk.kind === 'slam') {
+          const c = this.iso(m.x, m.y, 0);
+          const rad = Number(sk.radius) || 90;
+          const rx = rad * ISO_RX, ry = rad * ISO_RY;
+          ctx.globalAlpha = alpha * 0.75;
+          ctx.fillStyle = col;
+          ctx.beginPath(); ctx.ellipse(c.x, c.y, rx, ry, 0, 0, TAU); ctx.fill();
+          ctx.globalAlpha = 0.9;
+          ctx.strokeStyle = '#ff8a80';
+          ctx.lineWidth = 2.4;
+          ctx.setLineDash([8, 6]);
+          ctx.lineDashOffset = -this.time * 50;
+          ctx.beginPath(); ctx.ellipse(c.x, c.y, rx, ry, 0, 0, TAU); ctx.stroke();
+          ctx.setLineDash([]);
+          // dolan iç halka: süre azaldıkça daralır
+          ctx.globalAlpha = 0.5;
+          ctx.strokeStyle = col;
+          ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.ellipse(c.x, c.y, rx * (1 - prog * 0.85), ry * (1 - prog * 0.85), 0, 0, TAU); ctx.stroke();
+        } else {
+          const c = this.iso(m.x, m.y, 0);
+          const t = this.iso(m.cast.tx, m.cast.ty, 0);
+          ctx.globalAlpha = 0.55;
+          ctx.strokeStyle = col;
+          ctx.lineWidth = 1.6;
+          ctx.setLineDash([5, 9]);
+          ctx.lineDashOffset = -this.time * 40;
+          ctx.beginPath(); ctx.moveTo(c.x, c.y); ctx.lineTo(t.x, t.y); ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.globalAlpha = 0.3 + prog * 0.4;
+          ctx.fillStyle = col;
+          ctx.beginPath(); ctx.ellipse(t.x, t.y, 18, 9, 0, 0, TAU); ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+        // Canavarın üstünde uyarı halkası
+        const top = this.iso(m.x, m.y, m.radius * 2 + 18);
+        drawGlow(ctx, top.x, top.y, 14, '#ff1744', 0.5 + 0.3 * Math.sin(this.time * 10));
+      }
+      ctx.restore();
+    }
+
+    executeMonsterSkill(m, cast) {
+      const sk = (cast && cast.skill) || {};
+      const P = this.player;
+      const power = Number(sk.power) || 1;
+      const dmg = Math.max(3, Math.round((m.damage - (this.playerData.stats.defense || 0) * 0.3) * power));
+      const color = m.accent || m.color || '#ff7043';
+      const ang = Number.isFinite(cast.angle) ? cast.angle : Math.atan2(cast.ty - m.y, cast.tx - m.x);
+      let landed = false;
+      if (sk.kind === 'dash') {
+        this.sound.play('dash');
+        this.aoeEffects.push({ x: m.x, y: m.y, radius: m.radius * 1.5, duration: 0.32, timer: 0.32, color, ring: true });
+        const want = Math.min(Number(sk.dist) || 150, Math.hypot(cast.tx - m.x, cast.ty - m.y) + 40);
+        const np = this.clampToWorld(m.x + Math.cos(ang) * want, m.y + Math.sin(ang) * want);
+        for (let i = 0; i < 7; i++) {
+          const f = i / 7;
+          this.spawnExplosionParticles(m.x + (np.x - m.x) * f, m.y + (np.y - m.y) * f, 2, color);
+        }
+        m.x = np.x; m.y = np.y;
+        const hitR = (Number(sk.radius) || 36);
+        this.aoeEffects.push({ x: m.x, y: m.y, radius: hitR, duration: 0.3, timer: 0.3, color, ring: true });
+        landed = Math.hypot(P.x - m.x, P.y - m.y) <= hitR + P.radius;
+      } else if (sk.kind === 'slam') {
+        this.sound.play('hit');
+        this.addTrauma(0.22);
+        const radius = Number(sk.radius) || 90;
+        this.aoeEffects.push({ x: m.x, y: m.y, radius, duration: 0.45, timer: 0.45, color, ring: true, cracks: true });
+        landed = Math.hypot(P.x - m.x, P.y - m.y) <= radius + P.radius;
+      } else {
+        this.sound.play('shoot');
+        const count = sk.kind === 'volley' ? Math.max(1, Number(sk.count) || 3) : 1;
+        const spread = Number(sk.spread) || 0.18;
+        for (let i = 0; i < count; i++) {
+          const a = ang + (i - (count - 1) / 2) * spread;
+          this.projectiles.push({
+            type: 'monster_orb', hostile: true, x: m.x, y: m.y,
+            vx: Math.cos(a) * 380, vy: Math.sin(a) * 380,
+            radius: 8, life: 2.2, damage: dmg, color
+          });
+        }
+      }
+      if (landed) {
+        this.damagePlayer(dmg, ang);
+        if (sk.status && this.playerData.stats.currentHp > 0) this.applyPlayerStatusFromMonster(sk.status);
+      }
     }
 
     // ---------------- AoE ----------------
@@ -3065,7 +4870,35 @@
         ctx.globalCompositeOperation = 'lighter';
         ctx.lineCap = 'round'; ctx.lineJoin = 'round';
 
-        if (aoe.ring) {
+        if (aoe.vortex) {
+          // Girdap: dönen spiral kollar + merkeze çekilen kıvılcımlar.
+          const spin = this.time * 3.2;
+          drawGlowEllipse(ctx, c.x, c.y, rx, ry, col, 0.16 * prog + 0.05);
+          ctx.strokeStyle = rgba(col, 0.85 * prog);
+          ctx.lineWidth = 2.2;
+          ctx.beginPath(); ctx.ellipse(c.x, c.y, rx, ry, 0, 0, TAU); ctx.stroke();
+          for (let arm = 0; arm < 3; arm++) {
+            ctx.beginPath();
+            for (let i = 0; i <= 24; i++) {
+              const q = i / 24;
+              const a = spin + arm * (TAU / 3) + q * 3.4;
+              const rr = aoe.radius * (1 - q * 0.85);
+              const p = this.iso(aoe.x + Math.cos(a) * rr, aoe.y + Math.sin(a) * rr, 2);
+              if (i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
+            }
+            ctx.strokeStyle = rgba(col, 0.6 * prog);
+            ctx.lineWidth = 2.4;
+            ctx.stroke();
+          }
+          drawGlow(ctx, c.x, c.y, 34 + 6 * Math.sin(this.time * 8), col, 0.55 * prog);
+          for (let i = 0; i < 8; i++) {
+            const a = spin * 1.6 + i * (TAU / 8);
+            const q = ((this.time * 0.9 + i * 0.13) % 1);
+            const rr = aoe.radius * (1 - q);
+            const p = this.iso(aoe.x + Math.cos(a) * rr, aoe.y + Math.sin(a) * rr, 4 + q * 20);
+            drawGlow(ctx, p.x, p.y, 7, col, 0.7 * (1 - q) * prog);
+          }
+        } else if (aoe.ring) {
           const k = 0.25 + 0.75 * easeOut(t);
           drawGlowEllipse(ctx, c.x, c.y, rx * k * 1.05, ry * k * 1.05, col, 0.55 * prog);
           ctx.strokeStyle = rgba(col, clamp(prog * 1.1, 0, 1));
@@ -3195,10 +5028,119 @@
       });
     }
 
+    // ---------------- Zincir şimşeği (chain ultimate) ----------------
+    renderChainFx(ctx) {
+      if (!this.chainFx.length) return;
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      for (const fx of this.chainFx) {
+        const a = clamp(fx.timer / fx.duration, 0, 1);
+        const pts = fx.points || [];
+        for (let i = 1; i < pts.length; i++) {
+          const a0 = this.iso(pts[i - 1].x, pts[i - 1].y, 26);
+          const a1 = this.iso(pts[i].x, pts[i].y, 26);
+          // Kırık şimşek: iki nokta arasında zikzaklı çizgi.
+          const segs = 7;
+          const rand = mulberry32(Math.floor((fx.seed + i * 97) * 1000) + Math.floor(this.time * 30));
+          ctx.beginPath();
+          ctx.moveTo(a0.x, a0.y);
+          for (let s = 1; s < segs; s++) {
+            const q = s / segs;
+            const nx = a0.x + (a1.x - a0.x) * q + (rand() - 0.5) * 16;
+            const ny = a0.y + (a1.y - a0.y) * q + (rand() - 0.5) * 16;
+            ctx.lineTo(nx, ny);
+          }
+          ctx.lineTo(a1.x, a1.y);
+          ctx.strokeStyle = rgba(fx.color, 0.35 * a);
+          ctx.lineWidth = 9 * a + 2;
+          ctx.stroke();
+          ctx.strokeStyle = rgba('#ffffff', 0.9 * a);
+          ctx.lineWidth = 2.2;
+          ctx.stroke();
+        }
+        for (const p of pts) {
+          const s = this.iso(p.x, p.y, 26);
+          drawGlow(ctx, s.x, s.y, 24, fx.color, 0.5 * a);
+        }
+      }
+      ctx.restore();
+    }
+
+    // ---------------- Yörünge ultisi (orbit) ----------------
+    renderOrbitAura(ctx) {
+      const o = this.orbitAura;
+      if (!o) return;
+      const P = this.player;
+      const fade = clamp(Math.min(o.timer / 0.35, (o.duration - o.timer) / 0.2), 0, 1);
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      const center = this.iso(P.x, P.y, 0);
+      const rx = o.radius * 0.72 * ISO_RX, ry = o.radius * 0.72 * ISO_RY;
+      ctx.strokeStyle = rgba(o.color, 0.22 * fade);
+      ctx.lineWidth = 1.4;
+      ctx.setLineDash([6, 8]);
+      ctx.lineDashOffset = -this.time * 40;
+      ctx.beginPath(); ctx.ellipse(center.x, center.y, rx, ry, 0, 0, TAU); ctx.stroke();
+      ctx.setLineDash([]);
+      for (let i = 0; i < o.count; i++) {
+        const ang = o.angle + (i / o.count) * TAU;
+        const wx = P.x + Math.cos(ang) * o.radius * 0.72;
+        const wy = P.y + Math.sin(ang) * o.radius * 0.72;
+        const p = this.iso(wx, wy, 34);
+        drawGlow(ctx, p.x, p.y, 22, o.color, 0.55 * fade);
+        // Dönen enerji bıçağı
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(ang + Math.PI / 2 + this.time * 9);
+        ctx.fillStyle = rgba(o.color, 0.9 * fade);
+        ctx.beginPath();
+        ctx.moveTo(0, -16); ctx.lineTo(4.5, 0); ctx.lineTo(0, 16); ctx.lineTo(-4.5, 0);
+        ctx.closePath(); ctx.fill();
+        ctx.fillStyle = rgba('#ffffff', 0.75 * fade);
+        ctx.beginPath(); ctx.moveTo(0, -14); ctx.lineTo(1.6, 0); ctx.lineTo(0, 14); ctx.closePath(); ctx.fill();
+        ctx.restore();
+      }
+      ctx.restore();
+    }
+
     // ---------------- DERİNLİĞE GÖRE SIRALI VARLIKLAR ----------------
+    // Dönen silah izleri (Warrior E - Whirlwind)
+    renderChannelFx(ctx) {
+      const ch = this.player && this.player.channel;
+      if (!ch) return;
+      const P = this.player;
+      const col = ch.skill.color || '#ffd54f';
+      const radius = Number(ch.skill.radius) || 105;
+      const fade = clamp(Math.min(ch.timer / 0.4, (ch.duration - ch.timer) / 0.2), 0, 1);
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.lineCap = 'round';
+      for (let k = 0; k < 2; k++) {
+        const a0 = ch.angle + k * Math.PI;
+        ctx.strokeStyle = rgba(col, 0.55 * fade);
+        ctx.lineWidth = 4.5;
+        ctx.beginPath();
+        for (let i = 0; i <= 16; i++) {
+          const a = a0 - 1.15 + (2.3 * i) / 16;
+          const p = this.iso(P.x + Math.cos(a) * radius * 0.92, P.y + Math.sin(a) * radius * 0.92, 30);
+          if (i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
+        }
+        ctx.stroke();
+        ctx.strokeStyle = rgba('#ffffff', 0.5 * fade);
+        ctx.lineWidth = 1.6;
+        ctx.stroke();
+        // bıçak ucu
+        const tip = this.iso(P.x + Math.cos(a0) * radius * 0.92, P.y + Math.sin(a0) * radius * 0.92, 30);
+        drawGlow(ctx, tip.x, tip.y, 16, col, 0.65 * fade);
+      }
+      ctx.restore();
+    }
+
     renderSortedEntities(ctx) {
       const list = [];
       this.scenery.forEach((s) => list.push({ depth: s.wx + s.wy, type: 'scenery', data: s }));
+      Object.values(this.others || {}).forEach((o) => list.push({ depth: o.wx + o.wy, type: 'other', data: o }));
       this.monsters.forEach((m) => {
         if (m.hp > 0 || m.deathTimer > 0) list.push({ depth: m.x + m.y, type: 'monster', data: m });
       });
@@ -3210,6 +5152,7 @@
       list.forEach((item) => {
         if (item.type === 'scenery') this.drawSceneryItem(ctx, item.data);
         else if (item.type === 'monster') this.drawMonster(ctx, item.data);
+        else if (item.type === 'other') this.drawOtherPlayer(ctx, item.data);
         else if (item.type === 'player') this.drawPlayer(ctx, item.data);
         else if (item.type === 'pet') this.drawCompanionPet(ctx, item.data);
         else if (item.type === 'ghost') this.drawGhostTrail(ctx, item.data);
@@ -3217,33 +5160,175 @@
     }
 
     // ---------------- ÇEVRE: AĞAÇ / KAYA / FENER / MANTAR / TAŞ ----------------
+    // İlgi noktaları (dungeon kapısı, in, sandık...). Oyunun karanlık-fantezi
+    // izometrik tarzına uygun, el çizimi sahne parçaları.
+    drawPOI(ctx, s, x, y, t) {
+      const kind = s.kind || 'ruin';
+      const stone = '#6b6459', stoneDark = '#46413a', stoneLight = '#8e8779';
+      ctx.save();
+      ctx.translate(x, y);
+      // POI'ler artık havada süzülmüyor: iki katmanlı yumuşak taban gölgesi
+      // nesneyi zemine oturtuyor (bob animasyonu kaldırıldı).
+      ctx.fillStyle = 'rgba(0,0,0,0.20)';
+      ctx.beginPath(); ctx.ellipse(0, 4, 70, 28, 0, 0, TAU); ctx.fill();
+      ctx.fillStyle = 'rgba(0,0,0,0.42)';
+      ctx.beginPath(); ctx.ellipse(0, 1, 52, 20, 0, 0, TAU); ctx.fill();
+
+      if (kind === 'dungeon') {
+        // 1) Kaya kütlesi: dungeon girişi taşın İÇİNE gömülü görünür.
+        const rr = mulberry32(Math.floor(Math.abs(s.wx * 13.7 + s.wy * 7.3)) + 3);
+        for (let b = 0; b < 3; b++) {
+          const bx = (b - 1) * 27 + (rr() - 0.5) * 12;
+          const bw = 36 + rr() * 16;
+          const bh = 30 + rr() * 26;
+          ctx.fillStyle = shade(stone, b === 1 ? -0.34 : -0.46);
+          ctx.beginPath();
+          ctx.moveTo(bx - bw, 0);
+          ctx.quadraticCurveTo(bx - bw * 0.92, -bh, bx, -bh - 7);
+          ctx.quadraticCurveTo(bx + bw * 0.92, -bh, bx + bw, 0);
+          ctx.closePath(); ctx.fill();
+          // üst yüz ışığı (hacim)
+          ctx.fillStyle = shade(stone, 0.18);
+          ctx.beginPath();
+          ctx.moveTo(bx - bw * 0.6, -bh * 0.74);
+          ctx.quadraticCurveTo(bx - bw * 0.12, -bh - 5, bx + bw * 0.24, -bh * 0.82);
+          ctx.quadraticCurveTo(bx - bw * 0.08, -bh * 0.56, bx - bw * 0.6, -bh * 0.74);
+          ctx.closePath(); ctx.fill();
+          // çatlak
+          ctx.strokeStyle = 'rgba(0,0,0,0.35)'; ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.moveTo(bx - bw * 0.2, -bh * 0.3);
+          ctx.lineTo(bx - bw * 0.05, -bh * 0.55);
+          ctx.lineTo(bx + bw * 0.16, -bh * 0.66);
+          ctx.stroke();
+        }
+        for (let i = 0; i < 3; i++) {
+          const w = 52 - i * 8;
+          ctx.fillStyle = i === 2 ? '#7d766a' : '#5c564d';
+          ctx.fillRect(-w, -6 - i * 8, w * 2, 9);
+          ctx.fillStyle = 'rgba(255,255,255,0.10)';
+          ctx.fillRect(-w, -6 - i * 8, w * 2, 2);
+        }
+        for (const sx of [-34, 34]) {
+          ctx.fillStyle = stoneDark; ctx.fillRect(sx - 8, -92, 16, 84);
+          ctx.fillStyle = stone; ctx.fillRect(sx - 7, -92, 8, 84);
+          ctx.fillStyle = 'rgba(255,170,90,0.8)';
+          ctx.fillRect(sx - 2, -74, 4, 4); ctx.fillRect(sx - 2, -58, 4, 4);
+          ctx.fillStyle = stoneLight; ctx.fillRect(sx - 12, -100, 24, 10);
+        }
+        ctx.strokeStyle = stone; ctx.lineWidth = 12;
+        ctx.beginPath(); ctx.arc(0, -92, 30, Math.PI, 0); ctx.stroke();
+        ctx.strokeStyle = stoneLight; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(0, -92, 30, Math.PI, 0); ctx.stroke();
+        const pulse = 0.55 + 0.25 * Math.sin(t * 3.2);
+        const g = ctx.createLinearGradient(0, -112, 0, -18);
+        g.addColorStop(0, `rgba(255,140,60,${(0.18 + pulse * 0.2).toFixed(3)})`);
+        g.addColorStop(1, `rgba(120,20,10,${(0.55 + pulse * 0.25).toFixed(3)})`);
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.moveTo(-26, -18); ctx.lineTo(-26, -84); ctx.quadraticCurveTo(0, -112, 26, -84); ctx.lineTo(26, -18); ctx.closePath(); ctx.fill();
+        for (const sx of [-44, 44]) {
+          const fl = Math.sin(t * 9 + sx) * 2;
+          ctx.fillStyle = '#3a2a18'; ctx.fillRect(sx - 2, -58, 4, 30);
+          ctx.fillStyle = '#ff8a3d'; ctx.beginPath(); ctx.ellipse(sx, -64 + fl, 5, 9, 0, 0, TAU); ctx.fill();
+          ctx.fillStyle = '#ffd76a'; ctx.beginPath(); ctx.ellipse(sx, -62 + fl, 2.5, 5, 0, 0, TAU); ctx.fill();
+        }
+        this._poiLabel(ctx, 'DUNGEON', -124, '#ffb37a');
+      } else if (kind === 'den') {
+        ctx.fillStyle = '#2b2118';
+        ctx.beginPath(); ctx.moveTo(-40, 0); ctx.quadraticCurveTo(-34, -54, 0, -58); ctx.quadraticCurveTo(34, -54, 40, 0); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#4a3a28';
+        ctx.beginPath(); ctx.moveTo(-28, 0); ctx.quadraticCurveTo(-24, -38, 0, -42); ctx.quadraticCurveTo(24, -38, 28, 0); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#ff5a4a';
+        ctx.beginPath(); ctx.arc(-10, -22, 2.4, 0, TAU); ctx.arc(10, -22, 2.4, 0, TAU); ctx.fill();
+        ctx.strokeStyle = '#d9d2c2'; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.moveTo(-30, -2); ctx.lineTo(-14, -8); ctx.moveTo(18, -4); ctx.lineTo(32, 0); ctx.stroke();
+        ctx.fillStyle = '#e8e1d2'; ctx.beginPath(); ctx.arc(-8, -4, 6, 0, TAU); ctx.fill();
+        ctx.fillStyle = '#2b2118'; ctx.beginPath(); ctx.arc(-10, -5, 1.6, 0, TAU); ctx.arc(-6, -5, 1.6, 0, TAU); ctx.fill();
+        this._poiLabel(ctx, 'BEAST DEN', -78, '#ff8a7a');
+      } else if (kind === 'chest') {
+        // Toprak tümseği + 3D sandık (kapak, ön yüz, yan yüz, demir kuşaklar).
+        const gl = 0.30 + 0.16 * Math.sin(t * 4);
+        drawGlowEllipse(ctx, 0, -10, 36, 17, '#ffd166', gl);
+        ctx.fillStyle = 'rgba(58,42,22,0.55)';
+        ctx.beginPath(); ctx.ellipse(0, -1, 27, 11, 0, 0, TAU); ctx.fill();
+        // gövde: yan yüz (gölgeli)
+        ctx.fillStyle = '#4a2a12';
+        ctx.beginPath();
+        ctx.moveTo(18, -22); ctx.lineTo(24, -19); ctx.lineTo(24, -3); ctx.lineTo(18, -1); ctx.closePath(); ctx.fill();
+        // ön yüz
+        const gBody = ctx.createLinearGradient(0, -24, 0, -1);
+        gBody.addColorStop(0, '#8a5528'); gBody.addColorStop(1, '#5a3418');
+        ctx.fillStyle = gBody;
+        ctx.beginPath();
+        ctx.moveTo(-18, -23); ctx.lineTo(18, -23); ctx.lineTo(18, -1); ctx.lineTo(-18, -1); ctx.closePath(); ctx.fill();
+        // kapak (hafif eğimli üst yüz)
+        ctx.fillStyle = '#a5682f';
+        ctx.beginPath();
+        ctx.moveTo(-18, -23); ctx.lineTo(-13, -31); ctx.lineTo(21, -29); ctx.lineTo(18, -23); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#7a4a1e';
+        ctx.beginPath();
+        ctx.moveTo(18, -23); ctx.lineTo(21, -29); ctx.lineTo(25, -26); ctx.lineTo(24, -19); ctx.closePath(); ctx.fill();
+        // demir kuşaklar
+        ctx.strokeStyle = '#d9a441'; ctx.lineWidth = 2.2;
+        ctx.beginPath(); ctx.moveTo(-13, -30); ctx.lineTo(-18, -22); ctx.moveTo(21, -29); ctx.lineTo(18, -22); ctx.stroke();
+        ctx.fillStyle = '#c9962f';
+        ctx.fillRect(-18, -18, 36, 3);
+        ctx.fillRect(-18, -8, 36, 3);
+        // kilit
+        ctx.fillStyle = '#ffd76a'; ctx.fillRect(-3.5, -17, 7, 9);
+        ctx.fillStyle = '#3a2410'; ctx.beginPath(); ctx.arc(0, -12, 1.9, 0, TAU); ctx.fill();
+        this._poiLabel(ctx, 'BURIED CHEST', -46, '#ffe08a');
+      } else if (kind === 'inn') {
+        ctx.fillStyle = '#3c5a3f';
+        ctx.beginPath(); ctx.moveTo(-34, 0); ctx.lineTo(0, -46); ctx.lineTo(34, 0); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#2a4030';
+        ctx.beginPath(); ctx.moveTo(0, -46); ctx.lineTo(16, 0); ctx.lineTo(34, 0); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#c9a86a'; ctx.fillRect(-1.5, -58, 3, 12);
+        const fl = Math.sin(t * 8) * 2;
+        ctx.fillStyle = '#ff8a3d'; ctx.beginPath(); ctx.ellipse(0, -8, 6, 10, 0, 0, TAU); ctx.fill();
+        ctx.fillStyle = '#ffd76a'; ctx.beginPath(); ctx.ellipse(0, -6 + fl * 0.2, 3, 5, 0, 0, TAU); ctx.fill();
+        this._poiLabel(ctx, 'WAYFARER CAMP', -64, '#a8e6b0');
+      } else if (kind === 'watch') {
+        ctx.fillStyle = stoneDark; ctx.fillRect(-14, -70, 28, 70);
+        ctx.fillStyle = stone; ctx.fillRect(-12, -70, 12, 70);
+        ctx.fillStyle = stoneLight; ctx.fillRect(-18, -78, 36, 10);
+        const fl = Math.sin(t * 7) * 2;
+        drawGlowEllipse(ctx, 0, -88, 22, 12, '#ffb347', 0.25);
+        ctx.fillStyle = '#ff8a3d'; ctx.beginPath(); ctx.ellipse(0, -88 + fl, 7, 12, 0, 0, TAU); ctx.fill();
+        ctx.fillStyle = '#ffd76a'; ctx.beginPath(); ctx.ellipse(0, -86 + fl, 3.5, 6, 0, 0, TAU); ctx.fill();
+        this._poiLabel(ctx, 'WATCHTOWER', -106, '#9fd0ff');
+      } else {
+        for (const [px, h, tilt] of [[-18, 46, -0.08], [14, 34, 0.1], [-2, 22, 0.03]]) {
+          ctx.save(); ctx.translate(px, 0); ctx.rotate(tilt);
+          ctx.fillStyle = stoneDark; ctx.fillRect(-6, -h, 12, h);
+          ctx.fillStyle = stone; ctx.fillRect(-4, -h, 5, h);
+          ctx.fillStyle = stoneLight; ctx.fillRect(-8, -h - 4, 16, 5);
+          ctx.restore();
+        }
+        ctx.fillStyle = 'rgba(80,72,62,0.85)';
+        ctx.beginPath(); ctx.ellipse(6, -2, 20, 7, 0, 0, TAU); ctx.fill();
+        this._poiLabel(ctx, 'ANCIENT RUIN', -68, '#c6b8f0');
+      }
+      ctx.restore();
+    }
+
+    _poiLabel(ctx, text, yy, color) {
+      ctx.font = '700 9px system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = 'rgba(0,0,0,0.55)';
+      ctx.fillText(text, 0, yy + 1);
+      ctx.fillStyle = color || '#ffe08a';
+      ctx.fillText(text, 0, yy);
+    }
+
     drawSceneryItem(ctx, s) {
+      if (!s || !Number.isFinite(s.wx) || !Number.isFinite(s.wy)) return;
       const { x, y } = this.iso(s.wx, s.wy, 0);
+      if (!Number.isFinite(x) || !Number.isFinite(y)) return;
       if (x < -90 || x > this.width + 90 || y < -130 || y > this.height + 60) return;
       const t = this.time;
 
-      if (s.type === 'poi') {
-        const color = { dungeon: '#ff7b4d', den: '#e05555', chest: '#ffd166', inn: '#8fd6a0', ruin: '#b7a6e0', watch: '#8ec5ff' }[s.kind] || '#ffd166';
-        const bob = Math.sin(t * 2 + (s.wx + s.wy) * 0.01) * 3;
-        ctx.save();
-        ctx.translate(x, y);
-        drawGlowEllipse(ctx, 0, -6, 30, 14, color, 0.35);
-        ctx.fillStyle = color;
-        ctx.strokeStyle = 'rgba(0,0,0,0.45)';
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.moveTo(0, -50 + bob); ctx.lineTo(11, -36 + bob); ctx.lineTo(0, -22 + bob); ctx.lineTo(-11, -36 + bob);
-        ctx.closePath(); ctx.fill(); ctx.stroke();
-        ctx.fillStyle = '#120d06';
-        ctx.beginPath(); ctx.arc(0, -36 + bob, 2.8, 0, TAU); ctx.fill();
-        ctx.fillStyle = 'rgba(255,255,255,0.88)';
-        ctx.font = '600 9px system-ui, sans-serif';
-        ctx.textAlign = 'center';
-        const label = s.kind === 'dungeon' ? 'DUNGEON' : s.kind === 'den' ? 'DEN' : s.kind === 'chest' ? 'BURIED CHEST' : String(s.kind).toUpperCase();
-        ctx.fillText(label, 0, -56 + bob);
-        ctx.restore();
-        return;
-      }
+      if (s.type === 'poi') { this.drawPOI(ctx, s, x, y, t); return; }
 
       if (s.type === 'tree') {
         const sc = s.scale;
@@ -3340,6 +5425,86 @@
         ctx.beginPath(); ctx.ellipse(-11 * sc, -2.4 * sc, 3.5 * sc, 1.3 * sc, 0, 0, TAU); ctx.fill();
         ctx.restore();
 
+      } else if (s.type === 'bush') {
+        // Hacimli, hafif salınan 3D çalı (çarpışmasız süs).
+        const sc = s.scale;
+        const sway = Math.sin(t * 1.7 + (s.swayOffset || 0)) * 1.1 * sc;
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.fillStyle = 'rgba(0,0,0,0.18)';
+        ctx.beginPath(); ctx.ellipse(2 * sc, 1.5 * sc, 18 * sc, 6 * sc, 0, 0, TAU); ctx.fill();
+        const leaf = (dx, dy, rr, col) => {
+          ctx.fillStyle = col;
+          ctx.beginPath(); ctx.arc(dx * sc + sway, dy * sc, rr * sc, 0, TAU); ctx.fill();
+        };
+        leaf(-8, -6, 9, '#2f6b2b');
+        leaf(6, -5, 8, '#3f7a35');
+        leaf(0, -12, 9, '#4c8a3e');
+        leaf(-2, -4, 7, '#5da24a');
+        // ışık üstü
+        ctx.fillStyle = 'rgba(255,255,255,0.10)';
+        ctx.beginPath(); ctx.arc(-1 * sc + sway, -13 * sc, 5 * sc, 0, TAU); ctx.fill();
+        // küçük meyveler
+        ctx.fillStyle = '#d9534f';
+        ctx.beginPath(); ctx.arc(3 * sc + sway, -10 * sc, 1.5 * sc, 0, TAU); ctx.fill();
+        ctx.beginPath(); ctx.arc(-7 * sc + sway, -8 * sc, 1.3 * sc, 0, TAU); ctx.fill();
+        ctx.restore();
+
+      } else if (s.type === 'mountain') {
+        // Eski minyatür dağ yerine aynı ölçekte, çok yüzlü 3D kaya kütlesi.
+        const sc = s.scale;
+        ctx.save();
+        ctx.translate(x, y);
+
+        // Yumuşak zemin gölgesi (iki katman = 3D oturma hissi)
+        ctx.fillStyle = 'rgba(0,0,0,0.20)';
+        ctx.beginPath(); ctx.ellipse(5 * sc, 3 * sc, 46 * sc, 15 * sc, 0, 0, TAU); ctx.fill();
+        ctx.fillStyle = 'rgba(0,0,0,0.16)';
+        ctx.beginPath(); ctx.ellipse(-4 * sc, 1 * sc, 30 * sc, 10 * sc, 0, 0, TAU); ctx.fill();
+
+        const face = (pts, col) => {
+          ctx.fillStyle = col; ctx.beginPath();
+          pts.forEach((p, i) => (i ? ctx.lineTo(p[0] * sc, p[1] * sc) : ctx.moveTo(p[0] * sc, p[1] * sc)));
+          ctx.closePath(); ctx.fill();
+        };
+
+        // Arka kaya (koyu, derinlik)
+        face([[-34, 1], [-27, -26], [-12, -37], [4, -33], [12, -12], [4, 2]], '#39474e');
+        // Ana kütle
+        face([[-30, 3], [-23, -29], [-7, -44], [10, -36], [24, -8], [26, 3], [-2, 7]], '#6f828c');
+        // Sol/üst ışık faseti
+        face([[-23, -29], [-7, -44], [10, -36], [3, -25], [-9, -24]], '#a9bcc4');
+        // Sağ gölge faseti
+        face([[10, -36], [24, -8], [26, 3], [3, -25]], '#51636c');
+        // Ön alt gölge
+        face([[-30, 3], [26, 3], [8, 8], [-4, 8]], '#2c373d');
+        // Yan küçük kaya (kompozisyon)
+        face([[20, 2], [26, -15], [37, -11], [41, 2], [30, 6]], '#5d717b');
+        face([[26, -15], [37, -11], [33, -19], [41, 2]], '#8fa3ad');
+        face([[26, -15], [33, -19], [30, -10]], '#b0c4ce');
+
+        // Çatlaklar
+        ctx.strokeStyle = 'rgba(12,20,24,0.5)'; ctx.lineWidth = 1.3;
+        ctx.beginPath();
+        ctx.moveTo(-9 * sc, -33 * sc); ctx.lineTo(-5 * sc, -20 * sc); ctx.lineTo(-11 * sc, -7 * sc);
+        ctx.moveTo(11 * sc, -27 * sc); ctx.lineTo(14 * sc, -13 * sc);
+        ctx.moveTo(-20 * sc, -18 * sc); ctx.lineTo(-15 * sc, -11 * sc);
+        ctx.stroke();
+
+        // Yosun / etek otları
+        ctx.fillStyle = '#4f7a2f';
+        ctx.beginPath(); ctx.ellipse(-19 * sc, 2 * sc, 12 * sc, 3.4 * sc, 0, 0, TAU); ctx.fill();
+        ctx.fillStyle = '#6aa84f';
+        ctx.beginPath(); ctx.ellipse(21 * sc, 2.4 * sc, 9 * sc, 2.6 * sc, 0, 0, TAU); ctx.fill();
+        ctx.fillStyle = '#3f6326';
+        ctx.beginPath(); ctx.ellipse(-28 * sc, 3 * sc, 6 * sc, 2 * sc, 0, 0, TAU); ctx.fill();
+
+        // Güneş ışığı parıltısı (üst faset)
+        ctx.globalCompositeOperation = 'lighter';
+        drawGlow(ctx, -2 * sc, -34 * sc, 20 * sc, '#cfe8ff', 0.06 + 0.02 * Math.sin(t * 1.4 + s.wx));
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.restore();
+
       } else if (s.type === 'mushroom') {
         const sc = s.scale;
         ctx.save(); ctx.translate(x, y);
@@ -3430,6 +5595,69 @@
     }
 
     // ---------------- OYUNCU (37 sınıf görünümü) ----------------
+    drawOtherPlayer(ctx, o) {
+      const { x, y } = this.iso(o.wx, o.wy, 0);
+      if (x < -70 || x > this.width + 70 || y < -90 || y > this.height + 60) return;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.fillStyle = 'rgba(0,0,0,0.35)';
+      ctx.beginPath(); ctx.ellipse(0, 0, 14, 6, 0, 0, TAU); ctx.fill();
+      // Düşen müttefik: yerde yatan figür + kırmızı halka.
+      if (o.downed) {
+        const pulse = 0.5 + 0.5 * Math.sin(this.time * 5);
+        ctx.strokeStyle = rgba('#ff5252', 0.6 + 0.3 * pulse);
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.ellipse(0, 1, 22, 9, 0, 0, TAU); ctx.stroke();
+        ctx.save();
+        ctx.translate(0, 6);
+        ctx.rotate(-1.2);
+        ctx.fillStyle = o.color || '#8ec5ff';
+        ctx.beginPath(); ctx.moveTo(-8, -6); ctx.lineTo(8, -6); ctx.lineTo(6, -26); ctx.lineTo(-6, -26); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#e8c39a';
+        ctx.beginPath(); ctx.arc(0, -33, 6, 0, TAU); ctx.fill();
+        ctx.restore();
+      } else {
+        ctx.fillStyle = o.color || '#8ec5ff';
+        ctx.beginPath(); ctx.moveTo(-8, -6); ctx.lineTo(8, -6); ctx.lineTo(6, -26); ctx.lineTo(-6, -26); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#e8c39a';
+        ctx.beginPath(); ctx.arc(0, -33, 6, 0, TAU); ctx.fill();
+      }
+      ctx.font = '700 11px system-ui, sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillStyle = 'rgba(0,0,0,0.55)';
+      ctx.fillText(o.name || '?', 0, -45);
+      ctx.fillStyle = o.downed ? '#ff8a80' : '#cfe8ff';
+      ctx.fillText(o.name || '?', 0, -46);
+      const bw = 44, bh = 5, bx = -bw / 2, by = -56;
+      ctx.fillStyle = 'rgba(0,0,0,0.6)';
+      rr(ctx, bx - 1, by - 1, bw + 2, bh + 2, 3); ctx.fill();
+      const f = clamp(o.hpFrac != null ? o.hpFrac : 1, 0, 1);
+      if (f > 0) {
+        ctx.fillStyle = f > 0.35 ? '#2fbf4a' : '#d32f2f';
+        rr(ctx, bx, by, Math.max(2, bw * f), bh, 2); ctx.fill();
+      }
+      if (o.downed) {
+        const dw = 64;
+        ctx.fillStyle = 'rgba(40,6,8,0.8)';
+        rr(ctx, -dw / 2, by - 18, dw, 14, 7); ctx.fill();
+        ctx.fillStyle = '#ff8a80';
+        ctx.font = 'bold 9px Inter, sans-serif';
+        ctx.fillText('DOWNED', 0, by - 11);
+      }
+      // Yakındaysa diriltme ipucu
+      if (this._reviveTarget === o.id) {
+        ctx.font = 'bold 11px Inter, sans-serif';
+        const label = '[E] Revive';
+        const lw = ctx.measureText(label).width + 16;
+        ctx.fillStyle = 'rgba(10,24,18,0.82)';
+        rr(ctx, -lw / 2, by - 38, lw, 16, 8); ctx.fill();
+        ctx.strokeStyle = 'rgba(120,255,180,0.7)'; ctx.lineWidth = 1; ctx.stroke();
+        ctx.fillStyle = '#8dffc0'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(label, 0, by - 30);
+      }
+      ctx.restore();
+    }
+
     drawPlayer(ctx, p) {
       const { x, y } = this.iso(p.x, p.y, p.z);
       const S = p.style || (p.style = getClassStyle(this.playerData.class));
@@ -3454,9 +5682,16 @@
       if (S.ground) groundFx(ctx, t, S.ground);
 
       ctx.save();
-      ctx.translate(0, bob);
-      ctx.rotate(lean);
-      ctx.scale(S.scale, S.scale);
+      if (this.downed) {
+        // Yere yatmış: gövdeyi yana çevirip hafif çökert.
+        ctx.translate(0, 7);
+        ctx.rotate(-1.2);
+        ctx.scale(S.scale, S.scale);
+      } else {
+        ctx.translate(0, bob);
+        ctx.rotate(lean);
+        ctx.scale(S.scale, S.scale);
+      }
 
       // --- arka katman efektleri ---
       if (S.rise && (S.rise.kind === 'smoke' || S.rise.kind === 'dust')) riseFx(ctx, t, S.rise);
@@ -3656,6 +5891,24 @@
 
       // İsim plakası (boy/başlık yüksekliğine göre yukarı kayar)
       const lift = Math.max(0, 46 * S.scale + (HEAD_TALL[S.head] || 0) + (S.halo ? 5 : 0) + (S.crown ? 4 : 0) - 50);
+      if (this.downed) {
+        // Yere düşme göstergesi: kırmızı nabız halkası + DOWNED etiketi.
+        const pulse = 0.5 + 0.5 * Math.sin(t * 5);
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        drawGlow(ctx, 0, 0, 30 + pulse * 6, '#ff5252', 0.22 + 0.15 * pulse);
+        ctx.restore();
+        ctx.strokeStyle = rgba('#ff5252', 0.65 + 0.3 * pulse);
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.ellipse(0, 2, 26, 10, 0, 0, TAU); ctx.stroke();
+        const dw = 78;
+        ctx.fillStyle = 'rgba(40,6,8,0.78)';
+        rr(ctx, -dw / 2, -78 - lift, dw, 16, 8); ctx.fill();
+        ctx.strokeStyle = rgba('#ff5252', 0.8); ctx.lineWidth = 1; ctx.stroke();
+        ctx.font = 'bold 11px Inter, sans-serif';
+        ctx.fillStyle = '#ff8a80'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('DOWNED', 0, -70 - lift);
+      }
       ctx.font = 'bold 12px Cinzel, Inter, sans-serif';
       const nm = String(this.playerData.name || '');
       const w = ctx.measureText(nm).width;
@@ -3664,6 +5917,26 @@
       ctx.strokeStyle = 'rgba(128,222,234,0.45)'; ctx.lineWidth = 1; ctx.stroke();
       ctx.fillStyle = '#80deea'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText(nm, 0, -62 - lift);
+
+      // Can barı (karakterin üstünde, isim plakasının biraz yukarısında)
+      const st = this.playerData.stats || {};
+      const maxHp = Math.max(1, st.maxHp || 1);
+      const hp = clamp(st.currentHp != null ? st.currentHp : maxHp, 0, maxHp);
+      const frac = hp / maxHp;
+      const bw = 52, bh = 7, bx = -bw / 2, by = -84 - lift;
+      ctx.fillStyle = 'rgba(6,14,18,0.78)';
+      rr(ctx, bx - 2, by - 2, bw + 4, bh + 4, 4); ctx.fill();
+      ctx.fillStyle = 'rgba(0,0,0,0.5)';
+      rr(ctx, bx, by, bw, bh, 3); ctx.fill();
+      if (frac > 0) {
+        const hg = ctx.createLinearGradient(bx, 0, bx + bw, 0);
+        hg.addColorStop(0, frac > 0.35 ? '#2fbf4a' : '#d32f2f');
+        hg.addColorStop(1, frac > 0.35 ? '#8be08f' : '#ff8a80');
+        ctx.fillStyle = hg;
+        rr(ctx, bx, by, Math.max(2, bw * frac), bh, 3); ctx.fill();
+      }
+      ctx.strokeStyle = 'rgba(255,255,255,0.22)'; ctx.lineWidth = 1;
+      rr(ctx, bx, by, bw, bh, 3); ctx.stroke();
 
       ctx.restore();
     }
@@ -3795,8 +6068,14 @@
       g.save();
       g.translate(100, 150);
       g.translate(Math.cos(fa) * lunge, Math.sin(fa) * lunge * 0.6);
-      if (m.kind === 'treant') this.paintTreant(g, m, t, face, atkT);
-      else if (m.kind === 'wraith') this.paintWraith(g, m, t, face, atkT);
+      const painter = m.painter || m.kind;
+      if (painter === 'treant') this.paintTreant(g, m, t, face, atkT);
+      else if (painter === 'wraith') this.paintWraith(g, m, t, face, atkT);
+      else if (painter === 'beast') this.paintBeast(g, m, t, face, atkT);
+      else if (painter === 'spider') this.paintSpider(g, m, t, face, atkT);
+      else if (painter === 'golem') this.paintGolem(g, m, t, face, atkT);
+      else if (painter === 'knight') this.paintKnight(g, m, t, face, atkT);
+      else if (painter === 'archer') this.paintArcher(g, m, t, face, atkT);
       else this.paintGoblin(g, m, t, face, atkT);
       g.restore();
 
@@ -3822,7 +6101,7 @@
       if (dead) return;
 
       // Agro işareti
-      const topY = m.radius * (m.kind === 'treant' ? 2.9 : 2.5) + (m.kind === 'wraith' ? 10 : 0) + 8;
+      const topY = m.radius * (painter === 'treant' ? 2.9 : 2.5) + (painter === 'wraith' ? 10 : 0) + 8;
       ctx.save();
       ctx.translate(pos.x, pos.y);
       if (m.state === 'CHASE') {
@@ -3839,6 +6118,12 @@
       const bx = -barW / 2, by2 = -topY - 6;
       const pct = clamp(m.hp / m.maxHp, 0, 1);
       const gpct = clamp(m.hpGhost / m.maxHp, 0, 1);
+      if (m.elite) {
+        ctx.fillStyle = 'rgba(255,213,79,0.9)';
+        ctx.font = '900 9px Cinzel, Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('ELITE', 0, by2 - 16);
+      }
       ctx.fillStyle = 'rgba(8,10,14,0.92)';
       rr(ctx, bx - 1.5, by2 - 1.5, barW + 3, barH + 3, 3); ctx.fill();
       ctx.fillStyle = 'rgba(255,236,179,0.85)';
@@ -3864,6 +6149,20 @@
       ctx.strokeText(m.name, 0, by2 - 5);
       ctx.fillStyle = m.state === 'CHASE' ? '#ffcdd2' : '#eceff1';
       ctx.fillText(m.name, 0, by2 - 5);
+
+      // Durum efekti ikonları (freeze/poison/burn/bleed/...)
+      if (m.statuses) {
+        const keys = Object.keys(m.statuses);
+        const SC = { freeze: '#8fe4ff', stun: '#fff176', root: '#9ccc65', slow: '#4fc3f7', poison: '#9ccc65', burn: '#ff8a65', bleed: '#ff5370', shock: '#fff176' };
+        keys.forEach((k, i) => {
+          if (!SC[k]) return;
+          const sx = (i - (keys.length - 1) / 2) * 11;
+          ctx.fillStyle = SC[k];
+          ctx.globalAlpha = 0.85;
+          ctx.beginPath(); ctx.arc(sx, by2 - 15, 3, 0, TAU); ctx.fill();
+        });
+        ctx.globalAlpha = 1;
+      }
       ctx.restore();
     }
 
@@ -3878,7 +6177,8 @@
       g.rotate(waddle);
       g.lineCap = 'round'; g.lineJoin = 'round';
 
-      const skin0 = '#8bc34a', skin1 = '#4f8a2b', skinDark = '#33691e';
+      const baseCol = m.color || '#8bc34a';
+      const skin0 = baseCol, skin1 = shade(baseCol, -0.24), skinDark = shade(baseCol, -0.48);
 
       // Bacaklar
       g.strokeStyle = skinDark; g.lineWidth = 4.2;
@@ -3921,7 +6221,7 @@
 
       // Baş
       gr = g.createRadialGradient(-2, -30, 1, 1, -27, 10);
-      gr.addColorStop(0, '#a5d66a'); gr.addColorStop(1, skin1);
+      gr.addColorStop(0, shade(baseCol, 0.18)); gr.addColorStop(1, skin1);
       g.fillStyle = gr;
       g.beginPath(); g.ellipse(1, -27, 8.8, 7.6, 0, 0, TAU); g.fill();
       // Saç püskülü
@@ -4001,7 +6301,8 @@
 
       // Gövde
       let gr = g.createLinearGradient(-15, 0, 15, 0);
-      gr.addColorStop(0, '#7a5240'); gr.addColorStop(0.45, '#5a382a'); gr.addColorStop(1, '#2a1710');
+      const bark = m.color || '#5a382a';
+      gr.addColorStop(0, shade(bark, 0.16)); gr.addColorStop(0.45, bark); gr.addColorStop(1, shade(bark, -0.42));
       g.fillStyle = gr;
       g.beginPath();
       g.moveTo(-16, -2); g.quadraticCurveTo(-11, -16, -13, -34); g.quadraticCurveTo(-12, -48, -8, -54);
@@ -4017,7 +6318,7 @@
       g.strokeStyle = 'rgba(255,200,160,0.12)';
       g.beginPath(); g.moveTo(-11, -46); g.quadraticCurveTo(-12, -28, -11, -12); g.stroke();
       // Yosun + yozlaşma
-      g.fillStyle = '#4e7a2a';
+      g.fillStyle = m.accent || '#4e7a2a';
       g.beginPath(); g.ellipse(-8, -46, 8, 3, -0.2, 0, TAU); g.fill();
       g.fillStyle = '#6fa043';
       g.beginPath(); g.ellipse(-10, -47, 4, 1.3, -0.2, 0, TAU); g.fill();
@@ -4073,7 +6374,7 @@
 
       // Aura
       g.globalCompositeOperation = 'lighter';
-      drawGlow(g, 0, -hover - 22, 40, '#7c4dff', 0.28);
+      drawGlow(g, 0, -hover - 22, 40, m.accent || '#7c4dff', 0.28);
       // Sürüklenen hayalet kıvrımları
       for (let i = 0; i < 3; i++) {
         const o = (i - 1) * 8;
@@ -4088,7 +6389,8 @@
       // Pelerin gövdesi (yırtık etek, dalgalanan)
       const w1 = Math.sin(t * 6) * 2.5, w2 = Math.sin(t * 6 + 1.5) * 2.5, w3 = Math.sin(t * 6 + 3) * 2.5;
       let gr = g.createLinearGradient(0, -hover - 50, 0, -hover);
-      gr.addColorStop(0, '#4a2fa0'); gr.addColorStop(0.55, '#26135e'); gr.addColorStop(1, '#0b0620');
+      const cloak = m.color || '#4a2fa0';
+      gr.addColorStop(0, shade(cloak, 0.12)); gr.addColorStop(0.55, cloak); gr.addColorStop(1, shade(cloak, -0.55));
       g.fillStyle = gr;
       g.beginPath();
       g.moveTo(0, -hover - 50);
@@ -4134,6 +6436,347 @@
       g.globalCompositeOperation = 'source-over';
     }
 
+    // --- CANAVAR (kurt/dragon benzeri dört ayaklı) ---
+    paintBeast(g, m, t, face, atkT) {
+      const u = m.radius / 17;
+      const ph = m.walkPhase;
+      const sw = Math.sin(ph);
+      const body = m.color || '#93c5fd';
+      const accent = m.accent || '#e0f2fe';
+      g.scale(face * u, u);
+      g.translate(0, -Math.abs(sw) * 1.4);
+      g.lineCap = 'round'; g.lineJoin = 'round';
+
+      // Kuyruk
+      g.strokeStyle = shade(body, -0.2); g.lineWidth = 3.2;
+      g.beginPath(); g.moveTo(-12, -16);
+      g.quadraticCurveTo(-24, -18 + Math.sin(t * 6) * 3, -28, -26 + Math.sin(t * 6 + 1) * 4);
+      g.stroke();
+
+      // Arka bacaklar
+      g.strokeStyle = shade(body, -0.3); g.lineWidth = 4;
+      g.beginPath();
+      g.moveTo(-9, -12); g.lineTo(-11 + sw * 3, 0);
+      g.moveTo(7, -12); g.lineTo(9 - sw * 3, 0);
+      g.stroke();
+
+      // Gövde
+      let gr = g.createRadialGradient(-2, -22, 2, 0, -18, 16);
+      gr.addColorStop(0, shade(body, 0.15)); gr.addColorStop(1, shade(body, -0.35));
+      g.fillStyle = gr;
+      g.beginPath(); g.ellipse(-1, -17, 14, 9, -0.08, 0, TAU); g.fill();
+
+      // Sırt dikenleri
+      g.fillStyle = accent;
+      for (let i = 0; i < 4; i++) {
+        const bx = -9 + i * 6;
+        g.beginPath(); g.moveTo(bx - 2, -23); g.lineTo(bx, -29 - (i % 2) * 2); g.lineTo(bx + 2, -23); g.closePath(); g.fill();
+      }
+
+      // Ön bacaklar + pençeler
+      g.strokeStyle = shade(body, -0.15); g.lineWidth = 4.4;
+      const lunge = atkT > 0.75 ? (1 - atkT) / 0.25 : 0;
+      g.beginPath();
+      g.moveTo(-6, -15); g.lineTo(-7 - sw * 3, -1);
+      g.moveTo(8, -16); g.lineTo(7 + sw * 3 - lunge * 5, -1);
+      g.stroke();
+      g.strokeStyle = '#f5f5f5'; g.lineWidth = 1.2;
+      g.beginPath();
+      for (const px of [-7 - sw * 3, 7 + sw * 3]) {
+        g.moveTo(px - 2, -1); g.lineTo(px - 3.4, 1);
+        g.moveTo(px, -1); g.lineTo(px, 1.4);
+        g.moveTo(px + 2, -1); g.lineTo(px + 3.4, 1);
+      }
+      g.stroke();
+
+      // Boyun + kafa
+      g.strokeStyle = shade(body, -0.12); g.lineWidth = 9;
+      g.beginPath(); g.moveTo(8, -20); g.quadraticCurveTo(16, -24, 20, -27); g.stroke();
+      gr = g.createRadialGradient(20, -30, 1, 21, -28, 9);
+      gr.addColorStop(0, shade(body, 0.22)); gr.addColorStop(1, shade(body, -0.25));
+      g.fillStyle = gr;
+      g.beginPath(); g.ellipse(21, -28, 8, 6.2, 0.15, 0, TAU); g.fill();
+      // Kulaklar
+      g.fillStyle = shade(body, -0.35);
+      g.beginPath(); g.moveTo(17, -33); g.lineTo(16, -39); g.lineTo(21, -35); g.closePath(); g.fill();
+      g.beginPath(); g.moveTo(24, -33); g.lineTo(26, -39); g.lineTo(27, -33); g.closePath(); g.fill();
+      // Burun
+      g.fillStyle = '#1b1b1b';
+      g.beginPath(); g.arc(28.5, -27, 1.8, 0, TAU); g.fill();
+      // Gözler
+      g.globalCompositeOperation = 'lighter';
+      g.fillStyle = accent;
+      g.beginPath(); g.arc(19, -30, 1.8, 0, TAU); g.arc(24.5, -29.6, 1.6, 0, TAU); g.fill();
+      drawGlow(g, 19, -30, 8, accent, 0.9);
+      g.globalCompositeOperation = 'source-over';
+      // Ağız + dişler
+      g.strokeStyle = '#5d4037'; g.lineWidth = 1.4;
+      g.beginPath(); g.moveTo(26, -24.5); g.lineTo(21, -23.6); g.stroke();
+      g.fillStyle = '#fffde7';
+      g.beginPath(); g.moveTo(25, -25.2); g.lineTo(24, -22.8); g.lineTo(23, -25.2); g.fill();
+    }
+
+    // --- ÖRÜMCEK: sekiz bacak, çoklu göz, damla abdomen ---
+    paintSpider(g, m, t, face, atkT) {
+      const u = m.radius / 17;
+      const ph = m.walkPhase;
+      const body = m.color || '#3f6212';
+      const accent = m.accent || '#bef264';
+      g.scale(face * u, u);
+      g.translate(0, -Math.abs(Math.sin(ph)) * 1.1);
+      g.lineCap = 'round';
+
+      // Bacaklar (4 çift)
+      g.strokeStyle = shade(body, -0.4); g.lineWidth = 2.4;
+      for (let i = 0; i < 4; i++) {
+        const off = -10 + i * 6;
+        const lift = Math.sin(ph + i * 1.3) * 5;
+        g.beginPath();
+        g.moveTo(off, -16);
+        g.quadraticCurveTo(off - 12, -22 - lift, off - 19, -6 + lift * 0.4);
+        g.moveTo(off + 4, -16);
+        g.quadraticCurveTo(off + 14, -20 + lift, off + 21, -5 - lift * 0.4);
+        g.stroke();
+      }
+
+      // Abdomen
+      let gr = g.createRadialGradient(-6, -22, 2, -6, -20, 13);
+      gr.addColorStop(0, shade(body, 0.18)); gr.addColorStop(1, shade(body, -0.42));
+      g.fillStyle = gr;
+      g.beginPath(); g.ellipse(-6, -19, 12, 9.5, -0.1, 0, TAU); g.fill();
+      // Abdomen deseni
+      g.fillStyle = accent;
+      g.globalAlpha = 0.7;
+      g.beginPath(); g.ellipse(-6, -21, 5, 4, 0, 0, TAU); g.fill();
+      g.globalAlpha = 1;
+
+      // Göğüs + kafa
+      gr = g.createRadialGradient(10, -18, 1, 11, -17, 8);
+      gr.addColorStop(0, shade(body, 0.24)); gr.addColorStop(1, shade(body, -0.3));
+      g.fillStyle = gr;
+      g.beginPath(); g.ellipse(9, -17, 8, 7, 0.15, 0, TAU); g.fill();
+      g.beginPath(); g.ellipse(15.5, -16.5, 4.5, 4, 0, 0, TAU); g.fill();
+
+      // Gözler (4 çift kırmızı/mavi parıltı)
+      g.globalCompositeOperation = 'lighter';
+      const eyeCol = accent;
+      g.fillStyle = eyeCol;
+      [[14, -19], [17, -18.5], [15.5, -16], [18, -16]].forEach(([ex, ey]) => {
+        g.beginPath(); g.arc(ex, ey, 1.1, 0, TAU); g.fill();
+      });
+      drawGlow(g, 16, -18, 10, eyeCol, 0.9);
+      g.globalCompositeOperation = 'source-over';
+
+      // Zehir damlaları (ağızdan)
+      if (atkT > 0.6) {
+        g.fillStyle = accent;
+        const dy = (1 - atkT) * 10;
+        g.beginPath(); g.ellipse(20, -10 + dy, 1.6, 2.4, 0, 0, TAU); g.fill();
+      }
+    }
+
+    // --- GOLEM: blok gövde, parlayan çatlaklar ---
+    paintGolem(g, m, t, face, atkT) {
+      const u = m.radius / 30;
+      const ph = m.walkPhase;
+      const sw = Math.sin(ph);
+      const rock = m.color || '#7f1d1d';
+      const accent = m.accent || '#f97316';
+      g.scale(face * u, u);
+      g.translate(0, -Math.abs(sw) * 1.8);
+      g.lineJoin = 'round';
+      const lunge = atkT > 0.72 ? (1 - atkT) / 0.28 : 0;
+
+      // Bacaklar (blok)
+      g.fillStyle = shade(rock, -0.32);
+      g.fillRect(-14, -16, 10, 17);
+      g.fillRect(6, -16, 10, 17);
+      g.fillStyle = shade(rock, -0.5);
+      g.fillRect(-16, -2, 13, 4); g.fillRect(5, -2, 13, 4);
+
+      // Gövde
+      const gr = g.createLinearGradient(-22, -60, 22, -10);
+      gr.addColorStop(0, shade(rock, 0.2)); gr.addColorStop(0.5, rock); gr.addColorStop(1, shade(rock, -0.42));
+      g.fillStyle = gr;
+      g.beginPath();
+      g.moveTo(-20, -14); g.lineTo(-23, -48); g.lineTo(-12, -60); g.lineTo(12, -60);
+      g.lineTo(23, -48); g.lineTo(20, -14); g.lineTo(10, -10); g.lineTo(-10, -10);
+      g.closePath(); g.fill();
+
+      // Çatlaklar (accent)
+      g.strokeStyle = accent; g.lineWidth = 2;
+      g.globalCompositeOperation = 'lighter';
+      g.beginPath();
+      g.moveTo(-10, -54); g.lineTo(-4, -42); g.lineTo(-9, -32); g.lineTo(-3, -20);
+      g.moveTo(10, -48); g.lineTo(5, -36); g.lineTo(12, -26);
+      g.stroke();
+      // Göğüs çekirdeği
+      drawGlow(g, 0, -38, 14, accent, 0.9);
+      g.fillStyle = accent;
+      g.beginPath(); g.arc(0, -38, 4 + Math.sin(t * 4) * 1, 0, TAU); g.fill();
+      g.globalCompositeOperation = 'source-over';
+
+      // Kollar (blok, sallanır)
+      g.fillStyle = shade(rock, -0.2);
+      g.save();
+      g.translate(-20, -50); g.rotate(0.3 + sw * 0.12 + lunge * 0.5);
+      g.fillRect(-7, 0, 9, 26); g.restore();
+      g.save();
+      g.translate(20, -50); g.rotate(-0.3 - sw * 0.12 - lunge * 0.6);
+      g.fillRect(-2, 0, 9, 26);
+      g.fillStyle = shade(rock, -0.45); g.fillRect(-4, 22, 13, 9);
+      g.restore();
+
+      // Kafa (küçük, gömülü)
+      g.fillStyle = shade(rock, 0.08);
+      g.beginPath(); g.ellipse(0, -62, 11, 8, 0, 0, TAU); g.fill();
+      g.globalCompositeOperation = 'lighter';
+      g.fillStyle = accent;
+      g.beginPath(); g.ellipse(-4, -63, 2, 1.3, 0.2, 0, TAU); g.ellipse(4, -63, 2, 1.3, -0.2, 0, TAU); g.fill();
+      drawGlow(g, 0, -63, 9, accent, 0.8);
+      g.globalCompositeOperation = 'source-over';
+    }
+
+    // --- ŞÖVALYE: zırhlı humanoid, kılıç/kalkan, pelerin ---
+    // Okçu düşman: kapüşonlu, yaylı, sadaklı.
+    paintArcher(g, m, t, face, atkT) {
+      const u = m.radius / 16;
+      const ph = m.walkPhase;
+      const sw = Math.sin(ph);
+      const cloth = m.color || '#7dd3fc';
+      const accent = m.accent || '#f0f9ff';
+      g.scale(face * u, u);
+      g.translate(0, -Math.abs(sw) * 1.4);
+      g.lineCap = 'round'; g.lineJoin = 'round';
+      const draw = atkT > 0.65 ? (1 - atkT) / 0.35 : 0;
+
+      // Bacaklar
+      g.strokeStyle = shade(cloth, -0.38); g.lineWidth = 3.6;
+      g.beginPath();
+      g.moveTo(-3, -14); g.lineTo(-4 + sw * 3, -1);
+      g.moveTo(3, -14); g.lineTo(4 - sw * 3, -1);
+      g.stroke();
+      g.fillStyle = shade(cloth, -0.5);
+      g.beginPath(); g.ellipse(-4 + sw * 3, 0, 3, 1.6, 0, 0, TAU); g.ellipse(4 - sw * 3, 0, 3, 1.6, 0, 0, TAU); g.fill();
+
+      // Pelerin
+      g.fillStyle = shade(cloth, -0.28);
+      g.beginPath();
+      g.moveTo(-7, -31); g.quadraticCurveTo(-13, -16, -9 + Math.sin(t * 4) * 1.5, -3);
+      g.lineTo(3, -5); g.quadraticCurveTo(-2, -20, -1, -31); g.closePath(); g.fill();
+
+      // Gövde
+      const gr = g.createLinearGradient(-7, -30, 7, -12);
+      gr.addColorStop(0, shade(cloth, 0.25)); gr.addColorStop(1, shade(cloth, -0.35));
+      g.fillStyle = gr;
+      g.beginPath();
+      g.moveTo(-6, -30); g.lineTo(-8, -18); g.lineTo(-4, -11); g.lineTo(4, -11);
+      g.lineTo(8, -18); g.lineTo(6, -30); g.closePath(); g.fill();
+
+      // Sadak
+      g.save(); g.rotate(-0.35);
+      g.fillStyle = '#6b4f3a'; g.fillRect(4, -28, 4, 13);
+      g.fillStyle = accent; g.fillRect(4, -31, 4, 4);
+      g.restore();
+
+      // Baş + kapüşon
+      g.fillStyle = shade(cloth, -0.18);
+      g.beginPath(); g.arc(0, -36, 6.2, 0, TAU); g.fill();
+      g.fillStyle = '#241c14';
+      g.beginPath(); g.arc(0, -36, 4.2, 0, TAU); g.fill();
+      g.fillStyle = accent;
+      g.beginPath(); g.arc(1.7, -36.5, 1.4, 0, TAU); g.fill();
+
+      // Yay (hedefe bakar; atışta gerilir)
+      g.save();
+      g.translate(9, -24);
+      g.rotate(-0.15 - draw * 0.45);
+      g.strokeStyle = '#8d6e63'; g.lineWidth = 2.2;
+      g.beginPath(); g.arc(0, 0, 11, -1.1, 1.1); g.stroke();
+      g.strokeStyle = accent; g.lineWidth = 1;
+      g.beginPath(); g.moveTo(4.6, -9.6); g.lineTo(4.6 + draw * 6, 0); g.lineTo(4.6, 9.6); g.stroke();
+      g.restore();
+
+      // Atış anı: parlama
+      if (atkT > 0.72) {
+        const a = (atkT - 0.72) / 0.28;
+        glowAdd(g, 11, -24, 12 * a, accent, a * 0.8);
+      }
+    }
+
+    paintKnight(g, m, t, face, atkT) {
+      const u = m.radius / 19;
+      const ph = m.walkPhase;
+      const sw = Math.sin(ph);
+      const armor = m.color || '#3f3f46';
+      const accent = m.accent || '#a78bfa';
+      g.scale(face * u, u);
+      g.translate(0, -Math.abs(sw) * 1.6);
+      g.lineCap = 'round'; g.lineJoin = 'round';
+      const lunge = atkT > 0.72 ? (1 - atkT) / 0.28 : 0;
+
+      // Pelerin
+      g.fillStyle = shade(armor, -0.45);
+      g.beginPath();
+      g.moveTo(-8, -38); g.quadraticCurveTo(-16, -20, -12 + Math.sin(t * 5) * 2, -4);
+      g.lineTo(4, -6); g.quadraticCurveTo(-2, -24, -2, -38); g.closePath(); g.fill();
+
+      // Bacaklar
+      g.strokeStyle = shade(armor, -0.28); g.lineWidth = 4.6;
+      g.beginPath();
+      g.moveTo(-4, -16); g.lineTo(-5 + sw * 3, -1);
+      g.moveTo(4, -16); g.lineTo(5 - sw * 3, -1);
+      g.stroke();
+      g.fillStyle = shade(armor, -0.5);
+      g.beginPath(); g.ellipse(-5 + sw * 3, 0, 3.4, 1.8, 0, 0, TAU); g.ellipse(5 - sw * 3, 0, 3.4, 1.8, 0, 0, TAU); g.fill();
+
+      // Gövde zırh
+      const gr = g.createLinearGradient(-9, -36, 9, -14);
+      gr.addColorStop(0, shade(armor, 0.28)); gr.addColorStop(0.5, armor); gr.addColorStop(1, shade(armor, -0.45));
+      g.fillStyle = gr;
+      g.beginPath();
+      g.moveTo(-8, -34); g.lineTo(-10, -22); g.lineTo(-7, -13); g.lineTo(7, -13);
+      g.lineTo(10, -22); g.lineTo(8, -34); g.lineTo(0, -37); g.closePath(); g.fill();
+      // Göğüs plakası + accent çizgisi
+      g.strokeStyle = accent; g.lineWidth = 1.2; g.globalAlpha = 0.85;
+      g.beginPath(); g.moveTo(0, -34); g.lineTo(0, -15); g.stroke();
+      g.beginPath(); g.moveTo(-6, -27); g.lineTo(6, -27); g.stroke();
+      g.globalAlpha = 1;
+
+      // Omuzluklar
+      g.fillStyle = shade(armor, 0.12);
+      g.beginPath(); g.ellipse(-9, -33, 5.2, 4, 0.3, 0, TAU); g.ellipse(9, -33, 5.2, 4, -0.3, 0, TAU); g.fill();
+
+      // Kafa + miğfer
+      g.fillStyle = shade(armor, 0.05);
+      g.beginPath(); g.ellipse(0, -42, 6.4, 6.8, 0, 0, TAU); g.fill();
+      g.fillStyle = shade(armor, -0.35);
+      g.beginPath(); g.moveTo(-6, -44); g.lineTo(0, -50); g.lineTo(6, -44); g.closePath(); g.fill();
+      // Vizör yarığı + parlayan gözler
+      g.globalCompositeOperation = 'lighter';
+      g.fillStyle = accent;
+      g.beginPath(); g.ellipse(-2.4, -42, 1.6, 0.9, 0.15, 0, TAU); g.ellipse(2.4, -42, 1.6, 0.9, -0.15, 0, TAU); g.fill();
+      drawGlow(g, 0, -42, 9, accent, 0.85);
+      g.globalCompositeOperation = 'source-over';
+
+      // Kalkan (sol) + kılıç (sağ)
+      g.fillStyle = shade(armor, -0.15);
+      g.beginPath(); g.ellipse(-13, -25, 5.4, 7.4, -0.12, 0, TAU); g.fill();
+      g.strokeStyle = accent; g.lineWidth = 1.3;
+      g.beginPath(); g.ellipse(-13, -25, 5.4, 7.4, -0.12, 0, TAU); g.stroke();
+
+      const swordA = -0.9 + sw * 0.08 - lunge * 0.9;
+      g.save();
+      g.translate(12, -30); g.rotate(swordA);
+      g.strokeStyle = '#cfd8dc'; g.lineWidth = 2.4;
+      g.beginPath(); g.moveTo(0, 0); g.lineTo(0, -26); g.stroke();
+      g.strokeStyle = '#8d6e63'; g.lineWidth = 3;
+      g.beginPath(); g.moveTo(-4, 0); g.lineTo(4, 0); g.stroke();
+      g.fillStyle = accent;
+      g.beginPath(); g.arc(0, -28, 1.6, 0, TAU); g.fill();
+      g.restore();
+    }
+
     // ---------------- MERMİ & KILIÇ DALGASI ----------------
     renderProjectilesAndSlashes(ctx) {
       // Mermiler
@@ -4171,6 +6814,11 @@
           ctx.strokeStyle = p.color; ctx.lineWidth = 1.4;
           ctx.beginPath(); ctx.moveTo(-14, 0); ctx.lineTo(-18, -3); ctx.moveTo(-14, 0); ctx.lineTo(-18, 3); ctx.moveTo(-11, 0); ctx.lineTo(-15, -3); ctx.moveTo(-11, 0); ctx.lineTo(-15, 3); ctx.stroke();
           drawGlow(ctx, 8, 0, 14, p.color, 0.8);
+        } else if (p.type === 'monster_orb') {
+          const pu = 1 + 0.18 * Math.sin(this.time * 20);
+          drawGlow(ctx, x, y, 26 * pu, p.color, 0.85);
+          ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(x, y, p.radius, 0, TAU); ctx.fill();
+          ctx.fillStyle = 'rgba(0,0,0,0.55)'; ctx.beginPath(); ctx.arc(x, y, p.radius * 0.5, 0, TAU); ctx.fill();
         } else if (p.type === 'magic_orb') {
           const pu = 1 + 0.12 * Math.sin(this.time * 18);
           drawGlow(ctx, x, y, 30 * pu, p.color, 0.8);
@@ -4246,11 +6894,118 @@
     }
 
     // ---------------- PARÇACIKLAR & VURUŞ PATLAMALARI ----------------
+    // Mana rengi parçacık şekilleri: her efekt kendi siluetiyle çizilir.
+    drawShapeParticle(ctx, x, y, p) {
+      const shape = p.shape;
+      const s = Math.max(1.5, p.size);
+      const a = p.alpha;
+      const rot = (p.spin || 0) + this.time * 2.4;
+      ctx.save();
+      ctx.translate(x, y);
+      if (shape === 'bat') {
+        // Yarasa silueti: iki kanat + gövde (additive, kızıl parıltı)
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.globalAlpha = a;
+        ctx.rotate(Math.sin(rot * 3) * 0.25);
+        drawGlow(ctx, 0, 0, s * 3, p.color, a * 0.7);
+        ctx.fillStyle = p.color;
+        const wing = s * 2.2, flap = 0.6 + 0.4 * Math.abs(Math.sin(rot * 6));
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.quadraticCurveTo(-wing * 0.5, -wing * 0.6 * flap, -wing, -wing * 0.15 * flap);
+        ctx.quadraticCurveTo(-wing * 0.5, 0, 0, s * 0.5);
+        ctx.quadraticCurveTo(wing * 0.5, 0, wing, -wing * 0.15 * flap);
+        ctx.quadraticCurveTo(wing * 0.5, -wing * 0.6 * flap, 0, 0);
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath(); ctx.arc(0, 0, s * 0.5, 0, TAU); ctx.fill();
+      } else if (shape === 'star') {
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.globalAlpha = a;
+        drawGlow(ctx, 0, 0, s * 3.4, p.color, a * 0.85);
+        ctx.fillStyle = '#ffffff';
+        ctx.rotate(rot);
+        ctx.beginPath();
+        for (let i = 0; i < 8; i++) {
+          const ang = (i / 8) * TAU;
+          const r = i % 2 === 0 ? s * 1.8 : s * 0.6;
+          const px = Math.cos(ang) * r, py = Math.sin(ang) * r;
+          if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        ctx.closePath(); ctx.fill();
+      } else if (shape === 'bubble') {
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.globalAlpha = a * 0.9;
+        ctx.strokeStyle = p.color;
+        ctx.lineWidth = 1.4;
+        ctx.beginPath(); ctx.arc(0, 0, s, 0, TAU); ctx.stroke();
+        ctx.globalAlpha = a * 0.35;
+        ctx.fillStyle = p.color;
+        ctx.beginPath(); ctx.arc(0, 0, s * 0.8, 0, TAU); ctx.fill();
+        ctx.globalAlpha = a * 0.9;
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath(); ctx.arc(-s * 0.3, -s * 0.3, s * 0.25, 0, TAU); ctx.fill();
+      } else if (shape === 'leaf') {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = a * 0.9;
+        ctx.rotate(rot);
+        ctx.fillStyle = p.color;
+        ctx.beginPath(); ctx.ellipse(0, 0, s * 1.6, s * 0.7, 0, 0, TAU); ctx.fill();
+        ctx.strokeStyle = 'rgba(0,0,0,0.35)'; ctx.lineWidth = 0.8;
+        ctx.beginPath(); ctx.moveTo(-s * 1.6, 0); ctx.lineTo(s * 1.6, 0); ctx.stroke();
+      } else if (shape === 'void') {
+        // Zifiri kara küre + mor çerçeve: ışığı yutar.
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = a;
+        const gr = ctx.createRadialGradient(0, 0, 0, 0, 0, s * 1.5);
+        gr.addColorStop(0, '#000000');
+        gr.addColorStop(0.7, '#000000');
+        gr.addColorStop(1, 'rgba(120,0,180,0.0)');
+        ctx.fillStyle = gr;
+        ctx.beginPath(); ctx.arc(0, 0, s * 1.5, 0, TAU); ctx.fill();
+        ctx.globalAlpha = a * 0.8;
+        ctx.strokeStyle = p.color || '#7c4dff';
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.arc(0, 0, s * 1.35, 0, TAU); ctx.stroke();
+      } else if (shape === 'glitch') {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = a * 0.9;
+        for (let i = 0; i < 4; i++) {
+          const off = ((i % 2) * 2 - 1) * s * (0.4 + 0.6 * Math.random());
+          ctx.fillStyle = i % 2 === 0 ? p.color : (p.secondary || '#ff00e6');
+          ctx.fillRect(-s * 1.4 + off, (i - 1.5) * s * 0.7, s * 2.8, s * 0.45);
+        }
+      } else if (shape === 'smoke') {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = a * 0.35;
+        ctx.fillStyle = p.color;
+        ctx.beginPath(); ctx.arc(0, 0, s, 0, TAU); ctx.fill();
+        ctx.globalAlpha = a * 0.2;
+        ctx.beginPath(); ctx.arc(s * 0.5, -s * 0.4, s * 0.7, 0, TAU); ctx.fill();
+      } else if (shape === 'shard') {
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.globalAlpha = a;
+        ctx.rotate(rot);
+        drawGlow(ctx, 0, 0, s * 2.6, p.color, a * 0.7);
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.moveTo(0, -s * 1.6); ctx.lineTo(s * 0.7, 0); ctx.lineTo(0, s * 1.6); ctx.lineTo(-s * 0.7, 0);
+        ctx.closePath(); ctx.fill();
+      } else {
+        // bilinmeyen şekil: basit daire
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.globalAlpha = a * 0.8;
+        ctx.fillStyle = p.color;
+        ctx.beginPath(); ctx.arc(0, 0, s, 0, TAU); ctx.fill();
+      }
+      ctx.restore();
+    }
+
     renderParticles(ctx) {
       ctx.save();
       // 1) Katı parçacıklar (toz, kan damlaları)
       for (const p of this.particles) {
-        if (p.additive) continue;
+        if (p.additive || p.shape) continue;
         const { x, y } = this.iso(p.wx, p.wy, p.wz);
         ctx.globalAlpha = p.alpha * 0.7;
         ctx.fillStyle = p.color;
@@ -4261,13 +7016,22 @@
       // 2) Parlayan neon parçacıklar
       ctx.globalCompositeOperation = 'lighter';
       for (const p of this.particles) {
-        if (!p.additive) continue;
+        if (!p.additive || p.shape) continue;
         const { x, y } = this.iso(p.wx, p.wy, p.wz);
         ctx.globalAlpha = p.alpha;
         drawGlow(ctx, x, y, p.size * 3.2, p.color, 0.9);
         ctx.fillStyle = '#ffffff';
         ctx.beginPath(); ctx.arc(x, y, Math.max(0.4, p.size * 0.38), 0, TAU); ctx.fill();
       }
+      ctx.globalAlpha = 1;
+
+      // 2b) Mana rengi şekilleri (yarasa, yıldız, baloncuk, yaprak, void, glitch, duman, kristal)
+      for (const p of this.particles) {
+        if (!p.shape) continue;
+        const { x, y } = this.iso(p.wx, p.wy, p.wz);
+        this.drawShapeParticle(ctx, x, y, p);
+      }
+      ctx.globalCompositeOperation = 'source-over';
       ctx.globalAlpha = 1;
 
       // 3) Vuruş patlamaları: halka + yıldız çizgileri
@@ -4309,6 +7073,12 @@
           ctx.fillStyle = m.color;
           ctx.beginPath(); ctx.ellipse(0, 0, m.size, m.size * 0.45, 0, 0, TAU); ctx.fill();
           ctx.restore();
+        } else if (m.snow) {
+          // Kar tanesi: parlak hale yerine küçük, net bir nokta (daha ucuz + temiz).
+          ctx.globalCompositeOperation = 'source-over';
+          ctx.globalAlpha = m.alpha * 0.85;
+          ctx.fillStyle = '#f4fbff';
+          ctx.beginPath(); ctx.arc(x, y, Math.max(1, m.size * 0.62), 0, TAU); ctx.fill();
         } else {
           ctx.globalCompositeOperation = 'lighter';
           const fl = 0.55 + 0.45 * Math.sin(this.time * 3 + m.phase * 2);
@@ -4354,8 +7124,8 @@
       const cx = this.width / 2, cy = this.height / 2;
       const grad = ctx.createRadialGradient(cx, cy, Math.min(this.width, this.height) * 0.42, cx, cy, Math.max(this.width, this.height) * 0.78);
       grad.addColorStop(0, 'rgba(0,0,0,0)');
-      grad.addColorStop(0.7, 'rgba(0,0,0,0.42)');
-      grad.addColorStop(1, 'rgba(0,0,0,0.88)');
+      grad.addColorStop(0.7, 'rgba(0,0,0,0.06)');
+      grad.addColorStop(1, 'rgba(0,0,0,0.20)');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, this.width, this.height);
 
@@ -4395,10 +7165,15 @@
     // ======================================================================
     loop(timestamp) {
       if (!this.isRunning) return;
-      const dt = Math.min((timestamp - this.lastTime) / 1000, 0.1);
-      this.lastTime = timestamp;
-      this.update(dt);
-      this.render();
+      try {
+        const dt = Math.min((timestamp - this.lastTime) / 1000, 0.1);
+        this.lastTime = timestamp;
+        this.update(dt);
+        this.render();
+      } catch (err) {
+        // Tek karelik bir hata döngüyü durdurmasın (ekran siyah kalmasın).
+        if (!this._errLogged) { this._errLogged = true; console.error('[travel] frame error:', err); }
+      }
       requestAnimationFrame(this.loop);
     }
 
@@ -4406,18 +7181,48 @@
     // SUNUCU ENTEGRASYONU (Setra adapter kullanır)
     // ======================================================================
     setWorldBounds(map) {
-      if (!map) return;
-      this.serverSpawn = { x: (map.spawn && map.spawn.x) || 0, y: (map.spawn && map.spawn.y) || 0 };
+      if (!map || typeof map !== 'object') return;
+      const w = Number(map.w), h = Number(map.h);
+      const mapW = Number.isFinite(w) && w > 0 ? w : 64;
+      const mapH = Number.isFinite(h) && h > 0 ? h : 64;
+      const spRaw = map.spawn && typeof map.spawn === 'object' ? map.spawn : null;
+      const sx = spRaw && Number.isFinite(Number(spRaw.x)) ? Number(spRaw.x) : mapW / 2;
+      const sy = spRaw && Number.isFinite(Number(spRaw.y)) ? Number(spRaw.y) : mapH / 2;
+      this.serverSpawn = { x: sx, y: sy };
       const maxDist = Math.hypot(
-        Math.max(this.serverSpawn.x, map.w - this.serverSpawn.x),
-        Math.max(this.serverSpawn.y, map.h - this.serverSpawn.y)
-      );
-      // Oyuncu haritanın her köşesine yürüyebilsin diye yarıçapı büyüt.
-      this.mapRadius = Math.max(this.mapRadius, Math.ceil(maxDist) + 3);
+        Math.max(this.serverSpawn.x, mapW - this.serverSpawn.x),
+        Math.max(this.serverSpawn.y, mapH - this.serverSpawn.y)
+      ) || 1;
+      // Ölçek: sunucu haritasının tamamı sabit bir görsel yarıçapa sığdırılır.
+      // Harita boyutları 5x büyüdüğü için görsel yarıçap da büyütülür; aksi
+      // halde dev haritalar aynı küçük adada sıkışmış gibi görünürdü.
+      const RADIUS_BY_SIZE = { small: 20, normal: 28, large: 36, huge: 46, colossal: 58 };
+      const sizeId = (map && map.size) || 'normal';
+      const baseR = RADIUS_BY_SIZE[sizeId] || 28;
+      const R = Math.max(14, Math.min(64, Math.round(baseR)));
+      this.worldScale = ((R - 0.5) * this.tileSize) / maxDist;
+      if (!Number.isFinite(this.worldScale) || this.worldScale <= 0) this.worldScale = this.tileSize;
+      // Etkileşim yarıçapı sunucunun karo toleransını aşmasın.
+      this.interactRadius = Math.max(40, Math.min(130, this.worldScale * 2.0));
+      if (R !== this.mapRadius) {
+        this.mapRadius = R;
+        this.generateMap();
+      }
+      // Biyom (harita türü) canavar tablosunu ve ambiyansını belirler.
+      const newExpedition = map.id && map.id !== this._mapId;
+      this._mapId = map.id || this._mapId;
+      if (newExpedition) {
+        // Yeni sefer: canı bir kez daha sunucudan al. Aksi halde kasabada
+        // iyileşen oyuncu eski (düşük) canıyla seyahate devam ediyordu.
+        this._hpFromServer = false;
+        this._lastHpSent = null;
+      }
+      this.setBiome(map.type || 'verdant', newExpedition);
+      this.snapCamera();
     }
 
     placePOIs(pois) {
-      const tile = this.tileSize;
+      const tile = this.worldScale || this.tileSize;
       const sp = this.serverSpawn;
       const keep = (this.scenery || []).filter((s) => s.type !== 'poi');
       this.poiMarkers = [];
@@ -4425,7 +7230,7 @@
         if (p.consumed) continue;
         this.poiMarkers.push({
           type: 'poi', kind: p.kind, poiId: p.id, name: p.name,
-          wx: (p.x - sp.x) * tile, wy: (p.y - sp.y) * tile,
+          wx: (p.x + 0.5 - sp.x) * tile, wy: (p.y + 0.5 - sp.y) * tile,
           scale: 1, interactable: true, label: p.name,
         });
       }
@@ -4433,10 +7238,12 @@
     }
 
     worldToServer(wx, wy) {
-      return { x: wx / this.tileSize + this.serverSpawn.x, y: wy / this.tileSize + this.serverSpawn.y };
+      const s = this.worldScale || this.tileSize;
+      return { x: wx / s + this.serverSpawn.x, y: wy / s + this.serverSpawn.y };
     }
     serverToWorld(x, y) {
-      return { x: (x - this.serverSpawn.x) * this.tileSize, y: (y - this.serverSpawn.y) * this.tileSize };
+      const s = this.worldScale || this.tileSize;
+      return { x: (x - this.serverSpawn.x) * s, y: (y - this.serverSpawn.y) * s };
     }
 
     setServerPlayer(pos, force) {
@@ -4449,18 +7256,38 @@
 
     applyPlayerData(me) {
       if (!me) return;
+      // İsim plakasında "Kahraman" değil, oyuncunun gerçek adı görünsün.
+      if (me.name) this.playerData.name = me.name;
+      if (me.character && this.sound) this.sound.setClass(me.character);
       if (me.character && me.character !== this.playerData.class) this.setPlayerClass(me.character);
+      // Mana rengi (görsel efekt) sunucudan gelir.
+      if (me.activeSkin !== undefined) this.setSkin(me.activeSkin);
       const stats = this.playerData.stats || (this.playerData.stats = {});
       stats.attack = me.attack != null ? me.attack : stats.attack;
       stats.critChance = (me.critChance || 0) / 100;
       stats.critMultiplier = 1 + (me.critDamage || 0) / 100;
       stats.maxHp = me.maxHp || stats.maxHp;
-      stats.currentHp = me.hp != null ? me.hp : stats.currentHp;
+      // İlk gerçek oda verisinde canı sunucudan al; sonrasında motor yönetir.
+      // hp=0 ama sunucu "downed" demiyorsa bu bayat/boş bir kayıttır (yeni sefer,
+      // eski ölüm kalıntısı); tam canla başla. Yere düşme sunucu bayrağıyla gelir.
+      if (me.hp != null && !this._hpFromServer) {
+        const rawHp = Number(me.hp);
+        const accepted = (rawHp > 0 || me.downed) ? rawHp : (stats.maxHp || 1);
+        stats.currentHp = Math.min(Math.max(0, accepted), stats.maxHp);
+        this._hpFromServer = true;
+        this._lastHpSent = stats.currentHp;
+      }
+      if (me.downed) { this.downed = true; this._down = true; }
+      if (stats.currentHp != null) stats.currentHp = Math.min(stats.currentHp, stats.maxHp);
       stats.maxMana = me.maxMana || stats.maxMana;
       stats.currentMana = me.mana != null ? me.mana : stats.currentMana;
       stats.omnivamp = (me.omnivamp || 0) / 100;
       stats.speed = me.speed ? 120 + me.speed * 2 : stats.speed;
+      stats.attackSpeed = Number(me.attackSpeed) || 0;
+      stats.magicPower = me.magicPower != null ? Number(me.magicPower) || 0 : (stats.magicPower || 0);
+      stats.healPower = me.healPower != null ? Number(me.healPower) || 0 : (stats.healPower || 0);
       this.player.baseSpeed = stats.speed || 200;
+      this.refreshAttackCooldown();
     }
 
     // ======================================================================
@@ -4478,8 +7305,33 @@
       this.player.baseSpeed = this.playerData.stats.speed || 210;
     }
 
+    // Sunucudan gelen canı uygular (kalp kaybı / iyileşme / diriltme).
+    setHp(hp) {
+      const st = this.playerData.stats || (this.playerData.stats = {});
+      const maxHp = Math.max(1, st.maxHp || 1);
+      const v = Math.max(0, Math.min(maxHp, Number(hp)));
+      if (!Number.isFinite(v)) return;
+      st.currentHp = v;
+      this._hpFromServer = true;
+      this._lastHpSent = v;
+      if (v > 0) { this._down = false; this.downed = false; }
+    }
+
+    // Yere düşme durumunu uygular (sunucu onayı). Diriltilince false gelir.
+    setDowned(on) {
+      this.downed = !!on;
+      const st = this.playerData.stats || (this.playerData.stats = {});
+      if (on) {
+        this._down = true;
+        if (st.currentHp > 0) st.currentHp = 0;
+        this.player.vx = 0; this.player.vy = 0; this.player.isDashing = false;
+      }
+    }
+
     destroy() {
       this.isRunning = false;
+      this._destroyed = true;
+      if (this._bgTimer) { clearInterval(this._bgTimer); this._bgTimer = 0; }
       window.removeEventListener('resize', this.boundResize);
       window.removeEventListener('keydown', this._onKeyDown);
       window.removeEventListener('keyup', this._onKeyUp);
@@ -4487,6 +7339,11 @@
       this.canvas.removeEventListener('mousedown', this._onMouseDown);
       this.canvas.removeEventListener('mouseup', this._onMouseUp);
       this.canvas.removeEventListener('contextmenu', this._onContext);
+      this.canvas.removeEventListener('wheel', this._onWheel);
+      if (this._onVisibility) {
+        document.removeEventListener('visibilitychange', this._onVisibility);
+        window.removeEventListener('focus', this._onVisibility);
+      }
       if (this.canvas.style) this.canvas.style.cursor = this._prevCursor || '';
       this.timeouts.forEach((id) => clearTimeout(id));
       this.timeouts.clear();

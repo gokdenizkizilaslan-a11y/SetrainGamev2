@@ -104,7 +104,8 @@
         "desc": "+10% damage.",
         "mult": 0.1
       }
-    ]
+    ],
+    "attackSpeed": 6
   },
   {
     "slug": "ranger",
@@ -204,7 +205,8 @@
         "aboveHpPct": 0.6,
         "mult": 0.2
       }
-    ]
+    ],
+    "attackSpeed": 18
   },
   {
     "slug": "mage",
@@ -298,7 +300,8 @@
         "stat": "magicPower",
         "pct": 0.1
       }
-    ]
+    ],
+    "attackSpeed": -4
   },
   {
     "slug": "rogue",
@@ -398,7 +401,8 @@
         "belowHpPct": 0.5,
         "mult": 0.25
       }
-    ]
+    ],
+    "attackSpeed": 22
   },
   {
     "slug": "paladin",
@@ -505,7 +509,8 @@
         "pct": 0.2,
         "turns": 4
       }
-    ]
+    ],
+    "attackSpeed": 0
   },
   {
     "slug": "assassin",
@@ -604,7 +609,8 @@
         "desc": "Your hits execute targets at or below 10% HP.",
         "finishBelowHpPct": 0.1
       }
-    ]
+    ],
+    "attackSpeed": 20
   },
   {
     "slug": "support",
@@ -705,7 +711,8 @@
         "desc": "+20% healing.",
         "mult": 0.2
       }
-    ]
+    ],
+    "attackSpeed": -6
   },
   {
     "slug": "tank",
@@ -812,7 +819,8 @@
         "desc": "Take 10% less damage (true damage excluded).",
         "mult": -0.1
       }
-    ]
+    ],
+    "attackSpeed": -12
   },
   {
     "slug": "tamer",
@@ -882,7 +890,8 @@
     "tagline": "Beast Tamer",
     "lore": "A tamer fighting beside wild companions. Hunts with Beast Bite, endures with War Heal. Strength in the pack, never alone.",
     "petSlots": 3,
-    "petPowerMult": 2
+    "petPowerMult": 2,
+    "attackSpeed": 8
   },
   {
     "slug": "beastmaster",
@@ -964,7 +973,8 @@
       "magicPower": 4
     },
     "petSlots": 3,
-    "petPowerMult": 2
+    "petPowerMult": 2,
+    "attackSpeed": 9
   },
   {
     "slug": "anima_lorde",
@@ -1049,7 +1059,8 @@
       "magicPower": 5
     },
     "petSlots": 4,
-    "petPowerMult": 2
+    "petPowerMult": 2,
+    "attackSpeed": 12
   },
   {
     "slug": "gardener",
@@ -1130,7 +1141,8 @@
         "pct": 0.5,
         "turns": 3
       }
-    ]
+    ],
+    "attackSpeed": 2
   },
   {
     "slug": "rootbinder",
@@ -1224,7 +1236,8 @@
       "resistance": 5,
       "magicPower": 8,
       "healPower": 2
-    }
+    },
+    "attackSpeed": 14
   },
   {
     "slug": "lifeweaver",
@@ -1318,7 +1331,8 @@
       "resistance": 6,
       "magicPower": 10,
       "healPower": 3
-    }
+    },
+    "attackSpeed": -2
   },
   {
     "slug": "moderator",
@@ -1393,7 +1407,8 @@
     "critDamage": {
       "min": 40,
       "max": 80
-    }
+    },
+    "attackSpeed": 4
   },
   {
     "slug": "ultra_moderator",
@@ -1491,7 +1506,8 @@
       "resistance": 15,
       "magicPower": 20,
       "healPower": 5
-    }
+    },
+    "attackSpeed": 6
   },
   {
     "slug": "tester",
@@ -1561,7 +1577,8 @@
     "critDamage": {
       "min": 40,
       "max": 80
-    }
+    },
+    "attackSpeed": 10
   },
   {
     "slug": "warlord",
@@ -1640,7 +1657,8 @@
       "mana": 10,
       "resistance": 6,
       "magicPower": 3
-    }
+    },
+    "attackSpeed": 2
   },
   {
     "slug": "warden",
@@ -1721,7 +1739,8 @@
       "mana": 12,
       "resistance": 4,
       "magicPower": 4
-    }
+    },
+    "attackSpeed": 10
   },
   {
     "slug": "archmage",
@@ -1803,7 +1822,8 @@
       "mana": 25,
       "resistance": 3,
       "magicPower": 10
-    }
+    },
+    "attackSpeed": 0
   },
   {
     "slug": "nightblade",
@@ -1884,7 +1904,8 @@
       "mana": 10,
       "resistance": 3,
       "magicPower": 3
-    }
+    },
+    "attackSpeed": 24
   },
   {
     "slug": "crusader",
@@ -1966,7 +1987,8 @@
       "resistance": 7,
       "magicPower": 5,
       "healPower": 1
-    }
+    },
+    "attackSpeed": -2
   },
   {
     "slug": "reaper",
@@ -2046,7 +2068,8 @@
       "mana": 8,
       "resistance": 3,
       "magicPower": 3
-    }
+    },
+    "attackSpeed": 18
   },
   {
     "slug": "high_priest",
@@ -2128,7 +2151,8 @@
       "resistance": 4,
       "magicPower": 7,
       "healPower": 3
-    }
+    },
+    "attackSpeed": -6
   },
   {
     "slug": "juggernaut",
@@ -2209,7 +2233,8 @@
       "mana": 8,
       "resistance": 9,
       "magicPower": 2
-    }
+    },
+    "attackSpeed": -14
   },
   {
     "slug": "war_emperor",
@@ -2291,7 +2316,8 @@
       "mana": 12,
       "resistance": 8,
       "magicPower": 4
-    }
+    },
+    "attackSpeed": 0
   },
   {
     "slug": "storm_warden",
@@ -2369,7 +2395,8 @@
       "mana": 15,
       "resistance": 5,
       "magicPower": 5
-    }
+    },
+    "attackSpeed": 16
   },
   {
     "slug": "archon",
@@ -2447,7 +2474,8 @@
       "mana": 30,
       "resistance": 4,
       "magicPower": 13
-    }
+    },
+    "attackSpeed": 4
   },
   {
     "slug": "shade_king",
@@ -2524,7 +2552,8 @@
       "mana": 12,
       "resistance": 4,
       "magicPower": 4
-    }
+    },
+    "attackSpeed": 20
   },
   {
     "slug": "lightbringer",
@@ -2609,7 +2638,8 @@
       "resistance": 9,
       "magicPower": 6,
       "healPower": 1
-    }
+    },
+    "attackSpeed": 0
   },
   {
     "slug": "death_lord",
@@ -2693,7 +2723,8 @@
       "mana": 10,
       "resistance": 4,
       "magicPower": 4
-    }
+    },
+    "attackSpeed": 16
   },
   {
     "slug": "bloodspawn",
@@ -2793,7 +2824,8 @@
       "requiredItemCount": 5,
       "requirementType": "level_and_item",
       "requiresVampire": true
-    }
+    },
+    "attackSpeed": 22
   },
   {
     "slug": "bloodlord",
@@ -2880,7 +2912,8 @@
       "resistance": 5,
       "magicPower": 5,
       "healPower": 3
-    }
+    },
+    "attackSpeed": 14
   },
   {
     "slug": "gloomspawn",
@@ -2987,7 +3020,8 @@
       "requiredItemCount": 5,
       "requirementType": "level_and_item",
       "requiresVampire": true
-    }
+    },
+    "attackSpeed": 8
   },
   {
     "slug": "sanguine_lord",
@@ -3074,7 +3108,8 @@
       "resistance": 3,
       "magicPower": 14,
       "healPower": 4
-    }
+    },
+    "attackSpeed": 12
   },
   {
     "slug": "divine_saint",
@@ -3158,7 +3193,8 @@
       "resistance": 5,
       "magicPower": 9,
       "healPower": 4
-    }
+    },
+    "attackSpeed": -4
   },
   {
     "slug": "colossus",
@@ -3243,6 +3279,7 @@
       "mana": 10,
       "resistance": 11,
       "magicPower": 3
-    }
+    },
+    "attackSpeed": -16
   }
 ]

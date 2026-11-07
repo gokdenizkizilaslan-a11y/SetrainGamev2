@@ -130,7 +130,8 @@
     },
     "stats": {
       "attack": 6,
-      "speed": 1
+      "speed": 1,
+      "attackSpeed": 2
     },
     "image": "/images/items/rusty_sword.webp",
     "description": "+6 Attack, +1 Speed"
@@ -197,7 +198,8 @@
       "wood": 8
     },
     "stats": {
-      "speed": 1
+      "speed": 1,
+      "attackSpeed": 1
     },
     "image": "/images/items/leather_boots.webp",
     "description": "+1 Speed"
@@ -214,7 +216,8 @@
     },
     "stats": {
       "mana": 10,
-      "magicPower": 3
+      "magicPower": 3,
+      "attackSpeed": 2
     },
     "image": "/images/items/iron_amulet.webp",
     "description": "+10 Mana, +3 Magic Power"
@@ -231,7 +234,8 @@
     },
     "stats": {
       "attack": 2,
-      "mana": 5
+      "mana": 5,
+      "attackSpeed": 1
     },
     "image": "/images/items/iron_ring.webp",
     "description": "+2 Attack, +5 Mana"
@@ -247,7 +251,8 @@
     },
     "stats": {
       "mana": 20,
-      "manaRegen": 1
+      "manaRegen": 1,
+      "attackSpeed": 3
     },
     "image": "/images/items/mana_talisman.webp",
     "description": "+20 Mana, +1 Mana Regen"
@@ -262,7 +267,8 @@
       "wood": 15
     },
     "stats": {
-      "attack": 8
+      "attack": 8,
+      "attackSpeed": 2
     },
     "image": "/images/items/battle_axe.webp",
     "description": "+8 Attack"
@@ -277,7 +283,8 @@
       "wood": 20
     },
     "stats": {
-      "attack": 12
+      "attack": 12,
+      "attackSpeed": 2
     },
     "image": "/images/items/war_hammer.webp",
     "description": "+12 Attack"
@@ -293,7 +300,8 @@
     },
     "stats": {
       "attack": 7,
-      "speed": 1
+      "speed": 1,
+      "attackSpeed": 2
     },
     "image": "/images/items/longbow.webp",
     "description": "+7 Attack, +1 Speed"
@@ -309,7 +317,8 @@
     },
     "stats": {
       "attack": 5,
-      "speed": 2
+      "speed": 2,
+      "attackSpeed": 2
     },
     "image": "/images/items/shortbow.webp",
     "description": "+5 Attack, +2 Speed"
@@ -324,7 +333,8 @@
       "wood": 15
     },
     "stats": {
-      "magicPower": 8
+      "magicPower": 8,
+      "attackSpeed": 2
     },
     "image": "/images/items/apprentice_staff.webp",
     "description": "+8 Magic Power"
@@ -340,7 +350,8 @@
     },
     "stats": {
       "magicPower": 14,
-      "mana": 10
+      "mana": 10,
+      "attackSpeed": 3
     },
     "image": "/images/items/archon_staff.webp",
     "description": "+14 Magic Power, +10 Mana"
@@ -356,7 +367,8 @@
     },
     "stats": {
       "attack": 5,
-      "speed": 2
+      "speed": 2,
+      "attackSpeed": 2
     },
     "image": "/images/items/dagger.webp",
     "description": "+5 Attack, +2 Speed"
@@ -371,7 +383,8 @@
       "wood": 12
     },
     "stats": {
-      "attack": 7
+      "attack": 7,
+      "attackSpeed": 2
     },
     "image": "/images/items/poison_dagger.webp",
     "description": "+7 Attack"
@@ -387,7 +400,8 @@
     },
     "stats": {
       "attack": 6,
-      "magicPower": 3
+      "magicPower": 3,
+      "attackSpeed": 2
     },
     "image": "/images/items/mace.webp",
     "description": "+6 Attack, +3 Magic Power"
@@ -403,7 +417,8 @@
     },
     "stats": {
       "attack": 8,
-      "magicPower": 5
+      "magicPower": 5,
+      "attackSpeed": 3
     },
     "image": "/images/items/holy_sword.webp",
     "description": "+8 Attack, +5 Magic Power"
@@ -418,7 +433,8 @@
       "wood": 22
     },
     "stats": {
-      "attack": 10
+      "attack": 10,
+      "attackSpeed": 3
     },
     "image": "/images/items/kris_blade.webp",
     "description": "+10 Attack"
@@ -434,7 +450,8 @@
     },
     "stats": {
       "attack": 8,
-      "speed": 2
+      "speed": 2,
+      "attackSpeed": 3
     },
     "image": "/images/items/whisper_blade.webp",
     "description": "+8 Attack, +2 Speed"
@@ -450,7 +467,8 @@
     },
     "stats": {
       "magicPower": 10,
-      "healPower": 2
+      "healPower": 2,
+      "attackSpeed": 3
     },
     "image": "/images/items/scepter.webp",
     "description": "+10 Magic Power, +2 Heal Power"
@@ -466,7 +484,8 @@
     },
     "stats": {
       "magicPower": 12,
-      "healPower": 4
+      "healPower": 4,
+      "attackSpeed": 5
     },
     "image": "/images/items/cleric_staff.webp",
     "description": "+12 Magic Power, +4 Heal Power"
@@ -482,7 +501,8 @@
     },
     "stats": {
       "attack": 11,
-      "maxHp": 20
+      "maxHp": 20,
+      "attackSpeed": 2
     },
     "image": "/images/items/maul.webp",
     "description": "+11 Attack, +20 Max HP"
@@ -498,7 +518,8 @@
     },
     "stats": {
       "attack": 8,
-      "resistance": 5
+      "resistance": 5,
+      "attackSpeed": 3
     },
     "image": "/images/items/bulwark_hammer.webp",
     "description": "+8 Attack, +5 Resistance"
@@ -514,7 +535,8 @@
       "wood": 10
     },
     "stats": {
-      "attack": 8
+      "attack": 8,
+      "attackSpeed": 2
     },
     "image": "/images/items/stone_ash_sword.webp",
     "description": "+8 Attack. A base for temple crafting."
@@ -699,7 +721,8 @@
       "wood": 0
     },
     "stats": {
-      "attack": 16
+      "attack": 16,
+      "attackSpeed": 3
     },
     "image": "/images/items/fire_ash_sword.webp",
     "craftOnly": true,
@@ -715,7 +738,8 @@
       "wood": 0
     },
     "stats": {
-      "attack": 28
+      "attack": 28,
+      "attackSpeed": 5
     },
     "image": "/images/items/molten_cleaver.webp",
     "craftOnly": true,
@@ -732,7 +756,8 @@
     },
     "stats": {
       "attack": 18,
-      "resistance": 6
+      "resistance": 6,
+      "attackSpeed": 3
     },
     "image": "/images/items/frost_gladius.webp",
     "craftOnly": true,
@@ -749,7 +774,8 @@
     },
     "stats": {
       "magicPower": 20,
-      "mana": 15
+      "mana": 15,
+      "attackSpeed": 3
     },
     "image": "/images/items/arcane_rod.webp",
     "craftOnly": true,
@@ -767,7 +793,8 @@
     },
     "stats": {
       "attack": 18,
-      "speed": 3
+      "speed": 3,
+      "attackSpeed": 3
     },
     "image": "/images/items/shadow_knife.webp",
     "craftOnly": true,
@@ -783,7 +810,8 @@
       "wood": 0
     },
     "stats": {
-      "attack": 26
+      "attack": 26,
+      "attackSpeed": 7
     },
     "image": "/images/items/ember_sword.webp",
     "description": "+26 Attack. Found only in the deep ruins."
@@ -799,7 +827,8 @@
     },
     "stats": {
       "magicPower": 30,
-      "healPower": 6
+      "healPower": 6,
+      "attackSpeed": 10
     },
     "image": "/images/items/phoenix_staff.webp",
     "description": "+30 Magic Power, +6 Heal Power."
@@ -815,7 +844,8 @@
       "wood": 0
     },
     "stats": {
-      "attack": 42
+      "attack": 42,
+      "attackSpeed": 13
     },
     "image": "/images/items/void_cleaver.webp",
     "description": "+42 Attack. The edge drinks the dark."
@@ -896,7 +926,8 @@
       "wood": 10
     },
     "stats": {
-      "attack": 12
+      "attack": 12,
+      "attackSpeed": 2
     },
     "image": "/images/items/iron_greatsword.webp",
     "description": "+12 attack"
@@ -911,7 +942,8 @@
       "wood": 10
     },
     "stats": {
-      "attack": 14
+      "attack": 14,
+      "attackSpeed": 2
     },
     "image": "/images/items/steel_blade.webp",
     "description": "+14 attack"
@@ -928,7 +960,8 @@
     },
     "stats": {
       "attack": 16,
-      "speed": 1
+      "speed": 1,
+      "attackSpeed": 3
     },
     "image": "/images/items/ranger_bow.webp",
     "description": "+16 attack, +1 speed"
@@ -944,7 +977,8 @@
     },
     "stats": {
       "magicPower": 16,
-      "mana": 12
+      "mana": 12,
+      "attackSpeed": 3
     },
     "image": "/images/items/arcane_scepter.webp",
     "description": "+16 magicPower, +12 mana"
@@ -961,7 +995,8 @@
     },
     "stats": {
       "attack": 20,
-      "speed": 2
+      "speed": 2,
+      "attackSpeed": 5
     },
     "image": "/images/items/shadow_dagger.webp",
     "description": "+20 attack, +2 speed"
@@ -978,7 +1013,8 @@
     },
     "stats": {
       "attack": 22,
-      "speed": 1
+      "speed": 1,
+      "attackSpeed": 5
     },
     "image": "/images/items/dragon_spear.webp",
     "description": "+22 attack, +1 speed"
@@ -993,7 +1029,8 @@
       "wood": 60
     },
     "stats": {
-      "attack": 26
+      "attack": 26,
+      "attackSpeed": 7
     },
     "image": "/images/items/titan_hammer.webp",
     "description": "+26 attack"
@@ -1009,7 +1046,8 @@
     },
     "stats": {
       "attack": 24,
-      "speed": 2
+      "speed": 2,
+      "attackSpeed": 7
     },
     "image": "/images/items/storm_bow.webp",
     "description": "+24 attack, +2 speed"
@@ -1026,7 +1064,8 @@
     },
     "stats": {
       "attack": 32,
-      "speed": 1
+      "speed": 1,
+      "attackSpeed": 10
     },
     "image": "/images/items/void_blade.webp",
     "description": "+32 attack, +1 speed"
@@ -1042,7 +1081,8 @@
     },
     "stats": {
       "attack": 46,
-      "maxHp": 20
+      "maxHp": 20,
+      "attackSpeed": 13
     },
     "image": "/images/items/world_breaker.webp",
     "description": "+46 attack, +20 Max HP"
@@ -1470,7 +1510,8 @@
       "wood": 8
     },
     "stats": {
-      "speed": 1
+      "speed": 1,
+      "attackSpeed": 1
     },
     "image": "/images/items/worn_boots.webp",
     "description": "+1 speed"
@@ -1488,7 +1529,8 @@
     "stats": {
       "maxHp": 20,
       "resistance": 4,
-      "speed": 1
+      "speed": 1,
+      "attackSpeed": 1
     },
     "image": "/images/items/iron_boots.webp",
     "description": "+20 maxHp, +4 resistance, +1 speed"
@@ -1505,7 +1547,8 @@
     },
     "stats": {
       "maxHp": 20,
-      "speed": 2
+      "speed": 2,
+      "attackSpeed": 2
     },
     "image": "/images/items/ranger_boots.webp",
     "description": "+20 Max HP, +2 speed"
@@ -1521,7 +1564,8 @@
     },
     "stats": {
       "mana": 12,
-      "magicPower": 6
+      "magicPower": 6,
+      "attackSpeed": 2
     },
     "image": "/images/items/sorcery_boots.webp",
     "description": "+12 mana, +6 magicPower"
@@ -1538,7 +1582,8 @@
     "stats": {
       "maxHp": 40,
       "resistance": 8,
-      "speed": 1
+      "speed": 1,
+      "attackSpeed": 3
     },
     "image": "/images/items/knight_boots.webp",
     "description": "+40 maxHp, +8 resistance, +1 speed"
@@ -1556,7 +1601,8 @@
     "stats": {
       "maxHp": 60,
       "resistance": 12,
-      "speed": 2
+      "speed": 2,
+      "attackSpeed": 4
     },
     "image": "/images/items/void_boots.webp",
     "description": "+60 maxHp, +12 resistance, +2 speed"
@@ -1572,7 +1618,8 @@
     },
     "stats": {
       "mana": 8,
-      "magicPower": 4
+      "magicPower": 4,
+      "attackSpeed": 1
     },
     "image": "/images/items/copper_amulet.webp",
     "description": "+8 mana, +4 magicPower"
@@ -1588,7 +1635,8 @@
     },
     "stats": {
       "mana": 14,
-      "magicPower": 7
+      "magicPower": 7,
+      "attackSpeed": 2
     },
     "image": "/images/items/silver_amulet.webp",
     "description": "+14 mana, +7 magicPower"
@@ -1605,7 +1653,8 @@
     "stats": {
       "mana": 20,
       "magicPower": 12,
-      "healPower": 4
+      "healPower": 4,
+      "attackSpeed": 3
     },
     "image": "/images/items/ruby_amulet.webp",
     "description": "+20 mana, +12 magicPower, +4 healPower"
@@ -1622,7 +1671,8 @@
     "stats": {
       "mana": 30,
       "magicPower": 18,
-      "manaRegen": 2
+      "manaRegen": 2,
+      "attackSpeed": 4
     },
     "image": "/images/items/sapphire_amulet.webp",
     "description": "+30 mana, +18 magicPower, +2 manaRegen"
@@ -1640,7 +1690,8 @@
     "stats": {
       "mana": 40,
       "magicPower": 24,
-      "healPower": 8
+      "healPower": 8,
+      "attackSpeed": 6
     },
     "image": "/images/items/void_amulet.webp",
     "description": "+40 mana, +24 magicPower, +8 healPower"
@@ -1655,7 +1706,8 @@
       "wood": 8
     },
     "stats": {
-      "attack": 3
+      "attack": 3,
+      "attackSpeed": 1
     },
     "image": "/images/items/copper_ring.webp",
     "description": "+3 attack"
@@ -1671,7 +1723,8 @@
     },
     "stats": {
       "attack": 5,
-      "mana": 8
+      "mana": 8,
+      "attackSpeed": 2
     },
     "image": "/images/items/silver_ring.webp",
     "description": "+5 attack, +8 mana"
@@ -1687,7 +1740,8 @@
     },
     "stats": {
       "attack": 8,
-      "critChance": 5
+      "critChance": 5,
+      "attackSpeed": 3
     },
     "image": "/images/items/ruby_ring.webp",
     "description": "+8 attack, +5 critChance"
@@ -1704,7 +1758,8 @@
     "stats": {
       "attack": 12,
       "magicPower": 10,
-      "critChance": 7
+      "critChance": 7,
+      "attackSpeed": 4
     },
     "image": "/images/items/sapphire_ring.webp",
     "description": "+12 attack, +10 magicPower, +7 critChance"
@@ -1722,7 +1777,8 @@
     "stats": {
       "attack": 16,
       "magicPower": 14,
-      "critDamage": 15
+      "critDamage": 15,
+      "attackSpeed": 6
     },
     "image": "/images/items/void_ring.webp",
     "description": "+16 attack, +14 magicPower, +15 critDamage"
@@ -1911,7 +1967,8 @@
     },
     "stats": {
       "omnivamp": 5,
-      "attack": 4
+      "attack": 4,
+      "attackSpeed": 3
     },
     "image": "/images/items/vampiric_ring.webp",
     "description": "+5% Omnivamp, +4 Attack."
@@ -1927,7 +1984,8 @@
     },
     "stats": {
       "attack": 24,
-      "omnivamp": 4
+      "omnivamp": 4,
+      "attackSpeed": 7
     },
     "image": "/images/items/crimson_blade.webp",
     "description": "+24 Attack, +4% Omnivamp."
@@ -1977,7 +2035,8 @@
     },
     "stats": {
       "attack": 36,
-      "critChance": 5
+      "critChance": 5,
+      "attackSpeed": 7
     },
     "image": "/images/items/boss_weapon_ember.webp",
     "bossWeapon": true,
@@ -1994,7 +2053,8 @@
     },
     "stats": {
       "attack": 36,
-      "resistance": 8
+      "resistance": 8,
+      "attackSpeed": 7
     },
     "image": "/images/items/boss_weapon_frost.webp",
     "bossWeapon": true,
@@ -2011,7 +2071,8 @@
     },
     "stats": {
       "attack": 40,
-      "omnivamp": 4
+      "omnivamp": 4,
+      "attackSpeed": 10
     },
     "image": "/images/items/boss_weapon_void.webp",
     "bossWeapon": true,
@@ -2028,7 +2089,8 @@
     },
     "stats": {
       "attack": 44,
-      "speed": 1
+      "speed": 1,
+      "attackSpeed": 10
     },
     "image": "/images/items/boss_weapon_storm.webp",
     "bossWeapon": true,
@@ -2045,7 +2107,8 @@
     },
     "stats": {
       "attack": 48,
-      "critDamage": 15
+      "critDamage": 15,
+      "attackSpeed": 13
     },
     "image": "/images/items/boss_weapon_world.webp",
     "bossWeapon": true,
@@ -2148,7 +2211,8 @@
     "rarity": "common",
     "slot": "weapon",
     "stats": {
-      "attack": 11
+      "attack": 11,
+      "attackSpeed": 2
     },
     "description": "A dependable oaken club.",
     "value": 25,
@@ -2172,7 +2236,8 @@
     "rarity": "common",
     "slot": "ring",
     "stats": {
-      "resistance": 6
+      "resistance": 6,
+      "attackSpeed": 1
     },
     "description": "Carved from a dire wolf fang.",
     "value": 24,
@@ -2185,7 +2250,8 @@
     "slot": "boots",
     "stats": {
       "maxHp": 25,
-      "speed": 1
+      "speed": 1,
+      "attackSpeed": 1
     },
     "description": "Worn soles, swift steps.",
     "value": 26,
@@ -2197,7 +2263,8 @@
     "rarity": "uncommon",
     "slot": "weapon",
     "stats": {
-      "attack": 17
+      "attack": 17,
+      "attackSpeed": 3
     },
     "description": "A woodsman's heavy axe.",
     "value": 70,
@@ -2249,7 +2316,8 @@
     "slot": "boots",
     "stats": {
       "maxHp": 50,
-      "resistance": 8
+      "resistance": 8,
+      "attackSpeed": 2
     },
     "description": "Still warm from the forge.",
     "value": 72,
@@ -2262,7 +2330,8 @@
     "slot": "amulet",
     "stats": {
       "mana": 25,
-      "magicPower": 4
+      "magicPower": 4,
+      "attackSpeed": 2
     },
     "description": "Drinks in moonlight.",
     "value": 70,
@@ -2274,7 +2343,8 @@
     "rarity": "uncommon",
     "slot": "ring",
     "stats": {
-      "attack": 6
+      "attack": 6,
+      "attackSpeed": 2
     },
     "description": "A coiled silver serpent.",
     "value": 66,
@@ -2286,7 +2356,8 @@
     "rarity": "uncommon",
     "slot": "weapon",
     "stats": {
-      "magicPower": 18
+      "magicPower": 18,
+      "attackSpeed": 3
     },
     "description": "Heartwood humming with mana.",
     "value": 74,
@@ -2298,7 +2369,8 @@
     "rarity": "rare",
     "slot": "weapon",
     "stats": {
-      "attack": 24
+      "attack": 24,
+      "attackSpeed": 5
     },
     "description": "Its edge never thaws.",
     "value": 200,
@@ -2352,7 +2424,8 @@
     "slot": "amulet",
     "stats": {
       "attack": 14,
-      "speed": 2
+      "speed": 2,
+      "attackSpeed": 3
     },
     "description": "A bottled thunderstorm.",
     "value": 195,
@@ -2365,7 +2438,8 @@
     "slot": "ring",
     "stats": {
       "resistance": 14,
-      "maxHp": 40
+      "maxHp": 40,
+      "attackSpeed": 3
     },
     "description": "Oath-bound silver.",
     "value": 188,
@@ -2378,7 +2452,8 @@
     "slot": "weapon",
     "stats": {
       "attack": 22,
-      "speed": 1
+      "speed": 1,
+      "attackSpeed": 5
     },
     "description": "Runes guide every shaft.",
     "value": 205,
@@ -2391,7 +2466,8 @@
     "rarity": "epic",
     "slot": "weapon",
     "stats": {
-      "attack": 34
+      "attack": 34,
+      "attackSpeed": 7
     },
     "description": "It hungers between swings.",
     "value": 500,
@@ -2429,7 +2505,8 @@
     "rarity": "epic",
     "slot": "weapon",
     "stats": {
-      "magicPower": 38
+      "magicPower": 38,
+      "attackSpeed": 7
     },
     "description": "Points at clouds; clouds obey.",
     "value": 530,
@@ -2441,7 +2518,8 @@
     "rarity": "legendary",
     "slot": "weapon",
     "stats": {
-      "attack": 48
+      "attack": 48,
+      "attackSpeed": 10
     },
     "description": "Ended a dynasty.",
     "value": 1200,
@@ -2466,7 +2544,8 @@
     "rarity": "mythic",
     "slot": "weapon",
     "stats": {
-      "attack": 62
+      "attack": 62,
+      "attackSpeed": 13
     },
     "description": "The ground remembers it.",
     "value": 2500,
@@ -2726,7 +2805,8 @@
       "wood": 60
     },
     "stats": {
-      "attack": 28
+      "attack": 28,
+      "attackSpeed": 7
     },
     "setId": "blood",
     "image": "/images/items/blood_blade.webp",
@@ -2743,7 +2823,8 @@
     },
     "stats": {
       "attack": 18,
-      "speed": 2
+      "speed": 2,
+      "attackSpeed": 5
     },
     "setId": "blood",
     "image": "/images/items/blood_fang.webp",
@@ -2813,7 +2894,8 @@
     "stats": {
       "maxHp": 45,
       "resistance": 10,
-      "speed": 2
+      "speed": 2,
+      "attackSpeed": 3
     },
     "setId": "blood",
     "image": "/images/items/blood_boots.webp",
@@ -2830,7 +2912,8 @@
     },
     "stats": {
       "attack": 10,
-      "omnivamp": 5
+      "omnivamp": 5,
+      "attackSpeed": 4
     },
     "setId": "blood",
     "image": "/images/items/blood_ring.webp",
@@ -2848,7 +2931,8 @@
     "stats": {
       "mana": 20,
       "magicPower": 10,
-      "omnivamp": 3
+      "omnivamp": 3,
+      "attackSpeed": 3
     },
     "setId": "blood",
     "image": "/images/items/blood_amulet.webp",
@@ -2881,7 +2965,8 @@
       "wood": 0
     },
     "stats": {
-      "attack": 8
+      "attack": 8,
+      "attackSpeed": 2
     },
     "travelOnly": true,
     "image": "/images/items/sword_duskwood.webp",
@@ -2897,7 +2982,8 @@
       "wood": 0
     },
     "stats": {
-      "attack": 8
+      "attack": 8,
+      "attackSpeed": 2
     },
     "travelOnly": true,
     "image": "/images/items/sword_reed.webp",
@@ -2913,7 +2999,8 @@
       "wood": 0
     },
     "stats": {
-      "attack": 8
+      "attack": 8,
+      "attackSpeed": 2
     },
     "travelOnly": true,
     "image": "/images/items/sword_ironleaf.webp",
@@ -2929,7 +3016,8 @@
       "wood": 0
     },
     "stats": {
-      "attack": 8
+      "attack": 8,
+      "attackSpeed": 2
     },
     "travelOnly": true,
     "image": "/images/items/sword_patrol.webp",
@@ -2945,7 +3033,8 @@
       "wood": 0
     },
     "stats": {
-      "attack": 8
+      "attack": 8,
+      "attackSpeed": 2
     },
     "travelOnly": true,
     "image": "/images/items/sword_tin.webp",
@@ -2961,7 +3050,8 @@
       "wood": 0
     },
     "stats": {
-      "attack": 8
+      "attack": 8,
+      "attackSpeed": 2
     },
     "travelOnly": true,
     "image": "/images/items/sword_militia.webp",
@@ -2977,7 +3067,8 @@
       "wood": 0
     },
     "stats": {
-      "attack": 8
+      "attack": 8,
+      "attackSpeed": 2
     },
     "travelOnly": true,
     "image": "/images/items/sword_boar.webp",
@@ -2993,7 +3084,8 @@
       "wood": 0
     },
     "stats": {
-      "attack": 8
+      "attack": 8,
+      "attackSpeed": 2
     },
     "travelOnly": true,
     "image": "/images/items/sword_salt.webp",
@@ -3009,7 +3101,8 @@
       "wood": 0
     },
     "stats": {
-      "attack": 8
+      "attack": 8,
+      "attackSpeed": 2
     },
     "travelOnly": true,
     "image": "/images/items/sword_coal.webp",
@@ -3025,7 +3118,8 @@
       "wood": 0
     },
     "stats": {
-      "attack": 12
+      "attack": 12,
+      "attackSpeed": 3
     },
     "travelOnly": true,
     "image": "/images/items/sword_bronzeguard.webp",
@@ -3041,7 +3135,8 @@
       "wood": 0
     },
     "stats": {
-      "attack": 12
+      "attack": 12,
+      "attackSpeed": 3
     },
     "travelOnly": true,
     "image": "/images/items/sword_mossbrand.webp",
@@ -3057,7 +3152,8 @@
       "wood": 0
     },
     "stats": {
-      "attack": 12
+      "attack": 12,
+      "attackSpeed": 3
     },
     "travelOnly": true,
     "image": "/images/items/sword_tide.webp",
@@ -3073,7 +3169,8 @@
       "wood": 0
     },
     "stats": {
-      "attack": 12
+      "attack": 12,
+      "attackSpeed": 3
     },
     "travelOnly": true,
     "image": "/images/items/sword_ashen.webp",
@@ -3089,7 +3186,8 @@
       "wood": 0
     },
     "stats": {
-      "attack": 12
+      "attack": 12,
+      "attackSpeed": 3
     },
     "travelOnly": true,
     "image": "/images/items/sword_watch.webp",
@@ -3105,7 +3203,8 @@
       "wood": 0
     },
     "stats": {
-      "attack": 12
+      "attack": 12,
+      "attackSpeed": 3
     },
     "travelOnly": true,
     "image": "/images/items/sword_glade.webp",
@@ -3121,7 +3220,8 @@
       "wood": 0
     },
     "stats": {
-      "attack": 12
+      "attack": 12,
+      "attackSpeed": 3
     },
     "travelOnly": true,
     "image": "/images/items/sword_emberwood.webp",
@@ -3137,7 +3237,8 @@
       "wood": 0
     },
     "stats": {
-      "attack": 12
+      "attack": 12,
+      "attackSpeed": 3
     },
     "travelOnly": true,
     "image": "/images/items/sword_frostpin.webp",
@@ -3153,7 +3254,8 @@
       "wood": 0
     },
     "stats": {
-      "attack": 12
+      "attack": 12,
+      "attackSpeed": 3
     },
     "travelOnly": true,
     "image": "/images/items/sword_mason.webp",
@@ -3170,7 +3272,8 @@
     },
     "stats": {
       "attack": 18,
-      "critChance": 2
+      "critChance": 2,
+      "attackSpeed": 5
     },
     "travelOnly": true,
     "image": "/images/items/sword_stormhilt.webp",
@@ -3187,7 +3290,8 @@
     },
     "stats": {
       "attack": 18,
-      "critChance": 2
+      "critChance": 2,
+      "attackSpeed": 5
     },
     "travelOnly": true,
     "image": "/images/items/sword_runeblade.webp",
@@ -3204,7 +3308,8 @@
     },
     "stats": {
       "attack": 18,
-      "critChance": 2
+      "critChance": 2,
+      "attackSpeed": 5
     },
     "travelOnly": true,
     "image": "/images/items/sword_glacier.webp",
@@ -3221,7 +3326,8 @@
     },
     "stats": {
       "attack": 18,
-      "critChance": 2
+      "critChance": 2,
+      "attackSpeed": 5
     },
     "travelOnly": true,
     "image": "/images/items/sword_venom.webp",
@@ -3238,7 +3344,8 @@
     },
     "stats": {
       "attack": 18,
-      "critChance": 2
+      "critChance": 2,
+      "attackSpeed": 5
     },
     "travelOnly": true,
     "image": "/images/items/sword_brass.webp",
@@ -3255,7 +3362,8 @@
     },
     "stats": {
       "attack": 18,
-      "critChance": 2
+      "critChance": 2,
+      "attackSpeed": 5
     },
     "travelOnly": true,
     "image": "/images/items/sword_shadow.webp",
@@ -3272,7 +3380,8 @@
     },
     "stats": {
       "attack": 18,
-      "critChance": 2
+      "critChance": 2,
+      "attackSpeed": 5
     },
     "travelOnly": true,
     "image": "/images/items/sword_coral.webp",
@@ -3289,7 +3398,8 @@
     },
     "stats": {
       "attack": 18,
-      "critChance": 2
+      "critChance": 2,
+      "attackSpeed": 5
     },
     "travelOnly": true,
     "image": "/images/items/sword_grave.webp",
@@ -3306,7 +3416,8 @@
     },
     "stats": {
       "attack": 18,
-      "critChance": 2
+      "critChance": 2,
+      "attackSpeed": 5
     },
     "travelOnly": true,
     "image": "/images/items/sword_sun.webp",
@@ -3323,7 +3434,8 @@
     },
     "stats": {
       "attack": 27,
-      "critChance": 4
+      "critChance": 4,
+      "attackSpeed": 7
     },
     "travelOnly": true,
     "image": "/images/items/sword_emberforged.webp",
@@ -3340,7 +3452,8 @@
     },
     "stats": {
       "attack": 27,
-      "critChance": 4
+      "critChance": 4,
+      "attackSpeed": 7
     },
     "travelOnly": true,
     "image": "/images/items/sword_glacial.webp",
@@ -3357,7 +3470,8 @@
     },
     "stats": {
       "attack": 27,
-      "critChance": 4
+      "critChance": 4,
+      "attackSpeed": 7
     },
     "travelOnly": true,
     "image": "/images/items/sword_thunder.webp",
@@ -3374,7 +3488,8 @@
     },
     "stats": {
       "attack": 27,
-      "critChance": 4
+      "critChance": 4,
+      "attackSpeed": 7
     },
     "travelOnly": true,
     "image": "/images/items/sword_crimson.webp",
@@ -3391,7 +3506,8 @@
     },
     "stats": {
       "attack": 27,
-      "critChance": 4
+      "critChance": 4,
+      "attackSpeed": 7
     },
     "travelOnly": true,
     "image": "/images/items/sword_voidsteel.webp",
@@ -3408,7 +3524,8 @@
     },
     "stats": {
       "attack": 27,
-      "critChance": 4
+      "critChance": 4,
+      "attackSpeed": 7
     },
     "travelOnly": true,
     "image": "/images/items/sword_seraph.webp",
@@ -3425,7 +3542,8 @@
     },
     "stats": {
       "attack": 27,
-      "critChance": 4
+      "critChance": 4,
+      "attackSpeed": 7
     },
     "travelOnly": true,
     "image": "/images/items/sword_nightbloom.webp",
@@ -3442,7 +3560,8 @@
     },
     "stats": {
       "attack": 27,
-      "critChance": 4
+      "critChance": 4,
+      "attackSpeed": 7
     },
     "travelOnly": true,
     "image": "/images/items/sword_tidecaller.webp",
@@ -3459,7 +3578,8 @@
     },
     "stats": {
       "attack": 27,
-      "critChance": 4
+      "critChance": 4,
+      "attackSpeed": 7
     },
     "travelOnly": true,
     "image": "/images/items/sword_runic.webp",
@@ -3477,7 +3597,8 @@
     "stats": {
       "attack": 38,
       "critChance": 6,
-      "speed": 2
+      "speed": 2,
+      "attackSpeed": 10
     },
     "travelOnly": true,
     "image": "/images/items/sword_dragonfang.webp",
@@ -3495,7 +3616,8 @@
     "stats": {
       "attack": 38,
       "critChance": 6,
-      "speed": 2
+      "speed": 2,
+      "attackSpeed": 10
     },
     "travelOnly": true,
     "image": "/images/items/sword_phoenix.webp",
@@ -3513,7 +3635,8 @@
     "stats": {
       "attack": 38,
       "critChance": 6,
-      "speed": 2
+      "speed": 2,
+      "attackSpeed": 10
     },
     "travelOnly": true,
     "image": "/images/items/sword_worldtree.webp",
@@ -3532,7 +3655,8 @@
       "attack": 52,
       "critChance": 8,
       "speed": 3,
-      "omnivamp": 4
+      "omnivamp": 4,
+      "attackSpeed": 13
     },
     "travelOnly": true,
     "image": "/images/items/sword_voidheart.webp",
@@ -3551,7 +3675,8 @@
       "attack": 52,
       "critChance": 8,
       "speed": 3,
-      "omnivamp": 4
+      "omnivamp": 4,
+      "attackSpeed": 13
     },
     "travelOnly": true,
     "image": "/images/items/sword_astral.webp",
@@ -3570,7 +3695,8 @@
       "attack": 52,
       "critChance": 8,
       "speed": 3,
-      "omnivamp": 4
+      "omnivamp": 4,
+      "attackSpeed": 13
     },
     "travelOnly": true,
     "image": "/images/items/sword_bloodmoon.webp",
@@ -3589,7 +3715,8 @@
       "attack": 70,
       "critChance": 10,
       "speed": 4,
-      "omnivamp": 6
+      "omnivamp": 6,
+      "attackSpeed": 16
     },
     "travelOnly": true,
     "image": "/images/items/sword_setra.webp",
@@ -3608,7 +3735,8 @@
       "attack": 70,
       "critChance": 10,
       "speed": 4,
-      "omnivamp": 6
+      "omnivamp": 6,
+      "attackSpeed": 16
     },
     "travelOnly": true,
     "image": "/images/items/sword_firstborn.webp",
@@ -3627,7 +3755,8 @@
       "attack": 70,
       "critChance": 10,
       "speed": 4,
-      "omnivamp": 6
+      "omnivamp": 6,
+      "attackSpeed": 16
     },
     "travelOnly": true,
     "image": "/images/items/sword_worldheart.webp",
@@ -3699,7 +3828,8 @@
     },
     "stats": {
       "maxHp": 32,
-      "resistance": 5
+      "resistance": 5,
+      "attackSpeed": 1
     },
     "travelOnly": true,
     "image": "/images/items/duskhide_boots.webp",
@@ -3716,7 +3846,8 @@
       "wood": 0
     },
     "stats": {
-      "attack": 8
+      "attack": 8,
+      "attackSpeed": 2
     },
     "travelOnly": true,
     "image": "/images/items/duskhide_blade.webp",
@@ -3788,7 +3919,8 @@
     },
     "stats": {
       "maxHp": 50,
-      "resistance": 7
+      "resistance": 7,
+      "attackSpeed": 2
     },
     "travelOnly": true,
     "image": "/images/items/bronzeforge_boots.webp",
@@ -3805,7 +3937,8 @@
       "wood": 0
     },
     "stats": {
-      "attack": 12
+      "attack": 12,
+      "attackSpeed": 3
     },
     "travelOnly": true,
     "image": "/images/items/bronzeforge_blade.webp",
@@ -3877,7 +4010,8 @@
     },
     "stats": {
       "maxHp": 50,
-      "resistance": 7
+      "resistance": 7,
+      "attackSpeed": 2
     },
     "travelOnly": true,
     "image": "/images/items/mosswarden_boots.webp",
@@ -3894,7 +4028,8 @@
       "wood": 0
     },
     "stats": {
-      "attack": 12
+      "attack": 12,
+      "attackSpeed": 3
     },
     "travelOnly": true,
     "image": "/images/items/mosswarden_blade.webp",
@@ -3966,7 +4101,8 @@
     },
     "stats": {
       "maxHp": 77,
-      "resistance": 12
+      "resistance": 12,
+      "attackSpeed": 3
     },
     "travelOnly": true,
     "image": "/images/items/stormtouched_boots.webp",
@@ -3984,7 +4120,8 @@
     },
     "stats": {
       "attack": 18,
-      "critChance": 2
+      "critChance": 2,
+      "attackSpeed": 5
     },
     "travelOnly": true,
     "image": "/images/items/stormtouched_blade.webp",
@@ -4056,7 +4193,8 @@
     },
     "stats": {
       "maxHp": 77,
-      "resistance": 12
+      "resistance": 12,
+      "attackSpeed": 3
     },
     "travelOnly": true,
     "image": "/images/items/runebound_boots.webp",
@@ -4074,7 +4212,8 @@
     },
     "stats": {
       "attack": 18,
-      "critChance": 2
+      "critChance": 2,
+      "attackSpeed": 5
     },
     "travelOnly": true,
     "image": "/images/items/runebound_blade.webp",
@@ -4146,7 +4285,8 @@
     },
     "stats": {
       "maxHp": 117,
-      "resistance": 18
+      "resistance": 18,
+      "attackSpeed": 4
     },
     "travelOnly": true,
     "image": "/images/items/emberforged_boots.webp",
@@ -4164,7 +4304,8 @@
     },
     "stats": {
       "attack": 27,
-      "critChance": 4
+      "critChance": 4,
+      "attackSpeed": 7
     },
     "travelOnly": true,
     "image": "/images/items/emberforged_blade.webp",
@@ -4236,7 +4377,8 @@
     },
     "stats": {
       "maxHp": 117,
-      "resistance": 18
+      "resistance": 18,
+      "attackSpeed": 4
     },
     "travelOnly": true,
     "image": "/images/items/frostbound_boots.webp",
@@ -4254,7 +4396,8 @@
     },
     "stats": {
       "attack": 27,
-      "critChance": 4
+      "critChance": 4,
+      "attackSpeed": 7
     },
     "travelOnly": true,
     "image": "/images/items/frostbound_blade.webp",
@@ -4326,7 +4469,8 @@
     },
     "stats": {
       "maxHp": 171,
-      "resistance": 25
+      "resistance": 25,
+      "attackSpeed": 6
     },
     "travelOnly": true,
     "image": "/images/items/dragonblood_boots.webp",
@@ -4345,7 +4489,8 @@
     "stats": {
       "attack": 38,
       "critChance": 6,
-      "speed": 2
+      "speed": 2,
+      "attackSpeed": 10
     },
     "travelOnly": true,
     "image": "/images/items/dragonblood_blade.webp",
@@ -4417,7 +4562,8 @@
     },
     "stats": {
       "maxHp": 234,
-      "resistance": 34
+      "resistance": 34,
+      "attackSpeed": 8
     },
     "travelOnly": true,
     "image": "/images/items/voidweave_boots.webp",
@@ -4437,7 +4583,8 @@
       "attack": 52,
       "critChance": 8,
       "speed": 3,
-      "omnivamp": 4
+      "omnivamp": 4,
+      "attackSpeed": 13
     },
     "travelOnly": true,
     "image": "/images/items/voidweave_blade.webp",
@@ -4509,7 +4656,8 @@
     },
     "stats": {
       "maxHp": 324,
-      "resistance": 47
+      "resistance": 47,
+      "attackSpeed": 10
     },
     "travelOnly": true,
     "image": "/images/items/setras_chosen_boots.webp",
@@ -4529,7 +4677,8 @@
       "attack": 70,
       "critChance": 10,
       "speed": 4,
-      "omnivamp": 6
+      "omnivamp": 6,
+      "attackSpeed": 16
     },
     "travelOnly": true,
     "image": "/images/items/setras_chosen_blade.webp",
@@ -4548,7 +4697,8 @@
     "stats": {
       "magicPower": 16,
       "healPower": 8,
-      "mana": 360
+      "mana": 360,
+      "attackSpeed": 10
     },
     "travelOnly": true,
     "image": "/images/items/setras_chosen_amulet.webp",
@@ -4566,7 +4716,8 @@
     },
     "stats": {
       "attack": 28,
-      "critChance": 10
+      "critChance": 10,
+      "attackSpeed": 10
     },
     "travelOnly": true,
     "image": "/images/items/setras_chosen_ring.webp",

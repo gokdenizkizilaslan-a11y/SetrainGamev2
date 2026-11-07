@@ -1,0 +1,17 @@
+{
+  "weather": {
+    "enabled": true,
+    "rainChance": 0.4,
+    "minDelay": 50,
+    "maxDelay": 160,
+    "rainVolume": 0.28,
+    "dayVolume": 0.22
+  },
+  "downed": {
+    "enabled": true,
+    "reviveRange": 110
+  },
+  "sound": {
+    "master": 0.85
+  }
+}

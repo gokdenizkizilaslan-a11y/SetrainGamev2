@@ -1,0 +1,1133 @@
+{
+  "verdant": {
+    "id": "verdant",
+    "label": "Verdant Wilds",
+    "slogan": "Lush, alive, and never truly safe.",
+    "palette": {
+      "ground": "#4f8f3a",
+      "fog": "#9bd47a",
+      "sky": "#1a2e14",
+      "accent": "#9ccc65",
+      "grade": 0.08
+    },
+    "ambient": {
+      "color": "#b8e986",
+      "color2": "#ffd54f",
+      "leaf": true,
+      "fog": 0.16
+    },
+    "spawn": {
+      "count": 3,
+      "max": 6,
+      "respawn": 9,
+      "eliteChance": 0.14
+    },
+    "monsters": [
+      {
+        "painter": "goblin",
+        "element": "nature",
+        "weight": 26,
+        "elite": false,
+        "attackCooldown": 1.5,
+        "exp": 48,
+        "gold": 8,
+        "speed": 138,
+        "radius": 16,
+        "kind": "thorn_goblin",
+        "name": "Thornback Skirmisher",
+        "color": "#6aa84f",
+        "accent": "#d9f99d",
+        "hp": 267,
+        "damage": 39,
+        "aggroRange": 290,
+        "skills": [
+          {
+            "id": "lunge",
+            "kind": "dash",
+            "cd": 6.5,
+            "range": 250,
+            "windup": 0.55,
+            "dist": 130,
+            "power": 1.15,
+            "radius": 34
+          }
+        ]
+      },
+      {
+        "painter": "treant",
+        "element": "nature",
+        "weight": 14,
+        "elite": false,
+        "attackCooldown": 1.8,
+        "exp": 106,
+        "gold": 18,
+        "speed": 82,
+        "radius": 26,
+        "kind": "moss_treant",
+        "name": "Elder Moss Treant",
+        "color": "#3f6b2a",
+        "accent": "#a3e635",
+        "hp": 638,
+        "damage": 71,
+        "aggroRange": 290,
+        "skills": [
+          {
+            "id": "slam",
+            "kind": "slam",
+            "cd": 8.5,
+            "range": 190,
+            "windup": 1,
+            "radius": 110,
+            "power": 1.4
+          }
+        ]
+      },
+      {
+        "painter": "wraith",
+        "element": "shadow",
+        "weight": 18,
+        "elite": false,
+        "attackCooldown": 1.2,
+        "exp": 64,
+        "gold": 11,
+        "speed": 176,
+        "radius": 15,
+        "kind": "gloom_wraith",
+        "name": "Gloom Wraith",
+        "color": "#7b4dce",
+        "accent": "#e9d5ff",
+        "hp": 232,
+        "damage": 48,
+        "aggroRange": 290,
+        "skills": [
+          {
+            "id": "bolt",
+            "kind": "shot",
+            "cd": 4.5,
+            "range": 340,
+            "windup": 0.55,
+            "power": 1.1
+          }
+        ]
+      },
+      {
+        "painter": "spider",
+        "element": "nature",
+        "weight": 18,
+        "elite": false,
+        "attackCooldown": 1.5,
+        "exp": 57,
+        "gold": 10,
+        "speed": 150,
+        "radius": 17,
+        "kind": "venomfang",
+        "name": "Venomfang Spider",
+        "color": "#3f6212",
+        "accent": "#bef264",
+        "hp": 249,
+        "damage": 35,
+        "status": {
+          "type": "poison",
+          "duration": 3,
+          "dps": 10,
+          "chance": 0.5
+        },
+        "aggroRange": 290,
+        "skills": [
+          {
+            "id": "web",
+            "kind": "slam",
+            "cd": 7.5,
+            "range": 200,
+            "windup": 0.7,
+            "radius": 80,
+            "power": 0.9,
+            "status": {
+              "type": "slow",
+              "duration": 2,
+              "slow": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "painter": "treant",
+        "element": "nature",
+        "weight": 3,
+        "elite": true,
+        "attackCooldown": 2,
+        "exp": 242,
+        "gold": 55,
+        "speed": 90,
+        "radius": 30,
+        "kind": "ancient_guardian",
+        "name": "Ancient Grove Guardian",
+        "color": "#2f4f1f",
+        "accent": "#fde68a",
+        "hp": 1178,
+        "damage": 101,
+        "ability": "nova",
+        "aggroRange": 340,
+        "skills": [
+          {
+            "id": "slam",
+            "kind": "slam",
+            "cd": 8.5,
+            "range": 190,
+            "windup": 1,
+            "radius": 110,
+            "power": 1.4
+          },
+          {
+            "id": "quake",
+            "kind": "slam",
+            "cd": 6.5,
+            "range": 210,
+            "windup": 0.85,
+            "radius": 130,
+            "power": 1.45
+          }
+        ]
+      }
+    ]
+  },
+  "ashen": {
+    "id": "ashen",
+    "label": "Ashen Wastes",
+    "slogan": "Cinders, crags, and things that burn.",
+    "palette": {
+      "ground": "#5a4030",
+      "fog": "#ffb27a",
+      "sky": "#2a1408",
+      "accent": "#ff8a50",
+      "grade": 0.12
+    },
+    "ambient": {
+      "color": "#ffb74d",
+      "color2": "#ff7043",
+      "ember": true,
+      "fog": 0.24
+    },
+    "spawn": {
+      "count": 3,
+      "max": 6,
+      "respawn": 11,
+      "eliteChance": 0.16
+    },
+    "monsters": [
+      {
+        "painter": "goblin",
+        "element": "fire",
+        "weight": 26,
+        "elite": false,
+        "attackCooldown": 1.15,
+        "exp": 55,
+        "gold": 9,
+        "speed": 160,
+        "radius": 14,
+        "kind": "cinder_imp",
+        "name": "Cinder Imp",
+        "color": "#c2410c",
+        "accent": "#fde68a",
+        "hp": 226,
+        "damage": 46,
+        "aggroRange": 290,
+        "skills": [
+          {
+            "id": "lunge",
+            "kind": "dash",
+            "cd": 6.5,
+            "range": 250,
+            "windup": 0.55,
+            "dist": 130,
+            "power": 1.15,
+            "radius": 34
+          }
+        ]
+      },
+      {
+        "painter": "knight",
+        "element": "fire",
+        "weight": 18,
+        "elite": false,
+        "attackCooldown": 1.5,
+        "exp": 86,
+        "gold": 15,
+        "speed": 108,
+        "radius": 18,
+        "kind": "ash_revenant",
+        "name": "Ash Revenant",
+        "color": "#6b4f3a",
+        "accent": "#ff8a65",
+        "hp": 418,
+        "damage": 60,
+        "status": {
+          "type": "burn",
+          "duration": 2.5,
+          "dps": 9,
+          "chance": 0.4
+        },
+        "aggroRange": 290,
+        "skills": [
+          {
+            "id": "charge",
+            "kind": "dash",
+            "cd": 7,
+            "range": 280,
+            "windup": 0.65,
+            "dist": 155,
+            "power": 1.3,
+            "radius": 38
+          }
+        ]
+      },
+      {
+        "painter": "golem",
+        "element": "fire",
+        "weight": 10,
+        "elite": false,
+        "attackCooldown": 2.1,
+        "exp": 165,
+        "gold": 30,
+        "speed": 70,
+        "radius": 30,
+        "kind": "magma_behemoth",
+        "name": "Magma Behemoth",
+        "color": "#7f1d1d",
+        "accent": "#f97316",
+        "hp": 870,
+        "damage": 97,
+        "aggroRange": 290,
+        "skills": [
+          {
+            "id": "slam",
+            "kind": "slam",
+            "cd": 8,
+            "range": 170,
+            "windup": 0.95,
+            "radius": 100,
+            "power": 1.5
+          }
+        ]
+      },
+      {
+        "painter": "wraith",
+        "element": "fire",
+        "weight": 24,
+        "elite": false,
+        "attackCooldown": 1,
+        "exp": 37,
+        "gold": 6,
+        "speed": 210,
+        "radius": 12,
+        "kind": "cinder_bat",
+        "name": "Cinder Bat",
+        "color": "#9a3412",
+        "accent": "#fdba74",
+        "hp": 174,
+        "damage": 32,
+        "aggroRange": 290,
+        "skills": [
+          {
+            "id": "bolt",
+            "kind": "shot",
+            "cd": 4.5,
+            "range": 340,
+            "windup": 0.55,
+            "power": 1.1
+          }
+        ]
+      },
+      {
+        "painter": "golem",
+        "element": "fire",
+        "weight": 3,
+        "elite": true,
+        "attackCooldown": 1.9,
+        "exp": 308,
+        "gold": 70,
+        "speed": 84,
+        "radius": 34,
+        "kind": "emberlord",
+        "name": "Emberlord Vulkarr",
+        "color": "#450a0a",
+        "accent": "#fbbf24",
+        "hp": 1488,
+        "damage": 124,
+        "ability": "nova",
+        "status": {
+          "type": "burn",
+          "duration": 4,
+          "dps": 20,
+          "chance": 0.6
+        },
+        "aggroRange": 340,
+        "skills": [
+          {
+            "id": "slam",
+            "kind": "slam",
+            "cd": 8,
+            "range": 170,
+            "windup": 0.95,
+            "radius": 100,
+            "power": 1.5
+          },
+          {
+            "id": "quake",
+            "kind": "slam",
+            "cd": 6.5,
+            "range": 210,
+            "windup": 0.85,
+            "radius": 130,
+            "power": 1.45
+          }
+        ]
+      }
+    ]
+  },
+  "frost": {
+    "id": "frost",
+    "label": "Frozen Tundra",
+    "slogan": "Where the wind bites and the dead do not sleep.",
+    "palette": {
+      "ground": "#e8f7ff",
+      "fog": "#d7f2ff",
+      "sky": "#0d2230",
+      "accent": "#8fe4ff",
+      "grade": 0.1
+    },
+    "ambient": {
+      "color": "#d7f2ff",
+      "color2": "#a5d8ff",
+      "snow": true,
+      "fog": 0.2
+    },
+    "spawn": {
+      "count": 3,
+      "max": 6,
+      "respawn": 10,
+      "eliteChance": 0.16
+    },
+    "monsters": [
+      {
+        "painter": "beast",
+        "element": "frost",
+        "weight": 26,
+        "elite": false,
+        "attackCooldown": 1.15,
+        "exp": 62,
+        "gold": 10,
+        "speed": 190,
+        "radius": 17,
+        "kind": "frost_wolf",
+        "name": "Frost Wolf",
+        "color": "#93c5fd",
+        "accent": "#e0f2fe",
+        "hp": 278,
+        "damage": 44,
+        "aggroRange": 290,
+        "skills": [
+          {
+            "id": "pounce",
+            "kind": "dash",
+            "cd": 6,
+            "range": 300,
+            "windup": 0.6,
+            "dist": 165,
+            "power": 1.25,
+            "radius": 40
+          }
+        ]
+      },
+      {
+        "painter": "wraith",
+        "element": "frost",
+        "weight": 18,
+        "elite": false,
+        "attackCooldown": 1.5,
+        "exp": 70,
+        "gold": 12,
+        "speed": 150,
+        "radius": 15,
+        "kind": "ice_wraith",
+        "name": "Ice Wraith",
+        "color": "#3b82f6",
+        "accent": "#e0f2fe",
+        "hp": 255,
+        "damage": 53,
+        "status": {
+          "type": "freeze",
+          "duration": 1.1,
+          "chance": 0.28
+        },
+        "aggroRange": 290,
+        "skills": [
+          {
+            "id": "bolt",
+            "kind": "shot",
+            "cd": 4.5,
+            "range": 340,
+            "windup": 0.55,
+            "power": 1.1
+          }
+        ]
+      },
+      {
+        "painter": "golem",
+        "element": "frost",
+        "weight": 10,
+        "elite": false,
+        "attackCooldown": 2.2,
+        "exp": 165,
+        "gold": 28,
+        "speed": 72,
+        "radius": 30,
+        "kind": "glacier_golem",
+        "name": "Glacier Golem",
+        "color": "#1e40af",
+        "accent": "#bfdbfe",
+        "hp": 957,
+        "damage": 90,
+        "status": {
+          "type": "slow",
+          "duration": 2,
+          "slow": 0.5,
+          "chance": 0.5
+        },
+        "aggroRange": 290,
+        "skills": [
+          {
+            "id": "slam",
+            "kind": "slam",
+            "cd": 8,
+            "range": 170,
+            "windup": 0.95,
+            "radius": 100,
+            "power": 1.5
+          }
+        ]
+      },
+      {
+        "painter": "spider",
+        "element": "frost",
+        "weight": 22,
+        "elite": false,
+        "attackCooldown": 1.5,
+        "exp": 53,
+        "gold": 9,
+        "speed": 168,
+        "radius": 16,
+        "kind": "snow_stalker",
+        "name": "Snow Stalker",
+        "color": "#bfdbfe",
+        "accent": "#ffffff",
+        "hp": 244,
+        "damage": 39,
+        "aggroRange": 290,
+        "skills": [
+          {
+            "id": "web",
+            "kind": "slam",
+            "cd": 7.5,
+            "range": 200,
+            "windup": 0.7,
+            "radius": 80,
+            "power": 0.9,
+            "status": {
+              "type": "slow",
+              "duration": 2,
+              "slow": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "painter": "beast",
+        "element": "frost",
+        "weight": 3,
+        "elite": true,
+        "attackCooldown": 1.8,
+        "exp": 330,
+        "gold": 75,
+        "speed": 104,
+        "radius": 36,
+        "kind": "permafrost_wyrm",
+        "name": "Permafrost Wyrm",
+        "color": "#1d4ed8",
+        "accent": "#f0f9ff",
+        "hp": 1612,
+        "damage": 117,
+        "ability": "nova",
+        "status": {
+          "type": "freeze",
+          "duration": 1.6,
+          "chance": 0.5
+        },
+        "aggroRange": 340,
+        "skills": [
+          {
+            "id": "pounce",
+            "kind": "dash",
+            "cd": 6,
+            "range": 300,
+            "windup": 0.6,
+            "dist": 165,
+            "power": 1.25,
+            "radius": 40
+          },
+          {
+            "id": "quake",
+            "kind": "slam",
+            "cd": 6.5,
+            "range": 210,
+            "windup": 0.85,
+            "radius": 130,
+            "power": 1.45
+          }
+        ]
+      },
+      {
+        "painter": "archer",
+        "element": "frost",
+        "weight": 16,
+        "elite": false,
+        "attackCooldown": 1.6,
+        "exp": 97,
+        "gold": 18,
+        "speed": 128,
+        "radius": 15,
+        "kind": "rime_archer",
+        "name": "Rime Archer",
+        "color": "#7dd3fc",
+        "accent": "#f0f9ff",
+        "hp": 360,
+        "damage": 53,
+        "ability": "ranged",
+        "aggroRange": 290,
+        "skills": [
+          {
+            "id": "aimed",
+            "kind": "shot",
+            "cd": 3.6,
+            "range": 380,
+            "windup": 0.75,
+            "power": 1.15
+          },
+          {
+            "id": "volley",
+            "kind": "volley",
+            "cd": 6.5,
+            "range": 360,
+            "windup": 0.7,
+            "power": 0.9,
+            "count": 3,
+            "spread": 0.22
+          }
+        ]
+      },
+      {
+        "painter": "archer",
+        "element": "frost",
+        "weight": 14,
+        "elite": false,
+        "attackCooldown": 1.6,
+        "exp": 101,
+        "gold": 19,
+        "speed": 126,
+        "radius": 15,
+        "kind": "grave_archer",
+        "name": "Grave Archer",
+        "color": "#9ca3af",
+        "accent": "#a7f3d0",
+        "hp": 371,
+        "damage": 55,
+        "ability": "ranged",
+        "aggroRange": 290,
+        "skills": [
+          {
+            "id": "aimed",
+            "kind": "shot",
+            "cd": 3.6,
+            "range": 380,
+            "windup": 0.75,
+            "power": 1.15
+          },
+          {
+            "id": "volley",
+            "kind": "volley",
+            "cd": 6.5,
+            "range": 360,
+            "windup": 0.7,
+            "power": 0.9,
+            "count": 3,
+            "spread": 0.22
+          }
+        ]
+      }
+    ]
+  },
+  "swamp": {
+    "id": "swamp",
+    "label": "Mirefen Marsh",
+    "slogan": "Every step squelches. Something is always watching.",
+    "palette": {
+      "ground": "#3f5a34",
+      "fog": "#9bbf6b",
+      "sky": "#141f12",
+      "accent": "#84cc16",
+      "grade": 0.14
+    },
+    "ambient": {
+      "color": "#bef264",
+      "color2": "#65a30d",
+      "bubble": true,
+      "fog": 0.3
+    },
+    "spawn": {
+      "count": 3,
+      "max": 7,
+      "respawn": 9,
+      "eliteChance": 0.15
+    },
+    "monsters": [
+      {
+        "painter": "goblin",
+        "element": "poison",
+        "weight": 26,
+        "elite": false,
+        "attackCooldown": 1.5,
+        "exp": 51,
+        "gold": 8,
+        "speed": 140,
+        "radius": 16,
+        "kind": "bog_lurker",
+        "name": "Bog Lurker",
+        "color": "#4d7c0f",
+        "accent": "#d9f99d",
+        "hp": 255,
+        "damage": 41,
+        "status": {
+          "type": "poison",
+          "duration": 3,
+          "dps": 9,
+          "chance": 0.45
+        },
+        "aggroRange": 290,
+        "skills": [
+          {
+            "id": "lunge",
+            "kind": "dash",
+            "cd": 6.5,
+            "range": 250,
+            "windup": 0.55,
+            "dist": 130,
+            "power": 1.15,
+            "radius": 34
+          }
+        ]
+      },
+      {
+        "painter": "wraith",
+        "element": "poison",
+        "weight": 18,
+        "elite": false,
+        "attackCooldown": 1.5,
+        "exp": 79,
+        "gold": 14,
+        "speed": 120,
+        "radius": 16,
+        "kind": "mire_hag",
+        "name": "Mire Hag",
+        "color": "#6d28d9",
+        "accent": "#a3e635",
+        "hp": 302,
+        "damage": 55,
+        "ability": "ranged",
+        "status": {
+          "type": "poison",
+          "duration": 4,
+          "dps": 12,
+          "chance": 0.55
+        },
+        "aggroRange": 290,
+        "skills": [
+          {
+            "id": "bolt",
+            "kind": "shot",
+            "cd": 4.5,
+            "range": 340,
+            "windup": 0.55,
+            "power": 1.1
+          },
+          {
+            "id": "volley",
+            "kind": "volley",
+            "cd": 6.5,
+            "range": 360,
+            "windup": 0.7,
+            "power": 0.9,
+            "count": 3,
+            "spread": 0.22
+          }
+        ]
+      },
+      {
+        "painter": "treant",
+        "element": "nature",
+        "weight": 12,
+        "elite": false,
+        "attackCooldown": 1.9,
+        "exp": 121,
+        "gold": 20,
+        "speed": 76,
+        "radius": 27,
+        "kind": "rot_treant",
+        "name": "Rot Treant",
+        "color": "#3f4a1f",
+        "accent": "#84cc16",
+        "hp": 725,
+        "damage": 76,
+        "aggroRange": 290,
+        "skills": [
+          {
+            "id": "slam",
+            "kind": "slam",
+            "cd": 8.5,
+            "range": 190,
+            "windup": 1,
+            "radius": 110,
+            "power": 1.4
+          }
+        ]
+      },
+      {
+        "painter": "spider",
+        "element": "blood",
+        "weight": 22,
+        "elite": false,
+        "attackCooldown": 1.5,
+        "exp": 44,
+        "gold": 7,
+        "speed": 180,
+        "radius": 14,
+        "kind": "leech_swarm",
+        "name": "Leech Swarm",
+        "color": "#7f1d1d",
+        "accent": "#fecaca",
+        "hp": 197,
+        "damage": 32,
+        "status": {
+          "type": "bleed",
+          "duration": 3,
+          "dps": 8,
+          "chance": 0.5
+        },
+        "aggroRange": 290,
+        "skills": [
+          {
+            "id": "web",
+            "kind": "slam",
+            "cd": 7.5,
+            "range": 200,
+            "windup": 0.7,
+            "radius": 80,
+            "power": 0.9,
+            "status": {
+              "type": "slow",
+              "duration": 2,
+              "slow": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "painter": "knight",
+        "element": "poison",
+        "weight": 3,
+        "elite": true,
+        "attackCooldown": 1.8,
+        "exp": 297,
+        "gold": 68,
+        "speed": 92,
+        "radius": 32,
+        "kind": "plaguebringer",
+        "name": "Plaguebringer Morvane",
+        "color": "#3b3a1a",
+        "accent": "#a3e635",
+        "hp": 1364,
+        "damage": 110,
+        "ability": "nova",
+        "status": {
+          "type": "poison",
+          "duration": 5,
+          "dps": 18,
+          "chance": 0.7
+        },
+        "aggroRange": 340,
+        "skills": [
+          {
+            "id": "charge",
+            "kind": "dash",
+            "cd": 7,
+            "range": 280,
+            "windup": 0.65,
+            "dist": 155,
+            "power": 1.3,
+            "radius": 38
+          },
+          {
+            "id": "quake",
+            "kind": "slam",
+            "cd": 6.5,
+            "range": 210,
+            "windup": 0.85,
+            "radius": 130,
+            "power": 1.45
+          }
+        ]
+      }
+    ]
+  },
+  "cursed": {
+    "id": "cursed",
+    "label": "Cursed Reach",
+    "slogan": "The sky is wrong here. So is everything below it.",
+    "palette": {
+      "ground": "#3a2c4a",
+      "fog": "#c084fc",
+      "sky": "#120a1c",
+      "accent": "#c084fc",
+      "grade": 0.16
+    },
+    "ambient": {
+      "color": "#c084fc",
+      "color2": "#f472b6",
+      "void": true,
+      "fog": 0.34
+    },
+    "spawn": {
+      "count": 3,
+      "max": 7,
+      "respawn": 10,
+      "eliteChance": 0.18
+    },
+    "monsters": [
+      {
+        "painter": "knight",
+        "element": "shadow",
+        "weight": 24,
+        "elite": false,
+        "attackCooldown": 1.5,
+        "exp": 92,
+        "gold": 16,
+        "speed": 116,
+        "radius": 19,
+        "kind": "hollow_knight",
+        "name": "Hollow Knight",
+        "color": "#3f3f46",
+        "accent": "#a78bfa",
+        "hp": 441,
+        "damage": 64,
+        "aggroRange": 290,
+        "skills": [
+          {
+            "id": "charge",
+            "kind": "dash",
+            "cd": 7,
+            "range": 280,
+            "windup": 0.65,
+            "dist": 155,
+            "power": 1.3,
+            "radius": 38
+          }
+        ]
+      },
+      {
+        "painter": "wraith",
+        "element": "blood",
+        "weight": 18,
+        "elite": false,
+        "attackCooldown": 1.5,
+        "exp": 88,
+        "gold": 15,
+        "speed": 128,
+        "radius": 16,
+        "kind": "blood_seer",
+        "name": "Blood Seer",
+        "color": "#7f1d1d",
+        "accent": "#fb7185",
+        "hp": 302,
+        "damage": 62,
+        "ability": "ranged",
+        "status": {
+          "type": "bleed",
+          "duration": 3,
+          "dps": 12,
+          "chance": 0.5
+        },
+        "aggroRange": 290,
+        "skills": [
+          {
+            "id": "bolt",
+            "kind": "shot",
+            "cd": 4.5,
+            "range": 340,
+            "windup": 0.55,
+            "power": 1.1
+          },
+          {
+            "id": "volley",
+            "kind": "volley",
+            "cd": 6.5,
+            "range": 360,
+            "windup": 0.7,
+            "power": 0.9,
+            "count": 3,
+            "spread": 0.22
+          }
+        ]
+      },
+      {
+        "painter": "knight",
+        "element": "shadow",
+        "weight": 12,
+        "elite": false,
+        "attackCooldown": 2,
+        "exp": 154,
+        "gold": 26,
+        "speed": 88,
+        "radius": 28,
+        "kind": "bone_warden",
+        "name": "Bone Warden",
+        "color": "#4b3f2f",
+        "accent": "#fde68a",
+        "hp": 812,
+        "damage": 85,
+        "aggroRange": 290,
+        "skills": [
+          {
+            "id": "charge",
+            "kind": "dash",
+            "cd": 7,
+            "range": 280,
+            "windup": 0.65,
+            "dist": 155,
+            "power": 1.3,
+            "radius": 38
+          }
+        ]
+      },
+      {
+        "painter": "wraith",
+        "element": "shadow",
+        "weight": 22,
+        "elite": false,
+        "attackCooldown": 1.1,
+        "exp": 73,
+        "gold": 12,
+        "speed": 196,
+        "radius": 15,
+        "kind": "nightmare",
+        "name": "Nightmare",
+        "color": "#4c1d95",
+        "accent": "#e879f9",
+        "hp": 273,
+        "damage": 51,
+        "aggroRange": 290,
+        "skills": [
+          {
+            "id": "bolt",
+            "kind": "shot",
+            "cd": 4.5,
+            "range": 340,
+            "windup": 0.55,
+            "power": 1.1
+          }
+        ]
+      },
+      {
+        "painter": "golem",
+        "element": "shadow",
+        "weight": 3,
+        "elite": true,
+        "attackCooldown": 1.7,
+        "exp": 374,
+        "gold": 85,
+        "speed": 96,
+        "radius": 36,
+        "kind": "dread_sovereign",
+        "name": "Dread Sovereign",
+        "color": "#1e1b4b",
+        "accent": "#c084fc",
+        "hp": 1860,
+        "damage": 136,
+        "ability": "nova",
+        "status": {
+          "type": "stun",
+          "duration": 0.8,
+          "chance": 0.4
+        },
+        "aggroRange": 340,
+        "skills": [
+          {
+            "id": "slam",
+            "kind": "slam",
+            "cd": 8,
+            "range": 170,
+            "windup": 0.95,
+            "radius": 100,
+            "power": 1.5
+          },
+          {
+            "id": "quake",
+            "kind": "slam",
+            "cd": 6.5,
+            "range": 210,
+            "windup": 0.85,
+            "radius": 130,
+            "power": 1.45
+          }
+        ]
+      },
+      {
+        "painter": "archer",
+        "element": "shadow",
+        "weight": 16,
+        "elite": false,
+        "attackCooldown": 1.55,
+        "exp": 106,
+        "gold": 20,
+        "speed": 124,
+        "radius": 15,
+        "kind": "bone_archer",
+        "name": "Bone Archer",
+        "color": "#a8a29e",
+        "accent": "#c084fc",
+        "hp": 406,
+        "damage": 60,
+        "ability": "ranged",
+        "aggroRange": 290,
+        "skills": [
+          {
+            "id": "aimed",
+            "kind": "shot",
+            "cd": 3.6,
+            "range": 380,
+            "windup": 0.75,
+            "power": 1.15
+          },
+          {
+            "id": "volley",
+            "kind": "volley",
+            "cd": 6.5,
+            "range": 360,
+            "windup": 0.7,
+            "power": 0.9,
+            "count": 3,
+            "spread": 0.22
+          }
+        ]
+      }
+    ]
+  }
+}

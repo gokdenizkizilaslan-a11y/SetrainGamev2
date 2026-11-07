@@ -5,7 +5,9 @@
     "name": "Human",
     "desc": "Adaptable and ambitious. +10% gold from victories.",
     "chance": 10,
-    "stats": {},
+    "stats": {
+      "attackSpeed": 3
+    },
     "passives": [
       {
         "kind": "victoryGold",
@@ -23,7 +25,8 @@
     "chance": 10,
     "stats": {
       "maxMana": 12,
-      "speed": 1
+      "speed": 1,
+      "attackSpeed": 6
     },
     "passives": []
   },
@@ -35,7 +38,8 @@
     "chance": 10,
     "stats": {
       "maxHp": 30,
-      "resistance": 6
+      "resistance": 6,
+      "attackSpeed": -3
     },
     "passives": []
   },
@@ -46,7 +50,8 @@
     "desc": "Brutal and strong. +6 attack.",
     "chance": 10,
     "stats": {
-      "attack": 6
+      "attack": 6,
+      "attackSpeed": 2
     },
     "passives": []
   },
@@ -58,7 +63,8 @@
     "chance": 8.75,
     "stats": {
       "speed": 2,
-      "attack": 3
+      "attack": 3,
+      "attackSpeed": 7
     },
     "passives": []
   },
@@ -68,7 +74,9 @@
     "name": "Wyvernkin",
     "desc": "Sky hunters. 5% dodge chance.",
     "chance": 8.75,
-    "stats": {},
+    "stats": {
+      "attackSpeed": 4
+    },
     "passives": [
       {
         "kind": "dodge",
@@ -85,7 +93,8 @@
     "desc": "Ancient magic in the blood. +8 magic power.",
     "chance": 8.75,
     "stats": {
-      "magicPower": 8
+      "magicPower": 8,
+      "attackSpeed": 5
     },
     "passives": []
   },
@@ -96,7 +105,8 @@
     "desc": "A gaze of stone. Reflects 10% damage, +4 resistance.",
     "chance": 8.75,
     "stats": {
-      "resistance": 4
+      "resistance": 4,
+      "attackSpeed": 1
     },
     "passives": [
       {
@@ -113,7 +123,9 @@
     "name": "Demonblood",
     "desc": "Burning heritage. +15% damage, but takes 30% more holy damage.",
     "chance": 7,
-    "stats": {},
+    "stats": {
+      "attackSpeed": 3
+    },
     "passives": [
       {
         "kind": "damageBonus",
@@ -136,7 +148,9 @@
     "name": "Lightborn",
     "desc": "Blessed radiance. +15% healing, but takes 30% more shadow damage.",
     "chance": 7,
-    "stats": {},
+    "stats": {
+      "attackSpeed": 0
+    },
     "passives": [
       {
         "kind": "healBonus",
@@ -159,7 +173,9 @@
     "name": "Voidborn",
     "desc": "Touched by the void. 8% dodge, but takes 20% more holy damage.",
     "chance": 7,
-    "stats": {},
+    "stats": {
+      "attackSpeed": 2
+    },
     "passives": [
       {
         "kind": "dodge",
@@ -183,7 +199,9 @@
     "name": "Daemonkin",
     "desc": "Pure demon royalty. +20% damage and +10% lifesteal.",
     "chance": 1,
-    "stats": {},
+    "stats": {
+      "attackSpeed": 2
+    },
     "passives": [
       {
         "kind": "damageBonus",
@@ -206,7 +224,9 @@
     "name": "Dragonborn",
     "desc": "Scales of the wyrms. Take 15% less damage.",
     "chance": 1,
-    "stats": {},
+    "stats": {
+      "attackSpeed": 1
+    },
     "passives": [
       {
         "kind": "damageTaken",
@@ -223,7 +243,9 @@
     "name": "Arch-Vampyr",
     "desc": "Ancient predator. Heal 12% of all damage dealt.",
     "chance": 1,
-    "stats": {},
+    "stats": {
+      "attackSpeed": 5
+    },
     "passives": [
       {
         "kind": "lifesteal",
@@ -240,7 +262,9 @@
     "name": "Archangel",
     "desc": "Celestial guardian. +25% healing and start combat with a 10% shield (3 turns).",
     "chance": 1,
-    "stats": {},
+    "stats": {
+      "attackSpeed": 0
+    },
     "passives": [
       {
         "kind": "healBonus",

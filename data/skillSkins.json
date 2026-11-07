@@ -1,0 +1,380 @@
+{
+  "ashen_ember": {
+    "id": "ashen_ember",
+    "name": "Ashen Ember",
+    "rarity": "common",
+    "primary": "#ffb74d",
+    "secondary": "#ff7043",
+    "glow": "#ffa726",
+    "fx": "flame"
+  },
+  "forest_leaf": {
+    "id": "forest_leaf",
+    "name": "Forest Leaf",
+    "rarity": "common",
+    "primary": "#9ccc65",
+    "secondary": "#558b2f",
+    "glow": "#aed581",
+    "fx": "petal"
+  },
+  "spring_water": {
+    "id": "spring_water",
+    "name": "Spring Water",
+    "rarity": "common",
+    "primary": "#4fc3f7",
+    "secondary": "#0288d1",
+    "glow": "#81d4fa",
+    "fx": "water"
+  },
+  "cobble_dust": {
+    "id": "cobble_dust",
+    "name": "Cobble Dust",
+    "rarity": "common",
+    "primary": "#bdbdbd",
+    "secondary": "#757575",
+    "glow": "#e0e0e0",
+    "fx": "plain"
+  },
+  "candlelight": {
+    "id": "candlelight",
+    "name": "Candlelight",
+    "rarity": "common",
+    "primary": "#ffe082",
+    "secondary": "#ffb300",
+    "glow": "#ffd54f",
+    "fx": "ember"
+  },
+  "bog_moss": {
+    "id": "bog_moss",
+    "name": "Bog Moss",
+    "rarity": "common",
+    "primary": "#8d9e4b",
+    "secondary": "#4e6b26",
+    "glow": "#aee571",
+    "fx": "bubble"
+  },
+  "iron_grey": {
+    "id": "iron_grey",
+    "name": "Iron Grey",
+    "rarity": "common",
+    "primary": "#90a4ae",
+    "secondary": "#546e7a",
+    "glow": "#cfd8dc",
+    "fx": "plain"
+  },
+  "pale_blue": {
+    "id": "pale_blue",
+    "name": "Pale Blue",
+    "rarity": "common",
+    "primary": "#b3e5fc",
+    "secondary": "#4fc3f7",
+    "glow": "#e1f5fe",
+    "fx": "plain"
+  },
+  "harvest_amber": {
+    "id": "harvest_amber",
+    "name": "Harvest Amber",
+    "rarity": "common",
+    "primary": "#ffca28",
+    "secondary": "#f57f17",
+    "glow": "#ffd54f",
+    "fx": "plain"
+  },
+  "rust_red": {
+    "id": "rust_red",
+    "name": "Rust Red",
+    "rarity": "common",
+    "primary": "#e57373",
+    "secondary": "#b71c1c",
+    "glow": "#ff8a80",
+    "fx": "plain"
+  },
+  "pale_rose": {
+    "id": "pale_rose",
+    "name": "Pale Rose",
+    "rarity": "common",
+    "primary": "#f8bbd0",
+    "secondary": "#c2185b",
+    "glow": "#ffd1dc",
+    "fx": "petal"
+  },
+  "seafoam": {
+    "id": "seafoam",
+    "name": "Seafoam",
+    "rarity": "common",
+    "primary": "#80cbc4",
+    "secondary": "#00695c",
+    "glow": "#b2dfdb",
+    "fx": "bubble"
+  },
+  "toadstone": {
+    "id": "toadstone",
+    "name": "Toadstone",
+    "rarity": "common",
+    "primary": "#9e9d24",
+    "secondary": "#4e4a00",
+    "glow": "#d4e157",
+    "fx": "plain"
+  },
+  "chalk_white": {
+    "id": "chalk_white",
+    "name": "Chalk White",
+    "rarity": "common",
+    "primary": "#eceff1",
+    "secondary": "#90a4ae",
+    "glow": "#ffffff",
+    "fx": "plain"
+  },
+  "frostbite": {
+    "id": "frostbite",
+    "name": "Frostbite",
+    "rarity": "uncommon",
+    "primary": "#81d4fa",
+    "secondary": "#0277bd",
+    "glow": "#e1f5fe",
+    "fx": "frost"
+  },
+  "sunlit_gold": {
+    "id": "sunlit_gold",
+    "name": "Sunlit Gold",
+    "rarity": "uncommon",
+    "primary": "#ffd54f",
+    "secondary": "#ff8f00",
+    "glow": "#fff59d",
+    "fx": "holy"
+  },
+  "blood_red": {
+    "id": "blood_red",
+    "name": "Blood Red",
+    "rarity": "uncommon",
+    "primary": "#ef5350",
+    "secondary": "#7f0000",
+    "glow": "#ff8a80",
+    "fx": "blood"
+  },
+  "violet_mist": {
+    "id": "violet_mist",
+    "name": "Violet Mist",
+    "rarity": "uncommon",
+    "primary": "#ba68c8",
+    "secondary": "#4a148c",
+    "glow": "#e1bee7",
+    "fx": "smoke"
+  },
+  "storm_spark": {
+    "id": "storm_spark",
+    "name": "Storm Spark",
+    "rarity": "uncommon",
+    "primary": "#4dd0e1",
+    "secondary": "#006064",
+    "glow": "#b2ebf2",
+    "fx": "storm"
+  },
+  "moon_silver": {
+    "id": "moon_silver",
+    "name": "Moon Silver",
+    "rarity": "uncommon",
+    "primary": "#e0e0e0",
+    "secondary": "#7986cb",
+    "glow": "#f5f5f5",
+    "fx": "moon"
+  },
+  "thorn_green": {
+    "id": "thorn_green",
+    "name": "Thorn Green",
+    "rarity": "uncommon",
+    "primary": "#7cb342",
+    "secondary": "#33691e",
+    "glow": "#aed581",
+    "fx": "thorn"
+  },
+  "marsh_teal": {
+    "id": "marsh_teal",
+    "name": "Marsh Teal",
+    "rarity": "uncommon",
+    "primary": "#26a69a",
+    "secondary": "#004d40",
+    "glow": "#80cbc4",
+    "fx": "bubble"
+  },
+  "cinder_orange": {
+    "id": "cinder_orange",
+    "name": "Cinder Orange",
+    "rarity": "uncommon",
+    "primary": "#ff8a65",
+    "secondary": "#bf360c",
+    "glow": "#ffab91",
+    "fx": "ember"
+  },
+  "pale_amethyst": {
+    "id": "pale_amethyst",
+    "name": "Pale Amethyst",
+    "rarity": "uncommon",
+    "primary": "#b39ddb",
+    "secondary": "#512da8",
+    "glow": "#d1c4e9",
+    "fx": "plain"
+  },
+  "poison_lime": {
+    "id": "poison_lime",
+    "name": "Poison Lime",
+    "rarity": "rare",
+    "primary": "#c6ff00",
+    "secondary": "#33691e",
+    "glow": "#eeff41",
+    "fx": "venom"
+  },
+  "crystal_blue": {
+    "id": "crystal_blue",
+    "name": "Crystal Blue",
+    "rarity": "rare",
+    "primary": "#4fc3f7",
+    "secondary": "#01579b",
+    "glow": "#b3e5fc",
+    "fx": "crystal"
+  },
+  "sandstorm": {
+    "id": "sandstorm",
+    "name": "Sandstorm",
+    "rarity": "rare",
+    "primary": "#d4a373",
+    "secondary": "#7f5539",
+    "glow": "#ffe0b2",
+    "fx": "sand"
+  },
+  "rune_cyan": {
+    "id": "rune_cyan",
+    "name": "Rune Cyan",
+    "rarity": "rare",
+    "primary": "#00e5ff",
+    "secondary": "#006064",
+    "glow": "#84ffff",
+    "fx": "rune"
+  },
+  "obsidian": {
+    "id": "obsidian",
+    "name": "Obsidian",
+    "rarity": "rare",
+    "primary": "#5c6bc0",
+    "secondary": "#1a237e",
+    "glow": "#9fa8da",
+    "fx": "shadow"
+  },
+  "royal_purple": {
+    "id": "royal_purple",
+    "name": "Royal Purple",
+    "rarity": "rare",
+    "primary": "#ce93d8",
+    "secondary": "#6a1b9a",
+    "glow": "#e1bee7",
+    "fx": "plain"
+  },
+  "bloodmoon_rose": {
+    "id": "bloodmoon_rose",
+    "name": "Bloodmoon Rose",
+    "rarity": "rare",
+    "primary": "#f06292",
+    "secondary": "#880e4f",
+    "glow": "#ff8a80",
+    "fx": "blood"
+  },
+  "sunfire": {
+    "id": "sunfire",
+    "name": "Sunfire",
+    "rarity": "rare",
+    "primary": "#ffd740",
+    "secondary": "#ff6d00",
+    "glow": "#fff8e1",
+    "fx": "flame"
+  },
+  "glitch_green": {
+    "id": "glitch_green",
+    "name": "Glitch Green",
+    "rarity": "epic",
+    "primary": "#76ff03",
+    "secondary": "#ff00e6",
+    "glow": "#b2ff59",
+    "fx": "glitch"
+  },
+  "spectre_teal": {
+    "id": "spectre_teal",
+    "name": "Spectre Teal",
+    "rarity": "epic",
+    "primary": "#1de9b6",
+    "secondary": "#004d40",
+    "glow": "#a7ffeb",
+    "fx": "ghost"
+  },
+  "emberstorm": {
+    "id": "emberstorm",
+    "name": "Emberstorm",
+    "rarity": "epic",
+    "primary": "#ff7043",
+    "secondary": "#d84315",
+    "glow": "#ffab91",
+    "fx": "ember"
+  },
+  "frostbloom": {
+    "id": "frostbloom",
+    "name": "Frostbloom",
+    "rarity": "epic",
+    "primary": "#80deea",
+    "secondary": "#00838f",
+    "glow": "#e0f7fa",
+    "fx": "ice"
+  },
+  "starfall": {
+    "id": "starfall",
+    "name": "Starfall",
+    "rarity": "epic",
+    "primary": "#fff59d",
+    "secondary": "#3949ab",
+    "glow": "#ffffff",
+    "fx": "star"
+  },
+  "pitch_black": {
+    "id": "pitch_black",
+    "name": "Pitch Black",
+    "rarity": "legendary",
+    "primary": "#0a0a0a",
+    "secondary": "#6a1b9a",
+    "glow": "#b388ff",
+    "fx": "void"
+  },
+  "galaxy": {
+    "id": "galaxy",
+    "name": "Galaxy",
+    "rarity": "legendary",
+    "primary": "#7c4dff",
+    "secondary": "#00bcd4",
+    "glow": "#e040fb",
+    "fx": "galaxy"
+  },
+  "aurora": {
+    "id": "aurora",
+    "name": "Aurora",
+    "rarity": "legendary",
+    "primary": "#69f0ae",
+    "secondary": "#7c4dff",
+    "glow": "#b9f6ca",
+    "fx": "prism"
+  },
+  "bat_swarm": {
+    "id": "bat_swarm",
+    "name": "Bat Swarm",
+    "rarity": "legendary",
+    "primary": "#b71c1c",
+    "secondary": "#12005e",
+    "glow": "#ff5252",
+    "fx": "bats"
+  },
+  "void_heart": {
+    "id": "void_heart",
+    "name": "Void Heart",
+    "rarity": "mythic",
+    "primary": "#000000",
+    "secondary": "#d500f9",
+    "glow": "#ea80fc",
+    "fx": "void"
+  }
+}

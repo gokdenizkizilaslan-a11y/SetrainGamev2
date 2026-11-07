@@ -17,12 +17,15 @@ const MAP_TYPES = [
   { id: "cursed",  label: "Cursed Reach" },
 ];
 
+// Maps are intentionally large now (5x the old footprint). The client renders
+// a scaled circular world, so raw dimensions mostly buy explorable space,
+// breathing room for POIs and a real sense of distance between landmarks.
 const MAP_SIZES = [
-  { id: "small",    label: "Small",    w: 48,  h: 48,  scale: 0.7 },
-  { id: "normal",   label: "Normal",   w: 64,  h: 64,  scale: 1.0 },
-  { id: "large",    label: "Large",    w: 80,  h: 80,  scale: 1.35 },
-  { id: "huge",     label: "Huge",     w: 96,  h: 96,  scale: 1.7 },
-  { id: "colossal", label: "Colossal", w: 120, h: 120, scale: 2.2 },
+  { id: "small",    label: "Small",    w: 240, h: 240, scale: 0.7 },
+  { id: "normal",   label: "Normal",   w: 320, h: 320, scale: 1.0 },
+  { id: "large",    label: "Large",    w: 400, h: 400, scale: 1.35 },
+  { id: "huge",     label: "Huge",     w: 480, h: 480, scale: 1.7 },
+  { id: "colossal", label: "Colossal", w: 600, h: 600, scale: 2.2 },
 ];
 
 // tile codes
@@ -90,26 +93,74 @@ function isWalkable(tiles, w, h, x, y) {
   return WALKABLE.has(tiles[y * w + x]);
 }
 
+function tileAt(tiles, w, h, x, y) {
+  if (x < 0 || y < 0 || x >= w || y >= h) return -1;
+  return tiles[y * w + x];
+}
+
+// Verilen karonun çevresinde kaya/höyük var mı? Dungeon'lar kayaların içine
+// gömülsün diye yerleşim bunu tercih eder.
+function nearRock(tiles, w, h, x, y, rad = 3) {
+  for (let dy = -rad; dy <= rad; dy++) for (let dx = -rad; dx <= rad; dx++) {
+    const t = tileAt(tiles, w, h, x + dx, y + dy);
+    if (t === T.ROCK || t === T.HILL) return true;
+  }
+  return false;
+}
+
+// Yol kenarına serilmiş sandıklar: rastgele araziye saçılmak yerine
+// oyuncunun gerçekten yürüdüğü patikaların üstünde/kenarında dururlar.
+function pickRoadsideChests(rng, tiles, w, h, pois, spawn, count) {
+  const out = [];
+  const road = [];
+  for (let y = 2; y < h - 2; y++) for (let x = 2; x < w - 2; x++) {
+    if (tiles[y * w + x] === T.ROAD) road.push({ x, y });
+  }
+  if (!road.length) return out;
+  const minPOI = 9;
+  for (let a = 0; a < 4000 && out.length < count; a++) {
+    const c = road[Math.floor(rng() * road.length)];
+    const jitter = () => Math.round((rng() - 0.5) * 2);
+    const x = c.x + jitter(), y = c.y + jitter();
+    if (!isWalkable(tiles, w, h, x, y)) continue;
+    if (Math.hypot(x - spawn.x, y - spawn.y) < 10) continue;
+    if (pois.some((p) => Math.hypot(p.x - x, p.y - y) < minPOI)) continue;
+    if (out.some((p) => Math.hypot(p.x - x, p.y - y) < 12)) continue;
+    out.push({ id: "chest_" + (pois.length + out.length), kind: "chest", x, y, consumed: false });
+  }
+  return out;
+}
+
 function pickPOIs(rng, tiles, w, h, size, count) {
   const pois = [];
   const kinds = [];
-  // 1-2 dungeons (rarer on small maps)
-  const dungeons = size.scale < 0.9 ? 1 : (rng() < 0.5 ? 1 : 2);
+  // Az sayıda ama anlamlı savaş alanı.
+  const dungeons = size.scale < 0.9 ? 1 : (size.scale > 1.8 ? 3 : 2);
   for (let i = 0; i < dungeons; i++) kinds.push("dungeon");
   kinds.push("inn");
   const dens = Math.round(2 * size.scale) + 1;
   for (let i = 0; i < dens; i++) kinds.push("den");
-  const chests = Math.round(4 * size.scale) + 1;
-  for (let i = 0; i < chests; i++) kinds.push("chest");
-  const ruins = Math.round(2 * size.scale);
+  const ruins = Math.round(2 * size.scale) + 1;
   for (let i = 0; i < ruins; i++) kinds.push("ruin");
   if (rng() < 0.7) kinds.push("watch");
 
-  const minDist = 6 + Math.round(size.scale * 4);
+  const minDist = 13 + Math.round(size.scale * 8);
   let spawn = findWalkable(tiles, w, h, Math.floor(w / 2), Math.floor(h / 2), rng);
   let tries = 0;
   for (const kind of kinds) {
     let placed = null;
+    // İlk tur: türüne uygun arazi (dungeon kayaya gömülü, den orman/mağara).
+    for (let a = 0; a < 1200 && !placed; a++) {
+      const x = 3 + Math.floor(rng() * (w - 6));
+      const y = 3 + Math.floor(rng() * (h - 6));
+      if (!isWalkable(tiles, w, h, x, y)) continue;
+      if (kind === "dungeon" && !nearRock(tiles, w, h, x, y, 3)) continue;
+      if (kind === "den" && !(nearRock(tiles, w, h, x, y, 2) || tileAt(tiles, w, h, x, y) === T.FOREST)) continue;
+      if (Math.hypot(x - spawn.x, y - spawn.y) < minDist) continue;
+      if (pois.some((p) => Math.hypot(p.x - x, p.y - y) < minDist)) continue;
+      placed = { x, y };
+    }
+    // Yedek tur: arazi şartını bırak (harita boş kalmasın).
     for (let a = 0; a < 400 && !placed; a++) {
       const x = 3 + Math.floor(rng() * (w - 6));
       const y = 3 + Math.floor(rng() * (h - 6));
@@ -190,6 +241,9 @@ function generateMap(seed, typeId, sizeId) {
   }
   const { spawn, pois } = pickPOIs(rng, tiles, w, h, size, 0);
   for (const p of pois) carveRoad(tiles, w, h, spawn, p);
+  // Sandıklar yollar oyulduktan SONRA, patikaların üzerine yerleştirilir.
+  const chests = pickRoadsideChests(rng, tiles, w, h, pois, spawn, Math.round(3 * size.scale) + 2);
+  for (const c of chests) pois.push(c);
   // assign POI details
   for (const p of pois) {
     if (p.kind === "dungeon" || p.kind === "den") {
@@ -253,6 +307,9 @@ function revealAround(travel, x, y, rad) {
 
 function enterTravel(room, player, typeId, sizeId, opts = {}) {
   if (player.stamina < ENTRY_STAMINA) throw new Error(`Travel costs ${ENTRY_STAMINA} stamina.`);
+  // Eski bir ölümden kalan 0 canla seyahate çıkılmasın (anında ölüm bug'ı).
+  if (player.lives > 0 && player.hp <= 0) player.hp = Math.max(1, player.maxHp || 100);
+  player.downed = false;
   if (!room.travels) room.travels = {};
   // Zaten bir dünyadaysa önce oradan ayrıl (üst üste dünya olmasın).
   if (player.travelId) leaveTravel(room, player);
@@ -290,11 +347,13 @@ function enterTravel(room, player, typeId, sizeId, opts = {}) {
 }
 
 function leaveTravel(room, player) {
+  leaveExpedition(room, player);
   const travel = activeTravel(room, player);
   if (!travel) { if (player) player.travelId = null; return; }
   travel.members = travel.members.filter((id) => id !== player.id);
   delete travel.pos[player.id];
   delete travel.invites[player.id];
+  if (travel.downed) delete travel.downed[player.id];
   for (const key of Object.keys(travel.parties)) {
     const party = travel.parties[key];
     party.memberIds = party.memberIds.filter((id) => id !== player.id);
@@ -306,7 +365,71 @@ function leaveTravel(room, player) {
     if (room.travel === travel) room.travel = null;
   }
   if (player) player.travelId = null;
+  // Eski "yere düştü" durumu yeni sefere/kasabaya taşınmaz. Aksi halde
+  // publicPlayer.downed=true + hp=0 istemcide anında ölüm gibi görünür.
+  if (player) {
+    player.downed = false;
+    if (player.lives > 0 && !(player.hp > 0)) player.hp = Math.max(1, player.maxHp || 100);
+  }
   player.dungeonId = null;
+}
+
+// ---- Yere düşme / diriltme (çok oyunculu seyahat) ----
+// Yere düşen oyuncu seferde kalır; yakındaki bir takım arkadaşı onu diriltebilir.
+function isDowned(travel, id) {
+  return !!(travel && travel.downed && travel.downed[id]);
+}
+
+function setDowned(travel, id, on) {
+  if (!travel) return;
+  if (!travel.downed) travel.downed = {};
+  if (on) travel.downed[id] = Date.now();
+  else delete travel.downed[id];
+}
+
+// Yakındaki düşmüş bir oyuncuyu ayağa kaldırır; canı doldurulur.
+function revive(room, player, targetId) {
+  const travel = activeTravel(room, player);
+  if (!travel) throw new Error("No active travel map.");
+  if (player.lives <= 0) throw new Error("You cannot revive while fallen.");
+  if (!targetId || targetId === player.id) throw new Error("Pick an ally to revive.");
+  if (!isDowned(travel, targetId)) throw new Error("That ally is not down.");
+  const target = room.players.find((p) => p.id === targetId);
+  if (!target || !travel.members.includes(targetId)) throw new Error("That ally is not with you.");
+  const a = travel.pos[player.id];
+  const b = travel.pos[targetId];
+  if (!a || !b) throw new Error("Cannot reach that ally.");
+  if (Math.hypot(a.x - b.x, a.y - b.y) > 2.6) throw new Error("Move closer to revive your ally.");
+  setDowned(travel, targetId, false);
+  target.hp = Math.max(1, target.maxHp || 100);
+  target.downed = false;
+  return { target };
+}
+
+// Yere düşen oyuncu vazgeçip kasabaya döner (kalp zaten düşmüştü).
+function giveUp(room, player) {
+  const travel = activeTravel(room, player);
+  if (!travel) return null;
+  setDowned(travel, player.id, false);
+  player.downed = false;
+  if (player.hp <= 0) player.hp = Math.max(1, player.maxHp || 100);
+  leaveTravel(room, player);
+  player.dungeonId = null;
+  return travel;
+}
+
+// Düşen oyuncuyu ölüme götür (kalbi kalmadı): kasabada tapınakta diriltilmeli.
+function fall(room, player) {
+  const travel = activeTravel(room, player);
+  if (!travel) return null;
+  setDowned(travel, player.id, false);
+  player.downed = false;
+  player.hp = 0;
+  leaveTravel(room, player);
+  // leaveTravel yerde kalan oyuncuyu iyileştirir; gerçek ölümde can 0 kalmalı.
+  player.hp = 0;
+  player.dungeonId = null;
+  return travel;
 }
 
 function nearPOI(travel, player, poiId) {
@@ -314,7 +437,7 @@ function nearPOI(travel, player, poiId) {
   if (!poi) throw new Error("That place does not exist.");
   const pos = travel.pos[player.id];
   if (!pos) throw new Error("You are not travelling.");
-  if (Math.hypot(pos.x - poi.x - 0.5, pos.y - poi.y - 0.5) > 1.8) throw new Error("Too far away.");
+  if (Math.hypot(pos.x - poi.x - 0.5, pos.y - poi.y - 0.5) > 2.4) throw new Error("Too far away.");
   return poi;
 }
 
@@ -501,6 +624,7 @@ function publicTravel(room, player) {
     pois: travel.pois.map((p) => ({ id: p.id, kind: p.kind, x: p.x, y: p.y, name: p.name, rank: p.rank, tier: p.tier, consumed: !!p.consumed, revealed: !!p.revealed })),
     members: [...travel.members],
     pos: Object.fromEntries(Object.entries(travel.pos).map(([k, v]) => [k, { x: v.x, y: v.y }])),
+    downed: Object.keys(travel.downed || {}),
     parties, invites,
   };
 }
@@ -520,6 +644,93 @@ function publicTravels(room) {
   return out;
 }
 
+// ---- Sefer odaları (lobi) ----
+// Oyuncular doğrudan dünyaya düşmez; önce oda kurar / katılır, lider başlatır.
+const MAX_PARTY = 4;
+
+function publicExpeditions(room) {
+  const out = {};
+  for (const id of Object.keys(room.expeditions || {})) {
+    const e = room.expeditions[id];
+    if (!e) continue;
+    out[id] = {
+      id: e.id, leaderId: e.leaderId, type: e.type, typeLabel: e.typeLabel,
+      size: e.size, sizeLabel: e.sizeLabel, status: e.status,
+      memberIds: [...e.memberIds], createdAt: e.createdAt,
+    };
+  }
+  return out;
+}
+
+function myExpedition(room, player) {
+  if (!room || !player) return null;
+  for (const id of Object.keys(room.expeditions || {})) {
+    const e = room.expeditions[id];
+    if (e && e.memberIds.includes(player.id)) return e;
+  }
+  return null;
+}
+
+function leaveExpedition(room, player) {
+  if (!room || !player) return;
+  for (const id of Object.keys(room.expeditions || {})) {
+    const e = room.expeditions[id];
+    if (!e || !e.memberIds.includes(player.id)) continue;
+    e.memberIds = e.memberIds.filter((x) => x !== player.id);
+    if (e.leaderId === player.id && e.memberIds.length) e.leaderId = e.memberIds[0];
+    if (!e.memberIds.length) delete room.expeditions[id];
+  }
+}
+
+function createExpedition(room, player, typeId, sizeId) {
+  if (!room.expeditions) room.expeditions = {};
+  leaveExpedition(room, player);
+  const type = MAP_TYPES.find((t) => t.id === typeId) || MAP_TYPES[0];
+  const size = MAP_SIZES.find((s) => s.id === sizeId) || MAP_SIZES[1];
+  const id = "exp_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 6);
+  const exp = {
+    id, leaderId: player.id, memberIds: [player.id],
+    type: type.id, typeLabel: type.label, size: size.id, sizeLabel: size.label,
+    status: "lobby", createdAt: Date.now(),
+  };
+  room.expeditions[id] = exp;
+  return exp;
+}
+
+function joinExpedition(room, player, id) {
+  const exp = room.expeditions && room.expeditions[id];
+  if (!exp) throw new Error("That expedition no longer exists.");
+  if (exp.status !== "lobby") throw new Error("That expedition is already underway.");
+  if (!exp.memberIds.includes(player.id)) {
+    if (exp.memberIds.length >= MAX_PARTY) throw new Error("That expedition is full.");
+    leaveExpedition(room, player);
+    exp.memberIds.push(player.id);
+  }
+  return exp;
+}
+
+function launchExpedition(room, player, id) {
+  const exp = room.expeditions && room.expeditions[id];
+  if (!exp) throw new Error("That expedition no longer exists.");
+  if (exp.leaderId !== player.id) throw new Error("Only the expedition leader can start it.");
+  const members = exp.memberIds
+    .map((mid) => room.players.find((p) => p.id === mid))
+    .filter((p) => p && p.stamina >= ENTRY_STAMINA);
+  if (!members.length) throw new Error(`Travel costs ${ENTRY_STAMINA} stamina.`);
+  if (player.stamina < ENTRY_STAMINA) throw new Error(`Travel costs ${ENTRY_STAMINA} stamina.`);
+  let travel = null;
+  for (const m of members) {
+    travel = travel
+      ? enterTravel(room, m, exp.type, exp.size, { joinId: travel.id })
+      : enterTravel(room, m, exp.type, exp.size);
+  }
+  exp.status = "active";
+  exp.travelId = travel ? travel.id : null;
+  if (travel) travel.leaderId = exp.leaderId;
+  delete room.expeditions[id];
+  return travel;
+}
+
 function publicMap(room, player) {
   const travel = activeTravel(room, player);
   if (!travel) return null;
@@ -527,17 +738,32 @@ function publicMap(room, player) {
   if (travel.explored) {
     for (let i = 0; i < travel.explored.length; i++) exploredStr += travel.explored[i] ? "1" : "0";
   }
-  return { id: travel.id, seed: travel.seed, type: travel.type, size: travel.size, w: travel.w, h: travel.h, tiles: travel.tiles, spawn: travel.spawn, explored: exploredStr };
+  const sizeDef = MAP_SIZES.find((s) => s.id === travel.size) || MAP_SIZES[1];
+  const typeDef = MAP_TYPES.find((t) => t.id === travel.type) || MAP_TYPES[0];
+  return {
+    id: travel.id, seed: travel.seed,
+    type: travel.type, typeLabel: typeDef.label,
+    size: travel.size, sizeLabel: sizeDef.label, scale: sizeDef.scale,
+    w: travel.w, h: travel.h, tiles: travel.tiles, spawn: travel.spawn, explored: exploredStr,
+  };
 }
 
 // İstemci canavarları yerel olarak simüle eder; sunucu yalnızca ölüm
 // bildirimini alır ve ödülü tabloya göre sınırlar (spam koruması dahil).
-const KILL_REWARD = {
-  goblin: { xp: 18, gold: 6 },
-  wraith: { xp: 24, gold: 8 },
-  treant: { xp: 40, gold: 14 },
-};
+// Ödül tablosu artık CONTENT.travelBiomes içinden gelir: her biyomun kendi
+// canavar listesi (kind/exp/gold) vardır. Bilinmeyen kind güvenli tabana düşer.
+const KILL_FALLBACK = { xp: 18, gold: 6 };
 const KILL_MIN_GAP_MS = 320;
+
+function monsterReward(kind) {
+  const biomes = (CONTENT && CONTENT.travelBiomes) || {};
+  for (const b of Object.values(biomes)) {
+    for (const m of (b && b.monsters) || []) {
+      if (m && m.kind === kind) return { xp: Number(m.exp) || KILL_FALLBACK.xp, gold: Number(m.gold) || KILL_FALLBACK.gold };
+    }
+  }
+  return KILL_FALLBACK;
+}
 
 function rewardKill(room, player, payload = {}) {
   const travel = activeTravel(room, player);
@@ -546,9 +772,9 @@ function rewardKill(room, player, payload = {}) {
   if (now - (player._lastKillTs || 0) < KILL_MIN_GAP_MS) return null;
   player._lastKillTs = now;
   const kind = String(payload.kind || "goblin");
-  const base = KILL_REWARD[kind] || KILL_REWARD.goblin;
+  const base = monsterReward(kind);
   const size = MAP_SIZES.find((s) => s.id === travel.size) || MAP_SIZES[1];
-  const mult = Math.max(0.6, Math.min(2.2, size.scale));
+  const mult = Math.max(0.6, Math.min(2.4, size.scale));
   return { xp: Math.round(base.xp * mult), gold: Math.round(base.gold * mult) };
 }
 
@@ -556,6 +782,7 @@ function resetTravel(room) {
   if (!room) return;
   room.travels = {};
   room.travel = null;
+  room.expeditions = {};
   for (const p of room.players) {
     p.travelId = null;
     if (p.dungeonId && String(p.dungeonId).startsWith("trav_")) p.dungeonId = null;
@@ -576,8 +803,19 @@ module.exports = {
   publicTravel,
   publicTravels,
   publicMap,
+  publicExpeditions,
+  myExpedition,
+  createExpedition,
+  joinExpedition,
+  leaveExpedition,
+  launchExpedition,
   revealAround,
   resetTravel,
   activeTravel,
   rewardKill,
+  isDowned,
+  setDowned,
+  revive,
+  giveUp,
+  fall,
 };

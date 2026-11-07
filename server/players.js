@@ -602,10 +602,32 @@ function createPlayer({ id, name, character, isHost = false }) {
   // stats match a naturally leveled character. Normal classes skip this.
   applyStartLevelGrowth(player);
   seedOwnedTreeNodes(player);
+  // "Mana rengi": her yeni karakter 3 rastgele efektle başlar.
+  try { require("./skins").grantStarterSkins(player); } catch (e) { /* cosmetic */ }
   return player;
 }
 
 function publicPlayer(player) {
+  // Travel-only attack speed % (class + race + equipped items). The turn-based
+  // combat engine never reads this value; it is purely for the ARPG renderer.
+  let attackSpeed = 0;
+  try {
+    const clsDef = getClass(player.character);
+    attackSpeed += Number(clsDef && clsDef.attackSpeed) || 0;
+    const raceStats = (player.race && player.race.stats) || {};
+    attackSpeed += Number(raceStats.attackSpeed) || 0;
+    for (const itemId of Object.values(player.equipment || {})) {
+      if (!itemId) continue;
+      const it = getItem(itemId);
+      if (it && it.stats && it.stats.attackSpeed) attackSpeed += Number(it.stats.attackSpeed) || 0;
+    }
+  } catch (e) { /* never break player serialization over a cosmetic stat */ }
+
+  // Eski/yarıda kalmış oyuncular da 3 başlangıç mana rengine sahip olsun.
+  try {
+    if (!Array.isArray(player.skins) || !player.skins.length) require("./skins").grantStarterSkins(player);
+  } catch (e) { /* cosmetic */ }
+
   return {
     id: player.id,
     name: player.name,
@@ -626,6 +648,10 @@ function publicPlayer(player) {
     learnedTreeNodes: (player.learnedTreeNodes || []).slice(),
     bossKills: (player.bossKills || []).slice(),
     connected: player.connected !== false,
+    downed: !!player.downed,
+    // Görsel mana rengi (skill efekti). Hasarı etkilemez.
+    skins: Array.isArray(player.skins) ? player.skins.slice() : [],
+    activeSkin: player.activeSkin || null,
     hp: player.hp,
     maxHp: player.maxHp,
     attack: player.attack,
@@ -638,6 +664,7 @@ function publicPlayer(player) {
     speed: player.speed,
     critChance: player.critChance || 0,
     critDamage: player.critDamage || 0,
+    attackSpeed,
     manaRegen: player.manaRegen || (CONTENT.combat.manaRegenPerRound || 3),
     level: player.level,
     xp: player.xp,

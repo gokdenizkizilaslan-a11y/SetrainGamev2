@@ -2826,21 +2826,64 @@ function renderTravelViewInner(room, root) {
   }
   const isMember = !!(tv && tv.active && (tv.members || []).includes(state.playerId));
   if (!tv || !tv.active || !isMember) {
+    // Yeni harita geldiği anda oda durumu bir kare gecikebilir; canlı canvas'ı silme.
+    if (!tv && window.SetraTravel && typeof SetraTravel.hasMap === "function" && SetraTravel.hasMap()) return;
     if (!state.travelType) state.travelType = "verdant";
     if (!state.travelSize) state.travelSize = "normal";
     const stamina = me ? me.stamina : 0;
     const cannot = stamina < 10;
     const pickedType = (TRAVEL_TYPES.find(([id]) => id === state.travelType) || TRAVEL_TYPES[0])[1];
     const pickedSize = (TRAVEL_SIZES.find(([id]) => id === state.travelSize) || TRAVEL_SIZES[1])[1];
-    // Aynı odadaki diğer aktif seferler (katılmak isteyenler için).
-    const activeList = Object.values(travels).filter((t) => t && t.active);
+    // Sefer odaları: oyuncular önce oda kurar / katılır, lider başlatır.
+    const exps = room.expeditions || {};
+    const myExp = Object.values(exps).find((e) => (e.memberIds || []).includes(state.playerId)) || null;
+    const nameOf = (id) => ((room.players || []).find((p) => p.id === id) || {}).name || "Adventurer";
+    if (myExp) {
+      const isLeader = myExp.leaderId === state.playerId;
+      root.innerHTML = `
+      <div class="tv-start">
+        <div class="tv-start-head">
+          <span class="tv-start-emblem">${TRAVEL_EMBLEM}</span>
+          <div>
+            <h3 class="tv-start-title">Expedition camp</h3>
+            <p class="tv-start-sub">${escapeHtml(myExp.typeLabel || "Wilds")} &middot; ${escapeHtml(myExp.sizeLabel || "Normal")} &middot; ${(myExp.memberIds || []).length}/4 explorers${isLeader ? " &middot; you are the leader" : " &middot; waiting for the leader to set out"}</p>
+          </div>
+        </div>
+        <div class="tv-field">
+          <span class="tv-field-label">Party</span>
+          <div class="tv-chips">
+            ${(myExp.memberIds || []).map((id) => `<span class="tv-chip${id === myExp.leaderId ? " is-active" : ""}">${escapeHtml(nameOf(id))}${id === myExp.leaderId ? " &#9733;" : ""}</span>`).join("")}
+          </div>
+        </div>
+        <div class="tv-summary">
+          <div class="tv-summary-main">${escapeHtml(myExp.typeLabel || "Wilds")}</div>
+          <div class="tv-summary-sub">${escapeHtml(myExp.sizeLabel || "Normal")} land &middot; every explorer pays <b>10 stamina</b></div>
+        </div>
+        <div class="tv-start-actions">
+          ${isLeader ? `<button type="button" class="btn btn--gold tv-go" id="btn-exp-start"${cannot ? " disabled" : ""}>Start expedition <span class="tv-go-cost">10 stamina</span></button>` : ""}
+          <button type="button" class="btn tv-leave" id="btn-exp-leave">Leave room</button>
+        </div>
+        ${cannot ? `<p class="tv-warn">You need at least 10 stamina. Rest at the tavern or sleep to recover it.</p>` : ""}
+      </div>`;
+      const startBtn = root.querySelector("#btn-exp-start");
+      if (startBtn) startBtn.addEventListener("click", () => {
+        if (startBtn.disabled) return;
+        startBtn.disabled = true;
+        startBtn.textContent = "Generating world...";
+        socket.emit("travel:launch", { id: myExp.id });
+      });
+      const leaveBtn = root.querySelector("#btn-exp-leave");
+      if (leaveBtn) leaveBtn.addEventListener("click", () => socket.emit("travel:leave-lobby"));
+      return;
+    }
+    const openExps = Object.values(exps);
     root.innerHTML = `
       <div class="tv-start">
         <div class="tv-start-head">
           <span class="tv-start-emblem">${TRAVEL_EMBLEM}</span>
           <div>
-            <h3 class="tv-start-title">Set out on a new expedition</h3>
-            <p class="tv-start-sub">Her "Set out" yepyeni bir dünya üretir. Arkadaşlarınla gitmek için aşağıdaki aktif seferlerden birine katıl.</p>
+            <h3 class="tv-start-title">Create an expedition room</h3>
+            <p class="tv-start-sub">Dünya, lider "Start expedition" dediğinde üretilir. Arkadaşların aşağıdaki odalara katılır.</p>
           </div>
         </div>
         <div class="tv-field">
@@ -2860,14 +2903,14 @@ function renderTravelViewInner(room, root) {
           <div class="tv-summary-sub">${escapeHtml(pickedSize)} land &middot; every explorer pays <b>10 stamina</b></div>
         </div>
         <div class="tv-start-actions">
-          <button type="button" class="btn btn--gold tv-go" id="btn-travel-go"${cannot ? " disabled" : ""}>Set out (new world) <span class="tv-go-cost">10 stamina</span></button>
+          <button type="button" class="btn btn--gold tv-go" id="btn-travel-go"${cannot ? " disabled" : ""}>Create room <span class="tv-go-cost">10 stamina</span></button>
           ${cannot ? `<p class="tv-warn">You need at least 10 stamina. Rest at the tavern or sleep to recover it.</p>` : ""}
         </div>
-        ${activeList.length ? `
+        ${openExps.length ? `
         <div class="tv-field">
-          <span class="tv-field-label">Active expeditions</span>
+          <span class="tv-field-label">Open expedition rooms</span>
           <div class="tv-chips">
-            ${activeList.map((t) => `<button type="button" class="tv-chip" data-join="${escapeHtml(t.id)}"${cannot ? " disabled" : ""}>${escapeHtml(t.typeLabel || "Wilds")} &middot; ${escapeHtml(t.sizeLabel || "")} &middot; ${(t.members || []).length}p</button>`).join("")}
+            ${openExps.map((e) => `<button type="button" class="tv-chip" data-exp="${escapeHtml(e.id)}"${cannot ? " disabled" : ""}>${escapeHtml(e.typeLabel || "Wilds")} &middot; ${escapeHtml(e.sizeLabel || "")} &middot; ${(e.memberIds || []).length}p</button>`).join("")}
           </div>
         </div>` : ""}
       </div>`;
@@ -2877,27 +2920,14 @@ function renderTravelViewInner(room, root) {
     if (go) go.addEventListener("click", () => {
       if (go.disabled) return;
       go.disabled = true;
-      go.textContent = "Generating world...";
-      state.travelPending = Date.now();
-      socket.emit("travel:enter", { type: state.travelType, size: state.travelSize });
-      setTimeout(() => {
-        if (!state.travelPending) return;
-        const g = root.querySelector("#btn-travel-go");
-        if (g) { g.disabled = false; g.innerHTML = `Set out (new world) <span class="tv-go-cost">10 stamina</span>`; }
-        showToast("Sunucu yanit vermedi. Oyun sunucusunu yeniden baslat (basla.bat) ve tekrar dene.");
-      }, 3500);
+      go.textContent = "Opening room...";
+      socket.emit("travel:create", { type: state.travelType, size: state.travelSize });
     });
-    // Var olan bir dünyaya katıl.
-    root.querySelectorAll("[data-join]").forEach((b) => b.addEventListener("click", () => {
+    // Var olan bir odaya katıl.
+    root.querySelectorAll("[data-exp]").forEach((b) => b.addEventListener("click", () => {
       if (b.disabled) return;
       b.disabled = true;
-      state.travelPending = Date.now();
-      socket.emit("travel:enter", { joinId: b.getAttribute("data-join") });
-      setTimeout(() => {
-        if (!state.travelPending) return;
-        showToast("Katilim zaman asimi. Tekrar dene.");
-        renderTravelView(room);
-      }, 3500);
+      socket.emit("travel:join", { id: b.getAttribute("data-exp") });
     }));
     return;
   }

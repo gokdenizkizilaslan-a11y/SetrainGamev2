@@ -19,7 +19,7 @@ const pvp = require("./pvp");
 const pets = require("./pets");
 const travel = require("./travel");
 const { onNewDay, equipItem, unequipSlot, setSkillLoadout, learnTreeNode, addXp } = require("./players");
-const { publicCatalog, getClass } = require("../content");
+const { CONTENT, publicCatalog, getClass } = require("../content");
 
 function isDead(p) { return p && p.lives <= 0; }
 function requireAlive(player) {
@@ -844,6 +844,76 @@ function registerSocketHandlers(io) {
     });
 
     // ---- Travel (shared world map) ----
+    // ---- Travel odaları (lobi) ----
+    socket.on("travel:create", (payload = {}) => {
+      try {
+        const { room, player } = gameContext(socket);
+        requireAlive(player);
+        town.requirePlaying(room, player);
+        const d = dungeon.dungeonFor(room, player);
+        if (d && dungeon.delveUnderway(d)) throw new Error("Finish or leave the delve first.");
+        if (player.bossId || player.pvpId) throw new Error("Finish your current battle first.");
+        if (travel.activeTravel(room, player)) throw new Error("You are already on an expedition.");
+        travel.createExpedition(room, player, payload.type, payload.size);
+        room.log = { type: "travel", text: `${player.name} opens an expedition room.`, ts: Date.now() };
+        emitRoomState(io, room);
+      } catch (err) { emitError(socket, err); }
+    });
+
+    socket.on("travel:join", (payload = {}) => {
+      try {
+        const { room, player } = gameContext(socket);
+        requireAlive(player);
+        town.requirePlaying(room, player);
+        if (travel.activeTravel(room, player)) throw new Error("You are already on an expedition.");
+        travel.joinExpedition(room, player, payload.id);
+        room.log = { type: "travel", text: `${player.name} joins an expedition.`, ts: Date.now() };
+        emitRoomState(io, room);
+      } catch (err) { emitError(socket, err); }
+    });
+
+    socket.on("travel:leave-lobby", () => {
+      try {
+        const { room, player } = gameContext(socket);
+        travel.leaveExpedition(room, player);
+        emitRoomState(io, room);
+      } catch (err) { emitError(socket, err); }
+    });
+
+    socket.on("travel:launch", (payload = {}) => {
+      try {
+        const { room, player } = gameContext(socket);
+        requireAlive(player);
+        town.requirePlaying(room, player);
+        const t = travel.launchExpedition(room, player, payload.id);
+        if (t) emitToTravel(io, t, "travel:map", travel.publicMap(room, player));
+        room.log = { type: "travel", text: `${player.name}'s expedition sets out into the wilds.`, ts: Date.now() };
+        emitRoomState(io, room);
+      } catch (err) { emitError(socket, err); }
+    });
+
+    // ---- Mana rengi (skill efekti) roll & kuşanma ----
+    socket.on("skins:roll", () => {
+      try {
+        const { room, player } = gameContext(socket);
+        const res = require("./skins").rollForPlayer(player);
+        if (res.error) throw new Error(res.error);
+        socket.emit("skins:rolled", { skin: res.skin, cost: res.cost, activeSkin: player.activeSkin });
+        room.log = { type: "cosmetic", text: `${player.name} rolls a mana hue: ${res.skin.name}.`, ts: Date.now() };
+        emitRoomState(io, room);
+      } catch (err) { emitError(socket, err); }
+    });
+
+    socket.on("skins:equip", (payload = {}) => {
+      try {
+        const { room, player } = gameContext(socket);
+        const res = require("./skins").equipSkin(player, String(payload.id || ""));
+        if (res.error) throw new Error(res.error);
+        socket.emit("skins:equipped", { id: player.activeSkin });
+        emitRoomState(io, room);
+      } catch (err) { emitError(socket, err); }
+    });
+
     socket.on("travel:enter", (payload = {}) => {
       try {
         const { room, player } = gameContext(socket);
@@ -880,10 +950,14 @@ function registerSocketHandlers(io) {
         const { room, player } = gameContext(socket);
         const t = travel.activeTravel(room, player);
         if (!t || !t.members.includes(player.id)) return;
+        if (travel.isDowned(t, player.id)) return; // yerdeyken hareket etmez
         const x = Number(payload.x), y = Number(payload.y);
         if (!Number.isFinite(x) || !Number.isFinite(y)) return;
         t.pos[player.id] = { x: Math.max(0, Math.min(t.w, x)), y: Math.max(0, Math.min(t.h, y)) };
-        emitToTravel(io, t, "travel:pos", { id: player.id, x: t.pos[player.id].x, y: t.pos[player.id].y });
+        // Kendi konumumuzu geri gönderme; aksi halde istemci kendini "diğer oyuncu" sanar.
+        for (const mid of t.members || []) {
+          if (mid !== player.id) io.to(mid).emit("travel:pos", { id: player.id, x: t.pos[player.id].x, y: t.pos[player.id].y });
+        }
         const revealed = travel.revealAround(t, t.pos[player.id].x, t.pos[player.id].y, 6);
         if (revealed && revealed.length) emitToTravel(io, t, "travel:explored", { add: revealed });
         if (travel.tryAutoJoin(room, player)) emitRoomState(io, room);
@@ -894,22 +968,127 @@ function registerSocketHandlers(io) {
     socket.on("travel:kill", (payload = {}) => {
       try {
         const { room, player } = gameContext(socket);
+        const t = travel.activeTravel(room, player);
+        if (!t || travel.isDowned(t, player.id)) return; // yerdeki oyuncu öldürme ödülü alamaz
         const res = travel.rewardKill(room, player, payload);
         if (!res) return;
         addXp(player, res.xp);
         player.gold = (player.gold || 0) + res.gold;
+        // İstemciye anlık geri bildirim: "+X XP / +Y gold" ve sefer raporu.
+        socket.emit("travel:killReward", {
+          kind: payload.kind || null,
+          xp: res.xp,
+          gold: res.gold,
+          goldTotal: player.gold || 0,
+        });
         emitRoomState(io, room);
       } catch (err) { /* kill reward is best-effort */ }
+    });
+
+    // İstemci seyahatte canı yerel simüle eder; sunucu sınırlayarak kaydeder.
+    socket.on("travel:hp", (payload = {}) => {
+      try {
+        const { room, player } = gameContext(socket);
+        const t = travel.activeTravel(room, player);
+        if (!t || !t.members.includes(player.id)) return;
+        if (travel.isDowned(t, player.id)) return; // yerdeyken can güncellemesi yok
+        const now = Date.now();
+        if (now - (player._lastHpTs || 0) < 180) return;
+        const hp = Number(payload.hp);
+        if (!Number.isFinite(hp)) return;
+        player._lastHpTs = now;
+        player.hp = Math.max(1, Math.min(player.maxHp, Math.round(hp)));
+      } catch (err) { /* best-effort */ }
+    });
+
+    // Seyahatte can bitti: 1 kalp düşer. Kalbi kaldıysa yere düşer (takım arkadaşı
+    // diriltebilir, isterse kasabaya dönebilir). Kalbi bittiyse ölür ve kasabaya döner.
+    socket.on("travel:down", () => {
+      try {
+        const { room, player } = gameContext(socket);
+        const t = travel.activeTravel(room, player);
+        if (!t || !t.members.includes(player.id)) return;
+        if (travel.isDowned(t, player.id)) return; // zaten yerde; tekrar tetikleme
+        const now = Date.now();
+        if (now - (player._lastDownTs || 0) < 1200) return; // çift tetikleme koruması
+        player._lastDownTs = now;
+        const lives = Number.isFinite(player.lives) ? player.lives : 3;
+        if (lives <= 0) {
+          // Hiç kalbi yok: doğrudan ölüm.
+          travel.fall(room, player);
+          socket.emit("travel:fallen", {});
+          socket.emit("travel:notice", { text: "You have fallen. Return to the temple to be revived.", hearts: true });
+          room.log = { type: "travel", text: `${player.name} has fallen in the wilds.`, ts: Date.now() };
+          emitRoomState(io, room);
+          return;
+        }
+        player.lives = lives - 1;
+        player.hp = 0;
+        // Editörden "yere düşme sistemi" kapatılabilir (content.travel.downed.enabled).
+        const downedEnabled = !(CONTENT.travel && CONTENT.travel.downed && CONTENT.travel.downed.enabled === false);
+        if (player.lives > 0 && downedEnabled) {
+          // Yere düşer. Diğerleri sefere devam eder; sadece o yerde kalır.
+          player.downed = true;
+          travel.setDowned(t, player.id, true);
+          const others = (t.members || []).filter((id) => id !== player.id);
+          socket.emit("travel:downed", { hearts: player.lives, solo: others.length === 0 });
+          for (const mid of others) io.to(mid).emit("travel:allyDowned", { id: player.id, name: player.name });
+          room.log = { type: "travel", text: `${player.name} was knocked down.`, ts: Date.now() };
+        } else {
+          // Son kalp gitti: ölüm, kasabada tapınakta diriltilmeli.
+          travel.fall(room, player);
+          socket.emit("travel:fallen", {});
+          socket.emit("travel:notice", { text: "Your last heart is gone. Return to the temple to be revived.", hearts: true });
+          room.log = { type: "travel", text: `${player.name} has fallen in the wilds.`, ts: Date.now() };
+        }
+        emitRoomState(io, room);
+      } catch (err) { /* best-effort */ }
+    });
+
+    // Yakındaki bir düşmüş takım arkadaşını diriltir (canı dolar, seferde kalır).
+    socket.on("travel:revive", (payload = {}) => {
+      try {
+        const { room, player } = gameContext(socket);
+        const t = travel.activeTravel(room, player);
+        if (!t || !t.members.includes(player.id)) return;
+        if (travel.isDowned(t, player.id)) return; // düşmüş biri diriltemez
+        requireAlive(player);
+        const res = travel.revive(room, player, payload.targetId);
+        const target = res.target;
+        // Dirilen oyuncuya can bilgisi + durum; herkese efekt.
+        io.to(target.id).emit("travel:revived", { id: target.id, hp: target.hp, byName: player.name });
+        emitToTravel(io, t, "travel:reviveFx", { id: target.id, byId: player.id });
+        room.log = { type: "travel", text: `${player.name} revived ${target.name}.`, ts: Date.now() };
+        emitRoomState(io, room);
+      } catch (err) { emitError(socket, err); }
+    });
+
+    // Düşen oyuncu vazgeçip kasabaya döner (kalp zaten düşmüştü).
+    socket.on("travel:giveup", () => {
+      try {
+        const { room, player } = gameContext(socket);
+        const t = travel.activeTravel(room, player);
+        if (!t || !travel.isDowned(t, player.id)) return;
+        travel.giveUp(room, player);
+        socket.emit("travel:returned", { hearts: player.lives, text: "You were carried back to town." });
+        room.log = { type: "travel", text: `${player.name} was carried back to town.`, ts: Date.now() };
+        emitRoomState(io, room);
+      } catch (err) { /* best-effort */ }
     });
 
     socket.on("travel:interact", (payload = {}) => {
       try {
         const { room, player } = gameContext(socket);
         requireAlive(player);
+        const t = travel.activeTravel(room, player);
+        if (t && travel.isDowned(t, player.id)) throw new Error("You are down. Wait for an ally to revive you.");
         const res = travel.interact(room, player, payload.poiId);
         if (res.loot) socket.emit("travel:reward", { kind: "chest", loot: res.loot, poiId: res.poi.id });
         else if (res.gold) socket.emit("travel:reward", { kind: "gold", gold: res.gold, poiId: res.poi.id });
-        else if (res.reveal) emitToTravel(io, travel.activeTravel(room, player), "travel:reveal", {});
+        else if (res.reveal) {
+          emitToTravel(io, travel.activeTravel(room, player), "travel:reveal", {});
+          socket.emit("travel:notice", { text: res.text, poiId: res.poi.id, kind: res.poi.kind, party: null });
+        } else socket.emit("travel:notice", { text: res.text, poiId: res.poi.id, kind: res.poi.kind, party: res.party || null });
         room.log = { type: "travel", text: res.text, ts: Date.now() };
         emitRoomState(io, room);
       } catch (err) { emitError(socket, err); }

@@ -104,9 +104,9 @@ function validateReferences(data) {
     const setIds = new Set((data.itemSets || []).map((s) => s && s.id));
     const taxo = new Set(data.monsterTags || []);
     const rarities = (data.loot && data.loot.rarityOrder) || [];
-    const ITEM_STATS = ["attack", "resistance", "magicPower", "healPower", "maxHp", "maxMana", "hp", "mana", "speed", "critChance", "critDamage", "manaRegen", "omnivamp", "lifesteal"];
+    const ITEM_STATS = ["attack", "resistance", "magicPower", "healPower", "maxHp", "maxMana", "hp", "mana", "speed", "critChance", "critDamage", "manaRegen", "omnivamp", "lifesteal", "attackSpeed"];
     // RACE_STATS: dosyanın üstündeki ortak liste kullanılır.
-    const RACE_STATS = ["attack", "resistance", "magicPower", "healPower", "maxHp", "maxMana", "speed", "manaRegen", "critChance", "critDamage"];
+    const RACE_STATS = ["attack", "resistance", "magicPower", "healPower", "maxHp", "maxMana", "speed", "manaRegen", "critChance", "critDamage", "attackSpeed"];
     const BUFFS = ["attack", "defense", "regen", "weaken", "expose", "dot", "wet", "frozen", "shield", "magicBoost", "pet_attack", "pet_magic", "pet_defense", "pet_weaken", "healblock", "stack", "heal", "poison"];
     for (const c of classes) {
       for (const r of [...(c.evolutions || []), ...(c.evolution ? [c.evolution] : [])]) {

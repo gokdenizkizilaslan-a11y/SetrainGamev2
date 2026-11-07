@@ -3380,28 +3380,64 @@ input:focus {
 }
 
 .result-card {
+  position: relative;
   max-width: min(90vw, 440px);
-  padding: 1.6rem;
+  padding: 1.9rem 1.7rem 1.6rem;
   text-align: center;
-  background: rgba(35, 25, 20, 0.9);
-  border: 1px solid var(--glass-line);
+  color: #f6ead4;
+  background: linear-gradient(168deg, rgba(42, 32, 24, 0.97), rgba(14, 11, 10, 0.98));
+  border: 1px solid rgba(214, 178, 106, 0.34);
   border-radius: 18px;
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.68), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  animation: result-in 0.32s ease-out both;
+}
+
+@keyframes result-in {
+  from { transform: translateY(14px) scale(0.97); opacity: 0; }
+  to { transform: none; opacity: 1; }
 }
 
 .result-card h3 {
   font-family: "Cinzel", serif;
-  margin: 0 0 0.6rem;
+  font-size: 1.5rem;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  margin: 0 0 0.7rem;
 }
 
 .result-card--victory {
-  border-color: rgba(143, 201, 122, 0.6);
+  border-color: rgba(232, 196, 130, 0.5);
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.68), 0 0 30px rgba(232, 196, 130, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.result-card--victory h3 {
+  background: linear-gradient(180deg, #fdf2d4, #e8c48e 60%, #b98f45);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .result-card--defeat {
-  border-color: rgba(226, 96, 74, 0.6);
+  border-color: rgba(200, 100, 78, 0.46);
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.7), 0 0 26px rgba(190, 70, 55, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.result-card--defeat h3 {
+  background: linear-gradient(180deg, #ffe3d4, #e8967a 60%, #b45a45);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.result-card p {
+  color: #c3ae95;
+  line-height: 1.6;
+}
+
+.result-card .btn {
+  margin-top: 0.4rem;
 }
 
 /* ---- Tavern ---- */
@@ -9159,9 +9195,11 @@ input:focus {
    the map shell (which has only absolutely-positioned children) does not
    collapse to 0px. Without this the map renders "invisible" and only the town
    panel background shows through. */
-#travel-content { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; overflow-y: auto; }
-#travel-content > .tv-shell { flex: 1 1 0; }
-.tv-shell { position: relative; flex: 1; min-height: 0; border-radius: 14px; overflow: hidden; background: #0b0908; }
+#travel-content { flex: 1 1 auto; min-height: 320px; display: flex; flex-direction: column; overflow-y: auto; }
+#travel-content > .tv-shell { flex: 1 1 auto; min-height: 320px; height: 100%; }
+.tv-shell { position: relative; flex: 1; min-height: 320px; border-radius: 14px; overflow: hidden;
+  /* Siyah yerine dünyanın zemin tonu: kısa bir boş kare bile siyah görünmez. */
+  background: radial-gradient(120% 120% at 50% 38%, #2f4a33 0%, #1b2c20 55%, #0c1410 100%); }
 .tv-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .tv-top { position: absolute; top: 10px; left: 12px; right: 12px; display: flex; justify-content: space-between; gap: 10px; pointer-events: none; }
 .tv-title { font: 600 15px Georgia, serif; color: #ffd9a0; background: #0009; border: 1px solid #6b4a24; border-radius: 10px; padding: 6px 12px; }
@@ -9392,3 +9430,17 @@ input:focus {
   }
 }
 
+
+/* ---- Mana Hues (inventory) ---- */
+.mana-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; margin-top: 8px; }
+.mana-card { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.14); background: rgba(18,14,24,0.55); }
+.mana-card--active { border-color: #ffe6a8; box-shadow: 0 0 12px rgba(255,214,120,0.45); }
+.mana-swatch { flex: 0 0 34px; width: 34px; height: 34px; border-radius: 8px; }
+.mana-meta { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
+.mana-meta b { font-size: 13px; }
+.mana-meta em { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.6px; font-style: normal; }
+.mana-eq { margin-left: auto; font-size: 11px; color: #ffe6a8; font-weight: 700; }
+.mana-card .btn { margin-left: auto; }
+.mana-roll { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; margin-top: 10px; }
+.mana-roll .muted { max-width: 560px; }
