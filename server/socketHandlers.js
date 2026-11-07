@@ -18,7 +18,7 @@ const sessions = require("./sessions");
 const pvp = require("./pvp");
 const pets = require("./pets");
 const travel = require("./travel");
-const { onNewDay, equipItem, unequipSlot, setSkillLoadout, learnTreeNode } = require("./players");
+const { onNewDay, equipItem, unequipSlot, setSkillLoadout, learnTreeNode, addXp } = require("./players");
 const { publicCatalog, getClass } = require("../content");
 
 function isDead(p) { return p && p.lives <= 0; }
@@ -90,6 +90,13 @@ function broadcastRoomList(io) {
 function emitRoomState(io, room) {
   if (!room) return;
   io.to(room.id).emit("room:state", rooms.publicRoomState(room));
+}
+
+// Bir sefer (dünya) sadece kendi üyelerine yayınlanır; aynı odadaki başka
+// dünyalar birbirinin pozisyon/keşif verisini görmez.
+function emitToTravel(io, travel, event, payload) {
+  if (!travel) return;
+  for (const id of travel.members || []) io.to(id).emit(event, payload);
 }
 
 function emitCombatFx(io, room) {
@@ -845,8 +852,8 @@ function registerSocketHandlers(io) {
         const d = dungeon.dungeonFor(room, player);
         if (d && dungeon.delveUnderway(d)) throw new Error("Finish or leave the delve first.");
         if (player.bossId || player.pvpId) throw new Error("Finish your current battle first.");
-        travel.enterTravel(room, player, payload.type, payload.size);
-        socket.emit("travel:map", travel.publicMap(room));
+        travel.enterTravel(room, player, payload.type, payload.size, { joinId: payload.joinId });
+        socket.emit("travel:map", travel.publicMap(room, player));
         room.log = { type: "travel", text: `${player.name} sets out into the wilds.`, ts: Date.now() };
         emitRoomState(io, room);
       } catch (err) { emitError(socket, err); }
@@ -855,8 +862,8 @@ function registerSocketHandlers(io) {
     socket.on("travel:sync", () => {
       try {
         const { room, player } = gameContext(socket);
-        const t = travel.activeTravel(room);
-        if (t && t.members.includes(player.id)) socket.emit("travel:map", travel.publicMap(room));
+        const t = travel.activeTravel(room, player);
+        if (t && t.members.includes(player.id)) socket.emit("travel:map", travel.publicMap(room, player));
       } catch (err) { /* ignore */ }
     });
 
@@ -871,16 +878,28 @@ function registerSocketHandlers(io) {
     socket.on("travel:pos", (payload = {}) => {
       try {
         const { room, player } = gameContext(socket);
-        const t = travel.activeTravel(room);
+        const t = travel.activeTravel(room, player);
         if (!t || !t.members.includes(player.id)) return;
         const x = Number(payload.x), y = Number(payload.y);
         if (!Number.isFinite(x) || !Number.isFinite(y)) return;
         t.pos[player.id] = { x: Math.max(0, Math.min(t.w, x)), y: Math.max(0, Math.min(t.h, y)) };
-        io.to(room.id).emit("travel:pos", { id: player.id, x: t.pos[player.id].x, y: t.pos[player.id].y });
+        emitToTravel(io, t, "travel:pos", { id: player.id, x: t.pos[player.id].x, y: t.pos[player.id].y });
         const revealed = travel.revealAround(t, t.pos[player.id].x, t.pos[player.id].y, 6);
-        if (revealed && revealed.length) io.to(room.id).emit("travel:explored", { add: revealed });
+        if (revealed && revealed.length) emitToTravel(io, t, "travel:explored", { add: revealed });
         if (travel.tryAutoJoin(room, player)) emitRoomState(io, room);
       } catch (err) { /* movement is best-effort */ }
+    });
+
+    // İstemci canavarı yerel simüle eder; sunucu ödülü sınırlı verir.
+    socket.on("travel:kill", (payload = {}) => {
+      try {
+        const { room, player } = gameContext(socket);
+        const res = travel.rewardKill(room, player, payload);
+        if (!res) return;
+        addXp(player, res.xp);
+        player.gold = (player.gold || 0) + res.gold;
+        emitRoomState(io, room);
+      } catch (err) { /* kill reward is best-effort */ }
     });
 
     socket.on("travel:interact", (payload = {}) => {
@@ -890,7 +909,7 @@ function registerSocketHandlers(io) {
         const res = travel.interact(room, player, payload.poiId);
         if (res.loot) socket.emit("travel:reward", { kind: "chest", loot: res.loot, poiId: res.poi.id });
         else if (res.gold) socket.emit("travel:reward", { kind: "gold", gold: res.gold, poiId: res.poi.id });
-        else if (res.reveal) io.to(room.id).emit("travel:reveal", {});
+        else if (res.reveal) emitToTravel(io, travel.activeTravel(room, player), "travel:reveal", {});
         room.log = { type: "travel", text: res.text, ts: Date.now() };
         emitRoomState(io, room);
       } catch (err) { emitError(socket, err); }

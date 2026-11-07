@@ -128,6 +128,7 @@ function applyPassiveStatBonus(player, growth) {
     const cls = getClass(player.character);
     const g = growth || null;
     const beforeMaxHp = player.maxHp;
+    const beforeMaxMana = player.maxMana;
     const grant = (field, base) => {
       const pct = passives.statBonusPct(player, field);
       if (pct > 0 && base > 0) player[field] += Math.max(1, Math.round(base * pct));
@@ -138,13 +139,15 @@ function applyPassiveStatBonus(player, growth) {
     grant("healPower", g ? g.healPower || 0 : player.healPower);
     grant("maxHp", g ? g.hp || 0 : player.maxHp);
     grant("maxMana", g ? g.mana || 0 : player.maxMana);
+    // maxHp/maxMana bonusu canı/manayı da beraberinde getirir; hem yaratılışta
+    // hem level-up'ta (günlük reset şifası yok) — yoksa 646/678 gibi eksik kalır.
+    if (player.maxHp > beforeMaxHp) player.hp = Math.min(player.maxHp, player.hp + (player.maxHp - beforeMaxHp));
+    if (player.maxMana > beforeMaxMana) player.mana = Math.min(player.maxMana, (player.mana || 0) + (player.maxMana - beforeMaxMana));
     if (!g && cls) {
       const raceStats = (player.race && player.race.stats) || {};
       player.speed = (cls.speed || 0) + passives.speedBonus(player) + (Number(raceStats.speed) || 0);
       player.manaRegen = ((CONTENT.combat && CONTENT.combat.manaRegenPerRound) || 3)
         + (cls.manaRegen || 0) + passives.manaRegenBonus(player) + (Number(raceStats.manaRegen) || 0);
-      // maxHp bonusu canı da beraberinde getirir (günlük reset şifası yok).
-      if (player.maxHp > beforeMaxHp) player.hp = Math.min(player.maxHp, player.hp + (player.maxHp - beforeMaxHp));
     }
   } catch (e) {}
 }
@@ -555,6 +558,13 @@ function createPlayer({ id, name, character, isHost = false }) {
     activePetId: null,
     activePetIds: [],
   };
+  // "First Dawn" anomalisi: her gün bonus stamina ile başlar. Bonus kalıcı max
+  // stamina'ya eklenir; yoksa gün başında 11/10 gibi taşma görünürdü.
+  if (anomaly && anomaly.effect && anomaly.effect.type === "staminaOnDay") {
+    const sb = Math.max(0, Number(anomaly.effect.amount) || 0);
+    player.maxStamina += sb;
+    player.stamina = player.maxStamina;
+  }
   if (character === "tamer") {
     player.inventory.push({ itemId: "egg_red", qty: 1 }, { itemId: "egg_green", qty: 1 });
   }
@@ -641,6 +651,7 @@ function publicPlayer(player) {
     dungeonId: player.dungeonId || null,
     bossId: player.bossId || null,
     pvpId: player.pvpId || null,
+    travelId: player.travelId || null,
     shield: player.shield || 0,
     maxShield: player.maxShield || 0,
     pets: (player.pets || []).map((p) => ({ petId: p.petId, hatched: p.hatched, level: p.level||1, xp: p.xp||0, xpToNext: petXpToNext(p.level||1), bonusAttack: p.bonusAttack||0, bonusMagic: p.bonusMagic||0, bonusResist: p.bonusResist||0 })),
@@ -693,9 +704,8 @@ function onNewDay(player) {
   player.restCount = 0;
   if (player.anomaly && player.anomaly.effect) {
     const e = player.anomaly.effect;
-    if (e.type === "staminaOnDay") {
-      player.stamina += e.amount;
-    }
+    // staminaOnDay bonusu artık kalıcı maxStamina'ya işleniyor (yukarıda),
+    // burada tekrar eklenirse taşma (11/10) olur — eklenmez.
     if (e.type === "manaOnDay") {
       player.mana = Math.min(player.maxMana, player.mana + e.amount);
     }
@@ -817,10 +827,13 @@ function applyStatDelta(player, stats, sign) {
     const n = Number(val) || 0;
     if (key === "maxHp" || key === "hp") {
       player.maxHp += sign * n;
-      player.hp = Math.min(player.hp, player.maxHp);
+      // Kuşanınca max can artışı canı da getirir; çıkarınca yeni tavana kırpılır.
+      if (sign > 0) player.hp = Math.min(player.maxHp, player.hp + n);
+      else player.hp = Math.min(player.hp, player.maxHp);
     } else if (key === "mana") {
       player.maxMana += sign * n;
-      player.mana = Math.min(player.mana, player.maxMana);
+      if (sign > 0) player.mana = Math.min(player.maxMana, (player.mana || 0) + n);
+      else player.mana = Math.min(player.mana, player.maxMana);
     } else if (key === "attack") {
       player.attack += sign * n;
     } else if (key === "resistance") {

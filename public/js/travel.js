@@ -102,26 +102,42 @@
     }
   }
 
-  function update(room) {
-    if (!room || !room.travel || !room.travel.active) return;
-    S.room = room;
-    S.pois = room.travel.pois || [];
+  // Oyuncunun kendi dünyasını çözer (aynı odada birden çok sefer olabilir).
+  function currentTravel(room) {
+    if (!room) return null;
     const meId = (typeof state !== "undefined" && state.playerId) || (room.players[0] && room.players[0].id);
-    const pos = (room.travel.pos || {})[meId];
+    const me = meId && room.players ? room.players.find((p) => p.id === meId) : null;
+    if (me && me.travelId && room.travels && room.travels[me.travelId]) return room.travels[me.travelId];
+    if (room.travel && room.travel.active) return room.travel;
+    if (room.travels) {
+      for (const k of Object.keys(room.travels)) {
+        if (room.travels[k] && room.travels[k].active) return room.travels[k];
+      }
+    }
+    return null;
+  }
+
+  function update(room) {
+    const tv = currentTravel(room);
+    if (!room || !tv) return;
+    S.room = room;
+    S.pois = tv.pois || [];
+    const meId = (typeof state !== "undefined" && state.playerId) || (room.players[0] && room.players[0].id);
+    const pos = (tv.pos || {})[meId];
     if (pos && !S.keys.up && !S.keys.down && !S.keys.left && !S.keys.right) {
       // resync if server moved us (teleport) and we are idle
       if (Math.abs(pos.x - S.me.x) > 3 || Math.abs(pos.y - S.me.y) > 3) { S.me.x = pos.x; S.me.y = pos.y; }
     }
     S.others = {};
-    for (const [id, p] of Object.entries(room.travel.pos || {})) {
+    for (const [id, p] of Object.entries(tv.pos || {})) {
       if (id === meId) continue;
       const pl = room.players.find((x) => x.id === id);
       S.others[id] = { x: p.x, y: p.y, name: pl ? pl.name : "?", character: pl ? pl.character : "", id };
     }
-    S.invite = (room.travel.invites || {})[meId] || null;
+    S.invite = (tv.invites || {})[meId] || null;
     const under = poiUnderPlayer();
     S.hoverPoi = under;
-    S.party = under ? (room.travel.parties || {})[under.id] || null : null;
+    S.party = under ? (tv.parties || {})[under.id] || null : null;
     renderHud();
     renderInvite();
     renderParty();
@@ -365,7 +381,7 @@
     for (const p of S.particles) { p.x += p.vx; p.y += p.vy; p.z -= dt * 6; p.a -= dt * 0.12; }
     S.particles = S.particles.filter((p) => p.a > 0 && p.z > -4);
     const under = poiUnderPlayer();
-    if (under !== S.hoverPoi) { S.hoverPoi = under; S.party = under && S.room && S.room.travel ? (S.room.travel.parties || {})[under.id] || null : null; renderPrompt(); renderParty(); }
+    if (under !== S.hoverPoi) { S.hoverPoi = under; const tvNow = currentTravel(S.room); S.party = under && tvNow ? (tvNow.parties || {})[under.id] || null : null; renderPrompt(); renderParty(); }
   }
 
   function loop(ts) {
@@ -381,7 +397,7 @@
   // ---- DOM panels ----
   function renderHud() {
     const me = S.room && S.room.players.find((p) => p.id === state.playerId);
-    const t = S.room && S.room.travel;
+    const t = S.room && currentTravel(S.room);
     if (!me || !t) return;
     const title = $("tv-title");
     if (title) title.textContent = `${t.typeLabel || "Wilds"} \u00b7 ${t.sizeLabel || ""}`;

@@ -62,6 +62,7 @@ function publicRoomState(room) {
     pvpDuels: pvp,
     pvpInvites,
     travel: (() => { try { return require("./travel").publicTravel(room); } catch (e) { return null; } })(),
+    travels: (() => { try { return require("./travel").publicTravels(room); } catch (e) { return {}; } })(),
     players: room.players.map(publicPlayer),
   };
 }
@@ -119,6 +120,7 @@ function createRoom({ socketId, name, character, mode, roomName }) {
     pvpDuels: [],
     pvpInvites: [],
     travel: null,
+    travels: {},
     chat: [],
     players: [host],
   };
@@ -245,8 +247,9 @@ function leaveRoom(socketId) {
     }
   }
   try { require("./pvp").cleanupInvitesFor(room, socketId); } catch (e) {}
-  if (room.travel) {
-    try { require("./travel").leaveTravel(room, { id: socketId }); } catch (e) {}
+  const leavingPlayer = room.players.find((p) => p.id === socketId);
+  if (leavingPlayer && (leavingPlayer.travelId || room.travel)) {
+    try { require("./travel").leaveTravel(room, leavingPlayer); } catch (e) {}
   }
 
   room.players = room.players.filter((p) => p.id !== socketId);
@@ -306,6 +309,7 @@ function startGame(socketId) {
   room.pvpDuels = [];
   room.pvpInvites = [];
   room.travel = null;
+  room.travels = {};
   stock.init(room);
   room.log = { type: "day", text: "Day 1 — the town stirs. Spend your stamina wisely." };
   for (const p of room.players) {
@@ -351,22 +355,24 @@ function rebindSocket(oldSocketId, newSocketId) {
     if (inv.fromId === oldSocketId) inv.fromId = newSocketId;
     if (inv.toId === oldSocketId) inv.toId = newSocketId;
   }
-  if (room.travel) {
+  const remapOneTravel = (travel) => {
     const remap = (id) => (id === oldSocketId ? newSocketId : id);
-    room.travel.members = (room.travel.members || []).map(remap);
-    if (room.travel.pos && room.travel.pos[oldSocketId]) {
-      room.travel.pos[newSocketId] = room.travel.pos[oldSocketId];
-      delete room.travel.pos[oldSocketId];
+    travel.members = (travel.members || []).map(remap);
+    if (travel.pos && travel.pos[oldSocketId]) {
+      travel.pos[newSocketId] = travel.pos[oldSocketId];
+      delete travel.pos[oldSocketId];
     }
-    if (room.travel.invites && room.travel.invites[oldSocketId]) {
-      room.travel.invites[newSocketId] = room.travel.invites[oldSocketId];
-      delete room.travel.invites[oldSocketId];
+    if (travel.invites && travel.invites[oldSocketId]) {
+      travel.invites[newSocketId] = travel.invites[oldSocketId];
+      delete travel.invites[oldSocketId];
     }
-    for (const party of Object.values(room.travel.parties || {})) {
+    for (const party of Object.values(travel.parties || {})) {
       party.memberIds = (party.memberIds || []).map(remap);
       if (party.leaderId === oldSocketId) party.leaderId = newSocketId;
     }
-  }
+  };
+  for (const travel of Object.values(room.travels || {})) remapOneTravel(travel);
+  if (room.travel) remapOneTravel(room.travel);
   return room;
 }
 

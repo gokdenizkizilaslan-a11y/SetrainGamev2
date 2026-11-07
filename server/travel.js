@@ -211,8 +211,25 @@ function generateMap(seed, typeId, sizeId) {
   };
 }
 
-function activeTravel(room) {
-  return room && room.travel && room.travel.active ? room.travel : null;
+// Birden fazla bağımsız sefer (dünya) aynı anda yaşayabilir. Her oyuncu
+// player.travelId ile kendi dünyasına bağlıdır; oyuncu verilmezse (eski
+// çağrılar) ilk aktif dünya döner.
+function activeTravel(room, player) {
+  if (!room) return null;
+  if (player && player.travelId) {
+    const own = room.travels && room.travels[player.travelId];
+    if (own && own.active) return own;
+  }
+  for (const id of Object.keys(room.travels || {})) {
+    const t = room.travels[id];
+    if (t && t.active) return t;
+  }
+  return room.travel && room.travel.active ? room.travel : null;
+}
+
+function newTravelId(room) {
+  const n = Object.keys(room.travels || {}).length + 1;
+  return "trv_" + n + "_" + Math.random().toString(36).slice(2, 8);
 }
 
 // Mark a circular area around (x,y) as explored. Shared by the whole room so
@@ -234,15 +251,27 @@ function revealAround(travel, x, y, rad) {
   return added;
 }
 
-function enterTravel(room, player, typeId, sizeId, members) {
+function enterTravel(room, player, typeId, sizeId, opts = {}) {
   if (player.stamina < ENTRY_STAMINA) throw new Error(`Travel costs ${ENTRY_STAMINA} stamina.`);
-  let travel = activeTravel(room);
+  if (!room.travels) room.travels = {};
+  // Zaten bir dünyadaysa önce oradan ayrıl (üst üste dünya olmasın).
+  if (player.travelId) leaveTravel(room, player);
+
+  let travel = null;
+  if (opts.joinId) {
+    travel = room.travels[opts.joinId];
+    if (!travel || !travel.active) throw new Error("That expedition has ended.");
+  }
   if (!travel) {
+    // Her "Set out" yepyeni bir dünya üretir; aynı tohum asla tekrar kullanılmaz.
     const seed = Math.floor(Math.random() * 2147483647);
     const map = generateMap(seed, typeId || MAP_TYPES[0].id, sizeId || "normal");
-    travel = room.travel = {
+    const id = newTravelId(room);
+    travel = room.travels[id] = {
+      id,
       active: true,
       ...map,
+      leaderId: player.id,
       members: [],
       pos: {},
       parties: {},
@@ -253,6 +282,7 @@ function enterTravel(room, player, typeId, sizeId, members) {
     revealAround(travel, travel.spawn.x + 0.5, travel.spawn.y + 0.5, 8);
   }
   player.stamina = Math.max(0, player.stamina - ENTRY_STAMINA);
+  player.travelId = travel.id;
   if (!travel.members.includes(player.id)) travel.members.push(player.id);
   if (!travel.pos[player.id]) travel.pos[player.id] = { x: travel.spawn.x + 0.5, y: travel.spawn.y + 0.5 };
   revealAround(travel, travel.pos[player.id].x, travel.pos[player.id].y, 6);
@@ -260,8 +290,8 @@ function enterTravel(room, player, typeId, sizeId, members) {
 }
 
 function leaveTravel(room, player) {
-  const travel = activeTravel(room);
-  if (!travel) return;
+  const travel = activeTravel(room, player);
+  if (!travel) { if (player) player.travelId = null; return; }
   travel.members = travel.members.filter((id) => id !== player.id);
   delete travel.pos[player.id];
   delete travel.invites[player.id];
@@ -271,7 +301,11 @@ function leaveTravel(room, player) {
     if (party.leaderId === player.id && party.memberIds.length) party.leaderId = party.memberIds[0];
     if (!party.memberIds.length && party.status === "waiting") delete travel.parties[key];
   }
-  if (!travel.members.length) room.travel = null;
+  if (!travel.members.length) {
+    if (room.travels && room.travels[travel.id]) delete room.travels[travel.id];
+    if (room.travel === travel) room.travel = null;
+  }
+  if (player) player.travelId = null;
   player.dungeonId = null;
 }
 
@@ -328,7 +362,7 @@ function inviteOthers(room, travel, poi, from) {
 }
 
 function interact(room, player, poiId) {
-  const travel = activeTravel(room);
+  const travel = activeTravel(room, player);
   if (!travel) throw new Error("No active travel map.");
   const poi = nearPOI(travel, player, poiId);
   if (poi.kind === "chest") {
@@ -378,7 +412,7 @@ function interact(room, player, poiId) {
 }
 
 function acceptInvite(room, player) {
-  const travel = activeTravel(room);
+  const travel = activeTravel(room, player);
   if (!travel) throw new Error("No active travel map.");
   const inv = travel.invites[player.id];
   if (!inv) throw new Error("You have no pending invite.");
@@ -391,7 +425,7 @@ function acceptInvite(room, player) {
 }
 
 function startEncounter(room, player, poiId) {
-  const travel = activeTravel(room);
+  const travel = activeTravel(room, player);
   if (!travel) throw new Error("No active travel map.");
   const party = travel.parties[poiId];
   if (!party) throw new Error("No party here.");
@@ -419,7 +453,7 @@ function startEncounter(room, player, poiId) {
 }
 
 function tryAutoJoin(room, player) {
-  const travel = activeTravel(room);
+  const travel = activeTravel(room, player);
   if (!travel) return false;
   const pos = travel.pos[player.id];
   if (!pos) return false;
@@ -451,14 +485,16 @@ function publicParty(party) {
   return { id: party.id, poiId: party.poiId, kind: party.kind, rank: party.rank, leaderId: party.leaderId, memberIds: [...party.memberIds], status: party.status };
 }
 
-function publicTravel(room) {
-  const travel = activeTravel(room);
+function publicTravel(room, player) {
+  const travel = activeTravel(room, player);
   if (!travel) return null;
   const parties = {};
   for (const [k, v] of Object.entries(travel.parties)) parties[k] = publicParty(v);
   const invites = {};
   for (const [k, v] of Object.entries(travel.invites)) invites[k] = { poiId: v.poiId, fromName: v.fromName };
   return {
+    id: travel.id,
+    leaderId: travel.leaderId,
     active: true,
     seed: travel.seed, type: travel.type, typeLabel: travel.typeLabel,
     size: travel.size, sizeLabel: travel.sizeLabel, w: travel.w, h: travel.h,
@@ -469,20 +505,59 @@ function publicTravel(room) {
   };
 }
 
-function publicMap(room) {
-  const travel = activeTravel(room);
+// Aynı odadaki tüm aktif seferler (oyuncular birbirine katılabilsin diye).
+function publicTravels(room) {
+  const out = {};
+  for (const id of Object.keys(room.travels || {})) {
+    const t = room.travels[id];
+    if (!t || !t.active) continue;
+    out[id] = publicTravel(room, { travelId: id });
+  }
+  if (!Object.keys(out).length && room.travel && room.travel.active) {
+    const t = publicTravel(room);
+    if (t) out[t.id || "legacy"] = t;
+  }
+  return out;
+}
+
+function publicMap(room, player) {
+  const travel = activeTravel(room, player);
   if (!travel) return null;
   let exploredStr = "";
   if (travel.explored) {
     for (let i = 0; i < travel.explored.length; i++) exploredStr += travel.explored[i] ? "1" : "0";
   }
-  return { seed: travel.seed, type: travel.type, size: travel.size, w: travel.w, h: travel.h, tiles: travel.tiles, spawn: travel.spawn, explored: exploredStr };
+  return { id: travel.id, seed: travel.seed, type: travel.type, size: travel.size, w: travel.w, h: travel.h, tiles: travel.tiles, spawn: travel.spawn, explored: exploredStr };
+}
+
+// İstemci canavarları yerel olarak simüle eder; sunucu yalnızca ölüm
+// bildirimini alır ve ödülü tabloya göre sınırlar (spam koruması dahil).
+const KILL_REWARD = {
+  goblin: { xp: 18, gold: 6 },
+  wraith: { xp: 24, gold: 8 },
+  treant: { xp: 40, gold: 14 },
+};
+const KILL_MIN_GAP_MS = 320;
+
+function rewardKill(room, player, payload = {}) {
+  const travel = activeTravel(room, player);
+  if (!travel || !travel.members.includes(player.id)) return null;
+  const now = Date.now();
+  if (now - (player._lastKillTs || 0) < KILL_MIN_GAP_MS) return null;
+  player._lastKillTs = now;
+  const kind = String(payload.kind || "goblin");
+  const base = KILL_REWARD[kind] || KILL_REWARD.goblin;
+  const size = MAP_SIZES.find((s) => s.id === travel.size) || MAP_SIZES[1];
+  const mult = Math.max(0.6, Math.min(2.2, size.scale));
+  return { xp: Math.round(base.xp * mult), gold: Math.round(base.gold * mult) };
 }
 
 function resetTravel(room) {
   if (!room) return;
+  room.travels = {};
   room.travel = null;
   for (const p of room.players) {
+    p.travelId = null;
     if (p.dungeonId && String(p.dungeonId).startsWith("trav_")) p.dungeonId = null;
   }
 }
@@ -499,8 +574,10 @@ module.exports = {
   tryAutoJoin,
   startEncounter,
   publicTravel,
+  publicTravels,
   publicMap,
   revealAround,
   resetTravel,
   activeTravel,
+  rewardKill,
 };
