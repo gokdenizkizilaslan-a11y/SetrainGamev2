@@ -256,12 +256,12 @@ function generateMap(seed, typeId, sizeId) {
       p.name = genName(type.id, p.kind, pois.indexOf(p));
     }
   }
-  // encode tiles as base36 chars
-  let tilesStr = "";
-  for (let i = 0; i < tiles.length; i++) tilesStr += (tiles[i] || 0).toString(36);
+  // Kare kodları sayısal dizi olarak kalır; base36 metni yalnızca istemci
+  // "terrain" istediğinde üretilir. (Büyük haritada 360k string birleştirme
+  // tüm sunucuyu kilitliyordu.)
   return {
     seed, type: type.id, typeLabel: type.label, size: size.id, sizeLabel: size.label,
-    w, h, tiles: tilesStr, spawn, pois,
+    w, h, tiles, spawn, pois,
   };
 }
 
@@ -307,8 +307,11 @@ function revealAround(travel, x, y, rad) {
 
 function enterTravel(room, player, typeId, sizeId, opts = {}) {
   if (player.stamina < ENTRY_STAMINA) throw new Error(`Travel costs ${ENTRY_STAMINA} stamina.`);
-  // Eski bir ölümden kalan 0 canla seyahate çıkılmasın (anında ölüm bug'ı).
-  if (player.lives > 0 && player.hp <= 0) player.hp = Math.max(1, player.maxHp || 100);
+  // Sefer her zaman tam can/mana ile başlar: eski düşük can (0 ya da 40) taşınmaz.
+  if (player.lives > 0) {
+    player.hp = Math.max(1, player.maxHp || 100);
+    player.mana = Math.max(0, player.maxMana || 0);
+  }
   player.downed = false;
   if (!room.travels) room.travels = {};
   // Zaten bir dünyadaysa önce oradan ayrıl (üst üste dünya olmasın).
@@ -365,11 +368,14 @@ function leaveTravel(room, player) {
     if (room.travel === travel) room.travel = null;
   }
   if (player) player.travelId = null;
-  // Eski "yere düştü" durumu yeni sefere/kasabaya taşınmaz. Aksi halde
-  // publicPlayer.downed=true + hp=0 istemcide anında ölüm gibi görünür.
+  // Kasabaya dönen oyuncu her zaman tam can/mana ile döner. Eski davranış
+  // yalnızca hp<=0 iken iyileştiriyordu; 40 canla çıkınca lobide 40 kalıyordu.
   if (player) {
     player.downed = false;
-    if (player.lives > 0 && !(player.hp > 0)) player.hp = Math.max(1, player.maxHp || 100);
+    if (player.lives > 0) {
+      player.hp = Math.max(1, player.maxHp || 100);
+      player.mana = Math.max(0, player.maxMana || 0);
+    }
   }
   player.dungeonId = null;
 }
@@ -731,21 +737,42 @@ function launchExpedition(room, player, id) {
   return travel;
 }
 
-function publicMap(room, player) {
+// Raw terrain (base36 tile string) + explored bitmap are only sent on request.
+// On big maps they are hundreds of KB per emit; the ARPG client paints its own
+// tiles from the biome, so shipping them on every travel:map froze browsers.
+function exploredString(travel) {
+  if (!travel || !travel.explored) return "";
+  const ex = travel.explored;
+  const parts = new Array(ex.length);
+  for (let i = 0; i < ex.length; i++) parts[i] = ex[i] ? "1" : "0";
+  return parts.join("");
+}
+
+function publicMap(room, player, opts = {}) {
   const travel = activeTravel(room, player);
   if (!travel) return null;
-  let exploredStr = "";
-  if (travel.explored) {
-    for (let i = 0; i < travel.explored.length; i++) exploredStr += travel.explored[i] ? "1" : "0";
-  }
   const sizeDef = MAP_SIZES.find((s) => s.id === travel.size) || MAP_SIZES[1];
   const typeDef = MAP_TYPES.find((t) => t.id === travel.type) || MAP_TYPES[0];
-  return {
+  const out = {
     id: travel.id, seed: travel.seed,
     type: travel.type, typeLabel: typeDef.label,
     size: travel.size, sizeLabel: sizeDef.label, scale: sizeDef.scale,
-    w: travel.w, h: travel.h, tiles: travel.tiles, spawn: travel.spawn, explored: exploredStr,
+    w: travel.w, h: travel.h, spawn: travel.spawn,
   };
+  if (opts.terrain) {
+    // Legacy explorer için base36 karo metni (istek üzerine üretilir).
+    let tilesStr = "";
+    if (typeof travel.tiles === "string") tilesStr = travel.tiles;
+    else {
+      const arr = travel.tiles || [];
+      const parts = new Array(arr.length);
+      for (let i = 0; i < arr.length; i++) parts[i] = (arr[i] || 0).toString(36);
+      tilesStr = parts.join("");
+    }
+    out.tiles = tilesStr;
+    out.explored = exploredString(travel);
+  }
+  return out;
 }
 
 // İstemci canavarları yerel olarak simüle eder; sunucu yalnızca ölüm

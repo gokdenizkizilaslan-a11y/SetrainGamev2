@@ -6160,6 +6160,46 @@ input:focus {
   color: var(--muted) !important;
 }
 
+/* Mana Hue (tek slot renk) */
+.temple-card--mana {
+  background: linear-gradient(160deg, rgba(129, 212, 250, 0.12), rgba(171, 71, 188, 0.10));
+  border-color: rgba(143, 228, 255, 0.4);
+}
+.temple-mana-hue {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--glass-line);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.22);
+}
+.temple-mana-orb {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.55), 0 0 22px rgba(143, 228, 255, 0.5);
+}
+.temple-mana-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.temple-mana-info strong {
+  color: var(--gold-bright);
+  font-size: 1rem;
+}
+.temple-mana-info em {
+  font-style: normal;
+  font-size: 0.72rem;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+.temple-card--mana .btn {
+  align-self: flex-start;
+}
+
 .craft-grid {
   display: flex;
   flex-direction: column;

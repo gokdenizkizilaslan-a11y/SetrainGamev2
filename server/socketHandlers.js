@@ -18,7 +18,7 @@ const sessions = require("./sessions");
 const pvp = require("./pvp");
 const pets = require("./pets");
 const travel = require("./travel");
-const { onNewDay, equipItem, unequipSlot, setSkillLoadout, learnTreeNode, addXp } = require("./players");
+const { onNewDay, equipItem, unequipSlot, setSkillLoadout, learnTreeNode, consumeItem, addXp } = require("./players");
 const { CONTENT, publicCatalog, getClass } = require("../content");
 
 function isDead(p) { return p && p.lives <= 0; }
@@ -624,6 +624,37 @@ function registerSocketHandlers(io) {
       }
     });
 
+    // Tüketilebilir (iksir/azık) kullanımı: kasabada ve seyahatte serbest.
+    // Tur tabanlı bir savaş sürüyorsa mevcut sıra/kural akışına devredilir.
+    socket.on("inventory:use", (payload = {}) => {
+      try {
+        const { room, player } = gameContext(socket);
+        requireAlive(player);
+        town.requirePlaying(room, player);
+        const itemId = String(payload.itemId || "");
+        const d = (room.dungeons || []).find((x) => (x.memberIds || []).includes(player.id));
+        if (d && d.status === "fighting") {
+          combat.useItem(room, player, itemId);
+          emitRoomState(io, room);
+          return;
+        }
+        const res = consumeItem(player, itemId);
+        room.log = { type: "inventory", text: `${player.name} uses ${res.item.name}.` };
+        socket.emit("inventory:used", {
+          itemId: res.itemId,
+          name: res.item.name,
+          hp: res.hp,
+          maxHp: res.maxHp,
+          healed: res.healed,
+          food: res.food,
+          foodGained: res.foodGained,
+        });
+        emitRoomState(io, room);
+      } catch (err) {
+        emitError(socket, err);
+      }
+    });
+
     socket.on("skill:setLoadout", (payload = {}) => {
       try {
         const { room, player } = gameContext(socket);
@@ -929,11 +960,15 @@ function registerSocketHandlers(io) {
       } catch (err) { emitError(socket, err); }
     });
 
-    socket.on("travel:sync", () => {
+    // Terrain (tile string + explored bitmap) yalnızca açıkça istenirse gönderilir;
+    // varsayılan olarak yalnızca hafif harita bilgisi iner (donmayı önler).
+    socket.on("travel:sync", (payload = {}) => {
       try {
         const { room, player } = gameContext(socket);
         const t = travel.activeTravel(room, player);
-        if (t && t.members.includes(player.id)) socket.emit("travel:map", travel.publicMap(room, player));
+        if (t && t.members.includes(player.id)) {
+          socket.emit("travel:map", travel.publicMap(room, player, { terrain: !!(payload && payload.terrain) }));
+        }
       } catch (err) { /* ignore */ }
     });
 
@@ -958,8 +993,14 @@ function registerSocketHandlers(io) {
         for (const mid of t.members || []) {
           if (mid !== player.id) io.to(mid).emit("travel:pos", { id: player.id, x: t.pos[player.id].x, y: t.pos[player.id].y });
         }
-        const revealed = travel.revealAround(t, t.pos[player.id].x, t.pos[player.id].y, 6);
-        if (revealed && revealed.length) emitToTravel(io, t, "travel:explored", { add: revealed });
+        // Keşif işaretleme her pakette değil, ~2.5 Hz'de bir yapılır: 10 Hz'lik
+        // hareket akışında gereksiz iş/yayın yükü oluşturmasın.
+        player._revealAcc = (player._revealAcc || 0) + 1;
+        if (player._revealAcc >= 4) {
+          player._revealAcc = 0;
+          const revealed = travel.revealAround(t, t.pos[player.id].x, t.pos[player.id].y, 6);
+          if (revealed && revealed.length) emitToTravel(io, t, "travel:explored", { add: revealed });
+        }
         if (travel.tryAutoJoin(room, player)) emitRoomState(io, room);
       } catch (err) { /* movement is best-effort */ }
     });

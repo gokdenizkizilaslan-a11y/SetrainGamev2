@@ -161,6 +161,11 @@ function leaveDungeon(room, player) {
   }
   d.memberIds = d.memberIds.filter((id) => id !== player.id);
   player.dungeonId = null;
+  // Zindan lobisinden ayrılan oyuncu tam can/mana ile kasabaya döner.
+  if (player.lives > 0) {
+    player.hp = Math.max(1, player.maxHp || 100);
+    player.mana = Math.max(0, player.maxMana || 0);
+  }
   if (d.memberIds.length === 0) {
     removeDungeonFromRoom(room, d);
     return null;

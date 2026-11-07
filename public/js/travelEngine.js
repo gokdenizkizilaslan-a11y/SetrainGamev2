@@ -1964,6 +1964,10 @@
       this.lastTime = performance.now();
       this.isRunning = true;
       this._destroyed = false;
+      // Uyarlanabilir efekt seviyesi: kare süresi uzarsa ağır görseller seyreltilir.
+      this.lowFx = false;
+      this._fpsAcc = 0;
+      this._fpsN = 0;
       // Sekme arka plandayken tarayıcı rAF'i ~1 Hz'e kısar; simülasyonun
       // tamamen durmaması için küçük bir aralıkla güncellemeye devam et.
       if (this._bgTimer) clearInterval(this._bgTimer);
@@ -2033,6 +2037,10 @@
       this.height = h;
       if (newDpr !== this.dpr) this.tileSprites = {};
       this.dpr = newDpr;
+      // Boyuta bağlı gradyan önbellekleri geçersiz.
+      this._bgGradKey = null; this._bgGrad = null;
+      this._vigKey = null; this._vigGrad = null;
+      this._fogKey = null; this._fogGrad = null;
       this.canvas.width = Math.floor(this.width * this.dpr);
       this.canvas.height = Math.floor(this.height * this.dpr);
       this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
@@ -2147,6 +2155,11 @@
             variant: Math.floor(hash2(gx * 1.7 + 3, gy * 2.3 + 1) * 4) % 4,
             edge: smooth(0.55, 1.0, dist / (R + 0.3))
           };
+          // Ekran konumu bir kez hesaplanır: her karede iso() çağırmak nesne
+          // ayırıp çöp toplayıcıyı yoruyordu (10k+ karo).
+          tile.sx = (wx - wy) * COS_30;
+          tile.sy = (wx + wy) * SIN_30 - elevation;
+          if (tile.edge > 0.03) tile.edgeStyle = `rgba(2,4,6,${(tile.edge * 0.55).toFixed(3)})`;
           this.tiles.push(tile);
           this.tileMap.set(gx * 1000 + gy, tile);
 
@@ -2232,6 +2245,37 @@
 
     sortRenderables() {
       this.tiles.sort((a, b) => (a.wx + a.wy) - (b.wx + b.wy));
+      this.rebuildRenderables();
+    }
+
+    // Statik sahne listeleri: çizim sırası ve ekran koordinatları bir kez
+    // hazırlanır. Böylece her karede binlerce nesne ayırıp sıralamayız.
+    rebuildRenderables() {
+      const scenery = this.scenery || [];
+      for (const s of scenery) {
+        if (s._bx === undefined) {
+          s._bx = (s.wx - s.wy) * COS_30;
+          s._by = (s.wx + s.wy) * SIN_30 - (s.z || 0);
+        }
+        s._depth = s.wx + s.wy;
+      }
+      scenery.sort((a, b) => a._depth - b._depth);
+      const entries = new Array(scenery.length);
+      const lights = [];
+      const shadows = [];
+      const inter = [];
+      for (let i = 0; i < scenery.length; i++) {
+        const s = scenery[i];
+        entries[i] = { depth: s._depth, type: 'scenery', data: s };
+        if (s.type === 'shrine' || s.type === 'lantern' || s.type === 'mushroom') lights.push(s);
+        if (s.type === 'tree' || s.type === 'boulder' || s.type === 'mountain' || s.type === 'shrine' || s.type === 'mushroom' || s.type === 'lantern') shadows.push(s);
+        if (s.interactable || s.type === 'shrine') inter.push(s);
+      }
+      this._sceneryEntries = entries;
+      this._lightScenery = lights;
+      this._shadowScenery = shadows;
+      this._interactables = inter;
+      if (!this._renderList) this._renderList = [];
     }
 
     // ======================================================================
@@ -2499,18 +2543,24 @@
       const fog = (this.biomeAmbient && Number(this.biomeAmbient.fog)) || 0;
       if (fog <= 0) return;
       // Sis: merkezden dışa doğru yumuşak; kenarlarda tek renge kilitlenmez,
-      // hafifçe sürüklenir. Ekran kenarlarına doğru yoğunlaşır (derinlik hissi).
-      const cx = W / 2 + Math.sin(t * 0.06) * W * 0.05;
-      const cy = H / 2 + Math.cos(t * 0.05) * H * 0.04;
+      // hafifçe sürüklenir. Gradyan önbelleğe alınır, kayma translate ile verilir.
       const maxA = Math.min(0.42, fog);
       const fogCol = pal.fog || '#ffffff';
+      const fkey = W + 'x' + H + '|' + fogCol + '|' + maxA.toFixed(2);
+      if (this._fogKey !== fkey || !this._fogGrad) {
+        this._fogKey = fkey;
+        const g = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.18, W / 2, H / 2, Math.max(W, H) * 0.78);
+        g.addColorStop(0, rgba(fogCol, 0));
+        g.addColorStop(0.55, rgba(fogCol, maxA * 0.35));
+        g.addColorStop(1, rgba(fogCol, maxA));
+        this._fogGrad = g;
+      }
+      const dx = Math.sin(t * 0.06) * W * 0.05;
+      const dy = Math.cos(t * 0.05) * H * 0.04;
       ctx.save();
-      const g = ctx.createRadialGradient(cx, cy, Math.min(W, H) * 0.18, cx, cy, Math.max(W, H) * 0.78);
-      g.addColorStop(0, rgba(fogCol, 0));
-      g.addColorStop(0.55, rgba(fogCol, maxA * 0.35));
-      g.addColorStop(1, rgba(fogCol, maxA));
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, W, H);
+      ctx.translate(dx, dy);
+      ctx.fillStyle = this._fogGrad;
+      ctx.fillRect(-dx, -dy, W, H);
       ctx.restore();
     }
 
@@ -2594,7 +2644,9 @@
       ctx.strokeStyle = 'rgba(174,205,232,0.55)';
       ctx.lineWidth = 1.1;
       ctx.beginPath();
-      for (const d of this.rainDrops) {
+      const step = this.lowFx ? 2 : 1;
+      for (let i = 0; i < this.rainDrops.length; i += step) {
+        const d = this.rainDrops[i];
         ctx.globalAlpha = d.a;
         ctx.moveTo(d.x, d.y);
         ctx.lineTo(d.x - d.len * 0.22, d.y + d.len);
@@ -3615,11 +3667,17 @@
     }
 
     checkInteractionNearPlayer() {
-      let best = null, bestD = this.interactRadius || 76;
-      for (const s of this.scenery || []) {
-        if (!s.interactable && s.type !== 'shrine') continue;
-        const d = Math.hypot(s.wx - this.player.x, s.wy - this.player.y);
-        if (d < bestD) { bestD = d; best = s; }
+      // Yalnızca etkileşilebilir nesneler (POI + sunak) taranır; kare başına
+      // binlerce ağacı dolaşmak gereksizdi.
+      const list = this._interactables || this.scenery || [];
+      const px = this.player.x, py = this.player.y;
+      const r = this.interactRadius || 76;
+      let best = null, bestD2 = r * r;
+      for (let i = 0; i < list.length; i++) {
+        const s = list[i];
+        const dx = s.wx - px, dy = s.wy - py;
+        const d2 = dx * dx + dy * dy;
+        if (d2 < bestD2) { bestD2 = d2; best = s; }
       }
       this._interactTarget = best;
       return !!best;
@@ -4235,6 +4293,21 @@
       this.camera.y += this._walkBobOffset;
     }
 
+    // Boyuta göre önbelleğe alınan arka plan gradyanı (kare başına yeniden
+    // üretmek yerine tekrar kullanılır).
+    bgGradient(ctx) {
+      const key = this.width + 'x' + this.height;
+      if (this._bgGradKey === key && this._bgGrad) return this._bgGrad;
+      this._bgGradKey = key;
+      const cx = this.width / 2, cy = this.height / 2;
+      const g = ctx.createRadialGradient(cx, cy, 60, cx, cy, Math.max(this.width, this.height) * 0.8);
+      g.addColorStop(0, '#22333d');
+      g.addColorStop(0.6, '#101a20');
+      g.addColorStop(1, '#070b0e');
+      this._bgGrad = g;
+      return g;
+    }
+
     // ======================================================================
     // RENDER
     // ======================================================================
@@ -4254,14 +4327,14 @@
       if (!Number.isFinite(this.camera.x) || !Number.isFinite(this.camera.y) || !Number.isFinite(this.zoom)) this.snapCamera();
       if (!Array.isArray(this.tiles) || this.tiles.length === 0) { try { this.generateMap(); } catch (e) { this.tiles = this.tiles || []; } }
 
-      // Arka plan: derin gece + yıldızlar
-      const bg = ctx.createRadialGradient(this.width / 2, this.height / 2, 60, this.width / 2, this.height / 2, Math.max(this.width, this.height) * 0.8);
-      bg.addColorStop(0, '#22333d');
-      bg.addColorStop(0.6, '#101a20');
-      bg.addColorStop(1, '#070b0e');
-      ctx.fillStyle = bg;
+      // Arka plan: derin gece + yıldızlar (gradyan önbelleğe alınır)
+      ctx.fillStyle = this.bgGradient(ctx);
       ctx.fillRect(0, 0, this.width, this.height);
-      for (const s of this.stars || []) {
+      // Yıldızlar: düşük efekt modunda yarısı çizilir (görsel olarak fark edilmez).
+      const stars = this.stars || [];
+      const starStep = this.lowFx ? 2 : 1;
+      for (let i = 0; i < stars.length; i += starStep) {
+        const s = stars[i];
         ctx.globalAlpha = s.a * (0.6 + 0.4 * Math.sin(this.time * 1.2 + s.tw));
         ctx.fillStyle = '#cfe8ff';
         ctx.fillRect(s.x, s.y, s.r, s.r);
@@ -4522,21 +4595,23 @@
 
     render3DTiles(ctx) {
       const hw = this.tileSize * COS_30, hh = this.tileSize * SIN_30, th = this.tileThickness;
-      for (const t of this.tiles) {
-        const p = this.iso(t.wx, t.wy, t.wz);
-        if (!Number.isFinite(p.x) || !Number.isFinite(p.y)) continue;
-        // Alt-piksel çizim: kamera yumuşak kayarken zemin 1px sıçrayıp titremez.
-        const sx = p.x, sy = p.y;
-        if (sx < -120 || sx > this.width + 120 || sy < -120 || sy > this.height + 140) continue;
+      const camX = this.camera.x, camY = this.camera.y;
+      const W = this.width, H = this.height;
+      const tiles = this.tiles;
+      for (let i = 0; i < tiles.length; i++) {
+        const t = tiles[i];
+        // Önceden hesaplanmış taban konum + kamera (nesne ayırma yok).
+        const sx = t.sx + camX, sy = t.sy + camY;
+        if (sx < -120 || sx > W + 120 || sy < -120 || sy > H + 140) continue;
 
         const sp = this.getTileSprite(t.type, t.variant, t.wz);
         if (!sp || !sp.canvas || !sp.canvas.width) continue;
         ctx.drawImage(sp.canvas, sx - sp.ox, sy - sp.oy, sp.w, sp.h);
 
         // Ada kenarına doğru kararma (derinlik hissi)
-        if (t.edge > 0.03) {
+        if (t.edgeStyle) {
           const full = th + t.wz;
-          ctx.fillStyle = `rgba(2,4,6,${(t.edge * 0.55).toFixed(3)})`;
+          ctx.fillStyle = t.edgeStyle;
           ctx.beginPath();
           ctx.moveTo(sx, sy - hh); ctx.lineTo(sx + hw, sy); ctx.lineTo(sx + hw, sy + full);
           ctx.lineTo(sx, sy + hh + full); ctx.lineTo(sx - hw, sy + full); ctx.lineTo(sx - hw, sy);
@@ -4556,23 +4631,26 @@
       drawGlowEllipse(ctx, pp.x, pp.y, 230, 130, '#ffb067', 0.13);
 
       // Seyahat taşının mavi ışığı + fenerler
-      this.scenery.forEach((s) => {
+      const camX = this.camera.x, camY = this.camera.y;
+      const lit = this._lightScenery || this.scenery;
+      for (let i = 0; i < lit.length; i++) {
+        const s = lit[i];
+        const x = s._bx + camX, y = s._by + camY;
+        if (x < -160 || x > this.width + 160 || y < -160 || y > this.height + 160) continue;
         if (s.type === 'shrine') {
-          const sp = this.iso(s.wx, s.wy, 0);
-          drawGlowEllipse(ctx, sp.x, sp.y, 150, 85, '#00e5ff', 0.14 + 0.06 * Math.sin(t * 2.4));
+          drawGlowEllipse(ctx, x, y, 150, 85, '#00e5ff', 0.14 + 0.06 * Math.sin(t * 2.4));
         } else if (s.type === 'lantern') {
-          const sp = this.iso(s.wx, s.wy, 0);
-          drawGlowEllipse(ctx, sp.x, sp.y, 90, 50, '#ffcc66', 0.16 + 0.03 * Math.sin(t * 5 + s.wx));
+          drawGlowEllipse(ctx, x, y, 90, 50, '#ffcc66', 0.16 + 0.03 * Math.sin(t * 5 + s.wx));
         } else if (s.type === 'mushroom') {
-          const sp = this.iso(s.wx, s.wy, 0);
-          drawGlowEllipse(ctx, sp.x, sp.y, 34, 18, '#7cf0ff', 0.22);
+          drawGlowEllipse(ctx, x, y, 34, 18, '#7cf0ff', 0.22);
         }
-      });
+      }
       ctx.restore();
 
-      // Zemin sisi: yavaş süzülen yumuşak bulutlar
+      // Zemin sisi: yavaş süzülen yumuşak bulutlar (düşük efekt modunda seyreltilir)
       ctx.save();
-      for (let i = 0; i < 9; i++) {
+      const clouds = this.lowFx ? 4 : 9;
+      for (let i = 0; i < clouds; i++) {
         const a = i * 0.7 + t * 0.05 * (i % 2 ? 1 : -1);
         const r = 180 + (i % 3) * 140;
         const mp = this.iso(Math.cos(a) * r, Math.sin(a * 1.3) * r, 4);
@@ -4589,14 +4667,19 @@
         drawGlowEllipse(ctx, p.x + ox, p.y + oy, rx, ry, '#000000', a);
       };
 
-      this.scenery.forEach((s) => {
+      const shadows = this._shadowScenery || this.scenery;
+      const camX = this.camera.x, camY = this.camera.y;
+      for (let i = 0; i < shadows.length; i++) {
+        const s = shadows[i];
+        const x = s._bx + camX, y = s._by + camY;
+        if (x < -160 || x > this.width + 160 || y < -160 || y > this.height + 160) continue;
         if (s.type === 'tree') soft(s.wx, s.wy, 0, 34 * s.scale, 16 * s.scale, 0.6, 7, 3);
         else if (s.type === 'boulder') soft(s.wx, s.wy, 0, 24 * s.scale, 11 * s.scale, 0.55, 4, 2);
         else if (s.type === 'mountain') soft(s.wx, s.wy, 0, 46 * s.scale, 15 * s.scale, 0.5, 9, 4);
         else if (s.type === 'shrine') soft(s.wx, s.wy, 0, 40, 19, 0.6);
         else if (s.type === 'mushroom') soft(s.wx, s.wy, 0, 12 * s.scale, 6 * s.scale, 0.5);
         else if (s.type === 'lantern') soft(s.wx, s.wy, 0, 12, 6, 0.5);
-      });
+      }
 
       this.monsters.forEach((m) => {
         if (m.hp > 0 || m.deathTimer > 0) {
@@ -5138,25 +5221,44 @@
     }
 
     renderSortedEntities(ctx) {
-      const list = [];
-      this.scenery.forEach((s) => list.push({ depth: s.wx + s.wy, type: 'scenery', data: s }));
-      Object.values(this.others || {}).forEach((o) => list.push({ depth: o.wx + o.wy, type: 'other', data: o }));
-      this.monsters.forEach((m) => {
+      // Önceden hazırlanmış sahne listesini kullan; görünmeyenleri erkenden
+      // ele ve her karede yeni nesne üretme (GC takılmalarını önler).
+      const list = this._renderList || (this._renderList = []);
+      list.length = 0;
+      const camX = this.camera.x, camY = this.camera.y;
+      const W = this.width, H = this.height;
+      const margin = 240 / (this.zoom || 1);
+      const entries = this._sceneryEntries;
+      if (entries) {
+        for (let i = 0; i < entries.length; i++) {
+          const e = entries[i];
+          const s = e.data;
+          const x = s._bx + camX, y = s._by + camY;
+          if (x < -margin || x > W + margin || y < -margin || y > H + margin) continue;
+          list.push(e);
+        }
+      } else {
+        for (const s of this.scenery) list.push({ depth: s.wx + s.wy, type: 'scenery', data: s });
+      }
+      for (const o of Object.values(this.others || {})) list.push({ depth: o.wx + o.wy, type: 'other', data: o });
+      for (const m of this.monsters) {
         if (m.hp > 0 || m.deathTimer > 0) list.push({ depth: m.x + m.y, type: 'monster', data: m });
-      });
+      }
       if (this.companion.active) list.push({ depth: this.companion.x + this.companion.y, type: 'pet', data: this.companion });
-      this.player.ghostTrails.forEach((gt) => list.push({ depth: gt.x + gt.y - 1, type: 'ghost', data: gt }));
+      for (const gt of this.player.ghostTrails) list.push({ depth: gt.x + gt.y - 1, type: 'ghost', data: gt });
       list.push({ depth: this.player.x + this.player.y, type: 'player', data: this.player });
       list.sort((a, b) => a.depth - b.depth);
 
-      list.forEach((item) => {
+      for (let i = 0; i < list.length; i++) {
+        const item = list[i];
         if (item.type === 'scenery') this.drawSceneryItem(ctx, item.data);
         else if (item.type === 'monster') this.drawMonster(ctx, item.data);
         else if (item.type === 'other') this.drawOtherPlayer(ctx, item.data);
         else if (item.type === 'player') this.drawPlayer(ctx, item.data);
         else if (item.type === 'pet') this.drawCompanionPet(ctx, item.data);
         else if (item.type === 'ghost') this.drawGhostTrail(ctx, item.data);
-      });
+      }
+      list.length = 0;
     }
 
     // ---------------- ÇEVRE: AĞAÇ / KAYA / FENER / MANTAR / TAŞ ----------------
@@ -5323,7 +5425,8 @@
 
     drawSceneryItem(ctx, s) {
       if (!s || !Number.isFinite(s.wx) || !Number.isFinite(s.wy)) return;
-      const { x, y } = this.iso(s.wx, s.wy, 0);
+      const x = (s._bx !== undefined ? s._bx : (s.wx - s.wy) * COS_30) + this.camera.x;
+      const y = (s._by !== undefined ? s._by : (s.wx + s.wy) * SIN_30 - (s.z || 0)) + this.camera.y;
       if (!Number.isFinite(x) || !Number.isFinite(y)) return;
       if (x < -90 || x > this.width + 90 || y < -130 || y > this.height + 60) return;
       const t = this.time;
@@ -7122,11 +7225,16 @@
     // ---------------- VİNYET + HASAR UYARISI ----------------
     renderAtmosphericVignette(ctx) {
       const cx = this.width / 2, cy = this.height / 2;
-      const grad = ctx.createRadialGradient(cx, cy, Math.min(this.width, this.height) * 0.42, cx, cy, Math.max(this.width, this.height) * 0.78);
-      grad.addColorStop(0, 'rgba(0,0,0,0)');
-      grad.addColorStop(0.7, 'rgba(0,0,0,0.06)');
-      grad.addColorStop(1, 'rgba(0,0,0,0.20)');
-      ctx.fillStyle = grad;
+      const key = this.width + 'x' + this.height;
+      if (this._vigKey !== key || !this._vigGrad) {
+        this._vigKey = key;
+        const vg = ctx.createRadialGradient(cx, cy, Math.min(this.width, this.height) * 0.42, cx, cy, Math.max(this.width, this.height) * 0.78);
+        vg.addColorStop(0, 'rgba(0,0,0,0)');
+        vg.addColorStop(0.7, 'rgba(0,0,0,0.06)');
+        vg.addColorStop(1, 'rgba(0,0,0,0.20)');
+        this._vigGrad = vg;
+      }
+      ctx.fillStyle = this._vigGrad;
       ctx.fillRect(0, 0, this.width, this.height);
 
       if (this.hurt > 0) {
@@ -7165,16 +7273,32 @@
     // ======================================================================
     loop(timestamp) {
       if (!this.isRunning) return;
+      const raw = this.lastTime ? (timestamp - this.lastTime) / 1000 : 0;
       try {
-        const dt = Math.min((timestamp - this.lastTime) / 1000, 0.1);
+        const dt = Math.min(raw, 0.1);
         this.lastTime = timestamp;
         this.update(dt);
         this.render();
+        this.trackPerf(raw);
       } catch (err) {
         // Tek karelik bir hata döngüyü durdurmasın (ekran siyah kalmasın).
         if (!this._errLogged) { this._errLogged = true; console.error('[travel] frame error:', err); }
       }
       requestAnimationFrame(this.loop);
+    }
+
+    // Ortalama kare süresini izler ve ağır efektleri otomatik seyreltir.
+    // Oyun mekaniği değişmez; yalnızca çizim maliyeti düşer.
+    trackPerf(raw) {
+      if (!(raw > 0) || raw > 0.5) return; // sekme dönüşü / donma sıçramalarını sayma
+      this._fpsAcc += raw;
+      this._fpsN += 1;
+      if (this._fpsN < 40) return;
+      const avg = this._fpsAcc / this._fpsN;
+      this._fpsAcc = 0;
+      this._fpsN = 0;
+      if (avg > 0.032 && !this.lowFx) this.lowFx = true;      // ~<31 fps
+      else if (avg < 0.021 && this.lowFx) this.lowFx = false; // ~>48 fps
     }
 
     // ======================================================================
@@ -7235,6 +7359,7 @@
         });
       }
       this.scenery = keep.concat(this.poiMarkers);
+      this.rebuildRenderables();
     }
 
     worldToServer(wx, wy) {

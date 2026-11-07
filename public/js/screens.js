@@ -4481,11 +4481,30 @@ function renderTempleView(room) {
     ${deadAllies.length ? deadAllies.map((p) => `<div class="craft-row"><span class="craft-out">${escapeHtml(p.name)} — Lives ${p.lives}</span><button type="button" class="btn btn--mini${canRevive ? "" : " btn--mini-disabled"}" data-revive="${p.id}">Revive</button></div>`).join("") : `<p class="muted">No fallen allies.</p>`}
   </div>`;
 
+  // ---- Mana Hue (tek slot renk) ----
+  const skinsCat = CATALOG.skillSkins || {};
+  const activeHueId = me.activeSkin || (Array.isArray(me.skins) && me.skins[0]) || null;
+  const curSkin = activeHueId ? skinsCat[activeHueId] : null;
+  const hueRarity = { common: "#b0bec5", uncommon: "#66bb6a", rare: "#42a5f5", epic: "#ab47bc", legendary: "#ffb300", mythic: "#ff1744" };
+  const goldNow = Math.floor(me.gold || 0);
+  const canRollHue = goldNow >= 50;
+  const manaHtml = `<div class="temple-card temple-card--mana">
+    <p class="subhead">✦ Mana Hue</p>
+    <p>One hue of magic burns in you at a time. It paints the light of your skills and casts &mdash; roll a new one and the old hue fades away for good.</p>
+    ${curSkin ? `<div class="temple-mana-hue">
+        <span class="temple-mana-orb" style="background:linear-gradient(135deg,${curSkin.primary},${curSkin.secondary || curSkin.primary});box-shadow:0 0 24px ${curSkin.glow || curSkin.primary}aa"></span>
+        <span class="temple-mana-info"><strong>${escapeHtml(curSkin.name)}</strong><em style="color:${hueRarity[curSkin.rarity] || "#b0bec5"}">${escapeHtml(curSkin.rarity || "common")} &middot; worn</em></span>
+      </div>` : `<p class="muted">No mana hue burns in you yet.</p>`}
+    <p class="temple-req">Rolling costs 50 gold &middot; You have ${goldNow} gold</p>
+    <button type="button" class="btn btn--gold${canRollHue ? "" : " btn--mini-disabled"}" id="btn-temple-mana-roll">${curSkin ? "Roll a new hue (50g)" : "Roll a mana hue (50g)"}</button>
+  </div>`;
+
   const templeTabMeta = {
     ascend: { title: "Ascension", sub: "Forms your current class can ascend into." },
     hearts: { title: "Mend a Heart", sub: `Offer ${escapeHtml(restoreItem.itemName || "a Heart of Golem")} to restore one of your ${maxLives} hearts.` },
     rebirth: { title: "Rebirth of Blood", sub: `Offer ${escapeHtml(stoneName)} to be reborn into a new race.` },
     revive: { title: "Revive Ally", sub: "Offer The Essence of Life to bring a fallen ally back to the fight." },
+    mana: { title: "Mana Hue", sub: "One color of magic burns in you. Roll to change the hue of your skills." },
   };
   const templeTab = templeTabMeta[state.templeTab] ? state.templeTab : "ascend";
   const templePages = {
@@ -4493,12 +4512,14 @@ function renderTempleView(room) {
     hearts: restoreHtml,
     rebirth: originHtml,
     revive: reviveHtml,
+    mana: manaHtml,
   };
   const templeNav = [
     { id: "ascend", label: "Ascend", ico: "level", count: evos.length, note: evos.length ? `${evos.length} form${evos.length === 1 ? "" : "s"}` : "No forms", art: ui.templeAscend },
     { id: "hearts", label: "Mend a Heart", ico: "lives", count: Math.max(0, maxLives - me.lives), note: `${me.lives}/${maxLives} hearts`, art: ui.templeHearts },
     { id: "rebirth", label: "Rebirth", ico: "rest", count: stoneQty, note: `${stoneQty} stone${stoneQty === 1 ? "" : "s"}`, art: ui.templeRebirth },
     { id: "revive", label: "Revive Ally", ico: "heal", count: deadAllies.length, note: deadAllies.length ? `${deadAllies.length} fallen` : "No fallen", art: ui.templeRevive },
+    { id: "mana", label: "Mana Hue", ico: "mana", count: curSkin ? 1 : 0, note: curSkin ? curSkin.name : "No hue", art: ui.templeRebirth },
   ].map((t) => `<button type="button" class="temple-rite${templeTab === t.id ? " temple-rite--active" : ""}" data-temple-tab="${t.id}" role="tab" aria-selected="${templeTab === t.id}"${templeTab === t.id ? ' aria-current="page"' : ""} data-rite-img="${escapeHtml(t.art || "")}">
       <span class="temple-rite__mark" aria-hidden="true">${icon(t.ico)}</span>
       <span class="temple-rite__body">
@@ -4553,6 +4574,11 @@ function renderTempleView(room) {
   if (rerollBtn) rerollBtn.addEventListener("click", () => socket.emit("temple:reroll"));
   const buyBtn = root.querySelector("#btn-temple-buyorigin");
   if (buyBtn) buyBtn.addEventListener("click", () => socket.emit("temple:buyOrigin"));
+  const manaRollBtn = root.querySelector("#btn-temple-mana-roll");
+  if (manaRollBtn) manaRollBtn.addEventListener("click", () => {
+    if ((me.gold || 0) < 50) { if (typeof showToast === "function") showToast("Rerolling a mana hue costs 50 gold."); return; }
+    socket.emit("skins:roll");
+  });
   root.querySelectorAll("[data-craft]").forEach((b) =>
     b.addEventListener("click", () => socket.emit("temple:craft", { recipeId: b.getAttribute("data-craft") }))
   );
@@ -5127,6 +5153,11 @@ function renderInventory(room) {
       if (!item) return "";
       const equipable = item.slot !== "consumable" && item.slot !== "material" && item.slot !== "chest";
       const isChest = item.slot === "chest";
+      // Tüketilebilirler kasabada/seyahatte buradan kullanılabilir (can/azık).
+      const usable = item.slot === "consumable" && (Number(item.heal) > 0 || Number(item.food) > 0);
+      const useBtn = usable
+        ? `<button type="button" class="btn btn--mini" data-use="${inv.itemId}" title="${escapeHtml(item.heal ? `Heal ${item.heal} HP` : "+" + item.food + " Food")}">Use</button>`
+        : "";
       // Tüccar geri alımı: değerin %60'ı (değer yoksa altın fiyatından).
       const sellUnit = Math.floor((((typeof item.value === "number" && item.value > 0) ? item.value : (item.price && item.price.gold) || 0)) * 0.6);
       const sellBtns = (!isChest && sellUnit > 0)
@@ -5137,7 +5168,7 @@ function renderInventory(room) {
         ? `<button type="button" class="btn btn--mini" data-open-chest="${inv.itemId}">Open</button>`
         : equipable
         ? `<button type="button" class="btn btn--mini" data-equip="${inv.itemId}">Equip</button>${sellBtns}`
-        : `${sellBtns}`;
+        : `${useBtn}${sellBtns}`;
       const chestRates = item.slot === "chest" ? chestRatesHtml(item) : "";
       const chestPlain = chestRates.replace(/<[^>]*>/g, "");
       const statsHtml = item.slot === "chest" || item.slot === "material" ? "" : statChips(item);
@@ -5189,6 +5220,12 @@ function renderInventory(room) {
     b.addEventListener("click", () => {
       sfxEvent("item.loot");
       socket.emit("chest:open", { itemId: b.getAttribute("data-open-chest") });
+    })
+  );
+  root.querySelectorAll("[data-use]").forEach((b) =>
+    b.addEventListener("click", () => {
+      sfxEvent("item.inventory");
+      socket.emit("inventory:use", { itemId: b.getAttribute("data-use") });
     })
   );
   root.querySelectorAll("[data-sell]").forEach((b) =>

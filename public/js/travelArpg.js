@@ -137,6 +137,23 @@
       .tv-ctl { width: 34px; height: 34px; border-radius: 8px; border: 1px solid rgba(201,147,63,0.7);
         background: rgba(20,16,10,0.72); color: #ffe6a8; font: 700 16px/1 system-ui, sans-serif; cursor: pointer; }
       .tv-ctl:hover { background: rgba(40,30,16,0.92); }
+      /* Hızlı tüketilebilir çubuğu (1-5 tuşları) */
+      .tv-potions { position: absolute; top: 96px; right: 12px; display: flex; flex-direction: column;
+        align-items: flex-end; gap: 6px; z-index: 7; pointer-events: auto; }
+      .tv-potions.hidden { display: none; }
+      .tv-potion { display: flex; align-items: center; gap: 7px; padding: 5px 9px 5px 5px; cursor: pointer;
+        border-radius: 9px; border: 1px solid rgba(214,178,106,0.42); background: rgba(18,14,10,0.78);
+        color: #f2e3c6; font: 600 12px system-ui, sans-serif; transition: background .14s ease, transform .14s ease; }
+      .tv-potion:hover { background: rgba(52,38,20,0.92); transform: translateX(-2px); }
+      .tv-potion .k { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px;
+        border-radius: 5px; background: rgba(232,196,130,0.2); border: 1px solid rgba(232,196,130,0.45);
+        color: #ffe6a8; font: 700 11px/1 system-ui, sans-serif; }
+      .tv-potion .qt { color: #bfa77f; font-weight: 700; }
+      @media (hover: none), (pointer: coarse) {
+        .tv-potions { top: auto; bottom: 150px; right: 12px; }
+        .tv-potion .k { display: none; }
+        .tv-potion { padding: 7px 10px; }
+      }
       .tv-shell:fullscreen, .tv-shell:-webkit-full-screen { width: 100vw; height: 100vh; border-radius: 0; }
       .tv-shell:fullscreen .tv-canvas, .tv-shell:-webkit-full-screen .tv-canvas { width: 100%; height: 100%; }
       .tv-mana-panel { position: absolute; inset: 0; z-index: 20; display: none; flex-direction: column;
@@ -288,6 +305,7 @@
           <button type="button" class="tv-ctl" id="tv-zoom-out" title="Zoom out">&minus;</button>
           <button type="button" class="tv-ctl" id="tv-full" title="Fullscreen">&#x26F6;</button>
         </div>
+        <div class="tv-potions hidden" id="tv-potions"></div>
         <div class="tv-prompt hidden" id="tv-prompt"></div>
         <div class="tv-toast hidden" id="tv-toast"></div>
         <div class="tv-mana-panel" id="tv-mana-panel">
@@ -301,7 +319,7 @@
         <div class="tv-roll-stage" id="tv-roll-stage">
           <div class="tv-roll-box" id="tv-roll-box"><div class="rn">...</div><div class="rr"></div></div>
         </div>
-        <div class="tv-help">WASD: yuru &middot; Sol tik: saldiri &middot; Space: dash &middot; Q/E/R: skill &middot; E: etkilesim</div>
+        <div class="tv-help">WASD: yuru &middot; Sol tik: saldiri &middot; Space: dash &middot; Q/E/R: skill &middot; E: etkilesim &middot; 1-5: iksir</div>
         <div class="tv-mobile" id="tv-mobile">
           <div class="tv-stick" id="tv-stick"><div class="tv-knob" id="tv-knob"></div></div>
           <div class="tv-buttons">
@@ -335,6 +353,17 @@
     if (manaClose) manaClose.addEventListener("click", () => toggleManaPanel(false));
     const manaRoll = root.querySelector("#tv-mana-roll");
     if (manaRoll) manaRoll.addEventListener("click", () => requestRoll());
+    // Tüketilebilir çubuğu: tıklayınca kullan (1-5 tuşları da aynı işi yapar).
+    const potions = root.querySelector("#tv-potions");
+    if (potions) {
+      potions.addEventListener("click", (e) => {
+        const btn = e.target && e.target.closest ? e.target.closest("[data-item]") : null;
+        if (!btn) return;
+        e.preventDefault();
+        useConsumable(btn.getAttribute("data-item"));
+      });
+    }
+    bindUseKeys();
     if (S.map) boot();
   }
 
@@ -415,6 +444,7 @@
     applyRoom(S.room);
     startHud();
     bindSkinEvents();
+    bindStatEvents();
     // Kapsayıcı boyutu değişince tuvali yeniden ölçekle (karakter ortada kalsın).
     if (window.ResizeObserver && !S.ro) {
       try {
@@ -507,7 +537,7 @@
     if (S.engine) { try { S.engine.destroy(); } catch (e) {} S.engine = null; }
     if (downedEl) { try { downedEl.remove(); } catch (e) {} downedEl = null; }
     S.ready = false; S.root = null; S.canvas = null; S.map = null; S.poiSig = ""; S.pendingDungeon = null;
-    S.room = null; S.maxLives = 0;
+    S.room = null; S.maxLives = 0; S._potionSig = "";
   }
 
   function teleport(x, y) {
@@ -539,6 +569,7 @@
       close();
       if (typeof renderTown === "function" && typeof state !== "undefined" && state.room) renderTown(state.room);
       if (typeof showToast === "function") showToast("Back in town.");
+      showReport({ title: "Safe Return", kicker: "Back in town", subtitle: "You close the trail and return to town with everything you gathered." });
     }
   }
 
@@ -705,6 +736,79 @@
     });
   }
 
+  // ---- Tüketilebilirler (iksir / azık) ----
+  // Seyahatte canı yerel simüle ettiğimiz için sunucudan gelen "healed" miktarı
+  // doğrudan motora uygulanır; azık sunucuda sayılır.
+  const MAX_QUICK_ITEMS = 5;
+
+  function consumables() {
+    const me = meFrom(S.room);
+    const inv = (me && me.inventory) || [];
+    const items = (typeof CATALOG !== "undefined" && CATALOG && CATALOG.items) || [];
+    const out = [];
+    for (const slot of inv) {
+      if (!slot || !slot.itemId) continue;
+      const def = items.find((x) => x.id === slot.itemId);
+      if (!def || def.slot !== "consumable") continue;
+      const heal = Math.max(0, Number(def.heal) || 0);
+      const food = Math.max(0, Number(def.food) || 0);
+      if (!heal && !food) continue;
+      out.push({ itemId: slot.itemId, qty: Math.max(1, Number(slot.qty) || 1), name: def.name || slot.itemId, heal, food });
+      if (out.length >= MAX_QUICK_ITEMS) break;
+    }
+    return out;
+  }
+
+  function renderPotions() {
+    const el = S.root && S.root.querySelector("#tv-potions");
+    if (!el) return;
+    const list = consumables();
+    const sig = list.map((i) => i.itemId + "x" + i.qty).join("|");
+    if (sig === S._potionSig) return;
+    S._potionSig = sig;
+    if (!list.length) { el.innerHTML = ""; el.classList.add("hidden"); return; }
+    el.classList.remove("hidden");
+    el.innerHTML = list.map((i, idx) => {
+      const eff = [i.heal ? `+${i.heal} HP` : "", i.food ? `+${i.food} Food` : ""].filter(Boolean).join(" \u00b7 ");
+      const tip = `${i.name} \u2014 ${eff} (press ${idx + 1})`;
+      return `<button type="button" class="tv-potion" data-item="${escapeHtml(i.itemId)}" title="${escapeHtml(tip)}"><span class="k">${idx + 1}</span><span class="nm">${escapeHtml(i.name)}</span><span class="qt">&times;${i.qty}</span></button>`;
+    }).join("");
+  }
+
+  function useConsumable(itemId) {
+    if (!itemId || typeof socket === "undefined") return;
+    socket.emit("inventory:use", { itemId });
+  }
+
+  // 1..5 tuşları hızlı tüketilebilir kullanır (tek sefer bağlanır).
+  function bindUseKeys() {
+    if (S._useBound) return;
+    S._useBound = true;
+    window.addEventListener("keydown", (e) => {
+      if (!S.active || !S.engine || !S.root) return;
+      if (e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+      const tag = (e.target && e.target.tagName) || "";
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+      const n = Number(e.key);
+      if (!Number.isInteger(n) || n < 1 || n > MAX_QUICK_ITEMS) return;
+      const item = consumables()[n - 1];
+      if (!item) return;
+      e.preventDefault();
+      useConsumable(item.itemId);
+    });
+  }
+
+  function onItemUsed(p) {
+    if (!p) return;
+    S._potionSig = ""; // envanter değişti: çubuğu tazele
+    renderPotions();
+    const eng = S.engine;
+    if (!eng || !S.active) return;
+    const heal = Math.max(0, Number(p.healed) || 0);
+    if (heal > 0 && typeof eng.healPlayer === "function") eng.healPlayer(heal, "#69f0ae");
+    else if (typeof p.hp === "number" && typeof eng.setHp === "function") eng.setHp(p.hp);
+  }
+
   function startHud() {
     stopHud();
     S.hudTimer = setInterval(renderHud, 200);
@@ -766,6 +870,7 @@
         b.classList.toggle("is-cooling", !!(cdv && cdv.current > 0));
       });
     }
+    renderPotions();
   }
 
   function bindMobile() {
@@ -912,12 +1017,78 @@
     setTimeout(() => { if (el && !el.classList.contains("is-open")) el.style.display = "none"; }, 260);
   }
 
+  // ---- Sefer raporu (Travel'den donus ozeti) ----
+  let reportEl = null;
+
+  function fmtDuration(ms) {
+    const s = Math.max(0, Math.round((Number(ms) || 0) / 1000));
+    const m = Math.floor(s / 60), r = s % 60;
+    return m > 0 ? `${m}m ${r}s` : `${r}s`;
+  }
+
+  function hideReport() {
+    if (!reportEl) return;
+    const el = reportEl;
+    reportEl = null;
+    el.classList.remove("is-open");
+    setTimeout(() => { try { el.remove(); } catch (e) {} }, 280);
+  }
+
+  function showReport(opts) {
+    opts = opts || {};
+    try { injectStyles(); } catch (e) {}
+    const st = S.stats || { kills: 0, gold: 0, xp: 0, chests: 0, startedAt: Date.now() };
+    if (st._shown) return;
+    st._shown = true;
+    hideReport();
+    const kills = Math.round(st.kills || 0);
+    const gold = Math.round(st.gold || 0);
+    const xp = Math.round(st.xp || 0);
+    const chests = Math.round(st.chests || 0);
+    const dur = fmtDuration(Date.now() - (st.startedAt || Date.now()));
+    const rows = [
+      { ic: "\u2694", lbl: "Monsters Slain", val: String(kills) },
+      { ic: "\u25C6", lbl: "Gold Earned", val: `${gold}g` },
+      { ic: "\u2726", lbl: "Experience Gained", val: `${xp} XP` },
+      { ic: "\u25A0", lbl: "Chests Opened", val: String(chests) },
+      { ic: "\u23F1", lbl: "Time Afield", val: dur },
+    ].map((r) => `<div class="tv-report-row"><span class="tv-report-lbl"><span class="ic">${r.ic}</span>${escapeHtml(r.lbl)}</span><span class="tv-report-val">${escapeHtml(r.val)}</span></div>`).join("");
+    reportEl = document.createElement("div");
+    reportEl.className = "tv-report";
+    reportEl.innerHTML = `
+      <div class="tv-report-card" role="dialog" aria-modal="true" aria-label="Expedition report">
+        <div class="tv-report-orn tv-report-orn--tl"></div>
+        <div class="tv-report-orn tv-report-orn--tr"></div>
+        <div class="tv-report-orn tv-report-orn--bl"></div>
+        <div class="tv-report-orn tv-report-orn--br"></div>
+        <div class="tv-report-crest" aria-hidden="true">
+          <svg viewBox="0 0 64 64" width="44" height="44"><path d="M32 6 46 14v16c0 12-9 21-14 25-5-4-14-13-14-25V14Z" fill="none" stroke="url(#tvr)" stroke-width="2.2"/><path d="M24 30l6 6 12-14" fill="none" stroke="url(#tvr)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="tvr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6dda6"/><stop offset="1" stop-color="#9a6a2c"/></linearGradient></defs></svg>
+        </div>
+        <div class="tv-report-kicker">${escapeHtml(opts.kicker || "Safely returned")}</div>
+        <h2 class="tv-report-title">${escapeHtml(opts.title || "Expedition Report")}</h2>
+        <div class="tv-report-rule"><span>&#10022;</span></div>
+        <p class="tv-report-sub">${escapeHtml(opts.subtitle || "You made it back to town with your spoils.")}</p>
+        <div class="tv-report-rows">${rows}</div>
+        <div class="tv-report-actions">
+          <button type="button" class="tv-btn tv-btn--gold" id="tv-report-continue">Continue</button>
+        </div>
+      </div>`;
+    document.body.appendChild(reportEl);
+    const btn = reportEl.querySelector("#tv-report-continue");
+    if (btn) btn.addEventListener("click", hideReport);
+    requestAnimationFrame(() => { if (reportEl) reportEl.classList.add("is-open"); });
+  }
+
   // Mana rengi roll & kuşanma olaylarını bağla (socket hazırsa).
   try { bindSkinEvents(); } catch (e) { /* socket henüz yoksa boot'ta bağlanır */ }
+  try { bindStatEvents(); } catch (e) { /* socket henüz yoksa boot'ta bağlanır */ }
 
   window.SetraTravel = {
     ensure, setMap, update, open, pause, close,
     teleport, reveal() {}, toast, addExplored() {},
+    showReport(opts) { try { showReport(opts); } catch (e) {} },
+    hideReport,
+    stats() { return S.stats ? { ...S.stats } : null; },
     enterDowned(opts) { if (S.engine) { S.engine.setDowned(true); if (S.engine.sound) S.engine.sound.play('downed'); } showDownedOverlay(opts || {}); },
     leaveDowned(hp) {
       if (S.engine) { S.engine.setDowned(false); if (hp != null) S.engine.setHp(hp); if (S.engine.sound) S.engine.sound.play('revive'); }
@@ -945,5 +1116,7 @@
     clearParty() { S.pendingDungeon = null; },
     // Sunucudan gelen can değerini uygular (kalp kaybı sonrası).
     setHp(hp) { if (S.engine) S.engine.setHp(hp); },
+    // Tüketilebilir kullanıldığında (iksir/azık) canı motora uygular.
+    onItemUsed(p) { try { onItemUsed(p); } catch (e) {} },
   };
 })();

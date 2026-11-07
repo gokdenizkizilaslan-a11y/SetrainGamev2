@@ -562,6 +562,9 @@ if (travelCloseBtn) travelCloseBtn.addEventListener("click", () => {
   state.travelOpen = false;
   if (window.SetraTravel) SetraTravel.close();
   renderTown(state.room);
+  if (window.SetraTravel && SetraTravel.showReport) {
+    SetraTravel.showReport({ title: "Safe Return", kicker: "Back in town", subtitle: "You close the trail and return to town with everything you gathered." });
+  }
 });
 
 $("chat-send").addEventListener("click", sendChat);
@@ -803,6 +806,16 @@ socket.on("travel:teleport", (p) => { if (window.SetraTravel && p) SetraTravel.t
 socket.on("travel:reveal", () => { if (window.SetraTravel) SetraTravel.reveal(); });
 socket.on("travel:explored", (p) => { if (window.SetraTravel && p && p.add) SetraTravel.addExplored(p.add); });
 socket.on("travel:hp", (p) => { if (window.SetraTravel && p && p.hp != null) SetraTravel.setHp(p.hp); });
+
+// Tüketilebilir kullanımı (iksir/azık): seyahatte motora canı uygula, her yerde bildir.
+socket.on("inventory:used", (p) => {
+  if (!p) return;
+  if (window.SetraTravel && SetraTravel.onItemUsed) SetraTravel.onItemUsed(p);
+  const bits = [];
+  if (p.healed > 0) bits.push(`+${p.healed} HP`);
+  if (p.foodGained > 0) bits.push(`+${p.foodGained} Food`);
+  showToast(`${p.name || "Item"} used${bits.length ? " — " + bits.join(", ") : ""}.`);
+});
 socket.on("travel:downed", (p) => {
   // Can bitti ama kalbi kaldı: yere yattı, lobiye atılmadan "downed" ekranı açılır.
   state.travelOpen = true;
@@ -831,6 +844,7 @@ socket.on("travel:fallen", () => {
   SetraTravel.close();
   if (state.room) renderTown(state.room);
   showToast("You have fallen. Return to the temple to be revived.");
+  if (SetraTravel.showReport) SetraTravel.showReport({ title: "Expedition Failed", kicker: "The wilds claim you", subtitle: "You fall in the wilds. This is what you gathered before the end." });
 });
 socket.on("travel:returned", (p) => {
   // Can bitti: 1 kalp düştü ve sefer sona erdi. Oyuncu kasabada uyanır.
@@ -838,6 +852,9 @@ socket.on("travel:returned", (p) => {
   if (window.SetraTravel) SetraTravel.close();
   if (state.room) renderTown(state.room);
   showToast((p && p.text) || "You lost 1 heart. You wake up back in town.");
+  if (window.SetraTravel && SetraTravel.showReport) {
+    SetraTravel.showReport({ title: "Expedition Over", kicker: "Carried back", subtitle: (p && p.text) || "You wake up back in town." });
+  }
 });
 socket.on("travel:notice", (p) => {
   if (!window.SetraTravel || !p) return;
@@ -858,6 +875,7 @@ socket.on("travel:reward", (p) => {
 socket.on("skins:rolled", (p) => {
   if (!p || !p.skin) return;
   if (typeof showToast === "function") showToast(`Mana hue: ${p.skin.name} (${p.skin.rarity}) — the old hue fades.`);
+  if (state.templeOpen && state.room) { try { renderTempleView(state.room); } catch (e) {} }
 });
 
 function chestItemName(itemId) {

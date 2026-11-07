@@ -602,7 +602,7 @@ function createPlayer({ id, name, character, isHost = false }) {
   // stats match a naturally leveled character. Normal classes skip this.
   applyStartLevelGrowth(player);
   seedOwnedTreeNodes(player);
-  // "Mana rengi": her yeni karakter 3 rastgele efektle başlar.
+  // "Mana rengi": her yeni karakter 1 rastgele renkle başlar (tek slot).
   try { require("./skins").grantStarterSkins(player); } catch (e) { /* cosmetic */ }
   return player;
 }
@@ -623,7 +623,7 @@ function publicPlayer(player) {
     }
   } catch (e) { /* never break player serialization over a cosmetic stat */ }
 
-  // Eski/yarıda kalmış oyuncular da 3 başlangıç mana rengine sahip olsun.
+  // Eski/yarıda kalmış oyuncular da başlangıç mana rengine sahip olsun.
   try {
     if (!Array.isArray(player.skins) || !player.skins.length) require("./skins").grantStarterSkins(player);
   } catch (e) { /* cosmetic */ }
@@ -1003,6 +1003,41 @@ function healForFood(player) {
   return Math.round(healBase + healPct * player.maxHp);
 }
 
+// Tüketilebilir kullanımı (kasaba + seyahat). Tur tabanlı savaşta combat.useItem
+// kullanılır; burada sıra/görev kontrolü yoktur, yalnızca can/azık uygulanır.
+function consumeItem(player, itemId) {
+  const item = getItem(itemId);
+  if (!item || item.slot !== "consumable") {
+    throw new Error("That cannot be used.");
+  }
+  const owned = (player.inventory || []).find((i) => i.itemId === itemId);
+  if (!owned || owned.qty < 1) {
+    throw new Error("You do not own that item.");
+  }
+  if (player.hp <= 0) {
+    throw new Error("You are down.");
+  }
+  const maxHp = Math.max(1, player.maxHp || 1);
+  const heal = Math.max(0, Math.round(Number(item.heal) || 0));
+  const food = Math.max(0, Math.round(Number(item.food) || 0));
+  if (player.hp >= maxHp && food <= 0) {
+    throw new Error("You are already at full health.");
+  }
+  removeItem(player, itemId, 1);
+  const before = player.hp;
+  if (heal > 0) player.hp = Math.min(maxHp, player.hp + heal);
+  if (food > 0) player.food = (player.food || 0) + food;
+  return {
+    item,
+    itemId,
+    healed: Math.round(player.hp - before),
+    hp: player.hp,
+    maxHp,
+    food: player.food || 0,
+    foodGained: food,
+  };
+}
+
 function eatFood(player) {
   if (player.food < 1) {
     throw new Error("You have no food.");
@@ -1051,6 +1086,7 @@ module.exports = {
   setBonusInfo,
   healForFood,
   eatFood,
+  consumeItem,
   setSkillLoadout,
   learnTreeNode,
   ancestorsOf,
