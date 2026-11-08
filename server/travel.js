@@ -349,7 +349,30 @@ function enterTravel(room, player, typeId, sizeId, opts = {}) {
   return travel;
 }
 
+// Kasabaya dönüş yalnızca seferin başladığı noktadan (varış taşından) yapılabilir.
+// Böylece canavarın ortasında savaşırken "kaçış" olarak kullanılamaz.
+function atReturnPoint(travel, id, radius = 3) {
+  if (!travel || !travel.spawn) return false;
+  const p = travel.pos && travel.pos[id];
+  if (!p) return false;
+  const sx = (travel.spawn.x || 0) + 0.5;
+  const sy = (travel.spawn.y || 0) + 0.5;
+  return Math.hypot(p.x - sx, p.y - sy) <= radius;
+}
+
+function healForTown(player) {
+  if (!player) return;
+  player.downed = false;
+  // Ölü (kalp 0) oyuncu tapınakta diriltilir; onun canı 0 kalır.
+  if (Number.isFinite(player.lives) && player.lives <= 0) return;
+  player.hp = Math.max(1, player.maxHp || 100);
+  player.mana = Math.max(0, player.maxMana || 0);
+}
+
 function leaveTravel(room, player) {
+  // Kasabaya dönüş her koşulda tam can/mana ile olur. Bu satır fonksiyonun en
+  // başında: aşağıdaki erken çıkışlar (travel bulunamazsa) canı eksik bırakmasın.
+  healForTown(player);
   leaveExpedition(room, player);
   const travel = activeTravel(room, player);
   if (!travel) { if (player) player.travelId = null; return; }
@@ -368,15 +391,7 @@ function leaveTravel(room, player) {
     if (room.travel === travel) room.travel = null;
   }
   if (player) player.travelId = null;
-  // Kasabaya dönen oyuncu her zaman tam can/mana ile döner. Eski davranış
-  // yalnızca hp<=0 iken iyileştiriyordu; 40 canla çıkınca lobide 40 kalıyordu.
-  if (player) {
-    player.downed = false;
-    if (player.lives > 0) {
-      player.hp = Math.max(1, player.maxHp || 100);
-      player.mana = Math.max(0, player.maxMana || 0);
-    }
-  }
+  // (Can/mana doldurma fonksiyonun başında yapılır: healForTown.)
   player.dungeonId = null;
 }
 
@@ -813,6 +828,8 @@ function resetTravel(room) {
   for (const p of room.players) {
     p.travelId = null;
     if (p.dungeonId && String(p.dungeonId).startsWith("trav_")) p.dungeonId = null;
+    // Sefer sıfırlandıysa kimse yaralı canla kasabada kalmasın.
+    healForTown(p);
   }
 }
 
@@ -823,6 +840,7 @@ module.exports = {
   generateMap,
   enterTravel,
   leaveTravel,
+  healForTown,
   interact,
   acceptInvite,
   tryAutoJoin,
@@ -840,6 +858,7 @@ module.exports = {
   resetTravel,
   activeTravel,
   rewardKill,
+  atReturnPoint,
   isDowned,
   setDowned,
   revive,

@@ -9279,6 +9279,85 @@ input:focus {
 .tv-go[disabled] { opacity: .5; cursor: not-allowed; }
 .tv-warn { color: #ff9a7b; font-size: 12.5px; margin: 0; }
 
+/* ---- Travel hub: oda kurma + skill ağacı ---- */
+.tv-hub { display: flex; gap: 18px; align-items: flex-start; justify-content: center; max-width: 1180px; margin: 3.5vh auto 4vh; padding: 0 18px; }
+.tv-hub > .tv-start { margin: 0; }
+
+/* ---- Travel hub: sol kolon (sefer + mana rengi) ---- */
+.tv-hub-side { flex: 0 1 430px; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+.tv-hub-side > .tv-start { margin: 0; }
+.tv-hue { position: relative; overflow: hidden; gap: 14px; }
+.tv-hue::before { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(120% 90% at 10% 0%, var(--hue-g, #00000000), transparent 62%); opacity: .35; }
+.tv-hue-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; position: relative; }
+.tv-hue-cost { flex: none; display: inline-flex; align-items: baseline; gap: 5px; padding: 6px 11px; border-radius: 999px;
+  background: #00000055; border: 1px solid #6b4a24; color: #ffe6b8; font: 700 13px Georgia, serif; }
+.tv-hue-cost em { font: 600 9.5px Georgia, serif; letter-spacing: .14em; text-transform: uppercase; color: #a8946f; }
+.tv-hue-body { display: flex; align-items: center; gap: 16px; position: relative; }
+.tv-hue-orb { flex: none; position: relative; width: 76px; height: 76px; border-radius: 50%; display: grid; place-items: center;
+  background: radial-gradient(circle at 32% 26%, var(--hue-a, #2a2118), var(--hue-b, #2a2118) 68%);
+  box-shadow: 0 0 0 1px #00000066 inset, 0 0 26px var(--hue-g, #00000000), 0 10px 26px #00000077; }
+.tv-hue-orb::after { content: ""; position: absolute; inset: -6px; border-radius: 50%; border: 1px solid var(--hue-r, #6b4a24); opacity: .4; }
+.tv-hue-orb-core { width: 28px; height: 28px; border-radius: 50%; opacity: .55;
+  background: radial-gradient(circle, #ffffffcc, transparent 72%); }
+.tv-hue-info { min-width: 0; }
+.tv-hue-name { font: 700 19px Georgia, serif; color: #f7ecd4; letter-spacing: .01em; line-height: 1.2; }
+.tv-hue-tags { display: flex; align-items: center; gap: 7px; margin-top: 7px; flex-wrap: wrap; }
+.tv-hue-rarity, .tv-hue-fx { font: 600 9.5px Georgia, serif; letter-spacing: .14em; text-transform: uppercase;
+  padding: 4px 8px; border-radius: 6px; }
+.tv-hue-rarity { color: var(--hue-r, #b0bec5); border: 1px solid var(--hue-r, #b0bec5); background: #00000055; }
+.tv-hue-fx { color: #a8946f; border: 1px solid #4a3722; }
+.tv-hue-swatches { display: flex; gap: 5px; align-items: center; position: relative; }
+.tv-hue-dot { flex: 1; height: 4px; border-radius: 2px; background: var(--rr); opacity: .5; }
+.tv-hue-roll { position: relative; width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.tv-hue.is-rolling .tv-hue-orb { animation: tv-hue-spin .55s linear infinite; }
+.tv-hue.is-rolling .tv-hue-orb-core { animation: tv-hue-pulse .55s ease-in-out infinite alternate; }
+@keyframes tv-hue-spin { to { transform: rotate(360deg); } }
+@keyframes tv-hue-pulse { from { opacity: .25; transform: scale(.8); } to { opacity: .9; transform: scale(1.12); } }
+@media (max-width: 980px) {
+  .tv-hub-side { flex: 1 1 auto; }
+}
+.tv-hub > .tv-tree { flex: 1 1 600px; max-width: 620px; margin: 0; padding: 22px; background: linear-gradient(180deg, #241a12, #150f0a); }
+@media (max-width: 1020px) {
+  .tv-hub { flex-direction: column; align-items: stretch; max-width: 700px; }
+  .tv-hub > .tv-tree { max-width: none; }
+}
+.tv-tree-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+.tv-tree-points { flex: none; display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 999px; background: #00000066; border: 1px solid #6b4a24; color: #cdbca4; font: 600 11px Georgia, serif; letter-spacing: .06em; text-transform: uppercase; }
+.tv-tree-points span:first-child { color: #ffd479; font-size: 14px; }
+.tv-tree-points b { color: #ffe6b8; font: 700 16px Georgia, serif; }
+.tv-tree-slots { display: flex; flex-direction: column; gap: 8px; margin: 4px 0 6px; }
+.tv-tree-slot { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 13px; border-radius: 12px; background: #00000055; border: 1px solid #3d2c1a; color: #eadcc2; cursor: pointer; text-align: left; transition: border-color .15s ease, background .15s ease, box-shadow .15s ease; }
+.tv-tree-slot:hover { background: #2a1d12; border-color: #6b4a24; }
+.tv-tree-slot.is-sel { border-color: var(--sk, #e8c482); box-shadow: 0 0 0 1px var(--sk, #e8c482) inset, 0 6px 18px #00000055; background: #2f2113; }
+.tv-tree-slot .k { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 8px; background: var(--sk, #e8c482); color: #1a1208; font: 800 13px Georgia, serif; }
+.tv-tree-slot .nm { flex: 1; font: 700 14px Georgia, serif; color: #f7ecd4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tv-tree-slot .cd { flex: none; font: 600 11px Georgia, serif; color: #a89a80; }
+.tv-tree-group { margin-top: 10px; }
+.tv-tree-group-head { font: 700 10.5px Georgia, serif; letter-spacing: .18em; text-transform: uppercase; color: #9d8a6c; margin-bottom: 7px; }
+.tv-tree-group--legend .tv-tree-group-head { color: #e8b45c; }
+.tv-tree-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.tv-tree-group--base .tv-tree-cards { grid-template-columns: 1fr; }
+@media (max-width: 620px) { .tv-tree-cards { grid-template-columns: 1fr; } }
+.tv-tree-card { display: flex; gap: 9px; align-items: flex-start; padding: 9px 11px; border-radius: 12px; background: #1e150e; border: 1px solid #3d2c1a; color: #eadcc2; cursor: pointer; text-align: left; transition: border-color .15s ease, background .15s ease, box-shadow .15s ease, transform .15s ease; }
+.tv-tree-card:hover { background: #2a1d12; border-color: #8a6231; transform: translateY(-1px); }
+.tv-tree-card.is-eq { border-color: var(--sk, #e8c482); box-shadow: 0 0 16px #e8c48222, 0 0 0 1px var(--sk, #e8c482) inset; }
+.tv-tree-card.is-locked { opacity: .72; }
+.tv-tree-card.is-locked:hover { transform: none; }
+.tv-tree-card .ic { flex: none; width: 28px; height: 28px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 14px; background: color-mix(in srgb, var(--sk, #e8c482) 22%, transparent); border: 1px solid color-mix(in srgb, var(--sk, #e8c482) 45%, transparent); }
+.tv-tree-card .body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.tv-tree-card .nm { font: 700 13px Georgia, serif; color: #f7ecd4; }
+.tv-tree-card .meta { font: 600 9.5px Georgia, serif; letter-spacing: .07em; text-transform: uppercase; color: #b7a077; }
+.tv-tree-card .ds { font: 400 11px Georgia, serif; color: #9c917f; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.tv-tree-card .act { flex: none; display: flex; align-items: center; }
+.tv-tree-card .tag { font: 700 9.5px Georgia, serif; letter-spacing: .06em; text-transform: uppercase; color: #cdbca4; background: #00000066; border: 1px solid #4a3620; border-radius: 999px; padding: 3px 8px; }
+.tv-tree-card .tag--eq { color: #1c1206; background: var(--sk, #e8c482); border-color: transparent; }
+.tv-tree-learn { font: 700 10.5px Georgia, serif; letter-spacing: .05em; text-transform: uppercase; color: #1c1206; background: linear-gradient(180deg, #f0cb84, #d3a24b); border: 1px solid #8a6231; border-radius: 999px; padding: 4px 9px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
+.tv-tree-learn b { font-size: 10px; }
+.tv-tree-learn:hover { filter: brightness(1.08); }
+.tv-tree-learn[disabled] { opacity: .45; cursor: not-allowed; filter: none; }
+.tv-tree-foot { margin-top: 12px; padding-top: 10px; border-top: 1px solid #3d2c1a; font: 400 11px Georgia, serif; color: #8f8069; line-height: 1.45; }
+
 /* ===== Shop cards: square, rarity-framed tiles (minimal; details on hover) =====
    Rarity is shown by the coloured frame (--rarity) instead of a text badge.
    The item art fills the tile and the name / price / button sit over a

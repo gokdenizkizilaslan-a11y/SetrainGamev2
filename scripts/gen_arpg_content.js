@@ -17,6 +17,18 @@ const DATA = path.join(__dirname, "..", "data");
 function read(name) { return JSON.parse(fs.readFileSync(path.join(DATA, name), "utf8")); }
 function write(name, obj) { fs.writeFileSync(path.join(DATA, name), JSON.stringify(obj, null, 2) + "\n", "utf8"); }
 
+// KORUMA: arpgSkills.json artık pool/late (travel puanıyla açılan) yetenekler de
+// içeriyor ve GameCraft editöründen düzenlenebiliyor. Bu betik dosyayı baştan
+// yazdığı için o kayıtları SİLER; bilinçli yeniden üretim için FORCE_GEN=1 gerekir.
+try {
+  const existing = JSON.parse(fs.readFileSync(path.join(DATA, "arpgSkills.json"), "utf8"));
+  const hasExtended = Object.values(existing).some((c) => c && ((Array.isArray(c.pool) && c.pool.length) || (Array.isArray(c.late) && c.late.length)));
+  if (hasExtended && process.env.FORCE_GEN !== "1") {
+    console.error("[gen] arpgSkills.json içinde pool/late yetenekleri var. Üzerine yazmak için: FORCE_GEN=1 node scripts/gen_arpg_content.js");
+    process.exit(1);
+  }
+} catch (e) { /* dosya yoksa normal akış */ }
+
 // ---------------------------------------------------------------- attack speed
 // Percent bonus. Only the ARPG travel renderer reads it; the turn-based combat
 // engine (server/combat.js) never touches player ATK speed.

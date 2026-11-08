@@ -49,6 +49,10 @@ function injectElementTints(elements) {
 
 function applyCatalog(cat) {
   Object.assign(CATALOG, cat);
+  // content.js içindeki i18nTR sözlüğünü motora aktar (varsa).
+  if (Array.isArray(cat.i18nTR) && cat.i18nTR.length && window.SetraI18n && typeof window.SetraI18n.loadExtra === "function") {
+    try { window.SetraI18n.loadExtra(cat.i18nTR); } catch (e) { /* non-fatal */ }
+  }
   if (Array.isArray(cat.elements) && cat.elements.length) {
     if (window.SetraEffects && typeof window.SetraEffects.setElements === "function") {
       try { window.SetraEffects.setElements(cat.elements); } catch (e) { /* non-fatal */ }
@@ -2814,7 +2818,194 @@ function renderTravelView(room) {
     if (rb) rb.addEventListener("click", () => location.reload());
   }
 }
+// ---- Travel skill tree (kasabadaki travel ekranı: gezmeye çıkmadan önce) ----
+const TRAVEL_SKILL_SLOTS = [["q", "Q"], ["e", "E"], ["r", "R"]];
+const TRAVEL_ELEMENT_ICON = { physical: "⚔", fire: "🔥", frost: "❄", lightning: "⚡", shadow: "🌑", holy: "✨", nature: "🌿", arcane: "🔮" };
+const TRAVEL_ELEMENT_COLOR = { physical: "#ffd54f", fire: "#ff7a1a", frost: "#80deea", lightning: "#b388ff", shadow: "#9c4dff", holy: "#fff59d", nature: "#76ff03", arcane: "#d1a3ff" };
+
+function travelSkillPool(me) {
+  const slug = me && me.character;
+  const set = slug && CATALOG.arpgSkills && CATALOG.arpgSkills[slug];
+  if (!set) return [];
+  const out = [];
+  TRAVEL_SKILL_SLOTS.forEach(([slot]) => {
+    if (set[slot]) out.push(Object.assign({}, set[slot], { defaultSlot: slot }));
+  });
+  (set.pool || []).forEach((sk) => { if (sk) out.push(Object.assign({}, sk)); });
+  (set.late || []).forEach((sk) => { if (sk) out.push(Object.assign({}, sk, { late: true })); });
+  return out.filter((sk) => sk && sk.id);
+}
+
+function travelSkillTier(sk) {
+  if (sk.defaultSlot) return "base";
+  const cost = Number(sk.cost) || 1;
+  return cost >= 4 || sk.late ? "legend" : "adept";
+}
+
+function renderTravelSkillTree(me) {
+  const all = travelSkillPool(me);
+  if (!all.length) return "";
+  const learned = {};
+  ((me && me.travelSkills) || []).forEach((id) => { learned[id] = true; });
+  const loadout = (me && me.travelLoadout) || {};
+  const points = (me && me.travelPoints) || 0;
+  const slot = state.travelSkillSlot || "q";
+  const byId = (id) => (id && all.find((x) => x.id === id)) || null;
+  const defaultOf = (s) => all.find((x) => x.defaultSlot === s) || null;
+  const slotBtn = ([key, label]) => {
+    // Yuva sözlükte VAR ama boş ("") ise oyuncu onu bilerek boşaltmıştır:
+    // varsayılana düşmeyiz (aksi halde aynı yetenek iki tuşta görünür).
+    const explicitEmpty = Object.prototype.hasOwnProperty.call(loadout, key) && !loadout[key];
+    const sk = explicitEmpty ? {} : (byId(loadout[key]) || defaultOf(key) || {});
+    const color = TRAVEL_ELEMENT_COLOR[sk.element] || "#e8c482";
+    return `<button type="button" class="tv-tree-slot${slot === key ? " is-sel" : ""}" data-tslot="${key}" style="--sk:${color}">
+      <span class="k">${label}</span>
+      <span class="nm">${escapeHtml(sk.name || "—")}</span>
+      <span class="cd">${sk.cd ? sk.cd + "s" : ""}</span>
+    </button>`;
+  };
+  const tierLabel = { base: "Base Kit", adept: "Adept", legend: "Legend" };
+  const card = (sk) => {
+    const owned = !!sk.defaultSlot || !!learned[sk.id];
+    const isEq = Object.keys(loadout).some((k) => loadout[k] === sk.id) || (slot === (sk.defaultSlot || "") && !Object.prototype.hasOwnProperty.call(loadout, slot));
+    const cost = Number(sk.cost) || 0;
+    const color = TRAVEL_ELEMENT_COLOR[sk.element] || "#e8c482";
+    const icon = TRAVEL_ELEMENT_ICON[sk.element] || "◆";
+    const act = isEq
+      ? `<span class="tag tag--eq">Equipped</span>`
+      : owned
+        ? `<span class="tag">${sk.defaultSlot ? "Default" : "Learned"}</span>`
+        : `<button type="button" class="tv-tree-learn" data-tlearn="${escapeHtml(sk.id)}"${points < cost ? " disabled" : ""}>Learn <b>✦${cost}</b></button>`;
+    return `<div class="tv-tree-card${owned ? "" : " is-locked"}${isEq ? " is-eq" : ""}" data-tskill="${escapeHtml(sk.id)}" role="button" tabindex="0" style="--sk:${color}">
+      <span class="ic">${icon}</span>
+      <span class="body">
+        <span class="nm">${escapeHtml(sk.name)}</span>
+        <span class="meta">${escapeHtml(sk.element || "")}${sk.power ? " · ×" + sk.power : ""}${sk.cd ? " · " + sk.cd + "s" : ""}</span>
+        <span class="ds">${escapeHtml(sk.desc || "")}</span>
+      </span>
+      <span class="act">${act}</span>
+    </div>`;
+  };
+  const groups = ["base", "adept", "legend"].map((tier) => {
+    const list = all.filter((sk) => travelSkillTier(sk) === tier);
+    if (!list.length) return "";
+    return `<div class="tv-tree-group tv-tree-group--${tier}"><div class="tv-tree-group-head">${tierLabel[tier]}</div><div class="tv-tree-cards">${list.map(card).join("")}</div></div>`;
+  }).join("");
+  return `<div class="tv-start tv-tree">
+    <div class="tv-tree-head">
+      <div>
+        <h3 class="tv-start-title">Skill Tree</h3>
+        <p class="tv-start-sub">Pick a key, then a skill to equip it. Learn new ones with travel points.</p>
+      </div>
+      <div class="tv-tree-points"><span>✦</span><b>${points}</b><span>Travel Points</span></div>
+    </div>
+    <div class="tv-tree-slots">${TRAVEL_SKILL_SLOTS.map(slotBtn).join("")}</div>
+    ${groups}
+    <div class="tv-tree-foot">Travel points come from hunting in expeditions — every 4 kills grants 1. These points are separate from the turn-based skill tree.</div>
+  </div>`;
+}
+
+function bindTravelSkillTree(root, me) {
+  const tree = root.querySelector(".tv-tree");
+  if (!tree || tree._bound) return;
+  tree._bound = true;
+  tree.addEventListener("click", (e) => {
+    const t = e.target;
+    if (!t || !t.closest) return;
+    const slotBtn = t.closest("[data-tslot]");
+    if (slotBtn) {
+      state.travelSkillSlot = slotBtn.getAttribute("data-tslot");
+      if (state.lastTravelRoom) renderTravelView(state.lastTravelRoom);
+      return;
+    }
+    const learn = t.closest("[data-tlearn]");
+    if (learn) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (typeof socket !== "undefined") socket.emit("travel:skill:learn", { id: learn.getAttribute("data-tlearn") });
+      return;
+    }
+    const card = t.closest("[data-tskill]");
+    if (!card) return;
+    const id = card.getAttribute("data-tskill");
+    const all = travelSkillPool(me);
+    const sk = all.find((x) => x.id === id);
+    if (!sk) return;
+    const learnedNow = !!sk.defaultSlot || ((me && me.travelSkills) || []).indexOf(id) >= 0;
+    if (!learnedNow) return; // kilitli kart: yalnızca Learn butonu çalışır
+    const key = state.travelSkillSlot || "q";
+    const lo = (me && me.travelLoadout) || {};
+    const explicitEmpty = Object.prototype.hasOwnProperty.call(lo, key) && !lo[key];
+    const current = explicitEmpty ? null : (lo[key] || ((all.find((x) => x.defaultSlot === key) || {}).id));
+    if (typeof socket === "undefined") return;
+    if (current === id) socket.emit("travel:skill:equip", { slot: key, id: null });
+    else socket.emit("travel:skill:equip", { slot: key, id });
+  });
+}
+
+// ---- Mana Rengi (kasabadaki travel ekranı: gezmeye çıkmadan önce) ----
+// Tek slot: yeni renk öncekinin yerini alır. Panel artık ARPG HUD'unda değil,
+// burada; sefere çıkmadan rengi seçip yeteneğe girmeden görebilirsin.
+const HUE_RARITY_COLOR = { common: "#b0bec5", uncommon: "#66bb6a", rare: "#42a5f5", epic: "#ab47bc", legendary: "#ffb300", mythic: "#ff1744" };
+const HUE_ROLL_COST = 50;
+function travelManaHue(me) {
+  const cat = (CATALOG && CATALOG.skillSkins) || {};
+  const id = (me && me.activeSkin) || (me && Array.isArray(me.skins) && me.skins[0]) || null;
+  return id ? cat[id] || null : null;
+}
+function renderTravelManaHue(me) {
+  if (!CATALOG || !CATALOG.skillSkins) return "";
+  const cur = travelManaHue(me);
+  const gold = Math.floor((me && me.gold) || 0);
+  const canRoll = gold >= HUE_ROLL_COST;
+  const rc = cur ? (HUE_RARITY_COLOR[cur.rarity] || "#b0bec5") : "#8d7f6b";
+  const primary = (cur && cur.primary) || "#2a2118";
+  const secondary = (cur && (cur.secondary || cur.primary)) || primary;
+  const glow = (cur && (cur.glow || cur.primary)) || primary;
+  const fx = cur ? String((cur.fx && (cur.fx.kind || cur.fx.type)) || cur.fx || "plain") : "";
+  const dots = Object.keys(HUE_RARITY_COLOR).map((r) => `<span class="tv-hue-dot" style="--rr:${HUE_RARITY_COLOR[r]}" title="${escapeHtml(r)}"></span>`).join("");
+  return `<div class="tv-start tv-hue${cur ? "" : " tv-hue--empty"}" style="--hue-a:${primary};--hue-b:${secondary};--hue-g:${glow};--hue-r:${rc}">
+    <div class="tv-hue-head">
+      <div>
+        <h3 class="tv-start-title">Mana Hue</h3>
+        <p class="tv-start-sub">One hue burns at a time. It repaints the light, trails and particles of your travel skills — rolling a new one fades the old for good.</p>
+      </div>
+      <span class="tv-hue-cost">${gold}<em>gold</em></span>
+    </div>
+    <div class="tv-hue-body">
+      <span class="tv-hue-orb" aria-hidden="true"><span class="tv-hue-orb-core"></span></span>
+      <div class="tv-hue-info">
+        <div class="tv-hue-name">${cur ? escapeHtml(cur.name) : "No hue yet"}</div>
+        <div class="tv-hue-tags">
+          ${cur ? `<span class="tv-hue-rarity">${escapeHtml(cur.rarity || "common")}</span>` : ""}
+          <span class="tv-hue-fx">${cur ? escapeHtml(fx + " effects") : "roll one to paint your skills"}</span>
+        </div>
+      </div>
+    </div>
+    <div class="tv-hue-swatches" aria-hidden="true">${dots}</div>
+    <button type="button" class="btn btn--gold tv-hue-roll" id="btn-travel-hue-roll" data-hue-roll${canRoll ? "" : " disabled"}>${cur ? "Roll a new hue" : "Roll a mana hue"} <span class="tv-go-cost">${HUE_ROLL_COST} gold</span></button>
+    ${canRoll ? "" : `<p class="tv-warn">You need ${HUE_ROLL_COST} gold. Sell loot or finish an expedition first.</p>`}
+  </div>`;
+}
+
+function bindTravelManaHue(root) {
+  const card = root.querySelector(".tv-hue");
+  if (!card || card._bound) return;
+  card._bound = true;
+  const btn = card.querySelector("[data-hue-roll]");
+  if (!btn) return;
+  btn.addEventListener("click", () => {
+    if (btn.disabled || typeof socket === "undefined") return;
+    btn.disabled = true;
+    card.classList.add("is-rolling");
+    socket.emit("skins:roll");
+    setTimeout(() => card.classList.remove("is-rolling"), 1600);
+  });
+}
+
 function renderTravelViewInner(room, root) {
+  state.lastTravelRoom = room;
+  if (!state.travelSkillSlot) state.travelSkillSlot = "q";
   const me = room.players.find((p) => p.id === state.playerId);
   const travels = room.travels || {};
   // Oyuncu kendi dünyasına bağlıdır; aynı odada birden çok sefer olabilir.
@@ -2841,6 +3032,8 @@ function renderTravelViewInner(room, root) {
     if (myExp) {
       const isLeader = myExp.leaderId === state.playerId;
       root.innerHTML = `
+      <div class="tv-hub">
+      <div class="tv-hub-side">
       <div class="tv-start">
         <div class="tv-start-head">
           <span class="tv-start-emblem">${TRAVEL_EMBLEM}</span>
@@ -2864,7 +3057,13 @@ function renderTravelViewInner(room, root) {
           <button type="button" class="btn tv-leave" id="btn-exp-leave">Leave room</button>
         </div>
         ${cannot ? `<p class="tv-warn">You need at least 10 stamina. Rest at the tavern or sleep to recover it.</p>` : ""}
+      </div>
+      ${renderTravelManaHue(me)}
+      </div>
+      ${renderTravelSkillTree(me)}
       </div>`;
+      bindTravelSkillTree(root, me);
+      bindTravelManaHue(root);
       const startBtn = root.querySelector("#btn-exp-start");
       if (startBtn) startBtn.addEventListener("click", () => {
         if (startBtn.disabled) return;
@@ -2878,6 +3077,8 @@ function renderTravelViewInner(room, root) {
     }
     const openExps = Object.values(exps);
     root.innerHTML = `
+      <div class="tv-hub">
+      <div class="tv-hub-side">
       <div class="tv-start">
         <div class="tv-start-head">
           <span class="tv-start-emblem">${TRAVEL_EMBLEM}</span>
@@ -2913,9 +3114,15 @@ function renderTravelViewInner(room, root) {
             ${openExps.map((e) => `<button type="button" class="tv-chip" data-exp="${escapeHtml(e.id)}"${cannot ? " disabled" : ""}>${escapeHtml(e.typeLabel || "Wilds")} &middot; ${escapeHtml(e.sizeLabel || "")} &middot; ${(e.memberIds || []).length}p</button>`).join("")}
           </div>
         </div>` : ""}
+      </div>
+      ${renderTravelManaHue(me)}
+      </div>
+      ${renderTravelSkillTree(me)}
       </div>`;
     root.querySelectorAll("[data-tt]").forEach((b) => b.addEventListener("click", () => { state.travelType = b.getAttribute("data-tt"); renderTravelView(room); }));
     root.querySelectorAll("[data-ts]").forEach((b) => b.addEventListener("click", () => { state.travelSize = b.getAttribute("data-ts"); renderTravelView(room); }));
+    bindTravelSkillTree(root, me);
+    bindTravelManaHue(root);
     const go = root.querySelector("#btn-travel-go");
     if (go) go.addEventListener("click", () => {
       if (go.disabled) return;

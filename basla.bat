@@ -2,12 +2,12 @@
 setlocal
 chcp 65001 >nul
 cd /d "%~dp0"
-title Setra - Oyun Sunucusu (kapatmak icin Ctrl+C)
+title Setra - Oyun Sunucusu (R = yeniden baslat)
 
 echo =========================================================
 echo   SETRA - Yerel Oyun Sunucusu
 echo   Adres : http://localhost:3000
-echo   Kapat : bu pencerede Ctrl+C  (ya da kapat.bat)
+echo   R = yeniden baslat   Q = kapat   (ya da kapat.bat)
 echo =========================================================
 echo.
 
@@ -55,9 +55,10 @@ echo.
 echo [*] Tarayici birazdan acilacak: http://localhost:3000
 start "" /min cmd /c "ping -n 3 127.0.0.1 >nul && start http://localhost:3000"
 
-echo [*] Sunucu baslatiliyor... BU PENCEREYI KAPATMA. Durdurmak icin Ctrl+C.
+echo [*] Sunucu baslatiliyor... BU PENCEREYI KAPATMA.
+echo     R = yeniden baslat   Q = cik
 echo.
-node server.js
+node "scripts\launcher.js" --name "SETRA - Yerel Oyun Sunucusu" --url "http://localhost:3000" --delay 600 -- node server.js
 
 echo.
 echo [!] Sunucu durdu. Cikmak icin bir tusa basin.

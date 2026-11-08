@@ -1,0 +1,5634 @@
+[
+  {
+    "en": "Red Egg",
+    "tr": "Kırmızı Yumurta"
+  },
+  {
+    "en": "Green Egg",
+    "tr": "Yeşil Yumurta"
+  },
+  {
+    "en": "Blue Egg",
+    "tr": "Mavi Yumurta"
+  },
+  {
+    "en": "Brown Egg",
+    "tr": "Kahverengi Yumurta"
+  },
+  {
+    "en": "Yellow Egg",
+    "tr": "Sarı Yumurta"
+  },
+  {
+    "en": "Purple Egg",
+    "tr": "Mor Yumurta"
+  },
+  {
+    "en": "Cyan Egg",
+    "tr": "Turkuaz Yumurta"
+  },
+  {
+    "en": "Dark Egg",
+    "tr": "Kara Yumurta"
+  },
+  {
+    "en": "Orange Egg",
+    "tr": "Turuncu Yumurta"
+  },
+  {
+    "en": "Gold Egg",
+    "tr": "Altın Yumurta"
+  },
+  {
+    "en": "Rusty Sword",
+    "tr": "Paslı Kılıç"
+  },
+  {
+    "en": "Leather Helm",
+    "tr": "Deri Miğfer"
+  },
+  {
+    "en": "Leather Chest",
+    "tr": "Deri Göğüslük"
+  },
+  {
+    "en": "Leather Pants",
+    "tr": "Deri Pantolon"
+  },
+  {
+    "en": "Leather Boots",
+    "tr": "Deri Çizme"
+  },
+  {
+    "en": "Iron Amulet",
+    "tr": "Demir Muska"
+  },
+  {
+    "en": "Iron Ring",
+    "tr": "Demir Yüzük"
+  },
+  {
+    "en": "Mana Talisman",
+    "tr": "Mana Tılsımı"
+  },
+  {
+    "en": "Battle Axe",
+    "tr": "Savaş Baltası"
+  },
+  {
+    "en": "War Hammer",
+    "tr": "Savaş Çekici"
+  },
+  {
+    "en": "Longbow",
+    "tr": "Uzun Yay"
+  },
+  {
+    "en": "Shortbow",
+    "tr": "Kısa Yay"
+  },
+  {
+    "en": "Apprentice Staff",
+    "tr": "Çırak Asası"
+  },
+  {
+    "en": "Archon Staff",
+    "tr": "Arhon Asası"
+  },
+  {
+    "en": "Dagger",
+    "tr": "Hançer"
+  },
+  {
+    "en": "Poison Dagger",
+    "tr": "Zehirli Hançer"
+  },
+  {
+    "en": "Mace",
+    "tr": "Topuz"
+  },
+  {
+    "en": "Holy Sword",
+    "tr": "Kutsal Kılıç"
+  },
+  {
+    "en": "Kris Blade",
+    "tr": "Kris Kılıcı"
+  },
+  {
+    "en": "Whisper Blade",
+    "tr": "Fısıltı Kılıcı"
+  },
+  {
+    "en": "Scepter",
+    "tr": "Saltanat Asası"
+  },
+  {
+    "en": "Cleric Staff",
+    "tr": "Rahip Asası"
+  },
+  {
+    "en": "Maul",
+    "tr": "Balyoz"
+  },
+  {
+    "en": "Bulwark Hammer",
+    "tr": "Siper Çekici"
+  },
+  {
+    "en": "Stone Ash Sword",
+    "tr": "Taş Külü Kılıcı"
+  },
+  {
+    "en": "+8 Attack. A base for temple crafting.",
+    "tr": "+8 Saldırı. Tapınak zanaatı için bir temel."
+  },
+  {
+    "en": "Hearth Tea",
+    "tr": "Ocak Çayı"
+  },
+  {
+    "en": "Field Rations",
+    "tr": "Saha Azığı"
+  },
+  {
+    "en": "Fire Essence",
+    "tr": "Ateş Özü"
+  },
+  {
+    "en": "A spark of bottled flame. Used in crafting.",
+    "tr": "Şişeye konmuş bir alev kıvılcımı. Zanaatta kullanılır."
+  },
+  {
+    "en": "Frost Essence",
+    "tr": "Buz Özü"
+  },
+  {
+    "en": "Cold condensed to a droplet. Used in crafting.",
+    "tr": "Bir damlaya yoğunlaşmış soğuk. Zanaatta kullanılır."
+  },
+  {
+    "en": "Arcane Essence",
+    "tr": "Arkane Öz"
+  },
+  {
+    "en": "Raw magic held in a vial. Used in crafting.",
+    "tr": "Bir şişede tutulan ham büyü. Zanaatta kullanılır."
+  },
+  {
+    "en": "Shadow Essence",
+    "tr": "Gölge Özü"
+  },
+  {
+    "en": "Light that never arrives. Used in crafting.",
+    "tr": "Hiç ulaşmayan ışık. Zanaatta kullanılır."
+  },
+  {
+    "en": "Heart of Fire",
+    "tr": "Ateş Kalbi"
+  },
+  {
+    "en": "The still-burning heart of a fire spirit.",
+    "tr": "Bir ateş ruhunun hâlâ yanan kalbi."
+  },
+  {
+    "en": "Heart of Golem",
+    "tr": "Golem Kalbi"
+  },
+  {
+    "en": "Offer it at the Ancient Temple to mend a lost heart.",
+    "tr": "Kayıp bir kalbi onarmak için Antik Tapınak'ta sun."
+  },
+  {
+    "en": "Origin Stone",
+    "tr": "Köken Taşı"
+  },
+  {
+    "en": "Offer it at the Ancient Temple to be reborn into a new race.",
+    "tr": "Yeni bir ırka yeniden doğmak için Antik Tapınak'ta sun."
+  },
+  {
+    "en": "Ancient Relic",
+    "tr": "Kadim Kalıntı"
+  },
+  {
+    "en": "An artifact older than the kingdom. The temple remembers.",
+    "tr": "Krallıktan daha eski bir yadigâr. Tapınak hatırlar."
+  },
+  {
+    "en": "Warlord Crest",
+    "tr": "Savaş Lordu Arması"
+  },
+  {
+    "en": "A battle-worn crest. The Ancient Temple demands it from those walking the heavy path (Warlord, Juggernaut, Crusader).",
+    "tr": "Savaşta yıpranmış bir arma. Antik Tapınak bunu ağır yolda yürüyenlerden ister (Savaş Lordu, Juggernaut, Haçlı)."
+  },
+  {
+    "en": "Shadow Sigil",
+    "tr": "Gölge Mührü"
+  },
+  {
+    "en": "A whispering sigil. The Ancient Temple demands it from those walking the shadow path (Nightblade, Reaper, Warden).",
+    "tr": "Fısıldayan bir mühür. Antik Tapınak bunu gölge yolunda yürüyenlerden ister (Gece Bıçağı, Azrail, Muhafız)."
+  },
+  {
+    "en": "Arcane Seal",
+    "tr": "Arkane Mührü"
+  },
+  {
+    "en": "A humming seal. The Ancient Temple demands it from those walking the arcane path (Archmage, High Priest).",
+    "tr": "Uğuldayan bir mühür. Antik Tapınak bunu arkane yolunda yürüyenlerden ister (Başbüyücü, Yüce Rahip)."
+  },
+  {
+    "en": "Drop of Primeval Cruor",
+    "tr": "Kadim Cruor Damlası"
+  },
+  {
+    "en": "First blood, still warm. Rarely spills from humanoid wounds. Old Vesryn demands 10 drops for his rite.",
+    "tr": "İlk kan, hâlâ sıcak. İnsansı yaralarından nadiren sızar. Yaşlı Vesryn ayini için 10 damla ister."
+  },
+  {
+    "en": "Fire Ash Sword",
+    "tr": "Ateş Külü Kılıcı"
+  },
+  {
+    "en": "+12 Attack. Still warm to the touch.",
+    "tr": "+12 Saldırı. Dokununca hâlâ sıcak."
+  },
+  {
+    "en": "Molten Cleaver",
+    "tr": "Erimiş Satır"
+  },
+  {
+    "en": "+20 Attack. It hums with fire.",
+    "tr": "+20 Saldırı. Ateşle uğulduyor."
+  },
+  {
+    "en": "Frost Gladius",
+    "tr": "Buz Gladiusu"
+  },
+  {
+    "en": "Arcane Rod",
+    "tr": "Arkane Değnek"
+  },
+  {
+    "en": "Shadow Knife",
+    "tr": "Gölge Bıçağı"
+  },
+  {
+    "en": "Ember Sword",
+    "tr": "Kor Kılıcı"
+  },
+  {
+    "en": "+26 Attack. Found only in the deep ruins.",
+    "tr": "+26 Saldırı. Yalnızca derin harabelerde bulunur."
+  },
+  {
+    "en": "Phoenix Staff",
+    "tr": "Anka Asası"
+  },
+  {
+    "en": "Void Cleaver",
+    "tr": "Boşluk Satırı"
+  },
+  {
+    "en": "+42 Attack. The edge drinks the dark.",
+    "tr": "+42 Saldırı. Keskin ağzı karanlığı içer."
+  },
+  {
+    "en": "Wooden Chest",
+    "tr": "Ahşap Sandık"
+  },
+  {
+    "en": "A simple chest. Common odds of decent loot.",
+    "tr": "Basit bir sandık. İyi ganimet için sıradan şans."
+  },
+  {
+    "en": "Iron Chest",
+    "tr": "Demir Sandık"
+  },
+  {
+    "en": "A sturdy chest. Better odds of uncommon loot.",
+    "tr": "Sağlam bir sandık. Sıra dışı ganimet için daha iyi şans."
+  },
+  {
+    "en": "Gold Chest",
+    "tr": "Altın Sandık"
+  },
+  {
+    "en": "A gilded chest. Decent odds of rare loot.",
+    "tr": "Yaldızlı bir sandık. Nadir ganimet için iyi şans."
+  },
+  {
+    "en": "Emerald Chest",
+    "tr": "Zümrüt Sandık"
+  },
+  {
+    "en": "A gem-studded chest. Strong odds of epic loot.",
+    "tr": "Mücevher kakmalı bir sandık. Destansı ganimet için yüksek şans."
+  },
+  {
+    "en": "Obsidian Chest",
+    "tr": "Obsidyen Sandık"
+  },
+  {
+    "en": "A black-glass chest. Fine odds of legendary loot.",
+    "tr": "Kara camdan bir sandık. Efsanevi ganimet için yüksek şans."
+  },
+  {
+    "en": "Iron Greatsword",
+    "tr": "Demir Çift Elli Kılıç"
+  },
+  {
+    "en": "Steel Blade",
+    "tr": "Çelik Kılıç"
+  },
+  {
+    "en": "Ranger Bow",
+    "tr": "Korucu Yayı"
+  },
+  {
+    "en": "Arcane Scepter",
+    "tr": "Arkane Asa"
+  },
+  {
+    "en": "Shadow Dagger",
+    "tr": "Gölge Hançeri"
+  },
+  {
+    "en": "Dragon Spear",
+    "tr": "Ejder Mızrağı"
+  },
+  {
+    "en": "Titan Hammer",
+    "tr": "Titan Çekici"
+  },
+  {
+    "en": "Storm Bow",
+    "tr": "Fırtına Yayı"
+  },
+  {
+    "en": "Void Blade",
+    "tr": "Boşluk Kılıcı"
+  },
+  {
+    "en": "World Breaker",
+    "tr": "Dünya Kırıcı"
+  },
+  {
+    "en": "Bronze Helm",
+    "tr": "Bronz Miğfer"
+  },
+  {
+    "en": "Iron Helm",
+    "tr": "Demir Miğfer"
+  },
+  {
+    "en": "Ranger Hood",
+    "tr": "Korucu Başlığı"
+  },
+  {
+    "en": "Mage Cowl",
+    "tr": "Büyücü Kukuletası"
+  },
+  {
+    "en": "Knight Helm",
+    "tr": "Şövalye Miğferi"
+  },
+  {
+    "en": "Shadow Mask",
+    "tr": "Gölge Maskesi"
+  },
+  {
+    "en": "Dragon Helm",
+    "tr": "Ejder Miğferi"
+  },
+  {
+    "en": "Void Crown",
+    "tr": "Boşluk Tacı"
+  },
+  {
+    "en": "Padded Armor",
+    "tr": "Dolgulu Zırh"
+  },
+  {
+    "en": "Chainmail",
+    "tr": "Zincir Zırh"
+  },
+  {
+    "en": "Ranger Vest",
+    "tr": "Korucu Yeleği"
+  },
+  {
+    "en": "Silk Robe",
+    "tr": "İpek Cübbe"
+  },
+  {
+    "en": "Plate Armor",
+    "tr": "Plaka Zırh"
+  },
+  {
+    "en": "Shadow Garb",
+    "tr": "Gölge Giysisi"
+  },
+  {
+    "en": "Dragon Scale",
+    "tr": "Ejder Pulu"
+  },
+  {
+    "en": "Void Plate",
+    "tr": "Boşluk Zırhı"
+  },
+  {
+    "en": "Leather Greaves",
+    "tr": "Deri Dizlik"
+  },
+  {
+    "en": "Iron Greaves",
+    "tr": "Demir Dizlik"
+  },
+  {
+    "en": "Swift Leggings",
+    "tr": "Çevik Tozluk"
+  },
+  {
+    "en": "Sage Pants",
+    "tr": "Bilge Pantolonu"
+  },
+  {
+    "en": "Knight Leggings",
+    "tr": "Şövalye Tozluğu"
+  },
+  {
+    "en": "Shadow Leggings",
+    "tr": "Gölge Tozluğu"
+  },
+  {
+    "en": "Dragon Leggings",
+    "tr": "Ejder Tozluğu"
+  },
+  {
+    "en": "Void Leggings",
+    "tr": "Boşluk Tozluğu"
+  },
+  {
+    "en": "Worn Boots",
+    "tr": "Yıpranmış Çizme"
+  },
+  {
+    "en": "Iron Boots",
+    "tr": "Demir Çizme"
+  },
+  {
+    "en": "Ranger Boots",
+    "tr": "Korucu Çizmesi"
+  },
+  {
+    "en": "Sorcery Boots",
+    "tr": "Büyü Çizmesi"
+  },
+  {
+    "en": "Knight Boots",
+    "tr": "Şövalye Çizmesi"
+  },
+  {
+    "en": "Void Boots",
+    "tr": "Boşluk Çizmesi"
+  },
+  {
+    "en": "Copper Amulet",
+    "tr": "Bakır Muska"
+  },
+  {
+    "en": "Silver Amulet",
+    "tr": "Gümüş Muska"
+  },
+  {
+    "en": "Ruby Amulet",
+    "tr": "Yakut Muska"
+  },
+  {
+    "en": "Sapphire Amulet",
+    "tr": "Safir Muska"
+  },
+  {
+    "en": "Void Amulet",
+    "tr": "Boşluk Muskası"
+  },
+  {
+    "en": "Copper Ring",
+    "tr": "Bakır Yüzük"
+  },
+  {
+    "en": "Silver Ring",
+    "tr": "Gümüş Yüzük"
+  },
+  {
+    "en": "Ruby Ring",
+    "tr": "Yakut Yüzük"
+  },
+  {
+    "en": "Sapphire Ring",
+    "tr": "Safir Yüzük"
+  },
+  {
+    "en": "Void Ring",
+    "tr": "Boşluk Yüzüğü"
+  },
+  {
+    "en": "The Essence of Life",
+    "tr": "Yaşam Özü"
+  },
+  {
+    "en": "A rare essence that can revive a fallen ally at the Ancient Temple.",
+    "tr": "Antik Tapınak'ta düşmüş bir dostu diriltebilen nadir bir öz."
+  },
+  {
+    "en": "Tome of Ember",
+    "tr": "Kor Kitabı"
+  },
+  {
+    "en": "+12 Magic Power, +2 Heal Power. For mages.",
+    "tr": "+12 Büyü Gücü, +2 İyileştirme Gücü. Büyücüler için."
+  },
+  {
+    "en": "Tome of Frost",
+    "tr": "Buz Kitabı"
+  },
+  {
+    "en": "Tome of Shadows",
+    "tr": "Gölgeler Kitabı"
+  },
+  {
+    "en": "Tome of Light",
+    "tr": "Işık Kitabı"
+  },
+  {
+    "en": "Tome of Void",
+    "tr": "Boşluk Kitabı"
+  },
+  {
+    "en": "The Stone of Blood",
+    "tr": "Kan Taşı"
+  },
+  {
+    "en": "+10% Omnivamp. Heals 10% of all damage dealt. (Craftable)",
+    "tr": "+10% Omnivamp. Verilen tüm hasarın %10'unu iyileştirir. (Üretilebilir)"
+  },
+  {
+    "en": "Stone of Frost",
+    "tr": "Buz Taşı"
+  },
+  {
+    "en": "Stone of Shadows",
+    "tr": "Gölgeler Taşı"
+  },
+  {
+    "en": "Stone of Arcane",
+    "tr": "Arkane Taşı"
+  },
+  {
+    "en": "Stone of Earth",
+    "tr": "Toprak Taşı"
+  },
+  {
+    "en": "Vampiric Ring",
+    "tr": "Vampir Yüzüğü"
+  },
+  {
+    "en": "Crimson Blade",
+    "tr": "Kızıl Kılıç"
+  },
+  {
+    "en": "Glacial Helm",
+    "tr": "Buzul Miğferi"
+  },
+  {
+    "en": "Ember Plate",
+    "tr": "Kor Zırhı"
+  },
+  {
+    "en": "Ember King's Blade",
+    "tr": "Kor Kralı'nın Kılıcı"
+  },
+  {
+    "en": "Ember King's blade - only drops from Ember King (50%).",
+    "tr": "Kor Kralı'nın kılıcı - yalnızca Kor Kralı'ndan düşer (%50)."
+  },
+  {
+    "en": "Frost Titan's Axe",
+    "tr": "Buz Devi'nin Baltası"
+  },
+  {
+    "en": "Frost Titan's axe - only drops from Frost Titan (50%).",
+    "tr": "Buz Devi'nin baltası - yalnızca Buz Devi'nden düşer (%50)."
+  },
+  {
+    "en": "Void Herald's Scythe",
+    "tr": "Boşluk Habercisi'nin Tırpanı"
+  },
+  {
+    "en": "Void Herald's scythe - only drops from Void Herald (50%).",
+    "tr": "Boşluk Habercisi'nin tırpanı - yalnızca Boşluk Habercisi'nden düşer (%50)."
+  },
+  {
+    "en": "Storm Colossus Hammer",
+    "tr": "Fırtına Devi'nin Çekici"
+  },
+  {
+    "en": "Storm Colossus hammer - only drops from Storm Colossus (50%).",
+    "tr": "Fırtına Devi'nin çekici - yalnızca Fırtına Devi'nden düşer (%50)."
+  },
+  {
+    "en": "World Eater Fang",
+    "tr": "Dünya Yiyen'in Dişi"
+  },
+  {
+    "en": "World Eater's fang - only drops from World Eater (50%).",
+    "tr": "Dünya Yiyen'in dişi - yalnızca Dünya Yiyen'den düşer (%50)."
+  },
+  {
+    "en": "Ember Chest",
+    "tr": "Kor Sandığı"
+  },
+  {
+    "en": "Ember King's chest - rare+ guaranteed.",
+    "tr": "Kor Kralı'nın sandığı - en az nadir garanti."
+  },
+  {
+    "en": "Frost Chest",
+    "tr": "Buz Sandığı"
+  },
+  {
+    "en": "Frost Titan's chest - rare+ guaranteed.",
+    "tr": "Buz Devi'nin sandığı - en az nadir garanti."
+  },
+  {
+    "en": "Void Chest",
+    "tr": "Boşluk Sandığı"
+  },
+  {
+    "en": "Void Herald's chest - epic+ guaranteed.",
+    "tr": "Boşluk Habercisi'nin sandığı - en az destansı garanti."
+  },
+  {
+    "en": "Storm Chest",
+    "tr": "Fırtına Sandığı"
+  },
+  {
+    "en": "Storm Colossus chest - epic+ guaranteed.",
+    "tr": "Fırtına Devi'nin sandığı - en az destansı garanti."
+  },
+  {
+    "en": "World Chest",
+    "tr": "Dünya Sandığı"
+  },
+  {
+    "en": "World Eater's chest - legendary+ guaranteed.",
+    "tr": "Dünya Yiyen'in sandığı - en az efsanevi garanti."
+  },
+  {
+    "en": "Mythic Chest",
+    "tr": "Mitik Sandık"
+  },
+  {
+    "en": "A chest of legend. Great odds of mythic loot.",
+    "tr": "Efsanevi bir sandık. Mitik ganimet için yüksek şans."
+  },
+  {
+    "en": "Buried Treasure",
+    "tr": "Gömülü Hazine"
+  },
+  {
+    "en": "A dirt-caked hoard dug up on the road. Lucky find, honest loot.",
+    "tr": "Yolda topraktan çıkarılmış, çamura bulanmış bir define. Şanslı buluş, dürüst ganimet."
+  },
+  {
+    "en": "Sturdy Club",
+    "tr": "Dayanıklı Sopa"
+  },
+  {
+    "en": "A dependable oaken club.",
+    "tr": "Güvenilir bir meşe sopa."
+  },
+  {
+    "en": "Cloth Cap",
+    "tr": "Bez Başlık"
+  },
+  {
+    "en": "Stitched cloth, better than nothing.",
+    "tr": "Dikilmiş bez; hiç yoktan iyidir."
+  },
+  {
+    "en": "Bone Ring",
+    "tr": "Kemik Yüzük"
+  },
+  {
+    "en": "Carved from a dire wolf fang.",
+    "tr": "Bir dev kurt dişinden oyulmuş."
+  },
+  {
+    "en": "Travel Boots",
+    "tr": "Yol Çizmesi"
+  },
+  {
+    "en": "Worn soles, swift steps.",
+    "tr": "Aşınmış tabanlar, çevik adımlar."
+  },
+  {
+    "en": "Hunter Axe",
+    "tr": "Avcı Baltası"
+  },
+  {
+    "en": "A woodsman's heavy axe.",
+    "tr": "Bir oduncunun ağır baltası."
+  },
+  {
+    "en": "Wolf Helm",
+    "tr": "Kurt Miğferi"
+  },
+  {
+    "en": "Fashioned from an alpha pelt.",
+    "tr": "Bir alfa postundan yapılmış."
+  },
+  {
+    "en": "Boar Hide Armor",
+    "tr": "Yaban Domuzu Derisi Zırh"
+  },
+  {
+    "en": "Thick, musky, tough.",
+    "tr": "Kalın, keskin kokulu, dayanıklı."
+  },
+  {
+    "en": "Swift Greaves",
+    "tr": "Çevik Dizlik"
+  },
+  {
+    "en": "Light plates for fast feet.",
+    "tr": "Hızlı ayaklar için hafif plakalar."
+  },
+  {
+    "en": "Ember Boots",
+    "tr": "Kor Çizmesi"
+  },
+  {
+    "en": "Still warm from the forge.",
+    "tr": "Ocaktan hâlâ sıcak."
+  },
+  {
+    "en": "Moon Amulet",
+    "tr": "Ay Muskası"
+  },
+  {
+    "en": "Drinks in moonlight.",
+    "tr": "Ay ışığını içine çeker."
+  },
+  {
+    "en": "Serpent Ring",
+    "tr": "Yılan Yüzüğü"
+  },
+  {
+    "en": "A coiled silver serpent.",
+    "tr": "Kıvrılmış gümüş bir yılan."
+  },
+  {
+    "en": "Oak Staff",
+    "tr": "Meşe Asa"
+  },
+  {
+    "en": "Heartwood humming with mana.",
+    "tr": "Öz odunu manayla uğulduyor."
+  },
+  {
+    "en": "Frostbrand Axe",
+    "tr": "Buzdamgası Baltası"
+  },
+  {
+    "en": "Its edge never thaws.",
+    "tr": "Keskin ağzı asla çözülmez."
+  },
+  {
+    "en": "Sentinel Helm",
+    "tr": "Nöbetçi Miğferi"
+  },
+  {
+    "en": "Stood a hundred sieges.",
+    "tr": "Yüz kuşatmaya dayandı."
+  },
+  {
+    "en": "Shadowplate",
+    "tr": "Gölge Zırhı"
+  },
+  {
+    "en": "Forged in eclipse dark.",
+    "tr": "Tutulma karanlığında dövülmüş."
+  },
+  {
+    "en": "Storm Leggings",
+    "tr": "Fırtına Tozluğu"
+  },
+  {
+    "en": "Crackling with static.",
+    "tr": "Statikle çıtırdıyor."
+  },
+  {
+    "en": "Thunder Amulet",
+    "tr": "Gök Gürültüsü Muskası"
+  },
+  {
+    "en": "A bottled thunderstorm.",
+    "tr": "Şişeye konmuş bir gök gürültüsü fırtınası."
+  },
+  {
+    "en": "Warden Ring",
+    "tr": "Muhafız Yüzüğü"
+  },
+  {
+    "en": "Oath-bound silver.",
+    "tr": "Yeminle bağlı gümüş."
+  },
+  {
+    "en": "Runed Bow",
+    "tr": "Rünlü Yay"
+  },
+  {
+    "en": "Runes guide every shaft.",
+    "tr": "Rünler her oku yönlendirir."
+  },
+  {
+    "en": "Void Reaver",
+    "tr": "Boşluk Kemiricisi"
+  },
+  {
+    "en": "It hungers between swings.",
+    "tr": "Savurmalar arasında acıkır."
+  },
+  {
+    "en": "Aegis Armor",
+    "tr": "Aegis Zırhı"
+  },
+  {
+    "en": "A wall you can wear.",
+    "tr": "Giymek mümkün bir duvar."
+  },
+  {
+    "en": "Archon Crown",
+    "tr": "Arhon Tacı"
+  },
+  {
+    "en": "Worn by sky-tyrants.",
+    "tr": "Gökyüzü zorbaları tarafından giyilir."
+  },
+  {
+    "en": "Stormcaller Staff",
+    "tr": "Fırtına Çağıran Asa"
+  },
+  {
+    "en": "Points at clouds; clouds obey.",
+    "tr": "Bulutlara doğrultur; bulutlar itaat eder."
+  },
+  {
+    "en": "Kingsfall Blade",
+    "tr": "Kral Düşüren Kılıç"
+  },
+  {
+    "en": "Ended a dynasty.",
+    "tr": "Bir hanedanı bitirdi."
+  },
+  {
+    "en": "Titanward Plate",
+    "tr": "Titan Korulu Zırh"
+  },
+  {
+    "en": "Titan-forged bulwark.",
+    "tr": "Titan dövmesi siper."
+  },
+  {
+    "en": "Worldsplitter Axe",
+    "tr": "Dünya Yaran Balta"
+  },
+  {
+    "en": "The ground remembers it.",
+    "tr": "Toprak onu hatırlar."
+  },
+  {
+    "en": "Bottle of Slime",
+    "tr": "Slime Şişesi"
+  },
+  {
+    "en": "A jiggling bottle of fresh slime.",
+    "tr": "Taze slime dolu, kıpır kıpır bir şişe."
+  },
+  {
+    "en": "Wolf Fang",
+    "tr": "Kurt Dişi"
+  },
+  {
+    "en": "A sharp fang, still warm.",
+    "tr": "Keskin bir diş, hâlâ sıcak."
+  },
+  {
+    "en": "Cave Bat Wing",
+    "tr": "Mağara Yarasası Kanadı"
+  },
+  {
+    "en": "Leathery and light.",
+    "tr": "Derimsi ve hafif."
+  },
+  {
+    "en": "Ash Spider Silk",
+    "tr": "Kül Örümceği İpeği"
+  },
+  {
+    "en": "Stronger than it looks.",
+    "tr": "Göründüğünden daha güçlü."
+  },
+  {
+    "en": "Tough Hide",
+    "tr": "Dayanıklı Deri"
+  },
+  {
+    "en": "Thick hide of a hardy beast.",
+    "tr": "Dayanıklı bir hayvanın kalın derisi."
+  },
+  {
+    "en": "Old Bone",
+    "tr": "Eski Kemik"
+  },
+  {
+    "en": "Dense with old malice.",
+    "tr": "Eski kinden yoğun."
+  },
+  {
+    "en": "Orc Tusk",
+    "tr": "Ork Dişi"
+  },
+  {
+    "en": "A trophy with an edge.",
+    "tr": "Keskin bir ganimet."
+  },
+  {
+    "en": "Storm Harpy Feather",
+    "tr": "Fırtına Harpi Tüyü"
+  },
+  {
+    "en": "Crackles faintly.",
+    "tr": "Hafifçe çıtırdar."
+  },
+  {
+    "en": "Golem Fragment",
+    "tr": "Golem Parçası"
+  },
+  {
+    "en": "A chip of living stone.",
+    "tr": "Canlı taştan bir kıymık."
+  },
+  {
+    "en": "Wraith Wisp",
+    "tr": "Hayalet Işığı"
+  },
+  {
+    "en": "Cold light in a jar.",
+    "tr": "Kavanozda soğuk ışık."
+  },
+  {
+    "en": "Elder Treant Bark",
+    "tr": "Yaşlı Ağaç Adam Kabuğu"
+  },
+  {
+    "en": "Bark that slowly regrows.",
+    "tr": "Yavaşça yeniden büyüyen kabuk."
+  },
+  {
+    "en": "Hydra Scale",
+    "tr": "Hidra Pulu"
+  },
+  {
+    "en": "It shimmers with regrowth.",
+    "tr": "Yeniden büyümeyle parıldar."
+  },
+  {
+    "en": "Minor Salve",
+    "tr": "Küçük Merhem"
+  },
+  {
+    "en": "Heals small wounds.",
+    "tr": "Küçük yaraları iyileştirir."
+  },
+  {
+    "en": "Wolf Jerky",
+    "tr": "Kurt Pastırması"
+  },
+  {
+    "en": "Chewy trail food.",
+    "tr": "Çiğnenir yol azığı."
+  },
+  {
+    "en": "Mushroom Stew",
+    "tr": "Mantar Güveç"
+  },
+  {
+    "en": "A hearty dungeon stew.",
+    "tr": "Doyurucu bir zindan güveci."
+  },
+  {
+    "en": "Frost Berry",
+    "tr": "Buz Meyvesi"
+  },
+  {
+    "en": "Numbing and sweet.",
+    "tr": "Uyuşturucu ve tatlı."
+  },
+  {
+    "en": "Ember Pepper",
+    "tr": "Kor Biberi"
+  },
+  {
+    "en": "Burns going down.",
+    "tr": "Boğazdan inerken yakar."
+  },
+  {
+    "en": "Troll Draught",
+    "tr": "Trol Şerbeti"
+  },
+  {
+    "en": "Regrows more than courage.",
+    "tr": "Cesaretten fazlasını yeniden büyütür."
+  },
+  {
+    "en": "Skyshard Omelet",
+    "tr": "Gökyüzü Parçası Omleti"
+  },
+  {
+    "en": "Storm-harpy eggs, fried.",
+    "tr": "Kızarmış fırtına harpi yumurtaları."
+  },
+  {
+    "en": "Elixir of Dawn",
+    "tr": "Şafak İksiri"
+  },
+  {
+    "en": "First light, bottled.",
+    "tr": "Şişeye konmuş ilk ışık."
+  },
+  {
+    "en": "Sword Blueprint",
+    "tr": "Kılıç Kalıbı"
+  },
+  {
+    "en": "Reusable weapon pattern.",
+    "tr": "Yeniden kullanılabilir silah kalıbı."
+  },
+  {
+    "en": "Armor Blueprint",
+    "tr": "Zırh Kalıbı"
+  },
+  {
+    "en": "Reusable armor pattern.",
+    "tr": "Yeniden kullanılabilir zırh kalıbı."
+  },
+  {
+    "en": "Staff Blueprint",
+    "tr": "Asa Kalıbı"
+  },
+  {
+    "en": "Reusable staff pattern.",
+    "tr": "Yeniden kullanılabilir asa kalıbı."
+  },
+  {
+    "en": "Sage Circlet",
+    "tr": "Bilge Taçlığı"
+  },
+  {
+    "en": "For quiet, clever minds.",
+    "tr": "Sessiz, zeki zihinler için."
+  },
+  {
+    "en": "Blood Blade",
+    "tr": "Kan Kılıcı"
+  },
+  {
+    "en": "+28 Attack. It remembers every vein.",
+    "tr": "+28 Saldırı. Her damarı hatırlar."
+  },
+  {
+    "en": "Blood Fang",
+    "tr": "Kan Dişi"
+  },
+  {
+    "en": "+18 Attack, +2 Speed. Still warm.",
+    "tr": "+18 Saldırı, +2 Hız. Hâlâ sıcak."
+  },
+  {
+    "en": "Blood Helm",
+    "tr": "Kan Miğferi"
+  },
+  {
+    "en": "Blood Chest",
+    "tr": "Kan Göğüslüğü"
+  },
+  {
+    "en": "Blood Leggings",
+    "tr": "Kan Tozluğu"
+  },
+  {
+    "en": "Blood Boots",
+    "tr": "Kan Çizmesi"
+  },
+  {
+    "en": "Blood Ring",
+    "tr": "Kan Yüzüğü"
+  },
+  {
+    "en": "Blood Amulet",
+    "tr": "Kan Muskası"
+  },
+  {
+    "en": "Blood Tome",
+    "tr": "Kan Kitabı"
+  },
+  {
+    "en": "+14 Magic Power, +8 Heal Power. Written in red.",
+    "tr": "+14 Büyü Gücü, +8 İyileştirme Gücü. Kırmızıyla yazılmış."
+  },
+  {
+    "en": "Duskwood Blade",
+    "tr": "Alacakaranlık Ormanı Kılıcı"
+  },
+  {
+    "en": "Reedcutter",
+    "tr": "Sazkesen"
+  },
+  {
+    "en": "Ironleaf Sword",
+    "tr": "Demiryaprak Kılıcı"
+  },
+  {
+    "en": "Patrol Saber",
+    "tr": "Devriye Kılıcı"
+  },
+  {
+    "en": "Tinker's Shortsword",
+    "tr": "Tamircinin Kısa Kılıcı"
+  },
+  {
+    "en": "Militia Sword",
+    "tr": "Milis Kılıcı"
+  },
+  {
+    "en": "Boar Tusk Blade",
+    "tr": "Domuz Dişi Kılıcı"
+  },
+  {
+    "en": "Salt-Rusted Sword",
+    "tr": "Tuzpaslı Kılıç"
+  },
+  {
+    "en": "Charcoal Cutter",
+    "tr": "Kömürkesen"
+  },
+  {
+    "en": "Bronzeguard",
+    "tr": "Bronz Muhafız"
+  },
+  {
+    "en": "Mossbrand",
+    "tr": "Yosundamgası"
+  },
+  {
+    "en": "Tidecutter",
+    "tr": "Dalgakesen"
+  },
+  {
+    "en": "Ashen Edge",
+    "tr": "Kül Ağzı"
+  },
+  {
+    "en": "Watchman's Sabre",
+    "tr": "Bekçinin Kılıcı"
+  },
+  {
+    "en": "Glade Whisper",
+    "tr": "Açıklık Fısıltısı"
+  },
+  {
+    "en": "Emberwood Blade",
+    "tr": "Kor Odunu Kılıcı"
+  },
+  {
+    "en": "Frostpin",
+    "tr": "Buziğnesi"
+  },
+  {
+    "en": "Mason's Broadsword",
+    "tr": "Duvarcının Kılıcı"
+  },
+  {
+    "en": "Stormhilt",
+    "tr": "Fırtına Kabzası"
+  },
+  {
+    "en": "Runeblade",
+    "tr": "Rün Kılıcı"
+  },
+  {
+    "en": "Glacier Fang",
+    "tr": "Buzul Dişi"
+  },
+  {
+    "en": "Venomfang",
+    "tr": "Zehirdiş"
+  },
+  {
+    "en": "Brass Talon",
+    "tr": "Pirinç Pençe"
+  },
+  {
+    "en": "Shadowthorn",
+    "tr": "Gölge Dikeni"
+  },
+  {
+    "en": "Coral Reaver",
+    "tr": "Mercan Kemiricisi"
+  },
+  {
+    "en": "Graverust Sword",
+    "tr": "Mezar Pası Kılıcı"
+  },
+  {
+    "en": "Sunflare Sabre",
+    "tr": "Güneş Patlaması Kılıcı"
+  },
+  {
+    "en": "Emberforged Greatsword",
+    "tr": "Kordövme Çift Elli Kılıç"
+  },
+  {
+    "en": "Glacial Requiem",
+    "tr": "Buzul Ağıdı"
+  },
+  {
+    "en": "Thunderbrand",
+    "tr": "Gök Gürültüsü Damgası"
+  },
+  {
+    "en": "Crimson Oath",
+    "tr": "Kızıl Yemin"
+  },
+  {
+    "en": "Voidsteel Edge",
+    "tr": "Boşluk Çeliği Ağzı"
+  },
+  {
+    "en": "Seraph's Wing",
+    "tr": "Seraf'ın Kanadı"
+  },
+  {
+    "en": "Nightbloom Blade",
+    "tr": "Geceçiçeği Kılıcı"
+  },
+  {
+    "en": "Tidecaller",
+    "tr": "Dalga Çağıran"
+  },
+  {
+    "en": "Runic Warblade",
+    "tr": "Rünik Savaş Kılıcı"
+  },
+  {
+    "en": "Dragonfang Blade",
+    "tr": "Ejderdışı Kılıç"
+  },
+  {
+    "en": "Phoenix Ember Sword",
+    "tr": "Anka Kor Kılıcı"
+  },
+  {
+    "en": "Worldtree Blade",
+    "tr": "Dünya Ağacı Kılıcı"
+  },
+  {
+    "en": "Voidheart Cleaver",
+    "tr": "Boşluk Kalbi Satırı"
+  },
+  {
+    "en": "Astral Sever",
+    "tr": "Astral Kesici"
+  },
+  {
+    "en": "Bloodmoon Greatsword",
+    "tr": "Kan Ayı Çift Elli Kılıcı"
+  },
+  {
+    "en": "Setra's Dawnblade",
+    "tr": "Setra'nın Şafak Kılıcı"
+  },
+  {
+    "en": "Edge of the Firstborn",
+    "tr": "İlk Doğan'ın Ağzı"
+  },
+  {
+    "en": "Worldheart, the Unmaking",
+    "tr": "Dünya Kalbi, Yok Edici"
+  },
+  {
+    "en": "Duskhide Helm",
+    "tr": "Alacakaranlık Derisi Miğfer"
+  },
+  {
+    "en": "Duskhide Chest",
+    "tr": "Alacakaranlık Derisi Göğüslük"
+  },
+  {
+    "en": "Duskhide Legs",
+    "tr": "Alacakaranlık Derisi Bacaklık"
+  },
+  {
+    "en": "Duskhide Boots",
+    "tr": "Alacakaranlık Derisi Çizme"
+  },
+  {
+    "en": "Duskhide Blade",
+    "tr": "Alacakaranlık Derisi Kılıç"
+  },
+  {
+    "en": "Bronzeforge Helm",
+    "tr": "Bronzdövme Miğfer"
+  },
+  {
+    "en": "Bronzeforge Chest",
+    "tr": "Bronzdövme Göğüslük"
+  },
+  {
+    "en": "Bronzeforge Legs",
+    "tr": "Bronzdövme Bacaklık"
+  },
+  {
+    "en": "Bronzeforge Boots",
+    "tr": "Bronzdövme Çizme"
+  },
+  {
+    "en": "Bronzeforge Blade",
+    "tr": "Bronzdövme Kılıç"
+  },
+  {
+    "en": "Mosswarden Helm",
+    "tr": "Yosmuhafız Miğfer"
+  },
+  {
+    "en": "Mosswarden Chest",
+    "tr": "Yosmuhafız Göğüslük"
+  },
+  {
+    "en": "Mosswarden Legs",
+    "tr": "Yosmuhafız Bacaklık"
+  },
+  {
+    "en": "Mosswarden Boots",
+    "tr": "Yosmuhafız Çizme"
+  },
+  {
+    "en": "Mosswarden Blade",
+    "tr": "Yosmuhafız Kılıç"
+  },
+  {
+    "en": "Stormtouched Helm",
+    "tr": "Fırtınadeğmiş Miğfer"
+  },
+  {
+    "en": "Stormtouched Chest",
+    "tr": "Fırtınadeğmiş Göğüslük"
+  },
+  {
+    "en": "Stormtouched Legs",
+    "tr": "Fırtınadeğmiş Bacaklık"
+  },
+  {
+    "en": "Stormtouched Boots",
+    "tr": "Fırtınadeğmiş Çizme"
+  },
+  {
+    "en": "Stormtouched Blade",
+    "tr": "Fırtınadeğmiş Kılıç"
+  },
+  {
+    "en": "Runebound Helm",
+    "tr": "Rünbağlı Miğfer"
+  },
+  {
+    "en": "Runebound Chest",
+    "tr": "Rünbağlı Göğüslük"
+  },
+  {
+    "en": "Runebound Legs",
+    "tr": "Rünbağlı Bacaklık"
+  },
+  {
+    "en": "Runebound Boots",
+    "tr": "Rünbağlı Çizme"
+  },
+  {
+    "en": "Runebound Blade",
+    "tr": "Rünbağlı Kılıç"
+  },
+  {
+    "en": "Emberforged Helm",
+    "tr": "Kordövme Miğfer"
+  },
+  {
+    "en": "Emberforged Chest",
+    "tr": "Kordövme Göğüslük"
+  },
+  {
+    "en": "Emberforged Legs",
+    "tr": "Kordövme Bacaklık"
+  },
+  {
+    "en": "Emberforged Boots",
+    "tr": "Kordövme Çizme"
+  },
+  {
+    "en": "Emberforged Blade",
+    "tr": "Kordövme Kılıç"
+  },
+  {
+    "en": "Frostbound Helm",
+    "tr": "Buzbağlı Miğfer"
+  },
+  {
+    "en": "Frostbound Chest",
+    "tr": "Buzbağlı Göğüslük"
+  },
+  {
+    "en": "Frostbound Legs",
+    "tr": "Buzbağlı Bacaklık"
+  },
+  {
+    "en": "Frostbound Boots",
+    "tr": "Buzbağlı Çizme"
+  },
+  {
+    "en": "Frostbound Blade",
+    "tr": "Buzbağlı Kılıç"
+  },
+  {
+    "en": "Dragonblood Helm",
+    "tr": "Ejderkanı Miğfer"
+  },
+  {
+    "en": "Dragonblood Chest",
+    "tr": "Ejderkanı Göğüslük"
+  },
+  {
+    "en": "Dragonblood Legs",
+    "tr": "Ejderkanı Bacaklık"
+  },
+  {
+    "en": "Dragonblood Boots",
+    "tr": "Ejderkanı Çizme"
+  },
+  {
+    "en": "Dragonblood Blade",
+    "tr": "Ejderkanı Kılıç"
+  },
+  {
+    "en": "Voidweave Helm",
+    "tr": "Boşlukdokuma Miğfer"
+  },
+  {
+    "en": "Voidweave Chest",
+    "tr": "Boşlukdokuma Göğüslük"
+  },
+  {
+    "en": "Voidweave Legs",
+    "tr": "Boşlukdokuma Bacaklık"
+  },
+  {
+    "en": "Voidweave Boots",
+    "tr": "Boşlukdokuma Çizme"
+  },
+  {
+    "en": "Voidweave Blade",
+    "tr": "Boşlukdokuma Kılıç"
+  },
+  {
+    "en": "Setra's Chosen Helm",
+    "tr": "Setra'nın Seçilmişi Miğfer"
+  },
+  {
+    "en": "Setra's Chosen Chest",
+    "tr": "Setra'nın Seçilmişi Göğüslük"
+  },
+  {
+    "en": "Setra's Chosen Legs",
+    "tr": "Setra'nın Seçilmişi Bacaklık"
+  },
+  {
+    "en": "Setra's Chosen Boots",
+    "tr": "Setra'nın Seçilmişi Çizme"
+  },
+  {
+    "en": "Setra's Chosen Blade",
+    "tr": "Setra'nın Seçilmişi Kılıç"
+  },
+  {
+    "en": "Setra's Chosen Amulet",
+    "tr": "Setra'nın Seçilmişi Muska"
+  },
+  {
+    "en": "Setra's Chosen Ring",
+    "tr": "Setra'nın Seçilmişi Yüzük"
+  },
+  {
+    "en": "Setra's Chosen Book",
+    "tr": "Setra'nın Seçilmişi Kitap"
+  },
+  {
+    "en": "Setra's Chosen Stone",
+    "tr": "Setra'nın Seçilmişi Taş"
+  },
+  {
+    "en": "Warrior",
+    "tr": "Savaşçı"
+  },
+  {
+    "en": "Slash",
+    "tr": "Kesme"
+  },
+  {
+    "en": "Frontline Swordmaster",
+    "tr": "Cephe Kılıç Ustası"
+  },
+  {
+    "en": "A veteran of the front line. Heavy armor and a loyal blade. Balanced and forgiving — ideal for beginners.",
+    "tr": "Cephenin emektarı. Ağır zırh ve sadık bir kılıç. Dengeli ve bağışlayıcı — yeni başlayanlar için ideal."
+  },
+  {
+    "en": "Battle Fervor",
+    "tr": "Savaş Şevki"
+  },
+  {
+    "en": "Archer",
+    "tr": "Okçu"
+  },
+  {
+    "en": "Quick Shot",
+    "tr": "Çabuk Atış"
+  },
+  {
+    "en": "Long-Range Hunter",
+    "tr": "Uzun Menzilli Avcı"
+  },
+  {
+    "en": "A deadly archer striking from afar. Fast and first to shoot, but fragile up close.",
+    "tr": "Uzaktan vuran ölümcül bir okçu. Hızlı ve ilk atışta, ama yakında kırılgan."
+  },
+  {
+    "en": "Hunter's Instinct",
+    "tr": "Avcı İçgüdüsü"
+  },
+  {
+    "en": "Mage",
+    "tr": "Büyücü"
+  },
+  {
+    "en": "Arcane Bolt",
+    "tr": "Arkane Ok"
+  },
+  {
+    "en": "Apprentice Mage",
+    "tr": "Çırak Büyücü"
+  },
+  {
+    "en": "A novice bending arcane energy. Low health, deep mana pool. Huge burst damage, but needs protection.",
+    "tr": "Arkane enerjiyi büken bir çırak. Az can, derin mana havuzu. Muazzam patlama hasarı, ama korunmaya ihtiyaç duyar."
+  },
+  {
+    "en": "Arcane Intellect",
+    "tr": "Arkane Zeka"
+  },
+  {
+    "en": "Rogue",
+    "tr": "Haydut"
+  },
+  {
+    "en": "Stab",
+    "tr": "Saplama"
+  },
+  {
+    "en": "Shadow Thief",
+    "tr": "Gölge Hırsızı"
+  },
+  {
+    "en": "A cutpurse living in the shadows. Vampiric strikes steal life with every hit. Fast and cunning — for the impatient.",
+    "tr": "Gölgelerde yaşayan bir kese kesen. Vampir vuruşları her isabetle can çalar. Hızlı ve kurnaz — sabırsızlar için."
+  },
+  {
+    "en": "Opportunist",
+    "tr": "Fırsatçı"
+  },
+  {
+    "en": "Smite",
+    "tr": "Kutsal Darbe"
+  },
+  {
+    "en": "Holy Guardian",
+    "tr": "Kutsal Muhafız"
+  },
+  {
+    "en": "A knight sworn to the light. Strikes with steel, heals with prayer. Slow, but a rock that refuses to fall.",
+    "tr": "Işığa yemin etmiş bir şövalye. Çelikle vurur, duayla iyileştirir. Yavaş, ama düşmeyi reddeden bir kaya."
+  },
+  {
+    "en": "Holy Aegis",
+    "tr": "Kutsal Aegis"
+  },
+  {
+    "en": "Dawn Ward",
+    "tr": "Şafak Siperi"
+  },
+  {
+    "en": "Assassin",
+    "tr": "Suikastçı"
+  },
+  {
+    "en": "Lunge",
+    "tr": "Atılış"
+  },
+  {
+    "en": "Apprentice Assassin",
+    "tr": "Çırak Suikastçı"
+  },
+  {
+    "en": "A student of the deadly arts. Execute ends a single target — TRUE damage that ignores armor. Glass cannon: them or you.",
+    "tr": "Ölümcül sanatların öğrencisi. İnfaz tek bir hedefi bitirir — zırhı yok sayan GERÇEK hasar. Cam top: ya onlar ya sen."
+  },
+  {
+    "en": "Final Curtain",
+    "tr": "Son Perde"
+  },
+  {
+    "en": "Healer",
+    "tr": "Şifacı"
+  },
+  {
+    "en": "Sanct Bolt",
+    "tr": "Kutsal Ok"
+  },
+  {
+    "en": "Healer Adept",
+    "tr": "Şifacı Ustası"
+  },
+  {
+    "en": "The heart of the party. Cannot hunt alone — shines with friends. For team players.",
+    "tr": "Grubun kalbi. Tek başına avlanamaz — dostlarıyla parlar. Takım oyuncuları için."
+  },
+  {
+    "en": "Merciful Hand",
+    "tr": "Merhametli El"
+  },
+  {
+    "en": "Living Wall",
+    "tr": "Yaşayan Duvar"
+  },
+  {
+    "en": "A fortress incarnate. Low damage, but felling them takes a siege. A party without one is incomplete.",
+    "tr": "Vücut bulmuş bir kale. Az hasar, ama onu devirmek bir kuşatma ister. Onsuz bir grup eksiktir."
+  },
+  {
+    "en": "Spiked Wall",
+    "tr": "Dikenli Duvar"
+  },
+  {
+    "en": "Iron Hide",
+    "tr": "Demir Deri"
+  },
+  {
+    "en": "Tamer",
+    "tr": "Terbiyeci"
+  },
+  {
+    "en": "Tame Hit",
+    "tr": "Evcilleştirme Vuruşu"
+  },
+  {
+    "en": "Beast Tamer",
+    "tr": "Hayvan Terbiyecisi"
+  },
+  {
+    "en": "A tamer fighting beside wild companions. Hunts with Beast Bite, endures with War Heal. Strength in the pack, never alone.",
+    "tr": "Vahşi yoldaşlarının yanında savaşan bir terbiyeci. Hayvan Isırığı ile avlanır, Savaş Şifası ile dayanır. Güç sürüde, asla yalnız değil."
+  },
+  {
+    "en": "Beastmaster",
+    "tr": "Hayvan Efendisi"
+  },
+  {
+    "en": "Pack Alpha",
+    "tr": "Sürü Lideri"
+  },
+  {
+    "en": "Predator Strides",
+    "tr": "Yırtıcı Adımları"
+  },
+  {
+    "en": "Beast Strike",
+    "tr": "Hayvan Vuruşu"
+  },
+  {
+    "en": "Alpha Tamer",
+    "tr": "Alfa Terbiyeci"
+  },
+  {
+    "en": "Apex Bond",
+    "tr": "Zirve Bağı"
+  },
+  {
+    "en": "Wild Sprint",
+    "tr": "Vahşi Koşu"
+  },
+  {
+    "en": "Legendary Beasts",
+    "tr": "Efsanevi Hayvanlar"
+  },
+  {
+    "en": "Alpha Strike",
+    "tr": "Alfa Vuruşu"
+  },
+  {
+    "en": "Gardener",
+    "tr": "Bahçıvan"
+  },
+  {
+    "en": "Garden Swipe",
+    "tr": "Bahçe Savurması"
+  },
+  {
+    "en": "Nature Sprout",
+    "tr": "Doğa Filizi"
+  },
+  {
+    "en": "A gardener who hears the forest whisper. Vines and thorns are their weapons. A patient player's pick.",
+    "tr": "Ormanın fısıltısını duyan bir bahçıvan. Sarmaşıklar ve dikenler onun silahı. Sabırlı oyuncunun seçimi."
+  },
+  {
+    "en": "Living Bark",
+    "tr": "Yaşayan Kabuk"
+  },
+  {
+    "en": "Rootbinder",
+    "tr": "Kökbağlayıcı"
+  },
+  {
+    "en": "Deep Roots",
+    "tr": "Derin Kökler"
+  },
+  {
+    "en": "Sap Flow",
+    "tr": "Öz Akışı"
+  },
+  {
+    "en": "Root Lash",
+    "tr": "Kök Kamçısı"
+  },
+  {
+    "en": "Lifeweaver",
+    "tr": "Yaşam Dokuyucu"
+  },
+  {
+    "en": "Worldbloom",
+    "tr": "Dünya Çiçeği"
+  },
+  {
+    "en": "Gentle Season",
+    "tr": "Nazik Mevsim"
+  },
+  {
+    "en": "Bark Sanctuary",
+    "tr": "Kabuk Sığınağı"
+  },
+  {
+    "en": "Bloom Burst",
+    "tr": "Çiçek Patlaması"
+  },
+  {
+    "en": "Moderator",
+    "tr": "Moderatör"
+  },
+  {
+    "en": "Mod Strike",
+    "tr": "Mod Vuruşu"
+  },
+  {
+    "en": "Ultra Moderator",
+    "tr": "Ultra Moderatör"
+  },
+  {
+    "en": "Ban Hammer",
+    "tr": "Ban Çekici"
+  },
+  {
+    "en": "Trophy Case",
+    "tr": "Kupa Vitrini"
+  },
+  {
+    "en": "Confiscated",
+    "tr": "El Konuldu"
+  },
+  {
+    "en": "Mod Obliterate",
+    "tr": "Mod Yok Etme"
+  },
+  {
+    "en": "Tester",
+    "tr": "Testçi"
+  },
+  {
+    "en": "Ascension Test Dummy",
+    "tr": "Yükseliş Test Kuklası"
+  },
+  {
+    "en": "A test vessel for trying ascension. Starts at level 20 with every chest, every egg and every evolution item in its pack.",
+    "tr": "Yükselişi denemek için bir test kabı. 20. seviyede başlar; çantasında her sandık, her yumurta ve her evrim eşyası vardır."
+  },
+  {
+    "en": "War Lord",
+    "tr": "Savaş Lordu"
+  },
+  {
+    "en": "Battle Hunger",
+    "tr": "Savaş Açlığı"
+  },
+  {
+    "en": "Undying Warlord",
+    "tr": "Ölümsüz Savaş Lordu"
+  },
+  {
+    "en": "Great Slash",
+    "tr": "Büyük Kesme"
+  },
+  {
+    "en": "Warden",
+    "tr": "Muhafız"
+  },
+  {
+    "en": "True Aim",
+    "tr": "Gerçek Nişan"
+  },
+  {
+    "en": "Piercing Shots",
+    "tr": "Delici Atışlar"
+  },
+  {
+    "en": "Hunter Shot",
+    "tr": "Avcı Atışı"
+  },
+  {
+    "en": "Archmage",
+    "tr": "Başbüyücü"
+  },
+  {
+    "en": "Overmind",
+    "tr": "Üst Zihin"
+  },
+  {
+    "en": "Deep Well",
+    "tr": "Derin Kuyu"
+  },
+  {
+    "en": "Arcane Blast",
+    "tr": "Arkane Patlama"
+  },
+  {
+    "en": "Nightblade",
+    "tr": "Gece Bıçağı"
+  },
+  {
+    "en": "Red Harvest",
+    "tr": "Kızıl Hasat"
+  },
+  {
+    "en": "Ghoststep",
+    "tr": "Hayalet Adımı"
+  },
+  {
+    "en": "Shadow Stab",
+    "tr": "Gölge Saplaması"
+  },
+  {
+    "en": "Crusader",
+    "tr": "Haçlı"
+  },
+  {
+    "en": "Bulwark of Dawn",
+    "tr": "Şafak Siperi"
+  },
+  {
+    "en": "Greater Dawn Ward",
+    "tr": "Yüce Şafak Siperi"
+  },
+  {
+    "en": "Blessed Blade",
+    "tr": "Kutsanmış Kılıç"
+  },
+  {
+    "en": "Reaper",
+    "tr": "Azrail"
+  },
+  {
+    "en": "Reap the Weak",
+    "tr": "Zayıfı Biç"
+  },
+  {
+    "en": "Soul Siphon",
+    "tr": "Ruh Sifonu"
+  },
+  {
+    "en": "Reap",
+    "tr": "Biçme"
+  },
+  {
+    "en": "High Priest",
+    "tr": "Yüce Rahip"
+  },
+  {
+    "en": "Greater Benediction",
+    "tr": "Yüce Takdis"
+  },
+  {
+    "en": "Renewing Light",
+    "tr": "Yenileyen Işık"
+  },
+  {
+    "en": "Hallowed Bolt",
+    "tr": "Kutsal Ok"
+  },
+  {
+    "en": "Avalanche Hide",
+    "tr": "Çığ Derisi"
+  },
+  {
+    "en": "Siege Flesh",
+    "tr": "Kuşatma Eti"
+  },
+  {
+    "en": "Adamant Bash",
+    "tr": "Sarsılmaz Vuruş"
+  },
+  {
+    "en": "War Emperor",
+    "tr": "Savaş İmparatoru"
+  },
+  {
+    "en": "Conqueror's Aura",
+    "tr": "Fatih'in Aurası"
+  },
+  {
+    "en": "No Survivors",
+    "tr": "Hayatta Kalan Yok"
+  },
+  {
+    "en": "Imperial Decree",
+    "tr": "İmparatorluk Fermanı"
+  },
+  {
+    "en": "Colossal Slash",
+    "tr": "Devasa Kesme"
+  },
+  {
+    "en": "Storm Warden",
+    "tr": "Fırtına Muhafızı"
+  },
+  {
+    "en": "Storm's Judgment",
+    "tr": "Fırtınanın Hükmü"
+  },
+  {
+    "en": "Second Bolt",
+    "tr": "İkinci Ok"
+  },
+  {
+    "en": "Storm Shot",
+    "tr": "Fırtına Atışı"
+  },
+  {
+    "en": "Archon",
+    "tr": "Arhon"
+  },
+  {
+    "en": "Cosmic Mind",
+    "tr": "Kozmik Zihin"
+  },
+  {
+    "en": "Star Thirst",
+    "tr": "Yıldız Susuzluğu"
+  },
+  {
+    "en": "Primordial Bolt",
+    "tr": "İlksel Ok"
+  },
+  {
+    "en": "Shade King",
+    "tr": "Gölge Kralı"
+  },
+  {
+    "en": "Eclipse Reign",
+    "tr": "Tutulma Hükümdarlığı"
+  },
+  {
+    "en": "Untouchable",
+    "tr": "Dokunulmaz"
+  },
+  {
+    "en": "Eclipse Strike",
+    "tr": "Tutulma Vuruşu"
+  },
+  {
+    "en": "Lightbringer",
+    "tr": "Işık Getiren"
+  },
+  {
+    "en": "Dawn Incarnate",
+    "tr": "Şafak Vücut Bulmuş"
+  },
+  {
+    "en": "Radiant Mercy",
+    "tr": "Parlak Merhamet"
+  },
+  {
+    "en": "Halo Wall",
+    "tr": "Halo Duvarı"
+  },
+  {
+    "en": "Radiant Edge",
+    "tr": "Işıyan Ağız"
+  },
+  {
+    "en": "Death Lord",
+    "tr": "Ölüm Lordu"
+  },
+  {
+    "en": "Death's Due",
+    "tr": "Ölümün Hakkı"
+  },
+  {
+    "en": "Soul Feast",
+    "tr": "Ruh Ziyafeti"
+  },
+  {
+    "en": "Final Word",
+    "tr": "Son Söz"
+  },
+  {
+    "en": "Scythe Sweep",
+    "tr": "Tırpan Savurması"
+  },
+  {
+    "en": "Bloodspawn",
+    "tr": "Kan Doğuşlu"
+  },
+  {
+    "en": "Sanguine Hunger",
+    "tr": "Kanlı Açlık"
+  },
+  {
+    "en": "Apex Predator",
+    "tr": "Zirve Yırtıcı"
+  },
+  {
+    "en": "Fledgling of the Old Blood",
+    "tr": "Eski Kanın Yavrusu"
+  },
+  {
+    "en": "An assassin who knelt before Old Vesryn and rose thirsting. Fast, cruel, and forever barred from any other path.",
+    "tr": "Yaşlı Vesryn'in önünde diz çöküp susayarak ayağa kalkan bir suikastçı. Hızlı, zalim ve sonsuza dek başka hiçbir yola kapalı."
+  },
+  {
+    "en": "Vampire Bite",
+    "tr": "Vampir Isırığı"
+  },
+  {
+    "en": "Bloodlord",
+    "tr": "Kan Lordu"
+  },
+  {
+    "en": "Blood Tyranny",
+    "tr": "Kan Zorbalığı"
+  },
+  {
+    "en": "Crimson Verdict",
+    "tr": "Kızıl Hüküm"
+  },
+  {
+    "en": "Red Reign",
+    "tr": "Kırmızı Hükümdarlık"
+  },
+  {
+    "en": "Tyrant of the Thirst",
+    "tr": "Susuzluğun Zorbası"
+  },
+  {
+    "en": "A Bloodspawn that gorged for twenty levels and rose higher. The physical peak of the old blood — nothing else can become this.",
+    "tr": "Yirmi seviye boyunca tıkınıp daha yükselen bir Kan Doğuşlu. Eski kanın fiziksel zirvesi — başka hiçbir şey buna dönüşemez."
+  },
+  {
+    "en": "Tyrant Bite",
+    "tr": "Zorba Isırığı"
+  },
+  {
+    "en": "Gloomspawn",
+    "tr": "Kasvet Doğuşlu"
+  },
+  {
+    "en": "Moonlit Thirst",
+    "tr": "Ay Işığı Susuzluğu"
+  },
+  {
+    "en": "Gloom Well",
+    "tr": "Kasvet Kuyusu"
+  },
+  {
+    "en": "Occult Mind",
+    "tr": "Gizemli Zihin"
+  },
+  {
+    "en": "Acolyte of the Gloom",
+    "tr": "Kasvetin Çırağı"
+  },
+  {
+    "en": "A mage who knelt before Old Vesryn and bound the cruor into spellcraft. The magical twin of the Bloodspawn — no other path leads here.",
+    "tr": "Yaşlı Vesryn'in önünde diz çöküp cruor'u büyücülüğe bağlayan bir büyücü. Kan Doğuşlu'nun büyülü ikizi — başka hiçbir yol buraya çıkmaz."
+  },
+  {
+    "en": "Gloom Bolt",
+    "tr": "Kasvet Oku"
+  },
+  {
+    "en": "Sanguine Lord",
+    "tr": "Kanlı Lord"
+  },
+  {
+    "en": "First Thirst",
+    "tr": "İlk Susuzluk"
+  },
+  {
+    "en": "Crimson Grace",
+    "tr": "Kızıl Lütuf"
+  },
+  {
+    "en": "Soul Vintage",
+    "tr": "Ruh Mahsulü"
+  },
+  {
+    "en": "Heir of the First Thirst",
+    "tr": "İlk Susuzluğun Vârisi"
+  },
+  {
+    "en": "A mage who completed Vesryn's rite and bound the primeval cruor into spellcraft. Peerless blood magic — open only to those the rite has marked.",
+    "tr": "Vesryn'in ayinini tamamlayıp kadim cruor'u büyücülüğe bağlayan bir büyücü. Eşsiz kan büyüsü — yalnızca ayinin işaretlediklerine açık."
+  },
+  {
+    "en": "Sanguine Bolt",
+    "tr": "Kanlı Ok"
+  },
+  {
+    "en": "Divine Saint",
+    "tr": "Kutsal Aziz"
+  },
+  {
+    "en": "Miracle",
+    "tr": "Mucize"
+  },
+  {
+    "en": "Martyr's Return",
+    "tr": "Şehidin Dönüşü"
+  },
+  {
+    "en": "Everlasting Grace",
+    "tr": "Ebedi Lütuf"
+  },
+  {
+    "en": "Divine Light",
+    "tr": "İlahi Işık"
+  },
+  {
+    "en": "Colossus",
+    "tr": "Dev"
+  },
+  {
+    "en": "Mountain's Spite",
+    "tr": "Dağın Kindarlığı"
+  },
+  {
+    "en": "Bedrock Form",
+    "tr": "Ana Kaya Formu"
+  },
+  {
+    "en": "Gate of Stone",
+    "tr": "Taş Kapısı"
+  },
+  {
+    "en": "Titan Slam",
+    "tr": "Titan Çarpması"
+  },
+  {
+    "en": "Ember Strike",
+    "tr": "Kor Vuruşu"
+  },
+  {
+    "en": "Ember King",
+    "tr": "Kor Kralı"
+  },
+  {
+    "en": "Frost Titan",
+    "tr": "Buz Devi"
+  },
+  {
+    "en": "Void Herald",
+    "tr": "Boşluk Habercisi"
+  },
+  {
+    "en": "Storm Colossus",
+    "tr": "Fırtına Devi"
+  },
+  {
+    "en": "World Eater",
+    "tr": "Dünya Yiyen"
+  },
+  {
+    "en": "Ember Heavy",
+    "tr": "Kor Ağır Vuruş"
+  },
+  {
+    "en": "Ember Weaken",
+    "tr": "Kor Zayıflatma"
+  },
+  {
+    "en": "Ember weaken 35% 2t",
+    "tr": "Kor zayıflatma %35 2t"
+  },
+  {
+    "en": "Ember Fortify",
+    "tr": "Kor Güçlendirme"
+  },
+  {
+    "en": "Ember fortify 45% 2t",
+    "tr": "Kor güçlendirme %45 2t"
+  },
+  {
+    "en": "Ember Venom",
+    "tr": "Kor Zehir"
+  },
+  {
+    "en": "Ember Heal",
+    "tr": "Kor İyileştirme"
+  },
+  {
+    "en": "Ember heal 25%",
+    "tr": "Kor iyileştirme %25"
+  },
+  {
+    "en": "Frost Strike",
+    "tr": "Buz Vuruşu"
+  },
+  {
+    "en": "Frost Heavy",
+    "tr": "Buz Ağır Vuruş"
+  },
+  {
+    "en": "Frost Weaken",
+    "tr": "Buz Zayıflatma"
+  },
+  {
+    "en": "Frost weaken 35% 2t",
+    "tr": "Buz zayıflatma %35 2t"
+  },
+  {
+    "en": "Frost Fortify",
+    "tr": "Buz Güçlendirme"
+  },
+  {
+    "en": "Frost fortify 45% 2t",
+    "tr": "Buz güçlendirme %45 2t"
+  },
+  {
+    "en": "Frost Venom",
+    "tr": "Buz Zehir"
+  },
+  {
+    "en": "Frost Heal",
+    "tr": "Buz İyileştirme"
+  },
+  {
+    "en": "Frost heal 25%",
+    "tr": "Buz iyileştirme %25"
+  },
+  {
+    "en": "Void Strike",
+    "tr": "Boşluk Vuruşu"
+  },
+  {
+    "en": "Void Heavy",
+    "tr": "Boşluk Ağır Vuruş"
+  },
+  {
+    "en": "Void Weaken",
+    "tr": "Boşluk Zayıflatma"
+  },
+  {
+    "en": "Void expose 30% 2t",
+    "tr": "Boşluk ifşa %30 2t"
+  },
+  {
+    "en": "Void Fortify",
+    "tr": "Boşluk Güçlendirme"
+  },
+  {
+    "en": "Void fortify 50% 2t",
+    "tr": "Boşluk güçlendirme %50 2t"
+  },
+  {
+    "en": "Void Venom",
+    "tr": "Boşluk Zehir"
+  },
+  {
+    "en": "Void Heal",
+    "tr": "Boşluk İyileştirme"
+  },
+  {
+    "en": "Void heal 30%",
+    "tr": "Boşluk iyileştirme %30"
+  },
+  {
+    "en": "Storm Strike",
+    "tr": "Fırtına Vuruşu"
+  },
+  {
+    "en": "Storm Heavy",
+    "tr": "Fırtına Ağır Vuruş"
+  },
+  {
+    "en": "Storm Weaken",
+    "tr": "Fırtına Zayıflatma"
+  },
+  {
+    "en": "Storm weaken+expose 2t",
+    "tr": "Fırtına zayıflatma+ifşa 2t"
+  },
+  {
+    "en": "Storm Fortify",
+    "tr": "Fırtına Güçlendirme"
+  },
+  {
+    "en": "Storm fortify 40% 2t",
+    "tr": "Fırtına güçlendirme %40 2t"
+  },
+  {
+    "en": "Storm Venom",
+    "tr": "Fırtına Zehir"
+  },
+  {
+    "en": "Storm Heal",
+    "tr": "Fırtına İyileştirme"
+  },
+  {
+    "en": "Storm heal 25%",
+    "tr": "Fırtına iyileştirme %25"
+  },
+  {
+    "en": "World Strike",
+    "tr": "Dünya Vuruşu"
+  },
+  {
+    "en": "World Heavy",
+    "tr": "Dünya Ağır Vuruş"
+  },
+  {
+    "en": "World Weaken",
+    "tr": "Dünya Zayıflatma"
+  },
+  {
+    "en": "World weaken 40% 2t",
+    "tr": "Dünya zayıflatma %40 2t"
+  },
+  {
+    "en": "World Fortify",
+    "tr": "Dünya Güçlendirme"
+  },
+  {
+    "en": "World frenzy 40% 2t",
+    "tr": "Dünya cinnet %40 2t"
+  },
+  {
+    "en": "World Venom",
+    "tr": "Dünya Zehir"
+  },
+  {
+    "en": "World Heal",
+    "tr": "Dünya İyileştirme"
+  },
+  {
+    "en": "World heal 35%",
+    "tr": "Dünya iyileştirme %35"
+  },
+  {
+    "en": "Heavy Strike",
+    "tr": "Ağır Vuruş"
+  },
+  {
+    "en": "Defend",
+    "tr": "Savun"
+  },
+  {
+    "en": "Arcane Barrage",
+    "tr": "Arkane Yaylımı"
+  },
+  {
+    "en": "Mana Shield",
+    "tr": "Mana Kalkanı"
+  },
+  {
+    "en": "Aimed Shot",
+    "tr": "Nişanlı Atış"
+  },
+  {
+    "en": "Piercing Shot",
+    "tr": "Delici Atış"
+  },
+  {
+    "en": "Vampiric Strike",
+    "tr": "Vampir Vuruşu"
+  },
+  {
+    "en": "Shadow Meld",
+    "tr": "Gölge Karışımı"
+  },
+  {
+    "en": "Holy Strike",
+    "tr": "Kutsal Vuruş"
+  },
+  {
+    "en": "Divine Guard",
+    "tr": "İlahi Koruma"
+  },
+  {
+    "en": "Execute",
+    "tr": "İnfaz"
+  },
+  {
+    "en": "Shadow Step",
+    "tr": "Gölge Adımı"
+  },
+  {
+    "en": "Mend",
+    "tr": "Onarım"
+  },
+  {
+    "en": "Greater Mend",
+    "tr": "Yüce Onarım"
+  },
+  {
+    "en": "Fortify",
+    "tr": "Güçlendir"
+  },
+  {
+    "en": "War Banner",
+    "tr": "Savaş Sancağı"
+  },
+  {
+    "en": "Cleave",
+    "tr": "Yarma"
+  },
+  {
+    "en": "Shield Wall",
+    "tr": "Kalkan Duvarı"
+  },
+  {
+    "en": "Spirit Surge",
+    "tr": "Ruh Dalgası"
+  },
+  {
+    "en": "War Cry",
+    "tr": "Savaş Çığlığı"
+  },
+  {
+    "en": "Volley",
+    "tr": "Yaylım"
+  },
+  {
+    "en": "Shadow Veil",
+    "tr": "Gölge Peçesi"
+  },
+  {
+    "en": "Holy Judgement",
+    "tr": "Kutsal Hüküm"
+  },
+  {
+    "en": "Death Mark",
+    "tr": "Ölüm İşareti"
+  },
+  {
+    "en": "Divine Blessing",
+    "tr": "İlahi Lütuf"
+  },
+  {
+    "en": "Bastion",
+    "tr": "Kale"
+  },
+  {
+    "en": "Cataclysm",
+    "tr": "Felaket"
+  },
+  {
+    "en": "Storm Barrage",
+    "tr": "Fırtına Yaylımı"
+  },
+  {
+    "en": "Comet",
+    "tr": "Kuyruklu Yıldız"
+  },
+  {
+    "en": "Soul Thief",
+    "tr": "Ruh Hırsızı"
+  },
+  {
+    "en": "Radiance",
+    "tr": "Işıltı"
+  },
+  {
+    "en": "Soul Reap",
+    "tr": "Ruh Biçme"
+  },
+  {
+    "en": "Resurgence",
+    "tr": "Yeniden Doğuş"
+  },
+  {
+    "en": "Exsanguinate",
+    "tr": "Kansızlaştırma"
+  },
+  {
+    "en": "Bloodbath",
+    "tr": "Kan Banyosu"
+  },
+  {
+    "en": "Crimson Rebirth",
+    "tr": "Kızıl Yeniden Doğuş"
+  },
+  {
+    "en": "Immovable",
+    "tr": "Sarsılmaz"
+  },
+  {
+    "en": "Seismic Slam",
+    "tr": "Sismik Çarpma"
+  },
+  {
+    "en": "Colossal Crash",
+    "tr": "Devasa Çöküş"
+  },
+  {
+    "en": "Battle Fury",
+    "tr": "Savaş Öfkesi"
+  },
+  {
+    "en": "Iron Wall",
+    "tr": "Demir Duvar"
+  },
+  {
+    "en": "Group Guard",
+    "tr": "Grup Koruma"
+  },
+  {
+    "en": "Cripple",
+    "tr": "Sakatla"
+  },
+  {
+    "en": "Venom Strike",
+    "tr": "Zehir Vuruşu"
+  },
+  {
+    "en": "Rejuvenate",
+    "tr": "Gençleştir"
+  },
+  {
+    "en": "Savage Blow",
+    "tr": "Vahşi Darbe"
+  },
+  {
+    "en": "Shadow Claw",
+    "tr": "Gölge Pençesi"
+  },
+  {
+    "en": "Arcane Surge",
+    "tr": "Arkane Dalgası"
+  },
+  {
+    "en": "Heavy Blow",
+    "tr": "Ağır Darbe"
+  },
+  {
+    "en": "Shadow Bolt",
+    "tr": "Gölge Oku"
+  },
+  {
+    "en": "Arcane Storm",
+    "tr": "Arkane Fırtınası"
+  },
+  {
+    "en": "Frenzy",
+    "tr": "Cinnet"
+  },
+  {
+    "en": "Stoneskin",
+    "tr": "Taş Deri"
+  },
+  {
+    "en": "Regenerate",
+    "tr": "Yenilen"
+  },
+  {
+    "en": "Crushing Aura",
+    "tr": "Ezici Aura"
+  },
+  {
+    "en": "Expose Weakness",
+    "tr": "Zayıflık Aç"
+  },
+  {
+    "en": "Venom",
+    "tr": "Zehir"
+  },
+  {
+    "en": "Barrier",
+    "tr": "Bariyer"
+  },
+  {
+    "en": "Stone Skin",
+    "tr": "Taş Ten"
+  },
+  {
+    "en": "Holy Ward",
+    "tr": "Kutsal Siper"
+  },
+  {
+    "en": "Dark Veil",
+    "tr": "Karanlık Peçe"
+  },
+  {
+    "en": "Graft",
+    "tr": "Aşı"
+  },
+  {
+    "en": "Frost Bolt",
+    "tr": "Buz Oku"
+  },
+  {
+    "en": "Frost Nova",
+    "tr": "Buz Novası"
+  },
+  {
+    "en": "Water Splash",
+    "tr": "Su Sıçraması"
+  },
+  {
+    "en": "Lightning Bolt",
+    "tr": "Yıldırım Oku"
+  },
+  {
+    "en": "War Heal",
+    "tr": "Savaş Şifası"
+  },
+  {
+    "en": "Magic Mend",
+    "tr": "Büyülü Onarım"
+  },
+  {
+    "en": "Scorch Mark",
+    "tr": "Kavurma İzi"
+  },
+  {
+    "en": "Ember Storm",
+    "tr": "Kor Fırtınası"
+  },
+  {
+    "en": "Blaze Rupture",
+    "tr": "Alev Yarığı"
+  },
+  {
+    "en": "Cold Snap",
+    "tr": "Ani Soğuk"
+  },
+  {
+    "en": "Glacial Shatter",
+    "tr": "Buzul Kırılması"
+  },
+  {
+    "en": "Volt Conduit",
+    "tr": "Volt Kanalı"
+  },
+  {
+    "en": "Static Overload",
+    "tr": "Statik Aşırı Yükleme"
+  },
+  {
+    "en": "Toxin Drench",
+    "tr": "Toksin Yağmuru"
+  },
+  {
+    "en": "Venom Burst",
+    "tr": "Zehir Patlaması"
+  },
+  {
+    "en": "Broken Guard",
+    "tr": "Kırık Siper"
+  },
+  {
+    "en": "Shatter Point",
+    "tr": "Kırılma Noktası"
+  },
+  {
+    "en": "Devastate",
+    "tr": "Yıkım"
+  },
+  {
+    "en": "Vine Lash",
+    "tr": "Sarmaşık Kamçısı"
+  },
+  {
+    "en": "Thorn Volley",
+    "tr": "Diken Yaylımı"
+  },
+  {
+    "en": "Forest Renewal",
+    "tr": "Orman Yenilenmesi"
+  },
+  {
+    "en": "Bloom with nature's blessing, restoring 30% of your max HP.",
+    "tr": "Doğanın lütfuyla çiçek açarak maks. canının %30'unu geri yükler."
+  },
+  {
+    "en": "Beast Bite",
+    "tr": "Hayvan Isırığı"
+  },
+  {
+    "en": "Slime",
+    "tr": "Balçık"
+  },
+  {
+    "en": "Goblin",
+    "tr": "Goblin"
+  },
+  {
+    "en": "Giant Rat",
+    "tr": "Dev Sıçan"
+  },
+  {
+    "en": "Cave Bat",
+    "tr": "Mağara Yarasası"
+  },
+  {
+    "en": "Wolf",
+    "tr": "Kurt"
+  },
+  {
+    "en": "Bandit",
+    "tr": "Haydut"
+  },
+  {
+    "en": "Spider",
+    "tr": "Örümcek"
+  },
+  {
+    "en": "Wild Boar",
+    "tr": "Yaban Domuzu"
+  },
+  {
+    "en": "Goblin Archer",
+    "tr": "Goblin Okçu"
+  },
+  {
+    "en": "Rat King",
+    "tr": "Sıçan Kral"
+  },
+  {
+    "en": "Grove Sprite",
+    "tr": "Koru Perisi"
+  },
+  {
+    "en": "Goblin Warrior",
+    "tr": "Goblin Savaşçı"
+  },
+  {
+    "en": "Skeleton",
+    "tr": "İskelet"
+  },
+  {
+    "en": "Dire Wolf",
+    "tr": "Dev Kurt"
+  },
+  {
+    "en": "Harpy",
+    "tr": "Harpi"
+  },
+  {
+    "en": "Orc",
+    "tr": "Ork"
+  },
+  {
+    "en": "Thorn Viper",
+    "tr": "Diken Engereği"
+  },
+  {
+    "en": "Swamp Troll",
+    "tr": "Bataklık Trolü"
+  },
+  {
+    "en": "Griffin",
+    "tr": "Grifon"
+  },
+  {
+    "en": "Golem",
+    "tr": "Golem"
+  },
+  {
+    "en": "Stone Warden",
+    "tr": "Taş Muhafız"
+  },
+  {
+    "en": "Wraith",
+    "tr": "Hayalet"
+  },
+  {
+    "en": "Manticore",
+    "tr": "Manticore"
+  },
+  {
+    "en": "Ogre",
+    "tr": "Ogre"
+  },
+  {
+    "en": "Dark Knight",
+    "tr": "Karanlık Şövalye"
+  },
+  {
+    "en": "Witch",
+    "tr": "Cadı"
+  },
+  {
+    "en": "Wyvern",
+    "tr": "Wyvern"
+  },
+  {
+    "en": "Ancient Golem",
+    "tr": "Kadim Golem"
+  },
+  {
+    "en": "Lich",
+    "tr": "Lich"
+  },
+  {
+    "en": "Hydra",
+    "tr": "Hidra"
+  },
+  {
+    "en": "Kobold",
+    "tr": "Kobold"
+  },
+  {
+    "en": "Scavenger",
+    "tr": "Leşçil"
+  },
+  {
+    "en": "Cave Crawler",
+    "tr": "Mağara Sürüngeni"
+  },
+  {
+    "en": "Forest Mite",
+    "tr": "Orman Akarı"
+  },
+  {
+    "en": "Sludge",
+    "tr": "Çamur"
+  },
+  {
+    "en": "Thug",
+    "tr": "Kabadayı"
+  },
+  {
+    "en": "Dusk Bat",
+    "tr": "Alacakaranlık Yarasası"
+  },
+  {
+    "en": "Ember Slime",
+    "tr": "Kor Balçığı"
+  },
+  {
+    "en": "Iron Goblin",
+    "tr": "Demir Goblin"
+  },
+  {
+    "en": "Bone Archer",
+    "tr": "Kemik Okçu"
+  },
+  {
+    "en": "Frost Wolf",
+    "tr": "Buz Kurdu"
+  },
+  {
+    "en": "Vine Lurker",
+    "tr": "Sarmaşık Pusu"
+  },
+  {
+    "en": "Ash Spider",
+    "tr": "Kül Örümceği"
+  },
+  {
+    "en": "Brigand Captain",
+    "tr": "Haydut Kaptanı"
+  },
+  {
+    "en": "Marsh Crawler",
+    "tr": "Bataklık Sürüngeni"
+  },
+  {
+    "en": "Ember Sprite",
+    "tr": "Kor Perisi"
+  },
+  {
+    "en": "Crystal Golem",
+    "tr": "Kristal Golem"
+  },
+  {
+    "en": "Abyss Wraith",
+    "tr": "Uçurum Hayaleti"
+  },
+  {
+    "en": "Storm Harpy",
+    "tr": "Fırtına Harpisi"
+  },
+  {
+    "en": "Iron Ogre",
+    "tr": "Demir Ogre"
+  },
+  {
+    "en": "Cursed Knight",
+    "tr": "Lanetli Şövalye"
+  },
+  {
+    "en": "Flame Witch",
+    "tr": "Alev Cadısı"
+  },
+  {
+    "en": "Stone Titan",
+    "tr": "Taş Titan"
+  },
+  {
+    "en": "Dusk Manticore",
+    "tr": "Alacakaranlık Manticore"
+  },
+  {
+    "en": "Frost Wyvern",
+    "tr": "Buz Wyvern"
+  },
+  {
+    "en": "Void Golem",
+    "tr": "Boşluk Golemi"
+  },
+  {
+    "en": "Storm Lich",
+    "tr": "Fırtına Lich"
+  },
+  {
+    "en": "Nether Hydra",
+    "tr": "Cehennem Hidrası"
+  },
+  {
+    "en": "Doom Lord",
+    "tr": "Kıyamet Lordu"
+  },
+  {
+    "en": "Molten Behemoth",
+    "tr": "Erimiş Behemot"
+  },
+  {
+    "en": "Phoenix Canary",
+    "tr": "Anka Kanaryası"
+  },
+  {
+    "en": "Vine Wraith",
+    "tr": "Sarmaşık Hayaleti"
+  },
+  {
+    "en": "Thornback Boar",
+    "tr": "Dikensırt Domuzu"
+  },
+  {
+    "en": "Elder Treant",
+    "tr": "Yaşlı Ağaç Adam"
+  },
+  {
+    "en": "Human",
+    "tr": "İnsan"
+  },
+  {
+    "en": "Adaptable and ambitious. +10% gold from victories.",
+    "tr": "Uyum sağlayan ve hırslı. Zaferlerden +%10 altın."
+  },
+  {
+    "en": "Ambitious",
+    "tr": "Hırslı"
+  },
+  {
+    "en": "Elf",
+    "tr": "Elf"
+  },
+  {
+    "en": "Graceful and attuned. +12 mana, +1 speed.",
+    "tr": "Zarif ve uyumlu. +12 mana, +1 hız."
+  },
+  {
+    "en": "Dwarf",
+    "tr": "Cüce"
+  },
+  {
+    "en": "Stout and enduring. +30 max HP, +6 resistance.",
+    "tr": "Sağlam ve dayanıklı. +30 maks. can, +6 direnç."
+  },
+  {
+    "en": "Brutal and strong. +6 attack.",
+    "tr": "Vahşi ve güçlü. +6 saldırı."
+  },
+  {
+    "en": "Beastkin",
+    "tr": "Yarı Hayvan"
+  },
+  {
+    "en": "Wild instincts. +2 speed, +3 attack.",
+    "tr": "Vahşi içgüdüler. +2 hız, +3 saldırı."
+  },
+  {
+    "en": "Wyvernkin",
+    "tr": "Wyvern Halkı"
+  },
+  {
+    "en": "Sky hunters. 5% dodge chance.",
+    "tr": "Gökyüzü avcıları. %5 kaçınma şansı."
+  },
+  {
+    "en": "Sky Dancer",
+    "tr": "Gökyüzü Dansçısı"
+  },
+  {
+    "en": "High Elf",
+    "tr": "Yüce Elf"
+  },
+  {
+    "en": "Ancient magic in the blood. +8 magic power.",
+    "tr": "Kanında kadim büyü. +8 büyü gücü."
+  },
+  {
+    "en": "Gorgon",
+    "tr": "Gorgon"
+  },
+  {
+    "en": "A gaze of stone. Reflects 10% damage, +4 resistance.",
+    "tr": "Taşa çeviren bakış. Hasarın %10'unu yansıtır, +4 direnç."
+  },
+  {
+    "en": "Petrifying Gaze",
+    "tr": "Taşlaştıran Bakış"
+  },
+  {
+    "en": "Demonblood",
+    "tr": "Şeytankanı"
+  },
+  {
+    "en": "Burning heritage. +15% damage, but takes 30% more holy damage.",
+    "tr": "Yanan bir miras. +%15 hasar, ama %30 daha fazla kutsal hasar alır."
+  },
+  {
+    "en": "Demonic Fury",
+    "tr": "Şeytani Öfke"
+  },
+  {
+    "en": "Unholy Weakness",
+    "tr": "Kutsal Olmayan Zayıflık"
+  },
+  {
+    "en": "Lightborn",
+    "tr": "Işıkdoğan"
+  },
+  {
+    "en": "Blessed radiance. +15% healing, but takes 30% more shadow damage.",
+    "tr": "Kutsanmış ışıltı. +%15 iyileştirme, ama %30 daha fazla gölge hasar alır."
+  },
+  {
+    "en": "Radiant Touch",
+    "tr": "Işıyan Dokunuş"
+  },
+  {
+    "en": "Shadow Frailty",
+    "tr": "Gölge Kırılganlığı"
+  },
+  {
+    "en": "Voidborn",
+    "tr": "Boşlukdoğan"
+  },
+  {
+    "en": "Touched by the void. 8% dodge, but takes 20% more holy damage.",
+    "tr": "Boşluk tarafından dokunulmuş. %8 kaçınma, ama %20 daha fazla kutsal hasar alır."
+  },
+  {
+    "en": "Void Step",
+    "tr": "Boşluk Adımı"
+  },
+  {
+    "en": "Light Frailty",
+    "tr": "Işık Kırılganlığı"
+  },
+  {
+    "en": "Daemonkin",
+    "tr": "Şeytan Halkı"
+  },
+  {
+    "en": "Royal Wrath",
+    "tr": "Kraliyet Gazabı"
+  },
+  {
+    "en": "Dragonborn",
+    "tr": "Ejderdoğan"
+  },
+  {
+    "en": "Scales of the wyrms. Take 15% less damage.",
+    "tr": "Ejder pulları. %15 daha az hasar alır."
+  },
+  {
+    "en": "Dragonscales",
+    "tr": "Ejder Pulları"
+  },
+  {
+    "en": "Arch-Vampyr",
+    "tr": "Baş Vampir"
+  },
+  {
+    "en": "Ancient predator. Heal 12% of all damage dealt.",
+    "tr": "Kadim yırtıcı. Verilen tüm hasarın %12'sini iyileştirir."
+  },
+  {
+    "en": "Crimson Thirst",
+    "tr": "Kızıl Susuzluk"
+  },
+  {
+    "en": "Archangel",
+    "tr": "Baş Melek"
+  },
+  {
+    "en": "Celestial guardian. +25% healing and start combat with a 10% shield (3 turns).",
+    "tr": "Göksel muhafız. +%25 iyileştirme ve savaşa %10 kalkanla başla (3 tur)."
+  },
+  {
+    "en": "Celestial Grace",
+    "tr": "Göksel Lütuf"
+  },
+  {
+    "en": "Aegis of Dawn",
+    "tr": "Şafak Aegisi"
+  },
+  {
+    "en": "The Progenitor's Thirst",
+    "tr": "Atanın Susuzluğu"
+  },
+  {
+    "en": "Slay 50 humanoid foes and gather 10 Drops of Primeval Cruor for Old Vesryn. Completing the rite opens the vampire paths: Bloodspawn (physical, assassin Lv20, through Vesryn), Gloomspawn (magic, mage Lv20, through Vesryn), then Bloodlord and Sanguine Lord (Lv40, temple, vampire blood only).",
+    "tr": "Yaşlı Vesryn için 50 insansı düşman öldür ve 10 Kadim Cruor Damlası topla. Ayini tamamlamak vampir yollarını açar: Kan Doğuşlu (fiziksel, suikastçı Sv20, Vesryn aracılığıyla), Kasvet Doğuşlu (büyü, büyücü Sv20, Vesryn aracılığıyla), ardından Kan Lordu ve Kanlı Lord (Sv40, tapınak, yalnızca vampir kanı)."
+  },
+  {
+    "en": "Common",
+    "tr": "Yaygın"
+  },
+  {
+    "en": "Uncommon",
+    "tr": "Sıra Dışı"
+  },
+  {
+    "en": "Rare",
+    "tr": "Nadir"
+  },
+  {
+    "en": "Epic",
+    "tr": "Destansı"
+  },
+  {
+    "en": "Legendary",
+    "tr": "Efsanevi"
+  },
+  {
+    "en": "Mythic",
+    "tr": "Mitik"
+  },
+  {
+    "en": "Verdant Wilds",
+    "tr": "Yeşil Vahşi Doğa"
+  },
+  {
+    "en": "Lush, alive, and never truly safe.",
+    "tr": "Yemyeşil, canlı ve asla tam güvenli değil."
+  },
+  {
+    "en": "Thornback Skirmisher",
+    "tr": "Dikensırt Çatışmacısı"
+  },
+  {
+    "en": "Elder Moss Treant",
+    "tr": "Yaşlı Yosun Ağaç Adam"
+  },
+  {
+    "en": "Gloom Wraith",
+    "tr": "Kasvet Hayaleti"
+  },
+  {
+    "en": "Venomfang Spider",
+    "tr": "Zehirdiş Örümcek"
+  },
+  {
+    "en": "Ancient Grove Guardian",
+    "tr": "Kadim Koru Muhafızı"
+  },
+  {
+    "en": "Ashen Wastes",
+    "tr": "Kül Çorakları"
+  },
+  {
+    "en": "Cinders, crags, and things that burn.",
+    "tr": "Korlar, kayalıklar ve yanan şeyler."
+  },
+  {
+    "en": "Cinder Imp",
+    "tr": "Kor İblisi"
+  },
+  {
+    "en": "Ash Revenant",
+    "tr": "Kül Hortlağı"
+  },
+  {
+    "en": "Magma Behemoth",
+    "tr": "Magma Behemot"
+  },
+  {
+    "en": "Cinder Bat",
+    "tr": "Kor Yarasası"
+  },
+  {
+    "en": "Emberlord Vulkarr",
+    "tr": "Kor Lordu Vulkarr"
+  },
+  {
+    "en": "Frozen Tundra",
+    "tr": "Donmuş Tundra"
+  },
+  {
+    "en": "Where the wind bites and the dead do not sleep.",
+    "tr": "Rüzgârın ısırdığı ve ölülerin uyumadığı yer."
+  },
+  {
+    "en": "Ice Wraith",
+    "tr": "Buz Hayaleti"
+  },
+  {
+    "en": "Glacier Golem",
+    "tr": "Buzul Golemi"
+  },
+  {
+    "en": "Snow Stalker",
+    "tr": "Kar Avcısı"
+  },
+  {
+    "en": "Permafrost Wyrm",
+    "tr": "Kalıcı Buz Ejderi"
+  },
+  {
+    "en": "Rime Archer",
+    "tr": "Kırağı Okçu"
+  },
+  {
+    "en": "Grave Archer",
+    "tr": "Mezar Okçu"
+  },
+  {
+    "en": "Mirefen Marsh",
+    "tr": "Mirefen Bataklığı"
+  },
+  {
+    "en": "Every step squelches. Something is always watching.",
+    "tr": "Her adım şapırdıyor. Bir şey her zaman izliyor."
+  },
+  {
+    "en": "Bog Lurker",
+    "tr": "Bataklık Pusucusu"
+  },
+  {
+    "en": "Mire Hag",
+    "tr": "Bataklık Kocakarısı"
+  },
+  {
+    "en": "Rot Treant",
+    "tr": "Çürük Ağaç Adam"
+  },
+  {
+    "en": "Leech Swarm",
+    "tr": "Sülük Sürüsü"
+  },
+  {
+    "en": "Plaguebringer Morvane",
+    "tr": "Veba Getiren Morvane"
+  },
+  {
+    "en": "Cursed Reach",
+    "tr": "Lanetli Diyar"
+  },
+  {
+    "en": "The sky is wrong here. So is everything below it.",
+    "tr": "Burada gökyüzü yanlış. Altındaki her şey de öyle."
+  },
+  {
+    "en": "Hollow Knight",
+    "tr": "İçi Boş Şövalye"
+  },
+  {
+    "en": "Blood Seer",
+    "tr": "Kan Gören"
+  },
+  {
+    "en": "Bone Warden",
+    "tr": "Kemik Muhafız"
+  },
+  {
+    "en": "Nightmare",
+    "tr": "Kâbus"
+  },
+  {
+    "en": "Dread Sovereign",
+    "tr": "Dehşet Hükümdarı"
+  },
+  {
+    "en": "Sanguine Thirst",
+    "tr": "Kanlı Susuzluk"
+  },
+  {
+    "en": "Iron Bark",
+    "tr": "Demir Kabuk"
+  },
+  {
+    "en": "Gain a little extra resistance.",
+    "tr": "Biraz ekstra direnç kazan."
+  },
+  {
+    "en": "Ember Well",
+    "tr": "Kor Kuyusu"
+  },
+  {
+    "en": "Mana recovers more generously in town rest.",
+    "tr": "Kasaba dinlenmesinde mana daha cömertçe yenilenir."
+  },
+  {
+    "en": "Arcane Reservoir",
+    "tr": "Arkane Haznesi"
+  },
+  {
+    "en": "Mana regenerates a little faster each round.",
+    "tr": "Mana her tur biraz daha hızlı yenilenir."
+  },
+  {
+    "en": "Primeval Bloodlust",
+    "tr": "Kadim Kan Susuzluğu"
+  },
+  {
+    "en": "First Dawn",
+    "tr": "İlk Şafak"
+  },
+  {
+    "en": "Start each day with bonus stamina.",
+    "tr": "Her güne bonus dayanıklılıkla başla."
+  },
+  {
+    "en": "Physical",
+    "tr": "Fiziksel"
+  },
+  {
+    "en": "Plain weapon strikes and brute force.",
+    "tr": "Basit silah vuruşları ve kaba kuvvet."
+  },
+  {
+    "en": "Arcane",
+    "tr": "Arkane"
+  },
+  {
+    "en": "Raw magical energy and eldritch plasma.",
+    "tr": "Ham büyülü enerji ve tuhaf plazma."
+  },
+  {
+    "en": "Shadow",
+    "tr": "Gölge"
+  },
+  {
+    "en": "Darkness and cold moonlight arts.",
+    "tr": "Karanlık ve soğuk ay ışığı sanatları."
+  },
+  {
+    "en": "Holy",
+    "tr": "Kutsal"
+  },
+  {
+    "en": "Divine light and radiant judgement.",
+    "tr": "İlahi ışık ve parlak hüküm."
+  },
+  {
+    "en": "Frost",
+    "tr": "Buz"
+  },
+  {
+    "en": "Ice, cold and glacial shards.",
+    "tr": "Buz, soğuk ve buzul parçaları."
+  },
+  {
+    "en": "Fire",
+    "tr": "Ateş"
+  },
+  {
+    "en": "Burning flame and searing heat.",
+    "tr": "Yanan alev ve kavurucu sıcaklık."
+  },
+  {
+    "en": "Water",
+    "tr": "Su"
+  },
+  {
+    "en": "Flowing currents and crushing waves.",
+    "tr": "Akan akıntılar ve ezici dalgalar."
+  },
+  {
+    "en": "Earth",
+    "tr": "Toprak"
+  },
+  {
+    "en": "Stone, soil and bedrock.",
+    "tr": "Taş, toprak ve ana kaya."
+  },
+  {
+    "en": "Nature",
+    "tr": "Doğa"
+  },
+  {
+    "en": "Growth, vines, thorns and the living forest.",
+    "tr": "Büyüme, sarmaşıklar, dikenler ve yaşayan orman."
+  },
+  {
+    "en": "Lightning",
+    "tr": "Yıldırım"
+  },
+  {
+    "en": "Storms, thunder and electric surges.",
+    "tr": "Fırtınalar, gök gürültüsü ve elektrik dalgaları."
+  },
+  {
+    "en": "Blood",
+    "tr": "Kan"
+  },
+  {
+    "en": "Crimson hemomancy and life-stealing arts.",
+    "tr": "Kızıl kan büyüsü ve can çalan sanatlar."
+  },
+  {
+    "en": "Dark",
+    "tr": "Karanlık"
+  },
+  {
+    "en": "Void, abyss and forbidden power.",
+    "tr": "Boşluk, uçurum ve yasak güç."
+  },
+  {
+    "en": "Voidcaller",
+    "tr": "Boşluk Çağıran"
+  },
+  {
+    "en": "Gear steeped in the lightless void. It hums when whole.",
+    "tr": "Işıksız boşluğa batmış teçhizat. Tamamlanınca uğuldar."
+  },
+  {
+    "en": "Nightshade",
+    "tr": "Gece Gölgesi"
+  },
+  {
+    "en": "Eclipse-dark garb for those who strike unseen.",
+    "tr": "Görünmeden vuranlar için tutulma karanlığında giysi."
+  },
+  {
+    "en": "Wildstrider",
+    "tr": "Vahşi Yolcu"
+  },
+  {
+    "en": "Scout gear of the deep woods. Light feet, true aim.",
+    "tr": "Derin ormanların keşif teçhizatı. Hafif ayaklar, isabetli nişan."
+  },
+  {
+    "en": "Dragonscale",
+    "tr": "Ejder Pulu"
+  },
+  {
+    "en": "Plate cut from elder wyrms. Heavy, proud, unbroken.",
+    "tr": "Yaşlı ejderlerden kesilmiş plaka. Ağır, gururlu, kırılmamış."
+  },
+  {
+    "en": "Trailworn",
+    "tr": "Yol Yıpranmışı"
+  },
+  {
+    "en": "Honest stitched leather for the road.",
+    "tr": "Yol için dürüstçe dikilmiş deri."
+  },
+  {
+    "en": "Ironclad",
+    "tr": "Demir Kaplı"
+  },
+  {
+    "en": "Plain iron, honestly forged.",
+    "tr": "Sade demir, dürüstçe dövülmüş."
+  },
+  {
+    "en": "Sanguine",
+    "tr": "Kanlı"
+  },
+  {
+    "en": "Vampiric relics that thirst together. Two pieces wake them; four unleash them.",
+    "tr": "Birlikte susayan vampir kalıntıları. İki parça onları uyandırır; dört parça serbest bırakır."
+  },
+  {
+    "en": "Duskhide",
+    "tr": "Alacakaranlık Derisi"
+  },
+  {
+    "en": "Dark leather for quiet roads.",
+    "tr": "Sessiz yollar için koyu deri."
+  },
+  {
+    "en": "Bronzeforge",
+    "tr": "Bronzdövme"
+  },
+  {
+    "en": "Steel breast and bronze trim.",
+    "tr": "Çelik göğüs ve bronz süsleme."
+  },
+  {
+    "en": "Mosswarden",
+    "tr": "Yosmuhafız"
+  },
+  {
+    "en": "Bark and moss grown armour.",
+    "tr": "Kabuk ve yosundan büyümüş zırh."
+  },
+  {
+    "en": "Stormtouched",
+    "tr": "Fırtınadeğmiş"
+  },
+  {
+    "en": "Forged in a thunderstorm.",
+    "tr": "Bir gök gürültüsü fırtınasında dövülmüş."
+  },
+  {
+    "en": "Runebound",
+    "tr": "Rünbağlı"
+  },
+  {
+    "en": "Etched with living runes.",
+    "tr": "Yaşayan rünlerle kazınmış."
+  },
+  {
+    "en": "Emberforged",
+    "tr": "Kordövme"
+  },
+  {
+    "en": "Black steel veined with molten ember.",
+    "tr": "Erimiş korla damarlanmış kara çelik."
+  },
+  {
+    "en": "Frostbound",
+    "tr": "Buzbağlı"
+  },
+  {
+    "en": "Armour of enduring winter.",
+    "tr": "Dayanıklı kışın zırhı."
+  },
+  {
+    "en": "Dragonblood",
+    "tr": "Ejderkanı"
+  },
+  {
+    "en": "Dragonscale burning with a molten heart.",
+    "tr": "Erimiş bir kalple yanan ejder pulu."
+  },
+  {
+    "en": "Voidweave",
+    "tr": "Boşlukdokuma"
+  },
+  {
+    "en": "Cloth of the lightless void.",
+    "tr": "Işıksız boşluğun kumaşı."
+  },
+  {
+    "en": "Setra's Chosen",
+    "tr": "Setra'nın Seçilmişi"
+  },
+  {
+    "en": "The relic panoply of the first chosen.",
+    "tr": "İlk seçilmişin kalıntı donanımı."
+  },
+  {
+    "en": "F-Rank",
+    "tr": "F-Rütbesi"
+  },
+  {
+    "en": "D-Rank",
+    "tr": "D-Rütbesi"
+  },
+  {
+    "en": "C-Rank",
+    "tr": "C-Rütbesi"
+  },
+  {
+    "en": "B-Rank",
+    "tr": "B-Rütbesi"
+  },
+  {
+    "en": "A-Rank",
+    "tr": "A-Rütbesi"
+  },
+  {
+    "en": "S-Rank",
+    "tr": "S-Rütbesi"
+  },
+  {
+    "en": "SS-Rank",
+    "tr": "SS-Rütbesi"
+  },
+  {
+    "en": "Fast Dungeon",
+    "tr": "Hızlı Zindan"
+  },
+  {
+    "en": "Ember Hollow",
+    "tr": "Kor Çukuru"
+  },
+  {
+    "en": "Frost Crypt",
+    "tr": "Buz Mahzeni"
+  },
+  {
+    "en": "Shadow Sanctum",
+    "tr": "Gölge Mabedi"
+  },
+  {
+    "en": "Storm Bastion",
+    "tr": "Fırtına Kalesi"
+  },
+  {
+    "en": "Void Maw",
+    "tr": "Boşluk Ağzı"
+  },
+  {
+    "en": "Ancient Foundry",
+    "tr": "Kadim Dökümhane"
+  },
+  {
+    "en": "Phoenix Sanctum",
+    "tr": "Anka Mabedi"
+  },
+  {
+    "en": "Glacier Doomlord",
+    "tr": "Buzul Kıyamet Lordu"
+  },
+  {
+    "en": "Eternal Abyss Herald",
+    "tr": "Ebedi Uçurum Habercisi"
+  },
+  {
+    "en": "Thunder Tyrant",
+    "tr": "Gök Gürültüsü Zorbası"
+  },
+  {
+    "en": "Oblivion Devourer",
+    "tr": "Unutuluş Yiyeni"
+  },
+  {
+    "en": "Verdant Ruins",
+    "tr": "Yeşil Harabeler"
+  },
+  {
+    "en": "Sunken Cistern",
+    "tr": "Batık Sarnıç"
+  },
+  {
+    "en": "Ashen War Camp",
+    "tr": "Kül Savaş Kampı"
+  },
+  {
+    "en": "Frozen Sanctum",
+    "tr": "Donmuş Mabet"
+  },
+  {
+    "en": "Void Rift",
+    "tr": "Boşluk Yarığı"
+  },
+  {
+    "en": "Worldroot Abyss",
+    "tr": "Dünyakökü Uçurumu"
+  },
+  {
+    "en": "Overcharge",
+    "tr": "Aşırı Yükleme"
+  },
+  {
+    "en": "Lightning surges through soaked foes, dealing +50% damage to wet targets.",
+    "tr": "Yıldırım ıslak düşmanlardan geçer, ıslak hedeflere +%50 hasar verir."
+  },
+  {
+    "en": "Deep Freeze",
+    "tr": "Derin Donma"
+  },
+  {
+    "en": "Frost latches onto moisture, dealing +40% damage to wet targets.",
+    "tr": "Buz neme tutunur, ıslak hedeflere +%40 hasar verir."
+  },
+  {
+    "en": "Shatter",
+    "tr": "Kırılma"
+  },
+  {
+    "en": "Physical blows shatter frozen enemies, dealing +60% damage.",
+    "tr": "Fiziksel darbeler donmuş düşmanları kırar, +%60 hasar verir."
+  },
+  {
+    "en": "Burning Blaze",
+    "tr": "Yanan Alev"
+  },
+  {
+    "en": "Fire erupts on burning foes, dealing +60% damage to poisoned targets.",
+    "tr": "Ateş yanan düşmanlarda patlar, zehirli hedeflere +%60 hasar verir."
+  },
+  {
+    "en": "Break Guard",
+    "tr": "Siper Kırma"
+  },
+  {
+    "en": "Exposed enemies take +35% physical damage.",
+    "tr": "İfşa olmuş düşmanlar +%35 fiziksel hasar alır."
+  },
+  {
+    "en": "Overwhelm",
+    "tr": "Ezme"
+  },
+  {
+    "en": "Weakened enemies crumble, taking +20% physical damage.",
+    "tr": "Zayıflamış düşmanlar çöker, +%20 fiziksel hasar alır."
+  },
+  {
+    "en": "Rend",
+    "tr": "Yırtma"
+  },
+  {
+    "en": "Steel tears bleeding foes, dealing +30% physical damage to poisoned targets.",
+    "tr": "Çelik kanayan düşmanları yırtar, zehirli hedeflere +%30 fiziksel hasar verir."
+  },
+  {
+    "en": "Backstab",
+    "tr": "Sırttan Hançer"
+  },
+  {
+    "en": "Shadow finds the cracks, dealing +40% shadow damage to exposed targets.",
+    "tr": "Gölge çatlakları bulur, ifşa olmuş hedeflere +%40 gölge hasarı verir."
+  },
+  {
+    "en": "Bountiful Dawn",
+    "tr": "Bereketli Şafak"
+  },
+  {
+    "en": "Echoes",
+    "tr": "Yankılar"
+  },
+  {
+    "en": "Keen Edge",
+    "tr": "Keskin Ağız"
+  },
+  {
+    "en": "Iron Trial",
+    "tr": "Demir Sınavı"
+  },
+  {
+    "en": "Calm Day",
+    "tr": "Sakin Gün"
+  },
+  {
+    "en": "Helmet",
+    "tr": "Miğfer"
+  },
+  {
+    "en": "Armor",
+    "tr": "Zırh"
+  },
+  {
+    "en": "Pants",
+    "tr": "Pantolon"
+  },
+  {
+    "en": "Boots",
+    "tr": "Çizme"
+  },
+  {
+    "en": "Weapon",
+    "tr": "Silah"
+  },
+  {
+    "en": "Amulet",
+    "tr": "Muska"
+  },
+  {
+    "en": "Ring 1",
+    "tr": "Yüzük 1"
+  },
+  {
+    "en": "Ring 2",
+    "tr": "Yüzük 2"
+  },
+  {
+    "en": "Book",
+    "tr": "Kitap"
+  },
+  {
+    "en": "Stone",
+    "tr": "Taş"
+  },
+  {
+    "en": "Small",
+    "tr": "Küçük"
+  },
+  {
+    "en": "Normal",
+    "tr": "Normal"
+  },
+  {
+    "en": "Big",
+    "tr": "Büyük"
+  },
+  {
+    "en": "Huge",
+    "tr": "Devasa"
+  },
+  {
+    "en": "Flame Bite",
+    "tr": "Alev Isırığı"
+  },
+  {
+    "en": "Aqua Mend",
+    "tr": "Su Onarımı"
+  },
+  {
+    "en": "Heal 15% max HP every 2 turns.",
+    "tr": "Her 2 turda maks. canın %15'ini iyileştirir."
+  },
+  {
+    "en": "Stone Ward",
+    "tr": "Taş Siperi"
+  },
+  {
+    "en": "Frostbite",
+    "tr": "Soğuk Isırığı"
+  },
+  {
+    "en": "Volt Zap",
+    "tr": "Volt Çarpması"
+  },
+  {
+    "en": "Vine Leech",
+    "tr": "Sarmaşık Sülüğü"
+  },
+  {
+    "en": "Dusk Curse",
+    "tr": "Alacakaranlık Laneti"
+  },
+  {
+    "en": "Bloom",
+    "tr": "Çiçek Açma"
+  },
+  {
+    "en": "Offer a Heart of Golem to mend a lost heart.",
+    "tr": "Kayıp bir kalbi onarmak için bir Golem Kalbi sun."
+  },
+  {
+    "en": "Forge a sword that still smoulders.",
+    "tr": "Hâlâ için için yanan bir kılıç döv."
+  },
+  {
+    "en": "Bond the heart of a fire spirit to the blade.",
+    "tr": "Bir ateş ruhunun kalbini kılıca bağla."
+  },
+  {
+    "en": "Temper the blade in hoarfrost.",
+    "tr": "Kılıcı kırağıda su ver."
+  },
+  {
+    "en": "Weave raw magic into the staff.",
+    "tr": "Ham büyüyü asaya doku."
+  },
+  {
+    "en": "Fold shadow itself into the edge.",
+    "tr": "Gölgenin kendisini ağza katla."
+  },
+  {
+    "en": "Stone of Blood",
+    "tr": "Kan Taşı"
+  },
+  {
+    "en": "Forge a stone that drinks blood - 10% omnivamp.",
+    "tr": "Kan içen bir taş döv - %10 omnivamp."
+  },
+  {
+    "en": "Cleaving Arc",
+    "tr": "Yaran Kavis"
+  },
+  {
+    "en": "Swordstorm",
+    "tr": "Kılıç Fırtınası"
+  },
+  {
+    "en": "Blade Tempest",
+    "tr": "Bıçak Kasırgası"
+  },
+  {
+    "en": "Triple Shot",
+    "tr": "Üçlü Atış"
+  },
+  {
+    "en": "Piercing Bolt",
+    "tr": "Delici Ok"
+  },
+  {
+    "en": "Rain of Arrows",
+    "tr": "Ok Yağmuru"
+  },
+  {
+    "en": "Arcane Rift",
+    "tr": "Arkane Yarık"
+  },
+  {
+    "en": "Frost Vortex",
+    "tr": "Buz Girdabı"
+  },
+  {
+    "en": "Meteor Storm",
+    "tr": "Meteor Fırtınası"
+  },
+  {
+    "en": "Fan of Knives",
+    "tr": "Bıçak Yelpazesi"
+  },
+  {
+    "en": "Smoke Bomb",
+    "tr": "Sis Bombası"
+  },
+  {
+    "en": "Shadow Dance",
+    "tr": "Gölge Dansı"
+  },
+  {
+    "en": "Dawn Strike",
+    "tr": "Şafak Vuruşu"
+  },
+  {
+    "en": "Judgment",
+    "tr": "Hüküm"
+  },
+  {
+    "en": "Throat Cut",
+    "tr": "Boğaz Kesme"
+  },
+  {
+    "en": "Blood Mark",
+    "tr": "Kan İşareti"
+  },
+  {
+    "en": "Crimson Reaping",
+    "tr": "Kızıl Biçme"
+  },
+  {
+    "en": "Holy Bolt",
+    "tr": "Kutsal Ok"
+  },
+  {
+    "en": "Sanctuary",
+    "tr": "Sığınak"
+  },
+  {
+    "en": "Radiant Chorus",
+    "tr": "Işıyan Koro"
+  },
+  {
+    "en": "Shield Bash",
+    "tr": "Kalkan Vuruşu"
+  },
+  {
+    "en": "Iron Bulwark",
+    "tr": "Demir Siper"
+  },
+  {
+    "en": "Shockwave",
+    "tr": "Şok Dalgası"
+  },
+  {
+    "en": "Beast Fang",
+    "tr": "Hayvan Dişi"
+  },
+  {
+    "en": "Spirit Howl",
+    "tr": "Ruh Uluması"
+  },
+  {
+    "en": "Stampede",
+    "tr": "Sürü Hücumu"
+  },
+  {
+    "en": "Entangling Roots",
+    "tr": "Dolanan Kökler"
+  },
+  {
+    "en": "Debug Beam",
+    "tr": "Hata Ayıklama Işını"
+  },
+  {
+    "en": "Null Field",
+    "tr": "Sıfır Alanı"
+  },
+  {
+    "en": "Overclock",
+    "tr": "Aşırı Hız"
+  },
+  {
+    "en": "Test Strike",
+    "tr": "Test Vuruşu"
+  },
+  {
+    "en": "Bug Sweep",
+    "tr": "Hata Süpürme"
+  },
+  {
+    "en": "Crash",
+    "tr": "Çökme"
+  },
+  {
+    "en": "Savage Bite",
+    "tr": "Vahşi Isırık"
+  },
+  {
+    "en": "Pack Call",
+    "tr": "Sürü Çağrısı"
+  },
+  {
+    "en": "Primal Stampede",
+    "tr": "İlksel Hücum"
+  },
+  {
+    "en": "Spirit Bolt",
+    "tr": "Ruh Oku"
+  },
+  {
+    "en": "Anima Shield",
+    "tr": "Anima Kalkanı"
+  },
+  {
+    "en": "Wild Hunt",
+    "tr": "Vahşi Av"
+  },
+  {
+    "en": "Thorn Lance",
+    "tr": "Diken Mızrağı"
+  },
+  {
+    "en": "Grasping Roots",
+    "tr": "Kavrayan Kökler"
+  },
+  {
+    "en": "Overgrowth",
+    "tr": "Aşırı Büyüme"
+  },
+  {
+    "en": "Life Bolt",
+    "tr": "Yaşam Oku"
+  },
+  {
+    "en": "Renewal",
+    "tr": "Yenilenme"
+  },
+  {
+    "en": "Admin Beam",
+    "tr": "Yönetici Işını"
+  },
+  {
+    "en": "Ban Field",
+    "tr": "Ban Alanı"
+  },
+  {
+    "en": "Server Crash",
+    "tr": "Sunucu Çökmesi"
+  },
+  {
+    "en": "Warlord Cleave",
+    "tr": "Savaş Lordu Yarması"
+  },
+  {
+    "en": "Executioner",
+    "tr": "Cellat"
+  },
+  {
+    "en": "Bramble Shot",
+    "tr": "Çalı Atışı"
+  },
+  {
+    "en": "Verdant Snare",
+    "tr": "Yeşil Tuzak"
+  },
+  {
+    "en": "Wildstorm",
+    "tr": "Vahşi Fırtına"
+  },
+  {
+    "en": "Arcane Lance",
+    "tr": "Arkane Mızrağı"
+  },
+  {
+    "en": "Glacial Prison",
+    "tr": "Buzul Hapishanesi"
+  },
+  {
+    "en": "Umbral Slash",
+    "tr": "Gölge Kesme"
+  },
+  {
+    "en": "Nightfall",
+    "tr": "Gece Çöküşü"
+  },
+  {
+    "en": "Crusader's Blow",
+    "tr": "Haçlı'nın Darbesi"
+  },
+  {
+    "en": "Divine Aegis",
+    "tr": "İlahi Aegis"
+  },
+  {
+    "en": "Hammerfall",
+    "tr": "Çekiç Düşüşü"
+  },
+  {
+    "en": "Death Grip",
+    "tr": "Ölüm Pençesi"
+  },
+  {
+    "en": "Scythe Storm",
+    "tr": "Tırpan Fırtınası"
+  },
+  {
+    "en": "Blessing",
+    "tr": "Lütuf"
+  },
+  {
+    "en": "Divine Judgment",
+    "tr": "İlahi Hüküm"
+  },
+  {
+    "en": "Crushing Blow",
+    "tr": "Ezici Darbe"
+  },
+  {
+    "en": "Fortress",
+    "tr": "Kale"
+  },
+  {
+    "en": "Earthquake",
+    "tr": "Deprem"
+  },
+  {
+    "en": "Emperor's Edge",
+    "tr": "İmparatorun Ağzı"
+  },
+  {
+    "en": "Crown of Flame",
+    "tr": "Alev Tacı"
+  },
+  {
+    "en": "Worldbreaker",
+    "tr": "Dünya Kırıcı"
+  },
+  {
+    "en": "Storm Arrow",
+    "tr": "Fırtına Oku"
+  },
+  {
+    "en": "Thunder Cage",
+    "tr": "Gök Gürültüsü Kafesi"
+  },
+  {
+    "en": "Tempest",
+    "tr": "Kasırga"
+  },
+  {
+    "en": "Arcane Spear",
+    "tr": "Arkane Kargı"
+  },
+  {
+    "en": "Chrono Field",
+    "tr": "Krono Alanı"
+  },
+  {
+    "en": "Singularity",
+    "tr": "Tekillik"
+  },
+  {
+    "en": "King's Edict",
+    "tr": "Kralın Fermanı"
+  },
+  {
+    "en": "Umbra Gate",
+    "tr": "Gölge Kapısı"
+  },
+  {
+    "en": "Reign of Shadows",
+    "tr": "Gölgelerin Hükümdarlığı"
+  },
+  {
+    "en": "Radiant Strike",
+    "tr": "Işıyan Vuruş"
+  },
+  {
+    "en": "Aegis of Light",
+    "tr": "Işık Aegisi"
+  },
+  {
+    "en": "Solar Flare",
+    "tr": "Güneş Patlaması"
+  },
+  {
+    "en": "Reaper's Toll",
+    "tr": "Azrail'in Bedeli"
+  },
+  {
+    "en": "Grave Chains",
+    "tr": "Mezar Zincirleri"
+  },
+  {
+    "en": "Army of the Dead",
+    "tr": "Ölüler Ordusu"
+  },
+  {
+    "en": "Blood Claw",
+    "tr": "Kan Pençesi"
+  },
+  {
+    "en": "Crimson Rush",
+    "tr": "Kızıl Hücum"
+  },
+  {
+    "en": "Blood Tide",
+    "tr": "Kan Gelgiti"
+  },
+  {
+    "en": "Sanguine Slash",
+    "tr": "Kanlı Kesme"
+  },
+  {
+    "en": "Blood Pact",
+    "tr": "Kan Anlaşması"
+  },
+  {
+    "en": "Crimson Cataclysm",
+    "tr": "Kızıl Felaket"
+  },
+  {
+    "en": "Shadow Well",
+    "tr": "Gölge Kuyusu"
+  },
+  {
+    "en": "Eclipse",
+    "tr": "Tutulma"
+  },
+  {
+    "en": "Blood Reign",
+    "tr": "Kan Hükümdarlığı"
+  },
+  {
+    "en": "Veil of Blood",
+    "tr": "Kan Peçesi"
+  },
+  {
+    "en": "Holy Lance",
+    "tr": "Kutsal Mızrak"
+  },
+  {
+    "en": "Sacred Aegis",
+    "tr": "Kutsal Aegis"
+  },
+  {
+    "en": "Titanic Fist",
+    "tr": "Titan Yumruğu"
+  },
+  {
+    "en": "Colossal Guard",
+    "tr": "Devasa Koruma"
+  },
+  {
+    "en": "World Quake",
+    "tr": "Dünya Sarsıntısı"
+  },
+  {
+    "en": "A holy ward turns aside a heavy blow.",
+    "tr": "Kutsal bir siper ağır bir darbeyi savuşturur."
+  },
+  {
+    "en": "Steady yourself against damage.",
+    "tr": "Hasar karşısında kendini sağlamlaştır."
+  },
+  {
+    "en": "Raise morale; allies strike true.",
+    "tr": "Moral yükselt; dostlar isabetle vurur."
+  },
+  {
+    "en": "Wraiths of shadow guard you and sap the foe.",
+    "tr": "Gölge hayaletleri seni korur ve düşmanı zayıflatır."
+  },
+  {
+    "en": "A mighty ward shields body and spirit.",
+    "tr": "Kudretli bir siper bedeni ve ruhu korur."
+  },
+  {
+    "en": "A resilient bulwark of pure will.",
+    "tr": "Saf iradeden esnek bir siper."
+  },
+  {
+    "en": "Your hide hardens into living stone.",
+    "tr": "Derin yaşayan taşa dönüşür."
+  },
+  {
+    "en": "Become an unyielding wall of iron.",
+    "tr": "Boyun eğmeyen bir demir duvara dönüş."
+  },
+  {
+    "en": "Guard the whole party with armored grace.",
+    "tr": "Tüm grubu zırhlı bir zarafetle koru."
+  },
+  {
+    "en": "A radiant barrier blessed against harm.",
+    "tr": "Zarara karşı kutsanmış ışıyan bir bariyer."
+  },
+  {
+    "en": "Renew vitality, round after round.",
+    "tr": "Tur be tur canlılığı yenile."
+  },
+  {
+    "en": "Mend wounds with pure channeled magic.",
+    "tr": "Yaraları saf yönlendirilmiş büyüyle onar."
+  },
+  {
+    "en": "Soak the foe - wet makes lightning and frost bite harder.",
+    "tr": "Düşmanı ıslat - ıslak, yıldırım ve buzu daha sert ısırtır."
+  },
+  {
+    "en": "Overcharge: +50% vs wet.",
+    "tr": "Aşırı Yükleme: ıslağa karşı +%50."
+  },
+  {
+    "en": "Mighty lightning; still +50% vs wet.",
+    "tr": "Kudretli yıldırım; yine de ıslağa karşı +%50."
+  },
+  {
+    "en": "Electrify the foe while wet.",
+    "tr": "Düşmanı ıslakken elektriklendir."
+  },
+  {
+    "en": "A chill that lingers.",
+    "tr": "Süregelen bir soğuk."
+  },
+  {
+    "en": "Freeze the foe solid.",
+    "tr": "Düşmanı tamamen dondur."
+  },
+  {
+    "en": "A burst of frost; freezes, then Shatter for +60%.",
+    "tr": "Bir buz patlaması; dondurur, sonra +%60 için Kırılma."
+  },
+  {
+    "en": "Shatter the ice for huge frost damage.",
+    "tr": "Büyük buz hasarı için buzu kır."
+  },
+  {
+    "en": "Set the foe alight.",
+    "tr": "Düşmanı tutuştur."
+  },
+  {
+    "en": "Whirling cinders that keep burning.",
+    "tr": "Yanmaya devam eden dönen korlar."
+  },
+  {
+    "en": "Burning Blaze: +60% vs poisoned foes.",
+    "tr": "Yanan Alev: zehirli düşmanlara karşı +%60."
+  },
+  {
+    "en": "Heavy poison for 6% max HP / round.",
+    "tr": "Tur başına maks. canın %6'sı kadar ağır zehir."
+  },
+  {
+    "en": "Poisoned targets take +50%.",
+    "tr": "Zehirli hedefler +%50 alır."
+  },
+  {
+    "en": "Weaken and expose the foe in one blow.",
+    "tr": "Düşmanı tek darbede zayıflat ve ifşa et."
+  },
+  {
+    "en": "Shatter guard: expose + weaken.",
+    "tr": "Siper kır: ifşa + zayıflatma."
+  },
+  {
+    "en": "Break Guard: +80% vs exposed.",
+    "tr": "Siper Kırma: ifşa olmuşlara karşı +%80."
+  },
+  {
+    "en": "Overwhelm: +35% vs weakened.",
+    "tr": "Ezme: zayıflamışlara karşı +%35."
+  },
+  {
+    "en": "Whipping vines for 1.4× magic - first link of the nature chain.",
+    "tr": "1.4× büyü için kamçılayan sarmaşıklar - doğa zincirinin ilk halkası."
+  },
+  {
+    "en": "Thorny barrage for 1.9× magic that bleeds. Requires Vine Lash.",
+    "tr": "1.9× büyü için kanatan dikenli yaylım. Sarmaşık Kamçısı gerektirir."
+  },
+  {
+    "en": "Bloom restores 30% of your max HP.",
+    "tr": "Çiçek Açma maks. canının %30'unu geri yükler."
+  },
+  {
+    "en": "Warrior Path",
+    "tr": "Savaşçı Yolu"
+  },
+  {
+    "en": "Archer Path",
+    "tr": "Okçu Yolu"
+  },
+  {
+    "en": "Mage Path",
+    "tr": "Büyücü Yolu"
+  },
+  {
+    "en": "Rogue Path",
+    "tr": "Haydut Yolu"
+  },
+  {
+    "en": "Paladin Path",
+    "tr": "Paladin Yolu"
+  },
+  {
+    "en": "Assassin Path",
+    "tr": "Suikastçı Yolu"
+  },
+  {
+    "en": "Healer Path",
+    "tr": "Şifacı Yolu"
+  },
+  {
+    "en": "Tank Path",
+    "tr": "Tank Yolu"
+  },
+  {
+    "en": "Tamer Path",
+    "tr": "Terbiyeci Yolu"
+  },
+  {
+    "en": "Gardener Path",
+    "tr": "Bahçıvan Yolu"
+  },
+  {
+    "en": "Ashen Ember",
+    "tr": "Kül Kor"
+  },
+  {
+    "en": "Forest Leaf",
+    "tr": "Orman Yaprağı"
+  },
+  {
+    "en": "Spring Water",
+    "tr": "Pınar Suyu"
+  },
+  {
+    "en": "Cobble Dust",
+    "tr": "Arnavut Kaldırımı Tozu"
+  },
+  {
+    "en": "Candlelight",
+    "tr": "Mum Işığı"
+  },
+  {
+    "en": "Bog Moss",
+    "tr": "Bataklık Yosunu"
+  },
+  {
+    "en": "Iron Grey",
+    "tr": "Demir Grisi"
+  },
+  {
+    "en": "Pale Blue",
+    "tr": "Soluk Mavi"
+  },
+  {
+    "en": "Harvest Amber",
+    "tr": "Hasat Kehribarı"
+  },
+  {
+    "en": "Rust Red",
+    "tr": "Pas Kırmızısı"
+  },
+  {
+    "en": "Pale Rose",
+    "tr": "Soluk Gül"
+  },
+  {
+    "en": "Seafoam",
+    "tr": "Deniz Köpüğü"
+  },
+  {
+    "en": "Toadstone",
+    "tr": "Kurbağa Taşı"
+  },
+  {
+    "en": "Chalk White",
+    "tr": "Tebeşir Beyazı"
+  },
+  {
+    "en": "Sunlit Gold",
+    "tr": "Güneş Işığı Altını"
+  },
+  {
+    "en": "Blood Red",
+    "tr": "Kan Kırmızısı"
+  },
+  {
+    "en": "Violet Mist",
+    "tr": "Menekşe Sisi"
+  },
+  {
+    "en": "Storm Spark",
+    "tr": "Fırtına Kıvılcımı"
+  },
+  {
+    "en": "Moon Silver",
+    "tr": "Ay Gümüşü"
+  },
+  {
+    "en": "Thorn Green",
+    "tr": "Diken Yeşili"
+  },
+  {
+    "en": "Marsh Teal",
+    "tr": "Bataklık Turkuazı"
+  },
+  {
+    "en": "Cinder Orange",
+    "tr": "Kor Turuncusu"
+  },
+  {
+    "en": "Pale Amethyst",
+    "tr": "Soluk Ametist"
+  },
+  {
+    "en": "Poison Lime",
+    "tr": "Zehir Misketi"
+  },
+  {
+    "en": "Crystal Blue",
+    "tr": "Kristal Mavisi"
+  },
+  {
+    "en": "Sandstorm",
+    "tr": "Kum Fırtınası"
+  },
+  {
+    "en": "Rune Cyan",
+    "tr": "Rün Turkuazı"
+  },
+  {
+    "en": "Obsidian",
+    "tr": "Obsidyen"
+  },
+  {
+    "en": "Royal Purple",
+    "tr": "Kraliyet Moru"
+  },
+  {
+    "en": "Bloodmoon Rose",
+    "tr": "Kan Ayı Gülü"
+  },
+  {
+    "en": "Sunfire",
+    "tr": "Güneş Ateşi"
+  },
+  {
+    "en": "Glitch Green",
+    "tr": "Glitch Yeşili"
+  },
+  {
+    "en": "Spectre Teal",
+    "tr": "Hayalet Turkuazı"
+  },
+  {
+    "en": "Emberstorm",
+    "tr": "Kor Fırtınası"
+  },
+  {
+    "en": "Frostbloom",
+    "tr": "Buz Çiçeği"
+  },
+  {
+    "en": "Starfall",
+    "tr": "Yıldız Düşüşü"
+  },
+  {
+    "en": "Pitch Black",
+    "tr": "Zifiri Siyah"
+  },
+  {
+    "en": "Galaxy",
+    "tr": "Galaksi"
+  },
+  {
+    "en": "Aurora",
+    "tr": "Aurora"
+  },
+  {
+    "en": "Bat Swarm",
+    "tr": "Yarasa Sürüsü"
+  },
+  {
+    "en": "Void Heart",
+    "tr": "Boşluk Kalbi"
+  },
+  {
+    "en": "Fire Wolf",
+    "tr": "Ateş Kurdu"
+  },
+  {
+    "en": "A loyal ember pup. +5 Attack.",
+    "tr": "Sadık bir kor yavrusu. +5 Saldırı."
+  },
+  {
+    "en": "Water Sprite",
+    "tr": "Su Perisi"
+  },
+  {
+    "en": "A bubbling companion. +6 Magic Power.",
+    "tr": "Fokurdayan bir yoldaş. +6 Büyü Gücü."
+  },
+  {
+    "en": "Direwolf",
+    "tr": "Dev Kurt"
+  },
+  {
+    "en": "Ember Pup",
+    "tr": "Kor Yavrusu"
+  },
+  {
+    "en": "Cinder Cub",
+    "tr": "Kül Yavrusu"
+  },
+  {
+    "en": "Sprout",
+    "tr": "Filiz"
+  },
+  {
+    "en": "Flame Sprite",
+    "tr": "Alev Perisi"
+  },
+  {
+    "en": "Mossling",
+    "tr": "Yosuncuk"
+  },
+  {
+    "en": "Vine Pup",
+    "tr": "Sarmaşık Yavrusu"
+  },
+  {
+    "en": "Thorn Whelp",
+    "tr": "Diken Yavrusu"
+  },
+  {
+    "en": "Slime King",
+    "tr": "Balçık Kralı"
+  },
+  {
+    "en": "Forest Cub",
+    "tr": "Orman Yavrusu"
+  },
+  {
+    "en": "Natureling",
+    "tr": "Doğacık"
+  },
+  {
+    "en": "A budding nature spirit from the Green Egg.",
+    "tr": "Yeşil Yumurta'dan çıkan tomurcuklanan bir doğa ruhu."
+  },
+  {
+    "en": "Frost Pup",
+    "tr": "Buz Yavrusu"
+  },
+  {
+    "en": "Ice Whelp",
+    "tr": "Buz Çırağı"
+  },
+  {
+    "en": "Snow Cub",
+    "tr": "Kar Yavrusu"
+  },
+  {
+    "en": "Glacierling",
+    "tr": "Buzulcuk"
+  },
+  {
+    "en": "Chill Sprite",
+    "tr": "Soğuk Perisi"
+  },
+  {
+    "en": "Frost Drake",
+    "tr": "Buz Ejderi"
+  },
+  {
+    "en": "Stone Pup",
+    "tr": "Taş Yavrusu"
+  },
+  {
+    "en": "Rockling",
+    "tr": "Kayacık"
+  },
+  {
+    "en": "Boulder Cub",
+    "tr": "Kaya Yavrusu"
+  },
+  {
+    "en": "Crystal Sprite",
+    "tr": "Kristal Perisi"
+  },
+  {
+    "en": "Golem Whelp",
+    "tr": "Golem Yavrusu"
+  },
+  {
+    "en": "Granite Pup",
+    "tr": "Granit Yavrusu"
+  },
+  {
+    "en": "Storm Pup",
+    "tr": "Fırtına Yavrusu"
+  },
+  {
+    "en": "Thunder Cub",
+    "tr": "Gök Gürültüsü Yavrusu"
+  },
+  {
+    "en": "Lightning Drake",
+    "tr": "Yıldırım Ejderi"
+  },
+  {
+    "en": "Wind Sprite",
+    "tr": "Rüzgâr Perisi"
+  },
+  {
+    "en": "Gale Whelp",
+    "tr": "Bora Yavrusu"
+  },
+  {
+    "en": "Storm Hatchling",
+    "tr": "Fırtına Civcivi"
+  },
+  {
+    "en": "Shadow Pup",
+    "tr": "Gölge Yavrusu"
+  },
+  {
+    "en": "Voidling",
+    "tr": "Boşlukçuk"
+  },
+  {
+    "en": "Dusk Whelp",
+    "tr": "Alacakaranlık Yavrusu"
+  },
+  {
+    "en": "Night Cub",
+    "tr": "Gece Yavrusu"
+  },
+  {
+    "en": "Shade Sprite",
+    "tr": "Gölge Perisi"
+  },
+  {
+    "en": "Umbra Drake",
+    "tr": "Gölge Ejderi"
+  },
+  {
+    "en": "Crystal Drake",
+    "tr": "Kristal Ejderi"
+  },
+  {
+    "en": "Arcane Pup",
+    "tr": "Arkane Yavrusu"
+  },
+  {
+    "en": "Mana Sprite",
+    "tr": "Mana Perisi"
+  },
+  {
+    "en": "Spell Whelp",
+    "tr": "Büyü Yavrusu"
+  },
+  {
+    "en": "Runeling",
+    "tr": "Rüncük"
+  },
+  {
+    "en": "Crystal Hound",
+    "tr": "Kristal Tazısı"
+  },
+  {
+    "en": "Void Pup",
+    "tr": "Boşluk Yavrusu"
+  },
+  {
+    "en": "Abyssling",
+    "tr": "Uçurumcuk"
+  },
+  {
+    "en": "Nether Cub",
+    "tr": "Cehennem Yavrusu"
+  },
+  {
+    "en": "Shadow Drake",
+    "tr": "Gölge Ejderi"
+  },
+  {
+    "en": "Dark Hound",
+    "tr": "Karanlık Tazı"
+  },
+  {
+    "en": "Void Sprite",
+    "tr": "Boşluk Perisi"
+  },
+  {
+    "en": "Phoenix Hatchling",
+    "tr": "Anka Civcivi"
+  },
+  {
+    "en": "Ember Drake",
+    "tr": "Kor Ejderi"
+  },
+  {
+    "en": "Flame Hound",
+    "tr": "Alev Tazısı"
+  },
+  {
+    "en": "Inferno Pup",
+    "tr": "Yanardağ Yavrusu"
+  },
+  {
+    "en": "Blaze Drake",
+    "tr": "Alev Ejderi"
+  },
+  {
+    "en": "Phoenix Chick",
+    "tr": "Anka Piliç"
+  },
+  {
+    "en": "Mythic Drake",
+    "tr": "Mitik Ejder"
+  },
+  {
+    "en": "Gold Pup",
+    "tr": "Altın Yavrusu"
+  },
+  {
+    "en": "Radiant Cub",
+    "tr": "Işıyan Yavru"
+  },
+  {
+    "en": "Divine Whelp",
+    "tr": "İlahi Yavru"
+  },
+  {
+    "en": "Light Sprite",
+    "tr": "Işık Perisi"
+  },
+  {
+    "en": "Mythic Hound",
+    "tr": "Mitik Tazı"
+  },
+  {
+    "en": "Rage Pup",
+    "tr": "Öfke Yavrusu"
+  },
+  {
+    "en": "Fury Cub",
+    "tr": "Hiddet Yavrusu"
+  },
+  {
+    "en": "Berserk Whelp",
+    "tr": "Cinnet Yavrusu"
+  },
+  {
+    "en": "War Hound",
+    "tr": "Savaş Tazısı"
+  },
+  {
+    "en": "Battle Pup",
+    "tr": "Savaş Yavrusu"
+  },
+  {
+    "en": "Might Cub",
+    "tr": "Kudret Yavrusu"
+  },
+  {
+    "en": "Mystic Cub",
+    "tr": "Mistik Yavrusu"
+  },
+  {
+    "en": "Rune Pup",
+    "tr": "Rün Yavrusu"
+  },
+  {
+    "en": "Gale Sprite",
+    "tr": "Bora Perisi"
+  },
+  {
+    "en": "Stone Guardian",
+    "tr": "Taş Muhafız"
+  },
+  {
+    "en": "Iron Pup",
+    "tr": "Demir Yavrusu"
+  },
+  {
+    "en": "Granite Whelp",
+    "tr": "Granit Yavrusu"
+  },
+  {
+    "en": "Crystal Pup",
+    "tr": "Kristal Yavrusu"
+  },
+  {
+    "en": "Rock Sprite",
+    "tr": "Kaya Perisi"
+  },
+  {
+    "en": "Frost Lynx",
+    "tr": "Buz Vaşağı"
+  },
+  {
+    "en": "Glacier Pup",
+    "tr": "Buzul Yavrusu"
+  },
+  {
+    "en": "Snow Hound",
+    "tr": "Kar Tazısı"
+  },
+  {
+    "en": "Ice Cub",
+    "tr": "Buz Yavrusu"
+  },
+  {
+    "en": "Chill Whelp",
+    "tr": "Soğuk Yavrusu"
+  },
+  {
+    "en": "Frost Kit",
+    "tr": "Buz Tilkisi Yavrusu"
+  },
+  {
+    "en": "Ember Lynx",
+    "tr": "Kor Vaşağı"
+  },
+  {
+    "en": "Cinder Pup",
+    "tr": "Kül Yavrusu"
+  },
+  {
+    "en": "Blaze Cub",
+    "tr": "Alev Yavrusu"
+  },
+  {
+    "en": "Inferno Whelp",
+    "tr": "Yanardağ Yavrusu"
+  },
+  {
+    "en": "Fire Sprite",
+    "tr": "Ateş Perisi"
+  },
+  {
+    "en": "Storm Hawk",
+    "tr": "Fırtına Şahini"
+  },
+  {
+    "en": "Thunder Pup",
+    "tr": "Gök Gürültüsü Yavrusu"
+  },
+  {
+    "en": "Gale Cub",
+    "tr": "Bora Yavrusu"
+  },
+  {
+    "en": "Lightning Pup",
+    "tr": "Yıldırım Yavrusu"
+  },
+  {
+    "en": "Tempest Whelp",
+    "tr": "Kasırga Yavrusu"
+  },
+  {
+    "en": "Shadow Cat",
+    "tr": "Gölge Kedisi"
+  },
+  {
+    "en": "Rage Pup - grants attack buff. From egg_red",
+    "tr": "Öfke Yavrusu - saldırı güçlendirmesi verir. egg_red'den"
+  },
+  {
+    "en": "Fury Cub - grants magicBoost buff. From egg_green",
+    "tr": "Hiddet Yavrusu - magicBoost güçlendirmesi verir. egg_green'den"
+  },
+  {
+    "en": "Berserk Whelp - grants defense buff. From egg_blue",
+    "tr": "Cinnet Yavrusu - savunma güçlendirmesi verir. egg_blue'den"
+  },
+  {
+    "en": "War Hound - grants attack buff. From egg_brown",
+    "tr": "Savaş Tazısı - saldırı güçlendirmesi verir. egg_brown'dan"
+  },
+  {
+    "en": "Battle Pup - grants magicBoost buff. From egg_yellow",
+    "tr": "Savaş Yavrusu - magicBoost güçlendirmesi verir. egg_yellow'dan"
+  },
+  {
+    "en": "Might Cub - grants defense buff. From egg_purple",
+    "tr": "Kudret Yavrusu - savunma güçlendirmesi verir. egg_purple'dan"
+  },
+  {
+    "en": "Arcane Pup - grants attack buff. From egg_cyan",
+    "tr": "Arkane Yavrusu - saldırı güçlendirmesi verir. egg_cyan'dan"
+  },
+  {
+    "en": "Mana Sprite - grants magicBoost buff. From egg_dark",
+    "tr": "Mana Perisi - magicBoost güçlendirmesi verir. egg_dark'tan"
+  },
+  {
+    "en": "Spell Whelp - grants defense buff. From egg_orange",
+    "tr": "Büyü Yavrusu - savunma güçlendirmesi verir. egg_orange'dan"
+  },
+  {
+    "en": "Mystic Cub - grants attack buff. From egg_gold",
+    "tr": "Mistik Yavrusu - saldırı güçlendirmesi verir. egg_gold'dan"
+  },
+  {
+    "en": "Rune Pup - grants magicBoost buff. From egg_red",
+    "tr": "Rün Yavrusu - magicBoost güçlendirmesi verir. egg_red'den"
+  },
+  {
+    "en": "Gale Sprite - grants defense buff. From egg_green",
+    "tr": "Bora Perisi - savunma güçlendirmesi verir. egg_green'den"
+  },
+  {
+    "en": "Stone Guardian - grants attack buff. From egg_blue",
+    "tr": "Taş Muhafız - saldırı güçlendirmesi verir. egg_blue'den"
+  },
+  {
+    "en": "Iron Pup - grants magicBoost buff. From egg_brown",
+    "tr": "Demir Yavrusu - magicBoost güçlendirmesi verir. egg_brown'dan"
+  },
+  {
+    "en": "Granite Whelp - grants defense buff. From egg_yellow",
+    "tr": "Granit Yavrusu - savunma güçlendirmesi verir. egg_yellow'dan"
+  },
+  {
+    "en": "Crystal Pup - grants attack buff. From egg_purple",
+    "tr": "Kristal Yavrusu - saldırı güçlendirmesi verir. egg_purple'dan"
+  },
+  {
+    "en": "Boulder Cub - grants magicBoost buff. From egg_cyan",
+    "tr": "Kaya Yavrusu - magicBoost güçlendirmesi verir. egg_cyan'dan"
+  },
+  {
+    "en": "Rock Sprite - grants defense buff. From egg_dark",
+    "tr": "Kaya Perisi - savunma güçlendirmesi verir. egg_dark'tan"
+  },
+  {
+    "en": "Frost Lynx - grants attack buff. From egg_orange",
+    "tr": "Buz Vaşağı - saldırı güçlendirmesi verir. egg_orange'dan"
+  },
+  {
+    "en": "Glacier Pup - grants magicBoost buff. From egg_gold",
+    "tr": "Buzul Yavrusu - magicBoost güçlendirmesi verir. egg_gold'dan"
+  },
+  {
+    "en": "Snow Hound - grants defense buff. From egg_red",
+    "tr": "Kar Tazısı - savunma güçlendirmesi verir. egg_red'den"
+  },
+  {
+    "en": "Ice Cub - grants attack buff. From egg_green",
+    "tr": "Buz Yavrusu - saldırı güçlendirmesi verir. egg_green'den"
+  },
+  {
+    "en": "Chill Whelp - grants magicBoost buff. From egg_blue",
+    "tr": "Soğuk Yavrusu - magicBoost güçlendirmesi verir. egg_blue'den"
+  },
+  {
+    "en": "Frost Kit - grants defense buff. From egg_brown",
+    "tr": "Buz Tilkisi Yavrusu - savunma güçlendirmesi verir. egg_brown'dan"
+  },
+  {
+    "en": "Ember Lynx - grants attack buff. From egg_yellow",
+    "tr": "Kor Vaşağı - saldırı güçlendirmesi verir. egg_yellow'dan"
+  },
+  {
+    "en": "Flame Hound - grants magicBoost buff. From egg_purple",
+    "tr": "Alev Tazısı - magicBoost güçlendirmesi verir. egg_purple'dan"
+  },
+  {
+    "en": "Cinder Pup - grants defense buff. From egg_cyan",
+    "tr": "Kül Yavrusu - savunma güçlendirmesi verir. egg_cyan'dan"
+  },
+  {
+    "en": "Blaze Cub - grants attack buff. From egg_dark",
+    "tr": "Alev Yavrusu - saldırı güçlendirmesi verir. egg_dark'tan"
+  },
+  {
+    "en": "Inferno Whelp - grants magicBoost buff. From egg_orange",
+    "tr": "Yanardağ Yavrusu - magicBoost güçlendirmesi verir. egg_orange'dan"
+  },
+  {
+    "en": "Fire Sprite - grants defense buff. From egg_gold",
+    "tr": "Ateş Perisi - savunma güçlendirmesi verir. egg_gold'dan"
+  },
+  {
+    "en": "Storm Hawk - grants attack buff. From egg_red",
+    "tr": "Fırtına Şahini - saldırı güçlendirmesi verir. egg_red'den"
+  },
+  {
+    "en": "Thunder Pup - grants magicBoost buff. From egg_green",
+    "tr": "Gök Gürültüsü Yavrusu - magicBoost güçlendirmesi verir. egg_green'den"
+  },
+  {
+    "en": "Gale Cub - grants defense buff. From egg_blue",
+    "tr": "Bora Yavrusu - savunma güçlendirmesi verir. egg_blue'den"
+  },
+  {
+    "en": "Wind Sprite - grants attack buff. From egg_brown",
+    "tr": "Rüzgâr Perisi - saldırı güçlendirmesi verir. egg_brown'dan"
+  },
+  {
+    "en": "Lightning Pup - grants magicBoost buff. From egg_yellow",
+    "tr": "Yıldırım Yavrusu - magicBoost güçlendirmesi verir. egg_yellow'dan"
+  },
+  {
+    "en": "Tempest Whelp - grants defense buff. From egg_purple",
+    "tr": "Kasırga Yavrusu - savunma güçlendirmesi verir. egg_purple'dan"
+  },
+  {
+    "en": "Shadow Cat - grants attack buff. From egg_cyan",
+    "tr": "Gölge Kedisi - saldırı güçlendirmesi verir. egg_cyan'dan"
+  },
+  {
+    "en": "Void Pup - grants magicBoost buff. From egg_dark",
+    "tr": "Boşluk Yavrusu - magicBoost güçlendirmesi verir. egg_dark'tan"
+  },
+  {
+    "en": "Whirlwind",
+    "tr": "Kasırga"
+  },
+  {
+    "en": "A full spinning cut that carves every foe in front of you.",
+    "tr": "Önündeki bütün düşmanları biçen tam turlu bir savuruş."
+  },
+  {
+    "en": "Earthbreaker",
+    "tr": "Yerkıran"
+  },
+  {
+    "en": "Slam the ground and send a shockwave through everything nearby.",
+    "tr": "Yere vur; çevrendeki her şeyi sarsan bir şok dalgası yay."
+  },
+  {
+    "en": "Blade Storm",
+    "tr": "Bıçak Fırtınası"
+  },
+  {
+    "en": "Blades orbit you for three seconds, shredding anything they touch.",
+    "tr": "Bıçaklar üç saniye etrafında döner, dokunduklarını parçalar."
+  },
+  {
+    "en": "Titan Fist",
+    "tr": "Titan Yumruğu"
+  },
+  {
+    "en": "A colossal stone fist crashes down ahead of you.",
+    "tr": "Önüne devasa bir taş yumruk iner."
+  },
+  {
+    "en": "Gale",
+    "tr": "Rüzgâr"
+  },
+  {
+    "en": "A short burst of wind that pulls and cuts.",
+    "tr": "Çeken ve kesen kısa bir rüzgâr patlaması."
+  },
+  {
+    "en": "Cyclone",
+    "tr": "Siklon"
+  },
+  {
+    "en": "A spinning vortex drags enemies inward and shreds them.",
+    "tr": "Dönen bir girdap düşmanları içeri çeker ve parçalar."
+  },
+  {
+    "en": "Stars rain from the sky across a wide area.",
+    "tr": "Gökten geniş bir alana yıldızlar yağar."
+  },
+  {
+    "en": "Spirit Pack",
+    "tr": "Ruh Sürüsü"
+  },
+  {
+    "en": "Ghostly wolves circle the target and lunge as one.",
+    "tr": "Hayalet kurtlar hedefin etrafında döner ve birlikte atılır."
+  },
+  {
+    "en": "Toxic Cloud",
+    "tr": "Zehir Bulutu"
+  },
+  {
+    "en": "A lingering cloud of poison that eats away at anything inside.",
+    "tr": "İçindeki her şeyi kemiren, kalıcı bir zehir bulutu."
+  },
+  {
+    "en": "A ring of ice bursts outward and freezes what it touches.",
+    "tr": "Dışa doğru buz halkası patlar, dokunduğunu dondurur."
+  },
+  {
+    "en": "Inferno Burst",
+    "tr": "Cehennem Patlaması"
+  },
+  {
+    "en": "A ring of fire detonates around you and keeps burning.",
+    "tr": "Etrafında bir ateş halkası patlar ve yanmaya devam eder."
+  },
+  {
+    "en": "Call down meteors on the marked ground, leaving burning craters.",
+    "tr": "İşaretli yere meteorlar indir; yanan kraterler bırak."
+  },
+  {
+    "en": "Glacier Wall",
+    "tr": "Buzul Duvarı"
+  },
+  {
+    "en": "Raise a wall of ice ahead that slows and cuts anything crossing it.",
+    "tr": "Önüne geçenleri yavaşlatan ve kesen bir buz duvarı dik."
+  },
+  {
+    "en": "Chain Lightning",
+    "tr": "Zincir Yıldırım"
+  },
+  {
+    "en": "Lightning leaps between foes, shocking each one it touches.",
+    "tr": "Yıldırım düşmandan düşmana sıçrar, her birini çarpar."
+  },
+  {
+    "en": "Ember Wave",
+    "tr": "Kor Dalgası"
+  },
+  {
+    "en": "A wave of cinders washes over the arc ahead.",
+    "tr": "Önündeki yayın üzerinden kor dalgası geçer."
+  },
+  {
+    "en": "Umbral Lash",
+    "tr": "Gölge Kamçısı"
+  },
+  {
+    "en": "A whip of shadow cuts across the foes in front of you.",
+    "tr": "Önündeki düşmanları kesen bir gölge kamçısı."
+  },
+  {
+    "en": "Shadow Grasp",
+    "tr": "Gölge Kavrayışı"
+  },
+  {
+    "en": "Shadow tendrils burst from the ground and claw at everything.",
+    "tr": "Yerden gölge kolları fışkırır ve her şeyi tırmalar."
+  },
+  {
+    "en": "Judgement Beam",
+    "tr": "Hüküm Işını"
+  },
+  {
+    "en": "A lance of holy light burns a straight line through the enemy.",
+    "tr": "Kutsal ışıktan bir mızrak düşmanın içinden düz bir çizgi yakar."
+  },
+  {
+    "en": "Rune Seal",
+    "tr": "Rün Mührü"
+  },
+  {
+    "en": "Etch a warding rune that absorbs a share of incoming damage.",
+    "tr": "Gelen hasarın bir kısmını yutan koruyucu bir rün kaz."
+  },
+  {
+    "en": "Divine Judgement",
+    "tr": "İlahi Hüküm"
+  },
+  {
+    "en": "Six blades of light fall around you and stun the wicked.",
+    "tr": "Etrafına altı ışık kılıcı iner ve günahkârları sersemletir."
+  },
+  {
+    "en": "Radiant Verdict",
+    "tr": "Işıklı Hüküm"
+  },
+  {
+    "en": "A wide beam of judgement that sears everything in its path.",
+    "tr": "Yolundaki her şeyi dağlayan geniş bir hüküm ışını."
+  },
+  {
+    "en": "Healing Rain",
+    "tr": "Şifa Yağmuru"
+  },
+  {
+    "en": "Warm rain falls and knits your wounds shut.",
+    "tr": "Ilık bir yağmur yağar ve yaralarını kapatır."
+  },
+  {
+    "en": "Dimension Rift",
+    "tr": "Boyut Yarığı"
+  },
+  {
+    "en": "Tear space and step through it, shredding everything you leave behind.",
+    "tr": "Uzayı yırt ve içinden geç; geride bıraktığın her şeyi parçala."
+  },
+  {
+    "en": "Venom Spit",
+    "tr": "Zehir Tükürüğü"
+  },
+  {
+    "en": "Spit a blob of venom that bursts on impact.",
+    "tr": "Çarpınca patlayan bir zehir topağı tükür."
+  },
+  {
+    "en": "Mending Light",
+    "tr": "Onaran Işık"
+  },
+  {
+    "en": "A soft light mends a small amount of health.",
+    "tr": "Yumuşak bir ışık az miktarda can onarır."
+  },
+  {
+    "en": "Tree of Life",
+    "tr": "Hayat Ağacı"
+  },
+  {
+    "en": "A great tree blooms and pours healing light over the ground.",
+    "tr": "Ulu bir ağaç açar ve yere şifa ışığı döker."
+  },
+  {
+    "en": "Phoenix Rebirth",
+    "tr": "Anka Doğuşu"
+  },
+  {
+    "en": "A phoenix rises from you, restoring a great amount of health.",
+    "tr": "İçinden bir anka yükselir, büyük miktarda can geri verir."
+  },
+  {
+    "en": "Thorn Snare",
+    "tr": "Diken Tuzağı"
+  },
+  {
+    "en": "Thorned vines erupt and root everything in the area.",
+    "tr": "Dikenli sarmaşıklar fışkırır ve alandaki her şeyi kökler."
+  },
+  {
+    "en": "Bone Cage",
+    "tr": "Kemik Kafes"
+  },
+  {
+    "en": "Bones erupt around the target and lock it in place while they cut.",
+    "tr": "Hedefin çevresinde kemikler yükselir, onu yerinde kilitler."
+  },
+  {
+    "en": "Bramble",
+    "tr": "Çalı Dikeni"
+  },
+  {
+    "en": "A lash of thorned vines sweeps the arc ahead.",
+    "tr": "Önündeki yayı süpüren dikenli sarmaşık kamçısı."
+  },
+  {
+    "en": "Rune Circle",
+    "tr": "Rün Çemberi"
+  },
+  {
+    "en": "A rune circle flares under you, shocking everything standing on it.",
+    "tr": "Altında bir rün çemberi parlar, üstündeki her şeyi çarpar."
+  },
+  {
+    "en": "Open a collapsing void that drags enemies into its core.",
+    "tr": "Düşmanları çekirdeğine çeken, çöken bir boşluk aç."
+  },
+  {
+    "en": "Soul Harvest",
+    "tr": "Ruh Hasadı"
+  },
+  {
+    "en": "Rip the souls from nearby foes and drink back a share as life.",
+    "tr": "Yakındaki düşmanların ruhunu söküp bir kısmını can olarak içine çek."
+  },
+  {
+    "en": "Flame Pillar",
+    "tr": "Alev Sütunu"
+  },
+  {
+    "en": "A pillar of flame erupts where you point and lingers.",
+    "tr": "İşaret ettiğin yerde alev sütunu yükselir ve sürer."
+  },
+  {
+    "en": "Dragon Breath",
+    "tr": "Ejder Nefesi"
+  },
+  {
+    "en": "Exhale a cone of dragonfire that sets the ground alight.",
+    "tr": "Yeri tutuşturan bir ejder ateşi konisi püskürt."
+  },
+  {
+    "en": "Blizzard",
+    "tr": "Kar Fırtınası"
+  },
+  {
+    "en": "A long-lasting snowstorm grinds away at a wide area.",
+    "tr": "Geniş bir alanı kemiren, uzun süreli bir kar fırtınası."
+  },
+  {
+    "en": "Crimson Reap",
+    "tr": "Kızıl Biçim"
+  },
+  {
+    "en": "A wide scythe of blood rips through the crowd.",
+    "tr": "Kan orak kalabalığın içinden geçer."
+  },
+  {
+    "en": "Blood Cut",
+    "tr": "Kan Kesisi"
+  },
+  {
+    "en": "A quick crimson slash that leaves the wound bleeding.",
+    "tr": "Yarayı kanatır biçimde hızlı, kızıl bir kesik."
+  },
+  {
+    "en": "Thunderfall",
+    "tr": "Gök Gürültüsü"
+  },
+  {
+    "en": "A thunderbolt slams down and stuns the target area.",
+    "tr": "Bir yıldırım iner ve hedef alanı sersemletir."
+  },
+  {
+    "en": "Storm Call",
+    "tr": "Fırtına Çağrısı"
+  },
+  {
+    "en": "Call a quick bolt to a nearby point.",
+    "tr": "Yakın bir noktaya hızlı bir yıldırım çağır."
+  },
+  {
+    "en": "Blood Ritual",
+    "tr": "Kan Ritüeli"
+  },
+  {
+    "en": "A crimson ritual circle erupts, tearing foes and feeding you.",
+    "tr": "Kızıl bir ritüel çemberi patlar; düşmanı yırtar, sana can verir."
+  },
+  {
+    "en": "Judgement",
+    "tr": "Hüküm"
+  },
+  {
+    "en": "Call a single colossal blade of judgement on the marked spot.",
+    "tr": "İşaretli noktaya tek, devasa bir hüküm kılıcı çağır."
+  },
+  {
+    "en": "Doom Gavel",
+    "tr": "Kıyamet Tokmağı"
+  },
+  {
+    "en": "A colossal gavel of stone falls from the sky and shatters the ground.",
+    "tr": "Gökten devasa bir taş tokmak düşer ve yeri parçalar."
+  },
+  {
+    "en": "One strike cracks the world; everything around you is thrown back.",
+    "tr": "Tek vuruş dünyayı çatlatır; çevrendeki her şey geri savrulur."
+  },
+  {
+    "en": "Astral Collapse",
+    "tr": "Astral Çöküş"
+  },
+  {
+    "en": "Five collapsing stars hammer the battlefield in quick succession.",
+    "tr": "Beş çöken yıldız art arda savaş alanını döver."
+  },
+  {
+    "en": "Arcane Dominion",
+    "tr": "Arkana Egemenliği"
+  },
+  {
+    "en": "You claim the sky: seven stars answer your call at once.",
+    "tr": "Gökyüzünü sahiplenirsin: yedi yıldız aynı anda çağrına uyar."
+  },
+  {
+    "en": "Sunfall",
+    "tr": "Güneş Düşüşü"
+  },
+  {
+    "en": "Three burning suns crash down and leave the earth ablaze.",
+    "tr": "Üç yanan güneş yere çakılır ve toprağı tutuşturur."
+  },
+  {
+    "en": "Infernal Crown",
+    "tr": "Cehennem Tacı"
+  },
+  {
+    "en": "A crown of hellfire erupts around you and keeps the ground burning.",
+    "tr": "Etrafında cehennem ateşinden bir taç patlar ve yeri yakmaya devam eder."
+  },
+  {
+    "en": "Seraph's Judgement",
+    "tr": "Seraf Hükmü"
+  },
+  {
+    "en": "A seraph's spear of light burns a wide path through everything.",
+    "tr": "Bir serafın ışık mızrağı her şeyin içinden geniş bir yol yakar."
+  },
+  {
+    "en": "Eternal Dawn",
+    "tr": "Ebedi Şafak"
+  },
+  {
+    "en": "Dawn breaks all at once: foes are stunned, allies are restored.",
+    "tr": "Şafak bir anda söker: düşmanlar sersemler, müttefikler iyileşir."
+  },
+  {
+    "en": "Primordial Grove",
+    "tr": "İlkel Koru"
+  },
+  {
+    "en": "An ancient grove blooms around you, pouring life into every wound.",
+    "tr": "Etrafında kadim bir koru açar, her yaraya can döker."
+  },
+  {
+    "en": "Verdant Wrath",
+    "tr": "Yeşil Gazap"
+  },
+  {
+    "en": "The wilds rise up: thorns, roots and rot devour the marked land.",
+    "tr": "Yaban ayaklanır: dikenler, kökler ve çürük işaretli toprağı yutar."
+  },
+  {
+    "en": "Night collapses into a hungry void that drags enemies to its core.",
+    "tr": "Gece, düşmanları çekirdeğine çeken aç bir boşluğa çöker."
+  },
+  {
+    "en": "A void crown detonates around you, tearing foes and feeding you their essence.",
+    "tr": "Etrafında bir boşluk tacı patlar; düşmanı yırtar, özlerini sana verir."
+  },
+  {
+    "en": "Sky Rend",
+    "tr": "Gökyüzü Yarığı"
+  },
+  {
+    "en": "The sky tears open and a single bolt levels the marked ground.",
+    "tr": "Gökyüzü yırtılır ve tek bir yıldırım işaretli yeri yerle bir eder."
+  },
+  {
+    "en": "Tempest Sovereign",
+    "tr": "Fırtına Hükümdarı"
+  },
+  {
+    "en": "Lightning obeys you, leaping across the whole battlefield.",
+    "tr": "Yıldırım sana itaat eder, tüm savaş alanına sıçrar."
+  }
+]

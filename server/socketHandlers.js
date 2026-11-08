@@ -18,6 +18,7 @@ const sessions = require("./sessions");
 const pvp = require("./pvp");
 const pets = require("./pets");
 const travel = require("./travel");
+const travelSkills = require("./travelSkills");
 const { onNewDay, equipItem, unequipSlot, setSkillLoadout, learnTreeNode, consumeItem, addXp } = require("./players");
 const { CONTENT, publicCatalog, getClass } = require("../content");
 
@@ -669,6 +670,31 @@ function registerSocketHandlers(io) {
       }
     });
 
+    // Travel (ARPG): sınıf havuzundan yeni yetenek öğren.
+    socket.on("travel:skill:learn", (payload = {}) => {
+      try {
+        const { room, player } = gameContext(socket);
+        requireAlive(player);
+        travelSkills.learn(player, payload.id);
+        room.log = { type: "inventory", text: `${player.name} learns a new travel skill.` };
+        emitRoomState(io, room);
+      } catch (err) {
+        emitError(socket, err);
+      }
+    });
+
+    // Travel (ARPG): Q/E/R tuşlarına yetenek kuşan (id boş = varsayılana dön).
+    socket.on("travel:skill:equip", (payload = {}) => {
+      try {
+        const { room, player } = gameContext(socket);
+        requireAlive(player);
+        travelSkills.equip(player, payload.slot, payload.id);
+        emitRoomState(io, room);
+      } catch (err) {
+        emitError(socket, err);
+      }
+    });
+
     socket.on("skillTree:learn", (payload = {}) => {
       try {
         const { room, player } = gameContext(socket);
@@ -975,6 +1001,13 @@ function registerSocketHandlers(io) {
     socket.on("travel:leave", () => {
       try {
         const { room, player } = gameContext(socket);
+        // Kasabaya dönüş yalnızca varış noktasından yapılabilir: savaş ortasında
+        // bir "kaçış" tuşu olarak kullanılamasın. (Düşmüşken `travel:giveup` serbest.)
+        const t = travel.activeTravel(room, player);
+        if (t && t.members.includes(player.id) && t.pos && t.pos[player.id] &&
+            !travel.isDowned(t, player.id) && !travel.atReturnPoint(t, player.id)) {
+          throw new Error("You can only return to town from the travel stone where you arrived.");
+        }
         travel.leaveTravel(room, player);
         emitRoomState(io, room);
       } catch (err) { emitError(socket, err); }
@@ -1015,12 +1048,16 @@ function registerSocketHandlers(io) {
         if (!res) return;
         addXp(player, res.xp);
         player.gold = (player.gold || 0) + res.gold;
+        // Travel puanı: sıra tabanlı skillPoints'ten ayrı, her 4 avda 1 puan.
+        const travelPoint = travelSkills.addKillPoint(player);
         // İstemciye anlık geri bildirim: "+X XP / +Y gold" ve sefer raporu.
         socket.emit("travel:killReward", {
           kind: payload.kind || null,
           xp: res.xp,
           gold: res.gold,
           goldTotal: player.gold || 0,
+          travelPoint,
+          travelPoints: player.travelPoints || 0,
         });
         emitRoomState(io, room);
       } catch (err) { /* kill reward is best-effort */ }

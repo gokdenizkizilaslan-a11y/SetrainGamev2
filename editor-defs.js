@@ -360,6 +360,20 @@ const collections = [
       { key: "monsterHpMult", label: "Monster HP multiplier (1 = normal)", type: "number" },
     ],
   },
+{
+    id: "i18nTR",
+    label: "Türkçe Çeviriler (TR)",
+    kind: "collection",
+    path: "i18nTR",
+    idField: "en",
+    idLabel: "English (kaynak metin — değiştirme)",
+    nameField: "en",
+    itemLabelTemplate: "{tr}",
+    fields: [
+      { key: "en", label: "English (kaynak metin — değiştirme)", type: "string" },
+      { key: "tr", label: "Türkçe karşılık", type: "string" },
+    ],
+  },
 ];
 
 const pages = [

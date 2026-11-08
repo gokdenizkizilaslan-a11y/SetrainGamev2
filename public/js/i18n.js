@@ -20,6 +20,33 @@
   // ---- Çeviri sözlüğü: İngilizce (tam metin) -> Türkçe ------------------
   // NOT: Buraya asla özel isim / item adı / sınıf adı eklemeyin.
   const TR = {
+    // ===== Travel yetenek paneli =====
+    "Skills": "Yetenekler",
+    "Skill Loadout": "Yetenek Dizilimi",
+    "Skill Points": "Yetenek Puanı",
+    "Pick a slot, then choose a skill from your class. Learn new skills with skill points.":
+      "Bir yuva seç, sonra sınıfından bir yetenek seç. Yeni yetenekleri yetenek puanıyla öğren.",
+    "Class Skills": "Sınıf Yetenekleri",
+    "Learn": "Öğren",
+    "Learned": "Öğrenildi",
+    "Default": "Varsayılan",
+    "Equipped": "Kuşanıldı",
+    "No class skills found.": "Sınıf yeteneği bulunamadı.",
+    "Learn this skill first.": "Önce bu yeteneği öğren.",
+    "Learn new skills with skill points": "Yeni yetenekleri yetenek puanıyla öğren",
+    "Click the same skill again to restore the default.": "Varsayılana dönmek için aynı yeteneğe tekrar tıkla.",
+    "Skill Tree": "Yetenek Ağacı",
+    "Travel Points": "Sefer Puanı",
+    "Base Kit": "Temel Set",
+    "Adept": "Usta",
+    "Legend": "Efsane",
+    "Pick a key, then a skill to equip it. Learn new ones with travel points.":
+      "Bir tuş seç, sonra kuşanmak için bir yetenek seç. Yenilerini sefer puanıyla öğren.",
+    "Pick a slot, then choose a skill from your class. Learn new skills with travel points.":
+      "Bir yuva seç, sonra sınıfından bir yetenek seç. Yeni yetenekleri sefer puanıyla öğren.",
+    "Travel points come from hunting in expeditions — every 4 kills grants 1. These points are separate from the turn-based skill tree.":
+      "Sefer puanları avlanarak kazanılır — her 4 öldürmede 1 puan. Bu puanlar sıra tabanlı yetenek ağacından ayrıdır.",
+
     // ===== Ana menü / karakter yaratma / lobi =====
     "Singleplayer": "Tek Oyunculu",
     "Multiplayer": "Çok Oyunculu",
@@ -89,6 +116,8 @@
     "Map": "Harita",
     "What would you like to do?": "Ne yapmak istersin?",
     "Back to Town": "Kasabaya Dön",
+    "You can only return to town from the travel stone where you arrived.":
+      "Kasabaya dönmek için yalnızca vardığın seyahat taşından dönebilirsin.",
     "Today's omen": "Bugünün işareti",
     "How to play": "Nasıl oynanır",
     "Open Skill Tree": "Yetenek Ağacını aç",
@@ -260,6 +289,16 @@
     "No mana hue burns in you yet.": "İçinde henüz bir mana rengi yanmıyor.",
     "worn": "kuşanılmış",
     "No hue": "Renk yok",
+    "One hue burns at a time. It repaints the light, trails and particles of your travel skills — rolling a new one fades the old for good.":
+      "Aynı anda tek bir renk yanar. Seyahat yeteneklerinin ışığını, izlerini ve parçacıklarını yeniden boyar — yeni bir renk zar atınca eskisi temelli kaybolur.",
+    "No hue yet": "Henüz renk yok",
+    "roll one to paint your skills": "yeteneklerini boyamak için zar at",
+    "effects": "efekti",
+    "Roll a new hue": "Yeni bir renk zar at",
+    "Roll a mana hue": "Mana rengi zar at",
+    "gold": "altın",
+    "You need 50 gold. Sell loot or finish an expedition first.":
+      "50 altın gerekli. Önce ganimet sat ya da bir sefer tamamla.",
 
     // ===== Tapınak sekmeleri =====
     "Ascension": "Yükseliş",
@@ -597,6 +636,20 @@
     "📖 Guide": "📖 Rehber",
     "📜 Quests": "📜 Görevler",
     "🗺️ Map": "🗺️ Harita",
+    // ===== Skill tooltip: element etiketleri (tek sözcük düğümler) =====
+    "Physical": "Fiziksel",
+    "Fire": "Ateş",
+    "Frost": "Buz",
+    "Poison": "Zehir",
+    "Arcane": "Gizem",
+    "Lightning": "Yıldırım",
+    "Holy": "Kutsal",
+    "Shadow": "Gölge",
+    "Blood": "Kan",
+    "Nature": "Doğa",
+    "Water": "Su",
+    "Earth": "Toprak",
+    "Dark": "Karanlık",
   };
 
   // Diyalog sözlüğü (public/js/i18n.dialog.js) bu dosyadan önce yüklenir;
@@ -669,7 +722,281 @@
     [/^Form party at (.+)$/i, "Şurada grup kur: $1"],
     [/^Not enough skill points \((\d+) needed\)\.$/i, "Yeterli yetenek puanı yok ($1 gerekli)."],
     [/^Your rite: (\d+)\/(\d+) slain · (\d+)\/(\d+) cruor( · COMPLETE)?( ·)?$/i, "Ayinin: $1/$2 öldürüldü · $3/$4 cruor$5$6"],
+
+    // --- Hasar / iyileştirme şablonları ---
+    [/^Deals (\d+) \+ ([\d.]+)\s*[x×]\s*(attack|magic) damage\. Heals for half the damage dealt\.$/i, "$1 + $2× $3 hasarı verir. Verilen hasarın yarısı kadar iyileştirir."],
+    [/^Deals (\d+) \+ ([\d.]+)\s*[x×]\s*(attack|magic) damage\. Heals for (\d+)% of the damage dealt\.$/i, "$1 + $2× $3 hasarı verir. Verilen hasarın %$4'ü kadar iyileştirir."],
+    [/^Deals (\d+) \+ ([\d.]+)\s*[x×]\s*(attack|magic) damage\. Heals you for (\d+)% of the damage dealt\.$/i, "$1 + $2× $3 hasarı verir. Verilen hasarın %$4'ü kadar seni iyileştirir."],
+    [/^Deals (\d+) \+ ([\d.]+)\s*[x×]\s*(attack|magic) damage\. Restores (\d+)% of your max HP\.$/i, "$1 + $2× $3 hasarı verir. Maks. canının %$4'ünü geri yükler."],
+    [/^Deals (\d+) \+ ([\d.]+)\s*[x×]\s*(attack|magic) TRUE damage\. Exact — ignores all reductions\.$/i, "$1 + $2× $3 GERÇEK hasarı verir. Kesin — tüm azaltmaları yok sayar."],
+    [/^Deals (\d+) \+ ([\d.]+)\s*[x×]\s*(attack|magic) damage\.$/i, "$1 + $2× $3 hasarı verir."],
+    [/^Deals (\d+) \+ ([\d.]+)\s*[x×]\s*(attack|magic) damage\. (.+)$/i, "$1 + $2× $3 hasarı verir. $4"],
+    [/^Restore (\d+)% of an ally's max HP\.$/i, "Bir dostun maks. canının %$1'ini geri yükler."],
+    [/^Restore (\d+)% of each ally's max HP and (\d+)% of their max mana with first blood\.$/i, "İlk kanla her dostun maks. canının %$1'ini ve maks. manasının %$2'sini geri yükler."],
+    [/^Restore (\d+)% of each ally's max HP and (\d+)% of their max mana\.$/i, "Her dostun maks. canının %$1'ini ve maks. manasının %$2'sini geri yükler."],
+    [/^Restore (\d+)% of each ally's max HP\.$/i, "Her dostun maks. canının %$1'ini geri yükler."],
+    [/^Restore (\d+)% of each ally's max mana\.$/i, "Her dostun maks. manasının %$1'ini geri yükler."],
+    [/^Block (\d+)% of incoming damage this round\.$/i, "Bu tur gelen hasarın %$1'ini engeller."],
+    [/^Block (\d+)% of incoming damage for 2 rounds\.$/i, "2 tur boyunca gelen hasarın %$1'ini engeller."],
+    [/^Block 40% of incoming damage for 2 rounds\. The whole party\.$/i, "2 tur boyunca gelen hasarın %40'ını engeller. Tüm grup."],
+    [/^Heals ([\d.]+)× attack power\. Scales with healPower\.$/i, "Saldırı gücünün $1 katı iyileştirir. İyileştirme gücüyle ölçeklenir."],
+    [/^Heals ([\d.]+)× magicPower\. Scales with healPower\.$/i, "Büyü gücünün $1 katı iyileştirir. İyileştirme gücüyle ölçeklenir."],
+    [/^Heals (\d+)% max HP every 2 turns\.$/i, "Her 2 turda maks. canın %$1'ini iyileştirir."],
+    [/^Small heal every turn\.$/i, "Her tur küçük bir iyileştirme."],
+    [/^(\d+) shield every 3 turns \(1 turn\)\.$/i, "Her 3 turda $1 kalkan (1 tur)."],
+    [/^Freeze the foe every 3 turns\.$/i, "Her 3 turda düşmanı dondurur."],
+    [/^Fast lightning attack every turn\.$/i, "Her tur hızlı yıldırım saldırısı."],
+    [/^Weaken the foe every 2 turns\.$/i, "Her 2 turda düşmanı zayıflatır."],
+    [/^Heavy weaken every 3 turns\.$/i, "Her 3 turda ağır zayıflatma."],
+    [/^Fire attack every 2 turns\.$/i, "Her 2 turda ateş saldırısı."],
+
+    // --- Pasif / buff şablonları ---
+    [/^\+(\d+)% damage\.$/i, "+%$1 hasar."],
+    [/^\+(\d+)% damage vs targets above (\d+)% HP\.$/i, "%$2 üzeri canlı hedeflere +%$1 hasar."],
+    [/^\+(\d+)% damage vs targets below (\d+)% HP\.$/i, "%$2 altı canlı hedeflere +%$1 hasar."],
+    [/^Take (\d+)% less damage \(true damage excluded\)\.$/i, "Alınan hasar %$1 azalır (gerçek hasar hariç)."],
+    [/^Start combat with a shield equal to (\d+)% max HP \((\d+) turns\)\.$/i, "Savaşa maks. canın %$1'i kadar kalkanla başla ($2 tur)."],
+    [/^Reflect (\d+)% of damage taken\.$/i, "Alınan hasarın %$1'ini yansıtır."],
+    [/^Heal (\d+)% of all damage dealt\.$/i, "Verilen tüm hasarın %$1'ini iyileştirir."],
+    [/^Heal for (\d+)% of all damage dealt\.$/i, "Verilen tüm hasarın %$1'i kadar iyileştirir."],
+    [/^\+(\d+)% (healing|regeneration)\.$/i, "+%$1 $2."],
+    [/^\+(\d+)% XP from victories\.$/i, "Zaferlerden +%$1 tecrübe."],
+    [/^\+(\d+)% gold from victories\.$/i, "Zaferlerden +%$1 altın."],
+    [/^\+(\d+) speed\.$/i, "+$1 hız."],
+    [/^\+(\d+) mana regen per round\.$/i, "Tur başına +$1 mana yenilenmesi."],
+    [/^\+(\d+) mana, \+(\d+) speed\.$/i, "+$1 mana, +$2 hız."],
+    [/^\+(\d+) max HP, \+(\d+) resistance\.$/i, "+$1 maks. can, +$2 direnç."],
+    [/^\+(\d+) attack\.$/i, "+$1 saldırı."],
+    [/^\+(\d+) speed, \+(\d+) attack\.$/i, "+$1 hız, +$2 saldırı."],
+    [/^\+(\d+) magic power\.$/i, "+$1 büyü gücü."],
+    [/^(\d+)% chance to dodge attacks\.$/i, "Saldırılardan %$1 kaçınma şansı."],
+    [/^Your hits execute targets at or below (\d+)% HP\.$/i, "Vuruşların %$1 ve altı canlı hedefleri infaz eder."],
+    [/^Survive lethal damage once per combat at 1 HP\.$/i, "Savaşta bir kez ölümcül hasarı 1 canla atlatırsın."],
+    [/^Shots pierce flat resistance\.$/i, "Oklar sabit direnci deler."],
+    [/^Excess killing damage crashes into another foe\.$/i, "Fazla öldürme hasarı başka bir düşmana taşar."],
+    [/^Regain (\d+) mana on kill\.$/i, "Öldürmede $1 mana kazanırsın."],
+    [/^(\d+)% chance to strike again for (\d+)% damage\.$/i, "%$1 şansla %$2 hasarla tekrar vurursun."],
+    [/^Hits burn (\d+)% of target max HP as exact damage \(max (\d+)\)\.$/i, "Vuruşlar hedefin maks. canının %$1'ini kesin hasar olarak yakar (en fazla $2)."],
+    [/^Gain (\d+) shield for 2 rounds\.$/i, "2 tur boyunca $1 kalkan kazanır."],
+    [/^All allies gain (\d+) shield for 2 rounds\.$/i, "Tüm dostlar 2 tur boyunca $1 kalkan kazanır."],
+    [/^Gain (\d+) shield and (\d+)% damage reduction\.$/i, "$1 kalkan ve %$2 hasar azaltma kazanır."],
+    [/^Give an ally (\d+) shield for 2 rounds\.$/i, "Bir dosta 2 tur boyunca $1 kalkan verir."],
+    [/^Gain (\d+) shield and weaken attacker (\d+)%\.$/i, "$1 kalkan kazanır ve saldıranı %$2 zayıflatır."],
+    [/^Takes (\d+)% more (holy|shadow) damage\.$/i, "Alınan $2 hasarı %$1 artar."],
+    [/^Increase your damage by (\d+)% for 2 rounds\.$/i, "2 tur boyunca hasarını %$1 artırır."],
+    [/^The whole party blocks (\d+)% of incoming damage for 2 rounds\.$/i, "Tüm grup 2 tur boyunca gelen hasarın %$1'ini engeller."],
+    [/^An ally regains (\d+)% of max HP each round for 3 rounds\.$/i, "Bir dost 3 tur boyunca her tur maks. canının %$1'ini geri kazanır."],
+    [/^Slam the ground with your whole weight: (\d+)% of your max HP as damage\.$/i, "Tüm ağırlığınla yere vur: maks. canının %$1'i kadar hasar."],
+    [/^Crash down like a mountain: (\d+)% of your max HP as damage\.$/i, "Bir dağ gibi çök: maks. canının %$1'i kadar hasar."],
+    [/^A monster deals (\d+)% less damage and takes (\d+)% more for 2 rounds\.$/i, "Bir canavar 2 tur boyunca %$1 az hasar verir ve %$2 fazla hasar alır."],
+    [/^The monster deals (\d+)% more damage for 2 rounds\.$/i, "Canavar 2 tur boyunca %$1 fazla hasar verir."],
+    [/^The monster blocks (\d+)% of damage for 2 rounds\.$/i, "Canavar 2 tur boyunca hasarın %$1'ini engeller."],
+    [/^The monster heals (\d+)% of max HP each round for 3 rounds\.$/i, "Canavar 3 tur boyunca her tur maks. canının %$1'ini iyileştirir."],
+    [/^The monster restores (\d+)% of max HP\.$/i, "Canavar maks. canının %$1'ini geri yükler."],
+    [/^A hero deals (\d+)% less damage for 2 rounds\.$/i, "Bir kahraman 2 tur boyunca %$1 az hasar verir."],
+    [/^A hero takes (\d+)% more damage for 2 rounds\.$/i, "Bir kahraman 2 tur boyunca %$1 fazla hasar alır."],
+    [/^A hero takes damage each round for 3 rounds\.$/i, "Bir kahraman 3 tur boyunca her tur hasar alır."],
+    [/^Monsters \+(\d+)% HP, but victories grant \+(\d+)% XP\.$/i, "Canavarlar +%$1 can, ama zaferler +%$2 tecrübe verir."],
+    [/^\+(\d+)% gold and wood from dungeon victories\.$/i, "Zindan zaferlerinden +%$1 altın ve odun."],
+    [/^\+(\d+)% XP from dungeon victories\.$/i, "Zindan zaferlerinden +%$1 tecrübe."],
+    [/^\+(\d+)% crit chance for heroes in dungeons\.$/i, "Zindanlardaki kahramanlara +%$1 kritik şansı."],
+    [/^A quiet day\. No omens stir\.$/i, "Sakin bir gün. Hiçbir işaret kımıldamıyor."],
+    [/^Pure demon royalty\. \+(\d+)% damage and \+(\d+)% lifesteal\.$/i, "Saf şeytan asaleti. +%$1 hasar ve +%$2 can çalma."],
+    [/^Lace your weapon with venom\.$/i, "Silahını zehirle."],
+
+    // --- Hasar cümlesi kuyrukları ("Deals ... damage." sonrası) ---
+    [/^Exact [-—–] ignores all reductions\.$/i, "Kesin — tüm azaltmaları yok sayar."],
+    [/^Exposed targets take \+(\d+)%\.$/i, "İfşa olmuş hedefler +%$1 alır."],
+    [/^Weakened targets take \+(\d+)%\.$/i, "Zayıflamış hedefler +%$1 alır."],
+    [/^Poisoned targets take \+(\d+)%\.$/i, "Zehirli hedefler +%$1 alır."],
+    [/^Burning targets take \+(\d+)%\.$/i, "Yanan hedefler +%$1 alır."],
+    [/^Frozen targets take \+(\d+)%\.$/i, "Donmuş hedefler +%$1 alır."],
+    [/^Wet targets take \+(\d+)%\.$/i, "Islak hedefler +%$1 alır."],
+    [/^\+(\d+)% vs wet \(Overcharge\)\.$/i, "Islağa karşı +%$1 (Aşırı Yükleme)."],
+    [/^Foe takes (\d+)% more, deals (\d+)% less \((\d+) rounds\)\.$/i, "Düşman %$1 fazla alır, %$2 az verir ($3 tur)."],
+    [/^Heals for half the damage dealt\.$/i, "Verilen hasarın yarısı kadar iyileştirir."],
+    [/^Heals for (\d+)% of the damage dealt\.$/i, "Verilen hasarın %$1'i kadar iyileştirir."],
+    [/^Heals you for (\d+)% of the damage dealt\.$/i, "Verilen hasarın %$1'ü kadar seni iyileştirir."],
+    [/^Restores (\d+)% of your max HP\.$/i, "Maks. canının %$1'ini geri yükler."],
+    [/^Poisons the foe\.$/i, "Düşmanı zehirler."],
+    [/^Poisons the monster for (\d+) rounds\.$/i, "Canavarı $1 tur zehirler."],
+    [/^Soaks the target for (\d+) turns \(wet\)\.$/i, "Hedefi $1 tur ıslatır (ıslak)."],
+    [/^Freezes the target for (\d+) rounds?\.$/i, "Hedefi $1 tur dondurur."],
+    [/^Leaves the foe burning\.$/i, "Düşmanı yanar halde bırakır."],
+    [/^Sets the foe burning\.$/i, "Düşmanı tutuşturur."],
+    [/^May freeze the target\.$/i, "Hedefi dondurabilir."],
+    [/^Electrifies the target\.$/i, "Hedefi elektriklendirir."],
+    [/^Your companion tears into the foe\.$/i, "Yoldaşın düşmana saldırır."],
+
+    // --- Envanter / mağaza ---
+    [/^Sell \+(\d+)g$/i, "Sat +$1a"],
+    [/^All \+(\d+)g$/i, "Tümü +$1a"],
+    [/^Sell to merchant: \+(\d+) gold$/i, "Tüccara sat: +$1 altın"],
+    [/^Sell all: \+(\d+) gold$/i, "Tümünü sat: +$1 altın"],
   ];
+
+  // ---- Skill tooltip'in DİNAMİK satırları ---------------------------------
+  // Bu metinler çalışma anında birleştirildiği için sözlükte birebir yok.
+  // Yalnızca tanınan biçimler çevrilir (emoji işaretli satırlar, mana/hedef
+  // meta satırı, mekanik cümleleri); başka hiçbir metne dokunulmaz.
+  const SK_ELEM = {
+    Physical: "Fiziksel", Fire: "Ateş", Frost: "Buz", Poison: "Zehir",
+    Arcane: "Gizem", Lightning: "Yıldırım", Holy: "Kutsal", Shadow: "Gölge",
+    Blood: "Kan", Nature: "Doğa", Water: "Su", Earth: "Toprak", Dark: "Karanlık",
+  };
+  const SK_STAT = { Attack: "Saldırı", Magic: "Büyü", Heal: "Şifa", "Max HP": "Maks. Can" };
+  const SK_MARK = /^(?:⚔|💚|🩸|🛡|🔷|✨|💀|☠|💧|❄|⛰)/;
+
+  function skWords(s) {
+    return String(s)
+      .replace(/target Max HP/g, "hedefin Maks. Canı")
+      .replace(/target current HP/g, "hedefin mevcut Canı")
+      .replace(/Max HP/g, "Maks. Can")
+      .replace(/magicPower/g, "Büyü")
+      .replace(/\b(Physical|Fire|Frost|Poison|Arcane|Lightning|Holy|Shadow|Blood|Nature|Water|Earth|Dark)\b/g,
+        (m, w) => SK_ELEM[w] || m)
+      .replace(/\b(Attack|Magic|Heal)\b/g, (m, w) => SK_STAT[w] || m);
+  }
+  function skDur(d) {
+    return /^until match end$/i.test(d) ? "maç sonuna kadar" : String(d).replace(/^(\d+)r$/, "$1 tur");
+  }
+  function skBurst(b) {
+    const s = String(b);
+    let m = /^(\d+) heal$/.exec(s);
+    if (m) return m[1] + " iyileştirme";
+    m = /^(\d+) shield$/.exec(s);
+    if (m) return m[1] + " kalkan";
+    if (s === "exact damage") return "tam hasar";
+    m = /^([\d.]+)× burst$/.exec(s);
+    if (m) return m[1] + "× patlama";
+    return s;
+  }
+  // "12 mana · → enemy · ⏳ every 3 rounds" ya da tek parça ("Free").
+  function skMeta(text) {
+    return String(text).split(" · ").map((raw) => {
+      const s = raw.trim();
+      let m;
+      if (s === "Free") return "Ücretsiz";
+      if (/^\d+ mana$/.test(s)) return s;
+      if (s === "→ enemy") return "→ düşman";
+      if (s === "→ ally") return "→ müttefik";
+      if (s === "→ whole party") return "→ tüm grup";
+      if (s === "→ self") return "→ kendin";
+      m = /^⏳ every (\d+) rounds?$/.exec(s);
+      if (m) return "⏳ her " + m[1] + " turda";
+      return s;
+    }).join(" · ");
+  }
+  // Emoji işaretli tek satır (hasar / şifa / buff / yığın).
+  function skLine(t) {
+    let s = skWords(t);
+    let m;
+    if (s.charAt(0) === "⚔") {
+      return s.replace(/\bdamage\b/g, "hasar").replace(/\bexact\b/g, "tam").replace(/\bas\b/g, "olarak");
+    }
+    m = /^💚 Heals (.+)$/.exec(s);
+    if (m) return "💚 İyileştirir: " + m[1];
+    m = /^💚 Restores (.+)$/.exec(s);
+    if (m) {
+      let v = m[1];
+      const p = /^(\d+(?:\.\d+)?)% of (Maks\. Can|hedefin Maks\. Canı|hedefin mevcut Canı)$/.exec(v);
+      if (p) {
+        const gen = /[ıiuü]$/.test(p[2]) ? "'nın" : "'ın";
+        return "💚 " + p[2] + gen + " %" + p[1] + " kadarı geri yüklenir";
+      }
+      return "💚 Geri yükler: " + v.replace(/\bmax\b/g, "maks");
+    }
+    m = /^💚 \+(\d+)% self heal on hit$/.exec(s);
+    if (m) return "💚 Vuruşta +%" + m[1] + " kendini iyileştirme";
+    m = /^🩸 Lifesteal (\d+)% of damage$/.exec(s);
+    if (m) return "🩸 Hasarın %" + m[1] + "'i kadar can çalma";
+    m = /^🛡 Blocks (\d+)% this round$/.exec(s);
+    if (m) return "🛡 Bu tur %" + m[1] + " engeller";
+    m = /^🔷 Restores (.+) mana$/.exec(s);
+    if (m) return "🔷 " + m[1].replace(/\bmax\b/g, "maks") + " mana geri yükler";
+    m = /^🛡 \+(\d+) shield \((\d+)r\)$/.exec(s);
+    if (m) return "🛡 +" + m[1] + " kalkan (" + m[2] + " tur)";
+    m = /^✨ \+(\d+)% (damage|magic|defense) \((\d+)r\)$/.exec(s);
+    if (m) return "✨ +%" + m[1] + " " + ({ damage: "hasar", magic: "büyü", defense: "savunma" }[m[2]]) + " (" + m[3] + " tur)";
+    m = /^💀 Foe deals (\d+)% less \((\d+)r\)$/.exec(s);
+    if (m) return "💀 Düşman %" + m[1] + " az vurur (" + m[2] + " tur)";
+    m = /^💀 Foe takes (\d+)% more \((\d+)r\)$/.exec(s);
+    if (m) return "💀 Düşman %" + m[1] + " fazla alır (" + m[2] + " tur)";
+    m = /^☠ (\d+)%\/round poison \((\d+)r\)$/.exec(s);
+    if (m) return "☠ tur başına %" + m[1] + " zehir (" + m[2] + " tur)";
+    m = /^💚 (\d+)%\/round regen \((\d+)r\)$/.exec(s);
+    if (m) return "💚 tur başına %" + m[1] + " yenilenme (" + m[2] + " tur)";
+    m = /^💧 Soaks the foe \((\d+)r\)$/.exec(s);
+    if (m) return "💧 Düşmanı ıslatır (" + m[1] + " tur)";
+    m = /^❄ Freezes the foe \((\d+)r\)$/.exec(s);
+    if (m) return "❄ Düşmanı dondurur (" + m[1] + " tur)";
+    m = /^🩸 Foe healing -(\d+)% \((\d+)r\)$/.exec(s);
+    if (m) return "🩸 Düşman iyileşmesi -%" + m[1] + " (" + m[2] + " tur)";
+    m = /^⛰ (.+?): \+(\d+)% (.+?) per stack \(max (\d+), (.+)\)$/.exec(s);
+    if (m) {
+      const kind = String(m[3]).replace(/\bdamage\b/g, "hasar").replace(/\bmagic\b/g, "büyü")
+        .replace(/\battack\b/g, "saldırı").replace(/\bdefense\b/g, "savunma");
+      return "⛰ " + m[1] + ": yığın başına +%" + m[2] + " " + kind + " (maks " + m[4] + ", " + skDur(m[5]) + ")";
+    }
+    m = /^⛰ (.+?): (\d+) stacks → (.+?)( \(kept\))?$/.exec(s);
+    if (m) return "⛰ " + m[1] + ": " + m[2] + " yığın → " + skBurst(m[3]) + (m[4] ? " (korunur)" : "");
+    m = /^⛰ (.+?): stacks to (\d+)$/.exec(s);
+    if (m) return "⛰ " + m[1] + ": " + m[2] + " yığına kadar";
+    m = /^✨ (.+) \((\d+)r\)$/.exec(s);
+    if (m) return "✨ " + m[1] + " (" + m[2] + " tur)";
+    return s;
+  }
+  // Mekanik cümlesi (tek parça). Çevrilemezse null.
+  function skMechPart(s) {
+    let m;
+    m = /^(\d+)% of (.+) as base$/.exec(s);
+    if (m) return "temel olarak " + m[2] + " %" + m[1];
+    if (s === "Hits ALL enemies") return "TÜM düşmanlara vurur";
+    m = /^Also hits (\d+) random (?:enemy|enemies)$/.exec(s);
+    if (m) return "Ayrıca " + m[1] + " rastgele düşmana vurur";
+    m = /^Plus ([\d.]+)×(.+?) as (.+)$/.exec(s);
+    if (m) {
+      const el = SK_ELEM[m[3].charAt(0).toUpperCase() + m[3].slice(1)] || m[3];
+      return "Ayrıca " + m[1] + "×" + m[2] + ", " + el;
+    }
+    m = /^Usable below (\d+)% HP — executes$/.exec(s);
+    if (m) return "Can %" + m[1] + " altında kullanılabilir — infaz eder";
+    m = /^Kills targets dropped to (\d+)% HP or less$/.exec(s);
+    if (m) return "Canı %" + m[1] + " veya altına düşen hedefleri öldürür";
+    if (s === "Executes the target") return "Hedefi infaz eder";
+    m = /^\+(\d+)% vs targets above (\d+)% HP$/.exec(s);
+    if (m) return "Canı %" + m[2] + " üzerindeki hedeflere +%" + m[1];
+    m = /^\+(\d+)% vs (.+)$/.exec(s);
+    if (m) return m[2] + " hedeflerine karşı +%" + m[1];
+    m = /^(\d+)% chance to strike again at (\d+)% power$/.exec(s);
+    if (m) return "%" + m[1] + " şansla %" + m[2] + " güçle tekrar vurur";
+    m = /^Usable every (\d+) rounds?$/.exec(s);
+    if (m) return "Her " + m[1] + " turda kullanılabilir";
+    return null;
+  }
+  function trDynamic(text) {
+    const t = String(text).trim();
+    if (/^(?:Free|\d+ mana|→ |⏳ )/.test(t)) return skMeta(t);
+    if (SK_MARK.test(t)) return skLine(t);
+    // Travel yetenek paneli meta satırı: "Frost · 8s · ×1.6 · 20% heal"
+    const em = /^([A-Z][a-zçğıöşü]+) · (.+)$/.exec(t);
+    if (em && SK_ELEM[em[1]]) {
+      return SK_ELEM[em[1]] + " · " + em[2]
+        .replace(/(\d+)% heal\b/g, "%$1 şifa")
+        .replace(/(\d+)% shield\b/g, "%$1 kalkan");
+    }
+    if (t.indexOf(" · ") >= 0 || /base$|Hits ALL|random enem|Plus |Usable |Executes |Kills targets dropped to|chance to strike again|vs | as [A-ZÇĞİÖŞÜ]/.test(t)) {
+      let changed = false;
+      const out = t.split(" · ").map((raw) => {
+        const p = raw.trim();
+        const r = skMechPart(skWords(p));
+        if (r != null) { changed = true; return r; }
+        return p;
+      });
+      if (changed) return out.join(" · ");
+    }
+    return null;
+  }
 
   // ---- Durum ------------------------------------------------------------
   let lang = "en";
@@ -710,12 +1037,102 @@
     return v == null ? null : v;
   }
 
+  // ---- Otomatik çeviri (kalıplı metinler) ------------------------------
+  // Stat satırları, "Deals 8 + 1.2× attack damage." gibi tekrar eden
+  // şablonlar ve yumurta açıklamaları elle sözlüğe yazılmaz.
+  const STAT_EN2TR = {
+    attack: "Saldırı", atk: "Saldırı",
+    "max hp": "Maks. Can", maxhp: "Maks. Can", hp: "Can",
+    mana: "Mana",
+    "mana regen": "Mana Yenilenmesi", manaregen: "Mana Yenilenmesi",
+    resistance: "Direnç", res: "Direnç",
+    "magic power": "Büyü Gücü", magicpower: "Büyü Gücü", mgc: "Büyü Gücü",
+    "heal power": "İyileştirme Gücü", healpower: "İyileştirme Gücü", heal: "İyileştirme",
+    speed: "Hız",
+    "crit chance": "Kritik Şansı", critchance: "Kritik Şansı",
+    "crit damage": "Kritik Hasarı", critdamage: "Kritik Hasarı",
+    omnivamp: "Omnivamp",
+    food: "Yiyecek", gold: "Altın", wood: "Odun", stamina: "Dayanıklılık",
+  };
+  const EGG_COLORS = {
+    red: "Kırmızı", green: "Yeşil", blue: "Mavi", brown: "Kahverengi",
+    yellow: "Sarı", purple: "Mor", cyan: "Turkuaz", dark: "Kara",
+    orange: "Turuncu", gold: "Altın",
+  };
+  // İngilizce anahtarı küçük harfe indirip arayan yedek tablo (son çare).
+  let TRL = null;
+  function lookupCI(text) {
+    if (TRL === null) {
+      TRL = {};
+      const keys = Object.keys(TR);
+      for (let i = 0; i < keys.length; i++) {
+        const lk = keys[i].toLowerCase();
+        if (TRL[lk] == null) TRL[lk] = TR[keys[i]];
+      }
+    }
+    return TRL[String(text).toLowerCase()] || null;
+  }
+
+  function autoStatLine(t) {
+    const parts = t.replace(/\.$/, "").split(/,\s*/);
+    const out = [];
+    for (let i = 0; i < parts.length; i++) {
+      const m = /^\+?([\d.]+)(%?)\s*(.+)$/.exec(parts[i].trim());
+      if (!m) return null;
+      const name = STAT_EN2TR[m[3].trim().toLowerCase()];
+      if (!name) return null;
+      out.push("+" + m[1] + m[2] + " " + name);
+    }
+    return out.join(", ") + (/\.$/.test(t) ? "." : "");
+  }
+
+  function autoTranslate(t) {
+    // "+6 Attack, +1 Speed" / "+35 maxHp, +5 resistance"
+    if (/^\+?[\d.]/.test(t)) {
+      const st = autoStatLine(t);
+      if (st) return st;
+    }
+    // "Deals 45 + 1.6× magic damage." (+ isteğe bağlı kuyruk cümle)
+    // "Deals 30 + 1.0× magic TRUE damage. Exact — ignores all reductions."
+    let m = /^Deals ([\d.]+) \+ ([\d.]+)\s*[x×]\s*(attack|magic)\s+TRUE damage\.(.*)$/i.exec(t);
+    if (m) {
+      let out = m[1] + " + " + m[2] + "× " + (m[3].toLowerCase() === "magic" ? "büyü" : "saldırı") + " GERÇEK hasarı verir.";
+      const rest = m[4].trim();
+      if (rest) out += " " + translateString(rest);
+      return out;
+    }
+    m = /^Deals ([\d.]+) \+ ([\d.]+)\s*[x×]\s*(attack|magic) damage\.(.*)$/i.exec(t);
+    if (m) {
+      let out = m[1] + " + " + m[2] + "× " + (m[3].toLowerCase() === "magic" ? "büyü" : "saldırı") + " hasarı verir.";
+      const rest = m[4].trim();
+      if (rest) out += " " + translateString(rest);
+      return out;
+    }
+    // "Heals 40 HP when used."
+    m = /^Heals (\d+) HP when used\.$/.exec(t);
+    if (m) return "Kullanıldığında " + m[1] + " Can iyileştirir.";
+    // "Red Egg - hatch to get a random pet. Drops in specific dungeons."
+    m = /^(\w+) Egg - hatch to get a random pet\. Drops in specific dungeons\.$/.exec(t);
+    if (m) {
+      const c = EGG_COLORS[m[1].toLowerCase()] || m[1];
+      return c + " Yumurta - çatlatınca rastgele bir evcil hayvan verir. Belirli zindanlarda düşer.";
+    }
+    // "Direwolf from Red Egg"
+    m = /^(.+) from (\w+) Egg$/.exec(t);
+    if (m) {
+      const c = EGG_COLORS[m[2].toLowerCase()] || m[2];
+      return m[1] + " (" + c + " Yumurta'dan)";
+    }
+    return null;
+  }
+
   function translateString(s) {
     if (s == null) return s;
     if (lang === "en") return s;
     const trimmed = String(s).trim();
     if (!trimmed) return s;
     let out = lookup(trimmed);
+    if (out == null) out = autoTranslate(trimmed);
     if (out == null) {
       // "Cümle (ek bilgi)" biçimi: baştaki cümleyi çevir, parantez içini koru.
       const m = trimmed.match(/^([\s\S]+?)\s\(([^()]*)\)$/);
@@ -738,6 +1155,13 @@
         }
       }
     }
+    if (out == null) out = trDynamic(trimmed);
+    if (out == null && /\.$/.test(trimmed)) {
+      const stem = trimmed.slice(0, -1);
+      const head = lookup(stem) || autoTranslate(stem) || lookupCI(stem);
+      if (head != null) out = head + ".";
+    }
+    if (out == null) out = lookupCI(trimmed);
     if (out == null) return s;
     const at = String(s).indexOf(trimmed);
     return String(s).slice(0, at) + out + String(s).slice(at + trimmed.length);
@@ -918,6 +1342,27 @@
   // Dinamik olarak gelen menüleri de yakala.
   window.addEventListener("load", () => { bindButtons(); if (lang === "tr") apply(document.body); });
 
+  // ---- İçerik sözlüğü (content.js -> i18nTR) ---------------------------
+  // GameCraft editöründen düzenlenen [en, tr] çiftleri buradan sözlüğe eklenir.
+  // Mevcut anahtarların üzerine YAZMAZ (elle yazılmış çeviriler önceliklidir).
+  function loadExtra(list) {
+    if (!Array.isArray(list) || !list.length) return 0;
+    let added = 0;
+    for (let i = 0; i < list.length; i++) {
+      const row = list[i];
+      if (!row) continue;
+      const en = typeof row === "string" ? row : row.en;
+      const tr = typeof row === "string" ? null : row.tr;
+      if (!en || tr == null || tr === "") continue;
+      if (TR[en] == null) { TR[en] = tr; added++; }
+      const nk = normKey(en);
+      if (TRN[nk] == null) TRN[nk] = tr;
+    }
+    if (added && lang === "tr") { prune(); apply(document.body); }
+    if (added) TRL = null; // küçük-harf arama tablosunu tazele
+    return added;
+  }
+
   // ---- Genel API --------------------------------------------------------
   window.SetraI18n = {
     get lang() { return lang; },
@@ -926,6 +1371,7 @@
     setLang,
     toggle() { setLang(lang === "tr" ? "en" : "tr"); },
     onChange(fn) { if (typeof fn === "function") listeners.push(fn); },
+    loadExtra,
     refresh: boot,
     // Bakım/denetim için: sözlük ve desenlere erişim (yalnızca okuma amaçlı).
     _dict: TR,

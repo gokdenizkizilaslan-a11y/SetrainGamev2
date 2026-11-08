@@ -558,6 +558,13 @@ if (petsCloseBtn) petsCloseBtn.addEventListener("click", () => {
 });
 const travelCloseBtn = $("btn-travel-close");
 if (travelCloseBtn) travelCloseBtn.addEventListener("click", () => {
+  // Kasabaya dönüş yalnızca varış taşından yapılabilir (sunucu da doğrular).
+  if (window.SetraTravel && typeof SetraTravel.canReturnToTown === "function" && !SetraTravel.canReturnToTown()) {
+    const msg = "You can only return to town from the travel stone where you arrived.";
+    if (typeof showToast === "function") showToast(msg);
+    else if (SetraTravel.toast) SetraTravel.toast(msg);
+    return;
+  }
   socket.emit("travel:leave");
   state.travelOpen = false;
   if (window.SetraTravel) SetraTravel.close();
@@ -876,6 +883,10 @@ socket.on("skins:rolled", (p) => {
   if (!p || !p.skin) return;
   if (typeof showToast === "function") showToast(`Mana hue: ${p.skin.name} (${p.skin.rarity}) — the old hue fades.`);
   if (state.templeOpen && state.room) { try { renderTempleView(state.room); } catch (e) {} }
+  // Travel ekranındaki Mana Rengi kartı açıksa tazele.
+  if (state.room && document.querySelector("#travel-content .tv-hue") && typeof renderTravelView === "function") {
+    try { renderTravelView(state.room); } catch (e) {}
+  }
 });
 
 function chestItemName(itemId) {

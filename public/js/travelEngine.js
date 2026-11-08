@@ -68,6 +68,13 @@
   const smooth = (a, b, v) => { const t = clamp((v - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
   const easeOut = (t) => 1 - Math.pow(1 - clamp(t, 0, 1), 3);
 
+  // Buff stat etiketleri (hem yüzen yazı hem sol panel için).
+  const BUFF_LABEL = {
+    attack: "ATK", damage: "DMG", magic: "MGC", magicpower: "MGC",
+    heal: "HEAL", healpower: "HEAL", defense: "DEF", resistance: "DEF",
+    speed: "SPD", attackspeed: "ATK SPD",
+  };
+
   function hash2(x, y) {
     const n = Math.sin(x * 127.1 + y * 311.7) * 43758.5453123;
     return n - Math.floor(n);
@@ -1890,6 +1897,8 @@
       this.playerShield = 0;
       this.playerShieldMax = 0;
       this.playerShieldTimer = 0;
+      // ARPG buff'ları: { stat, pct, duration, timer, color, name }
+      this.playerBuffs = [];
       this.playerStatuses = {};
       this.playerSlowMult = 1;
       this._respawnQueue = [];
@@ -1939,7 +1948,7 @@
 
       this.monsters = [];
       // Biyom tablosu henüz gelmediyse eski varsayılan akış kullanılır.
-      this.spawnMonsters(6);
+      this.spawnMonsters(3);
 
       this.projectiles = [];
       this.slashes = [];
@@ -2326,6 +2335,9 @@
     setSkin(id) {
       const s = id && this.skins ? this.skins[id] : null;
       this.skin = s || null;
+      // Görsel kütüphanesi de aynı paleti kullansın (parçacık/efekt renkleri).
+      const TV = (typeof window !== 'undefined' && window.TravelVisuals) || null;
+      if (TV && typeof TV.setHue === 'function') TV.setHue(this.skin);
     }
 
     // Mana rengi parçacıkları (yarasa, galaksi, su, void, glitch...).
@@ -2373,14 +2385,46 @@
       this.monsters = [];
       this._respawnQueue = [];
       const sp = (def && def.spawn) || {};
-      this.spawnMonsters(Math.max(3, Number(sp.count) || 6));
+      // Seyrek ama ölümcül: yoğunluk ~yarıya indi.
+      this.spawnMonsters(Math.max(3, Math.round((Number(sp.count) || 4) * 0.8)));
     }
 
-    // Sınıfın ARPG yetenek seti; tanımsızsa jenerik yay/melee'ye düşer.
+    // Sınıfın tüm ARPG yetenekleri: varsayılan Q/E/R + öğrenilebilir havuz.
+    classSkillPool() {
+      const slug = this.playerData && this.playerData.class;
+      const set = slug && this.arpgSkills ? this.arpgSkills[slug] : null;
+      if (!set) return [];
+      const out = [];
+      for (const slot of ['q', 'e', 'r']) {
+        const sk = set[slot];
+        if (sk) out.push(Object.assign({ id: sk.id || ('default_' + slot), defaultSlot: slot }, sk));
+      }
+      for (const sk of (set.pool || [])) if (sk) out.push(Object.assign({}, sk));
+      for (const sk of (set.late || [])) if (sk) out.push(Object.assign({}, sk));
+      return out;
+    }
+
+    // Oyuncunun kuşandığı set. Sunucudan gelen travelLoadout (Q/E/R -> skill id)
+    // yoksa sınıfın varsayılan üçlüsü kullanılır.
     classSkillSet() {
       const slug = this.playerData && this.playerData.class;
-      if (slug && this.arpgSkills && this.arpgSkills[slug]) return this.arpgSkills[slug];
-      return null;
+      const set = slug && this.arpgSkills ? this.arpgSkills[slug] : null;
+      if (!set) return null;
+      const loadout = (this.playerData && this.playerData.travelLoadout) || null;
+      if (!loadout) return set;
+      const pool = this.classSkillPool();
+      const byId = new Map();
+      for (const sk of pool) if (sk && sk.id) byId.set(sk.id, sk);
+      const pick = (slot) => {
+        // Yuva sözlükte VAR ama boş ("") ise: oyuncu onu bilerek boşaltmıştır,
+        // varsayılana düşmeyiz (aksi halde aynı yetenek iki tuşta çalışır).
+        const has = Object.prototype.hasOwnProperty.call(loadout, slot);
+        const id = has ? loadout[slot] : null;
+        if (has && !id) return null;
+        const sk = id ? byId.get(id) : null;
+        return sk ? Object.assign({}, sk) : (set[slot] || null);
+      };
+      return { atkSpd: set.atkSpd, auto: set.auto, q: pick('q'), e: pick('e'), r: pick('r') };
     }
 
     // Saldırı hızı: taban + ATK ölçeği, class/ırk/item attackSpeed yüzdesiyle.
@@ -2435,6 +2479,14 @@
         const raw = this.clampToWorld(pcx + Math.cos(angle) * dist, pcy + Math.sin(angle) * dist);
         const px = raw.x, py = raw.y;
         const scale = base.elite ? 1 : 1;
+        // --- Zorluk ölçeği: canavarlar oyuncu seviyesine göre de büyür ---
+        // (Tek vuruşta kesilmesinler: can x2.0, hasar x1.6, seviye başına +%16)
+        const lvl = Math.max(1, Number(this.playerData && this.playerData.level) || 1);
+        const lvlMult = 1 + (lvl - 1) * 0.16;
+        const hpMult = 2.0 * lvlMult;
+        const dmgMult = 1.6 * lvlMult;
+        const hp = Math.round((Number(base.hp) || 200) * scale * hpMult);
+        const dmg = Math.round((Number(base.damage) || 24) * dmgMult);
         this.monsters.push({
           id: Math.random().toString(36).substr(2, 9),
           kind: base.kind,
@@ -2446,8 +2498,8 @@
           elite: !!base.elite,
           ability: base.ability || null,
           statusOnHit: base.status || null,
-          hp: Math.round(base.hp * scale), maxHp: Math.round(base.hp * scale),
-          speed: base.speed || 130, damage: base.damage || 24,
+          hp: hp, maxHp: hp,
+          speed: base.speed || 130, damage: dmg,
           radius: base.radius || 16, exp: base.exp || 45, gold: base.gold || 6,
           x: px, y: py, z: 0,
           patrolCenterX: px, patrolCenterY: py,
@@ -2459,7 +2511,7 @@
           skills: Array.isArray(base.skills) ? base.skills : null,
           skillCds: (Array.isArray(base.skills) ? base.skills : []).map((s) => (Number(s.cd) || 6) * (0.4 + Math.random() * 0.6)),
           cast: null, aggroRange: Number(base.aggroRange) || 280, aggroTimer: 0,
-          hpGhost: Math.round(base.hp * scale), walkPhase: Math.random() * 6, deathTimer: 0, dead: false
+          hpGhost: hp, walkPhase: Math.random() * 6, deathTimer: 0, dead: false
         });
       }
     }
@@ -2715,8 +2767,25 @@
       this.player.dashCooldownTimer = this.player.dashCooldown;
       this.sound.play('dash');
 
-      const dx = this.mouse.worldX - this.player.x;
-      const dy = this.mouse.worldY - this.player.y;
+      // Dash yönü: o an bastığımız hareket tuşları (yürüdüğümüz yön).
+      // Tuş yoksa fareye doğru gider. Böylece geriye/yanlara da dash atılabilir.
+      let mvx = 0, mvy = 0;
+      if (this.keys['w'] || this.keys['arrowup']) mvy -= 1;
+      if (this.keys['s'] || this.keys['arrowdown']) mvy += 1;
+      if (this.keys['a'] || this.keys['arrowleft']) mvx -= 1;
+      if (this.keys['d'] || this.keys['arrowright']) mvx += 1;
+
+      let dx, dy;
+      if (mvx !== 0 || mvy !== 0) {
+        const ml = Math.hypot(mvx, mvy) || 1;
+        const nx = mvx / ml, ny = mvy / ml;
+        // Yürüme koduyla aynı izometrik dönüşüm: dash tam olarak gittiğimiz yöne olsun.
+        dx = ny * 0.707 + nx * 0.707;
+        dy = ny * 0.707 - nx * 0.707;
+      } else {
+        dx = this.mouse.worldX - this.player.x;
+        dy = this.mouse.worldY - this.player.y;
+      }
       const len = Math.hypot(dx, dy) || 1;
       const dashSpeed = 680;
       this.player.dashVx = (dx / len) * dashSpeed;
@@ -2891,6 +2960,31 @@
       return Math.max(1, Math.round(this.skillPowerBonus(sk) * (Number(sk.power) || 1)));
     }
 
+    // Claude'un görsel kütüphanesi (travel_visuals.js) yüklüyse, yeteneğin
+    // mekaniği çalışırken hazır efekti de oynat. Görsel yoksa sessizce atlanır.
+    emitSkillVisual(sk, kind, aim) {
+      if (!sk || !sk.visual || typeof this.castVisual !== 'function' || !this.player) return;
+      const P = this.player;
+      let wx = P.x, wy = P.y, follow = false;
+      if (kind === 'meteor' || kind === 'ground' || kind === 'vortex') {
+        const tp = this.castTargetPoint(sk);
+        wx = tp.x; wy = tp.y;
+      } else if (kind === 'channel' || kind === 'orbit' || kind === 'arc') {
+        // Yakın dövüş yayları oyuncunun etrafında döner: efekti oyuncuya bağla
+        // (sabit noktada kalırsa karakter hareket edince kılıç geride kalıyor).
+        follow = true;
+      }
+      const opts = {
+        color: (this.skin && this.skin.primary) || sk.color || undefined,
+        radius: Number(sk.visualRadius || sk.radius) || undefined,
+        angle: aim,
+        follow,
+        // Kılıç etrafında ~3 tur atsın (spinSlash bu değeri kullanır).
+        turns: kind === 'arc' ? 3 : undefined
+      };
+      try { this.castVisual(sk.visual, wx, wy, opts); } catch (e) { /* görsel isteğe bağlı */ }
+    }
+
     showSkillPreview(key, sk) {
       const aim = this.skillAim();
       const color = (sk && sk.color) || this.getArchetypeColor();
@@ -2945,6 +3039,15 @@
       const radius = Number(sk.radius) || 80;
       const kind = sk.kind;
       const crit = Math.random() < (st.critChance || 0);
+      // Görsel eklenti: mekanik çalışırken hazır efekti göster.
+      this.emitSkillVisual(sk, kind, aim);
+
+      // Buff veren skill: stat'ı süre boyunca yükseltir (ATK / büyü / hız...).
+      if (sk.buff) {
+        this.addBuff(Object.assign({}, sk.buff, {
+          duration: Number(sk.buff.duration) || Number(sk.duration) || 8,
+        }), color, sk.name);
+      }
 
       // Kanal yeteneği (Warrior E - Whirlwind): tuş basılı tutuldukça döner.
       if (kind === 'channel') {
@@ -3022,6 +3125,10 @@
       if (kind === 'arc') {
         this.sound.play('slash');
         this.addTrauma(0.28);
+        // Silah savurma animasyonu: kılıç karakterle birlikte savrulsun.
+        this.player.attackAnimTimer = 0.22;
+        this.player.swingDir *= -1;
+        this.player.facingAngle = aim;
         const arc = Number(sk.arc) || 1.0;
         this.slashes.push({ x: this.player.x, y: this.player.y, angle: aim, radius: radius, arc, duration: 0.22, timer: 0.22, color, dir: this.player.swingDir });
         this.hitCone(this.player.x, this.player.y, radius, arc, aim, dmg, sk, crit);
@@ -3237,7 +3344,8 @@
     scheduleRespawn(monster) {
       const def = this.biomeDef || {};
       const spawn = def.spawn || {};
-      const max = Math.max(4, Number(spawn.max) || 9);
+      // Aynı anda haritada daha az canavar: seyrek ama güçlü karşılaşmalar.
+      const max = Math.max(3, Math.round((Number(spawn.max) || 7) * 0.6));
       const delay = Math.max(3000, (Number(spawn.respawn) || 9) * 1000);
       const id = monster && monster.id;
       this.later(() => {
@@ -3264,6 +3372,9 @@
       if (this.downed || this._down) return;
       const st = this.playerData.stats || (this.playerData.stats = {});
       let dmg = Math.max(1, Math.round(Number(amount) || 0));
+      // Savunma buff'ı gelen hasarı azaltır (en fazla %75).
+      const defBuff = Math.min(0.75, Math.max(0, this.buffPct("defense") + this.buffPct("resistance")));
+      if (defBuff > 0) dmg = Math.max(1, Math.round(dmg * (1 - defBuff)));
       if (this.playerShield > 0 && this.playerShieldTimer > 0) {
         const absorbed = Math.min(this.playerShield, dmg);
         this.playerShield -= absorbed;
@@ -3361,6 +3472,7 @@
         if (s.timer <= 0) delete ps[key];
       }
       this.playerSlowMult = slowMult;
+      this.updateBuffs(dt);
       if (this.playerShieldTimer > 0) {
         this.playerShieldTimer -= dt;
         if (this.playerShieldTimer <= 0) {
@@ -3575,8 +3687,56 @@
       });
     }
 
+    // ---- Buff sistemi (ARPG) -------------------------------------------
+    // Skill tanımındaki `buff` alanı: { stat: "attack"|"magic"|"heal"|"defense"|"speed", pct: 30 }
+    // Aynı stat birden çok buff'ta toplanır. Süre bitince kendiliğinden düşer.
+    addBuff(buff, color, fallbackName) {
+      if (!buff) return null;
+      const stat = String(buff.stat || "attack").toLowerCase();
+      const pct = Number(buff.pct);
+      if (!Number.isFinite(pct) || pct === 0) return null;
+      const duration = Math.max(0.5, Number(buff.duration) || 8);
+      const entry = {
+        stat, pct, duration, timer: duration,
+        name: buff.name || fallbackName || stat.toUpperCase(),
+        color: buff.color || color || "#80deea",
+      };
+      this.playerBuffs.push(entry);
+      this.spawnDamageNumber(this.player.x, this.player.y,
+        `${pct > 0 ? "+" : ""}${Math.round(pct)}% ${BUFF_LABEL[stat] || stat.toUpperCase()}`,
+        entry.color);
+      this.aoeEffects.push({ x: this.player.x, y: this.player.y, radius: 44, duration: 0.55, timer: 0.55, color: entry.color, ring: true });
+      if (this.onBuffChange) this.onBuffChange(this.playerBuffs.slice());
+      return entry;
+    }
+
+    // Aktif buff'ların toplam yüzdesi (ör. attack -> 0.3 = +%30).
+    buffPct(stat) {
+      const want = String(stat || "").toLowerCase();
+      let total = 0;
+      for (const b of this.playerBuffs || []) if (b && b.stat === want) total += (Number(b.pct) || 0) / 100;
+      return total;
+    }
+
+    updateBuffs(dt) {
+      if (!this.playerBuffs || !this.playerBuffs.length) return;
+      let changed = false;
+      for (const b of this.playerBuffs) {
+        if (!b) continue;
+        b.timer -= dt;
+        if (b.timer <= 0) changed = true;
+      }
+      if (changed) {
+        this.playerBuffs = this.playerBuffs.filter((b) => b && b.timer > 0);
+        if (this.onBuffChange) this.onBuffChange(this.playerBuffs.slice());
+      }
+    }
+
     applyDamageToMonster(monster, damage, isCrit, hitAngle, knockbackStrength = 0) {
       if (monster.dead) return;
+      // Buff'lı hasar: ATK buff'ı bütün giden hasarı çarpar.
+      const atkBuff = this.buffPct("attack") + this.buffPct("damage");
+      if (atkBuff) damage = Math.max(1, Math.round(damage * (1 + atkBuff)));
       monster.hp -= damage;
       monster.flashTimer = 0.12;
       monster.state = 'CHASE';
@@ -3823,8 +3983,9 @@
         const nx = moveX / len, ny = moveY / len;
         const isoMoveX = ny * 0.707 + nx * 0.707;
         const isoMoveY = ny * 0.707 - nx * 0.707;
-        P.vx = isoMoveX * P.baseSpeed * (this.playerSlowMult || 1) * (P.channel ? 0.45 : 1);
-        P.vy = isoMoveY * P.baseSpeed * (this.playerSlowMult || 1) * (P.channel ? 0.45 : 1);
+        const buffSpeed = 1 + this.buffPct("speed");
+        P.vx = isoMoveX * P.baseSpeed * (this.playerSlowMult || 1) * buffSpeed * (P.channel ? 0.45 : 1);
+        P.vy = isoMoveY * P.baseSpeed * (this.playerSlowMult || 1) * buffSpeed * (P.channel ? 0.45 : 1);
       } else { P.vx = 0; P.vy = 0; }
 
       // 3. Dash
@@ -4088,6 +4249,9 @@
           }
         }
         m.walkPhase += dt * (walking ? 9 : 2.2);
+        // Görsel çizerler (aslan, iskelet vb.) yürüme animasyonunu bu bayrakla
+        // açar; canavarlar konumu doğrudan güncellediği için vx/vy hep 0 kalıyordu.
+        m.moving = walking;
         if (m.attackTimer > 0) m.attackTimer -= dt;
       });
 
@@ -6021,25 +6185,8 @@
       ctx.fillStyle = '#80deea'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText(nm, 0, -62 - lift);
 
-      // Can barı (karakterin üstünde, isim plakasının biraz yukarısında)
-      const st = this.playerData.stats || {};
-      const maxHp = Math.max(1, st.maxHp || 1);
-      const hp = clamp(st.currentHp != null ? st.currentHp : maxHp, 0, maxHp);
-      const frac = hp / maxHp;
-      const bw = 52, bh = 7, bx = -bw / 2, by = -84 - lift;
-      ctx.fillStyle = 'rgba(6,14,18,0.78)';
-      rr(ctx, bx - 2, by - 2, bw + 4, bh + 4, 4); ctx.fill();
-      ctx.fillStyle = 'rgba(0,0,0,0.5)';
-      rr(ctx, bx, by, bw, bh, 3); ctx.fill();
-      if (frac > 0) {
-        const hg = ctx.createLinearGradient(bx, 0, bx + bw, 0);
-        hg.addColorStop(0, frac > 0.35 ? '#2fbf4a' : '#d32f2f');
-        hg.addColorStop(1, frac > 0.35 ? '#8be08f' : '#ff8a80');
-        ctx.fillStyle = hg;
-        rr(ctx, bx, by, Math.max(2, bw * frac), bh, 3); ctx.fill();
-      }
-      ctx.strokeStyle = 'rgba(255,255,255,0.22)'; ctx.lineWidth = 1;
-      rr(ctx, bx, by, bw, bh, 3); ctx.stroke();
+      // Kendi can barı artık çizilmiyor: can, alttaki skill bar'ında gösterilir.
+      // (Diğer oyuncuların can barı isim plakalarında kalmaya devam eder.)
 
       ctx.restore();
     }
@@ -7387,6 +7534,9 @@
       if (me.character && me.character !== this.playerData.class) this.setPlayerClass(me.character);
       // Mana rengi (görsel efekt) sunucudan gelir.
       if (me.activeSkin !== undefined) this.setSkin(me.activeSkin);
+      // Travel yetenek kuşanımı (Q/E/R) ve öğrenilen havuz.
+      if (me.travelLoadout !== undefined) this.playerData.travelLoadout = Object.assign({}, me.travelLoadout || {});
+      if (Array.isArray(me.travelSkills)) this.playerData.travelSkills = me.travelSkills.slice();
       const stats = this.playerData.stats || (this.playerData.stats = {});
       stats.attack = me.attack != null ? me.attack : stats.attack;
       stats.critChance = (me.critChance || 0) / 100;

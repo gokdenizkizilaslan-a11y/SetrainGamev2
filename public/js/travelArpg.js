@@ -5,7 +5,7 @@
   const S = {
     root: null, canvas: null, engine: null, map: null, room: null,
     spawn: { x: 0, y: 0 }, ready: false, active: false,
-    others: {}, hudTimer: 0, poiSig: "", pendingDungeon: null, ro: null,
+    others: {}, hudTimer: 0, poiSig: "", pendingDungeon: null, ro: null, skillSig: "", statPanelSig: "",
     ownedSkins: [], activeSkinId: null,
     stats: null, statMapId: null,
   };
@@ -49,6 +49,9 @@
       name: (me && me.name) || "Adventurer",
       class: me ? me.character : "warrior",
       level: me ? me.level || 1 : 1,
+      // Travel yetenek kuşanımı (Q/E/R) ve öğrenilen havuz.
+      travelSkills: me && Array.isArray(me.travelSkills) ? me.travelSkills.slice() : [],
+      travelLoadout: me && me.travelLoadout ? Object.assign({}, me.travelLoadout) : {},
       stats: {
         attack: me ? me.attack || 10 : 20,
         critChance: me ? (me.critChance || 0) / 100 : 0.1,
@@ -115,7 +118,10 @@
     const st = document.createElement("style");
     st.id = "tv-arpg-style";
     st.textContent = `
-      .tv-shell { position: relative; width: 100%; height: 100%; overflow: hidden; }
+      .tv-shell { position: relative; width: 100%; height: 100%; overflow: hidden;
+        --font-ui: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+        --font-display: "Cinzel", Georgia, "Times New Roman", serif;
+        font-family: var(--font-ui); }
       .tv-canvas { display: block; width: 100%; height: 100%; touch-action: none; background: #16242b; }
       .tv-mobile { display: none; }
       @media (hover: none), (pointer: coarse) {
@@ -133,12 +139,12 @@
         background: rgba(28,22,14,0.7); color: #ffe6a8; font: 700 13px system-ui, sans-serif; touch-action: none; }
       .tv-mbtn--atk { grid-column: 3; width: 64px; height: 64px; background: rgba(150,40,30,0.75); }
       .tv-mbtn.is-cooling { opacity: 0.45; }
-      .tv-controls { position: absolute; top: 54px; right: 12px; display: flex; gap: 6px; z-index: 6; }
+      .tv-controls { position: absolute; top: 12px; right: 12px; display: flex; gap: 6px; z-index: 6; }
       .tv-ctl { width: 34px; height: 34px; border-radius: 8px; border: 1px solid rgba(201,147,63,0.7);
         background: rgba(20,16,10,0.72); color: #ffe6a8; font: 700 16px/1 system-ui, sans-serif; cursor: pointer; }
       .tv-ctl:hover { background: rgba(40,30,16,0.92); }
       /* Hızlı tüketilebilir çubuğu (1-5 tuşları) */
-      .tv-potions { position: absolute; top: 96px; right: 12px; display: flex; flex-direction: column;
+      .tv-potions { position: absolute; top: 54px; right: 12px; display: flex; flex-direction: column;
         align-items: flex-end; gap: 6px; z-index: 7; pointer-events: auto; }
       .tv-potions.hidden { display: none; }
       .tv-potion { display: flex; align-items: center; gap: 7px; padding: 5px 9px 5px 5px; cursor: pointer;
@@ -149,6 +155,74 @@
         border-radius: 5px; background: rgba(232,196,130,0.2); border: 1px solid rgba(232,196,130,0.45);
         color: #ffe6a8; font: 700 11px/1 system-ui, sans-serif; }
       .tv-potion .qt { color: #bfa77f; font-weight: 700; }
+      /* LoL tarzı skill bar: alt orta, kompakt ve okunur */
+      .tv-skillbar { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%);
+        display: flex; align-items: flex-end; gap: 7px; padding: 7px 9px; border-radius: 13px; z-index: 8;
+        pointer-events: auto; background: linear-gradient(180deg, rgba(18,14,10,0.74), rgba(8,7,6,0.9));
+        border: 1px solid rgba(201,147,63,0.32); box-shadow: 0 10px 26px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.05); }
+      .tv-sb { position: relative; width: 54px; height: 54px; padding: 0; border-radius: 12px; cursor: pointer; overflow: hidden;
+        border: 1px solid rgba(232,196,130,0.34); color: #ffeccf;
+        background: radial-gradient(circle at 50% 116%, var(--sk, #3a3226), rgba(12,10,8,0.97) 66%), #0d0b09;
+        box-shadow: inset 0 -10px 16px -10px var(--sk, #3a3226), 0 3px 10px rgba(0,0,0,0.45);
+        transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease; }
+      .tv-sb:hover { transform: translateY(-2px); border-color: rgba(255,214,120,0.75); box-shadow: 0 7px 18px rgba(0,0,0,0.55), inset 0 -10px 16px -10px var(--sk, #3a3226); }
+      .tv-sb__ic { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+        font: 700 21px/1 "Segoe UI Symbol", var(--font-display); text-shadow: 0 2px 7px rgba(0,0,0,0.8); pointer-events: none; }
+      .tv-sb__key { position: absolute; top: 3px; left: 3px; padding: 1px 4px; border-radius: 4px;
+        background: rgba(6,5,4,0.6); border: 1px solid rgba(232,196,130,0.34);
+        font: 800 8.5px/1 var(--font-ui); letter-spacing: .06em; color: #ffe6a8; pointer-events: none; }
+      .tv-sb__name { display: none; }
+      .tv-sb__cd { position: absolute; inset: 0; display: none; align-items: center; justify-content: center;
+        background: rgba(5,4,8,0.76); color: #fff3d4; font: 700 15px/1 var(--font-display); pointer-events: none;
+        text-shadow: 0 2px 6px #000; }
+      .tv-sb.is-cd .tv-sb__cd { display: flex; }
+      .tv-sb__bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: linear-gradient(90deg,#ffd54f,#ffb74d);
+        transform-origin: left center; transform: scaleX(0); pointer-events: none; }
+      .tv-sb.is-auto { width: 46px; height: 46px; border-radius: 50%; border-color: rgba(224,74,60,0.55); }
+      .tv-sb.is-auto .tv-sb__name { display: none; }
+      .tv-sb.is-off { opacity: 0.4; }
+      /* Sol alt/orta: anlık stat paneli */
+      .tv-statpanel { position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+        display: flex; flex-direction: column; gap: 5px; z-index: 6; pointer-events: none; user-select: none; }
+      .tv-strow { display: flex; align-items: center; gap: 8px; min-width: 128px; padding: 4px 9px;
+        border-radius: 9px; border: 1px solid rgba(201,147,63,0.2);
+        background: linear-gradient(100deg, rgba(14,11,9,0.86), rgba(14,11,9,0.5));
+        box-shadow: 0 6px 16px rgba(0,0,0,0.32); backdrop-filter: blur(2px); }
+      .tv-strow .ic { width: 15px; text-align: center; font-size: 12px; color: #e8c482; opacity: .85; }
+      .tv-strow .lb { flex: 1; font: 600 9.5px/1 "Inter", system-ui, sans-serif; letter-spacing: .14em;
+        text-transform: uppercase; color: #a5906f; }
+      .tv-strow .vl { font: 700 12.5px/1 "Cinzel", Georgia, serif; color: #f8ecd4; font-variant-numeric: tabular-nums; }
+      .tv-strow.is-buff { border-color: rgba(128,222,234,0.45); }
+      .tv-strow.is-buff .vl { color: #a8ecff; }
+      .tv-buffbar { height: 2px; border-radius: 2px; background: rgba(128,222,234,0.25); overflow: hidden; margin: 2px 0 0; }
+      .tv-buffbar i { display: block; height: 100%; background: #80deea; transform-origin: left center; }
+      /* Can paneli (skill bar'ın solunda) */
+      .tv-vital { display: flex; flex-direction: column; justify-content: center; gap: 3px;
+        width: 124px; padding: 0 2px 0 0; margin-right: 3px; border-right: 1px solid rgba(201,147,63,0.22); }
+      .tv-vital__hearts { font: 700 11px/1 system-ui, sans-serif; letter-spacing: 2px; color: #ff6b6b; text-shadow: 0 1px 3px #000; }
+      .tv-vital__hearts .e { color: #5a4a3a; }
+      .tv-vital__bar { position: relative; height: 9px; border-radius: 5px; overflow: hidden;
+        background: rgba(0,0,0,0.62); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.09); }
+      .tv-vital__fill { position: absolute; inset: 0;
+        background: linear-gradient(90deg, #8e2b23, #e04a3c 45%, #ff8a65);
+        transform-origin: left center; transition: transform .16s linear; }
+      .tv-vital__num { font: 700 10px/1 "Inter", system-ui, sans-serif; color: #ffd9c8;
+        letter-spacing: .04em; text-align: right; font-variant-numeric: tabular-nums; }
+      .tv-sb.has-ic { background-size: cover; background-position: center; background-repeat: no-repeat; }
+      .tv-sb.has-ic .tv-sb__ic { display: none; }
+      /* Etkileşim ipucu skill bar'ın üstünde kalsın */
+      .tv-shell .tv-prompt { bottom: 96px; }
+      /* Bildirim balonu: üst orta (sağ üstteki iksir çubuğuyla çakışmasın) */
+      .tv-shell .tv-toast { top: 12px; left: 50%; right: auto; transform: translateX(-50%);
+        border-radius: 11px; font: 600 12px/1.35 var(--font-ui); letter-spacing: .02em; }
+      @media (hover: none), (pointer: coarse) {
+        .tv-statpanel { display: none; }
+        .tv-skillbar { bottom: 92px; gap: 6px; padding: 6px 7px; }
+        .tv-sb { width: 46px; height: 46px; }
+        .tv-sb__name { display: none; }
+        .tv-sb.is-auto { width: 40px; height: 40px; }
+        .tv-vital { width: 84px; }
+      }
       @media (hover: none), (pointer: coarse) {
         .tv-potions { top: auto; bottom: 150px; right: 12px; }
         .tv-potion .k { display: none; }
@@ -204,6 +278,64 @@
       .tv-roll-box .rn { font: 800 22px Cinzel, Georgia, serif; text-shadow: 0 2px 12px rgba(0,0,0,0.65); }
       .tv-roll-box .rr { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.9; }
       @keyframes tv-roll-pulse { from { transform: scale(0.96); } to { transform: scale(1.04); } }
+      /* ---- Yetenek paneli (Q/E/R + ogrenme) ---- */
+      .tv-skill-panel { position: absolute; inset: 0; z-index: 21; display: none; flex-direction: column;
+        align-items: center; padding: 22px 14px 28px; overflow-y: auto; color: #f2e6cf;
+        font: 13px/1.5 system-ui, sans-serif; background: radial-gradient(120% 120% at 50% 32%, rgba(42,30,14,0.7), rgba(6,5,9,0.9));
+        backdrop-filter: blur(3px); }
+      .tv-skill-panel.open { display: flex; }
+      .tv-skill-panel > * { width: min(430px, 96%); }
+      .tv-skill-head { display: flex; align-items: center; justify-content: space-between; gap: 10px;
+        padding-bottom: 8px; border-bottom: 1px solid rgba(214,178,106,0.28); }
+      .tv-skill-head h3 { margin: 0; font: 800 19px Cinzel, Georgia, serif; letter-spacing: 1.2px; text-transform: uppercase;
+        background: linear-gradient(180deg,#fbf0d2,#d8ab5c 60%,#9c7233);
+        -webkit-background-clip: text; background-clip: text; color: transparent; }
+      .tv-skill-sub { margin: 9px 0 12px; text-align: center; font-size: 12px; color: #b9a98f; }
+      .tv-skill-points { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 12px;
+        padding: 7px 12px; border-radius: 10px; border: 1px solid rgba(214,178,106,0.3);
+        background: rgba(255,236,196,0.05); color: #e9d4a6; font-size: 12.5px; }
+      .tv-skill-points .ico { color: #ffd479; }
+      .tv-skill-points b { color: #ffe6b8; }
+      .tv-skill-points.is-empty { opacity: 0.7; }
+      .tv-skill-slots { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
+      .tv-skill-slot { display: flex; align-items: center; gap: 10px; width: 100%; padding: 9px 12px; cursor: pointer;
+        border-radius: 11px; border: 1px solid rgba(214,178,106,0.26); background: rgba(20,16,12,0.72);
+        color: #f2e3c6; font: 600 13px system-ui, sans-serif; text-align: left; transition: background .14s ease, border-color .14s ease; }
+      .tv-skill-slot:hover { background: rgba(52,38,20,0.85); }
+      .tv-skill-slot.is-sel { border-color: var(--sk, #e8c482); box-shadow: 0 0 0 1px var(--sk, #e8c482) inset, 0 0 18px rgba(232,196,130,0.16); }
+      .tv-skill-slot .k { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px;
+        border-radius: 7px; background: rgba(232,196,130,0.16); border: 1px solid rgba(232,196,130,0.4);
+        color: #ffe6a8; font: 800 12px system-ui, sans-serif; }
+      .tv-skill-slot .nm { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .tv-skill-slot .cd { font-size: 11px; color: #a89a80; }
+      .tv-skill-list-head { font: 700 11px system-ui, sans-serif; letter-spacing: 2px; text-transform: uppercase;
+        color: #a4886a; margin: 0 0 8px; }
+      .tv-skill-list { display: flex; flex-direction: column; gap: 7px; }
+      .tv-skill-card { display: flex; align-items: flex-start; gap: 10px; padding: 9px 11px; border-radius: 11px;
+        border: 1px solid rgba(214,178,106,0.18); background: rgba(18,14,11,0.72); cursor: pointer;
+        transition: background .14s ease, border-color .14s ease; }
+      .tv-skill-card:hover { background: rgba(44,32,18,0.86); border-color: rgba(214,178,106,0.4); }
+      .tv-skill-card.is-eq { border-color: var(--sk, #e8c482); box-shadow: 0 0 14px rgba(232,196,130,0.12); }
+      .tv-skill-card.is-locked { opacity: 0.68; }
+      .tv-skill-card .ic { flex: 0 0 30px; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+        border-radius: 9px; background: rgba(255,255,255,0.05); border: 1px solid var(--sk, #e8c482); color: var(--sk, #e8c482); font-size: 15px; }
+      .tv-skill-card .body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+      .tv-skill-card .nm { font: 700 13px system-ui, sans-serif; color: #f7ecd4; }
+      .tv-skill-card .meta { font-size: 10.5px; letter-spacing: 0.3px; color: #b7a077; text-transform: uppercase; }
+      .tv-skill-card .ds { font-size: 11.5px; color: #9c917f; line-height: 1.4; }
+      .tv-skill-card .act { flex: 0 0 auto; display: flex; align-items: center; }
+      .tv-skill-card .tag { font: 700 10px system-ui, sans-serif; letter-spacing: 0.8px; text-transform: uppercase;
+        padding: 4px 7px; border-radius: 6px; border: 1px solid rgba(214,178,106,0.3); color: #bfa77f; }
+      .tv-skill-card .tag--eq { color: #ffe6a8; border-color: rgba(255,224,160,0.6); background: rgba(255,224,160,0.08); }
+      .tv-skill-card .tag--own { color: #9fd8b0; border-color: rgba(159,216,176,0.35); }
+      .tv-skill-learn { display: inline-flex; align-items: center; gap: 4px; padding: 5px 9px; border-radius: 8px; cursor: pointer;
+        border: 1px solid rgba(255,224,160,0.55); background: linear-gradient(180deg,#5a3f18,#2e1f0c); color: #ffecc4;
+        font: 700 11px system-ui, sans-serif; }
+      .tv-skill-learn:hover:not(:disabled) { background: linear-gradient(180deg,#735022,#3b2810); }
+      .tv-skill-learn:disabled { opacity: 0.42; cursor: default; }
+      .tv-skill-learn .dot { font-style: normal; opacity: 0.7; }
+      .tv-skill-empty { text-align: center; color: #9c8f78; font-size: 12.5px; padding: 14px 0; }
+      .tv-skill-hint { margin-top: 12px; text-align: center; font-size: 11px; color: #8f7c68; }
       /* ---- Yere dusme ekrani ---- */
       .tv-down { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; z-index: 40;
         pointer-events: auto; opacity: 0; transition: opacity .26s ease;
@@ -292,34 +424,31 @@
     injectStyles();
     if (S.engine) { try { S.engine.destroy(); } catch (e) {} S.engine = null; }
     S.root = root;
+    S.skillSig = "";
+    S.statPanelSig = "";
     root.innerHTML = `
       <div class="tv-shell">
         <canvas class="tv-canvas"></canvas>
-        <div class="tv-top">
-          <div class="tv-title" id="tv-title">Travel</div>
-          <div class="tv-stats" id="tv-stats"></div>
-        </div>
         <div class="tv-controls">
-          <button type="button" class="tv-ctl" id="tv-mana" title="Mana hue">&#10022;</button>
+          <button type="button" class="tv-ctl" id="tv-skills" title="Skills">&#9876;</button>
           <button type="button" class="tv-ctl" id="tv-zoom-in" title="Zoom in">+</button>
           <button type="button" class="tv-ctl" id="tv-zoom-out" title="Zoom out">&minus;</button>
           <button type="button" class="tv-ctl" id="tv-full" title="Fullscreen">&#x26F6;</button>
         </div>
         <div class="tv-potions hidden" id="tv-potions"></div>
+        <div class="tv-statpanel" id="tv-statpanel"></div>
+        <div class="tv-skillbar" id="tv-skillbar"></div>
         <div class="tv-prompt hidden" id="tv-prompt"></div>
         <div class="tv-toast hidden" id="tv-toast"></div>
-        <div class="tv-mana-panel" id="tv-mana-panel">
-          <div class="tv-mana-head"><h3>Mana Hue</h3><button type="button" class="tv-mana-btn tv-mana-x" id="tv-mana-close">&times;</button></div>
-          <div class="tv-mana-sub">One hue burns at a time. It paints your skills and cast effects. Roll a new one and the old hue fades away.</div>
-          <div class="tv-mana-grid" id="tv-mana-grid"></div>
-          <div class="tv-mana-actions">
-            <button type="button" class="tv-mana-btn tv-mana-roll" id="tv-mana-roll">Roll a new hue (50g)</button>
-          </div>
+        <div class="tv-skill-panel" id="tv-skill-panel">
+          <div class="tv-skill-head"><h3>Skill Loadout</h3><button type="button" class="tv-mana-btn tv-mana-x" id="tv-skill-close">&times;</button></div>
+          <div class="tv-skill-sub">Pick a slot, then choose a skill from your class. Learn new skills with travel points.</div>
+          <div class="tv-skill-points" id="tv-skill-points"></div>
+          <div class="tv-skill-slots" id="tv-skill-slots"></div>
+          <div class="tv-skill-list-head">Class Skills</div>
+          <div class="tv-skill-list" id="tv-skill-list"></div>
+          <div class="tv-skill-hint">Click the same skill again to restore the default.</div>
         </div>
-        <div class="tv-roll-stage" id="tv-roll-stage">
-          <div class="tv-roll-box" id="tv-roll-box"><div class="rn">...</div><div class="rr"></div></div>
-        </div>
-        <div class="tv-help">WASD: yuru &middot; Sol tik: saldiri &middot; Space: dash &middot; Q/E/R: skill &middot; E: etkilesim &middot; 1-5: iksir</div>
         <div class="tv-mobile" id="tv-mobile">
           <div class="tv-stick" id="tv-stick"><div class="tv-knob" id="tv-knob"></div></div>
           <div class="tv-buttons">
@@ -347,12 +476,11 @@
     if (zi) zi.addEventListener("click", () => { if (S.engine) S.engine.zoomTarget = Math.min(2.2, (S.engine.zoomTarget || 1) + 0.15); });
     if (zo) zo.addEventListener("click", () => { if (S.engine) S.engine.zoomTarget = Math.max(0.65, (S.engine.zoomTarget || 1) - 0.15); });
     if (fs) fs.addEventListener("click", toggleFullscreen);
-    const manaBtn = root.querySelector("#tv-mana");
-    if (manaBtn) manaBtn.addEventListener("click", () => toggleManaPanel());
-    const manaClose = root.querySelector("#tv-mana-close");
-    if (manaClose) manaClose.addEventListener("click", () => toggleManaPanel(false));
-    const manaRoll = root.querySelector("#tv-mana-roll");
-    if (manaRoll) manaRoll.addEventListener("click", () => requestRoll());
+    const skillsBtn = root.querySelector("#tv-skills");
+    if (skillsBtn) skillsBtn.addEventListener("click", () => toggleSkillPanel());
+    const skillsClose = root.querySelector("#tv-skill-close");
+    if (skillsClose) skillsClose.addEventListener("click", () => toggleSkillPanel(false));
+    bindSkillPanel();
     // Tüketilebilir çubuğu: tıklayınca kullan (1-5 tuşları da aynı işi yapar).
     const potions = root.querySelector("#tv-potions");
     if (potions) {
@@ -364,6 +492,36 @@
       });
     }
     bindUseKeys();
+    const skillbar = root.querySelector("#tv-skillbar");
+    if (skillbar) {
+      const sbOf = (e) => (e.target && e.target.closest ? e.target.closest("[data-sb]") : null);
+      // Kanal yetenekleri (E) basılı tutmayla çalışır: pointerdown/up ile yönetilir.
+      skillbar.addEventListener("pointerdown", (e) => {
+        const b = sbOf(e);
+        if (!b || !S.engine) return;
+        const key = b.getAttribute("data-sb");
+        if (b.getAttribute("data-kind") !== "skill") return;
+        e.preventDefault();
+        S.engine.keys[key] = true;
+        S.engine.triggerSkill(key);
+      });
+      const release = (e) => {
+        const b = sbOf(e);
+        if (!b || !S.engine) return;
+        const key = b.getAttribute("data-sb");
+        if (b.getAttribute("data-kind") === "skill") S.engine.keys[key] = false;
+      };
+      skillbar.addEventListener("pointerup", release);
+      skillbar.addEventListener("pointerleave", release);
+      skillbar.addEventListener("pointercancel", release);
+      skillbar.addEventListener("click", (e) => {
+        const b = sbOf(e);
+        if (!b || !S.engine) return;
+        const key = b.getAttribute("data-sb");
+        if (key === "auto") { e.preventDefault(); attackNearest(); }
+        else if (key === "dash") { e.preventDefault(); S.engine.triggerDash(); }
+      });
+    }
     if (S.map) boot();
   }
 
@@ -418,7 +576,8 @@
       tileSize: 64,
       onInteract: handleInteract,
       onMove: (pos) => { if (S.active && typeof socket !== "undefined") socket.emit("travel:pos", pos); },
-      onKill: (m) => { if (S.active && typeof socket !== "undefined") socket.emit("travel:kill", { kind: m && m.kind, exp: m && m.exp }); },
+      // Görsel eklenti canavar `kind`ını değiştirir; ödül için orijinali yolla.
+      onKill: (m) => { if (S.active && typeof socket !== "undefined") socket.emit("travel:kill", { kind: m && (m.baseKind || m.kind), exp: m && m.exp }); },
       onHpChange: (hp) => { if (typeof socket !== "undefined" && S.engine && S.engine._hpFromServer) socket.emit("travel:hp", { hp }); },
       onDown: () => {
         // Sunucuya bildir; sunucu "downed" (yere düşme) ya da "fallen" (ölüm) onaylar.
@@ -511,6 +670,7 @@
     if (!S.root || !S.canvas || !S.root.contains(S.canvas)) return;
     if (!S.engine) { if (S.map) boot(); return; }
     applyRoom(room);
+    if (S.skillPanelOpen) renderSkillPanel();
   }
 
   function open() {
@@ -608,89 +768,6 @@
     return (me && me.activeSkin) || null;
   }
 
-  function toggleManaPanel(force) {
-    if (!S.root) return;
-    const panel = S.root.querySelector("#tv-mana-panel");
-    if (!panel) return;
-    const open = force === undefined ? !panel.classList.contains("open") : !!force;
-    if (open) { renderManaPanel(); panel.classList.add("open"); }
-    else panel.classList.remove("open");
-  }
-
-  function renderManaPanel() {
-    if (!S.root) return;
-    const grid = S.root.querySelector("#tv-mana-grid");
-    if (!grid) return;
-    const cat = skinCatalog();
-    const active = activeSkinId();
-    const cur = active ? (cat || {})[active] : null;
-    const rollBtn = S.root.querySelector("#tv-mana-roll");
-    const me = meFrom(S.room);
-    const gold = me && me.gold != null ? Math.floor(me.gold) : 0;
-    if (!cur) {
-      grid.innerHTML = "<div class='tv-mana-empty'>No mana hue burns in you yet.</div>";
-    } else {
-      const rc = RARITY_COLOR[cur.rarity] || "#b0bec5";
-      const fx = (cur.fx && (cur.fx.kind || cur.fx.type)) || cur.effect || "glow";
-      grid.innerHTML = `<div class="tv-skin tv-skin--worn" data-skin="${cur.id}">
-        <div class="sw sw--big" style="background:linear-gradient(135deg,${cur.primary},${cur.secondary || cur.primary});box-shadow:inset 0 0 26px rgba(0,0,0,0.55),0 0 22px ${cur.glow || cur.primary}99"></div>
-        <div class="nm">${escapeHtml(cur.name)}</div>
-        <div class="rr" style="color:${rc}">${escapeHtml(cur.rarity || "common")} &middot; worn</div>
-        <div class="fx">${escapeHtml(String(fx))} effects</div>
-      </div>`;
-    }
-    if (rollBtn) {
-      rollBtn.disabled = gold < 50;
-      rollBtn.textContent = `Roll a new hue (50g) \u00b7 ${gold}g`;
-    }
-  }
-
-  function requestRoll() {
-    if (typeof socket === "undefined") return;
-    const me = meFrom(S.room);
-    const gold = me && me.gold != null ? me.gold : 0;
-    if (gold < 50) { toast("Not enough gold to roll a mana hue."); return; }
-    showRollStage();
-    socket.emit("skins:roll");
-  }
-
-  function showRollStage() {
-    if (!S.root) return;
-    const stage = S.root.querySelector("#tv-roll-stage");
-    const box = S.root.querySelector("#tv-roll-box");
-    if (!stage || !box) return;
-    const cat = skinCatalog();
-    const all = Object.values(cat || {});
-    stage.classList.add("show");
-    let i = 0;
-    const spin = setInterval(() => {
-      const s = all[i++ % all.length] || { name: "?", primary: "#666", rarity: "common" };
-      box.style.background = `radial-gradient(circle at 50% 40%, ${s.glow || s.primary}, ${s.primary})`;
-      box.querySelector(".rn").textContent = s.name;
-      box.querySelector(".rr").textContent = s.rarity || "";
-    }, 70);
-    clearTimeout(stage._t);
-    stage._t = setTimeout(() => {
-      clearInterval(spin);
-      if (!S._pendingRollDone) { stage.classList.remove("show"); }
-    }, 1500);
-  }
-
-  function showRollResult(skin) {
-    if (!S.root || !skin) return;
-    const stage = S.root.querySelector("#tv-roll-stage");
-    const box = S.root.querySelector("#tv-roll-box");
-    if (!stage || !box) return;
-    box.style.background = `radial-gradient(circle at 50% 40%, ${skin.glow || skin.primary}, ${skin.primary})`;
-    box.querySelector(".rn").textContent = skin.name;
-    box.querySelector(".rr").textContent = (skin.rarity || "") + " \u00b7 new hue";
-    stage.classList.add("show");
-    clearTimeout(stage._t);
-    stage._t = setTimeout(() => stage.classList.remove("show"), 1700);
-    // Paneli tazele.
-    if (S.root.querySelector("#tv-mana-panel.open")) renderManaPanel();
-  }
-
   // ---- Sefer ödülleri (XP/altın) ----
   function bindStatEvents() {
     if (typeof socket === "undefined" || S._statBound) return;
@@ -724,15 +801,11 @@
       S.ownedSkins = [p.skin.id];
       S.activeSkinId = p.activeSkin || p.skin.id;
       if (S.engine) S.engine.setSkin(S.activeSkinId);
-      S._pendingRollDone = true;
-      showRollResult(p.skin);
-      setTimeout(() => { S._pendingRollDone = false; }, 1600);
     });
     socket.on("skins:equipped", (p) => {
       if (!p || !p.id) return;
       S.activeSkinId = p.id;
       if (S.engine) S.engine.setSkin(p.id);
-      if (S.root && S.root.querySelector("#tv-mana-panel.open")) renderManaPanel();
     });
   }
 
@@ -809,6 +882,153 @@
     else if (typeof p.hp === "number" && typeof eng.setHp === "function") eng.setHp(p.hp);
   }
 
+  // --- LoL tarzı alt skill bar (Q / E / R + ATK + DASH) -------------------
+  const ELEM_RUNE = {
+    physical: "\u2694", fire: "\u2739", frost: "\u2744", lightning: "\u26A1\uFE0E",
+    shadow: "\u263E", holy: "\u2726", nature: "\u2766", arcane: "\u2727",
+    blood: "\u271A", earth: "\u26F0\uFE0E",
+  };
+  const BUFF_LABEL_UI = {
+    attack: "ATK", damage: "DMG", magic: "MGC", magicpower: "MGC",
+    heal: "HEAL", healpower: "HEAL", defense: "DEF", resistance: "DEF",
+    speed: "SPD", attackspeed: "ATK SPD",
+  };
+  function skillRune(sk) { return ELEM_RUNE[(sk && sk.element) || "physical"] || "\u2726"; }
+
+  // Ikon dosyası var mı? (public/images/skills/<id>.png|webp) — bir kez denenir.
+  const ICON_CACHE = {};
+  function travelIconOk(id, cb) {
+    if (!id) return cb(false);
+    if (Object.prototype.hasOwnProperty.call(ICON_CACHE, id)) return cb(ICON_CACHE[id]);
+    ICON_CACHE[id] = false;
+    const exts = ["png", "webp"];
+    const tryExt = (i) => {
+      if (i >= exts.length) return cb(false);
+      const img = new Image();
+      img.onload = () => { ICON_CACHE[id] = exts[i]; S.skillSig = ""; cb(exts[i]); };
+      img.onerror = () => tryExt(i + 1);
+      img.src = `/images/skills/${encodeURIComponent(id)}.${exts[i]}`;
+    };
+    tryExt(0);
+    return false;
+  }
+
+  function skillbarSlots() {
+    const eng = S.engine;
+    const set = eng && typeof eng.classSkillSet === "function" ? eng.classSkillSet() : null;
+    const out = [{ key: "auto", kind: "attack", label: "ATK", rune: "\u2694", color: "#b1442f", name: "Attack" }];
+    ["q", "e", "r"].forEach((k) => {
+      const sk = set ? set[k] : null;
+      const ext = sk && sk.id ? ICON_CACHE[sk.id] : null;
+      if (sk && sk.id && ext === undefined) travelIconOk(sk.id, () => {});
+      out.push({
+        key: k, kind: "skill", label: k.toUpperCase(),
+        rune: sk ? skillRune(sk) : "\u00B7",
+        color: (sk && sk.color) || "#3a3226",
+        name: (sk && sk.name) || "Empty",
+        cd: (sk && Number(sk.cd)) || 0,
+        icon: sk && sk.id && typeof ext === "string" ? `/images/skills/${encodeURIComponent(sk.id)}.${ext}` : "",
+        off: !sk,
+      });
+    });
+    out.push({ key: "dash", kind: "dash", label: "SPC", rune: "\u27A4", color: "#3c6f8c", name: "Dash" });
+    return out;
+  }
+
+  function renderSkillVitals(bar) {
+    const eng = S.engine;
+    if (!eng || !bar) return;
+    const st = (eng.playerData && eng.playerData.stats) || {};
+    const maxHp = Math.max(1, Number(st.maxHp) || 1);
+    const hp = Math.max(0, Math.min(maxHp, Number(st.currentHp != null ? st.currentHp : maxHp)));
+    const fill = bar.querySelector(".tv-vital__fill");
+    if (fill) fill.style.transform = `scaleX(${Math.max(0, hp / maxHp)})`;
+    const num = bar.querySelector(".tv-vital__num");
+    if (num) num.textContent = `${Math.ceil(hp)} / ${Math.ceil(maxHp)}`;
+    const hearts = bar.querySelector(".tv-vital__hearts");
+    if (hearts) {
+      const me = meFrom(S.room);
+      const lives = Math.max(0, Math.min(5, me && me.lives != null ? me.lives : 3));
+      const maxLives = Math.max(3, S.maxLives || 3);
+      if (lives > (S.maxLives || 0)) S.maxLives = lives;
+      let html = "";
+      for (let i = 0; i < Math.max(lives, maxLives); i += 1) {
+        html += i < lives ? "\u2665" : `<span class="e">\u2665</span>`;
+      }
+      hearts.innerHTML = html;
+    }
+  }
+
+  function renderStatPanel() {
+    const el = S.root && S.root.querySelector("#tv-statpanel");
+    if (!el || !S.engine) return;
+    const st = (S.engine.playerData && S.engine.playerData.stats) || {};
+    const buffs = S.engine.playerBuffs || [];
+    const row = (ic, lbl, val, buff) => `<div class="tv-strow${buff ? " is-buff" : ""}"><span class="ic">${ic}</span><span class="lb">${lbl}</span><span class="vl">${val}</span></div>`;
+    const parts = [
+      row("\u2694", "ATK", Math.round(Number(st.attack) || 0)),
+      row("\u2726", "MGC", Math.round(Number(st.magicPower) || 0)),
+      row("\u2764", "HEAL", Math.round(Number(st.healPower) || 0)),
+      row("\u25C6", "CRIT", `${Math.round((Number(st.critChance) || 0) * 100)}%`),
+      row("\u26E8", "RES", Math.round(Number(st.defense) || 0)),
+    ];
+    for (const b of buffs) {
+      if (!b) continue;
+      const pct = Math.round(Number(b.pct) || 0);
+      const left = Math.max(0, Number(b.timer) || 0);
+      parts.push(`<div class="tv-strow is-buff"><span class="ic">\u25B2</span><span class="lb">${escapeHtml(BUFF_LABEL_UI[b.stat] || String(b.stat || "").toUpperCase())}</span><span class="vl">${pct > 0 ? "+" : ""}${pct}% ${left.toFixed(0)}s</span></div>`);
+    }
+    const html = parts.join("");
+    if (html !== S.statPanelSig) { S.statPanelSig = html; el.innerHTML = html; }
+  }
+
+  function renderSkillbar() {
+    if (!S.root || !S.engine) return;
+    const bar = S.root.querySelector("#tv-skillbar");
+    if (!bar) return;
+    const slots = skillbarSlots();
+    const sig = slots.map((s) => `${s.key}:${s.name}:${s.color}:${s.off ? 1 : 0}:${s.icon || ""}`).join("|");
+    if (sig !== S.skillSig) {
+      S.skillSig = sig;
+      const vitals = `<div class="tv-vital" title="Health">
+          <div class="tv-vital__hearts"></div>
+          <div class="tv-vital__bar"><span class="tv-vital__fill"></span></div>
+          <div class="tv-vital__num">&mdash;</div>
+        </div>`;
+      bar.innerHTML = vitals + slots.map((s) => `<button type="button" class="tv-sb${s.kind === "attack" ? " is-auto" : ""}${s.off ? " is-off" : ""}${s.icon ? " has-ic" : ""}"
+          data-sb="${s.key}" data-kind="${s.kind}" title="${escapeHtml(s.name)}${s.cd ? ` · ${s.cd}s` : ""}"${s.icon ? ` style="--sk:${s.color};background-image:url('${s.icon}')"` : ` style="--sk:${s.color}"`}>
+          <span class="tv-sb__ic">${s.rune}</span>
+          <span class="tv-sb__key">${s.label}</span>
+          <span class="tv-sb__bar"></span>
+          <span class="tv-sb__cd"></span>
+        </button>`).join("");
+    }
+    const P = S.engine.player || {};
+    const paint = (key, frac, left) => {
+      const b = bar.querySelector(`[data-sb="${key}"]`);
+      if (!b) return;
+      const on = frac > 0.0005;
+      const cdEl = b.querySelector(".tv-sb__cd");
+      const barEl = b.querySelector(".tv-sb__bar");
+      if (barEl) barEl.style.transform = `scaleX(${on ? Math.max(0, Math.min(1, frac)) : 0})`;
+      if (b.getAttribute("data-kind") !== "attack") b.classList.toggle("is-cd", on);
+      if (cdEl) cdEl.textContent = on && b.getAttribute("data-kind") !== "attack"
+        ? (left >= 1 ? String(Math.ceil(left)) : left.toFixed(1)) : "";
+    };
+    ["q", "e", "r"].forEach((k) => {
+      const cdv = P.cooldowns && P.cooldowns[k];
+      if (!cdv || !(cdv.max > 0)) return paint(k, 0, 0);
+      paint(k, cdv.current / cdv.max, cdv.current);
+    });
+    const aps = typeof S.engine.computeAttackPerSecond === "function" ? S.engine.computeAttackPerSecond() : 1;
+    const atkLeft = Math.max(0, Number(P.attackCooldown) || 0);
+    paint("auto", atkLeft * aps, atkLeft);
+    const dMax = Number(P.dashCooldown) || 0.85;
+    const dLeft = Math.max(0, Number(P.dashCooldownTimer) || 0);
+    paint("dash", dLeft / dMax, dLeft);
+    renderSkillVitals(bar);
+  }
+
   function startHud() {
     stopHud();
     S.hudTimer = setInterval(renderHud, 200);
@@ -819,33 +1039,7 @@
   }
   function renderHud() {
     if (!S.engine || !S.root) return;
-    const me = meFrom(S.room);
-    const st = S.engine.playerData.stats || {};
-    const title = S.root.querySelector("#tv-title");
-    const z = S.engine.zoneName || "Travel";
-    if (title) title.textContent = z;
-    const stats = S.root.querySelector("#tv-stats");
-    if (stats) {
-      const hpVal = st.currentHp != null ? st.currentHp : (me ? me.hp : 0);
-      const hpMax = st.maxHp || (me ? me.maxHp : 0);
-      const hp = `${Math.max(0, Math.ceil(hpVal))}/${Math.ceil(hpMax)}`;
-      const mana = `${Math.ceil(st.currentMana != null ? st.currentMana : (me ? me.mana : 0))}/${Math.ceil(st.maxMana || (me ? me.maxMana : 0))}`;
-      const stam = me ? me.stamina : "-";
-      const lives = me && me.lives != null ? me.lives : 3;
-      const maxLives = Math.max(3, S.maxLives || 3);
-      if (lives > (S.maxLives || 0)) S.maxLives = lives;
-      const heartTxt = "\u2665".repeat(Math.max(0, lives)) + "\u2661".repeat(Math.max(0, maxLives - Math.max(0, lives)));
-      const cd = S.engine.player.cooldowns || {};
-      const skillSet = S.engine.classSkillSet ? S.engine.classSkillSet() : null;
-      const skillName = (k) => { const sk = skillSet && skillSet[k]; return (sk && sk.name) ? sk.name : k.toUpperCase(); };
-      const cdTxt = ["q", "e", "r"].map((k) => {
-        const v = cd[k];
-        return v && v.current > 0 ? `${k.toUpperCase()} ${v.current.toFixed(1)}s` : `${k.toUpperCase()} ${skillName(k)}`;
-      }).join("  ");
-      const shieldTxt = (S.engine.playerShield > 0 && S.engine.playerShieldTimer > 0)
-        ? ` &nbsp; \u{1F6E1} ${Math.ceil(S.engine.playerShield)}` : "";
-      stats.innerHTML = `${heartTxt} &nbsp; \u2764 ${hp} &nbsp; \u2728 ${mana} &nbsp; \u26A1 ${stam} &nbsp; ${cdTxt}${shieldTxt}`;
-    }
+    renderStatPanel();
     const prompt = S.root.querySelector("#tv-prompt");
     if (prompt) {
       const target = S.engine._interactTarget;
@@ -870,6 +1064,7 @@
         b.classList.toggle("is-cooling", !!(cdv && cdv.current > 0));
       });
     }
+    renderSkillbar();
     renderPotions();
   }
 
@@ -952,6 +1147,167 @@
     return String(s == null ? "" : s).replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
   }
 
+  // ---- YETENEK PANELİ: Q/E/R kuşanma + yeni yetenek öğrenme ----
+  const SKILL_SLOTS = ["q", "e", "r"];
+  const ELEM_ICON = { physical: "\u2694", fire: "\u{1F525}", frost: "\u2744", lightning: "\u26A1", shadow: "\u2620", holy: "\u2726", arcane: "\u25C8", nature: "\u2766" };
+
+  function classSkillData() {
+    const cat = (typeof CATALOG !== "undefined" && CATALOG) || null;
+    const me = meFrom(S.room);
+    const slug = (me && me.character) || (S.engine && S.engine.playerData && S.engine.playerData.class);
+    if (!slug) return null;
+    if (cat && cat.arpgSkills && cat.arpgSkills[slug]) return cat.arpgSkills[slug];
+    if (S.engine && S.engine.arpgSkills && S.engine.arpgSkills[slug]) return S.engine.arpgSkills[slug];
+    return null;
+  }
+
+  function skillPoolList(set) {
+    if (!set) return [];
+    const out = [];
+    SKILL_SLOTS.forEach((slot) => {
+      if (set[slot]) out.push(Object.assign({}, set[slot], { defaultSlot: slot }));
+    });
+    (set.pool || []).forEach((sk) => { if (sk) out.push(Object.assign({}, sk)); });
+    (set.late || []).forEach((sk) => { if (sk) out.push(Object.assign({}, sk)); });
+    return out;
+  }
+
+  function travelSkillState() {
+    const me = meFrom(S.room);
+    const set = classSkillData();
+    const all = skillPoolList(set);
+    const learned = {};
+    SKILL_SLOTS.forEach((slot) => { if (set && set[slot] && set[slot].id) learned[set[slot].id] = true; });
+    ((me && me.travelSkills) || []).forEach((id) => { learned[id] = true; });
+    const loadout = Object.assign({}, (me && me.travelLoadout) || {});
+    return { me, set, all, learned, loadout };
+  }
+
+  function equippedId(set, loadout, slot) {
+    // Yuva "açıkça boş" ("") bırakılmışsa varsayılana dönmeyiz.
+    if (loadout && Object.prototype.hasOwnProperty.call(loadout, slot)) {
+      return loadout[slot] || null;
+    }
+    return (set && set[slot] && set[slot].id) || null;
+  }
+
+  function elementIcon(sk) {
+    return ELEM_ICON[(sk && sk.element) || "physical"] || "\u2694";
+  }
+
+  function skillMeta(sk) {
+    if (!sk) return "";
+    const el = String(sk.element || "physical");
+    const bits = [el.charAt(0).toUpperCase() + el.slice(1), (Number(sk.cd) || 0) + "s"];
+    if (Number(sk.power) > 0) bits.push("\u00D7" + sk.power);
+    if (sk.healPct) bits.push(sk.healPct + "% heal");
+    if (sk.shieldPct) bits.push(sk.shieldPct + "% shield");
+    return bits.join(" \u00B7 ");
+  }
+
+  function toggleSkillPanel(force) {
+    if (!S.root) return;
+    const panel = S.root.querySelector("#tv-skill-panel");
+    if (!panel) return;
+    const open = force === undefined ? !panel.classList.contains("open") : !!force;
+    S.skillPanelOpen = open;
+    if (open) { renderSkillPanel(); panel.classList.add("open"); }
+    else panel.classList.remove("open");
+  }
+
+  function renderSkillPanel() {
+    if (!S.root) return;
+    const wrap = S.root.querySelector("#tv-skill-panel");
+    if (!wrap) return;
+    const st = travelSkillState();
+    const pts = (st.me && st.me.travelPoints) || 0;
+    const pointsEl = wrap.querySelector("#tv-skill-points");
+    if (pointsEl) {
+      pointsEl.innerHTML = `<span class="ico">\u2726</span><b>${pts}</b><span class="lbl">Travel Points</span>`;
+      pointsEl.classList.toggle("is-empty", pts <= 0);
+    }
+    const slotsEl = wrap.querySelector("#tv-skill-slots");
+    if (slotsEl) {
+      if (!st.set) {
+        slotsEl.innerHTML = `<div class="tv-skill-empty">No class skills found.</div>`;
+      } else {
+        slotsEl.innerHTML = SKILL_SLOTS.map((slot) => {
+          const id = equippedId(st.set, st.loadout, slot);
+          const sk = id ? (st.all.find((s) => s.id === id) || st.set[slot]) : null;
+          const on = (S.skillSlot || "q") === slot;
+          const col = (sk && sk.color) || "#ffe6a8";
+          return `<button type="button" class="tv-skill-slot${on ? " is-sel" : ""}" data-skill-slot="${slot}" style="--sk:${col}">
+            <span class="k">${slot.toUpperCase()}</span>
+            <span class="nm">${escapeHtml((sk && sk.name) || "\u2014")}</span>
+            <span class="cd">${sk ? (Number(sk.cd) || 0) + "s" : ""}</span>
+          </button>`;
+        }).join("");
+      }
+    }
+    const listEl = wrap.querySelector("#tv-skill-list");
+    if (listEl) {
+      listEl.innerHTML = st.all.map((sk) => {
+        const isDefault = !!sk.defaultSlot;
+        const owned = isDefault || !!st.learned[sk.id];
+        const equipped = SKILL_SLOTS.some((slot) => equippedId(st.set, st.loadout, slot) === sk.id);
+        const cost = Number(sk.cost) || 0;
+        const col = sk.color || "#ffe6a8";
+        let act;
+        if (equipped) act = `<span class="tag tag--eq">Equipped</span>`;
+        else if (owned) act = `<span class="tag tag--own">${isDefault ? "Default" : "Learned"}</span>`;
+        else act = `<button type="button" class="tv-skill-learn" data-skill-learn="${escapeHtml(sk.id)}"${pts < cost ? " disabled" : ""}><span class="learn-lbl">Learn</span><i class="dot">\u00B7</i><span class="learn-cost">${cost}</span></button>`;
+        return `<div class="tv-skill-card${owned ? "" : " is-locked"}${equipped ? " is-eq" : ""}" data-skill-pick="${escapeHtml(sk.id)}" style="--sk:${col}">
+          <span class="ic">${elementIcon(sk)}</span>
+          <span class="body">
+            <span class="nm">${escapeHtml(sk.name)}</span>
+            <span class="meta">${escapeHtml(skillMeta(sk))}</span>
+            <span class="ds">${escapeHtml(sk.desc || "")}</span>
+          </span>
+          <span class="act">${act}</span>
+        </div>`;
+      }).join("");
+    }
+  }
+
+  function bindSkillPanel() {
+    const panel = S.root && S.root.querySelector("#tv-skill-panel");
+    if (!panel || panel._bound) return;
+    panel._bound = true;
+    panel.addEventListener("click", (e) => {
+      const t = e.target;
+      if (!t || !t.closest) return;
+      if (t.closest("#tv-skill-close")) { toggleSkillPanel(false); return; }
+      const slotBtn = t.closest("[data-skill-slot]");
+      if (slotBtn) {
+        S.skillSlot = slotBtn.getAttribute("data-skill-slot");
+        renderSkillPanel();
+        return;
+      }
+      const learnBtn = t.closest("[data-skill-learn]");
+      if (learnBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (typeof socket !== "undefined") socket.emit("travel:skill:learn", { id: learnBtn.getAttribute("data-skill-learn") });
+        return;
+      }
+      const card = t.closest("[data-skill-pick]");
+      if (card) equipTravelSkill(card.getAttribute("data-skill-pick"));
+    });
+  }
+
+  function equipTravelSkill(id) {
+    const st = travelSkillState();
+    const sk = st.all.find((s) => s.id === id);
+    if (!sk) return;
+    const slot = S.skillSlot || "q";
+    if (!sk.defaultSlot && !st.learned[id]) { toast("Learn this skill first."); return; }
+    if (typeof socket === "undefined") return;
+    // Aynı yeteneğe tekrar tıklamak o yuvayı varsayılana döndürür.
+    if (equippedId(st.set, st.loadout, slot) === id) socket.emit("travel:skill:equip", { slot, id: null });
+    else socket.emit("travel:skill:equip", { slot, id });
+    renderSkillPanel();
+  }
+
   // ---- Yere düşme ekranı (lobiye atılmadan, yumuşak geçişli) ----
   let downedEl = null;
 
@@ -975,15 +1331,11 @@
           <div class="tv-down-hearts" id="tv-downed-hearts"></div>
           <p class="tv-down-text">Your torch still burns. An ally may raise you, or you may walk back to town &mdash; keeping everything you found.</p>
           <div class="tv-down-actions">
-            <button type="button" class="tv-btn tv-btn--gold" id="tv-downed-wait">Wait for a revive</button>
             <button type="button" class="tv-btn tv-btn--ghost" id="tv-downed-give">Return to town</button>
           </div>
-          <div class="tv-down-hint">A nearby ally revives you with <b>E</b></div>
         </div>`;
       S.root.appendChild(downedEl);
-      const waitBtn = downedEl.querySelector("#tv-downed-wait");
       const giveBtn = downedEl.querySelector("#tv-downed-give");
-      if (waitBtn) waitBtn.addEventListener("click", () => hideDownedOverlay());
       if (giveBtn) giveBtn.addEventListener("click", () => {
         if (typeof socket !== "undefined") socket.emit("travel:giveup");
         hideDownedOverlay();
@@ -996,9 +1348,6 @@
   function showDownedOverlay(opts) {
     const el = ensureDownedEl();
     if (!el) return;
-    const solo = !!(opts && opts.solo);
-    const waitBtn = el.querySelector("#tv-downed-wait");
-    if (waitBtn) waitBtn.style.display = solo ? "none" : "";
     const hearts = el.querySelector("#tv-downed-hearts");
     if (hearts) {
       const n = Math.max(0, Math.min(9, Number.isFinite(opts && opts.hearts) ? opts.hearts : 0));
@@ -1110,6 +1459,19 @@
       S.engine.others[id] = prev;
     },
     hasMap() { return !!S.map; },
+    // Kasabaya dönüş yalnızca varış taşından (haritanın başlangıç noktası) yapılabilir.
+    // Sunucu da aynı kuralı doğrular; bu yalnızca kullanıcıya erken geri bildirim verir.
+    canReturnToTown() {
+      try {
+        // Motor/harita yoksa (henüz kurulmadıysa) engellemeyiz; sunucu yine doğrular.
+        if (!S.engine || !S.map || !S.engine.player) return true;
+        const sp = S.map.spawn || S.spawn || { x: 0, y: 0 };
+        const w = S.engine.serverToWorld((sp.x || 0) + 0.5, (sp.y || 0) + 0.5);
+        const tile = S.engine.tileSize || S.engine.worldScale || 64;
+        const d = Math.hypot((S.engine.player.x || 0) - w.x, (S.engine.player.y || 0) - w.y);
+        return d <= tile * 3.5;
+      } catch (e) { return true; }
+    },
     get ready() { return !!(S.active && S.engine); },
     // Sunucu parti kurduğunu bildirdiğinde ikinci E zindana girer.
     noteParty(poiId) { if (poiId) S.pendingDungeon = poiId; },

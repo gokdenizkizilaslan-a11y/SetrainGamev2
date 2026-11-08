@@ -519,6 +519,12 @@ function createPlayer({ id, name, character, isHost = false }) {
     },
     unlockedSkills: starting,
     skillLoadout: starting.slice(),
+    // Travel (ARPG) yetenekleri: öğrenilen havuz + Q/E/R kuşanımı.
+    travelSkills: [],
+    travelLoadout: {},
+    // Travel'a ÖZEL yetenek puanı (sıra tabanlı `skillPoints`ten ayrı).
+    travelPoints: 2,
+    travelKills: 0,
     // Questler: oyuncuya özel sayaçlar { [questId]: { accepted, kills, completed } }.
     // Başka oyuncunun avı bu sayaçlara asla yazılmaz.
     quests: {},
@@ -645,6 +651,11 @@ function publicPlayer(player) {
       ? player.classHistory.slice()
       : historyOf(player),
     skillPoints: player.skillPoints || 0,
+    // Travel yetenek kuşanımı (Q/E/R) ve öğrenilen havuz yetenekleri.
+    travelSkills: (function () { try { require("./travelSkills").ensure(player); } catch (e) {} return (player.travelSkills || []).slice(); })(),
+    travelLoadout: Object.assign({}, player.travelLoadout || {}),
+    travelPoints: player.travelPoints || 0,
+    travelKills: player.travelKills || 0,
     learnedTreeNodes: (player.learnedTreeNodes || []).slice(),
     bossKills: (player.bossKills || []).slice(),
     connected: player.connected !== false,

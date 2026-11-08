@@ -18028,47 +18028,240 @@ const CONTENT = {
         "element": "physical"
       },
       "q": {
-        "name": "Cleaving Arc",
+        "id": "whirlwind",
+        "name": "Whirlwind",
+        "visual": "Whirlwind",
         "element": "physical",
         "kind": "arc",
         "cd": 4.5,
-        "power": 1.7,
-        "color": "#9fd8ff",
-        "desc": "",
+        "power": 1.55,
         "radius": 100,
-        "arc": 1.1
+        "arc": 1.15,
+        "color": "#ffd54f",
+        "cost": 0,
+        "desc": "A full spinning cut that carves every foe in front of you.",
+        "trDesc": "Önündeki bütün düşmanları biçen tam turlu bir savuruş.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Swordstorm",
+        "id": "earthbreaker",
+        "name": "Earthbreaker",
+        "visual": "Earthbreaker",
         "element": "physical",
-        "kind": "swing",
-        "cd": 10,
-        "power": 0.62,
-        "color": "#9fd8ff",
-        "desc": "",
-        "radius": 122,
-        "hits": 3,
-        "interval": 0.2,
-        "arc": 1.65,
-        "status": {
-          "type": "bleed",
-          "duration": 2,
-          "dps": 8
-        }
+        "kind": "nova",
+        "cd": 9,
+        "power": 1.7,
+        "radius": 110,
+        "knockback": 120,
+        "color": "#ffb74d",
+        "cost": 0,
+        "desc": "Slam the ground and send a shockwave through everything nearby.",
+        "trDesc": "Yere vur; çevrendeki her şeyi sarsan bir şok dalgası yay.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Blade Tempest",
+        "id": "bladestorm",
+        "name": "Blade Storm",
+        "visual": "Blade Storm",
         "element": "physical",
         "kind": "orbit",
-        "cd": 16,
-        "power": 2.7,
-        "color": "#9fd8ff",
-        "desc": "",
-        "radius": 120,
-        "duration": 3.4,
+        "cd": 15,
+        "power": 2.35,
+        "radius": 118,
+        "duration": 3.2,
         "tick": 0.35,
         "count": 8,
-        "speed": 4.4
+        "speed": 4.6,
+        "color": "#80d8ff",
+        "cost": 0,
+        "desc": "Blades orbit you for three seconds, shredding anything they touch.",
+        "trDesc": "Bıçaklar üç saniye etrafında döner, dokunduklarını parçalar.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "battlefocus",
+          "name": "Battle Focus",
+          "visual": "Rune Circle",
+          "element": "physical",
+          "kind": "buff",
+          "cd": 18,
+          "color": "#ffb74d",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "attack",
+            "pct": 30,
+            "duration": 8
+          },
+          "desc": "Sharpen your focus: attack power rises for 8 seconds.",
+          "trDesc": "Odağını topla: 8 saniye boyunca saldırı gücün yükselir."
+        },
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "id": "tremor",
+          "name": "Tremor",
+          "visual": "Earthbreaker",
+          "element": "physical",
+          "kind": "quake",
+          "cd": 14,
+          "power": 1.5,
+          "radius": 130,
+          "pulses": 3,
+          "interval": 0.22,
+          "knockback": 100,
+          "color": "#a1887f",
+          "cost": 2,
+          "slot": null,
+          "desc": "Smash the ground and send three rolling shockwaves outward.",
+          "trDesc": "Yere vur; dışa doğru yayılan üç şok dalgası gönder."
+        },
+        {
+          "name": "Swordstorm",
+          "element": "physical",
+          "kind": "swing",
+          "cd": 10,
+          "power": 0.62,
+          "color": "#9fd8ff",
+          "desc": "A technique carried over from the old travel kit.",
+          "radius": 122,
+          "hits": 3,
+          "interval": 0.2,
+          "arc": 1.65,
+          "status": {
+            "type": "bleed",
+            "duration": 2,
+            "dps": 8
+          },
+          "id": "legacy_warrior_e",
+          "visual": "Whirlwind",
+          "tr": "Kılıç Fırtınası",
+          "legacyFrom": "warrior.e",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 2,
+          "slot": null
+        },
+        {
+          "name": "Cleaving Arc",
+          "element": "physical",
+          "kind": "arc",
+          "cd": 4.5,
+          "power": 1.7,
+          "color": "#9fd8ff",
+          "desc": "A technique carried over from the old travel kit.",
+          "radius": 100,
+          "arc": 1.1,
+          "id": "legacy_warrior_q",
+          "visual": "Whirlwind",
+          "tr": "Yaran Yay",
+          "legacyFrom": "warrior.q",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 1,
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "doomgavel",
+          "name": "Doom Gavel",
+          "visual": "Titan Fist",
+          "element": "physical",
+          "kind": "meteor",
+          "cd": 34,
+          "power": 3.4,
+          "radius": 150,
+          "delay": 0.45,
+          "range": 340,
+          "knockback": 260,
+          "color": "#ffd54f",
+          "cost": 4,
+          "late": true,
+          "desc": "A colossal gavel of stone falls from the sky and shatters the ground.",
+          "trDesc": "Gökten devasa bir taş tokmak düşer ve yeri parçalar.",
+          "slot": null
+        },
+        {
+          "id": "worldbreaker",
+          "name": "World Breaker",
+          "visual": "Earthbreaker",
+          "element": "physical",
+          "kind": "nova",
+          "cd": 45,
+          "power": 4.6,
+          "radius": 190,
+          "knockback": 340,
+          "color": "#ffb74d",
+          "cost": 6,
+          "late": true,
+          "desc": "One strike cracks the world; everything around you is thrown back.",
+          "trDesc": "Tek vuruş dünyayı çatlatır; çevrendeki her şey geri savrulur.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Cleaving Arc",
+          "element": "physical",
+          "kind": "arc",
+          "cd": 4.5,
+          "power": 1.7,
+          "color": "#9fd8ff",
+          "desc": "",
+          "radius": 100,
+          "arc": 1.1
+        },
+        "e": {
+          "name": "Swordstorm",
+          "element": "physical",
+          "kind": "swing",
+          "cd": 10,
+          "power": 0.62,
+          "color": "#9fd8ff",
+          "desc": "",
+          "radius": 122,
+          "hits": 3,
+          "interval": 0.2,
+          "arc": 1.65,
+          "status": {
+            "type": "bleed",
+            "duration": 2,
+            "dps": 8
+          }
+        },
+        "r": {
+          "name": "Blade Tempest",
+          "element": "physical",
+          "kind": "orbit",
+          "cd": 16,
+          "power": 2.7,
+          "color": "#9fd8ff",
+          "desc": "",
+          "radius": 120,
+          "duration": 3.4,
+          "tick": 0.35,
+          "count": 8,
+          "speed": 4.4
+        }
       }
     },
     "ranger": {
@@ -18077,42 +18270,267 @@ const CONTENT = {
         "element": "physical"
       },
       "q": {
-        "name": "Triple Shot",
+        "id": "gale",
+        "name": "Gale",
+        "visual": "Cyclone",
         "element": "physical",
-        "kind": "fan",
-        "cd": 4,
-        "power": 0.9,
-        "color": "#9fd8ff",
-        "desc": "",
-        "count": 3,
-        "spread": 0.2,
-        "speed": 620,
-        "radius": 7
+        "kind": "vortex",
+        "cd": 6,
+        "power": 1,
+        "radius": 100,
+        "duration": 2,
+        "tick": 0.35,
+        "pull": 90,
+        "range": 260,
+        "color": "#b0bec5",
+        "cost": 0,
+        "desc": "A short burst of wind that pulls and cuts.",
+        "trDesc": "Çeken ve kesen kısa bir rüzgâr patlaması.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Piercing Bolt",
+        "id": "cyclone",
+        "name": "Cyclone",
+        "visual": "Cyclone",
         "element": "physical",
-        "kind": "beam",
-        "cd": 8,
-        "power": 2,
-        "color": "#9fd8ff",
-        "desc": "",
+        "kind": "vortex",
+        "cd": 9,
+        "power": 1.2,
+        "radius": 120,
+        "duration": 2.6,
+        "tick": 0.35,
+        "pull": 120,
         "range": 300,
-        "width": 22
+        "color": "#b0bec5",
+        "cost": 0,
+        "desc": "A spinning vortex drags enemies inward and shreds them.",
+        "trDesc": "Dönen bir girdap düşmanları içeri çeker ve parçalar.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Rain of Arrows",
-        "element": "physical",
-        "kind": "barrage",
-        "cd": 15,
-        "power": 2.2,
-        "color": "#9fd8ff",
-        "desc": "",
-        "count": 16,
-        "interval": 0.055,
-        "speed": 900,
-        "radius": 6,
-        "spread": 0.13
+        "id": "starfall",
+        "name": "Starfall",
+        "visual": "Starfall",
+        "element": "arcane",
+        "magic": true,
+        "kind": "meteor",
+        "cd": 17,
+        "power": 2.8,
+        "radius": 135,
+        "delay": 0.45,
+        "count": 3,
+        "stagger": 0.14,
+        "spreadRadius": 130,
+        "range": 360,
+        "color": "#ffe57f",
+        "cost": 0,
+        "desc": "Stars rain from the sky across a wide area.",
+        "trDesc": "Gökten geniş bir alana yıldızlar yağar.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "battlefocus",
+          "name": "Battle Focus",
+          "visual": "Rune Circle",
+          "element": "physical",
+          "kind": "buff",
+          "cd": 18,
+          "color": "#ffb74d",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "attack",
+            "pct": 30,
+            "duration": 8
+          },
+          "desc": "Sharpen your focus: attack power rises for 8 seconds.",
+          "trDesc": "Odağını topla: 8 saniye boyunca saldırı gücün yükselir."
+        },
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "id": "tremor",
+          "name": "Tremor",
+          "visual": "Earthbreaker",
+          "element": "physical",
+          "kind": "quake",
+          "cd": 14,
+          "power": 1.5,
+          "radius": 130,
+          "pulses": 3,
+          "interval": 0.22,
+          "knockback": 100,
+          "color": "#a1887f",
+          "cost": 2,
+          "slot": null,
+          "desc": "Smash the ground and send three rolling shockwaves outward.",
+          "trDesc": "Yere vur; dışa doğru yayılan üç şok dalgası gönder."
+        },
+        {
+          "name": "Rain of Arrows",
+          "element": "physical",
+          "kind": "barrage",
+          "cd": 15,
+          "power": 2.2,
+          "color": "#9fd8ff",
+          "desc": "A technique carried over from the old travel kit.",
+          "count": 16,
+          "interval": 0.055,
+          "speed": 900,
+          "radius": 6,
+          "spread": 0.13,
+          "id": "legacy_ranger_r",
+          "visual": "Starfall",
+          "tr": "Ok Yağmuru",
+          "legacyFrom": "ranger.r",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 3,
+          "slot": null
+        },
+        {
+          "id": "spiritpack",
+          "name": "Spirit Pack",
+          "visual": "Spirit Pack",
+          "element": "nature",
+          "magic": true,
+          "kind": "aoe",
+          "cd": 14,
+          "power": 1.7,
+          "radius": 120,
+          "offset": 60,
+          "pet": true,
+          "color": "#80deea",
+          "cost": 3,
+          "desc": "Ghostly wolves circle the target and lunge as one.",
+          "trDesc": "Hayalet kurtlar hedefin etrafında döner ve birlikte atılır.",
+          "slot": null
+        },
+        {
+          "id": "toxiccloud",
+          "name": "Toxic Cloud",
+          "visual": "Toxic Cloud",
+          "element": "nature",
+          "magic": true,
+          "kind": "ground",
+          "cd": 8,
+          "power": 1.1,
+          "radius": 100,
+          "duration": 3,
+          "tick": 0.5,
+          "dot": 10,
+          "range": 300,
+          "color": "#7cb342",
+          "cost": 1,
+          "desc": "A lingering cloud of poison that eats away at anything inside.",
+          "trDesc": "İçindeki her şeyi kemiren, kalıcı bir zehir bulutu.",
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "astralcollapse",
+          "name": "Astral Collapse",
+          "visual": "Starfall",
+          "element": "arcane",
+          "magic": true,
+          "kind": "meteor",
+          "cd": 36,
+          "power": 3.6,
+          "radius": 165,
+          "delay": 0.4,
+          "count": 5,
+          "stagger": 0.12,
+          "spreadRadius": 160,
+          "range": 370,
+          "color": "#ffe57f",
+          "cost": 4,
+          "late": true,
+          "desc": "Five collapsing stars hammer the battlefield in quick succession.",
+          "trDesc": "Beş çöken yıldız art arda savaş alanını döver.",
+          "slot": null
+        },
+        {
+          "id": "arcanedominion",
+          "name": "Arcane Dominion",
+          "visual": "Starfall",
+          "element": "arcane",
+          "magic": true,
+          "kind": "meteor",
+          "cd": 47,
+          "power": 4.9,
+          "radius": 210,
+          "delay": 0.5,
+          "count": 7,
+          "stagger": 0.1,
+          "spreadRadius": 200,
+          "range": 400,
+          "color": "#b388ff",
+          "cost": 6,
+          "late": true,
+          "desc": "You claim the sky: seven stars answer your call at once.",
+          "trDesc": "Gökyüzünü sahiplenirsin: yedi yıldız aynı anda çağrına uyar.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Triple Shot",
+          "element": "physical",
+          "kind": "fan",
+          "cd": 4,
+          "power": 0.9,
+          "color": "#9fd8ff",
+          "desc": "",
+          "count": 3,
+          "spread": 0.2,
+          "speed": 620,
+          "radius": 7
+        },
+        "e": {
+          "name": "Piercing Bolt",
+          "element": "physical",
+          "kind": "beam",
+          "cd": 8,
+          "power": 2,
+          "color": "#9fd8ff",
+          "desc": "",
+          "range": 300,
+          "width": 22
+        },
+        "r": {
+          "name": "Rain of Arrows",
+          "element": "physical",
+          "kind": "barrage",
+          "cd": 15,
+          "power": 2.2,
+          "color": "#9fd8ff",
+          "desc": "",
+          "count": 16,
+          "interval": 0.055,
+          "speed": 900,
+          "radius": 6,
+          "spread": 0.13
+        }
       }
     },
     "mage": {
@@ -18122,60 +18540,308 @@ const CONTENT = {
         "magic": true
       },
       "q": {
-        "name": "Arcane Rift",
-        "element": "arcane",
-        "kind": "chain",
-        "cd": 4.5,
-        "power": 1,
-        "color": "#c77dff",
-        "desc": "",
-        "radius": 330,
-        "jumps": 4,
-        "chainRange": 205,
-        "status": {
-          "type": "shock",
-          "duration": 2,
-          "dps": 7
-        }
-      },
-      "e": {
-        "name": "Frost Vortex",
+        "id": "frostnova",
+        "name": "Frost Nova",
+        "visual": "Frost Nova",
         "element": "frost",
-        "kind": "vortex",
-        "cd": 9,
-        "power": 1.15,
-        "color": "#8fe4ff",
-        "desc": "",
-        "radius": 132,
-        "duration": 2.8,
-        "tick": 0.35,
-        "pull": 135,
+        "magic": true,
+        "kind": "nova",
+        "cd": 8,
+        "power": 1.4,
+        "radius": 105,
+        "color": "#80deea",
         "status": {
           "type": "freeze",
-          "duration": 1.3
+          "duration": 1.2
         },
-        "range": 320,
-        "knockback": 130
+        "cost": 0,
+        "desc": "A ring of ice bursts outward and freezes what it touches.",
+        "trDesc": "Dışa doğru buz halkası patlar, dokunduğunu dondurur.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
-      "r": {
-        "name": "Meteor Storm",
+      "e": {
+        "id": "infernoburst",
+        "name": "Inferno Burst",
+        "visual": "Inferno Burst",
         "element": "fire",
-        "kind": "meteor",
-        "cd": 17,
-        "power": 3,
-        "color": "#ff8a65",
-        "desc": "",
-        "radius": 148,
-        "delay": 0.35,
-        "count": 3,
-        "stagger": 0.16,
-        "spreadRadius": 120,
+        "magic": true,
+        "kind": "nova",
+        "cd": 8.5,
+        "power": 1.6,
+        "radius": 100,
+        "color": "#ff7a1a",
         "status": {
           "type": "burn",
           "duration": 3,
-          "dps": 18
+          "dps": 12
         },
-        "range": 340
+        "cost": 0,
+        "desc": "A ring of fire detonates around you and keeps burning.",
+        "trDesc": "Etrafında bir ateş halkası patlar ve yanmaya devam eder.",
+        "slot": "e",
+        "defaultSlot": "e"
+      },
+      "r": {
+        "id": "meteorstorm",
+        "name": "Meteor Storm",
+        "visual": "Meteor Storm",
+        "element": "fire",
+        "magic": true,
+        "kind": "meteor",
+        "cd": 15,
+        "power": 2.6,
+        "radius": 120,
+        "delay": 0.35,
+        "count": 2,
+        "stagger": 0.2,
+        "spreadRadius": 110,
+        "range": 340,
+        "color": "#ff8a65",
+        "status": {
+          "type": "burn",
+          "duration": 3,
+          "dps": 14
+        },
+        "cost": 0,
+        "desc": "Call down meteors on the marked ground, leaving burning craters.",
+        "trDesc": "İşaretli yere meteorlar indir; yanan kraterler bırak.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "frostbite",
+          "name": "Frostbite",
+          "visual": "",
+          "element": "frost",
+          "kind": "projectile",
+          "cd": 6,
+          "power": 1.4,
+          "speed": 660,
+          "radius": 10,
+          "color": "#81d4fa",
+          "cost": 1,
+          "slot": null,
+          "status": {
+            "type": "slow",
+            "duration": 2,
+            "slow": 0.45
+          },
+          "desc": "Hurl a shard of ice that chills and slows the target.",
+          "trDesc": "Hedefi üşütüp yavaşlatan bir buz kırığı fırlat."
+        },
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "id": "spiritward",
+          "name": "Spirit Ward",
+          "visual": "",
+          "element": "holy",
+          "kind": "shield",
+          "cd": 22,
+          "shieldPct": 30,
+          "duration": 6,
+          "radius": 60,
+          "color": "#ffe082",
+          "cost": 2,
+          "slot": null,
+          "desc": "A spirit shield absorbs damage for 6 seconds.",
+          "trDesc": "Ruh kalkanı 6 saniye boyunca gelen hasarı emer."
+        },
+        {
+          "id": "glaciervall",
+          "name": "Glacier Wall",
+          "visual": "Glacier Wall",
+          "element": "frost",
+          "magic": true,
+          "kind": "ground",
+          "cd": 11,
+          "power": 1.25,
+          "radius": 80,
+          "duration": 2.2,
+          "tick": 0.45,
+          "range": 280,
+          "color": "#9fe2ff",
+          "status": {
+            "type": "freeze",
+            "duration": 1
+          },
+          "cost": 2,
+          "desc": "Raise a wall of ice ahead that slows and cuts anything crossing it.",
+          "trDesc": "Önüne geçenleri yavaşlatan ve kesen bir buz duvarı dik.",
+          "slot": null
+        },
+        {
+          "id": "chainlightning",
+          "name": "Chain Lightning",
+          "visual": "Chain Lightning",
+          "element": "lightning",
+          "magic": true,
+          "kind": "chain",
+          "cd": 8,
+          "power": 1.5,
+          "radius": 320,
+          "jumps": 4,
+          "chainRange": 200,
+          "color": "#80d8ff",
+          "status": {
+            "type": "shock",
+            "duration": 2,
+            "dps": 8
+          },
+          "cost": 1,
+          "desc": "Lightning leaps between foes, shocking each one it touches.",
+          "trDesc": "Yıldırım düşmandan düşmana sıçrar, her birini çarpar.",
+          "slot": null
+        },
+        {
+          "id": "emberwave",
+          "name": "Ember Wave",
+          "visual": "Inferno Burst",
+          "element": "fire",
+          "magic": true,
+          "kind": "arc",
+          "cd": 5,
+          "power": 1.5,
+          "radius": 105,
+          "arc": 1,
+          "color": "#ffb300",
+          "status": {
+            "type": "burn",
+            "duration": 2,
+            "dps": 8
+          },
+          "cost": 1,
+          "desc": "A wave of cinders washes over the arc ahead.",
+          "trDesc": "Önündeki yayın üzerinden kor dalgası geçer.",
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "sunfall",
+          "name": "Sunfall",
+          "visual": "Meteor Storm",
+          "element": "fire",
+          "magic": true,
+          "kind": "meteor",
+          "cd": 36,
+          "power": 3.5,
+          "radius": 165,
+          "delay": 0.4,
+          "count": 3,
+          "stagger": 0.18,
+          "spreadRadius": 150,
+          "range": 360,
+          "color": "#ff8a65",
+          "status": {
+            "type": "burn",
+            "duration": 4,
+            "dps": 20
+          },
+          "cost": 4,
+          "late": true,
+          "desc": "Three burning suns crash down and leave the earth ablaze.",
+          "trDesc": "Üç yanan güneş yere çakılır ve toprağı tutuşturur.",
+          "slot": null
+        },
+        {
+          "id": "infernalcrown",
+          "name": "Infernal Crown",
+          "visual": "Inferno Burst",
+          "element": "fire",
+          "magic": true,
+          "kind": "nova",
+          "cd": 46,
+          "power": 4.8,
+          "radius": 200,
+          "color": "#ff3d00",
+          "status": {
+            "type": "burn",
+            "duration": 5,
+            "dps": 26
+          },
+          "cost": 6,
+          "late": true,
+          "desc": "A crown of hellfire erupts around you and keeps the ground burning.",
+          "trDesc": "Etrafında cehennem ateşinden bir taç patlar ve yeri yakmaya devam eder.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Arcane Rift",
+          "element": "arcane",
+          "kind": "chain",
+          "cd": 4.5,
+          "power": 1,
+          "color": "#c77dff",
+          "desc": "",
+          "radius": 330,
+          "jumps": 4,
+          "chainRange": 205,
+          "status": {
+            "type": "shock",
+            "duration": 2,
+            "dps": 7
+          }
+        },
+        "e": {
+          "name": "Frost Vortex",
+          "element": "frost",
+          "kind": "vortex",
+          "cd": 9,
+          "power": 1.15,
+          "color": "#8fe4ff",
+          "desc": "",
+          "radius": 132,
+          "duration": 2.8,
+          "tick": 0.35,
+          "pull": 135,
+          "status": {
+            "type": "freeze",
+            "duration": 1.3
+          },
+          "range": 320,
+          "knockback": 130
+        },
+        "r": {
+          "name": "Meteor Storm",
+          "element": "fire",
+          "kind": "meteor",
+          "cd": 17,
+          "power": 3,
+          "color": "#ff8a65",
+          "desc": "",
+          "radius": 148,
+          "delay": 0.35,
+          "count": 3,
+          "stagger": 0.16,
+          "spreadRadius": 120,
+          "status": {
+            "type": "burn",
+            "duration": 3,
+            "dps": 18
+          },
+          "range": 340
+        }
       }
     },
     "rogue": {
@@ -18184,53 +18850,276 @@ const CONTENT = {
         "element": "physical"
       },
       "q": {
-        "name": "Fan of Knives",
-        "element": "shadow",
-        "kind": "fan",
-        "cd": 4,
-        "power": 0.8,
-        "color": "#b388ff",
-        "desc": "",
-        "count": 5,
-        "spread": 0.16,
-        "speed": 720,
-        "radius": 6
+        "id": "toxiccloud",
+        "name": "Toxic Cloud",
+        "visual": "Toxic Cloud",
+        "element": "nature",
+        "magic": true,
+        "kind": "ground",
+        "cd": 8,
+        "power": 1.1,
+        "radius": 100,
+        "duration": 3,
+        "tick": 0.5,
+        "dot": 10,
+        "range": 300,
+        "color": "#7cb342",
+        "cost": 0,
+        "desc": "A lingering cloud of poison that eats away at anything inside.",
+        "trDesc": "İçindeki her şeyi kemiren, kalıcı bir zehir bulutu.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Smoke Bomb",
+        "id": "umbrallash",
+        "name": "Umbral Lash",
+        "visual": "Shadow Grasp",
         "element": "shadow",
-        "kind": "ground",
-        "cd": 9,
-        "power": 0.7,
-        "color": "#b388ff",
-        "desc": "",
-        "radius": 92,
-        "duration": 2.8,
-        "tick": 0.45,
-        "status": {
-          "type": "slow",
-          "duration": 2.2,
-          "slow": 0.55
-        },
-        "dot": 8
+        "kind": "arc",
+        "cd": 5,
+        "power": 1.5,
+        "radius": 110,
+        "arc": 1.1,
+        "color": "#9c4dff",
+        "cost": 0,
+        "desc": "A whip of shadow cuts across the foes in front of you.",
+        "trDesc": "Önündeki düşmanları kesen bir gölge kamçısı.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Shadow Dance",
-        "element": "shadow",
+        "id": "bladestorm",
+        "name": "Blade Storm",
+        "visual": "Blade Storm",
+        "element": "physical",
         "kind": "orbit",
         "cd": 15,
-        "power": 2.6,
-        "color": "#b388ff",
-        "desc": "",
+        "power": 2.35,
         "radius": 118,
-        "duration": 3.6,
-        "tick": 0.28,
-        "count": 10,
-        "speed": 5.2,
-        "status": {
-          "type": "bleed",
-          "duration": 2.5,
-          "dps": 9
+        "duration": 3.2,
+        "tick": 0.35,
+        "count": 8,
+        "speed": 4.6,
+        "color": "#80d8ff",
+        "cost": 0,
+        "desc": "Blades orbit you for three seconds, shredding anything they touch.",
+        "trDesc": "Bıçaklar üç saniye etrafında döner, dokunduklarını parçalar.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "thornwave",
+          "name": "Thorn Wave",
+          "visual": "Thorn Snare",
+          "element": "nature",
+          "kind": "ground",
+          "cd": 14,
+          "power": 0.62,
+          "radius": 120,
+          "duration": 4,
+          "tick": 0.5,
+          "color": "#81c784",
+          "cost": 2,
+          "slot": null,
+          "status": {
+            "type": "slow",
+            "duration": 2,
+            "slow": 0.35
+          },
+          "desc": "Thorns erupt from the ground and keep stinging anything standing there.",
+          "trDesc": "Yerden dikenler fışkırır; orada duran her şeyi sürekli yakar."
+        },
+        {
+          "id": "windstep",
+          "name": "Wind Step",
+          "visual": "",
+          "element": "nature",
+          "kind": "buff",
+          "cd": 16,
+          "color": "#a5d6a7",
+          "cost": 1,
+          "slot": null,
+          "buff": {
+            "stat": "speed",
+            "pct": 35,
+            "duration": 6
+          },
+          "desc": "Ride the wind: movement speed rises for 6 seconds.",
+          "trDesc": "Rüzgâra bin: 6 saniye boyunca hareket hızın artar."
+        },
+        {
+          "id": "spiritward",
+          "name": "Spirit Ward",
+          "visual": "",
+          "element": "holy",
+          "kind": "shield",
+          "cd": 22,
+          "shieldPct": 30,
+          "duration": 6,
+          "radius": 60,
+          "color": "#ffe082",
+          "cost": 2,
+          "slot": null,
+          "desc": "A spirit shield absorbs damage for 6 seconds.",
+          "trDesc": "Ruh kalkanı 6 saniye boyunca gelen hasarı emer."
+        },
+        {
+          "id": "shadowgrasp",
+          "name": "Shadow Grasp",
+          "visual": "Shadow Grasp",
+          "element": "shadow",
+          "magic": true,
+          "kind": "ground",
+          "cd": 9,
+          "power": 1.4,
+          "radius": 95,
+          "duration": 2.2,
+          "tick": 0.4,
+          "range": 300,
+          "color": "#9c4dff",
+          "status": {
+            "type": "freeze",
+            "duration": 1
+          },
+          "cost": 2,
+          "desc": "Shadow tendrils burst from the ground and claw at everything.",
+          "trDesc": "Yerden gölge kolları fışkırır ve her şeyi tırmalar.",
+          "slot": null
+        },
+        {
+          "name": "Smoke Bomb",
+          "element": "shadow",
+          "kind": "ground",
+          "cd": 9,
+          "power": 0.7,
+          "color": "#b388ff",
+          "desc": "A technique carried over from the old travel kit.",
+          "radius": 92,
+          "duration": 2.8,
+          "tick": 0.45,
+          "status": {
+            "type": "slow",
+            "duration": 2.2,
+            "slow": 0.55
+          },
+          "dot": 8,
+          "id": "legacy_rogue_e",
+          "visual": "Toxic Cloud",
+          "tr": "Sis Bombası",
+          "legacyFrom": "rogue.e",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 2,
+          "slot": null
+        },
+        {
+          "id": "gale",
+          "name": "Gale",
+          "visual": "Cyclone",
+          "element": "physical",
+          "kind": "vortex",
+          "cd": 6,
+          "power": 1,
+          "radius": 100,
+          "duration": 2,
+          "tick": 0.35,
+          "pull": 90,
+          "range": 260,
+          "color": "#b0bec5",
+          "cost": 1,
+          "desc": "A short burst of wind that pulls and cuts.",
+          "trDesc": "Çeken ve kesen kısa bir rüzgâr patlaması.",
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "doomgavel",
+          "name": "Doom Gavel",
+          "visual": "Titan Fist",
+          "element": "physical",
+          "kind": "meteor",
+          "cd": 34,
+          "power": 3.4,
+          "radius": 150,
+          "delay": 0.45,
+          "range": 340,
+          "knockback": 260,
+          "color": "#ffd54f",
+          "cost": 4,
+          "late": true,
+          "desc": "A colossal gavel of stone falls from the sky and shatters the ground.",
+          "trDesc": "Gökten devasa bir taş tokmak düşer ve yeri parçalar.",
+          "slot": null
+        },
+        {
+          "id": "worldbreaker",
+          "name": "World Breaker",
+          "visual": "Earthbreaker",
+          "element": "physical",
+          "kind": "nova",
+          "cd": 45,
+          "power": 4.6,
+          "radius": 190,
+          "knockback": 340,
+          "color": "#ffb74d",
+          "cost": 6,
+          "late": true,
+          "desc": "One strike cracks the world; everything around you is thrown back.",
+          "trDesc": "Tek vuruş dünyayı çatlatır; çevrendeki her şey geri savrulur.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Fan of Knives",
+          "element": "shadow",
+          "kind": "fan",
+          "cd": 4,
+          "power": 0.8,
+          "color": "#b388ff",
+          "desc": "",
+          "count": 5,
+          "spread": 0.16,
+          "speed": 720,
+          "radius": 6
+        },
+        "e": {
+          "name": "Smoke Bomb",
+          "element": "shadow",
+          "kind": "ground",
+          "cd": 9,
+          "power": 0.7,
+          "color": "#b388ff",
+          "desc": "",
+          "radius": 92,
+          "duration": 2.8,
+          "tick": 0.45,
+          "status": {
+            "type": "slow",
+            "duration": 2.2,
+            "slow": 0.55
+          },
+          "dot": 8
+        },
+        "r": {
+          "name": "Shadow Dance",
+          "element": "shadow",
+          "kind": "orbit",
+          "cd": 15,
+          "power": 2.6,
+          "color": "#b388ff",
+          "desc": "",
+          "radius": 118,
+          "duration": 3.6,
+          "tick": 0.28,
+          "count": 10,
+          "speed": 5.2,
+          "status": {
+            "type": "bleed",
+            "duration": 2.5,
+            "dps": 9
+          }
         }
       }
     },
@@ -18240,42 +19129,249 @@ const CONTENT = {
         "element": "holy"
       },
       "q": {
-        "name": "Dawn Strike",
+        "id": "holylance",
+        "name": "Judgement Beam",
+        "visual": "Judgement Beam",
         "element": "holy",
-        "kind": "arc",
-        "cd": 4.5,
+        "magic": true,
+        "kind": "beam",
+        "cd": 7,
         "power": 1.7,
-        "color": "#ffe082",
-        "desc": "",
-        "radius": 100,
-        "arc": 1
+        "range": 300,
+        "width": 26,
+        "color": "#fff59d",
+        "cost": 0,
+        "desc": "A lance of holy light burns a straight line through the enemy.",
+        "trDesc": "Kutsal ışıktan bir mızrak düşmanın içinden düz bir çizgi yakar.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Aegis of Dawn",
-        "element": "holy",
+        "id": "runeseal",
+        "name": "Rune Seal",
+        "visual": "Rune Circle",
+        "element": "arcane",
+        "magic": true,
         "kind": "shield",
-        "cd": 10,
+        "cd": 11,
         "power": 0,
-        "color": "#ffe082",
-        "desc": "",
-        "shieldPct": 28,
-        "duration": 5
+        "shieldPct": 22,
+        "duration": 5,
+        "color": "#b388ff",
+        "cost": 0,
+        "desc": "Etch a warding rune that absorbs a share of incoming damage.",
+        "trDesc": "Gelen hasarın bir kısmını yutan koruyucu bir rün kaz.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Judgment",
+        "id": "divinejudgement",
+        "name": "Divine Judgement",
+        "visual": "Divine Judgement",
         "element": "holy",
-        "kind": "meteor",
-        "cd": 16,
+        "magic": true,
+        "kind": "nova",
+        "cd": 18,
         "power": 2.9,
-        "color": "#ffe082",
-        "desc": "",
-        "radius": 135,
-        "delay": 0.4,
+        "radius": 150,
+        "color": "#fff59d",
         "status": {
           "type": "stun",
-          "duration": 0.9
+          "duration": 0.8
         },
-        "range": 340
+        "cost": 0,
+        "desc": "Six blades of light fall around you and stun the wicked.",
+        "trDesc": "Etrafına altı ışık kılıcı iner ve günahkârları sersemletir.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "spiritward",
+          "name": "Spirit Ward",
+          "visual": "",
+          "element": "holy",
+          "kind": "shield",
+          "cd": 22,
+          "shieldPct": 30,
+          "duration": 6,
+          "radius": 60,
+          "color": "#ffe082",
+          "cost": 2,
+          "slot": null,
+          "desc": "A spirit shield absorbs damage for 6 seconds.",
+          "trDesc": "Ruh kalkanı 6 saniye boyunca gelen hasarı emer."
+        },
+        {
+          "id": "battlefocus",
+          "name": "Battle Focus",
+          "visual": "Rune Circle",
+          "element": "physical",
+          "kind": "buff",
+          "cd": 18,
+          "color": "#ffb74d",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "attack",
+            "pct": 30,
+            "duration": 8
+          },
+          "desc": "Sharpen your focus: attack power rises for 8 seconds.",
+          "trDesc": "Odağını topla: 8 saniye boyunca saldırı gücün yükselir."
+        },
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "id": "judgementbeam",
+          "name": "Radiant Verdict",
+          "visual": "Judgement Beam",
+          "element": "holy",
+          "magic": true,
+          "kind": "beam",
+          "cd": 11,
+          "power": 2.1,
+          "range": 360,
+          "width": 34,
+          "color": "#ffe082",
+          "cost": 2,
+          "desc": "A wide beam of judgement that sears everything in its path.",
+          "trDesc": "Yolundaki her şeyi dağlayan geniş bir hüküm ışını.",
+          "slot": null
+        },
+        {
+          "id": "healingrain",
+          "name": "Healing Rain",
+          "visual": "Healing Rain",
+          "element": "holy",
+          "magic": true,
+          "kind": "heal",
+          "cd": 9,
+          "healPct": 18,
+          "radius": 90,
+          "color": "#69f0ae",
+          "power": 0,
+          "cost": 2,
+          "desc": "Warm rain falls and knits your wounds shut.",
+          "trDesc": "Ilık bir yağmur yağar ve yaralarını kapatır.",
+          "slot": null
+        },
+        {
+          "name": "Aegis of Dawn",
+          "element": "holy",
+          "kind": "shield",
+          "cd": 10,
+          "power": 0,
+          "color": "#ffe082",
+          "desc": "A technique carried over from the old travel kit.",
+          "shieldPct": 28,
+          "duration": 5,
+          "id": "legacy_paladin_e",
+          "visual": "Rune Circle",
+          "tr": "Şafak Siperi",
+          "legacyFrom": "paladin.e",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 2,
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "seraphsjudgement",
+          "name": "Seraph's Judgement",
+          "visual": "Judgement Beam",
+          "element": "holy",
+          "magic": true,
+          "kind": "beam",
+          "cd": 34,
+          "power": 3.5,
+          "range": 380,
+          "width": 42,
+          "color": "#fff59d",
+          "cost": 4,
+          "late": true,
+          "desc": "A seraph's spear of light burns a wide path through everything.",
+          "trDesc": "Bir serafın ışık mızrağı her şeyin içinden geniş bir yol yakar.",
+          "slot": null
+        },
+        {
+          "id": "eternaldawn",
+          "name": "Eternal Dawn",
+          "visual": "Divine Judgement",
+          "element": "holy",
+          "magic": true,
+          "kind": "nova",
+          "cd": 45,
+          "power": 4.8,
+          "radius": 195,
+          "healPct": 22,
+          "color": "#ffe082",
+          "status": {
+            "type": "stun",
+            "duration": 1.2
+          },
+          "cost": 6,
+          "late": true,
+          "desc": "Dawn breaks all at once: foes are stunned, allies are restored.",
+          "trDesc": "Şafak bir anda söker: düşmanlar sersemler, müttefikler iyileşir.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Dawn Strike",
+          "element": "holy",
+          "kind": "arc",
+          "cd": 4.5,
+          "power": 1.7,
+          "color": "#ffe082",
+          "desc": "",
+          "radius": 100,
+          "arc": 1
+        },
+        "e": {
+          "name": "Aegis of Dawn",
+          "element": "holy",
+          "kind": "shield",
+          "cd": 10,
+          "power": 0,
+          "color": "#ffe082",
+          "desc": "",
+          "shieldPct": 28,
+          "duration": 5
+        },
+        "r": {
+          "name": "Judgment",
+          "element": "holy",
+          "kind": "meteor",
+          "cd": 16,
+          "power": 2.9,
+          "color": "#ffe082",
+          "desc": "",
+          "radius": 135,
+          "delay": 0.4,
+          "status": {
+            "type": "stun",
+            "duration": 0.9
+          },
+          "range": 340
+        }
       }
     },
     "assassin": {
@@ -18284,46 +19380,264 @@ const CONTENT = {
         "element": "physical"
       },
       "q": {
-        "name": "Throat Cut",
-        "element": "physical",
+        "id": "umbrallash",
+        "name": "Umbral Lash",
+        "visual": "Shadow Grasp",
+        "element": "shadow",
         "kind": "arc",
-        "cd": 3.5,
-        "power": 1.9,
-        "color": "#9fd8ff",
-        "desc": "",
-        "radius": 85,
-        "arc": 0.8
+        "cd": 5,
+        "power": 1.5,
+        "radius": 110,
+        "arc": 1.1,
+        "color": "#9c4dff",
+        "cost": 0,
+        "desc": "A whip of shadow cuts across the foes in front of you.",
+        "trDesc": "Önündeki düşmanları kesen bir gölge kamçısı.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Blood Mark",
-        "element": "blood",
-        "kind": "beam",
-        "cd": 7,
-        "power": 2.1,
-        "color": "#ff5370",
-        "desc": "",
-        "range": 210,
-        "width": 26,
+        "id": "shadowgrasp",
+        "name": "Shadow Grasp",
+        "visual": "Shadow Grasp",
+        "element": "shadow",
+        "magic": true,
+        "kind": "ground",
+        "cd": 9,
+        "power": 1.4,
+        "radius": 95,
+        "duration": 2.2,
+        "tick": 0.4,
+        "range": 300,
+        "color": "#9c4dff",
         "status": {
-          "type": "bleed",
-          "duration": 3,
-          "dps": 12
-        }
+          "type": "freeze",
+          "duration": 1
+        },
+        "cost": 0,
+        "desc": "Shadow tendrils burst from the ground and claw at everything.",
+        "trDesc": "Yerden gölge kolları fışkırır ve her şeyi tırmalar.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Crimson Reaping",
-        "element": "blood",
-        "kind": "teleport",
+        "id": "bladestorm",
+        "name": "Blade Storm",
+        "visual": "Blade Storm",
+        "element": "physical",
+        "kind": "orbit",
         "cd": 15,
-        "power": 2.9,
-        "color": "#ff5370",
-        "desc": "",
-        "range": 200,
-        "radius": 120,
-        "status": {
-          "type": "bleed",
-          "duration": 4,
-          "dps": 18
+        "power": 2.35,
+        "radius": 118,
+        "duration": 3.2,
+        "tick": 0.35,
+        "count": 8,
+        "speed": 4.6,
+        "color": "#80d8ff",
+        "cost": 0,
+        "desc": "Blades orbit you for three seconds, shredding anything they touch.",
+        "trDesc": "Bıçaklar üç saniye etrafında döner, dokunduklarını parçalar.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "shadowveil",
+          "name": "Shadow Veil",
+          "visual": "Dimension Rift",
+          "element": "shadow",
+          "kind": "teleport",
+          "cd": 10,
+          "power": 0.9,
+          "range": 200,
+          "radius": 70,
+          "color": "#9575cd",
+          "cost": 2,
+          "slot": null,
+          "desc": "Melt into shadow and reappear a short distance away.",
+          "trDesc": "Gölgeye karışıp kısa bir mesafe öteye belir."
+        },
+        {
+          "id": "frostbite",
+          "name": "Frostbite",
+          "visual": "",
+          "element": "frost",
+          "kind": "projectile",
+          "cd": 6,
+          "power": 1.4,
+          "speed": 660,
+          "radius": 10,
+          "color": "#81d4fa",
+          "cost": 1,
+          "slot": null,
+          "status": {
+            "type": "slow",
+            "duration": 2,
+            "slow": 0.45
+          },
+          "desc": "Hurl a shard of ice that chills and slows the target.",
+          "trDesc": "Hedefi üşütüp yavaşlatan bir buz kırığı fırlat."
+        },
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "id": "dimensionrift",
+          "name": "Dimension Rift",
+          "visual": "Dimension Rift",
+          "element": "arcane",
+          "magic": true,
+          "kind": "teleport",
+          "cd": 10,
+          "power": 1.9,
+          "radius": 90,
+          "range": 230,
+          "color": "#b388ff",
+          "cost": 2,
+          "desc": "Tear space and step through it, shredding everything you leave behind.",
+          "trDesc": "Uzayı yırt ve içinden geç; geride bıraktığın her şeyi parçala.",
+          "slot": null
+        },
+        {
+          "name": "Shadow Dance",
+          "element": "shadow",
+          "kind": "orbit",
+          "cd": 15,
+          "power": 2.6,
+          "color": "#b388ff",
+          "desc": "A technique carried over from the old travel kit.",
+          "radius": 118,
+          "duration": 3.6,
+          "tick": 0.28,
+          "count": 10,
+          "speed": 5.2,
+          "status": {
+            "type": "bleed",
+            "duration": 2.5,
+            "dps": 9
+          },
+          "id": "legacy_rogue_r",
+          "visual": "Blade Storm",
+          "tr": "Gölge Dansı",
+          "legacyFrom": "rogue.r",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 3,
+          "slot": null
+        },
+        {
+          "id": "venomspit",
+          "name": "Venom Spit",
+          "visual": "Toxic Cloud",
+          "element": "nature",
+          "magic": true,
+          "kind": "projectile",
+          "cd": 5,
+          "power": 1.35,
+          "speed": 620,
+          "radius": 9,
+          "color": "#7cb342",
+          "cost": 1,
+          "desc": "Spit a blob of venom that bursts on impact.",
+          "trDesc": "Çarpınca patlayan bir zehir topağı tükür.",
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "doomgavel",
+          "name": "Doom Gavel",
+          "visual": "Titan Fist",
+          "element": "physical",
+          "kind": "meteor",
+          "cd": 34,
+          "power": 3.4,
+          "radius": 150,
+          "delay": 0.45,
+          "range": 340,
+          "knockback": 260,
+          "color": "#ffd54f",
+          "cost": 4,
+          "late": true,
+          "desc": "A colossal gavel of stone falls from the sky and shatters the ground.",
+          "trDesc": "Gökten devasa bir taş tokmak düşer ve yeri parçalar.",
+          "slot": null
+        },
+        {
+          "id": "worldbreaker",
+          "name": "World Breaker",
+          "visual": "Earthbreaker",
+          "element": "physical",
+          "kind": "nova",
+          "cd": 45,
+          "power": 4.6,
+          "radius": 190,
+          "knockback": 340,
+          "color": "#ffb74d",
+          "cost": 6,
+          "late": true,
+          "desc": "One strike cracks the world; everything around you is thrown back.",
+          "trDesc": "Tek vuruş dünyayı çatlatır; çevrendeki her şey geri savrulur.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Throat Cut",
+          "element": "physical",
+          "kind": "arc",
+          "cd": 3.5,
+          "power": 1.9,
+          "color": "#9fd8ff",
+          "desc": "",
+          "radius": 85,
+          "arc": 0.8
+        },
+        "e": {
+          "name": "Blood Mark",
+          "element": "blood",
+          "kind": "beam",
+          "cd": 7,
+          "power": 2.1,
+          "color": "#ff5370",
+          "desc": "",
+          "range": 210,
+          "width": 26,
+          "status": {
+            "type": "bleed",
+            "duration": 3,
+            "dps": 12
+          }
+        },
+        "r": {
+          "name": "Crimson Reaping",
+          "element": "blood",
+          "kind": "teleport",
+          "cd": 15,
+          "power": 2.9,
+          "color": "#ff5370",
+          "desc": "",
+          "range": 200,
+          "radius": 120,
+          "status": {
+            "type": "bleed",
+            "duration": 4,
+            "dps": 18
+          }
         }
       }
     },
@@ -18334,38 +19648,253 @@ const CONTENT = {
         "magic": true
       },
       "q": {
-        "name": "Holy Bolt",
+        "id": "mendinglight",
+        "name": "Mending Light",
+        "visual": "Healing Rain",
         "element": "holy",
-        "kind": "projectile",
-        "cd": 3,
-        "power": 1.2,
-        "color": "#ffe082",
-        "desc": "",
-        "speed": 600,
-        "radius": 9
+        "magic": true,
+        "kind": "heal",
+        "cd": 6,
+        "healPct": 10,
+        "radius": 70,
+        "color": "#69f0ae",
+        "power": 0,
+        "cost": 0,
+        "desc": "A soft light mends a small amount of health.",
+        "trDesc": "Yumuşak bir ışık az miktarda can onarır.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Sanctuary",
+        "id": "healingrain",
+        "name": "Healing Rain",
+        "visual": "Healing Rain",
         "element": "holy",
-        "kind": "shield",
-        "cd": 10,
+        "magic": true,
+        "kind": "heal",
+        "cd": 9,
+        "healPct": 18,
+        "radius": 90,
+        "color": "#69f0ae",
         "power": 0,
-        "color": "#ffe082",
-        "desc": "",
-        "shieldPct": 24,
-        "duration": 5,
-        "healPct": 8
+        "cost": 0,
+        "desc": "Warm rain falls and knits your wounds shut.",
+        "trDesc": "Ilık bir yağmur yağar ve yaralarını kapatır.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Radiant Chorus",
-        "element": "holy",
+        "id": "treeoflife",
+        "name": "Tree of Life",
+        "visual": "Tree of Life",
+        "element": "nature",
+        "magic": true,
         "kind": "heal",
         "cd": 16,
+        "healPct": 30,
+        "radius": 120,
+        "color": "#69f0ae",
         "power": 0,
-        "color": "#ffe082",
-        "desc": "",
-        "healPct": 35,
-        "radius": 155
+        "cost": 0,
+        "desc": "A great tree blooms and pours healing light over the ground.",
+        "trDesc": "Ulu bir ağaç açar ve yere şifa ışığı döker.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "spiritward",
+          "name": "Spirit Ward",
+          "visual": "",
+          "element": "holy",
+          "kind": "shield",
+          "cd": 22,
+          "shieldPct": 30,
+          "duration": 6,
+          "radius": 60,
+          "color": "#ffe082",
+          "cost": 2,
+          "slot": null,
+          "desc": "A spirit shield absorbs damage for 6 seconds.",
+          "trDesc": "Ruh kalkanı 6 saniye boyunca gelen hasarı emer."
+        },
+        {
+          "id": "battlefocus",
+          "name": "Battle Focus",
+          "visual": "Rune Circle",
+          "element": "physical",
+          "kind": "buff",
+          "cd": 18,
+          "color": "#ffb74d",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "attack",
+            "pct": 30,
+            "duration": 8
+          },
+          "desc": "Sharpen your focus: attack power rises for 8 seconds.",
+          "trDesc": "Odağını topla: 8 saniye boyunca saldırı gücün yükselir."
+        },
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "id": "phoenixrebirth",
+          "name": "Phoenix Rebirth",
+          "visual": "Phoenix Rebirth",
+          "element": "holy",
+          "magic": true,
+          "kind": "heal",
+          "cd": 22,
+          "healPct": 45,
+          "radius": 110,
+          "shieldPct": 12,
+          "duration": 5,
+          "color": "#ff8f00",
+          "power": 0,
+          "cost": 3,
+          "desc": "A phoenix rises from you, restoring a great amount of health.",
+          "trDesc": "İçinden bir anka yükselir, büyük miktarda can geri verir.",
+          "slot": null
+        },
+        {
+          "id": "runeseal",
+          "name": "Rune Seal",
+          "visual": "Rune Circle",
+          "element": "arcane",
+          "magic": true,
+          "kind": "shield",
+          "cd": 11,
+          "power": 0,
+          "shieldPct": 22,
+          "duration": 5,
+          "color": "#b388ff",
+          "cost": 2,
+          "desc": "Etch a warding rune that absorbs a share of incoming damage.",
+          "trDesc": "Gelen hasarın bir kısmını yutan koruyucu bir rün kaz.",
+          "slot": null
+        },
+        {
+          "id": "thornsnare",
+          "name": "Thorn Snare",
+          "visual": "Thorn Snare",
+          "element": "nature",
+          "magic": true,
+          "kind": "ground",
+          "cd": 8,
+          "power": 1,
+          "radius": 90,
+          "duration": 2.2,
+          "tick": 0.4,
+          "range": 280,
+          "color": "#76ff03",
+          "status": {
+            "type": "freeze",
+            "duration": 1.4
+          },
+          "cost": 1,
+          "desc": "Thorned vines erupt and root everything in the area.",
+          "trDesc": "Dikenli sarmaşıklar fışkırır ve alandaki her şeyi kökler.",
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "primordialgrove",
+          "name": "Primordial Grove",
+          "visual": "Tree of Life",
+          "element": "nature",
+          "magic": true,
+          "kind": "heal",
+          "cd": 30,
+          "healPct": 55,
+          "shieldPct": 20,
+          "duration": 6,
+          "radius": 150,
+          "color": "#69f0ae",
+          "cost": 4,
+          "late": true,
+          "power": 0,
+          "desc": "An ancient grove blooms around you, pouring life into every wound.",
+          "trDesc": "Etrafında kadim bir koru açar, her yaraya can döker.",
+          "slot": null
+        },
+        {
+          "id": "verdantwrath",
+          "name": "Verdant Wrath",
+          "visual": "Thorn Snare",
+          "element": "nature",
+          "magic": true,
+          "kind": "ground",
+          "cd": 44,
+          "power": 4.6,
+          "radius": 200,
+          "duration": 4,
+          "tick": 0.35,
+          "range": 340,
+          "color": "#76ff03",
+          "status": {
+            "type": "freeze",
+            "duration": 1.8
+          },
+          "cost": 6,
+          "late": true,
+          "desc": "The wilds rise up: thorns, roots and rot devour the marked land.",
+          "trDesc": "Yaban ayaklanır: dikenler, kökler ve çürük işaretli toprağı yutar.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Holy Bolt",
+          "element": "holy",
+          "kind": "projectile",
+          "cd": 3,
+          "power": 1.2,
+          "color": "#ffe082",
+          "desc": "",
+          "speed": 600,
+          "radius": 9
+        },
+        "e": {
+          "name": "Sanctuary",
+          "element": "holy",
+          "kind": "shield",
+          "cd": 10,
+          "power": 0,
+          "color": "#ffe082",
+          "desc": "",
+          "shieldPct": 24,
+          "duration": 5,
+          "healPct": 8
+        },
+        "r": {
+          "name": "Radiant Chorus",
+          "element": "holy",
+          "kind": "heal",
+          "cd": 16,
+          "power": 0,
+          "color": "#ffe082",
+          "desc": "",
+          "healPct": 35,
+          "radius": 155
+        }
       }
     },
     "tank": {
@@ -18374,44 +19903,238 @@ const CONTENT = {
         "element": "physical"
       },
       "q": {
-        "name": "Shield Bash",
+        "id": "earthbreaker",
+        "name": "Earthbreaker",
+        "visual": "Earthbreaker",
         "element": "physical",
-        "kind": "arc",
-        "cd": 4,
-        "power": 1.4,
-        "color": "#9fd8ff",
-        "desc": "",
-        "radius": 85,
-        "arc": 0.9,
+        "kind": "nova",
+        "cd": 9,
+        "power": 1.7,
+        "radius": 110,
         "knockback": 120,
-        "status": {
-          "type": "stun",
-          "duration": 0.5
-        }
+        "color": "#ffb74d",
+        "cost": 0,
+        "desc": "Slam the ground and send a shockwave through everything nearby.",
+        "trDesc": "Yere vur; çevrendeki her şeyi sarsan bir şok dalgası yay.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Iron Bulwark",
-        "element": "earth",
-        "kind": "shield",
+        "id": "glaciervall",
+        "name": "Glacier Wall",
+        "visual": "Glacier Wall",
+        "element": "frost",
+        "magic": true,
+        "kind": "ground",
         "cd": 11,
-        "power": 0,
-        "color": "#c9a227",
-        "desc": "",
-        "shieldPct": 35,
-        "duration": 5
+        "power": 1.25,
+        "radius": 80,
+        "duration": 2.2,
+        "tick": 0.45,
+        "range": 280,
+        "color": "#9fe2ff",
+        "status": {
+          "type": "freeze",
+          "duration": 1
+        },
+        "cost": 0,
+        "desc": "Raise a wall of ice ahead that slows and cuts anything crossing it.",
+        "trDesc": "Önüne geçenleri yavaşlatan ve kesen bir buz duvarı dik.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Shockwave",
-        "element": "earth",
+        "id": "tremor",
+        "name": "Tremor",
+        "visual": "Earthbreaker",
+        "element": "physical",
         "kind": "quake",
-        "cd": 16,
-        "power": 2.5,
-        "color": "#c9a227",
-        "desc": "",
-        "radius": 150,
+        "cd": 14,
+        "power": 1.5,
+        "radius": 130,
         "pulses": 3,
         "interval": 0.22,
-        "knockback": 200
+        "knockback": 100,
+        "color": "#a1887f",
+        "cost": 2,
+        "slot": "r",
+        "desc": "Smash the ground and send three rolling shockwaves outward.",
+        "trDesc": "Yere vur; dışa doğru yayılan üç şok dalgası gönder.",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "battlefocus",
+          "name": "Battle Focus",
+          "visual": "Rune Circle",
+          "element": "physical",
+          "kind": "buff",
+          "cd": 18,
+          "color": "#ffb74d",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "attack",
+            "pct": 30,
+            "duration": 8
+          },
+          "desc": "Sharpen your focus: attack power rises for 8 seconds.",
+          "trDesc": "Odağını topla: 8 saniye boyunca saldırı gücün yükselir."
+        },
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "id": "runeseal",
+          "name": "Rune Seal",
+          "visual": "Rune Circle",
+          "element": "arcane",
+          "magic": true,
+          "kind": "shield",
+          "cd": 11,
+          "power": 0,
+          "shieldPct": 22,
+          "duration": 5,
+          "color": "#b388ff",
+          "cost": 2,
+          "desc": "Etch a warding rune that absorbs a share of incoming damage.",
+          "trDesc": "Gelen hasarın bir kısmını yutan koruyucu bir rün kaz.",
+          "slot": null
+        },
+        {
+          "id": "bonecage",
+          "name": "Bone Cage",
+          "visual": "Bone Cage",
+          "element": "shadow",
+          "kind": "ground",
+          "cd": 12,
+          "power": 1.4,
+          "radius": 95,
+          "duration": 2.4,
+          "tick": 0.4,
+          "color": "#d8d0b8",
+          "status": {
+            "type": "freeze",
+            "duration": 1.2
+          },
+          "cost": 2,
+          "desc": "Bones erupt around the target and lock it in place while they cut.",
+          "trDesc": "Hedefin çevresinde kemikler yükselir, onu yerinde kilitler.",
+          "slot": null
+        },
+        {
+          "name": "Aegis of Dawn",
+          "element": "holy",
+          "kind": "shield",
+          "cd": 10,
+          "power": 0,
+          "color": "#ffe082",
+          "desc": "A technique carried over from the old travel kit.",
+          "shieldPct": 28,
+          "duration": 5,
+          "id": "legacy_paladin_e",
+          "visual": "Rune Circle",
+          "tr": "Şafak Siperi",
+          "legacyFrom": "paladin.e",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 2,
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "doomgavel",
+          "name": "Doom Gavel",
+          "visual": "Titan Fist",
+          "element": "physical",
+          "kind": "meteor",
+          "cd": 34,
+          "power": 3.4,
+          "radius": 150,
+          "delay": 0.45,
+          "range": 340,
+          "knockback": 260,
+          "color": "#ffd54f",
+          "cost": 4,
+          "late": true,
+          "desc": "A colossal gavel of stone falls from the sky and shatters the ground.",
+          "trDesc": "Gökten devasa bir taş tokmak düşer ve yeri parçalar.",
+          "slot": null
+        },
+        {
+          "id": "worldbreaker",
+          "name": "World Breaker",
+          "visual": "Earthbreaker",
+          "element": "physical",
+          "kind": "nova",
+          "cd": 45,
+          "power": 4.6,
+          "radius": 190,
+          "knockback": 340,
+          "color": "#ffb74d",
+          "cost": 6,
+          "late": true,
+          "desc": "One strike cracks the world; everything around you is thrown back.",
+          "trDesc": "Tek vuruş dünyayı çatlatır; çevrendeki her şey geri savrulur.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Shield Bash",
+          "element": "physical",
+          "kind": "arc",
+          "cd": 4,
+          "power": 1.4,
+          "color": "#9fd8ff",
+          "desc": "",
+          "radius": 85,
+          "arc": 0.9,
+          "knockback": 120,
+          "status": {
+            "type": "stun",
+            "duration": 0.5
+          }
+        },
+        "e": {
+          "name": "Iron Bulwark",
+          "element": "earth",
+          "kind": "shield",
+          "cd": 11,
+          "power": 0,
+          "color": "#c9a227",
+          "desc": "",
+          "shieldPct": 35,
+          "duration": 5
+        },
+        "r": {
+          "name": "Shockwave",
+          "element": "earth",
+          "kind": "quake",
+          "cd": 16,
+          "power": 2.5,
+          "color": "#c9a227",
+          "desc": "",
+          "radius": 150,
+          "pulses": 3,
+          "interval": 0.22,
+          "knockback": 200
+        }
       }
     },
     "tamer": {
@@ -18420,45 +20143,267 @@ const CONTENT = {
         "element": "nature"
       },
       "q": {
-        "name": "Beast Fang",
+        "id": "bramble",
+        "name": "Bramble",
+        "visual": "Thorn Snare",
         "element": "nature",
-        "kind": "projectile",
-        "cd": 3.5,
+        "magic": true,
+        "kind": "arc",
+        "cd": 5,
         "power": 1.3,
-        "color": "#9ccc65",
-        "desc": "",
-        "speed": 640,
-        "radius": 9,
-        "pet": true
+        "radius": 95,
+        "arc": 1,
+        "color": "#76ff03",
+        "cost": 0,
+        "desc": "A lash of thorned vines sweeps the arc ahead.",
+        "trDesc": "Önündeki yayı süpüren dikenli sarmaşık kamçısı.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Spirit Howl",
+        "id": "thornsnare",
+        "name": "Thorn Snare",
+        "visual": "Thorn Snare",
         "element": "nature",
-        "kind": "nova",
+        "magic": true,
+        "kind": "ground",
         "cd": 8,
-        "power": 1.5,
-        "color": "#9ccc65",
-        "desc": "",
-        "radius": 125,
+        "power": 1,
+        "radius": 90,
+        "duration": 2.2,
+        "tick": 0.4,
+        "range": 280,
+        "color": "#76ff03",
         "status": {
-          "type": "slow",
-          "duration": 2.2,
-          "slow": 0.55
+          "type": "freeze",
+          "duration": 1.4
         },
-        "pet": true
+        "cost": 0,
+        "desc": "Thorned vines erupt and root everything in the area.",
+        "trDesc": "Dikenli sarmaşıklar fışkırır ve alandaki her şeyi kökler.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Stampede",
+        "id": "spiritpack",
+        "name": "Spirit Pack",
+        "visual": "Spirit Pack",
         "element": "nature",
+        "magic": true,
         "kind": "aoe",
-        "cd": 16,
-        "power": 2.7,
-        "color": "#9ccc65",
-        "desc": "",
-        "radius": 145,
-        "offset": 40,
-        "knockback": 160,
-        "pet": true
+        "cd": 14,
+        "power": 1.7,
+        "radius": 120,
+        "offset": 60,
+        "pet": true,
+        "color": "#80deea",
+        "cost": 0,
+        "desc": "Ghostly wolves circle the target and lunge as one.",
+        "trDesc": "Hayalet kurtlar hedefin etrafında döner ve birlikte atılır.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "thornwave",
+          "name": "Thorn Wave",
+          "visual": "Thorn Snare",
+          "element": "nature",
+          "kind": "ground",
+          "cd": 14,
+          "power": 0.62,
+          "radius": 120,
+          "duration": 4,
+          "tick": 0.5,
+          "color": "#81c784",
+          "cost": 2,
+          "slot": null,
+          "status": {
+            "type": "slow",
+            "duration": 2,
+            "slow": 0.35
+          },
+          "desc": "Thorns erupt from the ground and keep stinging anything standing there.",
+          "trDesc": "Yerden dikenler fışkırır; orada duran her şeyi sürekli yakar."
+        },
+        {
+          "id": "windstep",
+          "name": "Wind Step",
+          "visual": "",
+          "element": "nature",
+          "kind": "buff",
+          "cd": 16,
+          "color": "#a5d6a7",
+          "cost": 1,
+          "slot": null,
+          "buff": {
+            "stat": "speed",
+            "pct": 35,
+            "duration": 6
+          },
+          "desc": "Ride the wind: movement speed rises for 6 seconds.",
+          "trDesc": "Rüzgâra bin: 6 saniye boyunca hareket hızın artar."
+        },
+        {
+          "id": "spiritward",
+          "name": "Spirit Ward",
+          "visual": "",
+          "element": "holy",
+          "kind": "shield",
+          "cd": 22,
+          "shieldPct": 30,
+          "duration": 6,
+          "radius": 60,
+          "color": "#ffe082",
+          "cost": 2,
+          "slot": null,
+          "desc": "A spirit shield absorbs damage for 6 seconds.",
+          "trDesc": "Ruh kalkanı 6 saniye boyunca gelen hasarı emer."
+        },
+        {
+          "id": "cyclone",
+          "name": "Cyclone",
+          "visual": "Cyclone",
+          "element": "physical",
+          "kind": "vortex",
+          "cd": 9,
+          "power": 1.2,
+          "radius": 120,
+          "duration": 2.6,
+          "tick": 0.35,
+          "pull": 120,
+          "range": 300,
+          "color": "#b0bec5",
+          "cost": 2,
+          "desc": "A spinning vortex drags enemies inward and shreds them.",
+          "trDesc": "Dönen bir girdap düşmanları içeri çeker ve parçalar.",
+          "slot": null
+        },
+        {
+          "id": "umbrallash",
+          "name": "Umbral Lash",
+          "visual": "Shadow Grasp",
+          "element": "shadow",
+          "kind": "arc",
+          "cd": 5,
+          "power": 1.5,
+          "radius": 110,
+          "arc": 1.1,
+          "color": "#9c4dff",
+          "cost": 1,
+          "desc": "A whip of shadow cuts across the foes in front of you.",
+          "trDesc": "Önündeki düşmanları kesen bir gölge kamçısı.",
+          "slot": null
+        },
+        {
+          "name": "Stampede",
+          "element": "nature",
+          "kind": "aoe",
+          "cd": 16,
+          "power": 2.7,
+          "color": "#9ccc65",
+          "desc": "A technique carried over from the old travel kit.",
+          "radius": 145,
+          "offset": 40,
+          "knockback": 160,
+          "pet": true,
+          "id": "legacy_tamer_r",
+          "visual": "Earthbreaker",
+          "tr": "Stampede",
+          "legacyFrom": "tamer.r",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 3,
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "primordialgrove",
+          "name": "Primordial Grove",
+          "visual": "Tree of Life",
+          "element": "nature",
+          "magic": true,
+          "kind": "heal",
+          "cd": 30,
+          "healPct": 55,
+          "shieldPct": 20,
+          "duration": 6,
+          "radius": 150,
+          "color": "#69f0ae",
+          "cost": 4,
+          "late": true,
+          "power": 0,
+          "desc": "An ancient grove blooms around you, pouring life into every wound.",
+          "trDesc": "Etrafında kadim bir koru açar, her yaraya can döker.",
+          "slot": null
+        },
+        {
+          "id": "verdantwrath",
+          "name": "Verdant Wrath",
+          "visual": "Thorn Snare",
+          "element": "nature",
+          "magic": true,
+          "kind": "ground",
+          "cd": 44,
+          "power": 4.6,
+          "radius": 200,
+          "duration": 4,
+          "tick": 0.35,
+          "range": 340,
+          "color": "#76ff03",
+          "status": {
+            "type": "freeze",
+            "duration": 1.8
+          },
+          "cost": 6,
+          "late": true,
+          "desc": "The wilds rise up: thorns, roots and rot devour the marked land.",
+          "trDesc": "Yaban ayaklanır: dikenler, kökler ve çürük işaretli toprağı yutar.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Beast Fang",
+          "element": "nature",
+          "kind": "projectile",
+          "cd": 3.5,
+          "power": 1.3,
+          "color": "#9ccc65",
+          "desc": "",
+          "speed": 640,
+          "radius": 9,
+          "pet": true
+        },
+        "e": {
+          "name": "Spirit Howl",
+          "element": "nature",
+          "kind": "nova",
+          "cd": 8,
+          "power": 1.5,
+          "color": "#9ccc65",
+          "desc": "",
+          "radius": 125,
+          "status": {
+            "type": "slow",
+            "duration": 2.2,
+            "slow": 0.55
+          },
+          "pet": true
+        },
+        "r": {
+          "name": "Stampede",
+          "element": "nature",
+          "kind": "aoe",
+          "cd": 16,
+          "power": 2.7,
+          "color": "#9ccc65",
+          "desc": "",
+          "radius": 145,
+          "offset": 40,
+          "knockback": 160,
+          "pet": true
+        }
       }
     },
     "gardener": {
@@ -18467,53 +20412,281 @@ const CONTENT = {
         "element": "nature"
       },
       "q": {
-        "name": "Thorn Volley",
+        "id": "bramble",
+        "name": "Bramble",
+        "visual": "Thorn Snare",
         "element": "nature",
-        "kind": "fan",
-        "cd": 4,
-        "power": 0.8,
-        "color": "#9ccc65",
-        "desc": "",
-        "count": 4,
-        "spread": 0.2,
-        "speed": 620,
-        "radius": 7
+        "magic": true,
+        "kind": "arc",
+        "cd": 5,
+        "power": 1.3,
+        "radius": 95,
+        "arc": 1,
+        "color": "#76ff03",
+        "cost": 0,
+        "desc": "A lash of thorned vines sweeps the arc ahead.",
+        "trDesc": "Önündeki yayı süpüren dikenli sarmaşık kamçısı.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Entangling Roots",
+        "id": "toxiccloud",
+        "name": "Toxic Cloud",
+        "visual": "Toxic Cloud",
         "element": "nature",
+        "magic": true,
         "kind": "ground",
-        "cd": 9,
-        "power": 0.9,
-        "color": "#9ccc65",
-        "desc": "",
-        "radius": 78,
+        "cd": 8,
+        "power": 1.1,
+        "radius": 100,
         "duration": 3,
         "tick": 0.5,
-        "status": {
-          "type": "root",
-          "duration": 2.2
-        },
         "dot": 10,
-        "range": 340
+        "range": 300,
+        "color": "#7cb342",
+        "cost": 0,
+        "desc": "A lingering cloud of poison that eats away at anything inside.",
+        "trDesc": "İçindeki her şeyi kemiren, kalıcı bir zehir bulutu.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Bloom",
+        "id": "treeoflife",
+        "name": "Tree of Life",
+        "visual": "Tree of Life",
         "element": "nature",
-        "kind": "ground",
-        "cd": 15,
-        "power": 2,
-        "color": "#9ccc65",
-        "desc": "",
-        "radius": 130,
-        "duration": 4,
-        "tick": 0.5,
-        "status": {
-          "type": "root",
-          "duration": 1.2
+        "magic": true,
+        "kind": "heal",
+        "cd": 16,
+        "healPct": 30,
+        "radius": 120,
+        "color": "#69f0ae",
+        "power": 0,
+        "cost": 0,
+        "desc": "A great tree blooms and pours healing light over the ground.",
+        "trDesc": "Ulu bir ağaç açar ve yere şifa ışığı döker.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "thornwave",
+          "name": "Thorn Wave",
+          "visual": "Thorn Snare",
+          "element": "nature",
+          "kind": "ground",
+          "cd": 14,
+          "power": 0.62,
+          "radius": 120,
+          "duration": 4,
+          "tick": 0.5,
+          "color": "#81c784",
+          "cost": 2,
+          "slot": null,
+          "status": {
+            "type": "slow",
+            "duration": 2,
+            "slow": 0.35
+          },
+          "desc": "Thorns erupt from the ground and keep stinging anything standing there.",
+          "trDesc": "Yerden dikenler fışkırır; orada duran her şeyi sürekli yakar."
         },
-        "dot": 12,
-        "range": 340
+        {
+          "id": "windstep",
+          "name": "Wind Step",
+          "visual": "",
+          "element": "nature",
+          "kind": "buff",
+          "cd": 16,
+          "color": "#a5d6a7",
+          "cost": 1,
+          "slot": null,
+          "buff": {
+            "stat": "speed",
+            "pct": 35,
+            "duration": 6
+          },
+          "desc": "Ride the wind: movement speed rises for 6 seconds.",
+          "trDesc": "Rüzgâra bin: 6 saniye boyunca hareket hızın artar."
+        },
+        {
+          "id": "spiritward",
+          "name": "Spirit Ward",
+          "visual": "",
+          "element": "holy",
+          "kind": "shield",
+          "cd": 22,
+          "shieldPct": 30,
+          "duration": 6,
+          "radius": 60,
+          "color": "#ffe082",
+          "cost": 2,
+          "slot": null,
+          "desc": "A spirit shield absorbs damage for 6 seconds.",
+          "trDesc": "Ruh kalkanı 6 saniye boyunca gelen hasarı emer."
+        },
+        {
+          "id": "thornsnare",
+          "name": "Thorn Snare",
+          "visual": "Thorn Snare",
+          "element": "nature",
+          "magic": true,
+          "kind": "ground",
+          "cd": 8,
+          "power": 1,
+          "radius": 90,
+          "duration": 2.2,
+          "tick": 0.4,
+          "range": 280,
+          "color": "#76ff03",
+          "status": {
+            "type": "freeze",
+            "duration": 1.4
+          },
+          "cost": 1,
+          "desc": "Thorned vines erupt and root everything in the area.",
+          "trDesc": "Dikenli sarmaşıklar fışkırır ve alandaki her şeyi kökler.",
+          "slot": null
+        },
+        {
+          "id": "healingrain",
+          "name": "Healing Rain",
+          "visual": "Healing Rain",
+          "element": "holy",
+          "magic": true,
+          "kind": "heal",
+          "cd": 9,
+          "healPct": 18,
+          "radius": 90,
+          "color": "#69f0ae",
+          "power": 0,
+          "cost": 2,
+          "desc": "Warm rain falls and knits your wounds shut.",
+          "trDesc": "Ilık bir yağmur yağar ve yaralarını kapatır.",
+          "slot": null
+        },
+        {
+          "name": "Bloom",
+          "element": "nature",
+          "kind": "ground",
+          "cd": 15,
+          "power": 2,
+          "color": "#9ccc65",
+          "desc": "A technique carried over from the old travel kit.",
+          "radius": 130,
+          "duration": 4,
+          "tick": 0.5,
+          "status": {
+            "type": "root",
+            "duration": 1.2
+          },
+          "dot": 12,
+          "range": 340,
+          "id": "legacy_gardener_r",
+          "visual": "Toxic Cloud",
+          "tr": "Bloom",
+          "legacyFrom": "gardener.r",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 3,
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "primordialgrove",
+          "name": "Primordial Grove",
+          "visual": "Tree of Life",
+          "element": "nature",
+          "magic": true,
+          "kind": "heal",
+          "cd": 30,
+          "healPct": 55,
+          "shieldPct": 20,
+          "duration": 6,
+          "radius": 150,
+          "color": "#69f0ae",
+          "cost": 4,
+          "late": true,
+          "power": 0,
+          "desc": "An ancient grove blooms around you, pouring life into every wound.",
+          "trDesc": "Etrafında kadim bir koru açar, her yaraya can döker.",
+          "slot": null
+        },
+        {
+          "id": "verdantwrath",
+          "name": "Verdant Wrath",
+          "visual": "Thorn Snare",
+          "element": "nature",
+          "magic": true,
+          "kind": "ground",
+          "cd": 44,
+          "power": 4.6,
+          "radius": 200,
+          "duration": 4,
+          "tick": 0.35,
+          "range": 340,
+          "color": "#76ff03",
+          "status": {
+            "type": "freeze",
+            "duration": 1.8
+          },
+          "cost": 6,
+          "late": true,
+          "desc": "The wilds rise up: thorns, roots and rot devour the marked land.",
+          "trDesc": "Yaban ayaklanır: dikenler, kökler ve çürük işaretli toprağı yutar.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Thorn Volley",
+          "element": "nature",
+          "kind": "fan",
+          "cd": 4,
+          "power": 0.8,
+          "color": "#9ccc65",
+          "desc": "",
+          "count": 4,
+          "spread": 0.2,
+          "speed": 620,
+          "radius": 7
+        },
+        "e": {
+          "name": "Entangling Roots",
+          "element": "nature",
+          "kind": "ground",
+          "cd": 9,
+          "power": 0.9,
+          "color": "#9ccc65",
+          "desc": "",
+          "radius": 78,
+          "duration": 3,
+          "tick": 0.5,
+          "status": {
+            "type": "root",
+            "duration": 2.2
+          },
+          "dot": 10,
+          "range": 340
+        },
+        "r": {
+          "name": "Bloom",
+          "element": "nature",
+          "kind": "ground",
+          "cd": 15,
+          "power": 2,
+          "color": "#9ccc65",
+          "desc": "",
+          "radius": 130,
+          "duration": 4,
+          "tick": 0.5,
+          "status": {
+            "type": "root",
+            "duration": 1.2
+          },
+          "dot": 12,
+          "range": 340
+        }
       }
     },
     "moderator": {
@@ -18523,46 +20696,268 @@ const CONTENT = {
         "magic": true
       },
       "q": {
-        "name": "Debug Beam",
+        "id": "runecircle",
+        "name": "Rune Circle",
+        "visual": "Rune Circle",
         "element": "arcane",
-        "kind": "beam",
-        "cd": 4,
-        "power": 1.6,
-        "color": "#c77dff",
-        "desc": "",
-        "range": 230,
-        "width": 26
+        "magic": true,
+        "kind": "nova",
+        "cd": 10,
+        "power": 1.2,
+        "radius": 120,
+        "color": "#b388ff",
+        "status": {
+          "type": "shock",
+          "duration": 2,
+          "dps": 7
+        },
+        "cost": 0,
+        "desc": "A rune circle flares under you, shocking everything standing on it.",
+        "trDesc": "Altında bir rün çemberi parlar, üstündeki her şeyi çarpar.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Null Field",
+        "id": "dimensionrift",
+        "name": "Dimension Rift",
+        "visual": "Dimension Rift",
         "element": "arcane",
-        "kind": "ground",
-        "cd": 9,
-        "power": 0.8,
-        "color": "#c77dff",
-        "desc": "",
-        "radius": 85,
-        "duration": 3,
-        "tick": 0.5,
-        "status": {
-          "type": "slow",
-          "duration": 2.5,
-          "slow": 0.4
-        },
-        "dot": 12,
-        "range": 340
+        "magic": true,
+        "kind": "teleport",
+        "cd": 10,
+        "power": 1.9,
+        "radius": 90,
+        "range": 230,
+        "color": "#b388ff",
+        "cost": 0,
+        "desc": "Tear space and step through it, shredding everything you leave behind.",
+        "trDesc": "Uzayı yırt ve içinden geç; geride bıraktığın her şeyi parçala.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Overclock",
+        "id": "starfall",
+        "name": "Starfall",
+        "visual": "Starfall",
         "element": "arcane",
-        "kind": "chain",
-        "cd": 16,
-        "power": 3,
-        "color": "#c77dff",
-        "desc": "",
-        "radius": 320,
-        "jumps": 5,
-        "chainRange": 190
+        "magic": true,
+        "kind": "meteor",
+        "cd": 17,
+        "power": 2.8,
+        "radius": 135,
+        "delay": 0.45,
+        "count": 3,
+        "stagger": 0.14,
+        "spreadRadius": 130,
+        "range": 360,
+        "color": "#ffe57f",
+        "cost": 0,
+        "desc": "Stars rain from the sky across a wide area.",
+        "trDesc": "Gökten geniş bir alana yıldızlar yağar.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "arcanepulse",
+          "name": "Arcane Pulse",
+          "visual": "",
+          "element": "arcane",
+          "kind": "nova",
+          "cd": 8,
+          "power": 1.5,
+          "radius": 130,
+          "knockback": 90,
+          "color": "#ce93d8",
+          "cost": 1,
+          "slot": null,
+          "desc": "Release a ring of raw magic that hurls nearby foes back.",
+          "trDesc": "Çevrene ham büyü halkası sal; yakındaki düşmanları geri iter."
+        },
+        {
+          "id": "shadowveil",
+          "name": "Shadow Veil",
+          "visual": "Dimension Rift",
+          "element": "shadow",
+          "kind": "teleport",
+          "cd": 10,
+          "power": 0.9,
+          "range": 200,
+          "radius": 70,
+          "color": "#9575cd",
+          "cost": 2,
+          "slot": null,
+          "desc": "Melt into shadow and reappear a short distance away.",
+          "trDesc": "Gölgeye karışıp kısa bir mesafe öteye belir."
+        },
+        {
+          "id": "windstep",
+          "name": "Wind Step",
+          "visual": "",
+          "element": "nature",
+          "kind": "buff",
+          "cd": 16,
+          "color": "#a5d6a7",
+          "cost": 1,
+          "slot": null,
+          "buff": {
+            "stat": "speed",
+            "pct": 35,
+            "duration": 6
+          },
+          "desc": "Ride the wind: movement speed rises for 6 seconds.",
+          "trDesc": "Rüzgâra bin: 6 saniye boyunca hareket hızın artar."
+        },
+        {
+          "id": "runeseal",
+          "name": "Rune Seal",
+          "visual": "Rune Circle",
+          "element": "arcane",
+          "magic": true,
+          "kind": "shield",
+          "cd": 11,
+          "power": 0,
+          "shieldPct": 22,
+          "duration": 5,
+          "color": "#b388ff",
+          "cost": 2,
+          "desc": "Etch a warding rune that absorbs a share of incoming damage.",
+          "trDesc": "Gelen hasarın bir kısmını yutan koruyucu bir rün kaz.",
+          "slot": null
+        },
+        {
+          "id": "chainlightning",
+          "name": "Chain Lightning",
+          "visual": "Chain Lightning",
+          "element": "lightning",
+          "magic": true,
+          "kind": "chain",
+          "cd": 8,
+          "power": 1.5,
+          "radius": 320,
+          "jumps": 4,
+          "chainRange": 200,
+          "color": "#80d8ff",
+          "status": {
+            "type": "shock",
+            "duration": 2,
+            "dps": 8
+          },
+          "cost": 1,
+          "desc": "Lightning leaps between foes, shocking each one it touches.",
+          "trDesc": "Yıldırım düşmandan düşmana sıçrar, her birini çarpar.",
+          "slot": null
+        },
+        {
+          "id": "singularity",
+          "name": "Singularity",
+          "visual": "Singularity",
+          "element": "shadow",
+          "magic": true,
+          "kind": "vortex",
+          "cd": 16,
+          "power": 2,
+          "radius": 130,
+          "duration": 2.8,
+          "tick": 0.4,
+          "pull": 220,
+          "range": 330,
+          "color": "#7c4dff",
+          "cost": 3,
+          "desc": "Open a collapsing void that drags enemies into its core.",
+          "trDesc": "Düşmanları çekirdeğine çeken, çöken bir boşluk aç.",
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "astralcollapse",
+          "name": "Astral Collapse",
+          "visual": "Starfall",
+          "element": "arcane",
+          "magic": true,
+          "kind": "meteor",
+          "cd": 36,
+          "power": 3.6,
+          "radius": 165,
+          "delay": 0.4,
+          "count": 5,
+          "stagger": 0.12,
+          "spreadRadius": 160,
+          "range": 370,
+          "color": "#ffe57f",
+          "cost": 4,
+          "late": true,
+          "desc": "Five collapsing stars hammer the battlefield in quick succession.",
+          "trDesc": "Beş çöken yıldız art arda savaş alanını döver.",
+          "slot": null
+        },
+        {
+          "id": "arcanedominion",
+          "name": "Arcane Dominion",
+          "visual": "Starfall",
+          "element": "arcane",
+          "magic": true,
+          "kind": "meteor",
+          "cd": 47,
+          "power": 4.9,
+          "radius": 210,
+          "delay": 0.5,
+          "count": 7,
+          "stagger": 0.1,
+          "spreadRadius": 200,
+          "range": 400,
+          "color": "#b388ff",
+          "cost": 6,
+          "late": true,
+          "desc": "You claim the sky: seven stars answer your call at once.",
+          "trDesc": "Gökyüzünü sahiplenirsin: yedi yıldız aynı anda çağrına uyar.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Debug Beam",
+          "element": "arcane",
+          "kind": "beam",
+          "cd": 4,
+          "power": 1.6,
+          "color": "#c77dff",
+          "desc": "",
+          "range": 230,
+          "width": 26
+        },
+        "e": {
+          "name": "Null Field",
+          "element": "arcane",
+          "kind": "ground",
+          "cd": 9,
+          "power": 0.8,
+          "color": "#c77dff",
+          "desc": "",
+          "radius": 85,
+          "duration": 3,
+          "tick": 0.5,
+          "status": {
+            "type": "slow",
+            "duration": 2.5,
+            "slow": 0.4
+          },
+          "dot": 12,
+          "range": 340
+        },
+        "r": {
+          "name": "Overclock",
+          "element": "arcane",
+          "kind": "chain",
+          "cd": 16,
+          "power": 3,
+          "color": "#c77dff",
+          "desc": "",
+          "radius": 320,
+          "jumps": 5,
+          "chainRange": 190
+        }
       }
     },
     "tester": {
@@ -18571,39 +20966,277 @@ const CONTENT = {
         "element": "physical"
       },
       "q": {
-        "name": "Test Strike",
+        "id": "whirlwind",
+        "name": "Whirlwind",
+        "visual": "Whirlwind",
         "element": "physical",
         "kind": "arc",
-        "cd": 3,
-        "power": 1.6,
-        "color": "#9fd8ff",
-        "desc": "",
-        "radius": 90,
-        "arc": 0.9
+        "cd": 4.5,
+        "power": 1.55,
+        "radius": 100,
+        "arc": 1.15,
+        "color": "#ffd54f",
+        "cost": 0,
+        "desc": "A full spinning cut that carves every foe in front of you.",
+        "trDesc": "Önündeki bütün düşmanları biçen tam turlu bir savuruş.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Bug Sweep",
-        "element": "physical",
-        "kind": "nova",
-        "cd": 7,
-        "power": 1.7,
-        "color": "#9fd8ff",
-        "desc": "",
-        "radius": 115
+        "name": "Arcane Rift",
+        "element": "arcane",
+        "kind": "chain",
+        "cd": 4.5,
+        "power": 1,
+        "color": "#c77dff",
+        "desc": "A technique carried over from the old travel kit.",
+        "radius": 330,
+        "jumps": 4,
+        "chainRange": 205,
+        "status": {
+          "type": "shock",
+          "duration": 2,
+          "dps": 7
+        },
+        "id": "legacy_mage_q",
+        "visual": "Chain Lightning",
+        "tr": "Arkana Yarığı",
+        "legacyFrom": "mage.q",
+        "trDesc": "A technique carried over from the old travel kit.",
+        "cost": 0,
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Crash",
-        "element": "arcane",
-        "kind": "vortex",
+        "id": "meteorstorm",
+        "name": "Meteor Storm",
+        "visual": "Meteor Storm",
+        "element": "fire",
+        "magic": true,
+        "kind": "meteor",
         "cd": 15,
-        "power": 3.2,
-        "color": "#c77dff",
-        "desc": "",
-        "radius": 155,
-        "duration": 2.6,
-        "tick": 0.4,
-        "pull": 110,
-        "range": 320
+        "power": 2.6,
+        "radius": 120,
+        "delay": 0.35,
+        "count": 2,
+        "stagger": 0.2,
+        "spreadRadius": 110,
+        "range": 340,
+        "color": "#ff8a65",
+        "status": {
+          "type": "burn",
+          "duration": 3,
+          "dps": 14
+        },
+        "cost": 0,
+        "desc": "Call down meteors on the marked ground, leaving burning craters.",
+        "trDesc": "İşaretli yere meteorlar indir; yanan kraterler bırak.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "battlefocus",
+          "name": "Battle Focus",
+          "visual": "Rune Circle",
+          "element": "physical",
+          "kind": "buff",
+          "cd": 18,
+          "color": "#ffb74d",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "attack",
+            "pct": 30,
+            "duration": 8
+          },
+          "desc": "Sharpen your focus: attack power rises for 8 seconds.",
+          "trDesc": "Odağını topla: 8 saniye boyunca saldırı gücün yükselir."
+        },
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "id": "tremor",
+          "name": "Tremor",
+          "visual": "Earthbreaker",
+          "element": "physical",
+          "kind": "quake",
+          "cd": 14,
+          "power": 1.5,
+          "radius": 130,
+          "pulses": 3,
+          "interval": 0.22,
+          "knockback": 100,
+          "color": "#a1887f",
+          "cost": 2,
+          "slot": null,
+          "desc": "Smash the ground and send three rolling shockwaves outward.",
+          "trDesc": "Yere vur; dışa doğru yayılan üç şok dalgası gönder."
+        },
+        {
+          "id": "chainlightning",
+          "name": "Chain Lightning",
+          "visual": "Chain Lightning",
+          "element": "lightning",
+          "magic": true,
+          "kind": "chain",
+          "cd": 8,
+          "power": 1.5,
+          "radius": 320,
+          "jumps": 4,
+          "chainRange": 200,
+          "color": "#80d8ff",
+          "status": {
+            "type": "shock",
+            "duration": 2,
+            "dps": 8
+          },
+          "cost": 1,
+          "desc": "Lightning leaps between foes, shocking each one it touches.",
+          "trDesc": "Yıldırım düşmandan düşmana sıçrar, her birini çarpar.",
+          "slot": null
+        },
+        {
+          "id": "runecircle",
+          "name": "Rune Circle",
+          "visual": "Rune Circle",
+          "element": "arcane",
+          "magic": true,
+          "kind": "nova",
+          "cd": 10,
+          "power": 1.2,
+          "radius": 120,
+          "color": "#b388ff",
+          "status": {
+            "type": "shock",
+            "duration": 2,
+            "dps": 7
+          },
+          "cost": 2,
+          "desc": "A rune circle flares under you, shocking everything standing on it.",
+          "trDesc": "Altında bir rün çemberi parlar, üstündeki her şeyi çarpar.",
+          "slot": null
+        },
+        {
+          "id": "soulharvest",
+          "name": "Soul Harvest",
+          "visual": "Soul Harvest",
+          "element": "shadow",
+          "kind": "nova",
+          "cd": 16,
+          "power": 2.5,
+          "radius": 140,
+          "healPct": 12,
+          "color": "#69f0ae",
+          "cost": 3,
+          "desc": "Rip the souls from nearby foes and drink back a share as life.",
+          "trDesc": "Yakındaki düşmanların ruhunu söküp bir kısmını can olarak içine çek.",
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "sunfall",
+          "name": "Sunfall",
+          "visual": "Meteor Storm",
+          "element": "fire",
+          "magic": true,
+          "kind": "meteor",
+          "cd": 36,
+          "power": 3.5,
+          "radius": 165,
+          "delay": 0.4,
+          "count": 3,
+          "stagger": 0.18,
+          "spreadRadius": 150,
+          "range": 360,
+          "color": "#ff8a65",
+          "status": {
+            "type": "burn",
+            "duration": 4,
+            "dps": 20
+          },
+          "cost": 4,
+          "late": true,
+          "desc": "Three burning suns crash down and leave the earth ablaze.",
+          "trDesc": "Üç yanan güneş yere çakılır ve toprağı tutuşturur.",
+          "slot": null
+        },
+        {
+          "id": "infernalcrown",
+          "name": "Infernal Crown",
+          "visual": "Inferno Burst",
+          "element": "fire",
+          "magic": true,
+          "kind": "nova",
+          "cd": 46,
+          "power": 4.8,
+          "radius": 200,
+          "color": "#ff3d00",
+          "status": {
+            "type": "burn",
+            "duration": 5,
+            "dps": 26
+          },
+          "cost": 6,
+          "late": true,
+          "desc": "A crown of hellfire erupts around you and keeps the ground burning.",
+          "trDesc": "Etrafında cehennem ateşinden bir taç patlar ve yeri yakmaya devam eder.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Test Strike",
+          "element": "physical",
+          "kind": "arc",
+          "cd": 3,
+          "power": 1.6,
+          "color": "#9fd8ff",
+          "desc": "",
+          "radius": 90,
+          "arc": 0.9
+        },
+        "e": {
+          "name": "Bug Sweep",
+          "element": "physical",
+          "kind": "nova",
+          "cd": 7,
+          "power": 1.7,
+          "color": "#9fd8ff",
+          "desc": "",
+          "radius": 115
+        },
+        "r": {
+          "name": "Crash",
+          "element": "arcane",
+          "kind": "vortex",
+          "cd": 15,
+          "power": 3.2,
+          "color": "#c77dff",
+          "desc": "",
+          "radius": 155,
+          "duration": 2.6,
+          "tick": 0.4,
+          "pull": 110,
+          "range": 320
+        }
       }
     },
     "beastmaster": {
@@ -18612,48 +21245,258 @@ const CONTENT = {
         "element": "nature"
       },
       "q": {
-        "name": "Savage Bite",
+        "id": "bramble",
+        "name": "Bramble",
+        "visual": "Thorn Snare",
         "element": "nature",
-        "kind": "projectile",
-        "cd": 6,
-        "power": 1.83,
-        "color": "#9ccc65",
-        "desc": "",
-        "speed": 650,
-        "radius": 10,
-        "pet": true
+        "magic": true,
+        "kind": "arc",
+        "cd": 5,
+        "power": 1.3,
+        "radius": 95,
+        "arc": 1,
+        "color": "#76ff03",
+        "cost": 0,
+        "desc": "A lash of thorned vines sweeps the arc ahead.",
+        "trDesc": "Önündeki yayı süpüren dikenli sarmaşık kamçısı.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Pack Call",
+        "id": "spiritpack",
+        "name": "Spirit Pack",
+        "visual": "Spirit Pack",
         "element": "nature",
-        "kind": "nova",
-        "cd": 6.8,
-        "power": 1.95,
-        "color": "#9ccc65",
-        "desc": "",
-        "radius": 134,
-        "status": {
-          "type": "slow",
-          "duration": 2,
-          "slow": 0.5
-        },
-        "pet": true
+        "magic": true,
+        "kind": "aoe",
+        "cd": 14,
+        "power": 1.7,
+        "radius": 120,
+        "offset": 60,
+        "pet": true,
+        "color": "#80deea",
+        "cost": 0,
+        "desc": "Ghostly wolves circle the target and lunge as one.",
+        "trDesc": "Hayalet kurtlar hedefin etrafında döner ve birlikte atılır.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Primal Stampede",
-        "element": "nature",
-        "kind": "barrage",
-        "cd": 13.6,
-        "power": 2.93,
-        "color": "#9ccc65",
-        "desc": "",
-        "count": 12,
-        "interval": 0.08,
-        "speed": 700,
-        "radius": 10,
-        "spread": 0.2,
-        "pet": true,
-        "knockback": 140
+        "id": "cyclone",
+        "name": "Cyclone",
+        "visual": "Cyclone",
+        "element": "physical",
+        "kind": "vortex",
+        "cd": 9,
+        "power": 1.2,
+        "radius": 120,
+        "duration": 2.6,
+        "tick": 0.35,
+        "pull": 120,
+        "range": 300,
+        "color": "#b0bec5",
+        "cost": 0,
+        "desc": "A spinning vortex drags enemies inward and shreds them.",
+        "trDesc": "Dönen bir girdap düşmanları içeri çeker ve parçalar.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "thornwave",
+          "name": "Thorn Wave",
+          "visual": "Thorn Snare",
+          "element": "nature",
+          "kind": "ground",
+          "cd": 14,
+          "power": 0.62,
+          "radius": 120,
+          "duration": 4,
+          "tick": 0.5,
+          "color": "#81c784",
+          "cost": 2,
+          "slot": null,
+          "status": {
+            "type": "slow",
+            "duration": 2,
+            "slow": 0.35
+          },
+          "desc": "Thorns erupt from the ground and keep stinging anything standing there.",
+          "trDesc": "Yerden dikenler fışkırır; orada duran her şeyi sürekli yakar."
+        },
+        {
+          "id": "windstep",
+          "name": "Wind Step",
+          "visual": "",
+          "element": "nature",
+          "kind": "buff",
+          "cd": 16,
+          "color": "#a5d6a7",
+          "cost": 1,
+          "slot": null,
+          "buff": {
+            "stat": "speed",
+            "pct": 35,
+            "duration": 6
+          },
+          "desc": "Ride the wind: movement speed rises for 6 seconds.",
+          "trDesc": "Rüzgâra bin: 6 saniye boyunca hareket hızın artar."
+        },
+        {
+          "id": "spiritward",
+          "name": "Spirit Ward",
+          "visual": "",
+          "element": "holy",
+          "kind": "shield",
+          "cd": 22,
+          "shieldPct": 30,
+          "duration": 6,
+          "radius": 60,
+          "color": "#ffe082",
+          "cost": 2,
+          "slot": null,
+          "desc": "A spirit shield absorbs damage for 6 seconds.",
+          "trDesc": "Ruh kalkanı 6 saniye boyunca gelen hasarı emer."
+        },
+        {
+          "id": "umbrallash",
+          "name": "Umbral Lash",
+          "visual": "Shadow Grasp",
+          "element": "shadow",
+          "kind": "arc",
+          "cd": 5,
+          "power": 1.5,
+          "radius": 110,
+          "arc": 1.1,
+          "color": "#9c4dff",
+          "cost": 1,
+          "desc": "A whip of shadow cuts across the foes in front of you.",
+          "trDesc": "Önündeki düşmanları kesen bir gölge kamçısı.",
+          "slot": null
+        },
+        {
+          "id": "earthbreaker",
+          "name": "Earthbreaker",
+          "visual": "Earthbreaker",
+          "element": "physical",
+          "kind": "nova",
+          "cd": 9,
+          "power": 1.7,
+          "radius": 110,
+          "knockback": 120,
+          "color": "#ffb74d",
+          "cost": 2,
+          "desc": "Slam the ground and send a shockwave through everything nearby.",
+          "trDesc": "Yere vur; çevrendeki her şeyi sarsan bir şok dalgası yay.",
+          "slot": null
+        },
+        {
+          "name": "Primal Stampede",
+          "element": "nature",
+          "kind": "barrage",
+          "cd": 13.6,
+          "power": 2.93,
+          "color": "#9ccc65",
+          "desc": "A technique carried over from the old travel kit.",
+          "count": 12,
+          "interval": 0.08,
+          "speed": 700,
+          "radius": 10,
+          "spread": 0.2,
+          "pet": true,
+          "knockback": 140,
+          "id": "legacy_beastmaster_r",
+          "visual": "Starfall",
+          "tr": "Primal Stampede",
+          "legacyFrom": "beastmaster.r",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 2,
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "doomgavel",
+          "name": "Doom Gavel",
+          "visual": "Titan Fist",
+          "element": "physical",
+          "kind": "meteor",
+          "cd": 34,
+          "power": 3.4,
+          "radius": 150,
+          "delay": 0.45,
+          "range": 340,
+          "knockback": 260,
+          "color": "#ffd54f",
+          "cost": 4,
+          "late": true,
+          "desc": "A colossal gavel of stone falls from the sky and shatters the ground.",
+          "trDesc": "Gökten devasa bir taş tokmak düşer ve yeri parçalar.",
+          "slot": null
+        },
+        {
+          "id": "worldbreaker",
+          "name": "World Breaker",
+          "visual": "Earthbreaker",
+          "element": "physical",
+          "kind": "nova",
+          "cd": 45,
+          "power": 4.6,
+          "radius": 190,
+          "knockback": 340,
+          "color": "#ffb74d",
+          "cost": 6,
+          "late": true,
+          "desc": "One strike cracks the world; everything around you is thrown back.",
+          "trDesc": "Tek vuruş dünyayı çatlatır; çevrendeki her şey geri savrulur.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Savage Bite",
+          "element": "nature",
+          "kind": "projectile",
+          "cd": 6,
+          "power": 1.83,
+          "color": "#9ccc65",
+          "desc": "",
+          "speed": 650,
+          "radius": 10,
+          "pet": true
+        },
+        "e": {
+          "name": "Pack Call",
+          "element": "nature",
+          "kind": "nova",
+          "cd": 6.8,
+          "power": 1.95,
+          "color": "#9ccc65",
+          "desc": "",
+          "radius": 134,
+          "status": {
+            "type": "slow",
+            "duration": 2,
+            "slow": 0.5
+          },
+          "pet": true
+        },
+        "r": {
+          "name": "Primal Stampede",
+          "element": "nature",
+          "kind": "barrage",
+          "cd": 13.6,
+          "power": 2.93,
+          "color": "#9ccc65",
+          "desc": "",
+          "count": 12,
+          "interval": 0.08,
+          "speed": 700,
+          "radius": 10,
+          "spread": 0.2,
+          "pet": true,
+          "knockback": 140
+        }
       }
     },
     "anima_lorde": {
@@ -18662,41 +21505,244 @@ const CONTENT = {
         "element": "nature"
       },
       "q": {
-        "name": "Spirit Bolt",
-        "element": "nature",
-        "kind": "projectile",
-        "cd": 6,
-        "power": 2.07,
-        "color": "#9ccc65",
-        "desc": "",
-        "speed": 660,
-        "radius": 10
+        "id": "umbrallash",
+        "name": "Umbral Lash",
+        "visual": "Shadow Grasp",
+        "element": "shadow",
+        "kind": "arc",
+        "cd": 5,
+        "power": 1.5,
+        "radius": 110,
+        "arc": 1.1,
+        "color": "#9c4dff",
+        "cost": 0,
+        "desc": "A whip of shadow cuts across the foes in front of you.",
+        "trDesc": "Önündeki düşmanları kesen bir gölge kamçısı.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Anima Shield",
+        "id": "thornsnare",
+        "name": "Thorn Snare",
+        "visual": "Thorn Snare",
         "element": "nature",
-        "kind": "shield",
-        "cd": 8.5,
-        "power": 0,
-        "color": "#9ccc65",
-        "desc": "",
-        "shieldPct": 24,
-        "duration": 5,
-        "healPct": 10
+        "magic": true,
+        "kind": "ground",
+        "cd": 8,
+        "power": 1,
+        "radius": 90,
+        "duration": 2.2,
+        "tick": 0.4,
+        "range": 280,
+        "color": "#76ff03",
+        "status": {
+          "type": "freeze",
+          "duration": 1.4
+        },
+        "cost": 0,
+        "desc": "Thorned vines erupt and root everything in the area.",
+        "trDesc": "Dikenli sarmaşıklar fışkırır ve alandaki her şeyi kökler.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Wild Hunt",
+        "id": "spiritpack",
+        "name": "Spirit Pack",
+        "visual": "Spirit Pack",
         "element": "nature",
-        "kind": "orbit",
-        "cd": 14.5,
-        "power": 3.9,
-        "color": "#9ccc65",
-        "desc": "",
-        "radius": 146,
-        "duration": 3.6,
-        "tick": 0.35,
-        "count": 9,
-        "speed": 4
+        "magic": true,
+        "kind": "aoe",
+        "cd": 14,
+        "power": 1.7,
+        "radius": 120,
+        "offset": 60,
+        "pet": true,
+        "color": "#80deea",
+        "cost": 0,
+        "desc": "Ghostly wolves circle the target and lunge as one.",
+        "trDesc": "Hayalet kurtlar hedefin etrafında döner ve birlikte atılır.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "shadowveil",
+          "name": "Shadow Veil",
+          "visual": "Dimension Rift",
+          "element": "shadow",
+          "kind": "teleport",
+          "cd": 10,
+          "power": 0.9,
+          "range": 200,
+          "radius": 70,
+          "color": "#9575cd",
+          "cost": 2,
+          "slot": null,
+          "desc": "Melt into shadow and reappear a short distance away.",
+          "trDesc": "Gölgeye karışıp kısa bir mesafe öteye belir."
+        },
+        {
+          "id": "frostbite",
+          "name": "Frostbite",
+          "visual": "",
+          "element": "frost",
+          "kind": "projectile",
+          "cd": 6,
+          "power": 1.4,
+          "speed": 660,
+          "radius": 10,
+          "color": "#81d4fa",
+          "cost": 1,
+          "slot": null,
+          "status": {
+            "type": "slow",
+            "duration": 2,
+            "slow": 0.45
+          },
+          "desc": "Hurl a shard of ice that chills and slows the target.",
+          "trDesc": "Hedefi üşütüp yavaşlatan bir buz kırığı fırlat."
+        },
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "id": "treeoflife",
+          "name": "Tree of Life",
+          "visual": "Tree of Life",
+          "element": "nature",
+          "magic": true,
+          "kind": "heal",
+          "cd": 16,
+          "healPct": 30,
+          "radius": 120,
+          "color": "#69f0ae",
+          "power": 0,
+          "cost": 3,
+          "desc": "A great tree blooms and pours healing light over the ground.",
+          "trDesc": "Ulu bir ağaç açar ve yere şifa ışığı döker.",
+          "slot": null
+        },
+        {
+          "name": "Wild Hunt",
+          "element": "nature",
+          "kind": "orbit",
+          "cd": 14.5,
+          "power": 3.9,
+          "color": "#9ccc65",
+          "desc": "A technique carried over from the old travel kit.",
+          "radius": 146,
+          "duration": 3.6,
+          "tick": 0.35,
+          "count": 9,
+          "speed": 4,
+          "id": "legacy_anima_lorde_r",
+          "visual": "Blade Storm",
+          "tr": "Wild Hunt",
+          "legacyFrom": "anima_lorde.r",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 3,
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "primordialgrove",
+          "name": "Primordial Grove",
+          "visual": "Tree of Life",
+          "element": "nature",
+          "magic": true,
+          "kind": "heal",
+          "cd": 30,
+          "healPct": 55,
+          "shieldPct": 20,
+          "duration": 6,
+          "radius": 150,
+          "color": "#69f0ae",
+          "cost": 4,
+          "late": true,
+          "power": 0,
+          "desc": "An ancient grove blooms around you, pouring life into every wound.",
+          "trDesc": "Etrafında kadim bir koru açar, her yaraya can döker.",
+          "slot": null
+        },
+        {
+          "id": "verdantwrath",
+          "name": "Verdant Wrath",
+          "visual": "Thorn Snare",
+          "element": "nature",
+          "magic": true,
+          "kind": "ground",
+          "cd": 44,
+          "power": 4.6,
+          "radius": 200,
+          "duration": 4,
+          "tick": 0.35,
+          "range": 340,
+          "color": "#76ff03",
+          "status": {
+            "type": "freeze",
+            "duration": 1.8
+          },
+          "cost": 6,
+          "late": true,
+          "desc": "The wilds rise up: thorns, roots and rot devour the marked land.",
+          "trDesc": "Yaban ayaklanır: dikenler, kökler ve çürük işaretli toprağı yutar.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Spirit Bolt",
+          "element": "nature",
+          "kind": "projectile",
+          "cd": 6,
+          "power": 2.07,
+          "color": "#9ccc65",
+          "desc": "",
+          "speed": 660,
+          "radius": 10
+        },
+        "e": {
+          "name": "Anima Shield",
+          "element": "nature",
+          "kind": "shield",
+          "cd": 8.5,
+          "power": 0,
+          "color": "#9ccc65",
+          "desc": "",
+          "shieldPct": 24,
+          "duration": 5,
+          "healPct": 10
+        },
+        "r": {
+          "name": "Wild Hunt",
+          "element": "nature",
+          "kind": "orbit",
+          "cd": 14.5,
+          "power": 3.9,
+          "color": "#9ccc65",
+          "desc": "",
+          "radius": 146,
+          "duration": 3.6,
+          "tick": 0.35,
+          "count": 9,
+          "speed": 4
+        }
       }
     },
     "rootbinder": {
@@ -18705,51 +21751,283 @@ const CONTENT = {
         "element": "nature"
       },
       "q": {
-        "name": "Thorn Lance",
+        "id": "bramble",
+        "name": "Bramble",
+        "visual": "Thorn Snare",
         "element": "nature",
-        "kind": "beam",
-        "cd": 6,
-        "power": 2.07,
-        "color": "#9ccc65",
-        "desc": "",
-        "range": 242,
-        "width": 26
+        "magic": true,
+        "kind": "arc",
+        "cd": 5,
+        "power": 1.3,
+        "radius": 95,
+        "arc": 1,
+        "color": "#76ff03",
+        "cost": 0,
+        "desc": "A lash of thorned vines sweeps the arc ahead.",
+        "trDesc": "Önündeki yayı süpüren dikenli sarmaşık kamçısı.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Grasping Roots",
+        "id": "thornsnare",
+        "name": "Thorn Snare",
+        "visual": "Thorn Snare",
         "element": "nature",
+        "magic": true,
         "kind": "ground",
-        "cd": 7.7,
-        "power": 1.22,
-        "color": "#9ccc65",
-        "desc": "",
-        "radius": 92,
-        "duration": 3,
-        "tick": 0.5,
+        "cd": 8,
+        "power": 1,
+        "radius": 90,
+        "duration": 2.2,
+        "tick": 0.4,
+        "range": 280,
+        "color": "#76ff03",
         "status": {
-          "type": "root",
-          "duration": 2.4
+          "type": "freeze",
+          "duration": 1.4
         },
-        "dot": 11,
-        "range": 340
+        "cost": 0,
+        "desc": "Thorned vines erupt and root everything in the area.",
+        "trDesc": "Dikenli sarmaşıklar fışkırır ve alandaki her şeyi kökler.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Overgrowth",
+        "id": "treeoflife",
+        "name": "Tree of Life",
+        "visual": "Tree of Life",
         "element": "nature",
-        "kind": "ground",
-        "cd": 13.6,
-        "power": 3.54,
-        "color": "#9ccc65",
-        "desc": "",
-        "radius": 179,
-        "duration": 4,
-        "tick": 0.45,
-        "status": {
-          "type": "root",
-          "duration": 1.6
+        "magic": true,
+        "kind": "heal",
+        "cd": 16,
+        "healPct": 30,
+        "radius": 120,
+        "color": "#69f0ae",
+        "power": 0,
+        "cost": 0,
+        "desc": "A great tree blooms and pours healing light over the ground.",
+        "trDesc": "Ulu bir ağaç açar ve yere şifa ışığı döker.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "thornwave",
+          "name": "Thorn Wave",
+          "visual": "Thorn Snare",
+          "element": "nature",
+          "kind": "ground",
+          "cd": 14,
+          "power": 0.62,
+          "radius": 120,
+          "duration": 4,
+          "tick": 0.5,
+          "color": "#81c784",
+          "cost": 2,
+          "slot": null,
+          "status": {
+            "type": "slow",
+            "duration": 2,
+            "slow": 0.35
+          },
+          "desc": "Thorns erupt from the ground and keep stinging anything standing there.",
+          "trDesc": "Yerden dikenler fışkırır; orada duran her şeyi sürekli yakar."
         },
-        "dot": 14,
-        "range": 340
+        {
+          "id": "windstep",
+          "name": "Wind Step",
+          "visual": "",
+          "element": "nature",
+          "kind": "buff",
+          "cd": 16,
+          "color": "#a5d6a7",
+          "cost": 1,
+          "slot": null,
+          "buff": {
+            "stat": "speed",
+            "pct": 35,
+            "duration": 6
+          },
+          "desc": "Ride the wind: movement speed rises for 6 seconds.",
+          "trDesc": "Rüzgâra bin: 6 saniye boyunca hareket hızın artar."
+        },
+        {
+          "id": "spiritward",
+          "name": "Spirit Ward",
+          "visual": "",
+          "element": "holy",
+          "kind": "shield",
+          "cd": 22,
+          "shieldPct": 30,
+          "duration": 6,
+          "radius": 60,
+          "color": "#ffe082",
+          "cost": 2,
+          "slot": null,
+          "desc": "A spirit shield absorbs damage for 6 seconds.",
+          "trDesc": "Ruh kalkanı 6 saniye boyunca gelen hasarı emer."
+        },
+        {
+          "id": "toxiccloud",
+          "name": "Toxic Cloud",
+          "visual": "Toxic Cloud",
+          "element": "nature",
+          "magic": true,
+          "kind": "ground",
+          "cd": 8,
+          "power": 1.1,
+          "radius": 100,
+          "duration": 3,
+          "tick": 0.5,
+          "dot": 10,
+          "range": 300,
+          "color": "#7cb342",
+          "cost": 1,
+          "desc": "A lingering cloud of poison that eats away at anything inside.",
+          "trDesc": "İçindeki her şeyi kemiren, kalıcı bir zehir bulutu.",
+          "slot": null
+        },
+        {
+          "id": "bonecage",
+          "name": "Bone Cage",
+          "visual": "Bone Cage",
+          "element": "shadow",
+          "kind": "ground",
+          "cd": 12,
+          "power": 1.4,
+          "radius": 95,
+          "duration": 2.4,
+          "tick": 0.4,
+          "color": "#d8d0b8",
+          "status": {
+            "type": "freeze",
+            "duration": 1.2
+          },
+          "cost": 2,
+          "desc": "Bones erupt around the target and lock it in place while they cut.",
+          "trDesc": "Hedefin çevresinde kemikler yükselir, onu yerinde kilitler.",
+          "slot": null
+        },
+        {
+          "name": "Overgrowth",
+          "element": "nature",
+          "kind": "ground",
+          "cd": 13.6,
+          "power": 3.54,
+          "color": "#9ccc65",
+          "desc": "A technique carried over from the old travel kit.",
+          "radius": 179,
+          "duration": 4,
+          "tick": 0.45,
+          "status": {
+            "type": "root",
+            "duration": 1.6
+          },
+          "dot": 14,
+          "range": 340,
+          "id": "legacy_rootbinder_r",
+          "visual": "Toxic Cloud",
+          "tr": "Overgrowth",
+          "legacyFrom": "rootbinder.r",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 2,
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "primordialgrove",
+          "name": "Primordial Grove",
+          "visual": "Tree of Life",
+          "element": "nature",
+          "magic": true,
+          "kind": "heal",
+          "cd": 30,
+          "healPct": 55,
+          "shieldPct": 20,
+          "duration": 6,
+          "radius": 150,
+          "color": "#69f0ae",
+          "cost": 4,
+          "late": true,
+          "power": 0,
+          "desc": "An ancient grove blooms around you, pouring life into every wound.",
+          "trDesc": "Etrafında kadim bir koru açar, her yaraya can döker.",
+          "slot": null
+        },
+        {
+          "id": "verdantwrath",
+          "name": "Verdant Wrath",
+          "visual": "Thorn Snare",
+          "element": "nature",
+          "magic": true,
+          "kind": "ground",
+          "cd": 44,
+          "power": 4.6,
+          "radius": 200,
+          "duration": 4,
+          "tick": 0.35,
+          "range": 340,
+          "color": "#76ff03",
+          "status": {
+            "type": "freeze",
+            "duration": 1.8
+          },
+          "cost": 6,
+          "late": true,
+          "desc": "The wilds rise up: thorns, roots and rot devour the marked land.",
+          "trDesc": "Yaban ayaklanır: dikenler, kökler ve çürük işaretli toprağı yutar.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Thorn Lance",
+          "element": "nature",
+          "kind": "beam",
+          "cd": 6,
+          "power": 2.07,
+          "color": "#9ccc65",
+          "desc": "",
+          "range": 242,
+          "width": 26
+        },
+        "e": {
+          "name": "Grasping Roots",
+          "element": "nature",
+          "kind": "ground",
+          "cd": 7.7,
+          "power": 1.22,
+          "color": "#9ccc65",
+          "desc": "",
+          "radius": 92,
+          "duration": 3,
+          "tick": 0.5,
+          "status": {
+            "type": "root",
+            "duration": 2.4
+          },
+          "dot": 11,
+          "range": 340
+        },
+        "r": {
+          "name": "Overgrowth",
+          "element": "nature",
+          "kind": "ground",
+          "cd": 13.6,
+          "power": 3.54,
+          "color": "#9ccc65",
+          "desc": "",
+          "radius": 179,
+          "duration": 4,
+          "tick": 0.45,
+          "status": {
+            "type": "root",
+            "duration": 1.6
+          },
+          "dot": 14,
+          "range": 340
+        }
       }
     },
     "lifeweaver": {
@@ -18759,38 +22037,248 @@ const CONTENT = {
         "magic": true
       },
       "q": {
-        "name": "Life Bolt",
+        "id": "mendinglight",
+        "name": "Mending Light",
+        "visual": "Healing Rain",
         "element": "holy",
-        "kind": "projectile",
+        "magic": true,
+        "kind": "heal",
         "cd": 6,
-        "power": 1.83,
-        "color": "#ffe082",
-        "desc": "",
-        "speed": 620,
-        "radius": 10
+        "healPct": 10,
+        "radius": 70,
+        "color": "#69f0ae",
+        "power": 0,
+        "cost": 0,
+        "desc": "A soft light mends a small amount of health.",
+        "trDesc": "Yumuşak bir ışık az miktarda can onarır.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Living Bark",
-        "element": "nature",
-        "kind": "shield",
-        "cd": 7.7,
+        "id": "healingrain",
+        "name": "Healing Rain",
+        "visual": "Healing Rain",
+        "element": "holy",
+        "magic": true,
+        "kind": "heal",
+        "cd": 9,
+        "healPct": 18,
+        "radius": 90,
+        "color": "#69f0ae",
         "power": 0,
-        "color": "#9ccc65",
-        "desc": "",
-        "shieldPct": 24,
-        "duration": 5,
-        "healPct": 15
+        "cost": 0,
+        "desc": "Warm rain falls and knits your wounds shut.",
+        "trDesc": "Ilık bir yağmur yağar ve yaralarını kapatır.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Renewal",
-        "element": "holy",
+        "id": "treeoflife",
+        "name": "Tree of Life",
+        "visual": "Tree of Life",
+        "element": "nature",
+        "magic": true,
         "kind": "heal",
-        "cd": 13.6,
+        "cd": 16,
+        "healPct": 30,
+        "radius": 120,
+        "color": "#69f0ae",
         "power": 0,
-        "color": "#ffe082",
-        "desc": "",
-        "healPct": 50,
-        "radius": 179
+        "cost": 0,
+        "desc": "A great tree blooms and pours healing light over the ground.",
+        "trDesc": "Ulu bir ağaç açar ve yere şifa ışığı döker.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "spiritward",
+          "name": "Spirit Ward",
+          "visual": "",
+          "element": "holy",
+          "kind": "shield",
+          "cd": 22,
+          "shieldPct": 30,
+          "duration": 6,
+          "radius": 60,
+          "color": "#ffe082",
+          "cost": 2,
+          "slot": null,
+          "desc": "A spirit shield absorbs damage for 6 seconds.",
+          "trDesc": "Ruh kalkanı 6 saniye boyunca gelen hasarı emer."
+        },
+        {
+          "id": "battlefocus",
+          "name": "Battle Focus",
+          "visual": "Rune Circle",
+          "element": "physical",
+          "kind": "buff",
+          "cd": 18,
+          "color": "#ffb74d",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "attack",
+            "pct": 30,
+            "duration": 8
+          },
+          "desc": "Sharpen your focus: attack power rises for 8 seconds.",
+          "trDesc": "Odağını topla: 8 saniye boyunca saldırı gücün yükselir."
+        },
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "id": "phoenixrebirth",
+          "name": "Phoenix Rebirth",
+          "visual": "Phoenix Rebirth",
+          "element": "holy",
+          "magic": true,
+          "kind": "heal",
+          "cd": 22,
+          "healPct": 45,
+          "radius": 110,
+          "shieldPct": 12,
+          "duration": 5,
+          "color": "#ff8f00",
+          "power": 0,
+          "cost": 3,
+          "desc": "A phoenix rises from you, restoring a great amount of health.",
+          "trDesc": "İçinden bir anka yükselir, büyük miktarda can geri verir.",
+          "slot": null
+        },
+        {
+          "id": "runeseal",
+          "name": "Rune Seal",
+          "visual": "Rune Circle",
+          "element": "arcane",
+          "magic": true,
+          "kind": "shield",
+          "cd": 11,
+          "power": 0,
+          "shieldPct": 22,
+          "duration": 5,
+          "color": "#b388ff",
+          "cost": 2,
+          "desc": "Etch a warding rune that absorbs a share of incoming damage.",
+          "trDesc": "Gelen hasarın bir kısmını yutan koruyucu bir rün kaz.",
+          "slot": null
+        },
+        {
+          "id": "spiritpack",
+          "name": "Spirit Pack",
+          "visual": "Spirit Pack",
+          "element": "nature",
+          "magic": true,
+          "kind": "aoe",
+          "cd": 14,
+          "power": 1.7,
+          "radius": 120,
+          "offset": 60,
+          "pet": true,
+          "color": "#80deea",
+          "cost": 3,
+          "desc": "Ghostly wolves circle the target and lunge as one.",
+          "trDesc": "Hayalet kurtlar hedefin etrafında döner ve birlikte atılır.",
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "primordialgrove",
+          "name": "Primordial Grove",
+          "visual": "Tree of Life",
+          "element": "nature",
+          "magic": true,
+          "kind": "heal",
+          "cd": 30,
+          "healPct": 55,
+          "shieldPct": 20,
+          "duration": 6,
+          "radius": 150,
+          "color": "#69f0ae",
+          "cost": 4,
+          "late": true,
+          "power": 0,
+          "desc": "An ancient grove blooms around you, pouring life into every wound.",
+          "trDesc": "Etrafında kadim bir koru açar, her yaraya can döker.",
+          "slot": null
+        },
+        {
+          "id": "verdantwrath",
+          "name": "Verdant Wrath",
+          "visual": "Thorn Snare",
+          "element": "nature",
+          "magic": true,
+          "kind": "ground",
+          "cd": 44,
+          "power": 4.6,
+          "radius": 200,
+          "duration": 4,
+          "tick": 0.35,
+          "range": 340,
+          "color": "#76ff03",
+          "status": {
+            "type": "freeze",
+            "duration": 1.8
+          },
+          "cost": 6,
+          "late": true,
+          "desc": "The wilds rise up: thorns, roots and rot devour the marked land.",
+          "trDesc": "Yaban ayaklanır: dikenler, kökler ve çürük işaretli toprağı yutar.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Life Bolt",
+          "element": "holy",
+          "kind": "projectile",
+          "cd": 6,
+          "power": 1.83,
+          "color": "#ffe082",
+          "desc": "",
+          "speed": 620,
+          "radius": 10
+        },
+        "e": {
+          "name": "Living Bark",
+          "element": "nature",
+          "kind": "shield",
+          "cd": 7.7,
+          "power": 0,
+          "color": "#9ccc65",
+          "desc": "",
+          "shieldPct": 24,
+          "duration": 5,
+          "healPct": 15
+        },
+        "r": {
+          "name": "Renewal",
+          "element": "holy",
+          "kind": "heal",
+          "cd": 13.6,
+          "power": 0,
+          "color": "#ffe082",
+          "desc": "",
+          "healPct": 50,
+          "radius": 179
+        }
       }
     },
     "ultra_moderator": {
@@ -18800,45 +22288,262 @@ const CONTENT = {
         "magic": true
       },
       "q": {
-        "name": "Admin Beam",
+        "id": "dimensionrift",
+        "name": "Dimension Rift",
+        "visual": "Dimension Rift",
         "element": "arcane",
-        "kind": "beam",
-        "cd": 6,
-        "power": 2.44,
-        "color": "#c77dff",
-        "desc": "",
-        "range": 286,
-        "width": 26
+        "magic": true,
+        "kind": "teleport",
+        "cd": 10,
+        "power": 1.9,
+        "radius": 90,
+        "range": 230,
+        "color": "#b388ff",
+        "cost": 0,
+        "desc": "Tear space and step through it, shredding everything you leave behind.",
+        "trDesc": "Uzayı yırt ve içinden geç; geride bıraktığın her şeyi parçala.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Ban Field",
+        "id": "runecircle",
+        "name": "Rune Circle",
+        "visual": "Rune Circle",
         "element": "arcane",
-        "kind": "ground",
-        "cd": 7.7,
-        "power": 1.1,
-        "color": "#c77dff",
-        "desc": "",
-        "radius": 103,
-        "duration": 3,
-        "tick": 0.5,
+        "magic": true,
+        "kind": "nova",
+        "cd": 10,
+        "power": 1.2,
+        "radius": 120,
+        "color": "#b388ff",
         "status": {
-          "type": "stun",
-          "duration": 0.7
+          "type": "shock",
+          "duration": 2,
+          "dps": 7
         },
-        "dot": 14,
-        "range": 340
+        "cost": 0,
+        "desc": "A rune circle flares under you, shocking everything standing on it.",
+        "trDesc": "Altında bir rün çemberi parlar, üstündeki her şeyi çarpar.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Server Crash",
-        "element": "arcane",
-        "kind": "quake",
-        "cd": 15.3,
-        "power": 4.64,
-        "color": "#c77dff",
-        "desc": "",
-        "radius": 213,
-        "pulses": 4,
-        "interval": 0.18
+        "id": "singularity",
+        "name": "Singularity",
+        "visual": "Singularity",
+        "element": "shadow",
+        "magic": true,
+        "kind": "vortex",
+        "cd": 16,
+        "power": 2,
+        "radius": 130,
+        "duration": 2.8,
+        "tick": 0.4,
+        "pull": 220,
+        "range": 330,
+        "color": "#7c4dff",
+        "cost": 0,
+        "desc": "Open a collapsing void that drags enemies into its core.",
+        "trDesc": "Düşmanları çekirdeğine çeken, çöken bir boşluk aç.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "arcanepulse",
+          "name": "Arcane Pulse",
+          "visual": "",
+          "element": "arcane",
+          "kind": "nova",
+          "cd": 8,
+          "power": 1.5,
+          "radius": 130,
+          "knockback": 90,
+          "color": "#ce93d8",
+          "cost": 1,
+          "slot": null,
+          "desc": "Release a ring of raw magic that hurls nearby foes back.",
+          "trDesc": "Çevrene ham büyü halkası sal; yakındaki düşmanları geri iter."
+        },
+        {
+          "id": "shadowveil",
+          "name": "Shadow Veil",
+          "visual": "Dimension Rift",
+          "element": "shadow",
+          "kind": "teleport",
+          "cd": 10,
+          "power": 0.9,
+          "range": 200,
+          "radius": 70,
+          "color": "#9575cd",
+          "cost": 2,
+          "slot": null,
+          "desc": "Melt into shadow and reappear a short distance away.",
+          "trDesc": "Gölgeye karışıp kısa bir mesafe öteye belir."
+        },
+        {
+          "id": "windstep",
+          "name": "Wind Step",
+          "visual": "",
+          "element": "nature",
+          "kind": "buff",
+          "cd": 16,
+          "color": "#a5d6a7",
+          "cost": 1,
+          "slot": null,
+          "buff": {
+            "stat": "speed",
+            "pct": 35,
+            "duration": 6
+          },
+          "desc": "Ride the wind: movement speed rises for 6 seconds.",
+          "trDesc": "Rüzgâra bin: 6 saniye boyunca hareket hızın artar."
+        },
+        {
+          "id": "starfall",
+          "name": "Starfall",
+          "visual": "Starfall",
+          "element": "arcane",
+          "magic": true,
+          "kind": "meteor",
+          "cd": 17,
+          "power": 2.8,
+          "radius": 135,
+          "delay": 0.45,
+          "count": 3,
+          "stagger": 0.14,
+          "spreadRadius": 130,
+          "range": 360,
+          "color": "#ffe57f",
+          "cost": 3,
+          "desc": "Stars rain from the sky across a wide area.",
+          "trDesc": "Gökten geniş bir alana yıldızlar yağar.",
+          "slot": null
+        },
+        {
+          "id": "judgementbeam",
+          "name": "Radiant Verdict",
+          "visual": "Judgement Beam",
+          "element": "holy",
+          "magic": true,
+          "kind": "beam",
+          "cd": 11,
+          "power": 2.1,
+          "range": 360,
+          "width": 34,
+          "color": "#ffe082",
+          "cost": 2,
+          "desc": "A wide beam of judgement that sears everything in its path.",
+          "trDesc": "Yolundaki her şeyi dağlayan geniş bir hüküm ışını.",
+          "slot": null
+        },
+        {
+          "id": "chainlightning",
+          "name": "Chain Lightning",
+          "visual": "Chain Lightning",
+          "element": "lightning",
+          "magic": true,
+          "kind": "chain",
+          "cd": 8,
+          "power": 1.5,
+          "radius": 320,
+          "jumps": 4,
+          "chainRange": 200,
+          "color": "#80d8ff",
+          "status": {
+            "type": "shock",
+            "duration": 2,
+            "dps": 8
+          },
+          "cost": 1,
+          "desc": "Lightning leaps between foes, shocking each one it touches.",
+          "trDesc": "Yıldırım düşmandan düşmana sıçrar, her birini çarpar.",
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "nightfall",
+          "name": "Nightfall",
+          "visual": "Singularity",
+          "element": "shadow",
+          "magic": true,
+          "kind": "vortex",
+          "cd": 35,
+          "power": 3.3,
+          "radius": 165,
+          "duration": 3.2,
+          "tick": 0.35,
+          "pull": 280,
+          "range": 350,
+          "color": "#7c4dff",
+          "cost": 4,
+          "late": true,
+          "desc": "Night collapses into a hungry void that drags enemies to its core.",
+          "trDesc": "Gece, düşmanları çekirdeğine çeken aç bir boşluğa çöker.",
+          "slot": null
+        },
+        {
+          "id": "voidcrown",
+          "name": "Void Crown",
+          "visual": "Blood Ritual",
+          "element": "shadow",
+          "magic": true,
+          "kind": "nova",
+          "cd": 46,
+          "power": 4.7,
+          "radius": 200,
+          "healPct": 18,
+          "color": "#9c4dff",
+          "cost": 6,
+          "late": true,
+          "desc": "A void crown detonates around you, tearing foes and feeding you their essence.",
+          "trDesc": "Etrafında bir boşluk tacı patlar; düşmanı yırtar, özlerini sana verir.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Admin Beam",
+          "element": "arcane",
+          "kind": "beam",
+          "cd": 6,
+          "power": 2.44,
+          "color": "#c77dff",
+          "desc": "",
+          "range": 286,
+          "width": 26
+        },
+        "e": {
+          "name": "Ban Field",
+          "element": "arcane",
+          "kind": "ground",
+          "cd": 7.7,
+          "power": 1.1,
+          "color": "#c77dff",
+          "desc": "",
+          "radius": 103,
+          "duration": 3,
+          "tick": 0.5,
+          "status": {
+            "type": "stun",
+            "duration": 0.7
+          },
+          "dot": 14,
+          "range": 340
+        },
+        "r": {
+          "name": "Server Crash",
+          "element": "arcane",
+          "kind": "quake",
+          "cd": 15.3,
+          "power": 4.64,
+          "color": "#c77dff",
+          "desc": "",
+          "radius": 213,
+          "pulses": 4,
+          "interval": 0.18
+        }
       }
     },
     "warlord": {
@@ -18847,47 +22552,277 @@ const CONTENT = {
         "element": "fire"
       },
       "q": {
-        "name": "Warlord Cleave",
-        "element": "fire",
-        "kind": "arc",
-        "cd": 6,
-        "power": 2.32,
-        "color": "#ff8a65",
-        "desc": "",
-        "radius": 121,
-        "arc": 1.15,
-        "status": {
-          "type": "burn",
-          "duration": 2,
-          "dps": 8
-        }
+        "name": "Blade Tempest",
+        "element": "physical",
+        "kind": "orbit",
+        "cd": 16,
+        "power": 2.7,
+        "color": "#9fd8ff",
+        "desc": "A technique carried over from the old travel kit.",
+        "radius": 120,
+        "duration": 3.4,
+        "tick": 0.35,
+        "count": 8,
+        "speed": 4.4,
+        "id": "legacy_warrior_r",
+        "visual": "Blade Storm",
+        "tr": "Bıçak Kasırgası",
+        "legacyFrom": "warrior.r",
+        "trDesc": "A technique carried over from the old travel kit.",
+        "cost": 0,
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "War Banner",
+        "id": "pyre",
+        "name": "Flame Pillar",
+        "visual": "Flame Pillar",
         "element": "fire",
-        "kind": "shield",
-        "cd": 8.5,
-        "power": 0,
-        "color": "#ff8a65",
-        "desc": "",
-        "shieldPct": 20,
-        "duration": 5
+        "magic": true,
+        "kind": "ground",
+        "cd": 8,
+        "power": 1.5,
+        "radius": 70,
+        "duration": 2.4,
+        "tick": 0.45,
+        "range": 300,
+        "color": "#ff6a1a",
+        "status": {
+          "type": "burn",
+          "duration": 2.5,
+          "dps": 10
+        },
+        "cost": 0,
+        "desc": "A pillar of flame erupts where you point and lingers.",
+        "trDesc": "İşaret ettiğin yerde alev sütunu yükselir ve sürer.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Executioner",
+        "id": "dragonsbreath",
+        "name": "Dragon Breath",
+        "visual": "Dragon Breath",
         "element": "fire",
+        "magic": true,
         "kind": "arc",
-        "cd": 13.6,
-        "power": 3.9,
-        "color": "#ff8a65",
-        "desc": "",
-        "radius": 168,
-        "arc": 1.4,
-        "knockback": 160,
+        "cd": 14,
+        "power": 2.4,
+        "radius": 150,
+        "arc": 1,
+        "color": "#ff5a14",
         "status": {
           "type": "burn",
           "duration": 3,
-          "dps": 20
+          "dps": 16
+        },
+        "cost": 0,
+        "desc": "Exhale a cone of dragonfire that sets the ground alight.",
+        "trDesc": "Yeri tutuşturan bir ejder ateşi konisi püskürt.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "battlefocus",
+          "name": "Battle Focus",
+          "visual": "Rune Circle",
+          "element": "physical",
+          "kind": "buff",
+          "cd": 18,
+          "color": "#ffb74d",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "attack",
+            "pct": 30,
+            "duration": 8
+          },
+          "desc": "Sharpen your focus: attack power rises for 8 seconds.",
+          "trDesc": "Odağını topla: 8 saniye boyunca saldırı gücün yükselir."
+        },
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "id": "tremor",
+          "name": "Tremor",
+          "visual": "Earthbreaker",
+          "element": "physical",
+          "kind": "quake",
+          "cd": 14,
+          "power": 1.5,
+          "radius": 130,
+          "pulses": 3,
+          "interval": 0.22,
+          "knockback": 100,
+          "color": "#a1887f",
+          "cost": 2,
+          "slot": null,
+          "desc": "Smash the ground and send three rolling shockwaves outward.",
+          "trDesc": "Yere vur; dışa doğru yayılan üç şok dalgası gönder."
+        },
+        {
+          "id": "whirlwind",
+          "name": "Whirlwind",
+          "visual": "Whirlwind",
+          "element": "physical",
+          "kind": "arc",
+          "cd": 4.5,
+          "power": 1.55,
+          "radius": 100,
+          "arc": 1.15,
+          "color": "#ffd54f",
+          "cost": 1,
+          "desc": "A full spinning cut that carves every foe in front of you.",
+          "trDesc": "Önündeki bütün düşmanları biçen tam turlu bir savuruş.",
+          "slot": null
+        },
+        {
+          "id": "bladestorm",
+          "name": "Blade Storm",
+          "visual": "Blade Storm",
+          "element": "physical",
+          "kind": "orbit",
+          "cd": 15,
+          "power": 2.35,
+          "radius": 118,
+          "duration": 3.2,
+          "tick": 0.35,
+          "count": 8,
+          "speed": 4.6,
+          "color": "#80d8ff",
+          "cost": 3,
+          "desc": "Blades orbit you for three seconds, shredding anything they touch.",
+          "trDesc": "Bıçaklar üç saniye etrafında döner, dokunduklarını parçalar.",
+          "slot": null
+        },
+        {
+          "id": "earthbreaker",
+          "name": "Earthbreaker",
+          "visual": "Earthbreaker",
+          "element": "physical",
+          "kind": "nova",
+          "cd": 9,
+          "power": 1.7,
+          "radius": 110,
+          "knockback": 120,
+          "color": "#ffb74d",
+          "cost": 2,
+          "desc": "Slam the ground and send a shockwave through everything nearby.",
+          "trDesc": "Yere vur; çevrendeki her şeyi sarsan bir şok dalgası yay.",
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "sunfall",
+          "name": "Sunfall",
+          "visual": "Meteor Storm",
+          "element": "fire",
+          "magic": true,
+          "kind": "meteor",
+          "cd": 36,
+          "power": 3.5,
+          "radius": 165,
+          "delay": 0.4,
+          "count": 3,
+          "stagger": 0.18,
+          "spreadRadius": 150,
+          "range": 360,
+          "color": "#ff8a65",
+          "status": {
+            "type": "burn",
+            "duration": 4,
+            "dps": 20
+          },
+          "cost": 4,
+          "late": true,
+          "desc": "Three burning suns crash down and leave the earth ablaze.",
+          "trDesc": "Üç yanan güneş yere çakılır ve toprağı tutuşturur.",
+          "slot": null
+        },
+        {
+          "id": "infernalcrown",
+          "name": "Infernal Crown",
+          "visual": "Inferno Burst",
+          "element": "fire",
+          "magic": true,
+          "kind": "nova",
+          "cd": 46,
+          "power": 4.8,
+          "radius": 200,
+          "color": "#ff3d00",
+          "status": {
+            "type": "burn",
+            "duration": 5,
+            "dps": 26
+          },
+          "cost": 6,
+          "late": true,
+          "desc": "A crown of hellfire erupts around you and keeps the ground burning.",
+          "trDesc": "Etrafında cehennem ateşinden bir taç patlar ve yeri yakmaya devam eder.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Warlord Cleave",
+          "element": "fire",
+          "kind": "arc",
+          "cd": 6,
+          "power": 2.32,
+          "color": "#ff8a65",
+          "desc": "",
+          "radius": 121,
+          "arc": 1.15,
+          "status": {
+            "type": "burn",
+            "duration": 2,
+            "dps": 8
+          }
+        },
+        "e": {
+          "name": "War Banner",
+          "element": "fire",
+          "kind": "shield",
+          "cd": 8.5,
+          "power": 0,
+          "color": "#ff8a65",
+          "desc": "",
+          "shieldPct": 20,
+          "duration": 5
+        },
+        "r": {
+          "name": "Executioner",
+          "element": "fire",
+          "kind": "arc",
+          "cd": 13.6,
+          "power": 3.9,
+          "color": "#ff8a65",
+          "desc": "",
+          "radius": 168,
+          "arc": 1.4,
+          "knockback": 160,
+          "status": {
+            "type": "burn",
+            "duration": 3,
+            "dps": 20
+          }
         }
       }
     },
@@ -18897,46 +22832,279 @@ const CONTENT = {
         "element": "nature"
       },
       "q": {
-        "name": "Bramble Shot",
-        "element": "nature",
-        "kind": "projectile",
-        "cd": 6,
-        "power": 1.83,
-        "color": "#9ccc65",
-        "desc": "",
-        "speed": 660,
-        "radius": 10
+        "id": "cyclone",
+        "name": "Cyclone",
+        "visual": "Cyclone",
+        "element": "physical",
+        "kind": "vortex",
+        "cd": 9,
+        "power": 1.2,
+        "radius": 120,
+        "duration": 2.6,
+        "tick": 0.35,
+        "pull": 120,
+        "range": 300,
+        "color": "#b0bec5",
+        "cost": 0,
+        "desc": "A spinning vortex drags enemies inward and shreds them.",
+        "trDesc": "Dönen bir girdap düşmanları içeri çeker ve parçalar.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Verdant Snare",
-        "element": "nature",
+        "id": "blizzard",
+        "name": "Blizzard",
+        "visual": "Blizzard",
+        "element": "frost",
+        "magic": true,
         "kind": "ground",
-        "cd": 6.8,
-        "power": 1.22,
-        "color": "#9ccc65",
-        "desc": "",
-        "radius": 95,
-        "duration": 3,
-        "tick": 0.5,
+        "cd": 16,
+        "power": 1.9,
+        "radius": 130,
+        "duration": 3.4,
+        "tick": 0.4,
+        "range": 330,
+        "color": "#9fe2ff",
         "status": {
-          "type": "root",
-          "duration": 2.2
+          "type": "freeze",
+          "duration": 0.8
         },
-        "dot": 12,
-        "range": 340
+        "cost": 0,
+        "desc": "A long-lasting snowstorm grinds away at a wide area.",
+        "trDesc": "Geniş bir alanı kemiren, uzun süreli bir kar fırtınası.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Wildstorm",
-        "element": "nature",
-        "kind": "fan",
-        "cd": 13.6,
-        "power": 1.95,
-        "color": "#9ccc65",
-        "desc": "",
-        "count": 10,
-        "spread": 0.22,
-        "speed": 760,
-        "radius": 8
+        "id": "starfall",
+        "name": "Starfall",
+        "visual": "Starfall",
+        "element": "arcane",
+        "magic": true,
+        "kind": "meteor",
+        "cd": 17,
+        "power": 2.8,
+        "radius": 135,
+        "delay": 0.45,
+        "count": 3,
+        "stagger": 0.14,
+        "spreadRadius": 130,
+        "range": 360,
+        "color": "#ffe57f",
+        "cost": 0,
+        "desc": "Stars rain from the sky across a wide area.",
+        "trDesc": "Gökten geniş bir alana yıldızlar yağar.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "battlefocus",
+          "name": "Battle Focus",
+          "visual": "Rune Circle",
+          "element": "physical",
+          "kind": "buff",
+          "cd": 18,
+          "color": "#ffb74d",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "attack",
+            "pct": 30,
+            "duration": 8
+          },
+          "desc": "Sharpen your focus: attack power rises for 8 seconds.",
+          "trDesc": "Odağını topla: 8 saniye boyunca saldırı gücün yükselir."
+        },
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "id": "tremor",
+          "name": "Tremor",
+          "visual": "Earthbreaker",
+          "element": "physical",
+          "kind": "quake",
+          "cd": 14,
+          "power": 1.5,
+          "radius": 130,
+          "pulses": 3,
+          "interval": 0.22,
+          "knockback": 100,
+          "color": "#a1887f",
+          "cost": 2,
+          "slot": null,
+          "desc": "Smash the ground and send three rolling shockwaves outward.",
+          "trDesc": "Yere vur; dışa doğru yayılan üç şok dalgası gönder."
+        },
+        {
+          "id": "gale",
+          "name": "Gale",
+          "visual": "Cyclone",
+          "element": "physical",
+          "kind": "vortex",
+          "cd": 6,
+          "power": 1,
+          "radius": 100,
+          "duration": 2,
+          "tick": 0.35,
+          "pull": 90,
+          "range": 260,
+          "color": "#b0bec5",
+          "cost": 1,
+          "desc": "A short burst of wind that pulls and cuts.",
+          "trDesc": "Çeken ve kesen kısa bir rüzgâr patlaması.",
+          "slot": null
+        },
+        {
+          "id": "glaciervall",
+          "name": "Glacier Wall",
+          "visual": "Glacier Wall",
+          "element": "frost",
+          "magic": true,
+          "kind": "ground",
+          "cd": 11,
+          "power": 1.25,
+          "radius": 80,
+          "duration": 2.2,
+          "tick": 0.45,
+          "range": 280,
+          "color": "#9fe2ff",
+          "status": {
+            "type": "freeze",
+            "duration": 1
+          },
+          "cost": 2,
+          "desc": "Raise a wall of ice ahead that slows and cuts anything crossing it.",
+          "trDesc": "Önüne geçenleri yavaşlatan ve kesen bir buz duvarı dik.",
+          "slot": null
+        },
+        {
+          "name": "Rain of Arrows",
+          "element": "physical",
+          "kind": "barrage",
+          "cd": 15,
+          "power": 2.2,
+          "color": "#9fd8ff",
+          "desc": "A technique carried over from the old travel kit.",
+          "count": 16,
+          "interval": 0.055,
+          "speed": 900,
+          "radius": 6,
+          "spread": 0.13,
+          "id": "legacy_ranger_r",
+          "visual": "Starfall",
+          "tr": "Ok Yağmuru",
+          "legacyFrom": "ranger.r",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 3,
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "astralcollapse",
+          "name": "Astral Collapse",
+          "visual": "Starfall",
+          "element": "arcane",
+          "magic": true,
+          "kind": "meteor",
+          "cd": 36,
+          "power": 3.6,
+          "radius": 165,
+          "delay": 0.4,
+          "count": 5,
+          "stagger": 0.12,
+          "spreadRadius": 160,
+          "range": 370,
+          "color": "#ffe57f",
+          "cost": 4,
+          "late": true,
+          "desc": "Five collapsing stars hammer the battlefield in quick succession.",
+          "trDesc": "Beş çöken yıldız art arda savaş alanını döver.",
+          "slot": null
+        },
+        {
+          "id": "arcanedominion",
+          "name": "Arcane Dominion",
+          "visual": "Starfall",
+          "element": "arcane",
+          "magic": true,
+          "kind": "meteor",
+          "cd": 47,
+          "power": 4.9,
+          "radius": 210,
+          "delay": 0.5,
+          "count": 7,
+          "stagger": 0.1,
+          "spreadRadius": 200,
+          "range": 400,
+          "color": "#b388ff",
+          "cost": 6,
+          "late": true,
+          "desc": "You claim the sky: seven stars answer your call at once.",
+          "trDesc": "Gökyüzünü sahiplenirsin: yedi yıldız aynı anda çağrına uyar.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Bramble Shot",
+          "element": "nature",
+          "kind": "projectile",
+          "cd": 6,
+          "power": 1.83,
+          "color": "#9ccc65",
+          "desc": "",
+          "speed": 660,
+          "radius": 10
+        },
+        "e": {
+          "name": "Verdant Snare",
+          "element": "nature",
+          "kind": "ground",
+          "cd": 6.8,
+          "power": 1.22,
+          "color": "#9ccc65",
+          "desc": "",
+          "radius": 95,
+          "duration": 3,
+          "tick": 0.5,
+          "status": {
+            "type": "root",
+            "duration": 2.2
+          },
+          "dot": 12,
+          "range": 340
+        },
+        "r": {
+          "name": "Wildstorm",
+          "element": "nature",
+          "kind": "fan",
+          "cd": 13.6,
+          "power": 1.95,
+          "color": "#9ccc65",
+          "desc": "",
+          "count": 10,
+          "spread": 0.22,
+          "speed": 760,
+          "radius": 8
+        }
       }
     },
     "archmage": {
@@ -18946,59 +23114,300 @@ const CONTENT = {
         "magic": true
       },
       "q": {
-        "name": "Arcane Lance",
-        "element": "arcane",
-        "kind": "chain",
-        "cd": 6,
-        "power": 2.26,
-        "color": "#c77dff",
-        "desc": "",
-        "radius": 392,
-        "jumps": 5,
-        "chainRange": 220,
-        "status": {
-          "type": "shock",
-          "duration": 2.5,
-          "dps": 10
-        }
-      },
-      "e": {
-        "name": "Glacial Prison",
+        "id": "frostnova",
+        "name": "Frost Nova",
+        "visual": "Frost Nova",
         "element": "frost",
-        "kind": "vortex",
-        "cd": 7.7,
-        "power": 1.71,
-        "color": "#8fe4ff",
-        "desc": "",
-        "radius": 157,
-        "duration": 3,
-        "tick": 0.32,
-        "pull": 150,
+        "magic": true,
+        "kind": "nova",
+        "cd": 8,
+        "power": 1.4,
+        "radius": 105,
+        "color": "#80deea",
         "status": {
           "type": "freeze",
-          "duration": 2
+          "duration": 1.2
         },
-        "range": 320
+        "cost": 0,
+        "desc": "A ring of ice bursts outward and freezes what it touches.",
+        "trDesc": "Dışa doğru buz halkası patlar, dokunduğunu dondurur.",
+        "slot": "q",
+        "defaultSlot": "q"
+      },
+      "e": {
+        "id": "chainlightning",
+        "name": "Chain Lightning",
+        "visual": "Chain Lightning",
+        "element": "lightning",
+        "magic": true,
+        "kind": "chain",
+        "cd": 8,
+        "power": 1.5,
+        "radius": 320,
+        "jumps": 4,
+        "chainRange": 200,
+        "color": "#80d8ff",
+        "status": {
+          "type": "shock",
+          "duration": 2,
+          "dps": 8
+        },
+        "cost": 0,
+        "desc": "Lightning leaps between foes, shocking each one it touches.",
+        "trDesc": "Yıldırım düşmandan düşmana sıçrar, her birini çarpar.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Cataclysm",
-        "element": "fire",
+        "id": "starfall",
+        "name": "Starfall",
+        "visual": "Starfall",
+        "element": "arcane",
+        "magic": true,
         "kind": "meteor",
-        "cd": 15.3,
-        "power": 4.27,
-        "color": "#ff8a65",
-        "desc": "",
-        "radius": 193,
-        "delay": 0.4,
-        "count": 5,
-        "stagger": 0.18,
-        "spreadRadius": 150,
-        "status": {
-          "type": "burn",
-          "duration": 4,
-          "dps": 20
+        "cd": 17,
+        "power": 2.8,
+        "radius": 135,
+        "delay": 0.45,
+        "count": 3,
+        "stagger": 0.14,
+        "spreadRadius": 130,
+        "range": 360,
+        "color": "#ffe57f",
+        "cost": 0,
+        "desc": "Stars rain from the sky across a wide area.",
+        "trDesc": "Gökten geniş bir alana yıldızlar yağar.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "frostbite",
+          "name": "Frostbite",
+          "visual": "",
+          "element": "frost",
+          "kind": "projectile",
+          "cd": 6,
+          "power": 1.4,
+          "speed": 660,
+          "radius": 10,
+          "color": "#81d4fa",
+          "cost": 1,
+          "slot": null,
+          "status": {
+            "type": "slow",
+            "duration": 2,
+            "slow": 0.45
+          },
+          "desc": "Hurl a shard of ice that chills and slows the target.",
+          "trDesc": "Hedefi üşütüp yavaşlatan bir buz kırığı fırlat."
         },
-        "range": 340
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "id": "spiritward",
+          "name": "Spirit Ward",
+          "visual": "",
+          "element": "holy",
+          "kind": "shield",
+          "cd": 22,
+          "shieldPct": 30,
+          "duration": 6,
+          "radius": 60,
+          "color": "#ffe082",
+          "cost": 2,
+          "slot": null,
+          "desc": "A spirit shield absorbs damage for 6 seconds.",
+          "trDesc": "Ruh kalkanı 6 saniye boyunca gelen hasarı emer."
+        },
+        {
+          "id": "meteorstorm",
+          "name": "Meteor Storm",
+          "visual": "Meteor Storm",
+          "element": "fire",
+          "magic": true,
+          "kind": "meteor",
+          "cd": 15,
+          "power": 2.6,
+          "radius": 120,
+          "delay": 0.35,
+          "count": 2,
+          "stagger": 0.2,
+          "spreadRadius": 110,
+          "range": 340,
+          "color": "#ff8a65",
+          "status": {
+            "type": "burn",
+            "duration": 3,
+            "dps": 14
+          },
+          "cost": 3,
+          "desc": "Call down meteors on the marked ground, leaving burning craters.",
+          "trDesc": "İşaretli yere meteorlar indir; yanan kraterler bırak.",
+          "slot": null
+        },
+        {
+          "id": "singularity",
+          "name": "Singularity",
+          "visual": "Singularity",
+          "element": "shadow",
+          "magic": true,
+          "kind": "vortex",
+          "cd": 16,
+          "power": 2,
+          "radius": 130,
+          "duration": 2.8,
+          "tick": 0.4,
+          "pull": 220,
+          "range": 330,
+          "color": "#7c4dff",
+          "cost": 3,
+          "desc": "Open a collapsing void that drags enemies into its core.",
+          "trDesc": "Düşmanları çekirdeğine çeken, çöken bir boşluk aç.",
+          "slot": null
+        },
+        {
+          "id": "blizzard",
+          "name": "Blizzard",
+          "visual": "Blizzard",
+          "element": "frost",
+          "magic": true,
+          "kind": "ground",
+          "cd": 16,
+          "power": 1.9,
+          "radius": 130,
+          "duration": 3.4,
+          "tick": 0.4,
+          "range": 330,
+          "color": "#9fe2ff",
+          "status": {
+            "type": "freeze",
+            "duration": 0.8
+          },
+          "cost": 3,
+          "desc": "A long-lasting snowstorm grinds away at a wide area.",
+          "trDesc": "Geniş bir alanı kemiren, uzun süreli bir kar fırtınası.",
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "astralcollapse",
+          "name": "Astral Collapse",
+          "visual": "Starfall",
+          "element": "arcane",
+          "magic": true,
+          "kind": "meteor",
+          "cd": 36,
+          "power": 3.6,
+          "radius": 165,
+          "delay": 0.4,
+          "count": 5,
+          "stagger": 0.12,
+          "spreadRadius": 160,
+          "range": 370,
+          "color": "#ffe57f",
+          "cost": 4,
+          "late": true,
+          "desc": "Five collapsing stars hammer the battlefield in quick succession.",
+          "trDesc": "Beş çöken yıldız art arda savaş alanını döver.",
+          "slot": null
+        },
+        {
+          "id": "arcanedominion",
+          "name": "Arcane Dominion",
+          "visual": "Starfall",
+          "element": "arcane",
+          "magic": true,
+          "kind": "meteor",
+          "cd": 47,
+          "power": 4.9,
+          "radius": 210,
+          "delay": 0.5,
+          "count": 7,
+          "stagger": 0.1,
+          "spreadRadius": 200,
+          "range": 400,
+          "color": "#b388ff",
+          "cost": 6,
+          "late": true,
+          "desc": "You claim the sky: seven stars answer your call at once.",
+          "trDesc": "Gökyüzünü sahiplenirsin: yedi yıldız aynı anda çağrına uyar.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Arcane Lance",
+          "element": "arcane",
+          "kind": "chain",
+          "cd": 6,
+          "power": 2.26,
+          "color": "#c77dff",
+          "desc": "",
+          "radius": 392,
+          "jumps": 5,
+          "chainRange": 220,
+          "status": {
+            "type": "shock",
+            "duration": 2.5,
+            "dps": 10
+          }
+        },
+        "e": {
+          "name": "Glacial Prison",
+          "element": "frost",
+          "kind": "vortex",
+          "cd": 7.7,
+          "power": 1.71,
+          "color": "#8fe4ff",
+          "desc": "",
+          "radius": 157,
+          "duration": 3,
+          "tick": 0.32,
+          "pull": 150,
+          "status": {
+            "type": "freeze",
+            "duration": 2
+          },
+          "range": 320
+        },
+        "r": {
+          "name": "Cataclysm",
+          "element": "fire",
+          "kind": "meteor",
+          "cd": 15.3,
+          "power": 4.27,
+          "color": "#ff8a65",
+          "desc": "",
+          "radius": 193,
+          "delay": 0.4,
+          "count": 5,
+          "stagger": 0.18,
+          "spreadRadius": 150,
+          "status": {
+            "type": "burn",
+            "duration": 4,
+            "dps": 20
+          },
+          "range": 340
+        }
       }
     },
     "nightblade": {
@@ -19007,40 +23416,262 @@ const CONTENT = {
         "element": "shadow"
       },
       "q": {
-        "name": "Umbral Slash",
+        "id": "umbrallash",
+        "name": "Umbral Lash",
+        "visual": "Shadow Grasp",
         "element": "shadow",
         "kind": "arc",
-        "cd": 6,
-        "power": 2.44,
-        "color": "#b388ff",
-        "desc": "",
-        "radius": 101,
-        "arc": 0.85
+        "cd": 5,
+        "power": 1.5,
+        "radius": 110,
+        "arc": 1.1,
+        "color": "#9c4dff",
+        "cost": 0,
+        "desc": "A whip of shadow cuts across the foes in front of you.",
+        "trDesc": "Önündeki düşmanları kesen bir gölge kamçısı.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Shadow Veil",
+        "id": "shadowgrasp",
+        "name": "Shadow Grasp",
+        "visual": "Shadow Grasp",
         "element": "shadow",
-        "kind": "teleport",
-        "cd": 6,
-        "power": 2.07,
-        "color": "#b388ff",
-        "desc": "",
-        "range": 175,
-        "radius": 84
+        "magic": true,
+        "kind": "ground",
+        "cd": 9,
+        "power": 1.4,
+        "radius": 95,
+        "duration": 2.2,
+        "tick": 0.4,
+        "range": 300,
+        "color": "#9c4dff",
+        "status": {
+          "type": "freeze",
+          "duration": 1
+        },
+        "cost": 0,
+        "desc": "Shadow tendrils burst from the ground and claw at everything.",
+        "trDesc": "Yerden gölge kolları fışkırır ve her şeyi tırmalar.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Nightfall",
-        "element": "shadow",
-        "kind": "teleport",
-        "cd": 13.6,
-        "power": 3.66,
-        "color": "#b388ff",
-        "desc": "",
-        "range": 210,
-        "radius": 146,
-        "status": {
-          "type": "stun",
-          "duration": 0.5
+        "id": "bladestorm",
+        "name": "Blade Storm",
+        "visual": "Blade Storm",
+        "element": "physical",
+        "kind": "orbit",
+        "cd": 15,
+        "power": 2.35,
+        "radius": 118,
+        "duration": 3.2,
+        "tick": 0.35,
+        "count": 8,
+        "speed": 4.6,
+        "color": "#80d8ff",
+        "cost": 0,
+        "desc": "Blades orbit you for three seconds, shredding anything they touch.",
+        "trDesc": "Bıçaklar üç saniye etrafında döner, dokunduklarını parçalar.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "shadowveil",
+          "name": "Shadow Veil",
+          "visual": "Dimension Rift",
+          "element": "shadow",
+          "kind": "teleport",
+          "cd": 10,
+          "power": 0.9,
+          "range": 200,
+          "radius": 70,
+          "color": "#9575cd",
+          "cost": 2,
+          "slot": null,
+          "desc": "Melt into shadow and reappear a short distance away.",
+          "trDesc": "Gölgeye karışıp kısa bir mesafe öteye belir."
+        },
+        {
+          "id": "frostbite",
+          "name": "Frostbite",
+          "visual": "",
+          "element": "frost",
+          "kind": "projectile",
+          "cd": 6,
+          "power": 1.4,
+          "speed": 660,
+          "radius": 10,
+          "color": "#81d4fa",
+          "cost": 1,
+          "slot": null,
+          "status": {
+            "type": "slow",
+            "duration": 2,
+            "slow": 0.45
+          },
+          "desc": "Hurl a shard of ice that chills and slows the target.",
+          "trDesc": "Hedefi üşütüp yavaşlatan bir buz kırığı fırlat."
+        },
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "name": "Shadow Dance",
+          "element": "shadow",
+          "kind": "orbit",
+          "cd": 15,
+          "power": 2.6,
+          "color": "#b388ff",
+          "desc": "A technique carried over from the old travel kit.",
+          "radius": 118,
+          "duration": 3.6,
+          "tick": 0.28,
+          "count": 10,
+          "speed": 5.2,
+          "status": {
+            "type": "bleed",
+            "duration": 2.5,
+            "dps": 9
+          },
+          "id": "legacy_rogue_r",
+          "visual": "Blade Storm",
+          "tr": "Gölge Dansı",
+          "legacyFrom": "rogue.r",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 3,
+          "slot": null
+        },
+        {
+          "id": "dimensionrift",
+          "name": "Dimension Rift",
+          "visual": "Dimension Rift",
+          "element": "arcane",
+          "magic": true,
+          "kind": "teleport",
+          "cd": 10,
+          "power": 1.9,
+          "radius": 90,
+          "range": 230,
+          "color": "#b388ff",
+          "cost": 2,
+          "desc": "Tear space and step through it, shredding everything you leave behind.",
+          "trDesc": "Uzayı yırt ve içinden geç; geride bıraktığın her şeyi parçala.",
+          "slot": null
+        },
+        {
+          "id": "crimsonreap",
+          "name": "Crimson Reap",
+          "visual": "Crimson Reap",
+          "element": "shadow",
+          "kind": "arc",
+          "cd": 10,
+          "power": 2.2,
+          "radius": 130,
+          "arc": 1.4,
+          "color": "#ff1744",
+          "status": {
+            "type": "bleed",
+            "duration": 3,
+            "dps": 12
+          },
+          "cost": 2,
+          "desc": "A wide scythe of blood rips through the crowd.",
+          "trDesc": "Kan orak kalabalığın içinden geçer.",
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "doomgavel",
+          "name": "Doom Gavel",
+          "visual": "Titan Fist",
+          "element": "physical",
+          "kind": "meteor",
+          "cd": 34,
+          "power": 3.4,
+          "radius": 150,
+          "delay": 0.45,
+          "range": 340,
+          "knockback": 260,
+          "color": "#ffd54f",
+          "cost": 4,
+          "late": true,
+          "desc": "A colossal gavel of stone falls from the sky and shatters the ground.",
+          "trDesc": "Gökten devasa bir taş tokmak düşer ve yeri parçalar.",
+          "slot": null
+        },
+        {
+          "id": "worldbreaker",
+          "name": "World Breaker",
+          "visual": "Earthbreaker",
+          "element": "physical",
+          "kind": "nova",
+          "cd": 45,
+          "power": 4.6,
+          "radius": 190,
+          "knockback": 340,
+          "color": "#ffb74d",
+          "cost": 6,
+          "late": true,
+          "desc": "One strike cracks the world; everything around you is thrown back.",
+          "trDesc": "Tek vuruş dünyayı çatlatır; çevrendeki her şey geri savrulur.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Umbral Slash",
+          "element": "shadow",
+          "kind": "arc",
+          "cd": 6,
+          "power": 2.44,
+          "color": "#b388ff",
+          "desc": "",
+          "radius": 101,
+          "arc": 0.85
+        },
+        "e": {
+          "name": "Shadow Veil",
+          "element": "shadow",
+          "kind": "teleport",
+          "cd": 6,
+          "power": 2.07,
+          "color": "#b388ff",
+          "desc": "",
+          "range": 175,
+          "radius": 84
+        },
+        "r": {
+          "name": "Nightfall",
+          "element": "shadow",
+          "kind": "teleport",
+          "cd": 13.6,
+          "power": 3.66,
+          "color": "#b388ff",
+          "desc": "",
+          "range": 210,
+          "radius": 146,
+          "status": {
+            "type": "stun",
+            "duration": 0.5
+          }
         }
       }
     },
@@ -19050,41 +23681,262 @@ const CONTENT = {
         "element": "holy"
       },
       "q": {
-        "name": "Crusader's Blow",
-        "element": "holy",
+        "id": "whirlwind",
+        "name": "Whirlwind",
+        "visual": "Whirlwind",
+        "element": "physical",
         "kind": "arc",
-        "cd": 6,
-        "power": 2.2,
-        "color": "#ffe082",
-        "desc": "",
-        "radius": 112,
-        "arc": 1.05
+        "cd": 4.5,
+        "power": 1.55,
+        "radius": 100,
+        "arc": 1.15,
+        "color": "#ffd54f",
+        "cost": 0,
+        "desc": "A full spinning cut that carves every foe in front of you.",
+        "trDesc": "Önündeki bütün düşmanları biçen tam turlu bir savuruş.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Divine Aegis",
-        "element": "holy",
-        "kind": "shield",
-        "cd": 8.5,
-        "power": 0,
-        "color": "#ffe082",
-        "desc": "",
-        "shieldPct": 30,
-        "duration": 5
+        "name": "Swordstorm",
+        "element": "physical",
+        "kind": "swing",
+        "cd": 10,
+        "power": 0.62,
+        "color": "#9fd8ff",
+        "desc": "A technique carried over from the old travel kit.",
+        "radius": 122,
+        "hits": 3,
+        "interval": 0.2,
+        "arc": 1.65,
+        "status": {
+          "type": "bleed",
+          "duration": 2,
+          "dps": 8
+        },
+        "id": "legacy_warrior_e",
+        "visual": "Whirlwind",
+        "tr": "Kılıç Fırtınası",
+        "legacyFrom": "warrior.e",
+        "trDesc": "A technique carried over from the old travel kit.",
+        "cost": 0,
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Hammerfall",
+        "id": "divinejudgement",
+        "name": "Divine Judgement",
+        "visual": "Divine Judgement",
         "element": "holy",
-        "kind": "arc",
-        "cd": 13.6,
-        "power": 3.54,
-        "color": "#ffe082",
-        "desc": "",
-        "radius": 162,
-        "arc": 1.5,
-        "knockback": 150,
+        "magic": true,
+        "kind": "nova",
+        "cd": 18,
+        "power": 2.9,
+        "radius": 150,
+        "color": "#fff59d",
         "status": {
           "type": "stun",
-          "duration": 0.6
+          "duration": 0.8
+        },
+        "cost": 0,
+        "desc": "Six blades of light fall around you and stun the wicked.",
+        "trDesc": "Etrafına altı ışık kılıcı iner ve günahkârları sersemletir.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "battlefocus",
+          "name": "Battle Focus",
+          "visual": "Rune Circle",
+          "element": "physical",
+          "kind": "buff",
+          "cd": 18,
+          "color": "#ffb74d",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "attack",
+            "pct": 30,
+            "duration": 8
+          },
+          "desc": "Sharpen your focus: attack power rises for 8 seconds.",
+          "trDesc": "Odağını topla: 8 saniye boyunca saldırı gücün yükselir."
+        },
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "id": "tremor",
+          "name": "Tremor",
+          "visual": "Earthbreaker",
+          "element": "physical",
+          "kind": "quake",
+          "cd": 14,
+          "power": 1.5,
+          "radius": 130,
+          "pulses": 3,
+          "interval": 0.22,
+          "knockback": 100,
+          "color": "#a1887f",
+          "cost": 2,
+          "slot": null,
+          "desc": "Smash the ground and send three rolling shockwaves outward.",
+          "trDesc": "Yere vur; dışa doğru yayılan üç şok dalgası gönder."
+        },
+        {
+          "name": "Judgment",
+          "element": "holy",
+          "kind": "meteor",
+          "cd": 16,
+          "power": 2.9,
+          "color": "#ffe082",
+          "desc": "A technique carried over from the old travel kit.",
+          "radius": 135,
+          "delay": 0.4,
+          "status": {
+            "type": "stun",
+            "duration": 0.9
+          },
+          "range": 340,
+          "id": "legacy_paladin_r",
+          "visual": "Meteor Storm",
+          "tr": "Hüküm",
+          "legacyFrom": "paladin.r",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 3,
+          "slot": null
+        },
+        {
+          "id": "runeseal",
+          "name": "Rune Seal",
+          "visual": "Rune Circle",
+          "element": "arcane",
+          "magic": true,
+          "kind": "shield",
+          "cd": 11,
+          "power": 0,
+          "shieldPct": 22,
+          "duration": 5,
+          "color": "#b388ff",
+          "cost": 2,
+          "desc": "Etch a warding rune that absorbs a share of incoming damage.",
+          "trDesc": "Gelen hasarın bir kısmını yutan koruyucu bir rün kaz.",
+          "slot": null
+        },
+        {
+          "id": "judgementbeam",
+          "name": "Radiant Verdict",
+          "visual": "Judgement Beam",
+          "element": "holy",
+          "magic": true,
+          "kind": "beam",
+          "cd": 11,
+          "power": 2.1,
+          "range": 360,
+          "width": 34,
+          "color": "#ffe082",
+          "cost": 2,
+          "desc": "A wide beam of judgement that sears everything in its path.",
+          "trDesc": "Yolundaki her şeyi dağlayan geniş bir hüküm ışını.",
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "seraphsjudgement",
+          "name": "Seraph's Judgement",
+          "visual": "Judgement Beam",
+          "element": "holy",
+          "magic": true,
+          "kind": "beam",
+          "cd": 34,
+          "power": 3.5,
+          "range": 380,
+          "width": 42,
+          "color": "#fff59d",
+          "cost": 4,
+          "late": true,
+          "desc": "A seraph's spear of light burns a wide path through everything.",
+          "trDesc": "Bir serafın ışık mızrağı her şeyin içinden geniş bir yol yakar.",
+          "slot": null
+        },
+        {
+          "id": "eternaldawn",
+          "name": "Eternal Dawn",
+          "visual": "Divine Judgement",
+          "element": "holy",
+          "magic": true,
+          "kind": "nova",
+          "cd": 45,
+          "power": 4.8,
+          "radius": 195,
+          "healPct": 22,
+          "color": "#ffe082",
+          "status": {
+            "type": "stun",
+            "duration": 1.2
+          },
+          "cost": 6,
+          "late": true,
+          "desc": "Dawn breaks all at once: foes are stunned, allies are restored.",
+          "trDesc": "Şafak bir anda söker: düşmanlar sersemler, müttefikler iyileşir.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Crusader's Blow",
+          "element": "holy",
+          "kind": "arc",
+          "cd": 6,
+          "power": 2.2,
+          "color": "#ffe082",
+          "desc": "",
+          "radius": 112,
+          "arc": 1.05
+        },
+        "e": {
+          "name": "Divine Aegis",
+          "element": "holy",
+          "kind": "shield",
+          "cd": 8.5,
+          "power": 0,
+          "color": "#ffe082",
+          "desc": "",
+          "shieldPct": 30,
+          "duration": 5
+        },
+        "r": {
+          "name": "Hammerfall",
+          "element": "holy",
+          "kind": "arc",
+          "cd": 13.6,
+          "power": 3.54,
+          "color": "#ffe082",
+          "desc": "",
+          "radius": 162,
+          "arc": 1.5,
+          "knockback": 150,
+          "status": {
+            "type": "stun",
+            "duration": 0.6
+          }
         }
       }
     },
@@ -19094,49 +23946,280 @@ const CONTENT = {
         "element": "shadow"
       },
       "q": {
-        "name": "Soul Reap",
+        "id": "bloodcut",
+        "name": "Blood Cut",
+        "visual": "Crimson Reap",
         "element": "shadow",
         "kind": "arc",
-        "cd": 6,
-        "power": 2.56,
-        "color": "#b388ff",
-        "desc": "",
-        "radius": 106,
-        "arc": 1.2
-      },
-      "e": {
-        "name": "Death Grip",
-        "element": "shadow",
-        "kind": "beam",
-        "cd": 6.8,
-        "power": 2.32,
-        "color": "#b388ff",
-        "desc": "",
-        "range": 231,
-        "width": 26,
-        "status": {
-          "type": "slow",
-          "duration": 1.8,
-          "slow": 0.45
-        }
-      },
-      "r": {
-        "name": "Scythe Storm",
-        "element": "blood",
-        "kind": "orbit",
-        "cd": 13.6,
-        "power": 3.78,
-        "color": "#ff5370",
-        "desc": "",
-        "radius": 140,
-        "duration": 3.4,
-        "tick": 0.35,
-        "count": 7,
-        "speed": 4.2,
+        "cd": 5,
+        "power": 1.7,
+        "radius": 105,
+        "arc": 0.95,
+        "color": "#ff1744",
         "status": {
           "type": "bleed",
-          "duration": 2,
-          "dps": 10
+          "duration": 2.5,
+          "dps": 9
+        },
+        "cost": 0,
+        "desc": "A quick crimson slash that leaves the wound bleeding.",
+        "trDesc": "Yarayı kanatır biçimde hızlı, kızıl bir kesik.",
+        "slot": "q",
+        "defaultSlot": "q"
+      },
+      "e": {
+        "id": "crimsonreap",
+        "name": "Crimson Reap",
+        "visual": "Crimson Reap",
+        "element": "shadow",
+        "kind": "arc",
+        "cd": 10,
+        "power": 2.2,
+        "radius": 130,
+        "arc": 1.4,
+        "color": "#ff1744",
+        "status": {
+          "type": "bleed",
+          "duration": 3,
+          "dps": 12
+        },
+        "cost": 0,
+        "desc": "A wide scythe of blood rips through the crowd.",
+        "trDesc": "Kan orak kalabalığın içinden geçer.",
+        "slot": "e",
+        "defaultSlot": "e"
+      },
+      "r": {
+        "id": "soulharvest",
+        "name": "Soul Harvest",
+        "visual": "Soul Harvest",
+        "element": "shadow",
+        "kind": "nova",
+        "cd": 16,
+        "power": 2.5,
+        "radius": 140,
+        "healPct": 12,
+        "color": "#69f0ae",
+        "cost": 0,
+        "desc": "Rip the souls from nearby foes and drink back a share as life.",
+        "trDesc": "Yakındaki düşmanların ruhunu söküp bir kısmını can olarak içine çek.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "shadowveil",
+          "name": "Shadow Veil",
+          "visual": "Dimension Rift",
+          "element": "shadow",
+          "kind": "teleport",
+          "cd": 10,
+          "power": 0.9,
+          "range": 200,
+          "radius": 70,
+          "color": "#9575cd",
+          "cost": 2,
+          "slot": null,
+          "desc": "Melt into shadow and reappear a short distance away.",
+          "trDesc": "Gölgeye karışıp kısa bir mesafe öteye belir."
+        },
+        {
+          "id": "frostbite",
+          "name": "Frostbite",
+          "visual": "",
+          "element": "frost",
+          "kind": "projectile",
+          "cd": 6,
+          "power": 1.4,
+          "speed": 660,
+          "radius": 10,
+          "color": "#81d4fa",
+          "cost": 1,
+          "slot": null,
+          "status": {
+            "type": "slow",
+            "duration": 2,
+            "slow": 0.45
+          },
+          "desc": "Hurl a shard of ice that chills and slows the target.",
+          "trDesc": "Hedefi üşütüp yavaşlatan bir buz kırığı fırlat."
+        },
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "id": "bonecage",
+          "name": "Bone Cage",
+          "visual": "Bone Cage",
+          "element": "shadow",
+          "kind": "ground",
+          "cd": 12,
+          "power": 1.4,
+          "radius": 95,
+          "duration": 2.4,
+          "tick": 0.4,
+          "color": "#d8d0b8",
+          "status": {
+            "type": "freeze",
+            "duration": 1.2
+          },
+          "cost": 2,
+          "desc": "Bones erupt around the target and lock it in place while they cut.",
+          "trDesc": "Hedefin çevresinde kemikler yükselir, onu yerinde kilitler.",
+          "slot": null
+        },
+        {
+          "id": "shadowgrasp",
+          "name": "Shadow Grasp",
+          "visual": "Shadow Grasp",
+          "element": "shadow",
+          "magic": true,
+          "kind": "ground",
+          "cd": 9,
+          "power": 1.4,
+          "radius": 95,
+          "duration": 2.2,
+          "tick": 0.4,
+          "range": 300,
+          "color": "#9c4dff",
+          "status": {
+            "type": "freeze",
+            "duration": 1
+          },
+          "cost": 2,
+          "desc": "Shadow tendrils burst from the ground and claw at everything.",
+          "trDesc": "Yerden gölge kolları fışkırır ve her şeyi tırmalar.",
+          "slot": null
+        },
+        {
+          "name": "Scythe Storm",
+          "element": "blood",
+          "kind": "orbit",
+          "cd": 13.6,
+          "power": 3.78,
+          "color": "#ff5370",
+          "desc": "A technique carried over from the old travel kit.",
+          "radius": 140,
+          "duration": 3.4,
+          "tick": 0.35,
+          "count": 7,
+          "speed": 4.2,
+          "status": {
+            "type": "bleed",
+            "duration": 2,
+            "dps": 10
+          },
+          "id": "legacy_reaper_r",
+          "visual": "Blade Storm",
+          "tr": "Scythe Storm",
+          "legacyFrom": "reaper.r",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 2,
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "nightfall",
+          "name": "Nightfall",
+          "visual": "Singularity",
+          "element": "shadow",
+          "magic": true,
+          "kind": "vortex",
+          "cd": 35,
+          "power": 3.3,
+          "radius": 165,
+          "duration": 3.2,
+          "tick": 0.35,
+          "pull": 280,
+          "range": 350,
+          "color": "#7c4dff",
+          "cost": 4,
+          "late": true,
+          "desc": "Night collapses into a hungry void that drags enemies to its core.",
+          "trDesc": "Gece, düşmanları çekirdeğine çeken aç bir boşluğa çöker.",
+          "slot": null
+        },
+        {
+          "id": "voidcrown",
+          "name": "Void Crown",
+          "visual": "Blood Ritual",
+          "element": "shadow",
+          "magic": true,
+          "kind": "nova",
+          "cd": 46,
+          "power": 4.7,
+          "radius": 200,
+          "healPct": 18,
+          "color": "#9c4dff",
+          "cost": 6,
+          "late": true,
+          "desc": "A void crown detonates around you, tearing foes and feeding you their essence.",
+          "trDesc": "Etrafında bir boşluk tacı patlar; düşmanı yırtar, özlerini sana verir.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Soul Reap",
+          "element": "shadow",
+          "kind": "arc",
+          "cd": 6,
+          "power": 2.56,
+          "color": "#b388ff",
+          "desc": "",
+          "radius": 106,
+          "arc": 1.2
+        },
+        "e": {
+          "name": "Death Grip",
+          "element": "shadow",
+          "kind": "beam",
+          "cd": 6.8,
+          "power": 2.32,
+          "color": "#b388ff",
+          "desc": "",
+          "range": 231,
+          "width": 26,
+          "status": {
+            "type": "slow",
+            "duration": 1.8,
+            "slow": 0.45
+          }
+        },
+        "r": {
+          "name": "Scythe Storm",
+          "element": "blood",
+          "kind": "orbit",
+          "cd": 13.6,
+          "power": 3.78,
+          "color": "#ff5370",
+          "desc": "",
+          "radius": 140,
+          "duration": 3.4,
+          "tick": 0.35,
+          "count": 7,
+          "speed": 4.2,
+          "status": {
+            "type": "bleed",
+            "duration": 2,
+            "dps": 10
+          }
         }
       }
     },
@@ -19147,38 +24230,244 @@ const CONTENT = {
         "magic": true
       },
       "q": {
-        "name": "Smite",
+        "id": "holylance",
+        "name": "Judgement Beam",
+        "visual": "Judgement Beam",
         "element": "holy",
-        "kind": "projectile",
-        "cd": 6,
-        "power": 1.95,
-        "color": "#ffe082",
-        "desc": "",
-        "speed": 640,
-        "radius": 10
+        "magic": true,
+        "kind": "beam",
+        "cd": 7,
+        "power": 1.7,
+        "range": 300,
+        "width": 26,
+        "color": "#fff59d",
+        "cost": 0,
+        "desc": "A lance of holy light burns a straight line through the enemy.",
+        "trDesc": "Kutsal ışıktan bir mızrak düşmanın içinden düz bir çizgi yakar.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Blessing",
+        "id": "healingrain",
+        "name": "Healing Rain",
+        "visual": "Healing Rain",
         "element": "holy",
-        "kind": "shield",
-        "cd": 7.7,
+        "magic": true,
+        "kind": "heal",
+        "cd": 9,
+        "healPct": 18,
+        "radius": 90,
+        "color": "#69f0ae",
         "power": 0,
-        "color": "#ffe082",
-        "desc": "",
-        "shieldPct": 22,
-        "duration": 5,
-        "healPct": 19
+        "cost": 0,
+        "desc": "Warm rain falls and knits your wounds shut.",
+        "trDesc": "Ilık bir yağmur yağar ve yaralarını kapatır.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Divine Judgment",
+        "id": "phoenixrebirth",
+        "name": "Phoenix Rebirth",
+        "visual": "Phoenix Rebirth",
         "element": "holy",
-        "kind": "beam",
-        "cd": 13.6,
-        "power": 3.54,
-        "color": "#ffe082",
-        "desc": "",
-        "range": 352,
-        "width": 42
+        "magic": true,
+        "kind": "heal",
+        "cd": 22,
+        "healPct": 45,
+        "radius": 110,
+        "shieldPct": 12,
+        "duration": 5,
+        "color": "#ff8f00",
+        "power": 0,
+        "cost": 0,
+        "desc": "A phoenix rises from you, restoring a great amount of health.",
+        "trDesc": "İçinden bir anka yükselir, büyük miktarda can geri verir.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "spiritward",
+          "name": "Spirit Ward",
+          "visual": "",
+          "element": "holy",
+          "kind": "shield",
+          "cd": 22,
+          "shieldPct": 30,
+          "duration": 6,
+          "radius": 60,
+          "color": "#ffe082",
+          "cost": 2,
+          "slot": null,
+          "desc": "A spirit shield absorbs damage for 6 seconds.",
+          "trDesc": "Ruh kalkanı 6 saniye boyunca gelen hasarı emer."
+        },
+        {
+          "id": "battlefocus",
+          "name": "Battle Focus",
+          "visual": "Rune Circle",
+          "element": "physical",
+          "kind": "buff",
+          "cd": 18,
+          "color": "#ffb74d",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "attack",
+            "pct": 30,
+            "duration": 8
+          },
+          "desc": "Sharpen your focus: attack power rises for 8 seconds.",
+          "trDesc": "Odağını topla: 8 saniye boyunca saldırı gücün yükselir."
+        },
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "id": "judgementbeam",
+          "name": "Radiant Verdict",
+          "visual": "Judgement Beam",
+          "element": "holy",
+          "magic": true,
+          "kind": "beam",
+          "cd": 11,
+          "power": 2.1,
+          "range": 360,
+          "width": 34,
+          "color": "#ffe082",
+          "cost": 2,
+          "desc": "A wide beam of judgement that sears everything in its path.",
+          "trDesc": "Yolundaki her şeyi dağlayan geniş bir hüküm ışını.",
+          "slot": null
+        },
+        {
+          "id": "treeoflife",
+          "name": "Tree of Life",
+          "visual": "Tree of Life",
+          "element": "nature",
+          "magic": true,
+          "kind": "heal",
+          "cd": 16,
+          "healPct": 30,
+          "radius": 120,
+          "color": "#69f0ae",
+          "power": 0,
+          "cost": 3,
+          "desc": "A great tree blooms and pours healing light over the ground.",
+          "trDesc": "Ulu bir ağaç açar ve yere şifa ışığı döker.",
+          "slot": null
+        },
+        {
+          "name": "Divine Judgment",
+          "element": "holy",
+          "kind": "beam",
+          "cd": 13.6,
+          "power": 3.54,
+          "color": "#ffe082",
+          "desc": "A technique carried over from the old travel kit.",
+          "range": 352,
+          "width": 42,
+          "id": "legacy_high_priest_r",
+          "visual": "Judgement Beam",
+          "tr": "Divine Judgment",
+          "legacyFrom": "high_priest.r",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 2,
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "seraphsjudgement",
+          "name": "Seraph's Judgement",
+          "visual": "Judgement Beam",
+          "element": "holy",
+          "magic": true,
+          "kind": "beam",
+          "cd": 34,
+          "power": 3.5,
+          "range": 380,
+          "width": 42,
+          "color": "#fff59d",
+          "cost": 4,
+          "late": true,
+          "desc": "A seraph's spear of light burns a wide path through everything.",
+          "trDesc": "Bir serafın ışık mızrağı her şeyin içinden geniş bir yol yakar.",
+          "slot": null
+        },
+        {
+          "id": "eternaldawn",
+          "name": "Eternal Dawn",
+          "visual": "Divine Judgement",
+          "element": "holy",
+          "magic": true,
+          "kind": "nova",
+          "cd": 45,
+          "power": 4.8,
+          "radius": 195,
+          "healPct": 22,
+          "color": "#ffe082",
+          "status": {
+            "type": "stun",
+            "duration": 1.2
+          },
+          "cost": 6,
+          "late": true,
+          "desc": "Dawn breaks all at once: foes are stunned, allies are restored.",
+          "trDesc": "Şafak bir anda söker: düşmanlar sersemler, müttefikler iyileşir.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Smite",
+          "element": "holy",
+          "kind": "projectile",
+          "cd": 6,
+          "power": 1.95,
+          "color": "#ffe082",
+          "desc": "",
+          "speed": 640,
+          "radius": 10
+        },
+        "e": {
+          "name": "Blessing",
+          "element": "holy",
+          "kind": "shield",
+          "cd": 7.7,
+          "power": 0,
+          "color": "#ffe082",
+          "desc": "",
+          "shieldPct": 22,
+          "duration": 5,
+          "healPct": 19
+        },
+        "r": {
+          "name": "Divine Judgment",
+          "element": "holy",
+          "kind": "beam",
+          "cd": 13.6,
+          "power": 3.54,
+          "color": "#ffe082",
+          "desc": "",
+          "range": 352,
+          "width": 42
+        }
       }
     },
     "juggernaut": {
@@ -19187,39 +24476,230 @@ const CONTENT = {
         "element": "earth"
       },
       "q": {
-        "name": "Crushing Blow",
-        "element": "earth",
-        "kind": "arc",
-        "cd": 6,
-        "power": 2.44,
-        "color": "#c9a227",
-        "desc": "",
-        "radius": 118,
-        "arc": 1.15
+        "id": "earthbreaker",
+        "name": "Earthbreaker",
+        "visual": "Earthbreaker",
+        "element": "physical",
+        "kind": "nova",
+        "cd": 9,
+        "power": 1.7,
+        "radius": 110,
+        "knockback": 120,
+        "color": "#ffb74d",
+        "cost": 0,
+        "desc": "Slam the ground and send a shockwave through everything nearby.",
+        "trDesc": "Yere vur; çevrendeki her şeyi sarsan bir şok dalgası yay.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Fortress",
-        "element": "earth",
-        "kind": "shield",
-        "cd": 9.4,
-        "power": 0,
-        "color": "#c9a227",
-        "desc": "",
-        "shieldPct": 42,
-        "duration": 5
+        "id": "tremor",
+        "name": "Tremor",
+        "visual": "Earthbreaker",
+        "element": "physical",
+        "kind": "quake",
+        "cd": 14,
+        "power": 1.5,
+        "radius": 130,
+        "pulses": 3,
+        "interval": 0.22,
+        "knockback": 100,
+        "color": "#a1887f",
+        "cost": 2,
+        "slot": "e",
+        "desc": "Smash the ground and send three rolling shockwaves outward.",
+        "trDesc": "Yere vur; dışa doğru yayılan üç şok dalgası gönder.",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Earthquake",
-        "element": "earth",
-        "kind": "quake",
-        "cd": 14.5,
-        "power": 3.66,
-        "color": "#c9a227",
-        "desc": "",
-        "radius": 202,
-        "pulses": 4,
-        "interval": 0.2,
-        "knockback": 200
+        "id": "bladestorm",
+        "name": "Blade Storm",
+        "visual": "Blade Storm",
+        "element": "physical",
+        "kind": "orbit",
+        "cd": 15,
+        "power": 2.35,
+        "radius": 118,
+        "duration": 3.2,
+        "tick": 0.35,
+        "count": 8,
+        "speed": 4.6,
+        "color": "#80d8ff",
+        "cost": 0,
+        "desc": "Blades orbit you for three seconds, shredding anything they touch.",
+        "trDesc": "Bıçaklar üç saniye etrafında döner, dokunduklarını parçalar.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "battlefocus",
+          "name": "Battle Focus",
+          "visual": "Rune Circle",
+          "element": "physical",
+          "kind": "buff",
+          "cd": 18,
+          "color": "#ffb74d",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "attack",
+            "pct": 30,
+            "duration": 8
+          },
+          "desc": "Sharpen your focus: attack power rises for 8 seconds.",
+          "trDesc": "Odağını topla: 8 saniye boyunca saldırı gücün yükselir."
+        },
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "id": "bonecage",
+          "name": "Bone Cage",
+          "visual": "Bone Cage",
+          "element": "shadow",
+          "kind": "ground",
+          "cd": 12,
+          "power": 1.4,
+          "radius": 95,
+          "duration": 2.4,
+          "tick": 0.4,
+          "color": "#d8d0b8",
+          "status": {
+            "type": "freeze",
+            "duration": 1.2
+          },
+          "cost": 2,
+          "desc": "Bones erupt around the target and lock it in place while they cut.",
+          "trDesc": "Hedefin çevresinde kemikler yükselir, onu yerinde kilitler.",
+          "slot": null
+        },
+        {
+          "id": "whirlwind",
+          "name": "Whirlwind",
+          "visual": "Whirlwind",
+          "element": "physical",
+          "kind": "arc",
+          "cd": 4.5,
+          "power": 1.55,
+          "radius": 100,
+          "arc": 1.15,
+          "color": "#ffd54f",
+          "cost": 1,
+          "desc": "A full spinning cut that carves every foe in front of you.",
+          "trDesc": "Önündeki bütün düşmanları biçen tam turlu bir savuruş.",
+          "slot": null
+        },
+        {
+          "name": "Earthquake",
+          "element": "earth",
+          "kind": "quake",
+          "cd": 14.5,
+          "power": 3.66,
+          "color": "#c9a227",
+          "desc": "A technique carried over from the old travel kit.",
+          "radius": 202,
+          "pulses": 4,
+          "interval": 0.2,
+          "knockback": 200,
+          "id": "legacy_juggernaut_r",
+          "visual": "Whirlwind",
+          "tr": "Earthquake",
+          "legacyFrom": "juggernaut.r",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 3,
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "doomgavel",
+          "name": "Doom Gavel",
+          "visual": "Titan Fist",
+          "element": "physical",
+          "kind": "meteor",
+          "cd": 34,
+          "power": 3.4,
+          "radius": 150,
+          "delay": 0.45,
+          "range": 340,
+          "knockback": 260,
+          "color": "#ffd54f",
+          "cost": 4,
+          "late": true,
+          "desc": "A colossal gavel of stone falls from the sky and shatters the ground.",
+          "trDesc": "Gökten devasa bir taş tokmak düşer ve yeri parçalar.",
+          "slot": null
+        },
+        {
+          "id": "worldbreaker",
+          "name": "World Breaker",
+          "visual": "Earthbreaker",
+          "element": "physical",
+          "kind": "nova",
+          "cd": 45,
+          "power": 4.6,
+          "radius": 190,
+          "knockback": 340,
+          "color": "#ffb74d",
+          "cost": 6,
+          "late": true,
+          "desc": "One strike cracks the world; everything around you is thrown back.",
+          "trDesc": "Tek vuruş dünyayı çatlatır; çevrendeki her şey geri savrulur.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Crushing Blow",
+          "element": "earth",
+          "kind": "arc",
+          "cd": 6,
+          "power": 2.44,
+          "color": "#c9a227",
+          "desc": "",
+          "radius": 118,
+          "arc": 1.15
+        },
+        "e": {
+          "name": "Fortress",
+          "element": "earth",
+          "kind": "shield",
+          "cd": 9.4,
+          "power": 0,
+          "color": "#c9a227",
+          "desc": "",
+          "shieldPct": 42,
+          "duration": 5
+        },
+        "r": {
+          "name": "Earthquake",
+          "element": "earth",
+          "kind": "quake",
+          "cd": 14.5,
+          "power": 3.66,
+          "color": "#c9a227",
+          "desc": "",
+          "radius": 202,
+          "pulses": 4,
+          "interval": 0.2,
+          "knockback": 200
+        }
       }
     },
     "war_emperor": {
@@ -19228,52 +24708,272 @@ const CONTENT = {
         "element": "fire"
       },
       "q": {
-        "name": "Emperor's Edge",
+        "id": "dragonsbreath",
+        "name": "Dragon Breath",
+        "visual": "Dragon Breath",
         "element": "fire",
+        "magic": true,
         "kind": "arc",
-        "cd": 6,
-        "power": 2.56,
-        "color": "#ff8a65",
-        "desc": "",
-        "radius": 123,
-        "arc": 1.1,
+        "cd": 14,
+        "power": 2.4,
+        "radius": 150,
+        "arc": 1,
+        "color": "#ff5a14",
         "status": {
           "type": "burn",
-          "duration": 2.5,
-          "dps": 10
-        }
+          "duration": 3,
+          "dps": 16
+        },
+        "cost": 0,
+        "desc": "Exhale a cone of dragonfire that sets the ground alight.",
+        "trDesc": "Yeri tutuşturan bir ejder ateşi konisi püskürt.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Crown of Flame",
+        "id": "infernoburst",
+        "name": "Inferno Burst",
+        "visual": "Inferno Burst",
         "element": "fire",
+        "magic": true,
         "kind": "nova",
-        "cd": 7.7,
-        "power": 2.32,
+        "cd": 8.5,
+        "power": 1.6,
+        "radius": 100,
+        "color": "#ff7a1a",
+        "status": {
+          "type": "burn",
+          "duration": 3,
+          "dps": 12
+        },
+        "cost": 0,
+        "desc": "A ring of fire detonates around you and keeps burning.",
+        "trDesc": "Etrafında bir ateş halkası patlar ve yanmaya devam eder.",
+        "slot": "e",
+        "defaultSlot": "e"
+      },
+      "r": {
+        "id": "meteorstorm",
+        "name": "Meteor Storm",
+        "visual": "Meteor Storm",
+        "element": "fire",
+        "magic": true,
+        "kind": "meteor",
+        "cd": 15,
+        "power": 2.6,
+        "radius": 120,
+        "delay": 0.35,
+        "count": 2,
+        "stagger": 0.2,
+        "spreadRadius": 110,
+        "range": 340,
         "color": "#ff8a65",
-        "desc": "",
-        "radius": 146,
         "status": {
           "type": "burn",
           "duration": 3,
           "dps": 14
-        }
-      },
-      "r": {
-        "name": "Worldbreaker",
-        "element": "fire",
-        "kind": "meteor",
-        "cd": 15.3,
-        "power": 4.39,
-        "color": "#ff8a65",
-        "desc": "",
-        "radius": 190,
-        "delay": 0.45,
-        "status": {
-          "type": "burn",
-          "duration": 3,
-          "dps": 22
         },
-        "range": 340
+        "cost": 0,
+        "desc": "Call down meteors on the marked ground, leaving burning craters.",
+        "trDesc": "İşaretli yere meteorlar indir; yanan kraterler bırak.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "flamejet",
+          "name": "Flame Jet",
+          "visual": "",
+          "element": "fire",
+          "kind": "beam",
+          "cd": 9,
+          "power": 1.8,
+          "range": 250,
+          "width": 30,
+          "color": "#ff7043",
+          "cost": 2,
+          "slot": null,
+          "desc": "Spray a searing jet of flame in a straight line.",
+          "trDesc": "Düz bir hat boyunca kavurucu alev püskürt."
+        },
+        {
+          "id": "battlefocus",
+          "name": "Battle Focus",
+          "visual": "Rune Circle",
+          "element": "physical",
+          "kind": "buff",
+          "cd": 18,
+          "color": "#ffb74d",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "attack",
+            "pct": 30,
+            "duration": 8
+          },
+          "desc": "Sharpen your focus: attack power rises for 8 seconds.",
+          "trDesc": "Odağını topla: 8 saniye boyunca saldırı gücün yükselir."
+        },
+        {
+          "id": "arcanepulse",
+          "name": "Arcane Pulse",
+          "visual": "",
+          "element": "arcane",
+          "kind": "nova",
+          "cd": 8,
+          "power": 1.5,
+          "radius": 130,
+          "knockback": 90,
+          "color": "#ce93d8",
+          "cost": 1,
+          "slot": null,
+          "desc": "Release a ring of raw magic that hurls nearby foes back.",
+          "trDesc": "Çevrene ham büyü halkası sal; yakındaki düşmanları geri iter."
+        },
+        {
+          "id": "bladestorm",
+          "name": "Blade Storm",
+          "visual": "Blade Storm",
+          "element": "physical",
+          "kind": "orbit",
+          "cd": 15,
+          "power": 2.35,
+          "radius": 118,
+          "duration": 3.2,
+          "tick": 0.35,
+          "count": 8,
+          "speed": 4.6,
+          "color": "#80d8ff",
+          "cost": 3,
+          "desc": "Blades orbit you for three seconds, shredding anything they touch.",
+          "trDesc": "Bıçaklar üç saniye etrafında döner, dokunduklarını parçalar.",
+          "slot": null
+        },
+        {
+          "name": "Worldbreaker",
+          "element": "fire",
+          "kind": "meteor",
+          "cd": 15.3,
+          "power": 4.39,
+          "color": "#ff8a65",
+          "desc": "A technique carried over from the old travel kit.",
+          "radius": 190,
+          "delay": 0.45,
+          "status": {
+            "type": "burn",
+            "duration": 3,
+            "dps": 22
+          },
+          "range": 340,
+          "id": "legacy_war_emperor_r",
+          "visual": "Meteor Storm",
+          "tr": "Worldbreaker",
+          "legacyFrom": "war_emperor.r",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 3,
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "sunfall",
+          "name": "Sunfall",
+          "visual": "Meteor Storm",
+          "element": "fire",
+          "magic": true,
+          "kind": "meteor",
+          "cd": 36,
+          "power": 3.5,
+          "radius": 165,
+          "delay": 0.4,
+          "count": 3,
+          "stagger": 0.18,
+          "spreadRadius": 150,
+          "range": 360,
+          "color": "#ff8a65",
+          "status": {
+            "type": "burn",
+            "duration": 4,
+            "dps": 20
+          },
+          "cost": 4,
+          "late": true,
+          "desc": "Three burning suns crash down and leave the earth ablaze.",
+          "trDesc": "Üç yanan güneş yere çakılır ve toprağı tutuşturur.",
+          "slot": null
+        },
+        {
+          "id": "infernalcrown",
+          "name": "Infernal Crown",
+          "visual": "Inferno Burst",
+          "element": "fire",
+          "magic": true,
+          "kind": "nova",
+          "cd": 46,
+          "power": 4.8,
+          "radius": 200,
+          "color": "#ff3d00",
+          "status": {
+            "type": "burn",
+            "duration": 5,
+            "dps": 26
+          },
+          "cost": 6,
+          "late": true,
+          "desc": "A crown of hellfire erupts around you and keeps the ground burning.",
+          "trDesc": "Etrafında cehennem ateşinden bir taç patlar ve yeri yakmaya devam eder.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Emperor's Edge",
+          "element": "fire",
+          "kind": "arc",
+          "cd": 6,
+          "power": 2.56,
+          "color": "#ff8a65",
+          "desc": "",
+          "radius": 123,
+          "arc": 1.1,
+          "status": {
+            "type": "burn",
+            "duration": 2.5,
+            "dps": 10
+          }
+        },
+        "e": {
+          "name": "Crown of Flame",
+          "element": "fire",
+          "kind": "nova",
+          "cd": 7.7,
+          "power": 2.32,
+          "color": "#ff8a65",
+          "desc": "",
+          "radius": 146,
+          "status": {
+            "type": "burn",
+            "duration": 3,
+            "dps": 14
+          }
+        },
+        "r": {
+          "name": "Worldbreaker",
+          "element": "fire",
+          "kind": "meteor",
+          "cd": 15.3,
+          "power": 4.39,
+          "color": "#ff8a65",
+          "desc": "",
+          "radius": 190,
+          "delay": 0.45,
+          "status": {
+            "type": "burn",
+            "duration": 3,
+            "dps": 22
+          },
+          "range": 340
+        }
       }
     },
     "storm_warden": {
@@ -19282,49 +24982,295 @@ const CONTENT = {
         "element": "lightning"
       },
       "q": {
-        "name": "Storm Arrow",
-        "element": "lightning",
-        "kind": "projectile",
-        "cd": 6,
-        "power": 2.07,
-        "color": "#fff176",
-        "desc": "",
-        "speed": 720,
-        "radius": 10
+        "id": "cyclone",
+        "name": "Cyclone",
+        "visual": "Cyclone",
+        "element": "physical",
+        "kind": "vortex",
+        "cd": 9,
+        "power": 1.2,
+        "radius": 120,
+        "duration": 2.6,
+        "tick": 0.35,
+        "pull": 120,
+        "range": 300,
+        "color": "#b0bec5",
+        "cost": 0,
+        "desc": "A spinning vortex drags enemies inward and shreds them.",
+        "trDesc": "Dönen bir girdap düşmanları içeri çeker ve parçalar.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Thunder Cage",
+        "id": "chainlightning",
+        "name": "Chain Lightning",
+        "visual": "Chain Lightning",
         "element": "lightning",
-        "kind": "ground",
-        "cd": 7.7,
-        "power": 1.22,
-        "color": "#fff176",
-        "desc": "",
-        "radius": 99,
-        "duration": 3,
-        "tick": 0.5,
+        "magic": true,
+        "kind": "chain",
+        "cd": 8,
+        "power": 1.5,
+        "radius": 320,
+        "jumps": 4,
+        "chainRange": 200,
+        "color": "#80d8ff",
         "status": {
           "type": "shock",
-          "duration": 2.4,
-          "dps": 12
+          "duration": 2,
+          "dps": 8
         },
-        "dot": 10,
-        "range": 340
+        "cost": 0,
+        "desc": "Lightning leaps between foes, shocking each one it touches.",
+        "trDesc": "Yıldırım düşmandan düşmana sıçrar, her birini çarpar.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Tempest",
+        "id": "thunderfall",
+        "name": "Thunderfall",
+        "visual": "Thunderfall",
         "element": "lightning",
-        "kind": "chain",
-        "cd": 13.6,
-        "power": 3.66,
-        "color": "#fff176",
-        "desc": "",
-        "radius": 381,
-        "jumps": 6,
-        "chainRange": 200,
+        "magic": true,
+        "kind": "meteor",
+        "cd": 12,
+        "power": 2.2,
+        "radius": 110,
+        "delay": 0.35,
+        "range": 320,
+        "color": "#b388ff",
         "status": {
-          "type": "shock",
-          "duration": 1.6
+          "type": "stun",
+          "duration": 0.5
+        },
+        "cost": 0,
+        "desc": "A thunderbolt slams down and stuns the target area.",
+        "trDesc": "Bir yıldırım iner ve hedef alanı sersemletir.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "battlefocus",
+          "name": "Battle Focus",
+          "visual": "Rune Circle",
+          "element": "physical",
+          "kind": "buff",
+          "cd": 18,
+          "color": "#ffb74d",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "attack",
+            "pct": 30,
+            "duration": 8
+          },
+          "desc": "Sharpen your focus: attack power rises for 8 seconds.",
+          "trDesc": "Odağını topla: 8 saniye boyunca saldırı gücün yükselir."
+        },
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "id": "tremor",
+          "name": "Tremor",
+          "visual": "Earthbreaker",
+          "element": "physical",
+          "kind": "quake",
+          "cd": 14,
+          "power": 1.5,
+          "radius": 130,
+          "pulses": 3,
+          "interval": 0.22,
+          "knockback": 100,
+          "color": "#a1887f",
+          "cost": 2,
+          "slot": null,
+          "desc": "Smash the ground and send three rolling shockwaves outward.",
+          "trDesc": "Yere vur; dışa doğru yayılan üç şok dalgası gönder."
+        },
+        {
+          "id": "blizzard",
+          "name": "Blizzard",
+          "visual": "Blizzard",
+          "element": "frost",
+          "magic": true,
+          "kind": "ground",
+          "cd": 16,
+          "power": 1.9,
+          "radius": 130,
+          "duration": 3.4,
+          "tick": 0.4,
+          "range": 330,
+          "color": "#9fe2ff",
+          "status": {
+            "type": "freeze",
+            "duration": 0.8
+          },
+          "cost": 3,
+          "desc": "A long-lasting snowstorm grinds away at a wide area.",
+          "trDesc": "Geniş bir alanı kemiren, uzun süreli bir kar fırtınası.",
+          "slot": null
+        },
+        {
+          "name": "Frost Vortex",
+          "element": "frost",
+          "kind": "vortex",
+          "cd": 9,
+          "power": 1.15,
+          "color": "#8fe4ff",
+          "desc": "A technique carried over from the old travel kit.",
+          "radius": 132,
+          "duration": 2.8,
+          "tick": 0.35,
+          "pull": 135,
+          "status": {
+            "type": "freeze",
+            "duration": 1.3
+          },
+          "range": 320,
+          "knockback": 130,
+          "id": "legacy_mage_e",
+          "visual": "Cyclone",
+          "tr": "Don Girdabı",
+          "legacyFrom": "mage.e",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 2,
+          "slot": null
+        },
+        {
+          "id": "stormcall",
+          "name": "Storm Call",
+          "visual": "Thunderfall",
+          "element": "lightning",
+          "magic": true,
+          "kind": "meteor",
+          "cd": 6.5,
+          "power": 1.35,
+          "radius": 85,
+          "delay": 0.28,
+          "range": 300,
+          "color": "#80d8ff",
+          "status": {
+            "type": "shock",
+            "duration": 1.5,
+            "dps": 7
+          },
+          "cost": 1,
+          "desc": "Call a quick bolt to a nearby point.",
+          "trDesc": "Yakın bir noktaya hızlı bir yıldırım çağır.",
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "skyrend",
+          "name": "Sky Rend",
+          "visual": "Thunderfall",
+          "element": "lightning",
+          "magic": true,
+          "kind": "meteor",
+          "cd": 34,
+          "power": 3.4,
+          "radius": 155,
+          "delay": 0.35,
+          "range": 350,
+          "color": "#b388ff",
+          "status": {
+            "type": "stun",
+            "duration": 1
+          },
+          "cost": 4,
+          "late": true,
+          "desc": "The sky tears open and a single bolt levels the marked ground.",
+          "trDesc": "Gökyüzü yırtılır ve tek bir yıldırım işaretli yeri yerle bir eder.",
+          "slot": null
+        },
+        {
+          "id": "tempestsovereign",
+          "name": "Tempest Sovereign",
+          "visual": "Chain Lightning",
+          "element": "lightning",
+          "magic": true,
+          "kind": "chain",
+          "cd": 44,
+          "power": 4.5,
+          "radius": 420,
+          "jumps": 7,
+          "chainRange": 230,
+          "color": "#80d8ff",
+          "status": {
+            "type": "shock",
+            "duration": 3,
+            "dps": 18
+          },
+          "cost": 6,
+          "late": true,
+          "desc": "Lightning obeys you, leaping across the whole battlefield.",
+          "trDesc": "Yıldırım sana itaat eder, tüm savaş alanına sıçrar.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Storm Arrow",
+          "element": "lightning",
+          "kind": "projectile",
+          "cd": 6,
+          "power": 2.07,
+          "color": "#fff176",
+          "desc": "",
+          "speed": 720,
+          "radius": 10
+        },
+        "e": {
+          "name": "Thunder Cage",
+          "element": "lightning",
+          "kind": "ground",
+          "cd": 7.7,
+          "power": 1.22,
+          "color": "#fff176",
+          "desc": "",
+          "radius": 99,
+          "duration": 3,
+          "tick": 0.5,
+          "status": {
+            "type": "shock",
+            "duration": 2.4,
+            "dps": 12
+          },
+          "dot": 10,
+          "range": 340
+        },
+        "r": {
+          "name": "Tempest",
+          "element": "lightning",
+          "kind": "chain",
+          "cd": 13.6,
+          "power": 3.66,
+          "color": "#fff176",
+          "desc": "",
+          "radius": 381,
+          "jumps": 6,
+          "chainRange": 200,
+          "status": {
+            "type": "shock",
+            "duration": 1.6
+          }
         }
       }
     },
@@ -19335,48 +25281,268 @@ const CONTENT = {
         "magic": true
       },
       "q": {
-        "name": "Arcane Spear",
-        "element": "arcane",
-        "kind": "beam",
-        "cd": 6,
-        "power": 2.32,
-        "color": "#c77dff",
-        "desc": "",
-        "range": 281,
-        "width": 26
+        "id": "thunderfall",
+        "name": "Thunderfall",
+        "visual": "Thunderfall",
+        "element": "lightning",
+        "magic": true,
+        "kind": "meteor",
+        "cd": 12,
+        "power": 2.2,
+        "radius": 110,
+        "delay": 0.35,
+        "range": 320,
+        "color": "#b388ff",
+        "status": {
+          "type": "stun",
+          "duration": 0.5
+        },
+        "cost": 0,
+        "desc": "A thunderbolt slams down and stuns the target area.",
+        "trDesc": "Bir yıldırım iner ve hedef alanı sersemletir.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Chrono Field",
+        "id": "starfall",
+        "name": "Starfall",
+        "visual": "Starfall",
         "element": "arcane",
-        "kind": "ground",
-        "cd": 8.5,
-        "power": 1.1,
-        "color": "#c77dff",
-        "desc": "",
-        "radius": 106,
-        "duration": 3,
-        "tick": 0.5,
-        "status": {
-          "type": "slow",
-          "duration": 2.6,
-          "slow": 0.35
-        },
-        "dot": 10,
-        "range": 340
+        "magic": true,
+        "kind": "meteor",
+        "cd": 17,
+        "power": 2.8,
+        "radius": 135,
+        "delay": 0.45,
+        "count": 3,
+        "stagger": 0.14,
+        "spreadRadius": 130,
+        "range": 360,
+        "color": "#ffe57f",
+        "cost": 0,
+        "desc": "Stars rain from the sky across a wide area.",
+        "trDesc": "Gökten geniş bir alana yıldızlar yağar.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Singularity",
-        "element": "arcane",
-        "kind": "vortex",
-        "cd": 15.3,
-        "power": 4.27,
-        "color": "#c77dff",
-        "desc": "",
-        "radius": 179,
-        "duration": 2.8,
-        "tick": 0.4,
-        "pull": 150,
-        "range": 320
+        "id": "divinejudgement",
+        "name": "Divine Judgement",
+        "visual": "Divine Judgement",
+        "element": "holy",
+        "magic": true,
+        "kind": "nova",
+        "cd": 18,
+        "power": 2.9,
+        "radius": 150,
+        "color": "#fff59d",
+        "status": {
+          "type": "stun",
+          "duration": 0.8
+        },
+        "cost": 0,
+        "desc": "Six blades of light fall around you and stun the wicked.",
+        "trDesc": "Etrafına altı ışık kılıcı iner ve günahkârları sersemletir.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "stormlash",
+          "name": "Storm Lash",
+          "visual": "Chain Lightning",
+          "element": "lightning",
+          "kind": "chain",
+          "cd": 12,
+          "power": 1.6,
+          "radius": 300,
+          "jumps": 4,
+          "chainRange": 190,
+          "color": "#4fc3f7",
+          "cost": 2,
+          "slot": null,
+          "desc": "Lightning arcs from foe to foe, striking up to four enemies.",
+          "trDesc": "Şimşek düşmandan düşmana atlar; en fazla dört hedefe çarpar."
+        },
+        {
+          "id": "windstep",
+          "name": "Wind Step",
+          "visual": "",
+          "element": "nature",
+          "kind": "buff",
+          "cd": 16,
+          "color": "#a5d6a7",
+          "cost": 1,
+          "slot": null,
+          "buff": {
+            "stat": "speed",
+            "pct": 35,
+            "duration": 6
+          },
+          "desc": "Ride the wind: movement speed rises for 6 seconds.",
+          "trDesc": "Rüzgâra bin: 6 saniye boyunca hareket hızın artar."
+        },
+        {
+          "id": "arcanepulse",
+          "name": "Arcane Pulse",
+          "visual": "",
+          "element": "arcane",
+          "kind": "nova",
+          "cd": 8,
+          "power": 1.5,
+          "radius": 130,
+          "knockback": 90,
+          "color": "#ce93d8",
+          "cost": 1,
+          "slot": null,
+          "desc": "Release a ring of raw magic that hurls nearby foes back.",
+          "trDesc": "Çevrene ham büyü halkası sal; yakındaki düşmanları geri iter."
+        },
+        {
+          "id": "dimensionrift",
+          "name": "Dimension Rift",
+          "visual": "Dimension Rift",
+          "element": "arcane",
+          "magic": true,
+          "kind": "teleport",
+          "cd": 10,
+          "power": 1.9,
+          "radius": 90,
+          "range": 230,
+          "color": "#b388ff",
+          "cost": 2,
+          "desc": "Tear space and step through it, shredding everything you leave behind.",
+          "trDesc": "Uzayı yırt ve içinden geç; geride bıraktığın her şeyi parçala.",
+          "slot": null
+        },
+        {
+          "id": "chainlightning",
+          "name": "Chain Lightning",
+          "visual": "Chain Lightning",
+          "element": "lightning",
+          "magic": true,
+          "kind": "chain",
+          "cd": 8,
+          "power": 1.5,
+          "radius": 320,
+          "jumps": 4,
+          "chainRange": 200,
+          "color": "#80d8ff",
+          "status": {
+            "type": "shock",
+            "duration": 2,
+            "dps": 8
+          },
+          "cost": 1,
+          "desc": "Lightning leaps between foes, shocking each one it touches.",
+          "trDesc": "Yıldırım düşmandan düşmana sıçrar, her birini çarpar.",
+          "slot": null
+        },
+        {
+          "id": "judgementbeam",
+          "name": "Radiant Verdict",
+          "visual": "Judgement Beam",
+          "element": "holy",
+          "magic": true,
+          "kind": "beam",
+          "cd": 11,
+          "power": 2.1,
+          "range": 360,
+          "width": 34,
+          "color": "#ffe082",
+          "cost": 2,
+          "desc": "A wide beam of judgement that sears everything in its path.",
+          "trDesc": "Yolundaki her şeyi dağlayan geniş bir hüküm ışını.",
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "seraphsjudgement",
+          "name": "Seraph's Judgement",
+          "visual": "Judgement Beam",
+          "element": "holy",
+          "magic": true,
+          "kind": "beam",
+          "cd": 34,
+          "power": 3.5,
+          "range": 380,
+          "width": 42,
+          "color": "#fff59d",
+          "cost": 4,
+          "late": true,
+          "desc": "A seraph's spear of light burns a wide path through everything.",
+          "trDesc": "Bir serafın ışık mızrağı her şeyin içinden geniş bir yol yakar.",
+          "slot": null
+        },
+        {
+          "id": "eternaldawn",
+          "name": "Eternal Dawn",
+          "visual": "Divine Judgement",
+          "element": "holy",
+          "magic": true,
+          "kind": "nova",
+          "cd": 45,
+          "power": 4.8,
+          "radius": 195,
+          "healPct": 22,
+          "color": "#ffe082",
+          "status": {
+            "type": "stun",
+            "duration": 1.2
+          },
+          "cost": 6,
+          "late": true,
+          "desc": "Dawn breaks all at once: foes are stunned, allies are restored.",
+          "trDesc": "Şafak bir anda söker: düşmanlar sersemler, müttefikler iyileşir.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Arcane Spear",
+          "element": "arcane",
+          "kind": "beam",
+          "cd": 6,
+          "power": 2.32,
+          "color": "#c77dff",
+          "desc": "",
+          "range": 281,
+          "width": 26
+        },
+        "e": {
+          "name": "Chrono Field",
+          "element": "arcane",
+          "kind": "ground",
+          "cd": 8.5,
+          "power": 1.1,
+          "color": "#c77dff",
+          "desc": "",
+          "radius": 106,
+          "duration": 3,
+          "tick": 0.5,
+          "status": {
+            "type": "slow",
+            "duration": 2.6,
+            "slow": 0.35
+          },
+          "dot": 10,
+          "range": 340
+        },
+        "r": {
+          "name": "Singularity",
+          "element": "arcane",
+          "kind": "vortex",
+          "cd": 15.3,
+          "power": 4.27,
+          "color": "#c77dff",
+          "desc": "",
+          "radius": 179,
+          "duration": 2.8,
+          "tick": 0.4,
+          "pull": 150,
+          "range": 320
+        }
       }
     },
     "shade_king": {
@@ -19385,40 +25551,264 @@ const CONTENT = {
         "element": "shadow"
       },
       "q": {
-        "name": "King's Edict",
+        "id": "shadowgrasp",
+        "name": "Shadow Grasp",
+        "visual": "Shadow Grasp",
         "element": "shadow",
-        "kind": "arc",
-        "cd": 6,
-        "power": 2.68,
-        "color": "#b388ff",
-        "desc": "",
-        "radius": 112,
-        "arc": 1.1
+        "magic": true,
+        "kind": "ground",
+        "cd": 9,
+        "power": 1.4,
+        "radius": 95,
+        "duration": 2.2,
+        "tick": 0.4,
+        "range": 300,
+        "color": "#9c4dff",
+        "status": {
+          "type": "freeze",
+          "duration": 1
+        },
+        "cost": 0,
+        "desc": "Shadow tendrils burst from the ground and claw at everything.",
+        "trDesc": "Yerden gölge kolları fışkırır ve her şeyi tırmalar.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Umbra Gate",
+        "id": "singularity",
+        "name": "Singularity",
+        "visual": "Singularity",
         "element": "shadow",
-        "kind": "teleport",
-        "cd": 6.8,
-        "power": 2.07,
-        "color": "#b388ff",
-        "desc": "",
-        "range": 185,
-        "radius": 95
+        "magic": true,
+        "kind": "vortex",
+        "cd": 16,
+        "power": 2,
+        "radius": 130,
+        "duration": 2.8,
+        "tick": 0.4,
+        "pull": 220,
+        "range": 330,
+        "color": "#7c4dff",
+        "cost": 0,
+        "desc": "Open a collapsing void that drags enemies into its core.",
+        "trDesc": "Düşmanları çekirdeğine çeken, çöken bir boşluk aç.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Reign of Shadows",
-        "element": "shadow",
-        "kind": "nova",
-        "cd": 14.5,
-        "power": 4.03,
+        "id": "dimensionrift",
+        "name": "Dimension Rift",
+        "visual": "Dimension Rift",
+        "element": "arcane",
+        "magic": true,
+        "kind": "teleport",
+        "cd": 10,
+        "power": 1.9,
+        "radius": 90,
+        "range": 230,
         "color": "#b388ff",
-        "desc": "",
-        "radius": 185,
-        "status": {
-          "type": "slow",
-          "duration": 2,
-          "slow": 0.45
+        "cost": 0,
+        "desc": "Tear space and step through it, shredding everything you leave behind.",
+        "trDesc": "Uzayı yırt ve içinden geç; geride bıraktığın her şeyi parçala.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "shadowveil",
+          "name": "Shadow Veil",
+          "visual": "Dimension Rift",
+          "element": "shadow",
+          "kind": "teleport",
+          "cd": 10,
+          "power": 0.9,
+          "range": 200,
+          "radius": 70,
+          "color": "#9575cd",
+          "cost": 2,
+          "slot": null,
+          "desc": "Melt into shadow and reappear a short distance away.",
+          "trDesc": "Gölgeye karışıp kısa bir mesafe öteye belir."
+        },
+        {
+          "id": "frostbite",
+          "name": "Frostbite",
+          "visual": "",
+          "element": "frost",
+          "kind": "projectile",
+          "cd": 6,
+          "power": 1.4,
+          "speed": 660,
+          "radius": 10,
+          "color": "#81d4fa",
+          "cost": 1,
+          "slot": null,
+          "status": {
+            "type": "slow",
+            "duration": 2,
+            "slow": 0.45
+          },
+          "desc": "Hurl a shard of ice that chills and slows the target.",
+          "trDesc": "Hedefi üşütüp yavaşlatan bir buz kırığı fırlat."
+        },
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "name": "Arcane Rift",
+          "element": "arcane",
+          "kind": "chain",
+          "cd": 4.5,
+          "power": 1,
+          "color": "#c77dff",
+          "desc": "A technique carried over from the old travel kit.",
+          "radius": 330,
+          "jumps": 4,
+          "chainRange": 205,
+          "status": {
+            "type": "shock",
+            "duration": 2,
+            "dps": 7
+          },
+          "id": "legacy_mage_q",
+          "visual": "Chain Lightning",
+          "tr": "Arkana Yarığı",
+          "legacyFrom": "mage.q",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 1,
+          "slot": null
+        },
+        {
+          "id": "umbrallash",
+          "name": "Umbral Lash",
+          "visual": "Shadow Grasp",
+          "element": "shadow",
+          "kind": "arc",
+          "cd": 5,
+          "power": 1.5,
+          "radius": 110,
+          "arc": 1.1,
+          "color": "#9c4dff",
+          "cost": 1,
+          "desc": "A whip of shadow cuts across the foes in front of you.",
+          "trDesc": "Önündeki düşmanları kesen bir gölge kamçısı.",
+          "slot": null
+        },
+        {
+          "id": "soulharvest",
+          "name": "Soul Harvest",
+          "visual": "Soul Harvest",
+          "element": "shadow",
+          "kind": "nova",
+          "cd": 16,
+          "power": 2.5,
+          "radius": 140,
+          "healPct": 12,
+          "color": "#69f0ae",
+          "cost": 3,
+          "desc": "Rip the souls from nearby foes and drink back a share as life.",
+          "trDesc": "Yakındaki düşmanların ruhunu söküp bir kısmını can olarak içine çek.",
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "astralcollapse",
+          "name": "Astral Collapse",
+          "visual": "Starfall",
+          "element": "arcane",
+          "magic": true,
+          "kind": "meteor",
+          "cd": 36,
+          "power": 3.6,
+          "radius": 165,
+          "delay": 0.4,
+          "count": 5,
+          "stagger": 0.12,
+          "spreadRadius": 160,
+          "range": 370,
+          "color": "#ffe57f",
+          "cost": 4,
+          "late": true,
+          "desc": "Five collapsing stars hammer the battlefield in quick succession.",
+          "trDesc": "Beş çöken yıldız art arda savaş alanını döver.",
+          "slot": null
+        },
+        {
+          "id": "arcanedominion",
+          "name": "Arcane Dominion",
+          "visual": "Starfall",
+          "element": "arcane",
+          "magic": true,
+          "kind": "meteor",
+          "cd": 47,
+          "power": 4.9,
+          "radius": 210,
+          "delay": 0.5,
+          "count": 7,
+          "stagger": 0.1,
+          "spreadRadius": 200,
+          "range": 400,
+          "color": "#b388ff",
+          "cost": 6,
+          "late": true,
+          "desc": "You claim the sky: seven stars answer your call at once.",
+          "trDesc": "Gökyüzünü sahiplenirsin: yedi yıldız aynı anda çağrına uyar.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "King's Edict",
+          "element": "shadow",
+          "kind": "arc",
+          "cd": 6,
+          "power": 2.68,
+          "color": "#b388ff",
+          "desc": "",
+          "radius": 112,
+          "arc": 1.1
+        },
+        "e": {
+          "name": "Umbra Gate",
+          "element": "shadow",
+          "kind": "teleport",
+          "cd": 6.8,
+          "power": 2.07,
+          "color": "#b388ff",
+          "desc": "",
+          "range": 185,
+          "radius": 95
+        },
+        "r": {
+          "name": "Reign of Shadows",
+          "element": "shadow",
+          "kind": "nova",
+          "cd": 14.5,
+          "power": 4.03,
+          "color": "#b388ff",
+          "desc": "",
+          "radius": 185,
+          "status": {
+            "type": "slow",
+            "duration": 2,
+            "slow": 0.45
+          }
         }
       }
     },
@@ -19428,37 +25818,251 @@ const CONTENT = {
         "element": "holy"
       },
       "q": {
-        "name": "Radiant Strike",
+        "id": "judgementbeam",
+        "name": "Radiant Verdict",
+        "visual": "Judgement Beam",
         "element": "holy",
-        "kind": "arc",
-        "cd": 6,
-        "power": 2.44,
+        "magic": true,
+        "kind": "beam",
+        "cd": 11,
+        "power": 2.1,
+        "range": 360,
+        "width": 34,
         "color": "#ffe082",
-        "desc": "",
-        "radius": 118,
-        "arc": 1.05
+        "cost": 0,
+        "desc": "A wide beam of judgement that sears everything in its path.",
+        "trDesc": "Yolundaki her şeyi dağlayan geniş bir hüküm ışını.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Aegis of Light",
+        "id": "phoenixrebirth",
+        "name": "Phoenix Rebirth",
+        "visual": "Phoenix Rebirth",
         "element": "holy",
-        "kind": "shield",
-        "cd": 8.5,
+        "magic": true,
+        "kind": "heal",
+        "cd": 22,
+        "healPct": 45,
+        "radius": 110,
+        "shieldPct": 12,
+        "duration": 5,
+        "color": "#ff8f00",
         "power": 0,
-        "color": "#ffe082",
-        "desc": "",
-        "shieldPct": 32,
-        "duration": 5
+        "cost": 0,
+        "desc": "A phoenix rises from you, restoring a great amount of health.",
+        "trDesc": "İçinden bir anka yükselir, büyük miktarda can geri verir.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Solar Flare",
+        "id": "divinejudgement",
+        "name": "Divine Judgement",
+        "visual": "Divine Judgement",
         "element": "holy",
-        "kind": "beam",
-        "cd": 14.5,
-        "power": 3.9,
-        "color": "#ffe082",
-        "desc": "",
-        "range": 374,
-        "width": 46
+        "magic": true,
+        "kind": "nova",
+        "cd": 18,
+        "power": 2.9,
+        "radius": 150,
+        "color": "#fff59d",
+        "status": {
+          "type": "stun",
+          "duration": 0.8
+        },
+        "cost": 0,
+        "desc": "Six blades of light fall around you and stun the wicked.",
+        "trDesc": "Etrafına altı ışık kılıcı iner ve günahkârları sersemletir.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "spiritward",
+          "name": "Spirit Ward",
+          "visual": "",
+          "element": "holy",
+          "kind": "shield",
+          "cd": 22,
+          "shieldPct": 30,
+          "duration": 6,
+          "radius": 60,
+          "color": "#ffe082",
+          "cost": 2,
+          "slot": null,
+          "desc": "A spirit shield absorbs damage for 6 seconds.",
+          "trDesc": "Ruh kalkanı 6 saniye boyunca gelen hasarı emer."
+        },
+        {
+          "id": "battlefocus",
+          "name": "Battle Focus",
+          "visual": "Rune Circle",
+          "element": "physical",
+          "kind": "buff",
+          "cd": 18,
+          "color": "#ffb74d",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "attack",
+            "pct": 30,
+            "duration": 8
+          },
+          "desc": "Sharpen your focus: attack power rises for 8 seconds.",
+          "trDesc": "Odağını topla: 8 saniye boyunca saldırı gücün yükselir."
+        },
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "id": "holylance",
+          "name": "Judgement Beam",
+          "visual": "Judgement Beam",
+          "element": "holy",
+          "magic": true,
+          "kind": "beam",
+          "cd": 7,
+          "power": 1.7,
+          "range": 300,
+          "width": 26,
+          "color": "#fff59d",
+          "cost": 1,
+          "desc": "A lance of holy light burns a straight line through the enemy.",
+          "trDesc": "Kutsal ışıktan bir mızrak düşmanın içinden düz bir çizgi yakar.",
+          "slot": null
+        },
+        {
+          "id": "treeoflife",
+          "name": "Tree of Life",
+          "visual": "Tree of Life",
+          "element": "nature",
+          "magic": true,
+          "kind": "heal",
+          "cd": 16,
+          "healPct": 30,
+          "radius": 120,
+          "color": "#69f0ae",
+          "power": 0,
+          "cost": 3,
+          "desc": "A great tree blooms and pours healing light over the ground.",
+          "trDesc": "Ulu bir ağaç açar ve yere şifa ışığı döker.",
+          "slot": null
+        },
+        {
+          "name": "Judgment",
+          "element": "holy",
+          "kind": "meteor",
+          "cd": 16,
+          "power": 2.9,
+          "color": "#ffe082",
+          "desc": "A technique carried over from the old travel kit.",
+          "radius": 135,
+          "delay": 0.4,
+          "status": {
+            "type": "stun",
+            "duration": 0.9
+          },
+          "range": 340,
+          "id": "legacy_paladin_r",
+          "visual": "Meteor Storm",
+          "tr": "Hüküm",
+          "legacyFrom": "paladin.r",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 3,
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "seraphsjudgement",
+          "name": "Seraph's Judgement",
+          "visual": "Judgement Beam",
+          "element": "holy",
+          "magic": true,
+          "kind": "beam",
+          "cd": 34,
+          "power": 3.5,
+          "range": 380,
+          "width": 42,
+          "color": "#fff59d",
+          "cost": 4,
+          "late": true,
+          "desc": "A seraph's spear of light burns a wide path through everything.",
+          "trDesc": "Bir serafın ışık mızrağı her şeyin içinden geniş bir yol yakar.",
+          "slot": null
+        },
+        {
+          "id": "eternaldawn",
+          "name": "Eternal Dawn",
+          "visual": "Divine Judgement",
+          "element": "holy",
+          "magic": true,
+          "kind": "nova",
+          "cd": 45,
+          "power": 4.8,
+          "radius": 195,
+          "healPct": 22,
+          "color": "#ffe082",
+          "status": {
+            "type": "stun",
+            "duration": 1.2
+          },
+          "cost": 6,
+          "late": true,
+          "desc": "Dawn breaks all at once: foes are stunned, allies are restored.",
+          "trDesc": "Şafak bir anda söker: düşmanlar sersemler, müttefikler iyileşir.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Radiant Strike",
+          "element": "holy",
+          "kind": "arc",
+          "cd": 6,
+          "power": 2.44,
+          "color": "#ffe082",
+          "desc": "",
+          "radius": 118,
+          "arc": 1.05
+        },
+        "e": {
+          "name": "Aegis of Light",
+          "element": "holy",
+          "kind": "shield",
+          "cd": 8.5,
+          "power": 0,
+          "color": "#ffe082",
+          "desc": "",
+          "shieldPct": 32,
+          "duration": 5
+        },
+        "r": {
+          "name": "Solar Flare",
+          "element": "holy",
+          "kind": "beam",
+          "cd": 14.5,
+          "power": 3.9,
+          "color": "#ffe082",
+          "desc": "",
+          "range": 374,
+          "width": 46
+        }
       }
     },
     "death_lord": {
@@ -19467,44 +26071,269 @@ const CONTENT = {
         "element": "shadow"
       },
       "q": {
-        "name": "Reaper's Toll",
+        "id": "bonecage",
+        "name": "Bone Cage",
+        "visual": "Bone Cage",
         "element": "shadow",
-        "kind": "arc",
-        "cd": 6,
-        "power": 2.81,
-        "color": "#b388ff",
-        "desc": "",
-        "radius": 121,
-        "arc": 1.2
+        "kind": "ground",
+        "cd": 12,
+        "power": 1.4,
+        "radius": 95,
+        "duration": 2.4,
+        "tick": 0.4,
+        "color": "#d8d0b8",
+        "status": {
+          "type": "freeze",
+          "duration": 1.2
+        },
+        "cost": 0,
+        "desc": "Bones erupt around the target and lock it in place while they cut.",
+        "trDesc": "Hedefin çevresinde kemikler yükselir, onu yerinde kilitler.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Grave Chains",
+        "id": "crimsonreap",
+        "name": "Crimson Reap",
+        "visual": "Crimson Reap",
         "element": "shadow",
-        "kind": "beam",
-        "cd": 6.8,
-        "power": 2.44,
-        "color": "#b388ff",
-        "desc": "",
-        "range": 242,
-        "width": 26,
+        "kind": "arc",
+        "cd": 10,
+        "power": 2.2,
+        "radius": 130,
+        "arc": 1.4,
+        "color": "#ff1744",
         "status": {
-          "type": "root",
-          "duration": 1.8
-        }
+          "type": "bleed",
+          "duration": 3,
+          "dps": 12
+        },
+        "cost": 0,
+        "desc": "A wide scythe of blood rips through the crowd.",
+        "trDesc": "Kan orak kalabalığın içinden geçer.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Army of the Dead",
+        "id": "soulharvest",
+        "name": "Soul Harvest",
+        "visual": "Soul Harvest",
         "element": "shadow",
-        "kind": "barrage",
-        "cd": 15.3,
-        "power": 2.68,
-        "color": "#b388ff",
-        "desc": "",
-        "count": 14,
-        "interval": 0.08,
-        "speed": 680,
-        "radius": 9,
-        "spread": 0.3
+        "kind": "nova",
+        "cd": 16,
+        "power": 2.5,
+        "radius": 140,
+        "healPct": 12,
+        "color": "#69f0ae",
+        "cost": 0,
+        "desc": "Rip the souls from nearby foes and drink back a share as life.",
+        "trDesc": "Yakındaki düşmanların ruhunu söküp bir kısmını can olarak içine çek.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "shadowveil",
+          "name": "Shadow Veil",
+          "visual": "Dimension Rift",
+          "element": "shadow",
+          "kind": "teleport",
+          "cd": 10,
+          "power": 0.9,
+          "range": 200,
+          "radius": 70,
+          "color": "#9575cd",
+          "cost": 2,
+          "slot": null,
+          "desc": "Melt into shadow and reappear a short distance away.",
+          "trDesc": "Gölgeye karışıp kısa bir mesafe öteye belir."
+        },
+        {
+          "id": "frostbite",
+          "name": "Frostbite",
+          "visual": "",
+          "element": "frost",
+          "kind": "projectile",
+          "cd": 6,
+          "power": 1.4,
+          "speed": 660,
+          "radius": 10,
+          "color": "#81d4fa",
+          "cost": 1,
+          "slot": null,
+          "status": {
+            "type": "slow",
+            "duration": 2,
+            "slow": 0.45
+          },
+          "desc": "Hurl a shard of ice that chills and slows the target.",
+          "trDesc": "Hedefi üşütüp yavaşlatan bir buz kırığı fırlat."
+        },
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "id": "shadowgrasp",
+          "name": "Shadow Grasp",
+          "visual": "Shadow Grasp",
+          "element": "shadow",
+          "magic": true,
+          "kind": "ground",
+          "cd": 9,
+          "power": 1.4,
+          "radius": 95,
+          "duration": 2.2,
+          "tick": 0.4,
+          "range": 300,
+          "color": "#9c4dff",
+          "status": {
+            "type": "freeze",
+            "duration": 1
+          },
+          "cost": 2,
+          "desc": "Shadow tendrils burst from the ground and claw at everything.",
+          "trDesc": "Yerden gölge kolları fışkırır ve her şeyi tırmalar.",
+          "slot": null
+        },
+        {
+          "id": "singularity",
+          "name": "Singularity",
+          "visual": "Singularity",
+          "element": "shadow",
+          "magic": true,
+          "kind": "vortex",
+          "cd": 16,
+          "power": 2,
+          "radius": 130,
+          "duration": 2.8,
+          "tick": 0.4,
+          "pull": 220,
+          "range": 330,
+          "color": "#7c4dff",
+          "cost": 3,
+          "desc": "Open a collapsing void that drags enemies into its core.",
+          "trDesc": "Düşmanları çekirdeğine çeken, çöken bir boşluk aç.",
+          "slot": null
+        },
+        {
+          "name": "Army of the Dead",
+          "element": "shadow",
+          "kind": "barrage",
+          "cd": 15.3,
+          "power": 2.68,
+          "color": "#b388ff",
+          "desc": "A technique carried over from the old travel kit.",
+          "count": 14,
+          "interval": 0.08,
+          "speed": 680,
+          "radius": 9,
+          "spread": 0.3,
+          "id": "legacy_death_lord_r",
+          "visual": "Starfall",
+          "tr": "Army of the Dead",
+          "legacyFrom": "death_lord.r",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 3,
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "nightfall",
+          "name": "Nightfall",
+          "visual": "Singularity",
+          "element": "shadow",
+          "magic": true,
+          "kind": "vortex",
+          "cd": 35,
+          "power": 3.3,
+          "radius": 165,
+          "duration": 3.2,
+          "tick": 0.35,
+          "pull": 280,
+          "range": 350,
+          "color": "#7c4dff",
+          "cost": 4,
+          "late": true,
+          "desc": "Night collapses into a hungry void that drags enemies to its core.",
+          "trDesc": "Gece, düşmanları çekirdeğine çeken aç bir boşluğa çöker.",
+          "slot": null
+        },
+        {
+          "id": "voidcrown",
+          "name": "Void Crown",
+          "visual": "Blood Ritual",
+          "element": "shadow",
+          "magic": true,
+          "kind": "nova",
+          "cd": 46,
+          "power": 4.7,
+          "radius": 200,
+          "healPct": 18,
+          "color": "#9c4dff",
+          "cost": 6,
+          "late": true,
+          "desc": "A void crown detonates around you, tearing foes and feeding you their essence.",
+          "trDesc": "Etrafında bir boşluk tacı patlar; düşmanı yırtar, özlerini sana verir.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Reaper's Toll",
+          "element": "shadow",
+          "kind": "arc",
+          "cd": 6,
+          "power": 2.81,
+          "color": "#b388ff",
+          "desc": "",
+          "radius": 121,
+          "arc": 1.2
+        },
+        "e": {
+          "name": "Grave Chains",
+          "element": "shadow",
+          "kind": "beam",
+          "cd": 6.8,
+          "power": 2.44,
+          "color": "#b388ff",
+          "desc": "",
+          "range": 242,
+          "width": 26,
+          "status": {
+            "type": "root",
+            "duration": 1.8
+          }
+        },
+        "r": {
+          "name": "Army of the Dead",
+          "element": "shadow",
+          "kind": "barrage",
+          "cd": 15.3,
+          "power": 2.68,
+          "color": "#b388ff",
+          "desc": "",
+          "count": 14,
+          "interval": 0.08,
+          "speed": 680,
+          "radius": 9,
+          "spread": 0.3
+        }
       }
     },
     "bloodspawn": {
@@ -19513,55 +26342,281 @@ const CONTENT = {
         "element": "blood"
       },
       "q": {
-        "name": "Blood Claw",
-        "element": "blood",
+        "id": "bloodcut",
+        "name": "Blood Cut",
+        "visual": "Crimson Reap",
+        "element": "shadow",
         "kind": "arc",
-        "cd": 3.5,
-        "power": 1.9,
-        "color": "#ff5370",
-        "desc": "",
-        "radius": 90,
+        "cd": 5,
+        "power": 1.7,
+        "radius": 105,
         "arc": 0.95,
+        "color": "#ff1744",
         "status": {
           "type": "bleed",
-          "duration": 2,
-          "dps": 8
-        }
+          "duration": 2.5,
+          "dps": 9
+        },
+        "cost": 0,
+        "desc": "A quick crimson slash that leaves the wound bleeding.",
+        "trDesc": "Yarayı kanatır biçimde hızlı, kızıl bir kesik.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Crimson Rush",
-        "element": "blood",
-        "kind": "dash",
-        "cd": 7,
-        "power": 1.9,
-        "color": "#ff5370",
-        "desc": "",
-        "range": 175,
-        "radius": 70,
+        "id": "crimsonreap",
+        "name": "Crimson Reap",
+        "visual": "Crimson Reap",
+        "element": "shadow",
+        "kind": "arc",
+        "cd": 10,
+        "power": 2.2,
+        "radius": 130,
+        "arc": 1.4,
+        "color": "#ff1744",
         "status": {
           "type": "bleed",
-          "duration": 2,
-          "dps": 10
-        }
+          "duration": 3,
+          "dps": 12
+        },
+        "cost": 0,
+        "desc": "A wide scythe of blood rips through the crowd.",
+        "trDesc": "Kan orak kalabalığın içinden geçer.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Blood Tide",
-        "element": "blood",
-        "kind": "ground",
-        "cd": 16,
-        "power": 3,
-        "color": "#ff5370",
-        "desc": "",
-        "radius": 150,
-        "duration": 4,
-        "tick": 0.45,
-        "status": {
-          "type": "slow",
-          "duration": 2,
-          "slow": 0.4
+        "id": "bloodritual",
+        "name": "Blood Ritual",
+        "visual": "Blood Ritual",
+        "element": "shadow",
+        "kind": "nova",
+        "cd": 17,
+        "power": 2.7,
+        "radius": 120,
+        "healPct": 10,
+        "color": "#ff1744",
+        "cost": 0,
+        "desc": "A crimson ritual circle erupts, tearing foes and feeding you.",
+        "trDesc": "Kızıl bir ritüel çemberi patlar; düşmanı yırtar, sana can verir.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "shadowveil",
+          "name": "Shadow Veil",
+          "visual": "Dimension Rift",
+          "element": "shadow",
+          "kind": "teleport",
+          "cd": 10,
+          "power": 0.9,
+          "range": 200,
+          "radius": 70,
+          "color": "#9575cd",
+          "cost": 2,
+          "slot": null,
+          "desc": "Melt into shadow and reappear a short distance away.",
+          "trDesc": "Gölgeye karışıp kısa bir mesafe öteye belir."
         },
-        "dot": 16,
-        "range": 340
+        {
+          "id": "frostbite",
+          "name": "Frostbite",
+          "visual": "",
+          "element": "frost",
+          "kind": "projectile",
+          "cd": 6,
+          "power": 1.4,
+          "speed": 660,
+          "radius": 10,
+          "color": "#81d4fa",
+          "cost": 1,
+          "slot": null,
+          "status": {
+            "type": "slow",
+            "duration": 2,
+            "slow": 0.45
+          },
+          "desc": "Hurl a shard of ice that chills and slows the target.",
+          "trDesc": "Hedefi üşütüp yavaşlatan bir buz kırığı fırlat."
+        },
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "id": "shadowgrasp",
+          "name": "Shadow Grasp",
+          "visual": "Shadow Grasp",
+          "element": "shadow",
+          "magic": true,
+          "kind": "ground",
+          "cd": 9,
+          "power": 1.4,
+          "radius": 95,
+          "duration": 2.2,
+          "tick": 0.4,
+          "range": 300,
+          "color": "#9c4dff",
+          "status": {
+            "type": "freeze",
+            "duration": 1
+          },
+          "cost": 2,
+          "desc": "Shadow tendrils burst from the ground and claw at everything.",
+          "trDesc": "Yerden gölge kolları fışkırır ve her şeyi tırmalar.",
+          "slot": null
+        },
+        {
+          "id": "soulharvest",
+          "name": "Soul Harvest",
+          "visual": "Soul Harvest",
+          "element": "shadow",
+          "kind": "nova",
+          "cd": 16,
+          "power": 2.5,
+          "radius": 140,
+          "healPct": 12,
+          "color": "#69f0ae",
+          "cost": 3,
+          "desc": "Rip the souls from nearby foes and drink back a share as life.",
+          "trDesc": "Yakındaki düşmanların ruhunu söküp bir kısmını can olarak içine çek.",
+          "slot": null
+        },
+        {
+          "name": "Blood Tide",
+          "element": "blood",
+          "kind": "ground",
+          "cd": 16,
+          "power": 3,
+          "color": "#ff5370",
+          "desc": "A technique carried over from the old travel kit.",
+          "radius": 150,
+          "duration": 4,
+          "tick": 0.45,
+          "status": {
+            "type": "slow",
+            "duration": 2,
+            "slow": 0.4
+          },
+          "dot": 16,
+          "range": 340,
+          "id": "legacy_bloodspawn_r",
+          "visual": "Toxic Cloud",
+          "tr": "Blood Tide",
+          "legacyFrom": "bloodspawn.r",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 3,
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "nightfall",
+          "name": "Nightfall",
+          "visual": "Singularity",
+          "element": "shadow",
+          "magic": true,
+          "kind": "vortex",
+          "cd": 35,
+          "power": 3.3,
+          "radius": 165,
+          "duration": 3.2,
+          "tick": 0.35,
+          "pull": 280,
+          "range": 350,
+          "color": "#7c4dff",
+          "cost": 4,
+          "late": true,
+          "desc": "Night collapses into a hungry void that drags enemies to its core.",
+          "trDesc": "Gece, düşmanları çekirdeğine çeken aç bir boşluğa çöker.",
+          "slot": null
+        },
+        {
+          "id": "voidcrown",
+          "name": "Void Crown",
+          "visual": "Blood Ritual",
+          "element": "shadow",
+          "magic": true,
+          "kind": "nova",
+          "cd": 46,
+          "power": 4.7,
+          "radius": 200,
+          "healPct": 18,
+          "color": "#9c4dff",
+          "cost": 6,
+          "late": true,
+          "desc": "A void crown detonates around you, tearing foes and feeding you their essence.",
+          "trDesc": "Etrafında bir boşluk tacı patlar; düşmanı yırtar, özlerini sana verir.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Blood Claw",
+          "element": "blood",
+          "kind": "arc",
+          "cd": 3.5,
+          "power": 1.9,
+          "color": "#ff5370",
+          "desc": "",
+          "radius": 90,
+          "arc": 0.95,
+          "status": {
+            "type": "bleed",
+            "duration": 2,
+            "dps": 8
+          }
+        },
+        "e": {
+          "name": "Crimson Rush",
+          "element": "blood",
+          "kind": "dash",
+          "cd": 7,
+          "power": 1.9,
+          "color": "#ff5370",
+          "desc": "",
+          "range": 175,
+          "radius": 70,
+          "status": {
+            "type": "bleed",
+            "duration": 2,
+            "dps": 10
+          }
+        },
+        "r": {
+          "name": "Blood Tide",
+          "element": "blood",
+          "kind": "ground",
+          "cd": 16,
+          "power": 3,
+          "color": "#ff5370",
+          "desc": "",
+          "radius": 150,
+          "duration": 4,
+          "tick": 0.45,
+          "status": {
+            "type": "slow",
+            "duration": 2,
+            "slow": 0.4
+          },
+          "dot": 16,
+          "range": 340
+        }
       }
     },
     "bloodlord": {
@@ -19570,51 +26625,276 @@ const CONTENT = {
         "element": "blood"
       },
       "q": {
-        "name": "Sanguine Slash",
-        "element": "blood",
+        "id": "bloodcut",
+        "name": "Blood Cut",
+        "visual": "Crimson Reap",
+        "element": "shadow",
         "kind": "arc",
-        "cd": 6,
-        "power": 2.68,
-        "color": "#ff5370",
-        "desc": "",
-        "radius": 118,
-        "arc": 1.1,
+        "cd": 5,
+        "power": 1.7,
+        "radius": 105,
+        "arc": 0.95,
+        "color": "#ff1744",
         "status": {
           "type": "bleed",
           "duration": 2.5,
-          "dps": 12
-        }
+          "dps": 9
+        },
+        "cost": 0,
+        "desc": "A quick crimson slash that leaves the wound bleeding.",
+        "trDesc": "Yarayı kanatır biçimde hızlı, kızıl bir kesik.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Blood Pact",
-        "element": "blood",
-        "kind": "shield",
-        "cd": 8.5,
-        "power": 0,
-        "color": "#ff5370",
-        "desc": "",
-        "shieldPct": 25,
-        "duration": 5,
-        "healPct": 13
+        "id": "dragonsbreath",
+        "name": "Dragon Breath",
+        "visual": "Dragon Breath",
+        "element": "fire",
+        "magic": true,
+        "kind": "arc",
+        "cd": 14,
+        "power": 2.4,
+        "radius": 150,
+        "arc": 1,
+        "color": "#ff5a14",
+        "status": {
+          "type": "burn",
+          "duration": 3,
+          "dps": 16
+        },
+        "cost": 0,
+        "desc": "Exhale a cone of dragonfire that sets the ground alight.",
+        "trDesc": "Yeri tutuşturan bir ejder ateşi konisi püskürt.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Crimson Cataclysm",
-        "element": "blood",
-        "kind": "vortex",
-        "cd": 15.3,
-        "power": 4.27,
-        "color": "#ff5370",
-        "desc": "",
-        "radius": 196,
-        "duration": 2.6,
-        "tick": 0.4,
-        "pull": 140,
-        "status": {
-          "type": "bleed",
-          "duration": 4,
-          "dps": 22
+        "id": "bloodritual",
+        "name": "Blood Ritual",
+        "visual": "Blood Ritual",
+        "element": "shadow",
+        "kind": "nova",
+        "cd": 17,
+        "power": 2.7,
+        "radius": 120,
+        "healPct": 10,
+        "color": "#ff1744",
+        "cost": 0,
+        "desc": "A crimson ritual circle erupts, tearing foes and feeding you.",
+        "trDesc": "Kızıl bir ritüel çemberi patlar; düşmanı yırtar, sana can verir.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "shadowveil",
+          "name": "Shadow Veil",
+          "visual": "Dimension Rift",
+          "element": "shadow",
+          "kind": "teleport",
+          "cd": 10,
+          "power": 0.9,
+          "range": 200,
+          "radius": 70,
+          "color": "#9575cd",
+          "cost": 2,
+          "slot": null,
+          "desc": "Melt into shadow and reappear a short distance away.",
+          "trDesc": "Gölgeye karışıp kısa bir mesafe öteye belir."
         },
-        "range": 320
+        {
+          "id": "frostbite",
+          "name": "Frostbite",
+          "visual": "",
+          "element": "frost",
+          "kind": "projectile",
+          "cd": 6,
+          "power": 1.4,
+          "speed": 660,
+          "radius": 10,
+          "color": "#81d4fa",
+          "cost": 1,
+          "slot": null,
+          "status": {
+            "type": "slow",
+            "duration": 2,
+            "slow": 0.45
+          },
+          "desc": "Hurl a shard of ice that chills and slows the target.",
+          "trDesc": "Hedefi üşütüp yavaşlatan bir buz kırığı fırlat."
+        },
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "id": "crimsonreap",
+          "name": "Crimson Reap",
+          "visual": "Crimson Reap",
+          "element": "shadow",
+          "kind": "arc",
+          "cd": 10,
+          "power": 2.2,
+          "radius": 130,
+          "arc": 1.4,
+          "color": "#ff1744",
+          "status": {
+            "type": "bleed",
+            "duration": 3,
+            "dps": 12
+          },
+          "cost": 2,
+          "desc": "A wide scythe of blood rips through the crowd.",
+          "trDesc": "Kan orak kalabalığın içinden geçer.",
+          "slot": null
+        },
+        {
+          "id": "soulharvest",
+          "name": "Soul Harvest",
+          "visual": "Soul Harvest",
+          "element": "shadow",
+          "kind": "nova",
+          "cd": 16,
+          "power": 2.5,
+          "radius": 140,
+          "healPct": 12,
+          "color": "#69f0ae",
+          "cost": 3,
+          "desc": "Rip the souls from nearby foes and drink back a share as life.",
+          "trDesc": "Yakındaki düşmanların ruhunu söküp bir kısmını can olarak içine çek.",
+          "slot": null
+        },
+        {
+          "name": "Crimson Cataclysm",
+          "element": "blood",
+          "kind": "vortex",
+          "cd": 15.3,
+          "power": 4.27,
+          "color": "#ff5370",
+          "desc": "A technique carried over from the old travel kit.",
+          "radius": 196,
+          "duration": 2.6,
+          "tick": 0.4,
+          "pull": 140,
+          "status": {
+            "type": "bleed",
+            "duration": 4,
+            "dps": 22
+          },
+          "range": 320,
+          "id": "legacy_bloodlord_r",
+          "visual": "Cyclone",
+          "tr": "Crimson Cataclysm",
+          "legacyFrom": "bloodlord.r",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 3,
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "nightfall",
+          "name": "Nightfall",
+          "visual": "Singularity",
+          "element": "shadow",
+          "magic": true,
+          "kind": "vortex",
+          "cd": 35,
+          "power": 3.3,
+          "radius": 165,
+          "duration": 3.2,
+          "tick": 0.35,
+          "pull": 280,
+          "range": 350,
+          "color": "#7c4dff",
+          "cost": 4,
+          "late": true,
+          "desc": "Night collapses into a hungry void that drags enemies to its core.",
+          "trDesc": "Gece, düşmanları çekirdeğine çeken aç bir boşluğa çöker.",
+          "slot": null
+        },
+        {
+          "id": "voidcrown",
+          "name": "Void Crown",
+          "visual": "Blood Ritual",
+          "element": "shadow",
+          "magic": true,
+          "kind": "nova",
+          "cd": 46,
+          "power": 4.7,
+          "radius": 200,
+          "healPct": 18,
+          "color": "#9c4dff",
+          "cost": 6,
+          "late": true,
+          "desc": "A void crown detonates around you, tearing foes and feeding you their essence.",
+          "trDesc": "Etrafında bir boşluk tacı patlar; düşmanı yırtar, özlerini sana verir.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Sanguine Slash",
+          "element": "blood",
+          "kind": "arc",
+          "cd": 6,
+          "power": 2.68,
+          "color": "#ff5370",
+          "desc": "",
+          "radius": 118,
+          "arc": 1.1,
+          "status": {
+            "type": "bleed",
+            "duration": 2.5,
+            "dps": 12
+          }
+        },
+        "e": {
+          "name": "Blood Pact",
+          "element": "blood",
+          "kind": "shield",
+          "cd": 8.5,
+          "power": 0,
+          "color": "#ff5370",
+          "desc": "",
+          "shieldPct": 25,
+          "duration": 5,
+          "healPct": 13
+        },
+        "r": {
+          "name": "Crimson Cataclysm",
+          "element": "blood",
+          "kind": "vortex",
+          "cd": 15.3,
+          "power": 4.27,
+          "color": "#ff5370",
+          "desc": "",
+          "radius": 196,
+          "duration": 2.6,
+          "tick": 0.4,
+          "pull": 140,
+          "status": {
+            "type": "bleed",
+            "duration": 4,
+            "dps": 22
+          },
+          "range": 320
+        }
       }
     },
     "gloomspawn": {
@@ -19624,48 +26904,268 @@ const CONTENT = {
         "magic": true
       },
       "q": {
-        "name": "Gloom Bolt",
+        "id": "umbrallash",
+        "name": "Umbral Lash",
+        "visual": "Shadow Grasp",
         "element": "shadow",
-        "kind": "projectile",
-        "cd": 3,
-        "power": 1.7,
-        "color": "#b388ff",
-        "desc": "",
-        "speed": 620,
-        "radius": 9
+        "kind": "arc",
+        "cd": 5,
+        "power": 1.5,
+        "radius": 110,
+        "arc": 1.1,
+        "color": "#9c4dff",
+        "cost": 0,
+        "desc": "A whip of shadow cuts across the foes in front of you.",
+        "trDesc": "Önündeki düşmanları kesen bir gölge kamçısı.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Shadow Well",
+        "id": "bonecage",
+        "name": "Bone Cage",
+        "visual": "Bone Cage",
         "element": "shadow",
         "kind": "ground",
-        "cd": 9,
-        "power": 0.9,
-        "color": "#b388ff",
-        "desc": "",
-        "radius": 88,
-        "duration": 3,
-        "tick": 0.5,
+        "cd": 12,
+        "power": 1.4,
+        "radius": 95,
+        "duration": 2.4,
+        "tick": 0.4,
+        "color": "#d8d0b8",
         "status": {
-          "type": "slow",
-          "duration": 2.4,
-          "slow": 0.4
+          "type": "freeze",
+          "duration": 1.2
         },
-        "dot": 12,
-        "range": 340
+        "cost": 0,
+        "desc": "Bones erupt around the target and lock it in place while they cut.",
+        "trDesc": "Hedefin çevresinde kemikler yükselir, onu yerinde kilitler.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Eclipse",
+        "id": "soulharvest",
+        "name": "Soul Harvest",
+        "visual": "Soul Harvest",
         "element": "shadow",
-        "kind": "orbit",
-        "cd": 17,
-        "power": 3.2,
-        "color": "#b388ff",
-        "desc": "",
-        "radius": 120,
-        "duration": 3.6,
-        "tick": 0.35,
-        "count": 6,
-        "speed": 3.8
+        "kind": "nova",
+        "cd": 16,
+        "power": 2.5,
+        "radius": 140,
+        "healPct": 12,
+        "color": "#69f0ae",
+        "cost": 0,
+        "desc": "Rip the souls from nearby foes and drink back a share as life.",
+        "trDesc": "Yakındaki düşmanların ruhunu söküp bir kısmını can olarak içine çek.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "shadowveil",
+          "name": "Shadow Veil",
+          "visual": "Dimension Rift",
+          "element": "shadow",
+          "kind": "teleport",
+          "cd": 10,
+          "power": 0.9,
+          "range": 200,
+          "radius": 70,
+          "color": "#9575cd",
+          "cost": 2,
+          "slot": null,
+          "desc": "Melt into shadow and reappear a short distance away.",
+          "trDesc": "Gölgeye karışıp kısa bir mesafe öteye belir."
+        },
+        {
+          "id": "frostbite",
+          "name": "Frostbite",
+          "visual": "",
+          "element": "frost",
+          "kind": "projectile",
+          "cd": 6,
+          "power": 1.4,
+          "speed": 660,
+          "radius": 10,
+          "color": "#81d4fa",
+          "cost": 1,
+          "slot": null,
+          "status": {
+            "type": "slow",
+            "duration": 2,
+            "slow": 0.45
+          },
+          "desc": "Hurl a shard of ice that chills and slows the target.",
+          "trDesc": "Hedefi üşütüp yavaşlatan bir buz kırığı fırlat."
+        },
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "id": "shadowgrasp",
+          "name": "Shadow Grasp",
+          "visual": "Shadow Grasp",
+          "element": "shadow",
+          "magic": true,
+          "kind": "ground",
+          "cd": 9,
+          "power": 1.4,
+          "radius": 95,
+          "duration": 2.2,
+          "tick": 0.4,
+          "range": 300,
+          "color": "#9c4dff",
+          "status": {
+            "type": "freeze",
+            "duration": 1
+          },
+          "cost": 2,
+          "desc": "Shadow tendrils burst from the ground and claw at everything.",
+          "trDesc": "Yerden gölge kolları fışkırır ve her şeyi tırmalar.",
+          "slot": null
+        },
+        {
+          "id": "singularity",
+          "name": "Singularity",
+          "visual": "Singularity",
+          "element": "shadow",
+          "magic": true,
+          "kind": "vortex",
+          "cd": 16,
+          "power": 2,
+          "radius": 130,
+          "duration": 2.8,
+          "tick": 0.4,
+          "pull": 220,
+          "range": 330,
+          "color": "#7c4dff",
+          "cost": 3,
+          "desc": "Open a collapsing void that drags enemies into its core.",
+          "trDesc": "Düşmanları çekirdeğine çeken, çöken bir boşluk aç.",
+          "slot": null
+        },
+        {
+          "name": "Eclipse",
+          "element": "shadow",
+          "kind": "orbit",
+          "cd": 17,
+          "power": 3.2,
+          "color": "#b388ff",
+          "desc": "A technique carried over from the old travel kit.",
+          "radius": 120,
+          "duration": 3.6,
+          "tick": 0.35,
+          "count": 6,
+          "speed": 3.8,
+          "id": "legacy_gloomspawn_r",
+          "visual": "Blade Storm",
+          "tr": "Eclipse",
+          "legacyFrom": "gloomspawn.r",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 3,
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "nightfall",
+          "name": "Nightfall",
+          "visual": "Singularity",
+          "element": "shadow",
+          "magic": true,
+          "kind": "vortex",
+          "cd": 35,
+          "power": 3.3,
+          "radius": 165,
+          "duration": 3.2,
+          "tick": 0.35,
+          "pull": 280,
+          "range": 350,
+          "color": "#7c4dff",
+          "cost": 4,
+          "late": true,
+          "desc": "Night collapses into a hungry void that drags enemies to its core.",
+          "trDesc": "Gece, düşmanları çekirdeğine çeken aç bir boşluğa çöker.",
+          "slot": null
+        },
+        {
+          "id": "voidcrown",
+          "name": "Void Crown",
+          "visual": "Blood Ritual",
+          "element": "shadow",
+          "magic": true,
+          "kind": "nova",
+          "cd": 46,
+          "power": 4.7,
+          "radius": 200,
+          "healPct": 18,
+          "color": "#9c4dff",
+          "cost": 6,
+          "late": true,
+          "desc": "A void crown detonates around you, tearing foes and feeding you their essence.",
+          "trDesc": "Etrafında bir boşluk tacı patlar; düşmanı yırtar, özlerini sana verir.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Gloom Bolt",
+          "element": "shadow",
+          "kind": "projectile",
+          "cd": 3,
+          "power": 1.7,
+          "color": "#b388ff",
+          "desc": "",
+          "speed": 620,
+          "radius": 9
+        },
+        "e": {
+          "name": "Shadow Well",
+          "element": "shadow",
+          "kind": "ground",
+          "cd": 9,
+          "power": 0.9,
+          "color": "#b388ff",
+          "desc": "",
+          "radius": 88,
+          "duration": 3,
+          "tick": 0.5,
+          "status": {
+            "type": "slow",
+            "duration": 2.4,
+            "slow": 0.4
+          },
+          "dot": 12,
+          "range": 340
+        },
+        "r": {
+          "name": "Eclipse",
+          "element": "shadow",
+          "kind": "orbit",
+          "cd": 17,
+          "power": 3.2,
+          "color": "#b388ff",
+          "desc": "",
+          "radius": 120,
+          "duration": 3.6,
+          "tick": 0.35,
+          "count": 6,
+          "speed": 3.8
+        }
       }
     },
     "sanguine_lord": {
@@ -19674,38 +27174,257 @@ const CONTENT = {
         "element": "blood"
       },
       "q": {
-        "name": "Blood Reign",
-        "element": "blood",
+        "id": "bloodcut",
+        "name": "Blood Cut",
+        "visual": "Crimson Reap",
+        "element": "shadow",
         "kind": "arc",
-        "cd": 6,
-        "power": 2.81,
-        "color": "#ff5370",
-        "desc": "",
-        "radius": 123,
-        "arc": 1.15
+        "cd": 5,
+        "power": 1.7,
+        "radius": 105,
+        "arc": 0.95,
+        "color": "#ff1744",
+        "status": {
+          "type": "bleed",
+          "duration": 2.5,
+          "dps": 9
+        },
+        "cost": 0,
+        "desc": "A quick crimson slash that leaves the wound bleeding.",
+        "trDesc": "Yarayı kanatır biçimde hızlı, kızıl bir kesik.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Veil of Blood",
-        "element": "blood",
-        "kind": "shield",
-        "cd": 9.4,
-        "power": 0,
-        "color": "#ff5370",
-        "desc": "",
-        "shieldPct": 30,
-        "duration": 5
+        "id": "bloodritual",
+        "name": "Blood Ritual",
+        "visual": "Blood Ritual",
+        "element": "shadow",
+        "kind": "nova",
+        "cd": 17,
+        "power": 2.7,
+        "radius": 120,
+        "healPct": 10,
+        "color": "#ff1744",
+        "cost": 0,
+        "desc": "A crimson ritual circle erupts, tearing foes and feeding you.",
+        "trDesc": "Kızıl bir ritüel çemberi patlar; düşmanı yırtar, sana can verir.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Exsanguinate",
-        "element": "blood",
-        "kind": "beam",
-        "cd": 15.3,
-        "power": 4.39,
-        "color": "#ff5370",
-        "desc": "",
-        "range": 330,
-        "width": 38,
-        "healPct": 8
+        "id": "soulharvest",
+        "name": "Soul Harvest",
+        "visual": "Soul Harvest",
+        "element": "shadow",
+        "kind": "nova",
+        "cd": 16,
+        "power": 2.5,
+        "radius": 140,
+        "healPct": 12,
+        "color": "#69f0ae",
+        "cost": 0,
+        "desc": "Rip the souls from nearby foes and drink back a share as life.",
+        "trDesc": "Yakındaki düşmanların ruhunu söküp bir kısmını can olarak içine çek.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "shadowveil",
+          "name": "Shadow Veil",
+          "visual": "Dimension Rift",
+          "element": "shadow",
+          "kind": "teleport",
+          "cd": 10,
+          "power": 0.9,
+          "range": 200,
+          "radius": 70,
+          "color": "#9575cd",
+          "cost": 2,
+          "slot": null,
+          "desc": "Melt into shadow and reappear a short distance away.",
+          "trDesc": "Gölgeye karışıp kısa bir mesafe öteye belir."
+        },
+        {
+          "id": "frostbite",
+          "name": "Frostbite",
+          "visual": "",
+          "element": "frost",
+          "kind": "projectile",
+          "cd": 6,
+          "power": 1.4,
+          "speed": 660,
+          "radius": 10,
+          "color": "#81d4fa",
+          "cost": 1,
+          "slot": null,
+          "status": {
+            "type": "slow",
+            "duration": 2,
+            "slow": 0.45
+          },
+          "desc": "Hurl a shard of ice that chills and slows the target.",
+          "trDesc": "Hedefi üşütüp yavaşlatan bir buz kırığı fırlat."
+        },
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "id": "crimsonreap",
+          "name": "Crimson Reap",
+          "visual": "Crimson Reap",
+          "element": "shadow",
+          "kind": "arc",
+          "cd": 10,
+          "power": 2.2,
+          "radius": 130,
+          "arc": 1.4,
+          "color": "#ff1744",
+          "status": {
+            "type": "bleed",
+            "duration": 3,
+            "dps": 12
+          },
+          "cost": 2,
+          "desc": "A wide scythe of blood rips through the crowd.",
+          "trDesc": "Kan orak kalabalığın içinden geçer.",
+          "slot": null
+        },
+        {
+          "id": "shadowgrasp",
+          "name": "Shadow Grasp",
+          "visual": "Shadow Grasp",
+          "element": "shadow",
+          "magic": true,
+          "kind": "ground",
+          "cd": 9,
+          "power": 1.4,
+          "radius": 95,
+          "duration": 2.2,
+          "tick": 0.4,
+          "range": 300,
+          "color": "#9c4dff",
+          "status": {
+            "type": "freeze",
+            "duration": 1
+          },
+          "cost": 2,
+          "desc": "Shadow tendrils burst from the ground and claw at everything.",
+          "trDesc": "Yerden gölge kolları fışkırır ve her şeyi tırmalar.",
+          "slot": null
+        },
+        {
+          "name": "Exsanguinate",
+          "element": "blood",
+          "kind": "beam",
+          "cd": 15.3,
+          "power": 4.39,
+          "color": "#ff5370",
+          "desc": "A technique carried over from the old travel kit.",
+          "range": 330,
+          "width": 38,
+          "healPct": 8,
+          "id": "legacy_sanguine_lord_r",
+          "visual": "Judgement Beam",
+          "tr": "Exsanguinate",
+          "legacyFrom": "sanguine_lord.r",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 3,
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "nightfall",
+          "name": "Nightfall",
+          "visual": "Singularity",
+          "element": "shadow",
+          "magic": true,
+          "kind": "vortex",
+          "cd": 35,
+          "power": 3.3,
+          "radius": 165,
+          "duration": 3.2,
+          "tick": 0.35,
+          "pull": 280,
+          "range": 350,
+          "color": "#7c4dff",
+          "cost": 4,
+          "late": true,
+          "desc": "Night collapses into a hungry void that drags enemies to its core.",
+          "trDesc": "Gece, düşmanları çekirdeğine çeken aç bir boşluğa çöker.",
+          "slot": null
+        },
+        {
+          "id": "voidcrown",
+          "name": "Void Crown",
+          "visual": "Blood Ritual",
+          "element": "shadow",
+          "magic": true,
+          "kind": "nova",
+          "cd": 46,
+          "power": 4.7,
+          "radius": 200,
+          "healPct": 18,
+          "color": "#9c4dff",
+          "cost": 6,
+          "late": true,
+          "desc": "A void crown detonates around you, tearing foes and feeding you their essence.",
+          "trDesc": "Etrafında bir boşluk tacı patlar; düşmanı yırtar, özlerini sana verir.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Blood Reign",
+          "element": "blood",
+          "kind": "arc",
+          "cd": 6,
+          "power": 2.81,
+          "color": "#ff5370",
+          "desc": "",
+          "radius": 123,
+          "arc": 1.15
+        },
+        "e": {
+          "name": "Veil of Blood",
+          "element": "blood",
+          "kind": "shield",
+          "cd": 9.4,
+          "power": 0,
+          "color": "#ff5370",
+          "desc": "",
+          "shieldPct": 30,
+          "duration": 5
+        },
+        "r": {
+          "name": "Exsanguinate",
+          "element": "blood",
+          "kind": "beam",
+          "cd": 15.3,
+          "power": 4.39,
+          "color": "#ff5370",
+          "desc": "",
+          "range": 330,
+          "width": 38,
+          "healPct": 8
+        }
       }
     },
     "divine_saint": {
@@ -19715,39 +27434,257 @@ const CONTENT = {
         "magic": true
       },
       "q": {
-        "name": "Holy Lance",
+        "id": "judgementbeam",
+        "name": "Radiant Verdict",
+        "visual": "Judgement Beam",
         "element": "holy",
+        "magic": true,
         "kind": "beam",
-        "cd": 6,
-        "power": 2.32,
+        "cd": 11,
+        "power": 2.1,
+        "range": 360,
+        "width": 34,
         "color": "#ffe082",
-        "desc": "",
-        "range": 259,
-        "width": 26
+        "cost": 0,
+        "desc": "A wide beam of judgement that sears everything in its path.",
+        "trDesc": "Yolundaki her şeyi dağlayan geniş bir hüküm ışını.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Sacred Aegis",
+        "id": "phoenixrebirth",
+        "name": "Phoenix Rebirth",
+        "visual": "Phoenix Rebirth",
         "element": "holy",
-        "kind": "shield",
-        "cd": 7.7,
-        "power": 0,
-        "color": "#ffe082",
-        "desc": "",
-        "shieldPct": 26,
+        "magic": true,
+        "kind": "heal",
+        "cd": 22,
+        "healPct": 45,
+        "radius": 110,
+        "shieldPct": 12,
         "duration": 5,
-        "healPct": 13
+        "color": "#ff8f00",
+        "power": 0,
+        "cost": 0,
+        "desc": "A phoenix rises from you, restoring a great amount of health.",
+        "trDesc": "İçinden bir anka yükselir, büyük miktarda can geri verir.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "Ascension",
-        "element": "holy",
-        "kind": "shield",
-        "cd": 15.3,
-        "power": 0,
-        "color": "#ffe082",
-        "desc": "",
-        "shieldPct": 30,
-        "duration": 6,
-        "healPct": 19
+        "id": "starfall",
+        "name": "Starfall",
+        "visual": "Starfall",
+        "element": "arcane",
+        "magic": true,
+        "kind": "meteor",
+        "cd": 17,
+        "power": 2.8,
+        "radius": 135,
+        "delay": 0.45,
+        "count": 3,
+        "stagger": 0.14,
+        "spreadRadius": 130,
+        "range": 360,
+        "color": "#ffe57f",
+        "cost": 0,
+        "desc": "Stars rain from the sky across a wide area.",
+        "trDesc": "Gökten geniş bir alana yıldızlar yağar.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "spiritward",
+          "name": "Spirit Ward",
+          "visual": "",
+          "element": "holy",
+          "kind": "shield",
+          "cd": 22,
+          "shieldPct": 30,
+          "duration": 6,
+          "radius": 60,
+          "color": "#ffe082",
+          "cost": 2,
+          "slot": null,
+          "desc": "A spirit shield absorbs damage for 6 seconds.",
+          "trDesc": "Ruh kalkanı 6 saniye boyunca gelen hasarı emer."
+        },
+        {
+          "id": "battlefocus",
+          "name": "Battle Focus",
+          "visual": "Rune Circle",
+          "element": "physical",
+          "kind": "buff",
+          "cd": 18,
+          "color": "#ffb74d",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "attack",
+            "pct": 30,
+            "duration": 8
+          },
+          "desc": "Sharpen your focus: attack power rises for 8 seconds.",
+          "trDesc": "Odağını topla: 8 saniye boyunca saldırı gücün yükselir."
+        },
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "id": "judgement",
+          "name": "Judgement",
+          "visual": "Divine Judgement",
+          "element": "holy",
+          "magic": true,
+          "kind": "meteor",
+          "cd": 16,
+          "power": 2.9,
+          "radius": 135,
+          "delay": 0.4,
+          "range": 340,
+          "color": "#ffe082",
+          "status": {
+            "type": "stun",
+            "duration": 0.9
+          },
+          "cost": 3,
+          "desc": "Call a single colossal blade of judgement on the marked spot.",
+          "trDesc": "İşaretli noktaya tek, devasa bir hüküm kılıcı çağır.",
+          "slot": null
+        },
+        {
+          "id": "runeseal",
+          "name": "Rune Seal",
+          "visual": "Rune Circle",
+          "element": "arcane",
+          "magic": true,
+          "kind": "shield",
+          "cd": 11,
+          "power": 0,
+          "shieldPct": 22,
+          "duration": 5,
+          "color": "#b388ff",
+          "cost": 2,
+          "desc": "Etch a warding rune that absorbs a share of incoming damage.",
+          "trDesc": "Gelen hasarın bir kısmını yutan koruyucu bir rün kaz.",
+          "slot": null
+        },
+        {
+          "id": "treeoflife",
+          "name": "Tree of Life",
+          "visual": "Tree of Life",
+          "element": "nature",
+          "magic": true,
+          "kind": "heal",
+          "cd": 16,
+          "healPct": 30,
+          "radius": 120,
+          "color": "#69f0ae",
+          "power": 0,
+          "cost": 3,
+          "desc": "A great tree blooms and pours healing light over the ground.",
+          "trDesc": "Ulu bir ağaç açar ve yere şifa ışığı döker.",
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "astralcollapse",
+          "name": "Astral Collapse",
+          "visual": "Starfall",
+          "element": "arcane",
+          "magic": true,
+          "kind": "meteor",
+          "cd": 36,
+          "power": 3.6,
+          "radius": 165,
+          "delay": 0.4,
+          "count": 5,
+          "stagger": 0.12,
+          "spreadRadius": 160,
+          "range": 370,
+          "color": "#ffe57f",
+          "cost": 4,
+          "late": true,
+          "desc": "Five collapsing stars hammer the battlefield in quick succession.",
+          "trDesc": "Beş çöken yıldız art arda savaş alanını döver.",
+          "slot": null
+        },
+        {
+          "id": "arcanedominion",
+          "name": "Arcane Dominion",
+          "visual": "Starfall",
+          "element": "arcane",
+          "magic": true,
+          "kind": "meteor",
+          "cd": 47,
+          "power": 4.9,
+          "radius": 210,
+          "delay": 0.5,
+          "count": 7,
+          "stagger": 0.1,
+          "spreadRadius": 200,
+          "range": 400,
+          "color": "#b388ff",
+          "cost": 6,
+          "late": true,
+          "desc": "You claim the sky: seven stars answer your call at once.",
+          "trDesc": "Gökyüzünü sahiplenirsin: yedi yıldız aynı anda çağrına uyar.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Holy Lance",
+          "element": "holy",
+          "kind": "beam",
+          "cd": 6,
+          "power": 2.32,
+          "color": "#ffe082",
+          "desc": "",
+          "range": 259,
+          "width": 26
+        },
+        "e": {
+          "name": "Sacred Aegis",
+          "element": "holy",
+          "kind": "shield",
+          "cd": 7.7,
+          "power": 0,
+          "color": "#ffe082",
+          "desc": "",
+          "shieldPct": 26,
+          "duration": 5,
+          "healPct": 13
+        },
+        "r": {
+          "name": "Ascension",
+          "element": "holy",
+          "kind": "shield",
+          "cd": 15.3,
+          "power": 0,
+          "color": "#ffe082",
+          "desc": "",
+          "shieldPct": 30,
+          "duration": 6,
+          "healPct": 19
+        }
       }
     },
     "colossus": {
@@ -19756,39 +27693,254 @@ const CONTENT = {
         "element": "earth"
       },
       "q": {
-        "name": "Titanic Fist",
-        "element": "earth",
-        "kind": "arc",
-        "cd": 6,
-        "power": 2.81,
-        "color": "#c9a227",
-        "desc": "",
-        "radius": 129,
-        "arc": 1.2
+        "id": "earthbreaker",
+        "name": "Earthbreaker",
+        "visual": "Earthbreaker",
+        "element": "physical",
+        "kind": "nova",
+        "cd": 9,
+        "power": 1.7,
+        "radius": 110,
+        "knockback": 120,
+        "color": "#ffb74d",
+        "cost": 0,
+        "desc": "Slam the ground and send a shockwave through everything nearby.",
+        "trDesc": "Yere vur; çevrendeki her şeyi sarsan bir şok dalgası yay.",
+        "slot": "q",
+        "defaultSlot": "q"
       },
       "e": {
-        "name": "Colossal Guard",
-        "element": "earth",
-        "kind": "shield",
-        "cd": 9.4,
-        "power": 0,
-        "color": "#c9a227",
-        "desc": "",
-        "shieldPct": 45,
-        "duration": 5
+        "id": "titanfist",
+        "name": "Titan Fist",
+        "visual": "Titan Fist",
+        "element": "physical",
+        "kind": "aoe",
+        "cd": 12,
+        "power": 2.7,
+        "radius": 95,
+        "offset": 55,
+        "knockback": 220,
+        "color": "#00e5ff",
+        "cost": 0,
+        "desc": "A colossal stone fist crashes down ahead of you.",
+        "trDesc": "Önüne devasa bir taş yumruk iner.",
+        "slot": "e",
+        "defaultSlot": "e"
       },
       "r": {
-        "name": "World Quake",
-        "element": "earth",
-        "kind": "quake",
-        "cd": 15.3,
-        "power": 4.15,
-        "color": "#c9a227",
-        "desc": "",
-        "radius": 224,
-        "pulses": 4,
-        "interval": 0.2,
-        "knockback": 220
+        "id": "bladestorm",
+        "name": "Blade Storm",
+        "visual": "Blade Storm",
+        "element": "physical",
+        "kind": "orbit",
+        "cd": 15,
+        "power": 2.35,
+        "radius": 118,
+        "duration": 3.2,
+        "tick": 0.35,
+        "count": 8,
+        "speed": 4.6,
+        "color": "#80d8ff",
+        "cost": 0,
+        "desc": "Blades orbit you for three seconds, shredding anything they touch.",
+        "trDesc": "Bıçaklar üç saniye etrafında döner, dokunduklarını parçalar.",
+        "slot": "r",
+        "defaultSlot": "r"
+      },
+      "pool": [
+        {
+          "id": "battlefocus",
+          "name": "Battle Focus",
+          "visual": "Rune Circle",
+          "element": "physical",
+          "kind": "buff",
+          "cd": 18,
+          "color": "#ffb74d",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "attack",
+            "pct": 30,
+            "duration": 8
+          },
+          "desc": "Sharpen your focus: attack power rises for 8 seconds.",
+          "trDesc": "Odağını topla: 8 saniye boyunca saldırı gücün yükselir."
+        },
+        {
+          "id": "ironskin",
+          "name": "Iron Skin",
+          "visual": "",
+          "element": "earth",
+          "kind": "buff",
+          "cd": 20,
+          "color": "#b0bec5",
+          "cost": 2,
+          "slot": null,
+          "buff": {
+            "stat": "defense",
+            "pct": 35,
+            "duration": 8
+          },
+          "desc": "Harden your body: damage taken drops for 8 seconds.",
+          "trDesc": "Bedenini sertleştir: 8 saniye boyunca aldığın hasar azalır."
+        },
+        {
+          "id": "tremor",
+          "name": "Tremor",
+          "visual": "Earthbreaker",
+          "element": "physical",
+          "kind": "quake",
+          "cd": 14,
+          "power": 1.5,
+          "radius": 130,
+          "pulses": 3,
+          "interval": 0.22,
+          "knockback": 100,
+          "color": "#a1887f",
+          "cost": 2,
+          "slot": null,
+          "desc": "Smash the ground and send three rolling shockwaves outward.",
+          "trDesc": "Yere vur; dışa doğru yayılan üç şok dalgası gönder."
+        },
+        {
+          "id": "bonecage",
+          "name": "Bone Cage",
+          "visual": "Bone Cage",
+          "element": "shadow",
+          "kind": "ground",
+          "cd": 12,
+          "power": 1.4,
+          "radius": 95,
+          "duration": 2.4,
+          "tick": 0.4,
+          "color": "#d8d0b8",
+          "status": {
+            "type": "freeze",
+            "duration": 1.2
+          },
+          "cost": 2,
+          "desc": "Bones erupt around the target and lock it in place while they cut.",
+          "trDesc": "Hedefin çevresinde kemikler yükselir, onu yerinde kilitler.",
+          "slot": null
+        },
+        {
+          "id": "glaciervall",
+          "name": "Glacier Wall",
+          "visual": "Glacier Wall",
+          "element": "frost",
+          "magic": true,
+          "kind": "ground",
+          "cd": 11,
+          "power": 1.25,
+          "radius": 80,
+          "duration": 2.2,
+          "tick": 0.45,
+          "range": 280,
+          "color": "#9fe2ff",
+          "status": {
+            "type": "freeze",
+            "duration": 1
+          },
+          "cost": 2,
+          "desc": "Raise a wall of ice ahead that slows and cuts anything crossing it.",
+          "trDesc": "Önüne geçenleri yavaşlatan ve kesen bir buz duvarı dik.",
+          "slot": null
+        },
+        {
+          "name": "World Quake",
+          "element": "earth",
+          "kind": "quake",
+          "cd": 15.3,
+          "power": 4.15,
+          "color": "#c9a227",
+          "desc": "A technique carried over from the old travel kit.",
+          "radius": 224,
+          "pulses": 4,
+          "interval": 0.2,
+          "knockback": 220,
+          "id": "legacy_colossus_r",
+          "visual": "Whirlwind",
+          "tr": "World Quake",
+          "legacyFrom": "colossus.r",
+          "trDesc": "A technique carried over from the old travel kit.",
+          "cost": 3,
+          "slot": null
+        }
+      ],
+      "late": [
+        {
+          "id": "doomgavel",
+          "name": "Doom Gavel",
+          "visual": "Titan Fist",
+          "element": "physical",
+          "kind": "meteor",
+          "cd": 34,
+          "power": 3.4,
+          "radius": 150,
+          "delay": 0.45,
+          "range": 340,
+          "knockback": 260,
+          "color": "#ffd54f",
+          "cost": 4,
+          "late": true,
+          "desc": "A colossal gavel of stone falls from the sky and shatters the ground.",
+          "trDesc": "Gökten devasa bir taş tokmak düşer ve yeri parçalar.",
+          "slot": null
+        },
+        {
+          "id": "worldbreaker",
+          "name": "World Breaker",
+          "visual": "Earthbreaker",
+          "element": "physical",
+          "kind": "nova",
+          "cd": 45,
+          "power": 4.6,
+          "radius": 190,
+          "knockback": 340,
+          "color": "#ffb74d",
+          "cost": 6,
+          "late": true,
+          "desc": "One strike cracks the world; everything around you is thrown back.",
+          "trDesc": "Tek vuruş dünyayı çatlatır; çevrendeki her şey geri savrulur.",
+          "slot": null
+        }
+      ],
+      "legacy": {
+        "q": {
+          "name": "Titanic Fist",
+          "element": "earth",
+          "kind": "arc",
+          "cd": 6,
+          "power": 2.81,
+          "color": "#c9a227",
+          "desc": "",
+          "radius": 129,
+          "arc": 1.2
+        },
+        "e": {
+          "name": "Colossal Guard",
+          "element": "earth",
+          "kind": "shield",
+          "cd": 9.4,
+          "power": 0,
+          "color": "#c9a227",
+          "desc": "",
+          "shieldPct": 45,
+          "duration": 5
+        },
+        "r": {
+          "name": "World Quake",
+          "element": "earth",
+          "kind": "quake",
+          "cd": 15.3,
+          "power": 4.15,
+          "color": "#c9a227",
+          "desc": "",
+          "radius": 224,
+          "pulses": 4,
+          "interval": 0.2,
+          "knockback": 220
+        }
       }
     }
   },
@@ -21304,7 +29456,5641 @@ const CONTENT = {
       "glow": "#ea80fc",
       "fx": "void"
     }
-  }
+  },
+  "i18nTR": [
+    {
+      "en": "Red Egg",
+      "tr": "Kırmızı Yumurta"
+    },
+    {
+      "en": "Green Egg",
+      "tr": "Yeşil Yumurta"
+    },
+    {
+      "en": "Blue Egg",
+      "tr": "Mavi Yumurta"
+    },
+    {
+      "en": "Brown Egg",
+      "tr": "Kahverengi Yumurta"
+    },
+    {
+      "en": "Yellow Egg",
+      "tr": "Sarı Yumurta"
+    },
+    {
+      "en": "Purple Egg",
+      "tr": "Mor Yumurta"
+    },
+    {
+      "en": "Cyan Egg",
+      "tr": "Turkuaz Yumurta"
+    },
+    {
+      "en": "Dark Egg",
+      "tr": "Kara Yumurta"
+    },
+    {
+      "en": "Orange Egg",
+      "tr": "Turuncu Yumurta"
+    },
+    {
+      "en": "Gold Egg",
+      "tr": "Altın Yumurta"
+    },
+    {
+      "en": "Rusty Sword",
+      "tr": "Paslı Kılıç"
+    },
+    {
+      "en": "Leather Helm",
+      "tr": "Deri Miğfer"
+    },
+    {
+      "en": "Leather Chest",
+      "tr": "Deri Göğüslük"
+    },
+    {
+      "en": "Leather Pants",
+      "tr": "Deri Pantolon"
+    },
+    {
+      "en": "Leather Boots",
+      "tr": "Deri Çizme"
+    },
+    {
+      "en": "Iron Amulet",
+      "tr": "Demir Muska"
+    },
+    {
+      "en": "Iron Ring",
+      "tr": "Demir Yüzük"
+    },
+    {
+      "en": "Mana Talisman",
+      "tr": "Mana Tılsımı"
+    },
+    {
+      "en": "Battle Axe",
+      "tr": "Savaş Baltası"
+    },
+    {
+      "en": "War Hammer",
+      "tr": "Savaş Çekici"
+    },
+    {
+      "en": "Longbow",
+      "tr": "Uzun Yay"
+    },
+    {
+      "en": "Shortbow",
+      "tr": "Kısa Yay"
+    },
+    {
+      "en": "Apprentice Staff",
+      "tr": "Çırak Asası"
+    },
+    {
+      "en": "Archon Staff",
+      "tr": "Arhon Asası"
+    },
+    {
+      "en": "Dagger",
+      "tr": "Hançer"
+    },
+    {
+      "en": "Poison Dagger",
+      "tr": "Zehirli Hançer"
+    },
+    {
+      "en": "Mace",
+      "tr": "Topuz"
+    },
+    {
+      "en": "Holy Sword",
+      "tr": "Kutsal Kılıç"
+    },
+    {
+      "en": "Kris Blade",
+      "tr": "Kris Kılıcı"
+    },
+    {
+      "en": "Whisper Blade",
+      "tr": "Fısıltı Kılıcı"
+    },
+    {
+      "en": "Scepter",
+      "tr": "Saltanat Asası"
+    },
+    {
+      "en": "Cleric Staff",
+      "tr": "Rahip Asası"
+    },
+    {
+      "en": "Maul",
+      "tr": "Balyoz"
+    },
+    {
+      "en": "Bulwark Hammer",
+      "tr": "Siper Çekici"
+    },
+    {
+      "en": "Stone Ash Sword",
+      "tr": "Taş Külü Kılıcı"
+    },
+    {
+      "en": "+8 Attack. A base for temple crafting.",
+      "tr": "+8 Saldırı. Tapınak zanaatı için bir temel."
+    },
+    {
+      "en": "Hearth Tea",
+      "tr": "Ocak Çayı"
+    },
+    {
+      "en": "Field Rations",
+      "tr": "Saha Azığı"
+    },
+    {
+      "en": "Fire Essence",
+      "tr": "Ateş Özü"
+    },
+    {
+      "en": "A spark of bottled flame. Used in crafting.",
+      "tr": "Şişeye konmuş bir alev kıvılcımı. Zanaatta kullanılır."
+    },
+    {
+      "en": "Frost Essence",
+      "tr": "Buz Özü"
+    },
+    {
+      "en": "Cold condensed to a droplet. Used in crafting.",
+      "tr": "Bir damlaya yoğunlaşmış soğuk. Zanaatta kullanılır."
+    },
+    {
+      "en": "Arcane Essence",
+      "tr": "Arkane Öz"
+    },
+    {
+      "en": "Raw magic held in a vial. Used in crafting.",
+      "tr": "Bir şişede tutulan ham büyü. Zanaatta kullanılır."
+    },
+    {
+      "en": "Shadow Essence",
+      "tr": "Gölge Özü"
+    },
+    {
+      "en": "Light that never arrives. Used in crafting.",
+      "tr": "Hiç ulaşmayan ışık. Zanaatta kullanılır."
+    },
+    {
+      "en": "Heart of Fire",
+      "tr": "Ateş Kalbi"
+    },
+    {
+      "en": "The still-burning heart of a fire spirit.",
+      "tr": "Bir ateş ruhunun hâlâ yanan kalbi."
+    },
+    {
+      "en": "Heart of Golem",
+      "tr": "Golem Kalbi"
+    },
+    {
+      "en": "Offer it at the Ancient Temple to mend a lost heart.",
+      "tr": "Kayıp bir kalbi onarmak için Antik Tapınak'ta sun."
+    },
+    {
+      "en": "Origin Stone",
+      "tr": "Köken Taşı"
+    },
+    {
+      "en": "Offer it at the Ancient Temple to be reborn into a new race.",
+      "tr": "Yeni bir ırka yeniden doğmak için Antik Tapınak'ta sun."
+    },
+    {
+      "en": "Ancient Relic",
+      "tr": "Kadim Kalıntı"
+    },
+    {
+      "en": "An artifact older than the kingdom. The temple remembers.",
+      "tr": "Krallıktan daha eski bir yadigâr. Tapınak hatırlar."
+    },
+    {
+      "en": "Warlord Crest",
+      "tr": "Savaş Lordu Arması"
+    },
+    {
+      "en": "A battle-worn crest. The Ancient Temple demands it from those walking the heavy path (Warlord, Juggernaut, Crusader).",
+      "tr": "Savaşta yıpranmış bir arma. Antik Tapınak bunu ağır yolda yürüyenlerden ister (Savaş Lordu, Juggernaut, Haçlı)."
+    },
+    {
+      "en": "Shadow Sigil",
+      "tr": "Gölge Mührü"
+    },
+    {
+      "en": "A whispering sigil. The Ancient Temple demands it from those walking the shadow path (Nightblade, Reaper, Warden).",
+      "tr": "Fısıldayan bir mühür. Antik Tapınak bunu gölge yolunda yürüyenlerden ister (Gece Bıçağı, Azrail, Muhafız)."
+    },
+    {
+      "en": "Arcane Seal",
+      "tr": "Arkane Mührü"
+    },
+    {
+      "en": "A humming seal. The Ancient Temple demands it from those walking the arcane path (Archmage, High Priest).",
+      "tr": "Uğuldayan bir mühür. Antik Tapınak bunu arkane yolunda yürüyenlerden ister (Başbüyücü, Yüce Rahip)."
+    },
+    {
+      "en": "Drop of Primeval Cruor",
+      "tr": "Kadim Cruor Damlası"
+    },
+    {
+      "en": "First blood, still warm. Rarely spills from humanoid wounds. Old Vesryn demands 10 drops for his rite.",
+      "tr": "İlk kan, hâlâ sıcak. İnsansı yaralarından nadiren sızar. Yaşlı Vesryn ayini için 10 damla ister."
+    },
+    {
+      "en": "Fire Ash Sword",
+      "tr": "Ateş Külü Kılıcı"
+    },
+    {
+      "en": "+12 Attack. Still warm to the touch.",
+      "tr": "+12 Saldırı. Dokununca hâlâ sıcak."
+    },
+    {
+      "en": "Molten Cleaver",
+      "tr": "Erimiş Satır"
+    },
+    {
+      "en": "+20 Attack. It hums with fire.",
+      "tr": "+20 Saldırı. Ateşle uğulduyor."
+    },
+    {
+      "en": "Frost Gladius",
+      "tr": "Buz Gladiusu"
+    },
+    {
+      "en": "Arcane Rod",
+      "tr": "Arkane Değnek"
+    },
+    {
+      "en": "Shadow Knife",
+      "tr": "Gölge Bıçağı"
+    },
+    {
+      "en": "Ember Sword",
+      "tr": "Kor Kılıcı"
+    },
+    {
+      "en": "+26 Attack. Found only in the deep ruins.",
+      "tr": "+26 Saldırı. Yalnızca derin harabelerde bulunur."
+    },
+    {
+      "en": "Phoenix Staff",
+      "tr": "Anka Asası"
+    },
+    {
+      "en": "Void Cleaver",
+      "tr": "Boşluk Satırı"
+    },
+    {
+      "en": "+42 Attack. The edge drinks the dark.",
+      "tr": "+42 Saldırı. Keskin ağzı karanlığı içer."
+    },
+    {
+      "en": "Wooden Chest",
+      "tr": "Ahşap Sandık"
+    },
+    {
+      "en": "A simple chest. Common odds of decent loot.",
+      "tr": "Basit bir sandık. İyi ganimet için sıradan şans."
+    },
+    {
+      "en": "Iron Chest",
+      "tr": "Demir Sandık"
+    },
+    {
+      "en": "A sturdy chest. Better odds of uncommon loot.",
+      "tr": "Sağlam bir sandık. Sıra dışı ganimet için daha iyi şans."
+    },
+    {
+      "en": "Gold Chest",
+      "tr": "Altın Sandık"
+    },
+    {
+      "en": "A gilded chest. Decent odds of rare loot.",
+      "tr": "Yaldızlı bir sandık. Nadir ganimet için iyi şans."
+    },
+    {
+      "en": "Emerald Chest",
+      "tr": "Zümrüt Sandık"
+    },
+    {
+      "en": "A gem-studded chest. Strong odds of epic loot.",
+      "tr": "Mücevher kakmalı bir sandık. Destansı ganimet için yüksek şans."
+    },
+    {
+      "en": "Obsidian Chest",
+      "tr": "Obsidyen Sandık"
+    },
+    {
+      "en": "A black-glass chest. Fine odds of legendary loot.",
+      "tr": "Kara camdan bir sandık. Efsanevi ganimet için yüksek şans."
+    },
+    {
+      "en": "Iron Greatsword",
+      "tr": "Demir Çift Elli Kılıç"
+    },
+    {
+      "en": "Steel Blade",
+      "tr": "Çelik Kılıç"
+    },
+    {
+      "en": "Ranger Bow",
+      "tr": "Korucu Yayı"
+    },
+    {
+      "en": "Arcane Scepter",
+      "tr": "Arkane Asa"
+    },
+    {
+      "en": "Shadow Dagger",
+      "tr": "Gölge Hançeri"
+    },
+    {
+      "en": "Dragon Spear",
+      "tr": "Ejder Mızrağı"
+    },
+    {
+      "en": "Titan Hammer",
+      "tr": "Titan Çekici"
+    },
+    {
+      "en": "Storm Bow",
+      "tr": "Fırtına Yayı"
+    },
+    {
+      "en": "Void Blade",
+      "tr": "Boşluk Kılıcı"
+    },
+    {
+      "en": "World Breaker",
+      "tr": "Dünya Kırıcı"
+    },
+    {
+      "en": "Bronze Helm",
+      "tr": "Bronz Miğfer"
+    },
+    {
+      "en": "Iron Helm",
+      "tr": "Demir Miğfer"
+    },
+    {
+      "en": "Ranger Hood",
+      "tr": "Korucu Başlığı"
+    },
+    {
+      "en": "Mage Cowl",
+      "tr": "Büyücü Kukuletası"
+    },
+    {
+      "en": "Knight Helm",
+      "tr": "Şövalye Miğferi"
+    },
+    {
+      "en": "Shadow Mask",
+      "tr": "Gölge Maskesi"
+    },
+    {
+      "en": "Dragon Helm",
+      "tr": "Ejder Miğferi"
+    },
+    {
+      "en": "Void Crown",
+      "tr": "Boşluk Tacı"
+    },
+    {
+      "en": "Padded Armor",
+      "tr": "Dolgulu Zırh"
+    },
+    {
+      "en": "Chainmail",
+      "tr": "Zincir Zırh"
+    },
+    {
+      "en": "Ranger Vest",
+      "tr": "Korucu Yeleği"
+    },
+    {
+      "en": "Silk Robe",
+      "tr": "İpek Cübbe"
+    },
+    {
+      "en": "Plate Armor",
+      "tr": "Plaka Zırh"
+    },
+    {
+      "en": "Shadow Garb",
+      "tr": "Gölge Giysisi"
+    },
+    {
+      "en": "Dragon Scale",
+      "tr": "Ejder Pulu"
+    },
+    {
+      "en": "Void Plate",
+      "tr": "Boşluk Zırhı"
+    },
+    {
+      "en": "Leather Greaves",
+      "tr": "Deri Dizlik"
+    },
+    {
+      "en": "Iron Greaves",
+      "tr": "Demir Dizlik"
+    },
+    {
+      "en": "Swift Leggings",
+      "tr": "Çevik Tozluk"
+    },
+    {
+      "en": "Sage Pants",
+      "tr": "Bilge Pantolonu"
+    },
+    {
+      "en": "Knight Leggings",
+      "tr": "Şövalye Tozluğu"
+    },
+    {
+      "en": "Shadow Leggings",
+      "tr": "Gölge Tozluğu"
+    },
+    {
+      "en": "Dragon Leggings",
+      "tr": "Ejder Tozluğu"
+    },
+    {
+      "en": "Void Leggings",
+      "tr": "Boşluk Tozluğu"
+    },
+    {
+      "en": "Worn Boots",
+      "tr": "Yıpranmış Çizme"
+    },
+    {
+      "en": "Iron Boots",
+      "tr": "Demir Çizme"
+    },
+    {
+      "en": "Ranger Boots",
+      "tr": "Korucu Çizmesi"
+    },
+    {
+      "en": "Sorcery Boots",
+      "tr": "Büyü Çizmesi"
+    },
+    {
+      "en": "Knight Boots",
+      "tr": "Şövalye Çizmesi"
+    },
+    {
+      "en": "Void Boots",
+      "tr": "Boşluk Çizmesi"
+    },
+    {
+      "en": "Copper Amulet",
+      "tr": "Bakır Muska"
+    },
+    {
+      "en": "Silver Amulet",
+      "tr": "Gümüş Muska"
+    },
+    {
+      "en": "Ruby Amulet",
+      "tr": "Yakut Muska"
+    },
+    {
+      "en": "Sapphire Amulet",
+      "tr": "Safir Muska"
+    },
+    {
+      "en": "Void Amulet",
+      "tr": "Boşluk Muskası"
+    },
+    {
+      "en": "Copper Ring",
+      "tr": "Bakır Yüzük"
+    },
+    {
+      "en": "Silver Ring",
+      "tr": "Gümüş Yüzük"
+    },
+    {
+      "en": "Ruby Ring",
+      "tr": "Yakut Yüzük"
+    },
+    {
+      "en": "Sapphire Ring",
+      "tr": "Safir Yüzük"
+    },
+    {
+      "en": "Void Ring",
+      "tr": "Boşluk Yüzüğü"
+    },
+    {
+      "en": "The Essence of Life",
+      "tr": "Yaşam Özü"
+    },
+    {
+      "en": "A rare essence that can revive a fallen ally at the Ancient Temple.",
+      "tr": "Antik Tapınak'ta düşmüş bir dostu diriltebilen nadir bir öz."
+    },
+    {
+      "en": "Tome of Ember",
+      "tr": "Kor Kitabı"
+    },
+    {
+      "en": "+12 Magic Power, +2 Heal Power. For mages.",
+      "tr": "+12 Büyü Gücü, +2 İyileştirme Gücü. Büyücüler için."
+    },
+    {
+      "en": "Tome of Frost",
+      "tr": "Buz Kitabı"
+    },
+    {
+      "en": "Tome of Shadows",
+      "tr": "Gölgeler Kitabı"
+    },
+    {
+      "en": "Tome of Light",
+      "tr": "Işık Kitabı"
+    },
+    {
+      "en": "Tome of Void",
+      "tr": "Boşluk Kitabı"
+    },
+    {
+      "en": "The Stone of Blood",
+      "tr": "Kan Taşı"
+    },
+    {
+      "en": "+10% Omnivamp. Heals 10% of all damage dealt. (Craftable)",
+      "tr": "+10% Omnivamp. Verilen tüm hasarın %10'unu iyileştirir. (Üretilebilir)"
+    },
+    {
+      "en": "Stone of Frost",
+      "tr": "Buz Taşı"
+    },
+    {
+      "en": "Stone of Shadows",
+      "tr": "Gölgeler Taşı"
+    },
+    {
+      "en": "Stone of Arcane",
+      "tr": "Arkane Taşı"
+    },
+    {
+      "en": "Stone of Earth",
+      "tr": "Toprak Taşı"
+    },
+    {
+      "en": "Vampiric Ring",
+      "tr": "Vampir Yüzüğü"
+    },
+    {
+      "en": "Crimson Blade",
+      "tr": "Kızıl Kılıç"
+    },
+    {
+      "en": "Glacial Helm",
+      "tr": "Buzul Miğferi"
+    },
+    {
+      "en": "Ember Plate",
+      "tr": "Kor Zırhı"
+    },
+    {
+      "en": "Ember King's Blade",
+      "tr": "Kor Kralı'nın Kılıcı"
+    },
+    {
+      "en": "Ember King's blade - only drops from Ember King (50%).",
+      "tr": "Kor Kralı'nın kılıcı - yalnızca Kor Kralı'ndan düşer (%50)."
+    },
+    {
+      "en": "Frost Titan's Axe",
+      "tr": "Buz Devi'nin Baltası"
+    },
+    {
+      "en": "Frost Titan's axe - only drops from Frost Titan (50%).",
+      "tr": "Buz Devi'nin baltası - yalnızca Buz Devi'nden düşer (%50)."
+    },
+    {
+      "en": "Void Herald's Scythe",
+      "tr": "Boşluk Habercisi'nin Tırpanı"
+    },
+    {
+      "en": "Void Herald's scythe - only drops from Void Herald (50%).",
+      "tr": "Boşluk Habercisi'nin tırpanı - yalnızca Boşluk Habercisi'nden düşer (%50)."
+    },
+    {
+      "en": "Storm Colossus Hammer",
+      "tr": "Fırtına Devi'nin Çekici"
+    },
+    {
+      "en": "Storm Colossus hammer - only drops from Storm Colossus (50%).",
+      "tr": "Fırtına Devi'nin çekici - yalnızca Fırtına Devi'nden düşer (%50)."
+    },
+    {
+      "en": "World Eater Fang",
+      "tr": "Dünya Yiyen'in Dişi"
+    },
+    {
+      "en": "World Eater's fang - only drops from World Eater (50%).",
+      "tr": "Dünya Yiyen'in dişi - yalnızca Dünya Yiyen'den düşer (%50)."
+    },
+    {
+      "en": "Ember Chest",
+      "tr": "Kor Sandığı"
+    },
+    {
+      "en": "Ember King's chest - rare+ guaranteed.",
+      "tr": "Kor Kralı'nın sandığı - en az nadir garanti."
+    },
+    {
+      "en": "Frost Chest",
+      "tr": "Buz Sandığı"
+    },
+    {
+      "en": "Frost Titan's chest - rare+ guaranteed.",
+      "tr": "Buz Devi'nin sandığı - en az nadir garanti."
+    },
+    {
+      "en": "Void Chest",
+      "tr": "Boşluk Sandığı"
+    },
+    {
+      "en": "Void Herald's chest - epic+ guaranteed.",
+      "tr": "Boşluk Habercisi'nin sandığı - en az destansı garanti."
+    },
+    {
+      "en": "Storm Chest",
+      "tr": "Fırtına Sandığı"
+    },
+    {
+      "en": "Storm Colossus chest - epic+ guaranteed.",
+      "tr": "Fırtına Devi'nin sandığı - en az destansı garanti."
+    },
+    {
+      "en": "World Chest",
+      "tr": "Dünya Sandığı"
+    },
+    {
+      "en": "World Eater's chest - legendary+ guaranteed.",
+      "tr": "Dünya Yiyen'in sandığı - en az efsanevi garanti."
+    },
+    {
+      "en": "Mythic Chest",
+      "tr": "Mitik Sandık"
+    },
+    {
+      "en": "A chest of legend. Great odds of mythic loot.",
+      "tr": "Efsanevi bir sandık. Mitik ganimet için yüksek şans."
+    },
+    {
+      "en": "Buried Treasure",
+      "tr": "Gömülü Hazine"
+    },
+    {
+      "en": "A dirt-caked hoard dug up on the road. Lucky find, honest loot.",
+      "tr": "Yolda topraktan çıkarılmış, çamura bulanmış bir define. Şanslı buluş, dürüst ganimet."
+    },
+    {
+      "en": "Sturdy Club",
+      "tr": "Dayanıklı Sopa"
+    },
+    {
+      "en": "A dependable oaken club.",
+      "tr": "Güvenilir bir meşe sopa."
+    },
+    {
+      "en": "Cloth Cap",
+      "tr": "Bez Başlık"
+    },
+    {
+      "en": "Stitched cloth, better than nothing.",
+      "tr": "Dikilmiş bez; hiç yoktan iyidir."
+    },
+    {
+      "en": "Bone Ring",
+      "tr": "Kemik Yüzük"
+    },
+    {
+      "en": "Carved from a dire wolf fang.",
+      "tr": "Bir dev kurt dişinden oyulmuş."
+    },
+    {
+      "en": "Travel Boots",
+      "tr": "Yol Çizmesi"
+    },
+    {
+      "en": "Worn soles, swift steps.",
+      "tr": "Aşınmış tabanlar, çevik adımlar."
+    },
+    {
+      "en": "Hunter Axe",
+      "tr": "Avcı Baltası"
+    },
+    {
+      "en": "A woodsman's heavy axe.",
+      "tr": "Bir oduncunun ağır baltası."
+    },
+    {
+      "en": "Wolf Helm",
+      "tr": "Kurt Miğferi"
+    },
+    {
+      "en": "Fashioned from an alpha pelt.",
+      "tr": "Bir alfa postundan yapılmış."
+    },
+    {
+      "en": "Boar Hide Armor",
+      "tr": "Yaban Domuzu Derisi Zırh"
+    },
+    {
+      "en": "Thick, musky, tough.",
+      "tr": "Kalın, keskin kokulu, dayanıklı."
+    },
+    {
+      "en": "Swift Greaves",
+      "tr": "Çevik Dizlik"
+    },
+    {
+      "en": "Light plates for fast feet.",
+      "tr": "Hızlı ayaklar için hafif plakalar."
+    },
+    {
+      "en": "Ember Boots",
+      "tr": "Kor Çizmesi"
+    },
+    {
+      "en": "Still warm from the forge.",
+      "tr": "Ocaktan hâlâ sıcak."
+    },
+    {
+      "en": "Moon Amulet",
+      "tr": "Ay Muskası"
+    },
+    {
+      "en": "Drinks in moonlight.",
+      "tr": "Ay ışığını içine çeker."
+    },
+    {
+      "en": "Serpent Ring",
+      "tr": "Yılan Yüzüğü"
+    },
+    {
+      "en": "A coiled silver serpent.",
+      "tr": "Kıvrılmış gümüş bir yılan."
+    },
+    {
+      "en": "Oak Staff",
+      "tr": "Meşe Asa"
+    },
+    {
+      "en": "Heartwood humming with mana.",
+      "tr": "Öz odunu manayla uğulduyor."
+    },
+    {
+      "en": "Frostbrand Axe",
+      "tr": "Buzdamgası Baltası"
+    },
+    {
+      "en": "Its edge never thaws.",
+      "tr": "Keskin ağzı asla çözülmez."
+    },
+    {
+      "en": "Sentinel Helm",
+      "tr": "Nöbetçi Miğferi"
+    },
+    {
+      "en": "Stood a hundred sieges.",
+      "tr": "Yüz kuşatmaya dayandı."
+    },
+    {
+      "en": "Shadowplate",
+      "tr": "Gölge Zırhı"
+    },
+    {
+      "en": "Forged in eclipse dark.",
+      "tr": "Tutulma karanlığında dövülmüş."
+    },
+    {
+      "en": "Storm Leggings",
+      "tr": "Fırtına Tozluğu"
+    },
+    {
+      "en": "Crackling with static.",
+      "tr": "Statikle çıtırdıyor."
+    },
+    {
+      "en": "Thunder Amulet",
+      "tr": "Gök Gürültüsü Muskası"
+    },
+    {
+      "en": "A bottled thunderstorm.",
+      "tr": "Şişeye konmuş bir gök gürültüsü fırtınası."
+    },
+    {
+      "en": "Warden Ring",
+      "tr": "Muhafız Yüzüğü"
+    },
+    {
+      "en": "Oath-bound silver.",
+      "tr": "Yeminle bağlı gümüş."
+    },
+    {
+      "en": "Runed Bow",
+      "tr": "Rünlü Yay"
+    },
+    {
+      "en": "Runes guide every shaft.",
+      "tr": "Rünler her oku yönlendirir."
+    },
+    {
+      "en": "Void Reaver",
+      "tr": "Boşluk Kemiricisi"
+    },
+    {
+      "en": "It hungers between swings.",
+      "tr": "Savurmalar arasında acıkır."
+    },
+    {
+      "en": "Aegis Armor",
+      "tr": "Aegis Zırhı"
+    },
+    {
+      "en": "A wall you can wear.",
+      "tr": "Giymek mümkün bir duvar."
+    },
+    {
+      "en": "Archon Crown",
+      "tr": "Arhon Tacı"
+    },
+    {
+      "en": "Worn by sky-tyrants.",
+      "tr": "Gökyüzü zorbaları tarafından giyilir."
+    },
+    {
+      "en": "Stormcaller Staff",
+      "tr": "Fırtına Çağıran Asa"
+    },
+    {
+      "en": "Points at clouds; clouds obey.",
+      "tr": "Bulutlara doğrultur; bulutlar itaat eder."
+    },
+    {
+      "en": "Kingsfall Blade",
+      "tr": "Kral Düşüren Kılıç"
+    },
+    {
+      "en": "Ended a dynasty.",
+      "tr": "Bir hanedanı bitirdi."
+    },
+    {
+      "en": "Titanward Plate",
+      "tr": "Titan Korulu Zırh"
+    },
+    {
+      "en": "Titan-forged bulwark.",
+      "tr": "Titan dövmesi siper."
+    },
+    {
+      "en": "Worldsplitter Axe",
+      "tr": "Dünya Yaran Balta"
+    },
+    {
+      "en": "The ground remembers it.",
+      "tr": "Toprak onu hatırlar."
+    },
+    {
+      "en": "Bottle of Slime",
+      "tr": "Slime Şişesi"
+    },
+    {
+      "en": "A jiggling bottle of fresh slime.",
+      "tr": "Taze slime dolu, kıpır kıpır bir şişe."
+    },
+    {
+      "en": "Wolf Fang",
+      "tr": "Kurt Dişi"
+    },
+    {
+      "en": "A sharp fang, still warm.",
+      "tr": "Keskin bir diş, hâlâ sıcak."
+    },
+    {
+      "en": "Cave Bat Wing",
+      "tr": "Mağara Yarasası Kanadı"
+    },
+    {
+      "en": "Leathery and light.",
+      "tr": "Derimsi ve hafif."
+    },
+    {
+      "en": "Ash Spider Silk",
+      "tr": "Kül Örümceği İpeği"
+    },
+    {
+      "en": "Stronger than it looks.",
+      "tr": "Göründüğünden daha güçlü."
+    },
+    {
+      "en": "Tough Hide",
+      "tr": "Dayanıklı Deri"
+    },
+    {
+      "en": "Thick hide of a hardy beast.",
+      "tr": "Dayanıklı bir hayvanın kalın derisi."
+    },
+    {
+      "en": "Old Bone",
+      "tr": "Eski Kemik"
+    },
+    {
+      "en": "Dense with old malice.",
+      "tr": "Eski kinden yoğun."
+    },
+    {
+      "en": "Orc Tusk",
+      "tr": "Ork Dişi"
+    },
+    {
+      "en": "A trophy with an edge.",
+      "tr": "Keskin bir ganimet."
+    },
+    {
+      "en": "Storm Harpy Feather",
+      "tr": "Fırtına Harpi Tüyü"
+    },
+    {
+      "en": "Crackles faintly.",
+      "tr": "Hafifçe çıtırdar."
+    },
+    {
+      "en": "Golem Fragment",
+      "tr": "Golem Parçası"
+    },
+    {
+      "en": "A chip of living stone.",
+      "tr": "Canlı taştan bir kıymık."
+    },
+    {
+      "en": "Wraith Wisp",
+      "tr": "Hayalet Işığı"
+    },
+    {
+      "en": "Cold light in a jar.",
+      "tr": "Kavanozda soğuk ışık."
+    },
+    {
+      "en": "Elder Treant Bark",
+      "tr": "Yaşlı Ağaç Adam Kabuğu"
+    },
+    {
+      "en": "Bark that slowly regrows.",
+      "tr": "Yavaşça yeniden büyüyen kabuk."
+    },
+    {
+      "en": "Hydra Scale",
+      "tr": "Hidra Pulu"
+    },
+    {
+      "en": "It shimmers with regrowth.",
+      "tr": "Yeniden büyümeyle parıldar."
+    },
+    {
+      "en": "Minor Salve",
+      "tr": "Küçük Merhem"
+    },
+    {
+      "en": "Heals small wounds.",
+      "tr": "Küçük yaraları iyileştirir."
+    },
+    {
+      "en": "Wolf Jerky",
+      "tr": "Kurt Pastırması"
+    },
+    {
+      "en": "Chewy trail food.",
+      "tr": "Çiğnenir yol azığı."
+    },
+    {
+      "en": "Mushroom Stew",
+      "tr": "Mantar Güveç"
+    },
+    {
+      "en": "A hearty dungeon stew.",
+      "tr": "Doyurucu bir zindan güveci."
+    },
+    {
+      "en": "Frost Berry",
+      "tr": "Buz Meyvesi"
+    },
+    {
+      "en": "Numbing and sweet.",
+      "tr": "Uyuşturucu ve tatlı."
+    },
+    {
+      "en": "Ember Pepper",
+      "tr": "Kor Biberi"
+    },
+    {
+      "en": "Burns going down.",
+      "tr": "Boğazdan inerken yakar."
+    },
+    {
+      "en": "Troll Draught",
+      "tr": "Trol Şerbeti"
+    },
+    {
+      "en": "Regrows more than courage.",
+      "tr": "Cesaretten fazlasını yeniden büyütür."
+    },
+    {
+      "en": "Skyshard Omelet",
+      "tr": "Gökyüzü Parçası Omleti"
+    },
+    {
+      "en": "Storm-harpy eggs, fried.",
+      "tr": "Kızarmış fırtına harpi yumurtaları."
+    },
+    {
+      "en": "Elixir of Dawn",
+      "tr": "Şafak İksiri"
+    },
+    {
+      "en": "First light, bottled.",
+      "tr": "Şişeye konmuş ilk ışık."
+    },
+    {
+      "en": "Sword Blueprint",
+      "tr": "Kılıç Kalıbı"
+    },
+    {
+      "en": "Reusable weapon pattern.",
+      "tr": "Yeniden kullanılabilir silah kalıbı."
+    },
+    {
+      "en": "Armor Blueprint",
+      "tr": "Zırh Kalıbı"
+    },
+    {
+      "en": "Reusable armor pattern.",
+      "tr": "Yeniden kullanılabilir zırh kalıbı."
+    },
+    {
+      "en": "Staff Blueprint",
+      "tr": "Asa Kalıbı"
+    },
+    {
+      "en": "Reusable staff pattern.",
+      "tr": "Yeniden kullanılabilir asa kalıbı."
+    },
+    {
+      "en": "Sage Circlet",
+      "tr": "Bilge Taçlığı"
+    },
+    {
+      "en": "For quiet, clever minds.",
+      "tr": "Sessiz, zeki zihinler için."
+    },
+    {
+      "en": "Blood Blade",
+      "tr": "Kan Kılıcı"
+    },
+    {
+      "en": "+28 Attack. It remembers every vein.",
+      "tr": "+28 Saldırı. Her damarı hatırlar."
+    },
+    {
+      "en": "Blood Fang",
+      "tr": "Kan Dişi"
+    },
+    {
+      "en": "+18 Attack, +2 Speed. Still warm.",
+      "tr": "+18 Saldırı, +2 Hız. Hâlâ sıcak."
+    },
+    {
+      "en": "Blood Helm",
+      "tr": "Kan Miğferi"
+    },
+    {
+      "en": "Blood Chest",
+      "tr": "Kan Göğüslüğü"
+    },
+    {
+      "en": "Blood Leggings",
+      "tr": "Kan Tozluğu"
+    },
+    {
+      "en": "Blood Boots",
+      "tr": "Kan Çizmesi"
+    },
+    {
+      "en": "Blood Ring",
+      "tr": "Kan Yüzüğü"
+    },
+    {
+      "en": "Blood Amulet",
+      "tr": "Kan Muskası"
+    },
+    {
+      "en": "Blood Tome",
+      "tr": "Kan Kitabı"
+    },
+    {
+      "en": "+14 Magic Power, +8 Heal Power. Written in red.",
+      "tr": "+14 Büyü Gücü, +8 İyileştirme Gücü. Kırmızıyla yazılmış."
+    },
+    {
+      "en": "Duskwood Blade",
+      "tr": "Alacakaranlık Ormanı Kılıcı"
+    },
+    {
+      "en": "Reedcutter",
+      "tr": "Sazkesen"
+    },
+    {
+      "en": "Ironleaf Sword",
+      "tr": "Demiryaprak Kılıcı"
+    },
+    {
+      "en": "Patrol Saber",
+      "tr": "Devriye Kılıcı"
+    },
+    {
+      "en": "Tinker's Shortsword",
+      "tr": "Tamircinin Kısa Kılıcı"
+    },
+    {
+      "en": "Militia Sword",
+      "tr": "Milis Kılıcı"
+    },
+    {
+      "en": "Boar Tusk Blade",
+      "tr": "Domuz Dişi Kılıcı"
+    },
+    {
+      "en": "Salt-Rusted Sword",
+      "tr": "Tuzpaslı Kılıç"
+    },
+    {
+      "en": "Charcoal Cutter",
+      "tr": "Kömürkesen"
+    },
+    {
+      "en": "Bronzeguard",
+      "tr": "Bronz Muhafız"
+    },
+    {
+      "en": "Mossbrand",
+      "tr": "Yosundamgası"
+    },
+    {
+      "en": "Tidecutter",
+      "tr": "Dalgakesen"
+    },
+    {
+      "en": "Ashen Edge",
+      "tr": "Kül Ağzı"
+    },
+    {
+      "en": "Watchman's Sabre",
+      "tr": "Bekçinin Kılıcı"
+    },
+    {
+      "en": "Glade Whisper",
+      "tr": "Açıklık Fısıltısı"
+    },
+    {
+      "en": "Emberwood Blade",
+      "tr": "Kor Odunu Kılıcı"
+    },
+    {
+      "en": "Frostpin",
+      "tr": "Buziğnesi"
+    },
+    {
+      "en": "Mason's Broadsword",
+      "tr": "Duvarcının Kılıcı"
+    },
+    {
+      "en": "Stormhilt",
+      "tr": "Fırtına Kabzası"
+    },
+    {
+      "en": "Runeblade",
+      "tr": "Rün Kılıcı"
+    },
+    {
+      "en": "Glacier Fang",
+      "tr": "Buzul Dişi"
+    },
+    {
+      "en": "Venomfang",
+      "tr": "Zehirdiş"
+    },
+    {
+      "en": "Brass Talon",
+      "tr": "Pirinç Pençe"
+    },
+    {
+      "en": "Shadowthorn",
+      "tr": "Gölge Dikeni"
+    },
+    {
+      "en": "Coral Reaver",
+      "tr": "Mercan Kemiricisi"
+    },
+    {
+      "en": "Graverust Sword",
+      "tr": "Mezar Pası Kılıcı"
+    },
+    {
+      "en": "Sunflare Sabre",
+      "tr": "Güneş Patlaması Kılıcı"
+    },
+    {
+      "en": "Emberforged Greatsword",
+      "tr": "Kordövme Çift Elli Kılıç"
+    },
+    {
+      "en": "Glacial Requiem",
+      "tr": "Buzul Ağıdı"
+    },
+    {
+      "en": "Thunderbrand",
+      "tr": "Gök Gürültüsü Damgası"
+    },
+    {
+      "en": "Crimson Oath",
+      "tr": "Kızıl Yemin"
+    },
+    {
+      "en": "Voidsteel Edge",
+      "tr": "Boşluk Çeliği Ağzı"
+    },
+    {
+      "en": "Seraph's Wing",
+      "tr": "Seraf'ın Kanadı"
+    },
+    {
+      "en": "Nightbloom Blade",
+      "tr": "Geceçiçeği Kılıcı"
+    },
+    {
+      "en": "Tidecaller",
+      "tr": "Dalga Çağıran"
+    },
+    {
+      "en": "Runic Warblade",
+      "tr": "Rünik Savaş Kılıcı"
+    },
+    {
+      "en": "Dragonfang Blade",
+      "tr": "Ejderdışı Kılıç"
+    },
+    {
+      "en": "Phoenix Ember Sword",
+      "tr": "Anka Kor Kılıcı"
+    },
+    {
+      "en": "Worldtree Blade",
+      "tr": "Dünya Ağacı Kılıcı"
+    },
+    {
+      "en": "Voidheart Cleaver",
+      "tr": "Boşluk Kalbi Satırı"
+    },
+    {
+      "en": "Astral Sever",
+      "tr": "Astral Kesici"
+    },
+    {
+      "en": "Bloodmoon Greatsword",
+      "tr": "Kan Ayı Çift Elli Kılıcı"
+    },
+    {
+      "en": "Setra's Dawnblade",
+      "tr": "Setra'nın Şafak Kılıcı"
+    },
+    {
+      "en": "Edge of the Firstborn",
+      "tr": "İlk Doğan'ın Ağzı"
+    },
+    {
+      "en": "Worldheart, the Unmaking",
+      "tr": "Dünya Kalbi, Yok Edici"
+    },
+    {
+      "en": "Duskhide Helm",
+      "tr": "Alacakaranlık Derisi Miğfer"
+    },
+    {
+      "en": "Duskhide Chest",
+      "tr": "Alacakaranlık Derisi Göğüslük"
+    },
+    {
+      "en": "Duskhide Legs",
+      "tr": "Alacakaranlık Derisi Bacaklık"
+    },
+    {
+      "en": "Duskhide Boots",
+      "tr": "Alacakaranlık Derisi Çizme"
+    },
+    {
+      "en": "Duskhide Blade",
+      "tr": "Alacakaranlık Derisi Kılıç"
+    },
+    {
+      "en": "Bronzeforge Helm",
+      "tr": "Bronzdövme Miğfer"
+    },
+    {
+      "en": "Bronzeforge Chest",
+      "tr": "Bronzdövme Göğüslük"
+    },
+    {
+      "en": "Bronzeforge Legs",
+      "tr": "Bronzdövme Bacaklık"
+    },
+    {
+      "en": "Bronzeforge Boots",
+      "tr": "Bronzdövme Çizme"
+    },
+    {
+      "en": "Bronzeforge Blade",
+      "tr": "Bronzdövme Kılıç"
+    },
+    {
+      "en": "Mosswarden Helm",
+      "tr": "Yosmuhafız Miğfer"
+    },
+    {
+      "en": "Mosswarden Chest",
+      "tr": "Yosmuhafız Göğüslük"
+    },
+    {
+      "en": "Mosswarden Legs",
+      "tr": "Yosmuhafız Bacaklık"
+    },
+    {
+      "en": "Mosswarden Boots",
+      "tr": "Yosmuhafız Çizme"
+    },
+    {
+      "en": "Mosswarden Blade",
+      "tr": "Yosmuhafız Kılıç"
+    },
+    {
+      "en": "Stormtouched Helm",
+      "tr": "Fırtınadeğmiş Miğfer"
+    },
+    {
+      "en": "Stormtouched Chest",
+      "tr": "Fırtınadeğmiş Göğüslük"
+    },
+    {
+      "en": "Stormtouched Legs",
+      "tr": "Fırtınadeğmiş Bacaklık"
+    },
+    {
+      "en": "Stormtouched Boots",
+      "tr": "Fırtınadeğmiş Çizme"
+    },
+    {
+      "en": "Stormtouched Blade",
+      "tr": "Fırtınadeğmiş Kılıç"
+    },
+    {
+      "en": "Runebound Helm",
+      "tr": "Rünbağlı Miğfer"
+    },
+    {
+      "en": "Runebound Chest",
+      "tr": "Rünbağlı Göğüslük"
+    },
+    {
+      "en": "Runebound Legs",
+      "tr": "Rünbağlı Bacaklık"
+    },
+    {
+      "en": "Runebound Boots",
+      "tr": "Rünbağlı Çizme"
+    },
+    {
+      "en": "Runebound Blade",
+      "tr": "Rünbağlı Kılıç"
+    },
+    {
+      "en": "Emberforged Helm",
+      "tr": "Kordövme Miğfer"
+    },
+    {
+      "en": "Emberforged Chest",
+      "tr": "Kordövme Göğüslük"
+    },
+    {
+      "en": "Emberforged Legs",
+      "tr": "Kordövme Bacaklık"
+    },
+    {
+      "en": "Emberforged Boots",
+      "tr": "Kordövme Çizme"
+    },
+    {
+      "en": "Emberforged Blade",
+      "tr": "Kordövme Kılıç"
+    },
+    {
+      "en": "Frostbound Helm",
+      "tr": "Buzbağlı Miğfer"
+    },
+    {
+      "en": "Frostbound Chest",
+      "tr": "Buzbağlı Göğüslük"
+    },
+    {
+      "en": "Frostbound Legs",
+      "tr": "Buzbağlı Bacaklık"
+    },
+    {
+      "en": "Frostbound Boots",
+      "tr": "Buzbağlı Çizme"
+    },
+    {
+      "en": "Frostbound Blade",
+      "tr": "Buzbağlı Kılıç"
+    },
+    {
+      "en": "Dragonblood Helm",
+      "tr": "Ejderkanı Miğfer"
+    },
+    {
+      "en": "Dragonblood Chest",
+      "tr": "Ejderkanı Göğüslük"
+    },
+    {
+      "en": "Dragonblood Legs",
+      "tr": "Ejderkanı Bacaklık"
+    },
+    {
+      "en": "Dragonblood Boots",
+      "tr": "Ejderkanı Çizme"
+    },
+    {
+      "en": "Dragonblood Blade",
+      "tr": "Ejderkanı Kılıç"
+    },
+    {
+      "en": "Voidweave Helm",
+      "tr": "Boşlukdokuma Miğfer"
+    },
+    {
+      "en": "Voidweave Chest",
+      "tr": "Boşlukdokuma Göğüslük"
+    },
+    {
+      "en": "Voidweave Legs",
+      "tr": "Boşlukdokuma Bacaklık"
+    },
+    {
+      "en": "Voidweave Boots",
+      "tr": "Boşlukdokuma Çizme"
+    },
+    {
+      "en": "Voidweave Blade",
+      "tr": "Boşlukdokuma Kılıç"
+    },
+    {
+      "en": "Setra's Chosen Helm",
+      "tr": "Setra'nın Seçilmişi Miğfer"
+    },
+    {
+      "en": "Setra's Chosen Chest",
+      "tr": "Setra'nın Seçilmişi Göğüslük"
+    },
+    {
+      "en": "Setra's Chosen Legs",
+      "tr": "Setra'nın Seçilmişi Bacaklık"
+    },
+    {
+      "en": "Setra's Chosen Boots",
+      "tr": "Setra'nın Seçilmişi Çizme"
+    },
+    {
+      "en": "Setra's Chosen Blade",
+      "tr": "Setra'nın Seçilmişi Kılıç"
+    },
+    {
+      "en": "Setra's Chosen Amulet",
+      "tr": "Setra'nın Seçilmişi Muska"
+    },
+    {
+      "en": "Setra's Chosen Ring",
+      "tr": "Setra'nın Seçilmişi Yüzük"
+    },
+    {
+      "en": "Setra's Chosen Book",
+      "tr": "Setra'nın Seçilmişi Kitap"
+    },
+    {
+      "en": "Setra's Chosen Stone",
+      "tr": "Setra'nın Seçilmişi Taş"
+    },
+    {
+      "en": "Warrior",
+      "tr": "Savaşçı"
+    },
+    {
+      "en": "Slash",
+      "tr": "Kesme"
+    },
+    {
+      "en": "Frontline Swordmaster",
+      "tr": "Cephe Kılıç Ustası"
+    },
+    {
+      "en": "A veteran of the front line. Heavy armor and a loyal blade. Balanced and forgiving — ideal for beginners.",
+      "tr": "Cephenin emektarı. Ağır zırh ve sadık bir kılıç. Dengeli ve bağışlayıcı — yeni başlayanlar için ideal."
+    },
+    {
+      "en": "Battle Fervor",
+      "tr": "Savaş Şevki"
+    },
+    {
+      "en": "Archer",
+      "tr": "Okçu"
+    },
+    {
+      "en": "Quick Shot",
+      "tr": "Çabuk Atış"
+    },
+    {
+      "en": "Long-Range Hunter",
+      "tr": "Uzun Menzilli Avcı"
+    },
+    {
+      "en": "A deadly archer striking from afar. Fast and first to shoot, but fragile up close.",
+      "tr": "Uzaktan vuran ölümcül bir okçu. Hızlı ve ilk atışta, ama yakında kırılgan."
+    },
+    {
+      "en": "Hunter's Instinct",
+      "tr": "Avcı İçgüdüsü"
+    },
+    {
+      "en": "Mage",
+      "tr": "Büyücü"
+    },
+    {
+      "en": "Arcane Bolt",
+      "tr": "Arkane Ok"
+    },
+    {
+      "en": "Apprentice Mage",
+      "tr": "Çırak Büyücü"
+    },
+    {
+      "en": "A novice bending arcane energy. Low health, deep mana pool. Huge burst damage, but needs protection.",
+      "tr": "Arkane enerjiyi büken bir çırak. Az can, derin mana havuzu. Muazzam patlama hasarı, ama korunmaya ihtiyaç duyar."
+    },
+    {
+      "en": "Arcane Intellect",
+      "tr": "Arkane Zeka"
+    },
+    {
+      "en": "Rogue",
+      "tr": "Haydut"
+    },
+    {
+      "en": "Stab",
+      "tr": "Saplama"
+    },
+    {
+      "en": "Shadow Thief",
+      "tr": "Gölge Hırsızı"
+    },
+    {
+      "en": "A cutpurse living in the shadows. Vampiric strikes steal life with every hit. Fast and cunning — for the impatient.",
+      "tr": "Gölgelerde yaşayan bir kese kesen. Vampir vuruşları her isabetle can çalar. Hızlı ve kurnaz — sabırsızlar için."
+    },
+    {
+      "en": "Opportunist",
+      "tr": "Fırsatçı"
+    },
+    {
+      "en": "Smite",
+      "tr": "Kutsal Darbe"
+    },
+    {
+      "en": "Holy Guardian",
+      "tr": "Kutsal Muhafız"
+    },
+    {
+      "en": "A knight sworn to the light. Strikes with steel, heals with prayer. Slow, but a rock that refuses to fall.",
+      "tr": "Işığa yemin etmiş bir şövalye. Çelikle vurur, duayla iyileştirir. Yavaş, ama düşmeyi reddeden bir kaya."
+    },
+    {
+      "en": "Holy Aegis",
+      "tr": "Kutsal Aegis"
+    },
+    {
+      "en": "Dawn Ward",
+      "tr": "Şafak Siperi"
+    },
+    {
+      "en": "Assassin",
+      "tr": "Suikastçı"
+    },
+    {
+      "en": "Lunge",
+      "tr": "Atılış"
+    },
+    {
+      "en": "Apprentice Assassin",
+      "tr": "Çırak Suikastçı"
+    },
+    {
+      "en": "A student of the deadly arts. Execute ends a single target — TRUE damage that ignores armor. Glass cannon: them or you.",
+      "tr": "Ölümcül sanatların öğrencisi. İnfaz tek bir hedefi bitirir — zırhı yok sayan GERÇEK hasar. Cam top: ya onlar ya sen."
+    },
+    {
+      "en": "Final Curtain",
+      "tr": "Son Perde"
+    },
+    {
+      "en": "Healer",
+      "tr": "Şifacı"
+    },
+    {
+      "en": "Sanct Bolt",
+      "tr": "Kutsal Ok"
+    },
+    {
+      "en": "Healer Adept",
+      "tr": "Şifacı Ustası"
+    },
+    {
+      "en": "The heart of the party. Cannot hunt alone — shines with friends. For team players.",
+      "tr": "Grubun kalbi. Tek başına avlanamaz — dostlarıyla parlar. Takım oyuncuları için."
+    },
+    {
+      "en": "Merciful Hand",
+      "tr": "Merhametli El"
+    },
+    {
+      "en": "Living Wall",
+      "tr": "Yaşayan Duvar"
+    },
+    {
+      "en": "A fortress incarnate. Low damage, but felling them takes a siege. A party without one is incomplete.",
+      "tr": "Vücut bulmuş bir kale. Az hasar, ama onu devirmek bir kuşatma ister. Onsuz bir grup eksiktir."
+    },
+    {
+      "en": "Spiked Wall",
+      "tr": "Dikenli Duvar"
+    },
+    {
+      "en": "Iron Hide",
+      "tr": "Demir Deri"
+    },
+    {
+      "en": "Tamer",
+      "tr": "Terbiyeci"
+    },
+    {
+      "en": "Tame Hit",
+      "tr": "Evcilleştirme Vuruşu"
+    },
+    {
+      "en": "Beast Tamer",
+      "tr": "Hayvan Terbiyecisi"
+    },
+    {
+      "en": "A tamer fighting beside wild companions. Hunts with Beast Bite, endures with War Heal. Strength in the pack, never alone.",
+      "tr": "Vahşi yoldaşlarının yanında savaşan bir terbiyeci. Hayvan Isırığı ile avlanır, Savaş Şifası ile dayanır. Güç sürüde, asla yalnız değil."
+    },
+    {
+      "en": "Beastmaster",
+      "tr": "Hayvan Efendisi"
+    },
+    {
+      "en": "Pack Alpha",
+      "tr": "Sürü Lideri"
+    },
+    {
+      "en": "Predator Strides",
+      "tr": "Yırtıcı Adımları"
+    },
+    {
+      "en": "Beast Strike",
+      "tr": "Hayvan Vuruşu"
+    },
+    {
+      "en": "Alpha Tamer",
+      "tr": "Alfa Terbiyeci"
+    },
+    {
+      "en": "Apex Bond",
+      "tr": "Zirve Bağı"
+    },
+    {
+      "en": "Wild Sprint",
+      "tr": "Vahşi Koşu"
+    },
+    {
+      "en": "Legendary Beasts",
+      "tr": "Efsanevi Hayvanlar"
+    },
+    {
+      "en": "Alpha Strike",
+      "tr": "Alfa Vuruşu"
+    },
+    {
+      "en": "Gardener",
+      "tr": "Bahçıvan"
+    },
+    {
+      "en": "Garden Swipe",
+      "tr": "Bahçe Savurması"
+    },
+    {
+      "en": "Nature Sprout",
+      "tr": "Doğa Filizi"
+    },
+    {
+      "en": "A gardener who hears the forest whisper. Vines and thorns are their weapons. A patient player's pick.",
+      "tr": "Ormanın fısıltısını duyan bir bahçıvan. Sarmaşıklar ve dikenler onun silahı. Sabırlı oyuncunun seçimi."
+    },
+    {
+      "en": "Living Bark",
+      "tr": "Yaşayan Kabuk"
+    },
+    {
+      "en": "Rootbinder",
+      "tr": "Kökbağlayıcı"
+    },
+    {
+      "en": "Deep Roots",
+      "tr": "Derin Kökler"
+    },
+    {
+      "en": "Sap Flow",
+      "tr": "Öz Akışı"
+    },
+    {
+      "en": "Root Lash",
+      "tr": "Kök Kamçısı"
+    },
+    {
+      "en": "Lifeweaver",
+      "tr": "Yaşam Dokuyucu"
+    },
+    {
+      "en": "Worldbloom",
+      "tr": "Dünya Çiçeği"
+    },
+    {
+      "en": "Gentle Season",
+      "tr": "Nazik Mevsim"
+    },
+    {
+      "en": "Bark Sanctuary",
+      "tr": "Kabuk Sığınağı"
+    },
+    {
+      "en": "Bloom Burst",
+      "tr": "Çiçek Patlaması"
+    },
+    {
+      "en": "Moderator",
+      "tr": "Moderatör"
+    },
+    {
+      "en": "Mod Strike",
+      "tr": "Mod Vuruşu"
+    },
+    {
+      "en": "Ultra Moderator",
+      "tr": "Ultra Moderatör"
+    },
+    {
+      "en": "Ban Hammer",
+      "tr": "Ban Çekici"
+    },
+    {
+      "en": "Trophy Case",
+      "tr": "Kupa Vitrini"
+    },
+    {
+      "en": "Confiscated",
+      "tr": "El Konuldu"
+    },
+    {
+      "en": "Mod Obliterate",
+      "tr": "Mod Yok Etme"
+    },
+    {
+      "en": "Tester",
+      "tr": "Testçi"
+    },
+    {
+      "en": "Ascension Test Dummy",
+      "tr": "Yükseliş Test Kuklası"
+    },
+    {
+      "en": "A test vessel for trying ascension. Starts at level 20 with every chest, every egg and every evolution item in its pack.",
+      "tr": "Yükselişi denemek için bir test kabı. 20. seviyede başlar; çantasında her sandık, her yumurta ve her evrim eşyası vardır."
+    },
+    {
+      "en": "War Lord",
+      "tr": "Savaş Lordu"
+    },
+    {
+      "en": "Battle Hunger",
+      "tr": "Savaş Açlığı"
+    },
+    {
+      "en": "Undying Warlord",
+      "tr": "Ölümsüz Savaş Lordu"
+    },
+    {
+      "en": "Great Slash",
+      "tr": "Büyük Kesme"
+    },
+    {
+      "en": "Warden",
+      "tr": "Muhafız"
+    },
+    {
+      "en": "True Aim",
+      "tr": "Gerçek Nişan"
+    },
+    {
+      "en": "Piercing Shots",
+      "tr": "Delici Atışlar"
+    },
+    {
+      "en": "Hunter Shot",
+      "tr": "Avcı Atışı"
+    },
+    {
+      "en": "Archmage",
+      "tr": "Başbüyücü"
+    },
+    {
+      "en": "Overmind",
+      "tr": "Üst Zihin"
+    },
+    {
+      "en": "Deep Well",
+      "tr": "Derin Kuyu"
+    },
+    {
+      "en": "Arcane Blast",
+      "tr": "Arkane Patlama"
+    },
+    {
+      "en": "Nightblade",
+      "tr": "Gece Bıçağı"
+    },
+    {
+      "en": "Red Harvest",
+      "tr": "Kızıl Hasat"
+    },
+    {
+      "en": "Ghoststep",
+      "tr": "Hayalet Adımı"
+    },
+    {
+      "en": "Shadow Stab",
+      "tr": "Gölge Saplaması"
+    },
+    {
+      "en": "Crusader",
+      "tr": "Haçlı"
+    },
+    {
+      "en": "Bulwark of Dawn",
+      "tr": "Şafak Siperi"
+    },
+    {
+      "en": "Greater Dawn Ward",
+      "tr": "Yüce Şafak Siperi"
+    },
+    {
+      "en": "Blessed Blade",
+      "tr": "Kutsanmış Kılıç"
+    },
+    {
+      "en": "Reaper",
+      "tr": "Azrail"
+    },
+    {
+      "en": "Reap the Weak",
+      "tr": "Zayıfı Biç"
+    },
+    {
+      "en": "Soul Siphon",
+      "tr": "Ruh Sifonu"
+    },
+    {
+      "en": "Reap",
+      "tr": "Biçme"
+    },
+    {
+      "en": "High Priest",
+      "tr": "Yüce Rahip"
+    },
+    {
+      "en": "Greater Benediction",
+      "tr": "Yüce Takdis"
+    },
+    {
+      "en": "Renewing Light",
+      "tr": "Yenileyen Işık"
+    },
+    {
+      "en": "Hallowed Bolt",
+      "tr": "Kutsal Ok"
+    },
+    {
+      "en": "Avalanche Hide",
+      "tr": "Çığ Derisi"
+    },
+    {
+      "en": "Siege Flesh",
+      "tr": "Kuşatma Eti"
+    },
+    {
+      "en": "Adamant Bash",
+      "tr": "Sarsılmaz Vuruş"
+    },
+    {
+      "en": "War Emperor",
+      "tr": "Savaş İmparatoru"
+    },
+    {
+      "en": "Conqueror's Aura",
+      "tr": "Fatih'in Aurası"
+    },
+    {
+      "en": "No Survivors",
+      "tr": "Hayatta Kalan Yok"
+    },
+    {
+      "en": "Imperial Decree",
+      "tr": "İmparatorluk Fermanı"
+    },
+    {
+      "en": "Colossal Slash",
+      "tr": "Devasa Kesme"
+    },
+    {
+      "en": "Storm Warden",
+      "tr": "Fırtına Muhafızı"
+    },
+    {
+      "en": "Storm's Judgment",
+      "tr": "Fırtınanın Hükmü"
+    },
+    {
+      "en": "Second Bolt",
+      "tr": "İkinci Ok"
+    },
+    {
+      "en": "Storm Shot",
+      "tr": "Fırtına Atışı"
+    },
+    {
+      "en": "Archon",
+      "tr": "Arhon"
+    },
+    {
+      "en": "Cosmic Mind",
+      "tr": "Kozmik Zihin"
+    },
+    {
+      "en": "Star Thirst",
+      "tr": "Yıldız Susuzluğu"
+    },
+    {
+      "en": "Primordial Bolt",
+      "tr": "İlksel Ok"
+    },
+    {
+      "en": "Shade King",
+      "tr": "Gölge Kralı"
+    },
+    {
+      "en": "Eclipse Reign",
+      "tr": "Tutulma Hükümdarlığı"
+    },
+    {
+      "en": "Untouchable",
+      "tr": "Dokunulmaz"
+    },
+    {
+      "en": "Eclipse Strike",
+      "tr": "Tutulma Vuruşu"
+    },
+    {
+      "en": "Lightbringer",
+      "tr": "Işık Getiren"
+    },
+    {
+      "en": "Dawn Incarnate",
+      "tr": "Şafak Vücut Bulmuş"
+    },
+    {
+      "en": "Radiant Mercy",
+      "tr": "Parlak Merhamet"
+    },
+    {
+      "en": "Halo Wall",
+      "tr": "Halo Duvarı"
+    },
+    {
+      "en": "Radiant Edge",
+      "tr": "Işıyan Ağız"
+    },
+    {
+      "en": "Death Lord",
+      "tr": "Ölüm Lordu"
+    },
+    {
+      "en": "Death's Due",
+      "tr": "Ölümün Hakkı"
+    },
+    {
+      "en": "Soul Feast",
+      "tr": "Ruh Ziyafeti"
+    },
+    {
+      "en": "Final Word",
+      "tr": "Son Söz"
+    },
+    {
+      "en": "Scythe Sweep",
+      "tr": "Tırpan Savurması"
+    },
+    {
+      "en": "Bloodspawn",
+      "tr": "Kan Doğuşlu"
+    },
+    {
+      "en": "Sanguine Hunger",
+      "tr": "Kanlı Açlık"
+    },
+    {
+      "en": "Apex Predator",
+      "tr": "Zirve Yırtıcı"
+    },
+    {
+      "en": "Fledgling of the Old Blood",
+      "tr": "Eski Kanın Yavrusu"
+    },
+    {
+      "en": "An assassin who knelt before Old Vesryn and rose thirsting. Fast, cruel, and forever barred from any other path.",
+      "tr": "Yaşlı Vesryn'in önünde diz çöküp susayarak ayağa kalkan bir suikastçı. Hızlı, zalim ve sonsuza dek başka hiçbir yola kapalı."
+    },
+    {
+      "en": "Vampire Bite",
+      "tr": "Vampir Isırığı"
+    },
+    {
+      "en": "Bloodlord",
+      "tr": "Kan Lordu"
+    },
+    {
+      "en": "Blood Tyranny",
+      "tr": "Kan Zorbalığı"
+    },
+    {
+      "en": "Crimson Verdict",
+      "tr": "Kızıl Hüküm"
+    },
+    {
+      "en": "Red Reign",
+      "tr": "Kırmızı Hükümdarlık"
+    },
+    {
+      "en": "Tyrant of the Thirst",
+      "tr": "Susuzluğun Zorbası"
+    },
+    {
+      "en": "A Bloodspawn that gorged for twenty levels and rose higher. The physical peak of the old blood — nothing else can become this.",
+      "tr": "Yirmi seviye boyunca tıkınıp daha yükselen bir Kan Doğuşlu. Eski kanın fiziksel zirvesi — başka hiçbir şey buna dönüşemez."
+    },
+    {
+      "en": "Tyrant Bite",
+      "tr": "Zorba Isırığı"
+    },
+    {
+      "en": "Gloomspawn",
+      "tr": "Kasvet Doğuşlu"
+    },
+    {
+      "en": "Moonlit Thirst",
+      "tr": "Ay Işığı Susuzluğu"
+    },
+    {
+      "en": "Gloom Well",
+      "tr": "Kasvet Kuyusu"
+    },
+    {
+      "en": "Occult Mind",
+      "tr": "Gizemli Zihin"
+    },
+    {
+      "en": "Acolyte of the Gloom",
+      "tr": "Kasvetin Çırağı"
+    },
+    {
+      "en": "A mage who knelt before Old Vesryn and bound the cruor into spellcraft. The magical twin of the Bloodspawn — no other path leads here.",
+      "tr": "Yaşlı Vesryn'in önünde diz çöküp cruor'u büyücülüğe bağlayan bir büyücü. Kan Doğuşlu'nun büyülü ikizi — başka hiçbir yol buraya çıkmaz."
+    },
+    {
+      "en": "Gloom Bolt",
+      "tr": "Kasvet Oku"
+    },
+    {
+      "en": "Sanguine Lord",
+      "tr": "Kanlı Lord"
+    },
+    {
+      "en": "First Thirst",
+      "tr": "İlk Susuzluk"
+    },
+    {
+      "en": "Crimson Grace",
+      "tr": "Kızıl Lütuf"
+    },
+    {
+      "en": "Soul Vintage",
+      "tr": "Ruh Mahsulü"
+    },
+    {
+      "en": "Heir of the First Thirst",
+      "tr": "İlk Susuzluğun Vârisi"
+    },
+    {
+      "en": "A mage who completed Vesryn's rite and bound the primeval cruor into spellcraft. Peerless blood magic — open only to those the rite has marked.",
+      "tr": "Vesryn'in ayinini tamamlayıp kadim cruor'u büyücülüğe bağlayan bir büyücü. Eşsiz kan büyüsü — yalnızca ayinin işaretlediklerine açık."
+    },
+    {
+      "en": "Sanguine Bolt",
+      "tr": "Kanlı Ok"
+    },
+    {
+      "en": "Divine Saint",
+      "tr": "Kutsal Aziz"
+    },
+    {
+      "en": "Miracle",
+      "tr": "Mucize"
+    },
+    {
+      "en": "Martyr's Return",
+      "tr": "Şehidin Dönüşü"
+    },
+    {
+      "en": "Everlasting Grace",
+      "tr": "Ebedi Lütuf"
+    },
+    {
+      "en": "Divine Light",
+      "tr": "İlahi Işık"
+    },
+    {
+      "en": "Colossus",
+      "tr": "Dev"
+    },
+    {
+      "en": "Mountain's Spite",
+      "tr": "Dağın Kindarlığı"
+    },
+    {
+      "en": "Bedrock Form",
+      "tr": "Ana Kaya Formu"
+    },
+    {
+      "en": "Gate of Stone",
+      "tr": "Taş Kapısı"
+    },
+    {
+      "en": "Titan Slam",
+      "tr": "Titan Çarpması"
+    },
+    {
+      "en": "Ember Strike",
+      "tr": "Kor Vuruşu"
+    },
+    {
+      "en": "Ember King",
+      "tr": "Kor Kralı"
+    },
+    {
+      "en": "Frost Titan",
+      "tr": "Buz Devi"
+    },
+    {
+      "en": "Void Herald",
+      "tr": "Boşluk Habercisi"
+    },
+    {
+      "en": "Storm Colossus",
+      "tr": "Fırtına Devi"
+    },
+    {
+      "en": "World Eater",
+      "tr": "Dünya Yiyen"
+    },
+    {
+      "en": "Ember Heavy",
+      "tr": "Kor Ağır Vuruş"
+    },
+    {
+      "en": "Ember Weaken",
+      "tr": "Kor Zayıflatma"
+    },
+    {
+      "en": "Ember weaken 35% 2t",
+      "tr": "Kor zayıflatma %35 2t"
+    },
+    {
+      "en": "Ember Fortify",
+      "tr": "Kor Güçlendirme"
+    },
+    {
+      "en": "Ember fortify 45% 2t",
+      "tr": "Kor güçlendirme %45 2t"
+    },
+    {
+      "en": "Ember Venom",
+      "tr": "Kor Zehir"
+    },
+    {
+      "en": "Ember Heal",
+      "tr": "Kor İyileştirme"
+    },
+    {
+      "en": "Ember heal 25%",
+      "tr": "Kor iyileştirme %25"
+    },
+    {
+      "en": "Frost Strike",
+      "tr": "Buz Vuruşu"
+    },
+    {
+      "en": "Frost Heavy",
+      "tr": "Buz Ağır Vuruş"
+    },
+    {
+      "en": "Frost Weaken",
+      "tr": "Buz Zayıflatma"
+    },
+    {
+      "en": "Frost weaken 35% 2t",
+      "tr": "Buz zayıflatma %35 2t"
+    },
+    {
+      "en": "Frost Fortify",
+      "tr": "Buz Güçlendirme"
+    },
+    {
+      "en": "Frost fortify 45% 2t",
+      "tr": "Buz güçlendirme %45 2t"
+    },
+    {
+      "en": "Frost Venom",
+      "tr": "Buz Zehir"
+    },
+    {
+      "en": "Frost Heal",
+      "tr": "Buz İyileştirme"
+    },
+    {
+      "en": "Frost heal 25%",
+      "tr": "Buz iyileştirme %25"
+    },
+    {
+      "en": "Void Strike",
+      "tr": "Boşluk Vuruşu"
+    },
+    {
+      "en": "Void Heavy",
+      "tr": "Boşluk Ağır Vuruş"
+    },
+    {
+      "en": "Void Weaken",
+      "tr": "Boşluk Zayıflatma"
+    },
+    {
+      "en": "Void expose 30% 2t",
+      "tr": "Boşluk ifşa %30 2t"
+    },
+    {
+      "en": "Void Fortify",
+      "tr": "Boşluk Güçlendirme"
+    },
+    {
+      "en": "Void fortify 50% 2t",
+      "tr": "Boşluk güçlendirme %50 2t"
+    },
+    {
+      "en": "Void Venom",
+      "tr": "Boşluk Zehir"
+    },
+    {
+      "en": "Void Heal",
+      "tr": "Boşluk İyileştirme"
+    },
+    {
+      "en": "Void heal 30%",
+      "tr": "Boşluk iyileştirme %30"
+    },
+    {
+      "en": "Storm Strike",
+      "tr": "Fırtına Vuruşu"
+    },
+    {
+      "en": "Storm Heavy",
+      "tr": "Fırtına Ağır Vuruş"
+    },
+    {
+      "en": "Storm Weaken",
+      "tr": "Fırtına Zayıflatma"
+    },
+    {
+      "en": "Storm weaken+expose 2t",
+      "tr": "Fırtına zayıflatma+ifşa 2t"
+    },
+    {
+      "en": "Storm Fortify",
+      "tr": "Fırtına Güçlendirme"
+    },
+    {
+      "en": "Storm fortify 40% 2t",
+      "tr": "Fırtına güçlendirme %40 2t"
+    },
+    {
+      "en": "Storm Venom",
+      "tr": "Fırtına Zehir"
+    },
+    {
+      "en": "Storm Heal",
+      "tr": "Fırtına İyileştirme"
+    },
+    {
+      "en": "Storm heal 25%",
+      "tr": "Fırtına iyileştirme %25"
+    },
+    {
+      "en": "World Strike",
+      "tr": "Dünya Vuruşu"
+    },
+    {
+      "en": "World Heavy",
+      "tr": "Dünya Ağır Vuruş"
+    },
+    {
+      "en": "World Weaken",
+      "tr": "Dünya Zayıflatma"
+    },
+    {
+      "en": "World weaken 40% 2t",
+      "tr": "Dünya zayıflatma %40 2t"
+    },
+    {
+      "en": "World Fortify",
+      "tr": "Dünya Güçlendirme"
+    },
+    {
+      "en": "World frenzy 40% 2t",
+      "tr": "Dünya cinnet %40 2t"
+    },
+    {
+      "en": "World Venom",
+      "tr": "Dünya Zehir"
+    },
+    {
+      "en": "World Heal",
+      "tr": "Dünya İyileştirme"
+    },
+    {
+      "en": "World heal 35%",
+      "tr": "Dünya iyileştirme %35"
+    },
+    {
+      "en": "Heavy Strike",
+      "tr": "Ağır Vuruş"
+    },
+    {
+      "en": "Defend",
+      "tr": "Savun"
+    },
+    {
+      "en": "Arcane Barrage",
+      "tr": "Arkane Yaylımı"
+    },
+    {
+      "en": "Mana Shield",
+      "tr": "Mana Kalkanı"
+    },
+    {
+      "en": "Aimed Shot",
+      "tr": "Nişanlı Atış"
+    },
+    {
+      "en": "Piercing Shot",
+      "tr": "Delici Atış"
+    },
+    {
+      "en": "Vampiric Strike",
+      "tr": "Vampir Vuruşu"
+    },
+    {
+      "en": "Shadow Meld",
+      "tr": "Gölge Karışımı"
+    },
+    {
+      "en": "Holy Strike",
+      "tr": "Kutsal Vuruş"
+    },
+    {
+      "en": "Divine Guard",
+      "tr": "İlahi Koruma"
+    },
+    {
+      "en": "Execute",
+      "tr": "İnfaz"
+    },
+    {
+      "en": "Shadow Step",
+      "tr": "Gölge Adımı"
+    },
+    {
+      "en": "Mend",
+      "tr": "Onarım"
+    },
+    {
+      "en": "Greater Mend",
+      "tr": "Yüce Onarım"
+    },
+    {
+      "en": "Fortify",
+      "tr": "Güçlendir"
+    },
+    {
+      "en": "War Banner",
+      "tr": "Savaş Sancağı"
+    },
+    {
+      "en": "Cleave",
+      "tr": "Yarma"
+    },
+    {
+      "en": "Shield Wall",
+      "tr": "Kalkan Duvarı"
+    },
+    {
+      "en": "Spirit Surge",
+      "tr": "Ruh Dalgası"
+    },
+    {
+      "en": "War Cry",
+      "tr": "Savaş Çığlığı"
+    },
+    {
+      "en": "Volley",
+      "tr": "Yaylım"
+    },
+    {
+      "en": "Shadow Veil",
+      "tr": "Gölge Peçesi"
+    },
+    {
+      "en": "Holy Judgement",
+      "tr": "Kutsal Hüküm"
+    },
+    {
+      "en": "Death Mark",
+      "tr": "Ölüm İşareti"
+    },
+    {
+      "en": "Divine Blessing",
+      "tr": "İlahi Lütuf"
+    },
+    {
+      "en": "Bastion",
+      "tr": "Kale"
+    },
+    {
+      "en": "Cataclysm",
+      "tr": "Felaket"
+    },
+    {
+      "en": "Storm Barrage",
+      "tr": "Fırtına Yaylımı"
+    },
+    {
+      "en": "Comet",
+      "tr": "Kuyruklu Yıldız"
+    },
+    {
+      "en": "Soul Thief",
+      "tr": "Ruh Hırsızı"
+    },
+    {
+      "en": "Radiance",
+      "tr": "Işıltı"
+    },
+    {
+      "en": "Soul Reap",
+      "tr": "Ruh Biçme"
+    },
+    {
+      "en": "Resurgence",
+      "tr": "Yeniden Doğuş"
+    },
+    {
+      "en": "Exsanguinate",
+      "tr": "Kansızlaştırma"
+    },
+    {
+      "en": "Bloodbath",
+      "tr": "Kan Banyosu"
+    },
+    {
+      "en": "Crimson Rebirth",
+      "tr": "Kızıl Yeniden Doğuş"
+    },
+    {
+      "en": "Immovable",
+      "tr": "Sarsılmaz"
+    },
+    {
+      "en": "Seismic Slam",
+      "tr": "Sismik Çarpma"
+    },
+    {
+      "en": "Colossal Crash",
+      "tr": "Devasa Çöküş"
+    },
+    {
+      "en": "Battle Fury",
+      "tr": "Savaş Öfkesi"
+    },
+    {
+      "en": "Iron Wall",
+      "tr": "Demir Duvar"
+    },
+    {
+      "en": "Group Guard",
+      "tr": "Grup Koruma"
+    },
+    {
+      "en": "Cripple",
+      "tr": "Sakatla"
+    },
+    {
+      "en": "Venom Strike",
+      "tr": "Zehir Vuruşu"
+    },
+    {
+      "en": "Rejuvenate",
+      "tr": "Gençleştir"
+    },
+    {
+      "en": "Savage Blow",
+      "tr": "Vahşi Darbe"
+    },
+    {
+      "en": "Shadow Claw",
+      "tr": "Gölge Pençesi"
+    },
+    {
+      "en": "Arcane Surge",
+      "tr": "Arkane Dalgası"
+    },
+    {
+      "en": "Heavy Blow",
+      "tr": "Ağır Darbe"
+    },
+    {
+      "en": "Shadow Bolt",
+      "tr": "Gölge Oku"
+    },
+    {
+      "en": "Arcane Storm",
+      "tr": "Arkane Fırtınası"
+    },
+    {
+      "en": "Frenzy",
+      "tr": "Cinnet"
+    },
+    {
+      "en": "Stoneskin",
+      "tr": "Taş Deri"
+    },
+    {
+      "en": "Regenerate",
+      "tr": "Yenilen"
+    },
+    {
+      "en": "Crushing Aura",
+      "tr": "Ezici Aura"
+    },
+    {
+      "en": "Expose Weakness",
+      "tr": "Zayıflık Aç"
+    },
+    {
+      "en": "Venom",
+      "tr": "Zehir"
+    },
+    {
+      "en": "Barrier",
+      "tr": "Bariyer"
+    },
+    {
+      "en": "Stone Skin",
+      "tr": "Taş Ten"
+    },
+    {
+      "en": "Holy Ward",
+      "tr": "Kutsal Siper"
+    },
+    {
+      "en": "Dark Veil",
+      "tr": "Karanlık Peçe"
+    },
+    {
+      "en": "Graft",
+      "tr": "Aşı"
+    },
+    {
+      "en": "Frost Bolt",
+      "tr": "Buz Oku"
+    },
+    {
+      "en": "Frost Nova",
+      "tr": "Buz Novası"
+    },
+    {
+      "en": "Water Splash",
+      "tr": "Su Sıçraması"
+    },
+    {
+      "en": "Lightning Bolt",
+      "tr": "Yıldırım Oku"
+    },
+    {
+      "en": "War Heal",
+      "tr": "Savaş Şifası"
+    },
+    {
+      "en": "Magic Mend",
+      "tr": "Büyülü Onarım"
+    },
+    {
+      "en": "Scorch Mark",
+      "tr": "Kavurma İzi"
+    },
+    {
+      "en": "Ember Storm",
+      "tr": "Kor Fırtınası"
+    },
+    {
+      "en": "Blaze Rupture",
+      "tr": "Alev Yarığı"
+    },
+    {
+      "en": "Cold Snap",
+      "tr": "Ani Soğuk"
+    },
+    {
+      "en": "Glacial Shatter",
+      "tr": "Buzul Kırılması"
+    },
+    {
+      "en": "Volt Conduit",
+      "tr": "Volt Kanalı"
+    },
+    {
+      "en": "Static Overload",
+      "tr": "Statik Aşırı Yükleme"
+    },
+    {
+      "en": "Toxin Drench",
+      "tr": "Toksin Yağmuru"
+    },
+    {
+      "en": "Venom Burst",
+      "tr": "Zehir Patlaması"
+    },
+    {
+      "en": "Broken Guard",
+      "tr": "Kırık Siper"
+    },
+    {
+      "en": "Shatter Point",
+      "tr": "Kırılma Noktası"
+    },
+    {
+      "en": "Devastate",
+      "tr": "Yıkım"
+    },
+    {
+      "en": "Vine Lash",
+      "tr": "Sarmaşık Kamçısı"
+    },
+    {
+      "en": "Thorn Volley",
+      "tr": "Diken Yaylımı"
+    },
+    {
+      "en": "Forest Renewal",
+      "tr": "Orman Yenilenmesi"
+    },
+    {
+      "en": "Bloom with nature's blessing, restoring 30% of your max HP.",
+      "tr": "Doğanın lütfuyla çiçek açarak maks. canının %30'unu geri yükler."
+    },
+    {
+      "en": "Beast Bite",
+      "tr": "Hayvan Isırığı"
+    },
+    {
+      "en": "Slime",
+      "tr": "Balçık"
+    },
+    {
+      "en": "Goblin",
+      "tr": "Goblin"
+    },
+    {
+      "en": "Giant Rat",
+      "tr": "Dev Sıçan"
+    },
+    {
+      "en": "Cave Bat",
+      "tr": "Mağara Yarasası"
+    },
+    {
+      "en": "Wolf",
+      "tr": "Kurt"
+    },
+    {
+      "en": "Bandit",
+      "tr": "Haydut"
+    },
+    {
+      "en": "Spider",
+      "tr": "Örümcek"
+    },
+    {
+      "en": "Wild Boar",
+      "tr": "Yaban Domuzu"
+    },
+    {
+      "en": "Goblin Archer",
+      "tr": "Goblin Okçu"
+    },
+    {
+      "en": "Rat King",
+      "tr": "Sıçan Kral"
+    },
+    {
+      "en": "Grove Sprite",
+      "tr": "Koru Perisi"
+    },
+    {
+      "en": "Goblin Warrior",
+      "tr": "Goblin Savaşçı"
+    },
+    {
+      "en": "Skeleton",
+      "tr": "İskelet"
+    },
+    {
+      "en": "Dire Wolf",
+      "tr": "Dev Kurt"
+    },
+    {
+      "en": "Harpy",
+      "tr": "Harpi"
+    },
+    {
+      "en": "Orc",
+      "tr": "Ork"
+    },
+    {
+      "en": "Thorn Viper",
+      "tr": "Diken Engereği"
+    },
+    {
+      "en": "Swamp Troll",
+      "tr": "Bataklık Trolü"
+    },
+    {
+      "en": "Griffin",
+      "tr": "Grifon"
+    },
+    {
+      "en": "Golem",
+      "tr": "Golem"
+    },
+    {
+      "en": "Stone Warden",
+      "tr": "Taş Muhafız"
+    },
+    {
+      "en": "Wraith",
+      "tr": "Hayalet"
+    },
+    {
+      "en": "Manticore",
+      "tr": "Manticore"
+    },
+    {
+      "en": "Ogre",
+      "tr": "Ogre"
+    },
+    {
+      "en": "Dark Knight",
+      "tr": "Karanlık Şövalye"
+    },
+    {
+      "en": "Witch",
+      "tr": "Cadı"
+    },
+    {
+      "en": "Wyvern",
+      "tr": "Wyvern"
+    },
+    {
+      "en": "Ancient Golem",
+      "tr": "Kadim Golem"
+    },
+    {
+      "en": "Lich",
+      "tr": "Lich"
+    },
+    {
+      "en": "Hydra",
+      "tr": "Hidra"
+    },
+    {
+      "en": "Kobold",
+      "tr": "Kobold"
+    },
+    {
+      "en": "Scavenger",
+      "tr": "Leşçil"
+    },
+    {
+      "en": "Cave Crawler",
+      "tr": "Mağara Sürüngeni"
+    },
+    {
+      "en": "Forest Mite",
+      "tr": "Orman Akarı"
+    },
+    {
+      "en": "Sludge",
+      "tr": "Çamur"
+    },
+    {
+      "en": "Thug",
+      "tr": "Kabadayı"
+    },
+    {
+      "en": "Dusk Bat",
+      "tr": "Alacakaranlık Yarasası"
+    },
+    {
+      "en": "Ember Slime",
+      "tr": "Kor Balçığı"
+    },
+    {
+      "en": "Iron Goblin",
+      "tr": "Demir Goblin"
+    },
+    {
+      "en": "Bone Archer",
+      "tr": "Kemik Okçu"
+    },
+    {
+      "en": "Frost Wolf",
+      "tr": "Buz Kurdu"
+    },
+    {
+      "en": "Vine Lurker",
+      "tr": "Sarmaşık Pusu"
+    },
+    {
+      "en": "Ash Spider",
+      "tr": "Kül Örümceği"
+    },
+    {
+      "en": "Brigand Captain",
+      "tr": "Haydut Kaptanı"
+    },
+    {
+      "en": "Marsh Crawler",
+      "tr": "Bataklık Sürüngeni"
+    },
+    {
+      "en": "Ember Sprite",
+      "tr": "Kor Perisi"
+    },
+    {
+      "en": "Crystal Golem",
+      "tr": "Kristal Golem"
+    },
+    {
+      "en": "Abyss Wraith",
+      "tr": "Uçurum Hayaleti"
+    },
+    {
+      "en": "Storm Harpy",
+      "tr": "Fırtına Harpisi"
+    },
+    {
+      "en": "Iron Ogre",
+      "tr": "Demir Ogre"
+    },
+    {
+      "en": "Cursed Knight",
+      "tr": "Lanetli Şövalye"
+    },
+    {
+      "en": "Flame Witch",
+      "tr": "Alev Cadısı"
+    },
+    {
+      "en": "Stone Titan",
+      "tr": "Taş Titan"
+    },
+    {
+      "en": "Dusk Manticore",
+      "tr": "Alacakaranlık Manticore"
+    },
+    {
+      "en": "Frost Wyvern",
+      "tr": "Buz Wyvern"
+    },
+    {
+      "en": "Void Golem",
+      "tr": "Boşluk Golemi"
+    },
+    {
+      "en": "Storm Lich",
+      "tr": "Fırtına Lich"
+    },
+    {
+      "en": "Nether Hydra",
+      "tr": "Cehennem Hidrası"
+    },
+    {
+      "en": "Doom Lord",
+      "tr": "Kıyamet Lordu"
+    },
+    {
+      "en": "Molten Behemoth",
+      "tr": "Erimiş Behemot"
+    },
+    {
+      "en": "Phoenix Canary",
+      "tr": "Anka Kanaryası"
+    },
+    {
+      "en": "Vine Wraith",
+      "tr": "Sarmaşık Hayaleti"
+    },
+    {
+      "en": "Thornback Boar",
+      "tr": "Dikensırt Domuzu"
+    },
+    {
+      "en": "Elder Treant",
+      "tr": "Yaşlı Ağaç Adam"
+    },
+    {
+      "en": "Human",
+      "tr": "İnsan"
+    },
+    {
+      "en": "Adaptable and ambitious. +10% gold from victories.",
+      "tr": "Uyum sağlayan ve hırslı. Zaferlerden +%10 altın."
+    },
+    {
+      "en": "Ambitious",
+      "tr": "Hırslı"
+    },
+    {
+      "en": "Elf",
+      "tr": "Elf"
+    },
+    {
+      "en": "Graceful and attuned. +12 mana, +1 speed.",
+      "tr": "Zarif ve uyumlu. +12 mana, +1 hız."
+    },
+    {
+      "en": "Dwarf",
+      "tr": "Cüce"
+    },
+    {
+      "en": "Stout and enduring. +30 max HP, +6 resistance.",
+      "tr": "Sağlam ve dayanıklı. +30 maks. can, +6 direnç."
+    },
+    {
+      "en": "Brutal and strong. +6 attack.",
+      "tr": "Vahşi ve güçlü. +6 saldırı."
+    },
+    {
+      "en": "Beastkin",
+      "tr": "Yarı Hayvan"
+    },
+    {
+      "en": "Wild instincts. +2 speed, +3 attack.",
+      "tr": "Vahşi içgüdüler. +2 hız, +3 saldırı."
+    },
+    {
+      "en": "Wyvernkin",
+      "tr": "Wyvern Halkı"
+    },
+    {
+      "en": "Sky hunters. 5% dodge chance.",
+      "tr": "Gökyüzü avcıları. %5 kaçınma şansı."
+    },
+    {
+      "en": "Sky Dancer",
+      "tr": "Gökyüzü Dansçısı"
+    },
+    {
+      "en": "High Elf",
+      "tr": "Yüce Elf"
+    },
+    {
+      "en": "Ancient magic in the blood. +8 magic power.",
+      "tr": "Kanında kadim büyü. +8 büyü gücü."
+    },
+    {
+      "en": "Gorgon",
+      "tr": "Gorgon"
+    },
+    {
+      "en": "A gaze of stone. Reflects 10% damage, +4 resistance.",
+      "tr": "Taşa çeviren bakış. Hasarın %10'unu yansıtır, +4 direnç."
+    },
+    {
+      "en": "Petrifying Gaze",
+      "tr": "Taşlaştıran Bakış"
+    },
+    {
+      "en": "Demonblood",
+      "tr": "Şeytankanı"
+    },
+    {
+      "en": "Burning heritage. +15% damage, but takes 30% more holy damage.",
+      "tr": "Yanan bir miras. +%15 hasar, ama %30 daha fazla kutsal hasar alır."
+    },
+    {
+      "en": "Demonic Fury",
+      "tr": "Şeytani Öfke"
+    },
+    {
+      "en": "Unholy Weakness",
+      "tr": "Kutsal Olmayan Zayıflık"
+    },
+    {
+      "en": "Lightborn",
+      "tr": "Işıkdoğan"
+    },
+    {
+      "en": "Blessed radiance. +15% healing, but takes 30% more shadow damage.",
+      "tr": "Kutsanmış ışıltı. +%15 iyileştirme, ama %30 daha fazla gölge hasar alır."
+    },
+    {
+      "en": "Radiant Touch",
+      "tr": "Işıyan Dokunuş"
+    },
+    {
+      "en": "Shadow Frailty",
+      "tr": "Gölge Kırılganlığı"
+    },
+    {
+      "en": "Voidborn",
+      "tr": "Boşlukdoğan"
+    },
+    {
+      "en": "Touched by the void. 8% dodge, but takes 20% more holy damage.",
+      "tr": "Boşluk tarafından dokunulmuş. %8 kaçınma, ama %20 daha fazla kutsal hasar alır."
+    },
+    {
+      "en": "Void Step",
+      "tr": "Boşluk Adımı"
+    },
+    {
+      "en": "Light Frailty",
+      "tr": "Işık Kırılganlığı"
+    },
+    {
+      "en": "Daemonkin",
+      "tr": "Şeytan Halkı"
+    },
+    {
+      "en": "Royal Wrath",
+      "tr": "Kraliyet Gazabı"
+    },
+    {
+      "en": "Dragonborn",
+      "tr": "Ejderdoğan"
+    },
+    {
+      "en": "Scales of the wyrms. Take 15% less damage.",
+      "tr": "Ejder pulları. %15 daha az hasar alır."
+    },
+    {
+      "en": "Dragonscales",
+      "tr": "Ejder Pulları"
+    },
+    {
+      "en": "Arch-Vampyr",
+      "tr": "Baş Vampir"
+    },
+    {
+      "en": "Ancient predator. Heal 12% of all damage dealt.",
+      "tr": "Kadim yırtıcı. Verilen tüm hasarın %12'sini iyileştirir."
+    },
+    {
+      "en": "Crimson Thirst",
+      "tr": "Kızıl Susuzluk"
+    },
+    {
+      "en": "Archangel",
+      "tr": "Baş Melek"
+    },
+    {
+      "en": "Celestial guardian. +25% healing and start combat with a 10% shield (3 turns).",
+      "tr": "Göksel muhafız. +%25 iyileştirme ve savaşa %10 kalkanla başla (3 tur)."
+    },
+    {
+      "en": "Celestial Grace",
+      "tr": "Göksel Lütuf"
+    },
+    {
+      "en": "Aegis of Dawn",
+      "tr": "Şafak Aegisi"
+    },
+    {
+      "en": "The Progenitor's Thirst",
+      "tr": "Atanın Susuzluğu"
+    },
+    {
+      "en": "Slay 50 humanoid foes and gather 10 Drops of Primeval Cruor for Old Vesryn. Completing the rite opens the vampire paths: Bloodspawn (physical, assassin Lv20, through Vesryn), Gloomspawn (magic, mage Lv20, through Vesryn), then Bloodlord and Sanguine Lord (Lv40, temple, vampire blood only).",
+      "tr": "Yaşlı Vesryn için 50 insansı düşman öldür ve 10 Kadim Cruor Damlası topla. Ayini tamamlamak vampir yollarını açar: Kan Doğuşlu (fiziksel, suikastçı Sv20, Vesryn aracılığıyla), Kasvet Doğuşlu (büyü, büyücü Sv20, Vesryn aracılığıyla), ardından Kan Lordu ve Kanlı Lord (Sv40, tapınak, yalnızca vampir kanı)."
+    },
+    {
+      "en": "Common",
+      "tr": "Yaygın"
+    },
+    {
+      "en": "Uncommon",
+      "tr": "Sıra Dışı"
+    },
+    {
+      "en": "Rare",
+      "tr": "Nadir"
+    },
+    {
+      "en": "Epic",
+      "tr": "Destansı"
+    },
+    {
+      "en": "Legendary",
+      "tr": "Efsanevi"
+    },
+    {
+      "en": "Mythic",
+      "tr": "Mitik"
+    },
+    {
+      "en": "Verdant Wilds",
+      "tr": "Yeşil Vahşi Doğa"
+    },
+    {
+      "en": "Lush, alive, and never truly safe.",
+      "tr": "Yemyeşil, canlı ve asla tam güvenli değil."
+    },
+    {
+      "en": "Thornback Skirmisher",
+      "tr": "Dikensırt Çatışmacısı"
+    },
+    {
+      "en": "Elder Moss Treant",
+      "tr": "Yaşlı Yosun Ağaç Adam"
+    },
+    {
+      "en": "Gloom Wraith",
+      "tr": "Kasvet Hayaleti"
+    },
+    {
+      "en": "Venomfang Spider",
+      "tr": "Zehirdiş Örümcek"
+    },
+    {
+      "en": "Ancient Grove Guardian",
+      "tr": "Kadim Koru Muhafızı"
+    },
+    {
+      "en": "Ashen Wastes",
+      "tr": "Kül Çorakları"
+    },
+    {
+      "en": "Cinders, crags, and things that burn.",
+      "tr": "Korlar, kayalıklar ve yanan şeyler."
+    },
+    {
+      "en": "Cinder Imp",
+      "tr": "Kor İblisi"
+    },
+    {
+      "en": "Ash Revenant",
+      "tr": "Kül Hortlağı"
+    },
+    {
+      "en": "Magma Behemoth",
+      "tr": "Magma Behemot"
+    },
+    {
+      "en": "Cinder Bat",
+      "tr": "Kor Yarasası"
+    },
+    {
+      "en": "Emberlord Vulkarr",
+      "tr": "Kor Lordu Vulkarr"
+    },
+    {
+      "en": "Frozen Tundra",
+      "tr": "Donmuş Tundra"
+    },
+    {
+      "en": "Where the wind bites and the dead do not sleep.",
+      "tr": "Rüzgârın ısırdığı ve ölülerin uyumadığı yer."
+    },
+    {
+      "en": "Ice Wraith",
+      "tr": "Buz Hayaleti"
+    },
+    {
+      "en": "Glacier Golem",
+      "tr": "Buzul Golemi"
+    },
+    {
+      "en": "Snow Stalker",
+      "tr": "Kar Avcısı"
+    },
+    {
+      "en": "Permafrost Wyrm",
+      "tr": "Kalıcı Buz Ejderi"
+    },
+    {
+      "en": "Rime Archer",
+      "tr": "Kırağı Okçu"
+    },
+    {
+      "en": "Grave Archer",
+      "tr": "Mezar Okçu"
+    },
+    {
+      "en": "Mirefen Marsh",
+      "tr": "Mirefen Bataklığı"
+    },
+    {
+      "en": "Every step squelches. Something is always watching.",
+      "tr": "Her adım şapırdıyor. Bir şey her zaman izliyor."
+    },
+    {
+      "en": "Bog Lurker",
+      "tr": "Bataklık Pusucusu"
+    },
+    {
+      "en": "Mire Hag",
+      "tr": "Bataklık Kocakarısı"
+    },
+    {
+      "en": "Rot Treant",
+      "tr": "Çürük Ağaç Adam"
+    },
+    {
+      "en": "Leech Swarm",
+      "tr": "Sülük Sürüsü"
+    },
+    {
+      "en": "Plaguebringer Morvane",
+      "tr": "Veba Getiren Morvane"
+    },
+    {
+      "en": "Cursed Reach",
+      "tr": "Lanetli Diyar"
+    },
+    {
+      "en": "The sky is wrong here. So is everything below it.",
+      "tr": "Burada gökyüzü yanlış. Altındaki her şey de öyle."
+    },
+    {
+      "en": "Hollow Knight",
+      "tr": "İçi Boş Şövalye"
+    },
+    {
+      "en": "Blood Seer",
+      "tr": "Kan Gören"
+    },
+    {
+      "en": "Bone Warden",
+      "tr": "Kemik Muhafız"
+    },
+    {
+      "en": "Nightmare",
+      "tr": "Kâbus"
+    },
+    {
+      "en": "Dread Sovereign",
+      "tr": "Dehşet Hükümdarı"
+    },
+    {
+      "en": "Sanguine Thirst",
+      "tr": "Kanlı Susuzluk"
+    },
+    {
+      "en": "Iron Bark",
+      "tr": "Demir Kabuk"
+    },
+    {
+      "en": "Gain a little extra resistance.",
+      "tr": "Biraz ekstra direnç kazan."
+    },
+    {
+      "en": "Ember Well",
+      "tr": "Kor Kuyusu"
+    },
+    {
+      "en": "Mana recovers more generously in town rest.",
+      "tr": "Kasaba dinlenmesinde mana daha cömertçe yenilenir."
+    },
+    {
+      "en": "Arcane Reservoir",
+      "tr": "Arkane Haznesi"
+    },
+    {
+      "en": "Mana regenerates a little faster each round.",
+      "tr": "Mana her tur biraz daha hızlı yenilenir."
+    },
+    {
+      "en": "Primeval Bloodlust",
+      "tr": "Kadim Kan Susuzluğu"
+    },
+    {
+      "en": "First Dawn",
+      "tr": "İlk Şafak"
+    },
+    {
+      "en": "Start each day with bonus stamina.",
+      "tr": "Her güne bonus dayanıklılıkla başla."
+    },
+    {
+      "en": "Physical",
+      "tr": "Fiziksel"
+    },
+    {
+      "en": "Plain weapon strikes and brute force.",
+      "tr": "Basit silah vuruşları ve kaba kuvvet."
+    },
+    {
+      "en": "Arcane",
+      "tr": "Arkane"
+    },
+    {
+      "en": "Raw magical energy and eldritch plasma.",
+      "tr": "Ham büyülü enerji ve tuhaf plazma."
+    },
+    {
+      "en": "Shadow",
+      "tr": "Gölge"
+    },
+    {
+      "en": "Darkness and cold moonlight arts.",
+      "tr": "Karanlık ve soğuk ay ışığı sanatları."
+    },
+    {
+      "en": "Holy",
+      "tr": "Kutsal"
+    },
+    {
+      "en": "Divine light and radiant judgement.",
+      "tr": "İlahi ışık ve parlak hüküm."
+    },
+    {
+      "en": "Frost",
+      "tr": "Buz"
+    },
+    {
+      "en": "Ice, cold and glacial shards.",
+      "tr": "Buz, soğuk ve buzul parçaları."
+    },
+    {
+      "en": "Fire",
+      "tr": "Ateş"
+    },
+    {
+      "en": "Burning flame and searing heat.",
+      "tr": "Yanan alev ve kavurucu sıcaklık."
+    },
+    {
+      "en": "Water",
+      "tr": "Su"
+    },
+    {
+      "en": "Flowing currents and crushing waves.",
+      "tr": "Akan akıntılar ve ezici dalgalar."
+    },
+    {
+      "en": "Earth",
+      "tr": "Toprak"
+    },
+    {
+      "en": "Stone, soil and bedrock.",
+      "tr": "Taş, toprak ve ana kaya."
+    },
+    {
+      "en": "Nature",
+      "tr": "Doğa"
+    },
+    {
+      "en": "Growth, vines, thorns and the living forest.",
+      "tr": "Büyüme, sarmaşıklar, dikenler ve yaşayan orman."
+    },
+    {
+      "en": "Lightning",
+      "tr": "Yıldırım"
+    },
+    {
+      "en": "Storms, thunder and electric surges.",
+      "tr": "Fırtınalar, gök gürültüsü ve elektrik dalgaları."
+    },
+    {
+      "en": "Blood",
+      "tr": "Kan"
+    },
+    {
+      "en": "Crimson hemomancy and life-stealing arts.",
+      "tr": "Kızıl kan büyüsü ve can çalan sanatlar."
+    },
+    {
+      "en": "Dark",
+      "tr": "Karanlık"
+    },
+    {
+      "en": "Void, abyss and forbidden power.",
+      "tr": "Boşluk, uçurum ve yasak güç."
+    },
+    {
+      "en": "Voidcaller",
+      "tr": "Boşluk Çağıran"
+    },
+    {
+      "en": "Gear steeped in the lightless void. It hums when whole.",
+      "tr": "Işıksız boşluğa batmış teçhizat. Tamamlanınca uğuldar."
+    },
+    {
+      "en": "Nightshade",
+      "tr": "Gece Gölgesi"
+    },
+    {
+      "en": "Eclipse-dark garb for those who strike unseen.",
+      "tr": "Görünmeden vuranlar için tutulma karanlığında giysi."
+    },
+    {
+      "en": "Wildstrider",
+      "tr": "Vahşi Yolcu"
+    },
+    {
+      "en": "Scout gear of the deep woods. Light feet, true aim.",
+      "tr": "Derin ormanların keşif teçhizatı. Hafif ayaklar, isabetli nişan."
+    },
+    {
+      "en": "Dragonscale",
+      "tr": "Ejder Pulu"
+    },
+    {
+      "en": "Plate cut from elder wyrms. Heavy, proud, unbroken.",
+      "tr": "Yaşlı ejderlerden kesilmiş plaka. Ağır, gururlu, kırılmamış."
+    },
+    {
+      "en": "Trailworn",
+      "tr": "Yol Yıpranmışı"
+    },
+    {
+      "en": "Honest stitched leather for the road.",
+      "tr": "Yol için dürüstçe dikilmiş deri."
+    },
+    {
+      "en": "Ironclad",
+      "tr": "Demir Kaplı"
+    },
+    {
+      "en": "Plain iron, honestly forged.",
+      "tr": "Sade demir, dürüstçe dövülmüş."
+    },
+    {
+      "en": "Sanguine",
+      "tr": "Kanlı"
+    },
+    {
+      "en": "Vampiric relics that thirst together. Two pieces wake them; four unleash them.",
+      "tr": "Birlikte susayan vampir kalıntıları. İki parça onları uyandırır; dört parça serbest bırakır."
+    },
+    {
+      "en": "Duskhide",
+      "tr": "Alacakaranlık Derisi"
+    },
+    {
+      "en": "Dark leather for quiet roads.",
+      "tr": "Sessiz yollar için koyu deri."
+    },
+    {
+      "en": "Bronzeforge",
+      "tr": "Bronzdövme"
+    },
+    {
+      "en": "Steel breast and bronze trim.",
+      "tr": "Çelik göğüs ve bronz süsleme."
+    },
+    {
+      "en": "Mosswarden",
+      "tr": "Yosmuhafız"
+    },
+    {
+      "en": "Bark and moss grown armour.",
+      "tr": "Kabuk ve yosundan büyümüş zırh."
+    },
+    {
+      "en": "Stormtouched",
+      "tr": "Fırtınadeğmiş"
+    },
+    {
+      "en": "Forged in a thunderstorm.",
+      "tr": "Bir gök gürültüsü fırtınasında dövülmüş."
+    },
+    {
+      "en": "Runebound",
+      "tr": "Rünbağlı"
+    },
+    {
+      "en": "Etched with living runes.",
+      "tr": "Yaşayan rünlerle kazınmış."
+    },
+    {
+      "en": "Emberforged",
+      "tr": "Kordövme"
+    },
+    {
+      "en": "Black steel veined with molten ember.",
+      "tr": "Erimiş korla damarlanmış kara çelik."
+    },
+    {
+      "en": "Frostbound",
+      "tr": "Buzbağlı"
+    },
+    {
+      "en": "Armour of enduring winter.",
+      "tr": "Dayanıklı kışın zırhı."
+    },
+    {
+      "en": "Dragonblood",
+      "tr": "Ejderkanı"
+    },
+    {
+      "en": "Dragonscale burning with a molten heart.",
+      "tr": "Erimiş bir kalple yanan ejder pulu."
+    },
+    {
+      "en": "Voidweave",
+      "tr": "Boşlukdokuma"
+    },
+    {
+      "en": "Cloth of the lightless void.",
+      "tr": "Işıksız boşluğun kumaşı."
+    },
+    {
+      "en": "Setra's Chosen",
+      "tr": "Setra'nın Seçilmişi"
+    },
+    {
+      "en": "The relic panoply of the first chosen.",
+      "tr": "İlk seçilmişin kalıntı donanımı."
+    },
+    {
+      "en": "F-Rank",
+      "tr": "F-Rütbesi"
+    },
+    {
+      "en": "D-Rank",
+      "tr": "D-Rütbesi"
+    },
+    {
+      "en": "C-Rank",
+      "tr": "C-Rütbesi"
+    },
+    {
+      "en": "B-Rank",
+      "tr": "B-Rütbesi"
+    },
+    {
+      "en": "A-Rank",
+      "tr": "A-Rütbesi"
+    },
+    {
+      "en": "S-Rank",
+      "tr": "S-Rütbesi"
+    },
+    {
+      "en": "SS-Rank",
+      "tr": "SS-Rütbesi"
+    },
+    {
+      "en": "Fast Dungeon",
+      "tr": "Hızlı Zindan"
+    },
+    {
+      "en": "Ember Hollow",
+      "tr": "Kor Çukuru"
+    },
+    {
+      "en": "Frost Crypt",
+      "tr": "Buz Mahzeni"
+    },
+    {
+      "en": "Shadow Sanctum",
+      "tr": "Gölge Mabedi"
+    },
+    {
+      "en": "Storm Bastion",
+      "tr": "Fırtına Kalesi"
+    },
+    {
+      "en": "Void Maw",
+      "tr": "Boşluk Ağzı"
+    },
+    {
+      "en": "Ancient Foundry",
+      "tr": "Kadim Dökümhane"
+    },
+    {
+      "en": "Phoenix Sanctum",
+      "tr": "Anka Mabedi"
+    },
+    {
+      "en": "Glacier Doomlord",
+      "tr": "Buzul Kıyamet Lordu"
+    },
+    {
+      "en": "Eternal Abyss Herald",
+      "tr": "Ebedi Uçurum Habercisi"
+    },
+    {
+      "en": "Thunder Tyrant",
+      "tr": "Gök Gürültüsü Zorbası"
+    },
+    {
+      "en": "Oblivion Devourer",
+      "tr": "Unutuluş Yiyeni"
+    },
+    {
+      "en": "Verdant Ruins",
+      "tr": "Yeşil Harabeler"
+    },
+    {
+      "en": "Sunken Cistern",
+      "tr": "Batık Sarnıç"
+    },
+    {
+      "en": "Ashen War Camp",
+      "tr": "Kül Savaş Kampı"
+    },
+    {
+      "en": "Frozen Sanctum",
+      "tr": "Donmuş Mabet"
+    },
+    {
+      "en": "Void Rift",
+      "tr": "Boşluk Yarığı"
+    },
+    {
+      "en": "Worldroot Abyss",
+      "tr": "Dünyakökü Uçurumu"
+    },
+    {
+      "en": "Overcharge",
+      "tr": "Aşırı Yükleme"
+    },
+    {
+      "en": "Lightning surges through soaked foes, dealing +50% damage to wet targets.",
+      "tr": "Yıldırım ıslak düşmanlardan geçer, ıslak hedeflere +%50 hasar verir."
+    },
+    {
+      "en": "Deep Freeze",
+      "tr": "Derin Donma"
+    },
+    {
+      "en": "Frost latches onto moisture, dealing +40% damage to wet targets.",
+      "tr": "Buz neme tutunur, ıslak hedeflere +%40 hasar verir."
+    },
+    {
+      "en": "Shatter",
+      "tr": "Kırılma"
+    },
+    {
+      "en": "Physical blows shatter frozen enemies, dealing +60% damage.",
+      "tr": "Fiziksel darbeler donmuş düşmanları kırar, +%60 hasar verir."
+    },
+    {
+      "en": "Burning Blaze",
+      "tr": "Yanan Alev"
+    },
+    {
+      "en": "Fire erupts on burning foes, dealing +60% damage to poisoned targets.",
+      "tr": "Ateş yanan düşmanlarda patlar, zehirli hedeflere +%60 hasar verir."
+    },
+    {
+      "en": "Break Guard",
+      "tr": "Siper Kırma"
+    },
+    {
+      "en": "Exposed enemies take +35% physical damage.",
+      "tr": "İfşa olmuş düşmanlar +%35 fiziksel hasar alır."
+    },
+    {
+      "en": "Overwhelm",
+      "tr": "Ezme"
+    },
+    {
+      "en": "Weakened enemies crumble, taking +20% physical damage.",
+      "tr": "Zayıflamış düşmanlar çöker, +%20 fiziksel hasar alır."
+    },
+    {
+      "en": "Rend",
+      "tr": "Yırtma"
+    },
+    {
+      "en": "Steel tears bleeding foes, dealing +30% physical damage to poisoned targets.",
+      "tr": "Çelik kanayan düşmanları yırtar, zehirli hedeflere +%30 fiziksel hasar verir."
+    },
+    {
+      "en": "Backstab",
+      "tr": "Sırttan Hançer"
+    },
+    {
+      "en": "Shadow finds the cracks, dealing +40% shadow damage to exposed targets.",
+      "tr": "Gölge çatlakları bulur, ifşa olmuş hedeflere +%40 gölge hasarı verir."
+    },
+    {
+      "en": "Bountiful Dawn",
+      "tr": "Bereketli Şafak"
+    },
+    {
+      "en": "Echoes",
+      "tr": "Yankılar"
+    },
+    {
+      "en": "Keen Edge",
+      "tr": "Keskin Ağız"
+    },
+    {
+      "en": "Iron Trial",
+      "tr": "Demir Sınavı"
+    },
+    {
+      "en": "Calm Day",
+      "tr": "Sakin Gün"
+    },
+    {
+      "en": "Helmet",
+      "tr": "Miğfer"
+    },
+    {
+      "en": "Armor",
+      "tr": "Zırh"
+    },
+    {
+      "en": "Pants",
+      "tr": "Pantolon"
+    },
+    {
+      "en": "Boots",
+      "tr": "Çizme"
+    },
+    {
+      "en": "Weapon",
+      "tr": "Silah"
+    },
+    {
+      "en": "Amulet",
+      "tr": "Muska"
+    },
+    {
+      "en": "Ring 1",
+      "tr": "Yüzük 1"
+    },
+    {
+      "en": "Ring 2",
+      "tr": "Yüzük 2"
+    },
+    {
+      "en": "Book",
+      "tr": "Kitap"
+    },
+    {
+      "en": "Stone",
+      "tr": "Taş"
+    },
+    {
+      "en": "Small",
+      "tr": "Küçük"
+    },
+    {
+      "en": "Normal",
+      "tr": "Normal"
+    },
+    {
+      "en": "Big",
+      "tr": "Büyük"
+    },
+    {
+      "en": "Huge",
+      "tr": "Devasa"
+    },
+    {
+      "en": "Flame Bite",
+      "tr": "Alev Isırığı"
+    },
+    {
+      "en": "Aqua Mend",
+      "tr": "Su Onarımı"
+    },
+    {
+      "en": "Heal 15% max HP every 2 turns.",
+      "tr": "Her 2 turda maks. canın %15'ini iyileştirir."
+    },
+    {
+      "en": "Stone Ward",
+      "tr": "Taş Siperi"
+    },
+    {
+      "en": "Frostbite",
+      "tr": "Soğuk Isırığı"
+    },
+    {
+      "en": "Volt Zap",
+      "tr": "Volt Çarpması"
+    },
+    {
+      "en": "Vine Leech",
+      "tr": "Sarmaşık Sülüğü"
+    },
+    {
+      "en": "Dusk Curse",
+      "tr": "Alacakaranlık Laneti"
+    },
+    {
+      "en": "Bloom",
+      "tr": "Çiçek Açma"
+    },
+    {
+      "en": "Offer a Heart of Golem to mend a lost heart.",
+      "tr": "Kayıp bir kalbi onarmak için bir Golem Kalbi sun."
+    },
+    {
+      "en": "Forge a sword that still smoulders.",
+      "tr": "Hâlâ için için yanan bir kılıç döv."
+    },
+    {
+      "en": "Bond the heart of a fire spirit to the blade.",
+      "tr": "Bir ateş ruhunun kalbini kılıca bağla."
+    },
+    {
+      "en": "Temper the blade in hoarfrost.",
+      "tr": "Kılıcı kırağıda su ver."
+    },
+    {
+      "en": "Weave raw magic into the staff.",
+      "tr": "Ham büyüyü asaya doku."
+    },
+    {
+      "en": "Fold shadow itself into the edge.",
+      "tr": "Gölgenin kendisini ağza katla."
+    },
+    {
+      "en": "Stone of Blood",
+      "tr": "Kan Taşı"
+    },
+    {
+      "en": "Forge a stone that drinks blood - 10% omnivamp.",
+      "tr": "Kan içen bir taş döv - %10 omnivamp."
+    },
+    {
+      "en": "Cleaving Arc",
+      "tr": "Yaran Kavis"
+    },
+    {
+      "en": "Swordstorm",
+      "tr": "Kılıç Fırtınası"
+    },
+    {
+      "en": "Blade Tempest",
+      "tr": "Bıçak Kasırgası"
+    },
+    {
+      "en": "Triple Shot",
+      "tr": "Üçlü Atış"
+    },
+    {
+      "en": "Piercing Bolt",
+      "tr": "Delici Ok"
+    },
+    {
+      "en": "Rain of Arrows",
+      "tr": "Ok Yağmuru"
+    },
+    {
+      "en": "Arcane Rift",
+      "tr": "Arkane Yarık"
+    },
+    {
+      "en": "Frost Vortex",
+      "tr": "Buz Girdabı"
+    },
+    {
+      "en": "Meteor Storm",
+      "tr": "Meteor Fırtınası"
+    },
+    {
+      "en": "Fan of Knives",
+      "tr": "Bıçak Yelpazesi"
+    },
+    {
+      "en": "Smoke Bomb",
+      "tr": "Sis Bombası"
+    },
+    {
+      "en": "Shadow Dance",
+      "tr": "Gölge Dansı"
+    },
+    {
+      "en": "Dawn Strike",
+      "tr": "Şafak Vuruşu"
+    },
+    {
+      "en": "Judgment",
+      "tr": "Hüküm"
+    },
+    {
+      "en": "Throat Cut",
+      "tr": "Boğaz Kesme"
+    },
+    {
+      "en": "Blood Mark",
+      "tr": "Kan İşareti"
+    },
+    {
+      "en": "Crimson Reaping",
+      "tr": "Kızıl Biçme"
+    },
+    {
+      "en": "Holy Bolt",
+      "tr": "Kutsal Ok"
+    },
+    {
+      "en": "Sanctuary",
+      "tr": "Sığınak"
+    },
+    {
+      "en": "Radiant Chorus",
+      "tr": "Işıyan Koro"
+    },
+    {
+      "en": "Shield Bash",
+      "tr": "Kalkan Vuruşu"
+    },
+    {
+      "en": "Iron Bulwark",
+      "tr": "Demir Siper"
+    },
+    {
+      "en": "Shockwave",
+      "tr": "Şok Dalgası"
+    },
+    {
+      "en": "Beast Fang",
+      "tr": "Hayvan Dişi"
+    },
+    {
+      "en": "Spirit Howl",
+      "tr": "Ruh Uluması"
+    },
+    {
+      "en": "Stampede",
+      "tr": "Sürü Hücumu"
+    },
+    {
+      "en": "Entangling Roots",
+      "tr": "Dolanan Kökler"
+    },
+    {
+      "en": "Debug Beam",
+      "tr": "Hata Ayıklama Işını"
+    },
+    {
+      "en": "Null Field",
+      "tr": "Sıfır Alanı"
+    },
+    {
+      "en": "Overclock",
+      "tr": "Aşırı Hız"
+    },
+    {
+      "en": "Test Strike",
+      "tr": "Test Vuruşu"
+    },
+    {
+      "en": "Bug Sweep",
+      "tr": "Hata Süpürme"
+    },
+    {
+      "en": "Crash",
+      "tr": "Çökme"
+    },
+    {
+      "en": "Savage Bite",
+      "tr": "Vahşi Isırık"
+    },
+    {
+      "en": "Pack Call",
+      "tr": "Sürü Çağrısı"
+    },
+    {
+      "en": "Primal Stampede",
+      "tr": "İlksel Hücum"
+    },
+    {
+      "en": "Spirit Bolt",
+      "tr": "Ruh Oku"
+    },
+    {
+      "en": "Anima Shield",
+      "tr": "Anima Kalkanı"
+    },
+    {
+      "en": "Wild Hunt",
+      "tr": "Vahşi Av"
+    },
+    {
+      "en": "Thorn Lance",
+      "tr": "Diken Mızrağı"
+    },
+    {
+      "en": "Grasping Roots",
+      "tr": "Kavrayan Kökler"
+    },
+    {
+      "en": "Overgrowth",
+      "tr": "Aşırı Büyüme"
+    },
+    {
+      "en": "Life Bolt",
+      "tr": "Yaşam Oku"
+    },
+    {
+      "en": "Renewal",
+      "tr": "Yenilenme"
+    },
+    {
+      "en": "Admin Beam",
+      "tr": "Yönetici Işını"
+    },
+    {
+      "en": "Ban Field",
+      "tr": "Ban Alanı"
+    },
+    {
+      "en": "Server Crash",
+      "tr": "Sunucu Çökmesi"
+    },
+    {
+      "en": "Warlord Cleave",
+      "tr": "Savaş Lordu Yarması"
+    },
+    {
+      "en": "Executioner",
+      "tr": "Cellat"
+    },
+    {
+      "en": "Bramble Shot",
+      "tr": "Çalı Atışı"
+    },
+    {
+      "en": "Verdant Snare",
+      "tr": "Yeşil Tuzak"
+    },
+    {
+      "en": "Wildstorm",
+      "tr": "Vahşi Fırtına"
+    },
+    {
+      "en": "Arcane Lance",
+      "tr": "Arkane Mızrağı"
+    },
+    {
+      "en": "Glacial Prison",
+      "tr": "Buzul Hapishanesi"
+    },
+    {
+      "en": "Umbral Slash",
+      "tr": "Gölge Kesme"
+    },
+    {
+      "en": "Nightfall",
+      "tr": "Gece Çöküşü"
+    },
+    {
+      "en": "Crusader's Blow",
+      "tr": "Haçlı'nın Darbesi"
+    },
+    {
+      "en": "Divine Aegis",
+      "tr": "İlahi Aegis"
+    },
+    {
+      "en": "Hammerfall",
+      "tr": "Çekiç Düşüşü"
+    },
+    {
+      "en": "Death Grip",
+      "tr": "Ölüm Pençesi"
+    },
+    {
+      "en": "Scythe Storm",
+      "tr": "Tırpan Fırtınası"
+    },
+    {
+      "en": "Blessing",
+      "tr": "Lütuf"
+    },
+    {
+      "en": "Divine Judgment",
+      "tr": "İlahi Hüküm"
+    },
+    {
+      "en": "Crushing Blow",
+      "tr": "Ezici Darbe"
+    },
+    {
+      "en": "Fortress",
+      "tr": "Kale"
+    },
+    {
+      "en": "Earthquake",
+      "tr": "Deprem"
+    },
+    {
+      "en": "Emperor's Edge",
+      "tr": "İmparatorun Ağzı"
+    },
+    {
+      "en": "Crown of Flame",
+      "tr": "Alev Tacı"
+    },
+    {
+      "en": "Worldbreaker",
+      "tr": "Dünya Kırıcı"
+    },
+    {
+      "en": "Storm Arrow",
+      "tr": "Fırtına Oku"
+    },
+    {
+      "en": "Thunder Cage",
+      "tr": "Gök Gürültüsü Kafesi"
+    },
+    {
+      "en": "Tempest",
+      "tr": "Kasırga"
+    },
+    {
+      "en": "Arcane Spear",
+      "tr": "Arkane Kargı"
+    },
+    {
+      "en": "Chrono Field",
+      "tr": "Krono Alanı"
+    },
+    {
+      "en": "Singularity",
+      "tr": "Tekillik"
+    },
+    {
+      "en": "King's Edict",
+      "tr": "Kralın Fermanı"
+    },
+    {
+      "en": "Umbra Gate",
+      "tr": "Gölge Kapısı"
+    },
+    {
+      "en": "Reign of Shadows",
+      "tr": "Gölgelerin Hükümdarlığı"
+    },
+    {
+      "en": "Radiant Strike",
+      "tr": "Işıyan Vuruş"
+    },
+    {
+      "en": "Aegis of Light",
+      "tr": "Işık Aegisi"
+    },
+    {
+      "en": "Solar Flare",
+      "tr": "Güneş Patlaması"
+    },
+    {
+      "en": "Reaper's Toll",
+      "tr": "Azrail'in Bedeli"
+    },
+    {
+      "en": "Grave Chains",
+      "tr": "Mezar Zincirleri"
+    },
+    {
+      "en": "Army of the Dead",
+      "tr": "Ölüler Ordusu"
+    },
+    {
+      "en": "Blood Claw",
+      "tr": "Kan Pençesi"
+    },
+    {
+      "en": "Crimson Rush",
+      "tr": "Kızıl Hücum"
+    },
+    {
+      "en": "Blood Tide",
+      "tr": "Kan Gelgiti"
+    },
+    {
+      "en": "Sanguine Slash",
+      "tr": "Kanlı Kesme"
+    },
+    {
+      "en": "Blood Pact",
+      "tr": "Kan Anlaşması"
+    },
+    {
+      "en": "Crimson Cataclysm",
+      "tr": "Kızıl Felaket"
+    },
+    {
+      "en": "Shadow Well",
+      "tr": "Gölge Kuyusu"
+    },
+    {
+      "en": "Eclipse",
+      "tr": "Tutulma"
+    },
+    {
+      "en": "Blood Reign",
+      "tr": "Kan Hükümdarlığı"
+    },
+    {
+      "en": "Veil of Blood",
+      "tr": "Kan Peçesi"
+    },
+    {
+      "en": "Holy Lance",
+      "tr": "Kutsal Mızrak"
+    },
+    {
+      "en": "Sacred Aegis",
+      "tr": "Kutsal Aegis"
+    },
+    {
+      "en": "Titanic Fist",
+      "tr": "Titan Yumruğu"
+    },
+    {
+      "en": "Colossal Guard",
+      "tr": "Devasa Koruma"
+    },
+    {
+      "en": "World Quake",
+      "tr": "Dünya Sarsıntısı"
+    },
+    {
+      "en": "A holy ward turns aside a heavy blow.",
+      "tr": "Kutsal bir siper ağır bir darbeyi savuşturur."
+    },
+    {
+      "en": "Steady yourself against damage.",
+      "tr": "Hasar karşısında kendini sağlamlaştır."
+    },
+    {
+      "en": "Raise morale; allies strike true.",
+      "tr": "Moral yükselt; dostlar isabetle vurur."
+    },
+    {
+      "en": "Wraiths of shadow guard you and sap the foe.",
+      "tr": "Gölge hayaletleri seni korur ve düşmanı zayıflatır."
+    },
+    {
+      "en": "A mighty ward shields body and spirit.",
+      "tr": "Kudretli bir siper bedeni ve ruhu korur."
+    },
+    {
+      "en": "A resilient bulwark of pure will.",
+      "tr": "Saf iradeden esnek bir siper."
+    },
+    {
+      "en": "Your hide hardens into living stone.",
+      "tr": "Derin yaşayan taşa dönüşür."
+    },
+    {
+      "en": "Become an unyielding wall of iron.",
+      "tr": "Boyun eğmeyen bir demir duvara dönüş."
+    },
+    {
+      "en": "Guard the whole party with armored grace.",
+      "tr": "Tüm grubu zırhlı bir zarafetle koru."
+    },
+    {
+      "en": "A radiant barrier blessed against harm.",
+      "tr": "Zarara karşı kutsanmış ışıyan bir bariyer."
+    },
+    {
+      "en": "Renew vitality, round after round.",
+      "tr": "Tur be tur canlılığı yenile."
+    },
+    {
+      "en": "Mend wounds with pure channeled magic.",
+      "tr": "Yaraları saf yönlendirilmiş büyüyle onar."
+    },
+    {
+      "en": "Soak the foe - wet makes lightning and frost bite harder.",
+      "tr": "Düşmanı ıslat - ıslak, yıldırım ve buzu daha sert ısırtır."
+    },
+    {
+      "en": "Overcharge: +50% vs wet.",
+      "tr": "Aşırı Yükleme: ıslağa karşı +%50."
+    },
+    {
+      "en": "Mighty lightning; still +50% vs wet.",
+      "tr": "Kudretli yıldırım; yine de ıslağa karşı +%50."
+    },
+    {
+      "en": "Electrify the foe while wet.",
+      "tr": "Düşmanı ıslakken elektriklendir."
+    },
+    {
+      "en": "A chill that lingers.",
+      "tr": "Süregelen bir soğuk."
+    },
+    {
+      "en": "Freeze the foe solid.",
+      "tr": "Düşmanı tamamen dondur."
+    },
+    {
+      "en": "A burst of frost; freezes, then Shatter for +60%.",
+      "tr": "Bir buz patlaması; dondurur, sonra +%60 için Kırılma."
+    },
+    {
+      "en": "Shatter the ice for huge frost damage.",
+      "tr": "Büyük buz hasarı için buzu kır."
+    },
+    {
+      "en": "Set the foe alight.",
+      "tr": "Düşmanı tutuştur."
+    },
+    {
+      "en": "Whirling cinders that keep burning.",
+      "tr": "Yanmaya devam eden dönen korlar."
+    },
+    {
+      "en": "Burning Blaze: +60% vs poisoned foes.",
+      "tr": "Yanan Alev: zehirli düşmanlara karşı +%60."
+    },
+    {
+      "en": "Heavy poison for 6% max HP / round.",
+      "tr": "Tur başına maks. canın %6'sı kadar ağır zehir."
+    },
+    {
+      "en": "Poisoned targets take +50%.",
+      "tr": "Zehirli hedefler +%50 alır."
+    },
+    {
+      "en": "Weaken and expose the foe in one blow.",
+      "tr": "Düşmanı tek darbede zayıflat ve ifşa et."
+    },
+    {
+      "en": "Shatter guard: expose + weaken.",
+      "tr": "Siper kır: ifşa + zayıflatma."
+    },
+    {
+      "en": "Break Guard: +80% vs exposed.",
+      "tr": "Siper Kırma: ifşa olmuşlara karşı +%80."
+    },
+    {
+      "en": "Overwhelm: +35% vs weakened.",
+      "tr": "Ezme: zayıflamışlara karşı +%35."
+    },
+    {
+      "en": "Whipping vines for 1.4× magic - first link of the nature chain.",
+      "tr": "1.4× büyü için kamçılayan sarmaşıklar - doğa zincirinin ilk halkası."
+    },
+    {
+      "en": "Thorny barrage for 1.9× magic that bleeds. Requires Vine Lash.",
+      "tr": "1.9× büyü için kanatan dikenli yaylım. Sarmaşık Kamçısı gerektirir."
+    },
+    {
+      "en": "Bloom restores 30% of your max HP.",
+      "tr": "Çiçek Açma maks. canının %30'unu geri yükler."
+    },
+    {
+      "en": "Warrior Path",
+      "tr": "Savaşçı Yolu"
+    },
+    {
+      "en": "Archer Path",
+      "tr": "Okçu Yolu"
+    },
+    {
+      "en": "Mage Path",
+      "tr": "Büyücü Yolu"
+    },
+    {
+      "en": "Rogue Path",
+      "tr": "Haydut Yolu"
+    },
+    {
+      "en": "Paladin Path",
+      "tr": "Paladin Yolu"
+    },
+    {
+      "en": "Assassin Path",
+      "tr": "Suikastçı Yolu"
+    },
+    {
+      "en": "Healer Path",
+      "tr": "Şifacı Yolu"
+    },
+    {
+      "en": "Tank Path",
+      "tr": "Tank Yolu"
+    },
+    {
+      "en": "Tamer Path",
+      "tr": "Terbiyeci Yolu"
+    },
+    {
+      "en": "Gardener Path",
+      "tr": "Bahçıvan Yolu"
+    },
+    {
+      "en": "Ashen Ember",
+      "tr": "Kül Kor"
+    },
+    {
+      "en": "Forest Leaf",
+      "tr": "Orman Yaprağı"
+    },
+    {
+      "en": "Spring Water",
+      "tr": "Pınar Suyu"
+    },
+    {
+      "en": "Cobble Dust",
+      "tr": "Arnavut Kaldırımı Tozu"
+    },
+    {
+      "en": "Candlelight",
+      "tr": "Mum Işığı"
+    },
+    {
+      "en": "Bog Moss",
+      "tr": "Bataklık Yosunu"
+    },
+    {
+      "en": "Iron Grey",
+      "tr": "Demir Grisi"
+    },
+    {
+      "en": "Pale Blue",
+      "tr": "Soluk Mavi"
+    },
+    {
+      "en": "Harvest Amber",
+      "tr": "Hasat Kehribarı"
+    },
+    {
+      "en": "Rust Red",
+      "tr": "Pas Kırmızısı"
+    },
+    {
+      "en": "Pale Rose",
+      "tr": "Soluk Gül"
+    },
+    {
+      "en": "Seafoam",
+      "tr": "Deniz Köpüğü"
+    },
+    {
+      "en": "Toadstone",
+      "tr": "Kurbağa Taşı"
+    },
+    {
+      "en": "Chalk White",
+      "tr": "Tebeşir Beyazı"
+    },
+    {
+      "en": "Sunlit Gold",
+      "tr": "Güneş Işığı Altını"
+    },
+    {
+      "en": "Blood Red",
+      "tr": "Kan Kırmızısı"
+    },
+    {
+      "en": "Violet Mist",
+      "tr": "Menekşe Sisi"
+    },
+    {
+      "en": "Storm Spark",
+      "tr": "Fırtına Kıvılcımı"
+    },
+    {
+      "en": "Moon Silver",
+      "tr": "Ay Gümüşü"
+    },
+    {
+      "en": "Thorn Green",
+      "tr": "Diken Yeşili"
+    },
+    {
+      "en": "Marsh Teal",
+      "tr": "Bataklık Turkuazı"
+    },
+    {
+      "en": "Cinder Orange",
+      "tr": "Kor Turuncusu"
+    },
+    {
+      "en": "Pale Amethyst",
+      "tr": "Soluk Ametist"
+    },
+    {
+      "en": "Poison Lime",
+      "tr": "Zehir Misketi"
+    },
+    {
+      "en": "Crystal Blue",
+      "tr": "Kristal Mavisi"
+    },
+    {
+      "en": "Sandstorm",
+      "tr": "Kum Fırtınası"
+    },
+    {
+      "en": "Rune Cyan",
+      "tr": "Rün Turkuazı"
+    },
+    {
+      "en": "Obsidian",
+      "tr": "Obsidyen"
+    },
+    {
+      "en": "Royal Purple",
+      "tr": "Kraliyet Moru"
+    },
+    {
+      "en": "Bloodmoon Rose",
+      "tr": "Kan Ayı Gülü"
+    },
+    {
+      "en": "Sunfire",
+      "tr": "Güneş Ateşi"
+    },
+    {
+      "en": "Glitch Green",
+      "tr": "Glitch Yeşili"
+    },
+    {
+      "en": "Spectre Teal",
+      "tr": "Hayalet Turkuazı"
+    },
+    {
+      "en": "Emberstorm",
+      "tr": "Kor Fırtınası"
+    },
+    {
+      "en": "Frostbloom",
+      "tr": "Buz Çiçeği"
+    },
+    {
+      "en": "Starfall",
+      "tr": "Yıldız Düşüşü"
+    },
+    {
+      "en": "Pitch Black",
+      "tr": "Zifiri Siyah"
+    },
+    {
+      "en": "Galaxy",
+      "tr": "Galaksi"
+    },
+    {
+      "en": "Aurora",
+      "tr": "Aurora"
+    },
+    {
+      "en": "Bat Swarm",
+      "tr": "Yarasa Sürüsü"
+    },
+    {
+      "en": "Void Heart",
+      "tr": "Boşluk Kalbi"
+    },
+    {
+      "en": "Fire Wolf",
+      "tr": "Ateş Kurdu"
+    },
+    {
+      "en": "A loyal ember pup. +5 Attack.",
+      "tr": "Sadık bir kor yavrusu. +5 Saldırı."
+    },
+    {
+      "en": "Water Sprite",
+      "tr": "Su Perisi"
+    },
+    {
+      "en": "A bubbling companion. +6 Magic Power.",
+      "tr": "Fokurdayan bir yoldaş. +6 Büyü Gücü."
+    },
+    {
+      "en": "Direwolf",
+      "tr": "Dev Kurt"
+    },
+    {
+      "en": "Ember Pup",
+      "tr": "Kor Yavrusu"
+    },
+    {
+      "en": "Cinder Cub",
+      "tr": "Kül Yavrusu"
+    },
+    {
+      "en": "Sprout",
+      "tr": "Filiz"
+    },
+    {
+      "en": "Flame Sprite",
+      "tr": "Alev Perisi"
+    },
+    {
+      "en": "Mossling",
+      "tr": "Yosuncuk"
+    },
+    {
+      "en": "Vine Pup",
+      "tr": "Sarmaşık Yavrusu"
+    },
+    {
+      "en": "Thorn Whelp",
+      "tr": "Diken Yavrusu"
+    },
+    {
+      "en": "Slime King",
+      "tr": "Balçık Kralı"
+    },
+    {
+      "en": "Forest Cub",
+      "tr": "Orman Yavrusu"
+    },
+    {
+      "en": "Natureling",
+      "tr": "Doğacık"
+    },
+    {
+      "en": "A budding nature spirit from the Green Egg.",
+      "tr": "Yeşil Yumurta'dan çıkan tomurcuklanan bir doğa ruhu."
+    },
+    {
+      "en": "Frost Pup",
+      "tr": "Buz Yavrusu"
+    },
+    {
+      "en": "Ice Whelp",
+      "tr": "Buz Çırağı"
+    },
+    {
+      "en": "Snow Cub",
+      "tr": "Kar Yavrusu"
+    },
+    {
+      "en": "Glacierling",
+      "tr": "Buzulcuk"
+    },
+    {
+      "en": "Chill Sprite",
+      "tr": "Soğuk Perisi"
+    },
+    {
+      "en": "Frost Drake",
+      "tr": "Buz Ejderi"
+    },
+    {
+      "en": "Stone Pup",
+      "tr": "Taş Yavrusu"
+    },
+    {
+      "en": "Rockling",
+      "tr": "Kayacık"
+    },
+    {
+      "en": "Boulder Cub",
+      "tr": "Kaya Yavrusu"
+    },
+    {
+      "en": "Crystal Sprite",
+      "tr": "Kristal Perisi"
+    },
+    {
+      "en": "Golem Whelp",
+      "tr": "Golem Yavrusu"
+    },
+    {
+      "en": "Granite Pup",
+      "tr": "Granit Yavrusu"
+    },
+    {
+      "en": "Storm Pup",
+      "tr": "Fırtına Yavrusu"
+    },
+    {
+      "en": "Thunder Cub",
+      "tr": "Gök Gürültüsü Yavrusu"
+    },
+    {
+      "en": "Lightning Drake",
+      "tr": "Yıldırım Ejderi"
+    },
+    {
+      "en": "Wind Sprite",
+      "tr": "Rüzgâr Perisi"
+    },
+    {
+      "en": "Gale Whelp",
+      "tr": "Bora Yavrusu"
+    },
+    {
+      "en": "Storm Hatchling",
+      "tr": "Fırtına Civcivi"
+    },
+    {
+      "en": "Shadow Pup",
+      "tr": "Gölge Yavrusu"
+    },
+    {
+      "en": "Voidling",
+      "tr": "Boşlukçuk"
+    },
+    {
+      "en": "Dusk Whelp",
+      "tr": "Alacakaranlık Yavrusu"
+    },
+    {
+      "en": "Night Cub",
+      "tr": "Gece Yavrusu"
+    },
+    {
+      "en": "Shade Sprite",
+      "tr": "Gölge Perisi"
+    },
+    {
+      "en": "Umbra Drake",
+      "tr": "Gölge Ejderi"
+    },
+    {
+      "en": "Crystal Drake",
+      "tr": "Kristal Ejderi"
+    },
+    {
+      "en": "Arcane Pup",
+      "tr": "Arkane Yavrusu"
+    },
+    {
+      "en": "Mana Sprite",
+      "tr": "Mana Perisi"
+    },
+    {
+      "en": "Spell Whelp",
+      "tr": "Büyü Yavrusu"
+    },
+    {
+      "en": "Runeling",
+      "tr": "Rüncük"
+    },
+    {
+      "en": "Crystal Hound",
+      "tr": "Kristal Tazısı"
+    },
+    {
+      "en": "Void Pup",
+      "tr": "Boşluk Yavrusu"
+    },
+    {
+      "en": "Abyssling",
+      "tr": "Uçurumcuk"
+    },
+    {
+      "en": "Nether Cub",
+      "tr": "Cehennem Yavrusu"
+    },
+    {
+      "en": "Shadow Drake",
+      "tr": "Gölge Ejderi"
+    },
+    {
+      "en": "Dark Hound",
+      "tr": "Karanlık Tazı"
+    },
+    {
+      "en": "Void Sprite",
+      "tr": "Boşluk Perisi"
+    },
+    {
+      "en": "Phoenix Hatchling",
+      "tr": "Anka Civcivi"
+    },
+    {
+      "en": "Ember Drake",
+      "tr": "Kor Ejderi"
+    },
+    {
+      "en": "Flame Hound",
+      "tr": "Alev Tazısı"
+    },
+    {
+      "en": "Inferno Pup",
+      "tr": "Yanardağ Yavrusu"
+    },
+    {
+      "en": "Blaze Drake",
+      "tr": "Alev Ejderi"
+    },
+    {
+      "en": "Phoenix Chick",
+      "tr": "Anka Piliç"
+    },
+    {
+      "en": "Mythic Drake",
+      "tr": "Mitik Ejder"
+    },
+    {
+      "en": "Gold Pup",
+      "tr": "Altın Yavrusu"
+    },
+    {
+      "en": "Radiant Cub",
+      "tr": "Işıyan Yavru"
+    },
+    {
+      "en": "Divine Whelp",
+      "tr": "İlahi Yavru"
+    },
+    {
+      "en": "Light Sprite",
+      "tr": "Işık Perisi"
+    },
+    {
+      "en": "Mythic Hound",
+      "tr": "Mitik Tazı"
+    },
+    {
+      "en": "Rage Pup",
+      "tr": "Öfke Yavrusu"
+    },
+    {
+      "en": "Fury Cub",
+      "tr": "Hiddet Yavrusu"
+    },
+    {
+      "en": "Berserk Whelp",
+      "tr": "Cinnet Yavrusu"
+    },
+    {
+      "en": "War Hound",
+      "tr": "Savaş Tazısı"
+    },
+    {
+      "en": "Battle Pup",
+      "tr": "Savaş Yavrusu"
+    },
+    {
+      "en": "Might Cub",
+      "tr": "Kudret Yavrusu"
+    },
+    {
+      "en": "Mystic Cub",
+      "tr": "Mistik Yavrusu"
+    },
+    {
+      "en": "Rune Pup",
+      "tr": "Rün Yavrusu"
+    },
+    {
+      "en": "Gale Sprite",
+      "tr": "Bora Perisi"
+    },
+    {
+      "en": "Stone Guardian",
+      "tr": "Taş Muhafız"
+    },
+    {
+      "en": "Iron Pup",
+      "tr": "Demir Yavrusu"
+    },
+    {
+      "en": "Granite Whelp",
+      "tr": "Granit Yavrusu"
+    },
+    {
+      "en": "Crystal Pup",
+      "tr": "Kristal Yavrusu"
+    },
+    {
+      "en": "Rock Sprite",
+      "tr": "Kaya Perisi"
+    },
+    {
+      "en": "Frost Lynx",
+      "tr": "Buz Vaşağı"
+    },
+    {
+      "en": "Glacier Pup",
+      "tr": "Buzul Yavrusu"
+    },
+    {
+      "en": "Snow Hound",
+      "tr": "Kar Tazısı"
+    },
+    {
+      "en": "Ice Cub",
+      "tr": "Buz Yavrusu"
+    },
+    {
+      "en": "Chill Whelp",
+      "tr": "Soğuk Yavrusu"
+    },
+    {
+      "en": "Frost Kit",
+      "tr": "Buz Tilkisi Yavrusu"
+    },
+    {
+      "en": "Ember Lynx",
+      "tr": "Kor Vaşağı"
+    },
+    {
+      "en": "Cinder Pup",
+      "tr": "Kül Yavrusu"
+    },
+    {
+      "en": "Blaze Cub",
+      "tr": "Alev Yavrusu"
+    },
+    {
+      "en": "Inferno Whelp",
+      "tr": "Yanardağ Yavrusu"
+    },
+    {
+      "en": "Fire Sprite",
+      "tr": "Ateş Perisi"
+    },
+    {
+      "en": "Storm Hawk",
+      "tr": "Fırtına Şahini"
+    },
+    {
+      "en": "Thunder Pup",
+      "tr": "Gök Gürültüsü Yavrusu"
+    },
+    {
+      "en": "Gale Cub",
+      "tr": "Bora Yavrusu"
+    },
+    {
+      "en": "Lightning Pup",
+      "tr": "Yıldırım Yavrusu"
+    },
+    {
+      "en": "Tempest Whelp",
+      "tr": "Kasırga Yavrusu"
+    },
+    {
+      "en": "Shadow Cat",
+      "tr": "Gölge Kedisi"
+    },
+    {
+      "en": "Rage Pup - grants attack buff. From egg_red",
+      "tr": "Öfke Yavrusu - saldırı güçlendirmesi verir. egg_red'den"
+    },
+    {
+      "en": "Fury Cub - grants magicBoost buff. From egg_green",
+      "tr": "Hiddet Yavrusu - magicBoost güçlendirmesi verir. egg_green'den"
+    },
+    {
+      "en": "Berserk Whelp - grants defense buff. From egg_blue",
+      "tr": "Cinnet Yavrusu - savunma güçlendirmesi verir. egg_blue'den"
+    },
+    {
+      "en": "War Hound - grants attack buff. From egg_brown",
+      "tr": "Savaş Tazısı - saldırı güçlendirmesi verir. egg_brown'dan"
+    },
+    {
+      "en": "Battle Pup - grants magicBoost buff. From egg_yellow",
+      "tr": "Savaş Yavrusu - magicBoost güçlendirmesi verir. egg_yellow'dan"
+    },
+    {
+      "en": "Might Cub - grants defense buff. From egg_purple",
+      "tr": "Kudret Yavrusu - savunma güçlendirmesi verir. egg_purple'dan"
+    },
+    {
+      "en": "Arcane Pup - grants attack buff. From egg_cyan",
+      "tr": "Arkane Yavrusu - saldırı güçlendirmesi verir. egg_cyan'dan"
+    },
+    {
+      "en": "Mana Sprite - grants magicBoost buff. From egg_dark",
+      "tr": "Mana Perisi - magicBoost güçlendirmesi verir. egg_dark'tan"
+    },
+    {
+      "en": "Spell Whelp - grants defense buff. From egg_orange",
+      "tr": "Büyü Yavrusu - savunma güçlendirmesi verir. egg_orange'dan"
+    },
+    {
+      "en": "Mystic Cub - grants attack buff. From egg_gold",
+      "tr": "Mistik Yavrusu - saldırı güçlendirmesi verir. egg_gold'dan"
+    },
+    {
+      "en": "Rune Pup - grants magicBoost buff. From egg_red",
+      "tr": "Rün Yavrusu - magicBoost güçlendirmesi verir. egg_red'den"
+    },
+    {
+      "en": "Gale Sprite - grants defense buff. From egg_green",
+      "tr": "Bora Perisi - savunma güçlendirmesi verir. egg_green'den"
+    },
+    {
+      "en": "Stone Guardian - grants attack buff. From egg_blue",
+      "tr": "Taş Muhafız - saldırı güçlendirmesi verir. egg_blue'den"
+    },
+    {
+      "en": "Iron Pup - grants magicBoost buff. From egg_brown",
+      "tr": "Demir Yavrusu - magicBoost güçlendirmesi verir. egg_brown'dan"
+    },
+    {
+      "en": "Granite Whelp - grants defense buff. From egg_yellow",
+      "tr": "Granit Yavrusu - savunma güçlendirmesi verir. egg_yellow'dan"
+    },
+    {
+      "en": "Crystal Pup - grants attack buff. From egg_purple",
+      "tr": "Kristal Yavrusu - saldırı güçlendirmesi verir. egg_purple'dan"
+    },
+    {
+      "en": "Boulder Cub - grants magicBoost buff. From egg_cyan",
+      "tr": "Kaya Yavrusu - magicBoost güçlendirmesi verir. egg_cyan'dan"
+    },
+    {
+      "en": "Rock Sprite - grants defense buff. From egg_dark",
+      "tr": "Kaya Perisi - savunma güçlendirmesi verir. egg_dark'tan"
+    },
+    {
+      "en": "Frost Lynx - grants attack buff. From egg_orange",
+      "tr": "Buz Vaşağı - saldırı güçlendirmesi verir. egg_orange'dan"
+    },
+    {
+      "en": "Glacier Pup - grants magicBoost buff. From egg_gold",
+      "tr": "Buzul Yavrusu - magicBoost güçlendirmesi verir. egg_gold'dan"
+    },
+    {
+      "en": "Snow Hound - grants defense buff. From egg_red",
+      "tr": "Kar Tazısı - savunma güçlendirmesi verir. egg_red'den"
+    },
+    {
+      "en": "Ice Cub - grants attack buff. From egg_green",
+      "tr": "Buz Yavrusu - saldırı güçlendirmesi verir. egg_green'den"
+    },
+    {
+      "en": "Chill Whelp - grants magicBoost buff. From egg_blue",
+      "tr": "Soğuk Yavrusu - magicBoost güçlendirmesi verir. egg_blue'den"
+    },
+    {
+      "en": "Frost Kit - grants defense buff. From egg_brown",
+      "tr": "Buz Tilkisi Yavrusu - savunma güçlendirmesi verir. egg_brown'dan"
+    },
+    {
+      "en": "Ember Lynx - grants attack buff. From egg_yellow",
+      "tr": "Kor Vaşağı - saldırı güçlendirmesi verir. egg_yellow'dan"
+    },
+    {
+      "en": "Flame Hound - grants magicBoost buff. From egg_purple",
+      "tr": "Alev Tazısı - magicBoost güçlendirmesi verir. egg_purple'dan"
+    },
+    {
+      "en": "Cinder Pup - grants defense buff. From egg_cyan",
+      "tr": "Kül Yavrusu - savunma güçlendirmesi verir. egg_cyan'dan"
+    },
+    {
+      "en": "Blaze Cub - grants attack buff. From egg_dark",
+      "tr": "Alev Yavrusu - saldırı güçlendirmesi verir. egg_dark'tan"
+    },
+    {
+      "en": "Inferno Whelp - grants magicBoost buff. From egg_orange",
+      "tr": "Yanardağ Yavrusu - magicBoost güçlendirmesi verir. egg_orange'dan"
+    },
+    {
+      "en": "Fire Sprite - grants defense buff. From egg_gold",
+      "tr": "Ateş Perisi - savunma güçlendirmesi verir. egg_gold'dan"
+    },
+    {
+      "en": "Storm Hawk - grants attack buff. From egg_red",
+      "tr": "Fırtına Şahini - saldırı güçlendirmesi verir. egg_red'den"
+    },
+    {
+      "en": "Thunder Pup - grants magicBoost buff. From egg_green",
+      "tr": "Gök Gürültüsü Yavrusu - magicBoost güçlendirmesi verir. egg_green'den"
+    },
+    {
+      "en": "Gale Cub - grants defense buff. From egg_blue",
+      "tr": "Bora Yavrusu - savunma güçlendirmesi verir. egg_blue'den"
+    },
+    {
+      "en": "Wind Sprite - grants attack buff. From egg_brown",
+      "tr": "Rüzgâr Perisi - saldırı güçlendirmesi verir. egg_brown'dan"
+    },
+    {
+      "en": "Lightning Pup - grants magicBoost buff. From egg_yellow",
+      "tr": "Yıldırım Yavrusu - magicBoost güçlendirmesi verir. egg_yellow'dan"
+    },
+    {
+      "en": "Tempest Whelp - grants defense buff. From egg_purple",
+      "tr": "Kasırga Yavrusu - savunma güçlendirmesi verir. egg_purple'dan"
+    },
+    {
+      "en": "Shadow Cat - grants attack buff. From egg_cyan",
+      "tr": "Gölge Kedisi - saldırı güçlendirmesi verir. egg_cyan'dan"
+    },
+    {
+      "en": "Void Pup - grants magicBoost buff. From egg_dark",
+      "tr": "Boşluk Yavrusu - magicBoost güçlendirmesi verir. egg_dark'tan"
+    },
+    {
+      "en": "Whirlwind",
+      "tr": "Kasırga"
+    },
+    {
+      "en": "A full spinning cut that carves every foe in front of you.",
+      "tr": "Önündeki bütün düşmanları biçen tam turlu bir savuruş."
+    },
+    {
+      "en": "Earthbreaker",
+      "tr": "Yerkıran"
+    },
+    {
+      "en": "Slam the ground and send a shockwave through everything nearby.",
+      "tr": "Yere vur; çevrendeki her şeyi sarsan bir şok dalgası yay."
+    },
+    {
+      "en": "Blade Storm",
+      "tr": "Bıçak Fırtınası"
+    },
+    {
+      "en": "Blades orbit you for three seconds, shredding anything they touch.",
+      "tr": "Bıçaklar üç saniye etrafında döner, dokunduklarını parçalar."
+    },
+    {
+      "en": "Titan Fist",
+      "tr": "Titan Yumruğu"
+    },
+    {
+      "en": "A colossal stone fist crashes down ahead of you.",
+      "tr": "Önüne devasa bir taş yumruk iner."
+    },
+    {
+      "en": "Gale",
+      "tr": "Rüzgâr"
+    },
+    {
+      "en": "A short burst of wind that pulls and cuts.",
+      "tr": "Çeken ve kesen kısa bir rüzgâr patlaması."
+    },
+    {
+      "en": "Cyclone",
+      "tr": "Siklon"
+    },
+    {
+      "en": "A spinning vortex drags enemies inward and shreds them.",
+      "tr": "Dönen bir girdap düşmanları içeri çeker ve parçalar."
+    },
+    {
+      "en": "Stars rain from the sky across a wide area.",
+      "tr": "Gökten geniş bir alana yıldızlar yağar."
+    },
+    {
+      "en": "Spirit Pack",
+      "tr": "Ruh Sürüsü"
+    },
+    {
+      "en": "Ghostly wolves circle the target and lunge as one.",
+      "tr": "Hayalet kurtlar hedefin etrafında döner ve birlikte atılır."
+    },
+    {
+      "en": "Toxic Cloud",
+      "tr": "Zehir Bulutu"
+    },
+    {
+      "en": "A lingering cloud of poison that eats away at anything inside.",
+      "tr": "İçindeki her şeyi kemiren, kalıcı bir zehir bulutu."
+    },
+    {
+      "en": "A ring of ice bursts outward and freezes what it touches.",
+      "tr": "Dışa doğru buz halkası patlar, dokunduğunu dondurur."
+    },
+    {
+      "en": "Inferno Burst",
+      "tr": "Cehennem Patlaması"
+    },
+    {
+      "en": "A ring of fire detonates around you and keeps burning.",
+      "tr": "Etrafında bir ateş halkası patlar ve yanmaya devam eder."
+    },
+    {
+      "en": "Call down meteors on the marked ground, leaving burning craters.",
+      "tr": "İşaretli yere meteorlar indir; yanan kraterler bırak."
+    },
+    {
+      "en": "Glacier Wall",
+      "tr": "Buzul Duvarı"
+    },
+    {
+      "en": "Raise a wall of ice ahead that slows and cuts anything crossing it.",
+      "tr": "Önüne geçenleri yavaşlatan ve kesen bir buz duvarı dik."
+    },
+    {
+      "en": "Chain Lightning",
+      "tr": "Zincir Yıldırım"
+    },
+    {
+      "en": "Lightning leaps between foes, shocking each one it touches.",
+      "tr": "Yıldırım düşmandan düşmana sıçrar, her birini çarpar."
+    },
+    {
+      "en": "Ember Wave",
+      "tr": "Kor Dalgası"
+    },
+    {
+      "en": "A wave of cinders washes over the arc ahead.",
+      "tr": "Önündeki yayın üzerinden kor dalgası geçer."
+    },
+    {
+      "en": "Umbral Lash",
+      "tr": "Gölge Kamçısı"
+    },
+    {
+      "en": "A whip of shadow cuts across the foes in front of you.",
+      "tr": "Önündeki düşmanları kesen bir gölge kamçısı."
+    },
+    {
+      "en": "Shadow Grasp",
+      "tr": "Gölge Kavrayışı"
+    },
+    {
+      "en": "Shadow tendrils burst from the ground and claw at everything.",
+      "tr": "Yerden gölge kolları fışkırır ve her şeyi tırmalar."
+    },
+    {
+      "en": "Judgement Beam",
+      "tr": "Hüküm Işını"
+    },
+    {
+      "en": "A lance of holy light burns a straight line through the enemy.",
+      "tr": "Kutsal ışıktan bir mızrak düşmanın içinden düz bir çizgi yakar."
+    },
+    {
+      "en": "Rune Seal",
+      "tr": "Rün Mührü"
+    },
+    {
+      "en": "Etch a warding rune that absorbs a share of incoming damage.",
+      "tr": "Gelen hasarın bir kısmını yutan koruyucu bir rün kaz."
+    },
+    {
+      "en": "Divine Judgement",
+      "tr": "İlahi Hüküm"
+    },
+    {
+      "en": "Six blades of light fall around you and stun the wicked.",
+      "tr": "Etrafına altı ışık kılıcı iner ve günahkârları sersemletir."
+    },
+    {
+      "en": "Radiant Verdict",
+      "tr": "Işıklı Hüküm"
+    },
+    {
+      "en": "A wide beam of judgement that sears everything in its path.",
+      "tr": "Yolundaki her şeyi dağlayan geniş bir hüküm ışını."
+    },
+    {
+      "en": "Healing Rain",
+      "tr": "Şifa Yağmuru"
+    },
+    {
+      "en": "Warm rain falls and knits your wounds shut.",
+      "tr": "Ilık bir yağmur yağar ve yaralarını kapatır."
+    },
+    {
+      "en": "Dimension Rift",
+      "tr": "Boyut Yarığı"
+    },
+    {
+      "en": "Tear space and step through it, shredding everything you leave behind.",
+      "tr": "Uzayı yırt ve içinden geç; geride bıraktığın her şeyi parçala."
+    },
+    {
+      "en": "Venom Spit",
+      "tr": "Zehir Tükürüğü"
+    },
+    {
+      "en": "Spit a blob of venom that bursts on impact.",
+      "tr": "Çarpınca patlayan bir zehir topağı tükür."
+    },
+    {
+      "en": "Mending Light",
+      "tr": "Onaran Işık"
+    },
+    {
+      "en": "A soft light mends a small amount of health.",
+      "tr": "Yumuşak bir ışık az miktarda can onarır."
+    },
+    {
+      "en": "Tree of Life",
+      "tr": "Hayat Ağacı"
+    },
+    {
+      "en": "A great tree blooms and pours healing light over the ground.",
+      "tr": "Ulu bir ağaç açar ve yere şifa ışığı döker."
+    },
+    {
+      "en": "Phoenix Rebirth",
+      "tr": "Anka Doğuşu"
+    },
+    {
+      "en": "A phoenix rises from you, restoring a great amount of health.",
+      "tr": "İçinden bir anka yükselir, büyük miktarda can geri verir."
+    },
+    {
+      "en": "Thorn Snare",
+      "tr": "Diken Tuzağı"
+    },
+    {
+      "en": "Thorned vines erupt and root everything in the area.",
+      "tr": "Dikenli sarmaşıklar fışkırır ve alandaki her şeyi kökler."
+    },
+    {
+      "en": "Bone Cage",
+      "tr": "Kemik Kafes"
+    },
+    {
+      "en": "Bones erupt around the target and lock it in place while they cut.",
+      "tr": "Hedefin çevresinde kemikler yükselir, onu yerinde kilitler."
+    },
+    {
+      "en": "Bramble",
+      "tr": "Çalı Dikeni"
+    },
+    {
+      "en": "A lash of thorned vines sweeps the arc ahead.",
+      "tr": "Önündeki yayı süpüren dikenli sarmaşık kamçısı."
+    },
+    {
+      "en": "Rune Circle",
+      "tr": "Rün Çemberi"
+    },
+    {
+      "en": "A rune circle flares under you, shocking everything standing on it.",
+      "tr": "Altında bir rün çemberi parlar, üstündeki her şeyi çarpar."
+    },
+    {
+      "en": "Open a collapsing void that drags enemies into its core.",
+      "tr": "Düşmanları çekirdeğine çeken, çöken bir boşluk aç."
+    },
+    {
+      "en": "Soul Harvest",
+      "tr": "Ruh Hasadı"
+    },
+    {
+      "en": "Rip the souls from nearby foes and drink back a share as life.",
+      "tr": "Yakındaki düşmanların ruhunu söküp bir kısmını can olarak içine çek."
+    },
+    {
+      "en": "Flame Pillar",
+      "tr": "Alev Sütunu"
+    },
+    {
+      "en": "A pillar of flame erupts where you point and lingers.",
+      "tr": "İşaret ettiğin yerde alev sütunu yükselir ve sürer."
+    },
+    {
+      "en": "Dragon Breath",
+      "tr": "Ejder Nefesi"
+    },
+    {
+      "en": "Exhale a cone of dragonfire that sets the ground alight.",
+      "tr": "Yeri tutuşturan bir ejder ateşi konisi püskürt."
+    },
+    {
+      "en": "Blizzard",
+      "tr": "Kar Fırtınası"
+    },
+    {
+      "en": "A long-lasting snowstorm grinds away at a wide area.",
+      "tr": "Geniş bir alanı kemiren, uzun süreli bir kar fırtınası."
+    },
+    {
+      "en": "Crimson Reap",
+      "tr": "Kızıl Biçim"
+    },
+    {
+      "en": "A wide scythe of blood rips through the crowd.",
+      "tr": "Kan orak kalabalığın içinden geçer."
+    },
+    {
+      "en": "Blood Cut",
+      "tr": "Kan Kesisi"
+    },
+    {
+      "en": "A quick crimson slash that leaves the wound bleeding.",
+      "tr": "Yarayı kanatır biçimde hızlı, kızıl bir kesik."
+    },
+    {
+      "en": "Thunderfall",
+      "tr": "Gök Gürültüsü"
+    },
+    {
+      "en": "A thunderbolt slams down and stuns the target area.",
+      "tr": "Bir yıldırım iner ve hedef alanı sersemletir."
+    },
+    {
+      "en": "Storm Call",
+      "tr": "Fırtına Çağrısı"
+    },
+    {
+      "en": "Call a quick bolt to a nearby point.",
+      "tr": "Yakın bir noktaya hızlı bir yıldırım çağır."
+    },
+    {
+      "en": "Blood Ritual",
+      "tr": "Kan Ritüeli"
+    },
+    {
+      "en": "A crimson ritual circle erupts, tearing foes and feeding you.",
+      "tr": "Kızıl bir ritüel çemberi patlar; düşmanı yırtar, sana can verir."
+    },
+    {
+      "en": "Judgement",
+      "tr": "Hüküm"
+    },
+    {
+      "en": "Call a single colossal blade of judgement on the marked spot.",
+      "tr": "İşaretli noktaya tek, devasa bir hüküm kılıcı çağır."
+    },
+    {
+      "en": "Doom Gavel",
+      "tr": "Kıyamet Tokmağı"
+    },
+    {
+      "en": "A colossal gavel of stone falls from the sky and shatters the ground.",
+      "tr": "Gökten devasa bir taş tokmak düşer ve yeri parçalar."
+    },
+    {
+      "en": "One strike cracks the world; everything around you is thrown back.",
+      "tr": "Tek vuruş dünyayı çatlatır; çevrendeki her şey geri savrulur."
+    },
+    {
+      "en": "Astral Collapse",
+      "tr": "Astral Çöküş"
+    },
+    {
+      "en": "Five collapsing stars hammer the battlefield in quick succession.",
+      "tr": "Beş çöken yıldız art arda savaş alanını döver."
+    },
+    {
+      "en": "Arcane Dominion",
+      "tr": "Arkana Egemenliği"
+    },
+    {
+      "en": "You claim the sky: seven stars answer your call at once.",
+      "tr": "Gökyüzünü sahiplenirsin: yedi yıldız aynı anda çağrına uyar."
+    },
+    {
+      "en": "Sunfall",
+      "tr": "Güneş Düşüşü"
+    },
+    {
+      "en": "Three burning suns crash down and leave the earth ablaze.",
+      "tr": "Üç yanan güneş yere çakılır ve toprağı tutuşturur."
+    },
+    {
+      "en": "Infernal Crown",
+      "tr": "Cehennem Tacı"
+    },
+    {
+      "en": "A crown of hellfire erupts around you and keeps the ground burning.",
+      "tr": "Etrafında cehennem ateşinden bir taç patlar ve yeri yakmaya devam eder."
+    },
+    {
+      "en": "Seraph's Judgement",
+      "tr": "Seraf Hükmü"
+    },
+    {
+      "en": "A seraph's spear of light burns a wide path through everything.",
+      "tr": "Bir serafın ışık mızrağı her şeyin içinden geniş bir yol yakar."
+    },
+    {
+      "en": "Eternal Dawn",
+      "tr": "Ebedi Şafak"
+    },
+    {
+      "en": "Dawn breaks all at once: foes are stunned, allies are restored.",
+      "tr": "Şafak bir anda söker: düşmanlar sersemler, müttefikler iyileşir."
+    },
+    {
+      "en": "Primordial Grove",
+      "tr": "İlkel Koru"
+    },
+    {
+      "en": "An ancient grove blooms around you, pouring life into every wound.",
+      "tr": "Etrafında kadim bir koru açar, her yaraya can döker."
+    },
+    {
+      "en": "Verdant Wrath",
+      "tr": "Yeşil Gazap"
+    },
+    {
+      "en": "The wilds rise up: thorns, roots and rot devour the marked land.",
+      "tr": "Yaban ayaklanır: dikenler, kökler ve çürük işaretli toprağı yutar."
+    },
+    {
+      "en": "Night collapses into a hungry void that drags enemies to its core.",
+      "tr": "Gece, düşmanları çekirdeğine çeken aç bir boşluğa çöker."
+    },
+    {
+      "en": "A void crown detonates around you, tearing foes and feeding you their essence.",
+      "tr": "Etrafında bir boşluk tacı patlar; düşmanı yırtar, özlerini sana verir."
+    },
+    {
+      "en": "Sky Rend",
+      "tr": "Gökyüzü Yarığı"
+    },
+    {
+      "en": "The sky tears open and a single bolt levels the marked ground.",
+      "tr": "Gökyüzü yırtılır ve tek bir yıldırım işaretli yeri yerle bir eder."
+    },
+    {
+      "en": "Tempest Sovereign",
+      "tr": "Fırtına Hükümdarı"
+    },
+    {
+      "en": "Lightning obeys you, leaping across the whole battlefield.",
+      "tr": "Yıldırım sana itaat eder, tüm savaş alanına sıçrar."
+    }
+  ]
 };
 
 function getClass(slug) {
@@ -21352,6 +35138,8 @@ function publicCatalog() {
   return {
     baseSkills: CONTENT.baseSkills,
     story: CONTENT.story,
+    // Ekrandaki metinlerin Türkçe karşılıkları (id/slug değil, sadece metin).
+    i18nTR: CONTENT.i18nTR || [],
     npcs: CONTENT.npcs || [],
     classes: CONTENT.classes.map((c) => ({
       slug: c.slug,
