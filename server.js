@@ -44,6 +44,9 @@ app.use((req, res, next) => {
 
 app.use(express.static(path.join(__dirname, "public")));
 
+// 3D varlık denemesi (newassets/*.glb) — public dışında tutuluyor, salt okunur servis.
+app.use("/newassets", express.static(path.join(__dirname, "newassets")));
+
 app.use("/editor", editorRoutes);
 
 function listAudioFiles(dir) {
@@ -92,6 +95,10 @@ const httpServer = http.createServer(app);
 const io = new Server(httpServer, {
   cors: { origin: "*" },
 });
+
+// Dünya Kurucu (editorRoutes) "Oyuna Uygula" sonrası tüm istemcilere haber
+// verebilsin diye io'yu app'e bağla.
+app.set("io", io);
 
 registerSocketHandlers(io);
 

@@ -1,5 +1,5 @@
 const { CONTENT, getSkill, getClassBasicAttack, getPetSlots, getPetPowerMult, resolveDamageStat } = require("../content");
-const { dealDamage, addShield, heal, tickShields, removeShieldInstance } = require("./players");
+const { dealDamage, addShield, heal, tickShields, removeShieldInstance, anomalyAttackSpeedPct } = require("./players");
 const passives = require("./passives");
 const stacks = require("./stacks");
 
@@ -618,7 +618,9 @@ function act(room, player, skillId){
       if (Array.isArray(opponent.shields)) opponent.shields = [];
       d.log.push(`${player.name} executed ${opponent.name}!`);
     }
-    const echoSrc = skill.echo || passives.echoFor(player);
+    const apsPct = anomalyAttackSpeedPct(player);
+    const anomalyEcho = apsPct > 0 ? { chance: Math.min(1, apsPct / 100), mult: 0.5 } : null;
+    const echoSrc = skill.echo || passives.echoFor(player) || anomalyEcho;
     if (echoSrc && Number(echoSrc.chance) > 0 && Math.random() < Number(echoSrc.chance) && opponent.hp > 0) {
       const echoDmg = Math.max(1, Math.round(dmg * Number(echoSrc.mult || 0.3)));
       dealDamage(opponent, echoDmg);

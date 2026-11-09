@@ -6,6 +6,7 @@ const { CONTENT, getDungeon, getItem } = require("../content");
 const { addItem, addXp } = require("./players");
 const { idleDungeon } = require("./dungeon");
 const combat = require("./combat");
+const persistentWorld = require("./persistentWorld");
 
 const ENTRY_STAMINA = 10;
 
@@ -110,6 +111,12 @@ function nearRock(tiles, w, h, x, y, rad = 3) {
 
 // Yol kenarına serilmiş sandıklar: rastgele araziye saçılmak yerine
 // oyuncunun gerçekten yürüdüğü patikaların üstünde/kenarında dururlar.
+// Sandıklar birbirine ve diğer önemli noktalara çok yakın olamaz: keşif
+// hissi için aralarında en az CHEST_SPACING kare mesafe bırakılır.
+const CHEST_MIN_FROM_POI = 20;  // sandık <-> kale/mağara/köy vb.
+const CHEST_SPACING = 26;       // sandık <-> sandık (20-30 kare aralık)
+const CHEST_MIN_FROM_SPAWN = 16;
+
 function pickRoadsideChests(rng, tiles, w, h, pois, spawn, count) {
   const out = [];
   const road = [];
@@ -117,16 +124,20 @@ function pickRoadsideChests(rng, tiles, w, h, pois, spawn, count) {
     if (tiles[y * w + x] === T.ROAD) road.push({ x, y });
   }
   if (!road.length) return out;
-  const minPOI = 9;
-  for (let a = 0; a < 4000 && out.length < count; a++) {
-    const c = road[Math.floor(rng() * road.length)];
-    const jitter = () => Math.round((rng() - 0.5) * 2);
-    const x = c.x + jitter(), y = c.y + jitter();
-    if (!isWalkable(tiles, w, h, x, y)) continue;
-    if (Math.hypot(x - spawn.x, y - spawn.y) < 10) continue;
-    if (pois.some((p) => Math.hypot(p.x - x, p.y - y) < minPOI)) continue;
-    if (out.some((p) => Math.hypot(p.x - x, p.y - y) < 12)) continue;
-    out.push({ id: "chest_" + (pois.length + out.length), kind: "chest", x, y, consumed: false });
+  // Önce uzak noktaları deneyen ikinci bir tur: seyrek yerleşim olmazsa
+  // mesafeyi kademeli olarak düşürürüz (yine de yakın sandık çıkmaz).
+  const passes = [CHEST_SPACING, Math.round(CHEST_SPACING * 0.8), CHEST_MIN_FROM_POI];
+  for (const spacing of passes) {
+    for (let a = 0; a < 6000 && out.length < count; a++) {
+      const c = road[Math.floor(rng() * road.length)];
+      const jitter = () => Math.round((rng() - 0.5) * 2);
+      const x = c.x + jitter(), y = c.y + jitter();
+      if (!isWalkable(tiles, w, h, x, y)) continue;
+      if (Math.hypot(x - spawn.x, y - spawn.y) < CHEST_MIN_FROM_SPAWN) continue;
+      if (pois.some((p) => Math.hypot(p.x - x, p.y - y) < CHEST_MIN_FROM_POI)) continue;
+      if (out.some((p) => Math.hypot(p.x - x, p.y - y) < spacing)) continue;
+      out.push({ id: "chest_" + (pois.length + out.length), kind: "chest", x, y, consumed: false });
+    }
   }
   return out;
 }
@@ -242,7 +253,8 @@ function generateMap(seed, typeId, sizeId) {
   const { spawn, pois } = pickPOIs(rng, tiles, w, h, size, 0);
   for (const p of pois) carveRoad(tiles, w, h, spawn, p);
   // Sandıklar yollar oyulduktan SONRA, patikaların üzerine yerleştirilir.
-  const chests = pickRoadsideChests(rng, tiles, w, h, pois, spawn, Math.round(3 * size.scale) + 2);
+  // Sayı düşük tutulur: sandık bulmak nadir ve değerli olmalı.
+  const chests = pickRoadsideChests(rng, tiles, w, h, pois, spawn, Math.max(1, Math.round(2 * size.scale)));
   for (const c of chests) pois.push(c);
   // assign POI details
   for (const p of pois) {
@@ -270,10 +282,15 @@ function generateMap(seed, typeId, sizeId) {
 // çağrılar) ilk aktif dünya döner.
 function activeTravel(room, player) {
   if (!room) return null;
-  if (player && player.travelId) {
-    const own = room.travels && room.travels[player.travelId];
-    if (own && own.active) return own;
+  // Bir oyuncu verildiyse YALNIZCA kendi seferi döner. Eski "ilk aktif sefere
+  // düş" davranışı, kasabaya dönmüş/ölmüş bir oyuncunun başkasının seferinde
+  // sanılmasına ("zaten seferdesin"), hayalet konum göndermesine ve yanlış
+  // haritanın açılmasına yol açıyordu.
+  if (player) {
+    const own = player.travelId && room.travels && room.travels[player.travelId];
+    return own && own.active ? own : null;
   }
+  // Oyuncu verilmediyse (eski çağrılar / tüm seferler) ilk aktif dünya döner.
   for (const id of Object.keys(room.travels || {})) {
     const t = room.travels[id];
     if (t && t.active) return t;
@@ -316,6 +333,20 @@ function enterTravel(room, player, typeId, sizeId, opts = {}) {
   if (!room.travels) room.travels = {};
   // Zaten bir dünyadaysa önce oradan ayrıl (üst üste dünya olmasın).
   if (player.travelId) leaveTravel(room, player);
+  // `travelId` boş kalmış hayalet üyelikleri de temizle: eski oturumdan kalan
+  // kayıt yeni seferde ikinci bir "gölge oyuncu" olarak görünmesin.
+  for (const id of Object.keys(room.travels)) {
+    const tr = room.travels[id];
+    if (!tr || !Array.isArray(tr.members) || !tr.members.includes(player.id)) continue;
+    tr.members = tr.members.filter((x) => x !== player.id);
+    if (tr.pos) delete tr.pos[player.id];
+    if (tr.invites) delete tr.invites[player.id];
+    if (tr.downed) delete tr.downed[player.id];
+    if (!tr.members.length) {
+      delete room.travels[id];
+      if (room.travel === tr) room.travel = null;
+    }
+  }
 
   let travel = null;
   if (opts.joinId) {
@@ -349,12 +380,40 @@ function enterTravel(room, player, typeId, sizeId, opts = {}) {
   return travel;
 }
 
+function enterPersistent(room, player) {
+  if (player.stamina < ENTRY_STAMINA) throw new Error(`Travel costs ${ENTRY_STAMINA} stamina.`);
+  // Tek, kalıcı kıta: her girişte tam can/mana ve hayalet üyelik temizliği.
+  if (player.lives > 0) {
+    player.hp = Math.max(1, player.maxHp || 100);
+    player.mana = Math.max(0, player.maxMana || 0);
+  }
+  player.downed = false;
+  if (player.travelId) leaveTravel(room, player);
+  if (!room.travels) room.travels = {};
+  for (const id of Object.keys(room.travels)) {
+    const tr = room.travels[id];
+    if (!tr || !Array.isArray(tr.members) || !tr.members.includes(player.id)) continue;
+    tr.members = tr.members.filter((x) => x !== player.id);
+    if (tr.pos) delete tr.pos[player.id];
+    if (tr.invites) delete tr.invites[player.id];
+    if (tr.downed) delete tr.downed[player.id];
+    if (!tr.members.length) { delete room.travels[id]; if (room.travel === tr) room.travel = null; }
+  }
+  const t = persistentWorld.enter(room, player);
+  player.stamina = Math.max(0, player.stamina - ENTRY_STAMINA);
+  return t;
+}
+
 // Kasabaya dönüş yalnızca seferin başladığı noktadan (varış taşından) yapılabilir.
 // Böylece canavarın ortasında savaşırken "kaçış" olarak kullanılamaz.
 function atReturnPoint(travel, id, radius = 3) {
   if (!travel || !travel.spawn) return false;
   const p = travel.pos && travel.pos[id];
   if (!p) return false;
+  if (travel.persistent) {
+    return travel.pois.some((poi) => (poi.checkpoint || poi.kind === "inn" || poi.kind === "checkpoint") &&
+      Math.hypot(p.x - poi.x - 0.5, p.y - poi.y - 0.5) <= 16);
+  }
   const sx = (travel.spawn.x || 0) + 0.5;
   const sy = (travel.spawn.y || 0) + 0.5;
   return Math.hypot(p.x - sx, p.y - sy) <= radius;
@@ -369,30 +428,59 @@ function healForTown(player) {
   player.mana = Math.max(0, player.maxMana || 0);
 }
 
+// Oyuncu `travelId` taşımıyor ama bir seferin üyesi olarak listelenmiş mi?
+// (Eski istemci/sunucu karışıklığından kalan hayalet üyelik.)
+function memberOfAnyTravel(room, player) {
+  if (!room || !player || !room.travels) return false;
+  for (const id of Object.keys(room.travels)) {
+    const tr = room.travels[id];
+    if (tr && Array.isArray(tr.members) && tr.members.includes(player.id)) return true;
+  }
+  return false;
+}
+
 function leaveTravel(room, player) {
+  if (!room || !player) return;
   // Kasabaya dönüş her koşulda tam can/mana ile olur. Bu satır fonksiyonun en
   // başında: aşağıdaki erken çıkışlar (travel bulunamazsa) canı eksik bırakmasın.
   healForTown(player);
   leaveExpedition(room, player);
-  const travel = activeTravel(room, player);
-  if (!travel) { if (player) player.travelId = null; return; }
-  travel.members = travel.members.filter((id) => id !== player.id);
-  delete travel.pos[player.id];
-  delete travel.invites[player.id];
-  if (travel.downed) delete travel.downed[player.id];
-  for (const key of Object.keys(travel.parties)) {
-    const party = travel.parties[key];
-    party.memberIds = party.memberIds.filter((id) => id !== player.id);
-    if (party.leaderId === player.id && party.memberIds.length) party.leaderId = party.memberIds[0];
-    if (!party.memberIds.length && party.status === "waiting") delete travel.parties[key];
+  // Oyuncunun `travelId`'si boş/eskimiş olsa bile üye olarak listelendiği TÜM
+  // seferlerden çıkar. Eski "ilk aktif sefer" mantığı yüzünden oluşan hayalet
+  // üyelikler burada temizlenir; aksi halde oyuncu kasabada görünürken sunucu
+  // onu hâlâ bir seferin üyesi sayıp "zaten seferdesin" diyebiliyordu.
+  const targets = [];
+  for (const id of Object.keys(room.travels || {})) {
+    const tr = room.travels[id];
+    if (tr && Array.isArray(tr.members) && tr.members.includes(player.id) && !targets.includes(tr)) targets.push(tr);
   }
-  if (!travel.members.length) {
-    if (room.travels && room.travels[travel.id]) delete room.travels[travel.id];
-    if (room.travel === travel) room.travel = null;
+  const own = player.travelId && room.travels && room.travels[player.travelId];
+  if (own && !targets.includes(own)) targets.push(own);
+  for (const travel of targets) {
+    if (travel.persistent) {
+      persistentWorld.leave(room, player, travel);
+      continue;
+    }
+    travel.members = (travel.members || []).filter((id) => id !== player.id);
+    if (travel.pos) delete travel.pos[player.id];
+    if (travel.invites) delete travel.invites[player.id];
+    if (travel.downed) delete travel.downed[player.id];
+    for (const key of Object.keys(travel.parties || {})) {
+      const party = travel.parties[key];
+      party.memberIds = (party.memberIds || []).filter((id) => id !== player.id);
+      if (party.leaderId === player.id && party.memberIds.length) party.leaderId = party.memberIds[0];
+      if (!party.memberIds.length && party.status === "waiting") delete travel.parties[key];
+    }
+    if (!travel.members.length) {
+      if (room.travels && room.travels[travel.id]) delete room.travels[travel.id];
+      if (room.travel === travel) room.travel = null;
+    }
   }
-  if (player) player.travelId = null;
-  // (Can/mana doldurma fonksiyonun başında yapılır: healForTown.)
+  player.travelId = null;
   player.dungeonId = null;
+  // Son güvence: aradaki hiçbir işlem canı düşüremesin. `fall()` bunu takiben
+  // bilinçli olarak hp=0 yapar (gerçek ölüm), diğer tüm dönüşlerde tam can kalır.
+  healForTown(player);
 }
 
 // ---- Yere düşme / diriltme (çok oyunculu seyahat) ----
@@ -458,7 +546,9 @@ function nearPOI(travel, player, poiId) {
   if (!poi) throw new Error("That place does not exist.");
   const pos = travel.pos[player.id];
   if (!pos) throw new Error("You are not travelling.");
-  if (Math.hypot(pos.x - poi.x - 0.5, pos.y - poi.y - 0.5) > 2.4) throw new Error("Too far away.");
+  // POI'lerin görsel boyutu büyük: oyuncu nesnenin içine girmek zorunda kalmasın.
+  // (İstemci etkileşim yarıçapı ~12 karo; sunucu biraz daha toleranslı.)
+  if (Math.hypot(pos.x - poi.x - 0.5, pos.y - poi.y - 0.5) > 16) throw new Error("Too far away.");
   return poi;
 }
 
@@ -474,13 +564,15 @@ function weightedPick(weights) {
 // Travel loot is luck-based: chest POIs hand over a CHEST whose quality is
 // rolled against the map tier. The chest's own tier then bounds what spills
 // out when opened, so a lucky find never dumps a directly-overpowered item.
+// Denge: yüksek tier'lerde bile efsanevi/mythic sandık çıkışı düşük tutulur
+// (dungeon sonu sandık şansına yakın bir his).
 const TRAVEL_CHEST_TABLE = {
-  t1: { wooden_chest: 58, iron_chest: 30, gold_chest: 12 },
-  t2: { wooden_chest: 38, iron_chest: 36, gold_chest: 24, buried_treasure: 2 },
-  t3: { iron_chest: 40, gold_chest: 38, emerald_chest: 20, buried_treasure: 2 },
-  t4: { gold_chest: 40, emerald_chest: 38, obsidian_chest: 20, buried_treasure: 2 },
-  t5: { emerald_chest: 42, obsidian_chest: 40, mythic_chest: 16, buried_treasure: 2 },
-  t6: { obsidian_chest: 44, mythic_chest: 40, buried_treasure: 16 },
+  t1: { wooden_chest: 70, iron_chest: 25, gold_chest: 5 },
+  t2: { wooden_chest: 55, iron_chest: 32, gold_chest: 11, emerald_chest: 1.5, buried_treasure: 0.5 },
+  t3: { wooden_chest: 20, iron_chest: 40, gold_chest: 30, emerald_chest: 8, obsidian_chest: 1.5, buried_treasure: 0.5 },
+  t4: { iron_chest: 22, gold_chest: 38, emerald_chest: 30, obsidian_chest: 8, mythic_chest: 1, buried_treasure: 1 },
+  t5: { gold_chest: 25, emerald_chest: 40, obsidian_chest: 26, mythic_chest: 7, buried_treasure: 2 },
+  t6: { gold_chest: 15, emerald_chest: 35, obsidian_chest: 36, mythic_chest: 11, buried_treasure: 3 },
 };
 
 function rollTravelLoot(player, tier) {
@@ -510,29 +602,49 @@ function interact(room, player, poiId) {
   if (!travel) throw new Error("No active travel map.");
   const poi = nearPOI(travel, player, poiId);
   if (poi.kind === "chest") {
-    if (poi.consumed) throw new Error("This chest is already looted.");
-    poi.consumed = true;
+    const used = travel.persistent ? persistentWorld.consumedFor(travel, player, poi) : poi.consumed;
+    if (used) throw new Error("This chest is already looted.");
+    if (travel.persistent) persistentWorld.markConsumed(travel, player, poi, true);
+    else poi.consumed = true;
     const loot = rollTravelLoot(player, poi.tier || "t1");
     return { poi, loot, text: `${player.name} opens the ${poi.name}.` };
   }
-  if (poi.kind === "inn") {
-    if (poi.consumed) throw new Error("The inn has closed for now.");
-    poi.consumed = true;
-    player.hp = player.maxHp;
-    player.mana = player.maxMana;
-    player.stamina = Math.min(player.maxStamina, player.stamina + 4);
-    return { poi, text: `${player.name} rests at the ${poi.name}.` };
+  if (poi.kind === "inn" || poi.kind === "checkpoint") {
+    if (!travel.persistent && poi.consumed) throw new Error("The inn has closed for now.");
+    if (travel.persistent) persistentWorld.activateCheckpoint(travel, player, poi);
+    else {
+      poi.consumed = true;
+      player.hp = player.maxHp;
+      player.mana = player.maxMana;
+      player.stamina = Math.min(player.maxStamina, player.stamina + 4);
+    }
+    return { poi, checkpoint: true, text: `${player.name} rests at the ${poi.name}. Checkpoint saved.` };
   }
   if (poi.kind === "ruin") {
-    if (poi.consumed) throw new Error("This ruin has nothing left.");
-    poi.consumed = true;
+    const used = travel.persistent ? persistentWorld.consumedFor(travel, player, poi) : poi.consumed;
+    if (used) throw new Error("This ruin has nothing left.");
+    if (travel.persistent) persistentWorld.markConsumed(travel, player, poi, true);
+    else poi.consumed = true;
     const gold = 15 + Math.floor(Math.random() * 35);
     player.gold += gold;
     return { poi, gold, text: `${player.name} searches the ${poi.name} (+${gold} gold).` };
   }
   if (poi.kind === "watch") {
     poi.revealed = true;
+    if (travel.persistent) {
+      const saved = persistentWorld.playerState(player);
+      saved.discovered[poi.id] = 1;
+      persistentWorld.scheduleSave();
+    }
     return { poi, reveal: true, text: `${player.name} lights the ${poi.name} - the map is revealed.` };
+  }
+  if (poi.kind === "camp") {
+    if (travel.persistent) persistentWorld.activateCheckpoint(travel, player, poi);
+    player.hp = player.maxHp; player.mana = player.maxMana;
+    return { poi, checkpoint: true, text: `${player.name} makes camp at ${poi.name}. Progress saved.` };
+  }
+  if (poi.kind !== "dungeon" && poi.kind !== "den") {
+    return { poi, text: `${player.name} discovered ${poi.name}.` };
   }
   // dungeon / den -> party formation
   let party = travel.parties[poi.id];
@@ -601,7 +713,7 @@ function tryAutoJoin(room, player) {
   if (!travel) return false;
   const pos = travel.pos[player.id];
   if (!pos) return false;
-  const poi = travel.pois.find((p) => (p.kind === "dungeon" || p.kind === "den") && Math.hypot(pos.x - p.x - 0.5, pos.y - p.y - 0.5) < 1.0);
+  const poi = travel.pois.find((p) => (p.kind === "dungeon" || p.kind === "den") && Math.hypot(pos.x - p.x - 0.5, pos.y - p.y - 0.5) < 8.0);
   if (!poi) return false;
   let party = travel.parties[poi.id];
   if (!party) {
@@ -766,6 +878,8 @@ function exploredString(travel) {
 function publicMap(room, player, opts = {}) {
   const travel = activeTravel(room, player);
   if (!travel) return null;
+  // Kalıcı kıta: tam dünya konfigürasyonu, POI'ler ve oyuncunun keşfi istemciye gider.
+  if (travel.persistent) return persistentWorld.publicMap(travel, player);
   const sizeDef = MAP_SIZES.find((s) => s.id === travel.size) || MAP_SIZES[1];
   const typeDef = MAP_TYPES.find((t) => t.id === travel.type) || MAP_TYPES[0];
   const out = {
@@ -839,8 +953,10 @@ module.exports = {
   MAP_SIZES,
   generateMap,
   enterTravel,
+  enterPersistent,
   leaveTravel,
   healForTown,
+  memberOfAnyTravel,
   interact,
   acceptInvite,
   tryAutoJoin,

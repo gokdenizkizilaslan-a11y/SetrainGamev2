@@ -18,6 +18,7 @@ const sessions = require("./sessions");
 const pvp = require("./pvp");
 const pets = require("./pets");
 const travel = require("./travel");
+const persistentWorld = require("./persistentWorld");
 const travelSkills = require("./travelSkills");
 const { onNewDay, equipItem, unequipSlot, setSkillLoadout, learnTreeNode, consumeItem, addXp } = require("./players");
 const { CONTENT, publicCatalog, getClass } = require("../content");
@@ -910,6 +911,9 @@ function registerSocketHandlers(io) {
         const d = dungeon.dungeonFor(room, player);
         if (d && dungeon.delveUnderway(d)) throw new Error("Finish or leave the delve first.");
         if (player.bossId || player.pvpId) throw new Error("Finish your current battle first.");
+        // Hayalet üyelik temizliği: eski oturumdan kalan sefer kaydı yeni sefer
+        // kurmayı engellemesin ve oyuncu tam canla kasabada kalsın.
+        if (!travel.activeTravel(room, player) && travel.memberOfAnyTravel(room, player)) travel.leaveTravel(room, player);
         if (travel.activeTravel(room, player)) throw new Error("You are already on an expedition.");
         travel.createExpedition(room, player, payload.type, payload.size);
         room.log = { type: "travel", text: `${player.name} opens an expedition room.`, ts: Date.now() };
@@ -979,7 +983,11 @@ function registerSocketHandlers(io) {
         const d = dungeon.dungeonFor(room, player);
         if (d && dungeon.delveUnderway(d)) throw new Error("Finish or leave the delve first.");
         if (player.bossId || player.pvpId) throw new Error("Finish your current battle first.");
-        travel.enterTravel(room, player, payload.type, payload.size, { joinId: payload.joinId });
+        if (payload.world === "setra") {
+          travel.enterPersistent(room, player);
+        } else {
+          travel.enterTravel(room, player, payload.type, payload.size, { joinId: payload.joinId });
+        }
         socket.emit("travel:map", travel.publicMap(room, player));
         room.log = { type: "travel", text: `${player.name} sets out into the wilds.`, ts: Date.now() };
         emitRoomState(io, room);
@@ -1008,7 +1016,21 @@ function registerSocketHandlers(io) {
             !travel.isDowned(t, player.id) && !travel.atReturnPoint(t, player.id)) {
           throw new Error("You can only return to town from the travel stone where you arrived.");
         }
+        const left = t && t.members.includes(player.id) ? { id: player.id, name: player.name } : null;
         travel.leaveTravel(room, player);
+        // Seferden çıkış = kasabaya dönüş: can/mana her koşulda dolu olmalı.
+        travel.healForTown(player);
+        player.travelId = null;
+        // Kalan oyuncular hayaleti hemen silsin (oda durumunu beklemesin).
+        if (left) for (const mid of (t.members || [])) io.to(mid).emit("travel:left", left);
+        // İstemci yalnızca sunucu onayından sonra seyahat ekranını kapatsın.
+        // Can bilgisi de gönderilir: istemci arayüzü oda durumunu beklemeden
+        // doğru (tam) canı gösterebilsin.
+        socket.emit("travel:left", {
+          id: player.id, self: true, reason: "town",
+          hp: player.hp, maxHp: player.maxHp,
+          mana: player.mana, maxMana: player.maxMana,
+        });
         emitRoomState(io, room);
       } catch (err) { emitError(socket, err); }
     });
@@ -1021,6 +1043,15 @@ function registerSocketHandlers(io) {
         if (travel.isDowned(t, player.id)) return; // yerdeyken hareket etmez
         const x = Number(payload.x), y = Number(payload.y);
         if (!Number.isFinite(x) || !Number.isFinite(y)) return;
+        if (t.persistent) {
+          // Kalıcı kıta: sunucu tarafı yürünebilirlik + anti-teleport denetimi.
+          const res = persistentWorld.updatePosition(room, player, x, y);
+          const pos = (res && res.pos) || t.pos[player.id];
+          if (pos) for (const mid of t.members || []) {
+            if (mid !== player.id) io.to(mid).emit("travel:pos", { id: player.id, x: pos.x, y: pos.y });
+          }
+          return;
+        }
         t.pos[player.id] = { x: Math.max(0, Math.min(t.w, x)), y: Math.max(0, Math.min(t.h, y)) };
         // Kendi konumumuzu geri gönderme; aksi halde istemci kendini "diğer oyuncu" sanar.
         for (const mid of t.members || []) {
@@ -1036,6 +1067,40 @@ function registerSocketHandlers(io) {
         }
         if (travel.tryAutoJoin(room, player)) emitRoomState(io, room);
       } catch (err) { /* movement is best-effort */ }
+    });
+
+    // Diğer oyuncuların savaş efektleri: yalnızca kozmetik, sunucu doğrulamaz.
+    // Aynı seferdeki üyelere kırpılmış/sınırlı bir paket olarak iletilir.
+    socket.on("travel:fx", (payload = {}) => {
+      try {
+        const { room, player } = gameContext(socket);
+        const t = travel.activeTravel(room, player);
+        if (!t || !t.members.includes(player.id)) return;
+        if (travel.isDowned(t, player.id)) return;
+        // Saniyede en fazla 30 efekt: paket spam'i diğer istemcileri boğmasın.
+        const now = Date.now();
+        if (!player._fxWin || now - player._fxWin.t > 1000) player._fxWin = { t: now, n: 0 };
+        if (player._fxWin.n++ > 30) return;
+        const clampNum = (v, lo, hi) => Math.max(lo, Math.min(hi, Number(v) || 0));
+        const kind = String(payload.kind || "skill").slice(0, 12);
+        const msg = {
+          id: player.id,
+          kind,
+          x: clampNum(payload.x, -1e5, 1e5),
+          y: clampNum(payload.y, -1e5, 1e5),
+          tx: clampNum(payload.tx, -1e5, 1e5),
+          ty: clampNum(payload.ty, -1e5, 1e5),
+          angle: clampNum(payload.angle, -Math.PI * 4, Math.PI * 4),
+          color: /^#[0-9a-fA-F]{3,8}$/.test(String(payload.color || "")) ? String(payload.color) : "#8ec5ff",
+          radius: clampNum(payload.radius, 0, 420),
+          range: clampNum(payload.range, 0, 900),
+          visual: String(payload.visual || "").slice(0, 48),
+          name: String(payload.name || "").slice(0, 64),
+        };
+        for (const mid of (t.members || [])) {
+          if (mid !== player.id) io.to(mid).emit("travel:allyFx", msg);
+        }
+      } catch (err) { /* kozmetik; hata oyunu etkilemez */ }
     });
 
     // İstemci canavarı yerel simüle eder; sunucu ödülü sınırlı verir.
@@ -1069,6 +1134,9 @@ function registerSocketHandlers(io) {
         const { room, player } = gameContext(socket);
         const t = travel.activeTravel(room, player);
         if (!t || !t.members.includes(player.id)) return;
+        // Yalnızca gerçekten içinde bulunduğu seferin canını yaz (geç gelen
+        // paketler kasabadaki canı düşürmesin).
+        if (player.travelId !== t.id) return;
         if (travel.isDowned(t, player.id)) return; // yerdeyken can güncellemesi yok
         const now = Date.now();
         if (now - (player._lastHpTs || 0) < 180) return;
@@ -1093,7 +1161,9 @@ function registerSocketHandlers(io) {
         const lives = Number.isFinite(player.lives) ? player.lives : 3;
         if (lives <= 0) {
           // Hiç kalbi yok: doğrudan ölüm.
+          const t = travel.activeTravel(room, player);
           travel.fall(room, player);
+          if (t) for (const mid of (t.members || [])) io.to(mid).emit("travel:left", { id: player.id, name: player.name });
           socket.emit("travel:fallen", {});
           socket.emit("travel:notice", { text: "You have fallen. Return to the temple to be revived.", hearts: true });
           room.log = { type: "travel", text: `${player.name} has fallen in the wilds.`, ts: Date.now() };
@@ -1114,7 +1184,9 @@ function registerSocketHandlers(io) {
           room.log = { type: "travel", text: `${player.name} was knocked down.`, ts: Date.now() };
         } else {
           // Son kalp gitti: ölüm, kasabada tapınakta diriltilmeli.
+          const t2 = travel.activeTravel(room, player);
           travel.fall(room, player);
+          if (t2) for (const mid of (t2.members || [])) io.to(mid).emit("travel:left", { id: player.id, name: player.name });
           socket.emit("travel:fallen", {});
           socket.emit("travel:notice", { text: "Your last heart is gone. Return to the temple to be revived.", hearts: true });
           room.log = { type: "travel", text: `${player.name} has fallen in the wilds.`, ts: Date.now() };
@@ -1148,7 +1220,8 @@ function registerSocketHandlers(io) {
         const t = travel.activeTravel(room, player);
         if (!t || !travel.isDowned(t, player.id)) return;
         travel.giveUp(room, player);
-        socket.emit("travel:returned", { hearts: player.lives, text: "You were carried back to town." });
+        for (const mid of (t.members || [])) io.to(mid).emit("travel:left", { id: player.id, name: player.name });
+        socket.emit("travel:returned", { hearts: player.lives, text: "You were carried back to town.", hp: player.hp, maxHp: player.maxHp, mana: player.mana, maxMana: player.maxMana });
         room.log = { type: "travel", text: `${player.name} was carried back to town.`, ts: Date.now() };
         emitRoomState(io, room);
       } catch (err) { /* best-effort */ }

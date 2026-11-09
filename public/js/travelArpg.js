@@ -8,7 +8,11 @@
     others: {}, hudTimer: 0, poiSig: "", pendingDungeon: null, ro: null, skillSig: "", statPanelSig: "",
     ownedSkins: [], activeSkinId: null,
     stats: null, statMapId: null,
+    allyFxEnabled: true,
+    miniCanvas: null, bigMapCanvas: null, mapModal: null,
   };
+  // Oyuncu tercihi: diğer oyuncuların yetenek efektlerini çizme (yalnızca yerel).
+  try { S.allyFxEnabled = localStorage.getItem("setra_travel_allyfx") !== "0"; } catch (e) {}
 
   // Sefer boyunca toplanan ödüller (rapor ekranı için).
   function resetStats(mapId) {
@@ -44,22 +48,53 @@
     );
     return Math.max(10, Math.ceil(maxDist) + 3);
   }
+  // Sınıf + ırk pasiflerini tek listede topla (ARPG motoru bunları okur).
+  function collectPassives(me) {
+    const out = [];
+    if (!me) return out;
+    // Sunucu tam pasif nesnelerini yollar (mult/chance/pct/element dahil).
+    if (Array.isArray(me.classPassives)) out.push(...me.classPassives);
+    else {
+      const cat = (typeof CATALOG !== "undefined" && CATALOG) || null;
+      const classes = (cat && Array.isArray(cat.classes) && cat.classes) || [];
+      const cls = me.character ? classes.find((c) => c && (c.slug === me.character || c.id === me.character)) : null;
+      if (cls && Array.isArray(cls.passives)) out.push(...cls.passives);
+    }
+    if (me.race && Array.isArray(me.race.passives)) out.push(...me.race.passives);
+    return out.filter((p) => p && typeof p.kind === "string");
+  }
+
+  // statBonus pasifleri (ör. +%10 maxHp) ARPG sayılarına uygulanır.
+  function passiveStatPct(passives, stat) {
+    let t = 0;
+    for (const p of passives) if (p.kind === "statBonus" && p.stat === stat) t += Number(p.pct) || 0;
+    return t;
+  }
+
   function playerPayload(me) {
+    const passives = collectPassives(me);
+    const baseAttack = me ? me.attack || 10 : 20;
+    const baseHp = me ? me.maxHp || 100 : 100;
+    const atkPct = passiveStatPct(passives, "attack");
+    const hpPct = passiveStatPct(passives, "maxHp") + passiveStatPct(passives, "hp");
     return {
       name: (me && me.name) || "Adventurer",
       class: me ? me.character : "warrior",
+      race: me && me.race ? me.race.id : null,
       level: me ? me.level || 1 : 1,
+      // Pasifler: sınıf + ırk birleşik (hasar, direnç, dodge, thorns...).
+      passives,
       // Travel yetenek kuşanımı (Q/E/R) ve öğrenilen havuz.
       travelSkills: me && Array.isArray(me.travelSkills) ? me.travelSkills.slice() : [],
       travelLoadout: me && me.travelLoadout ? Object.assign({}, me.travelLoadout) : {},
       stats: {
-        attack: me ? me.attack || 10 : 20,
+        attack: Math.max(1, Math.round(baseAttack * (1 + atkPct))),
         critChance: me ? (me.critChance || 0) / 100 : 0.1,
         critMultiplier: me ? 1 + (me.critDamage || 0) / 100 : 1.5,
         speed: me && me.speed ? 120 + me.speed * 2 : 200,
         omnivamp: me ? (me.omnivamp || 0) / 100 : 0,
         defense: me ? me.resistance || 0 : 0,
-        maxHp: me ? me.maxHp || 100 : 100,
+        maxHp: Math.max(1, Math.round(baseHp * (1 + hpPct))),
         currentHp: me ? (me.hp > 0 ? me.hp : me.maxHp || 100) : 100,
         maxMana: me ? me.maxMana || 0 : 0,
         currentMana: me ? me.mana || 0 : 0,
@@ -95,20 +130,30 @@
       if (id === meId || !p) continue;
       const pl = (room.players || []).find((x) => x.id === id);
       const old = prev[id];
-      let wx, wy;
-      if (old && Number.isFinite(old.wx) && Number.isFinite(old.wy)) {
-        wx = old.wx; wy = old.wy; // canlı akıştan gelen konum korunur
-      } else {
-        const w = S.engine.serverToWorld(p.x, p.y);
-        wx = w.x; wy = w.y;
+      const w = S.engine.serverToWorld(p.x, p.y);
+      // Aynı nesneyi koru: yürüyüş/yön animasyonu oda güncellemelerinde sıfırlanmasın.
+      const o = old || {};
+      o.id = id;
+      if (!Number.isFinite(o.wx) || !Number.isFinite(o.wy)) { o.wx = w.x; o.wy = w.y; }
+      // Canlı `travel:pos` akışı tazeyse o konumu koru. Akış yoksa (ışınlanma,
+      // odaya yeni katılma) oda durumundaki konuma geç.
+      const liveRecent = old && old._posTs && (Date.now() - old._posTs < 1500);
+      if (!liveRecent && (!Number.isFinite(o.tx) || !Number.isFinite(o.ty) || Math.hypot(o.tx - w.x, o.ty - w.y) > 3)) {
+        o.tx = w.x; o.ty = w.y;
       }
-      live[id] = {
-        id, wx, wy,
-        name: (pl && pl.name) || (old && old.name) || "Adventurer",
-        color: classColor(pl && pl.character),
-        hpFrac: pl && pl.maxHp ? clamp01((pl.hp || 0) / pl.maxHp) : 1,
-        downed: downedSet.has(id),
-      };
+      if (!Number.isFinite(o.tx)) o.tx = o.wx;
+      if (!Number.isFinite(o.ty)) o.ty = o.wy;
+      o.z = 0;
+      if (!Number.isFinite(o.vx)) o.vx = 0;
+      if (!Number.isFinite(o.vy)) o.vy = 0;
+      if (!Number.isFinite(o.walkPhase)) o.walkPhase = 0;
+      if (!Number.isFinite(o.facingAngle)) o.facingAngle = 0;
+      o.name = (pl && pl.name) || (old && old.name) || "Adventurer";
+      o.character = (pl && pl.character) || (old && old.character) || "warrior";
+      o.color = classColor(o.character);
+      o.hpFrac = pl && pl.maxHp ? clamp01((pl.hp || 0) / pl.maxHp) : 1;
+      o.downed = downedSet.has(id);
+      live[id] = o;
     }
     S.engine.others = live;
   }
@@ -143,6 +188,44 @@
       .tv-ctl { width: 34px; height: 34px; border-radius: 8px; border: 1px solid rgba(201,147,63,0.7);
         background: rgba(20,16,10,0.72); color: #ffe6a8; font: 700 16px/1 system-ui, sans-serif; cursor: pointer; }
       .tv-ctl:hover { background: rgba(40,30,16,0.92); }
+      .tv-ctl.is-off { opacity: 0.42; filter: grayscale(0.7); }
+      .tv-ctl.is-on { border-color: rgba(140,220,255,0.8); color: #bfeaff; }
+      /* ---- Mini harita (sol üst) ---- */
+      .tv-minimap { position: absolute; top: 12px; left: 12px; width: 172px; height: 172px; z-index: 6;
+        border-radius: 50%; cursor: pointer; pointer-events: auto; touch-action: none;
+        background: radial-gradient(circle at 50% 45%, rgba(10,18,22,0.75), rgba(5,8,10,0.92));
+        box-shadow: 0 10px 26px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(214,178,106,0.28);
+        transition: transform .16s ease, box-shadow .16s ease; }
+      .tv-minimap:hover { transform: scale(1.035); box-shadow: 0 12px 30px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(232,196,130,0.6); }
+      .tv-minimap canvas { display: block; width: 100%; height: 100%; border-radius: 50%; }
+      .tv-mini-cap { position: absolute; left: 50%; bottom: -1px; transform: translate(-50%, 50%);
+        padding: 2px 9px; border-radius: 999px; background: rgba(12,9,6,0.92); border: 1px solid rgba(214,178,106,0.4);
+        color: #ffe6a8; font: 700 8.5px/1 Inter, system-ui, sans-serif; letter-spacing: 2px; text-transform: uppercase; pointer-events: none; }
+      /* ---- Büyük harita (modal) ---- */
+      .tv-mapmodal { position: absolute; inset: 0; z-index: 25; display: none; align-items: center; justify-content: center;
+        padding: 18px; background: radial-gradient(120% 120% at 50% 40%, rgba(10,16,20,0.72), rgba(3,5,7,0.95));
+        backdrop-filter: blur(3px); }
+      .tv-mapmodal.is-open { display: flex; }
+      .tv-mapmodal-box { display: flex; flex-direction: column; gap: 8px; align-items: center; width: min(94vw, 720px); }
+      .tv-mapmodal-head { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+      .tv-mapmodal-head span { font: 800 15px Cinzel, Georgia, serif; letter-spacing: 2px; text-transform: uppercase;
+        background: linear-gradient(180deg,#fbf0d2,#d8ab5c 60%,#9c7233); -webkit-background-clip: text; background-clip: text; color: transparent; }
+      .tv-map-x { width: 30px; height: 30px; border-radius: 50%; padding: 0; cursor: pointer; font-size: 18px; line-height: 1;
+        background: rgba(20,16,10,0.85); border: 1px solid rgba(214,178,106,0.45); color: #e6c98e; }
+      .tv-mapstage { width: min(84vh, 620px); height: min(84vh, 620px); }
+      .tv-mapstage canvas { display: block; width: 100%; height: 100%; border-radius: 50%; background: #0a1218;
+        box-shadow: 0 18px 50px rgba(0,0,0,0.7), inset 0 0 0 1px rgba(214,178,106,0.35); cursor: grab; touch-action: none; }
+      .tv-mapstage canvas:active { cursor: grabbing; }
+      .tv-maplegend { display: flex; flex-wrap: wrap; gap: 4px 12px; justify-content: center;
+        font: 600 10.5px Inter, system-ui, sans-serif; color: #b9a98f; }
+      .tv-maplegend span { display: inline-flex; align-items: center; gap: 5px; }
+      .tv-maplegend i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+      .tv-maphint { font: 500 10px Inter, system-ui, sans-serif; color: #8f7c68; letter-spacing: .4px; }
+      @media (hover: none), (pointer: coarse) {
+        .tv-minimap { width: 116px; height: 116px; top: 10px; left: 10px; }
+        .tv-mini-cap { display: none; }
+        .tv-mapstage { width: min(86vw, 78vh); height: min(86vw, 78vh); }
+      }
       /* Hızlı tüketilebilir çubuğu (1-5 tuşları) */
       .tv-potions { position: absolute; top: 54px; right: 12px; display: flex; flex-direction: column;
         align-items: flex-end; gap: 6px; z-index: 7; pointer-events: auto; }
@@ -215,6 +298,22 @@
       /* Bildirim balonu: üst orta (sağ üstteki iksir çubuğuyla çakışmasın) */
       .tv-shell .tv-toast { top: 12px; left: 50%; right: auto; transform: translateX(-50%);
         border-radius: 11px; font: 600 12px/1.35 var(--font-ui); letter-spacing: .02em; }
+      /* Yetenek ipucu (turn-based savaştaki skill tooltip'in ARPG karşılığı) */
+      .tv-skill-tip { position: fixed; z-index: 60; width: min(300px, 82vw); padding: 11px 13px;
+        border-radius: 12px; border: 1px solid rgba(214,178,106,0.55);
+        background: linear-gradient(170deg, rgba(34,26,16,0.98), rgba(12,9,6,0.99));
+        box-shadow: 0 18px 44px rgba(0,0,0,0.7); pointer-events: none; color: #efe2c9;
+        font: 12px/1.5 Inter, system-ui, sans-serif; display: none; }
+      .tv-skill-tip.is-open { display: block; }
+      .tv-skill-tip h4 { margin: 0 0 2px; font: 800 14px Cinzel, Georgia, serif; letter-spacing: .4px; color: #ffe6b8; }
+      .tv-skill-tip .elem { display: inline-block; font-size: 9.5px; letter-spacing: 1.4px; text-transform: uppercase;
+        color: #9fd3e0; margin-bottom: 5px; }
+      .tv-skill-tip .desc { color: #cdbca4; margin: 2px 0 7px; }
+      .tv-skill-tip .nums { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 5px; }
+      .tv-skill-tip .nums span { font-size: 10.5px; padding: 2px 7px; border-radius: 999px;
+        background: rgba(255,236,196,0.07); border: 1px solid rgba(214,178,106,0.28); color: #ffe0a8; }
+      .tv-skill-tip .scale { font-size: 10.5px; color: #a8c6a0; }
+      .tv-skill-tip .scale b { color: #d9f0cf; }
       @media (hover: none), (pointer: coarse) {
         .tv-statpanel { display: none; }
         .tv-skillbar { bottom: 92px; gap: 6px; padding: 6px 7px; }
@@ -429,26 +528,41 @@
     root.innerHTML = `
       <div class="tv-shell">
         <canvas class="tv-canvas"></canvas>
+        <div class="tv-minimap" id="tv-minimap" title="Dünya haritası — büyütmek için tıkla">
+          <canvas id="tv-mini"></canvas>
+          <span class="tv-mini-cap">Harita</span>
+        </div>
+        <div class="tv-mapmodal" id="tv-mapmodal">
+          <div class="tv-mapmodal-box">
+            <div class="tv-mapmodal-head">
+              <span>Dünya Haritası</span>
+              <button type="button" class="tv-map-x" id="tv-map-close">&times;</button>
+            </div>
+            <div class="tv-mapstage"><canvas id="tv-mapbig"></canvas></div>
+            <div class="tv-maplegend">
+              <span><i style="background:#ffe082"></i>Sen</span>
+              <span><i style="background:#8ec5ff"></i>Oyuncular</span>
+              <span><i style="background:#ff5454"></i>Canavarlar</span>
+              <span><i style="background:#4fc3f7"></i>Seyahat Taşı</span>
+              <span><i style="background:#b388ff"></i>Zindan</span>
+              <span><i style="background:#ffab40"></i>İn</span>
+              <span><i style="background:#ffd54f"></i>Sandık</span>
+            </div>
+            <div class="tv-maphint">Tekerlek: yakınlaştır &middot; Sürükle: kaydır &middot; Esc: kapat</div>
+          </div>
+        </div>
         <div class="tv-controls">
-          <button type="button" class="tv-ctl" id="tv-skills" title="Skills">&#9876;</button>
           <button type="button" class="tv-ctl" id="tv-zoom-in" title="Zoom in">+</button>
           <button type="button" class="tv-ctl" id="tv-zoom-out" title="Zoom out">&minus;</button>
           <button type="button" class="tv-ctl" id="tv-full" title="Fullscreen">&#x26F6;</button>
+          <button type="button" class="tv-ctl" id="tv-allyfx" title="Ally effects">&#10022;</button>
         </div>
         <div class="tv-potions hidden" id="tv-potions"></div>
         <div class="tv-statpanel" id="tv-statpanel"></div>
         <div class="tv-skillbar" id="tv-skillbar"></div>
         <div class="tv-prompt hidden" id="tv-prompt"></div>
         <div class="tv-toast hidden" id="tv-toast"></div>
-        <div class="tv-skill-panel" id="tv-skill-panel">
-          <div class="tv-skill-head"><h3>Skill Loadout</h3><button type="button" class="tv-mana-btn tv-mana-x" id="tv-skill-close">&times;</button></div>
-          <div class="tv-skill-sub">Pick a slot, then choose a skill from your class. Learn new skills with travel points.</div>
-          <div class="tv-skill-points" id="tv-skill-points"></div>
-          <div class="tv-skill-slots" id="tv-skill-slots"></div>
-          <div class="tv-skill-list-head">Class Skills</div>
-          <div class="tv-skill-list" id="tv-skill-list"></div>
-          <div class="tv-skill-hint">Click the same skill again to restore the default.</div>
-        </div>
+        <div class="tv-skill-tip" id="tv-skill-tip"></div>
         <div class="tv-mobile" id="tv-mobile">
           <div class="tv-stick" id="tv-stick"><div class="tv-knob" id="tv-knob"></div></div>
           <div class="tv-buttons">
@@ -461,6 +575,10 @@
         </div>
       </div>`;
     S.canvas = root.querySelector(".tv-canvas");
+    S.miniCanvas = root.querySelector("#tv-mini");
+    S.bigMapCanvas = root.querySelector("#tv-mapbig");
+    S.mapModal = root.querySelector("#tv-mapmodal");
+    bindMinimapUi(root);
     // Yükseklik zinciri çökerse tuval 0px kalıp "siyah ekran" gibi görünmesin.
     const shell = root.querySelector(".tv-shell");
     if (shell) shell.style.minHeight = "320px";
@@ -473,14 +591,40 @@
     const zi = root.querySelector("#tv-zoom-in");
     const zo = root.querySelector("#tv-zoom-out");
     const fs = root.querySelector("#tv-full");
-    if (zi) zi.addEventListener("click", () => { if (S.engine) S.engine.zoomTarget = Math.min(2.2, (S.engine.zoomTarget || 1) + 0.15); });
-    if (zo) zo.addEventListener("click", () => { if (S.engine) S.engine.zoomTarget = Math.max(0.65, (S.engine.zoomTarget || 1) - 0.15); });
+    if (zi) zi.addEventListener("click", () => { const e = S.engine; if (e) e.zoomTarget = e.clampZoomTarget((e.zoomTarget || 1) + 0.15); });
+    if (zo) zo.addEventListener("click", () => { const e = S.engine; if (e) e.zoomTarget = e.clampZoomTarget((e.zoomTarget || 1) - 0.15); });
     if (fs) fs.addEventListener("click", toggleFullscreen);
-    const skillsBtn = root.querySelector("#tv-skills");
-    if (skillsBtn) skillsBtn.addEventListener("click", () => toggleSkillPanel());
+    const afx = root.querySelector("#tv-allyfx");
+    const syncAfx = () => {
+      if (!afx) return;
+      afx.classList.toggle("is-off", S.allyFxEnabled === false);
+      afx.classList.toggle("is-on", S.allyFxEnabled !== false);
+      afx.title = S.allyFxEnabled === false ? "Ally effects: off (click to show)" : "Ally effects: on (click to hide)";
+      if (S.engine) S.engine.allyFxEnabled = S.allyFxEnabled !== false;
+    };
+    syncAfx();
+    if (afx) afx.addEventListener("click", () => {
+      S.allyFxEnabled = S.allyFxEnabled === false;
+      try { localStorage.setItem("setra_travel_allyfx", S.allyFxEnabled ? "1" : "0"); } catch (e) {}
+      if (S.engine) S.engine.allyFxEnabled = S.allyFxEnabled;
+      syncAfx();
+    });
     const skillsClose = root.querySelector("#tv-skill-close");
     if (skillsClose) skillsClose.addEventListener("click", () => toggleSkillPanel(false));
     bindSkillPanel();
+    // Yetenek ipucu: skill bar üzerinde gezinince turn-based savaştaki gibi
+    // hasar / ölçeklenme / bekleme bilgisi gösterilir.
+    const tipBar = root.querySelector("#tv-skillbar");
+    if (tipBar && !tipBar._tipBound) {
+      tipBar._tipBound = true;
+      tipBar.addEventListener("mousemove", (e) => {
+        const b = e.target && e.target.closest ? e.target.closest("[data-tip]") : null;
+        if (!b) { hideSkillTip(); return; }
+        showSkillTip(b.getAttribute("data-tip"), e.clientX, e.clientY);
+      });
+      tipBar.addEventListener("mouseleave", hideSkillTip);
+      tipBar.addEventListener("pointerdown", hideSkillTip, true);
+    }
     // Tüketilebilir çubuğu: tıklayınca kullan (1-5 tuşları da aynı işi yapar).
     const potions = root.querySelector("#tv-potions");
     if (potions) {
@@ -525,8 +669,73 @@
     if (S.map) boot();
   }
 
-  function toggleFullscreen() {
-    const el = S.root && S.root.querySelector(".tv-shell");
+  // ---- Mini harita / dünya haritası -------------------------------------
+  // Motor (TravelEngine) haritayı kendi çizer; burada yalnızca DOM tuvalleri
+  // kaydedilir. Mini harita her karede motor döngüsünde tazelenir.
+  function attachMinimaps() {
+    if (!S.engine || !S.engine.attachMinimap) return;
+    if (S.miniCanvas) S.engine.attachMinimap(S.miniCanvas, { onClick: openBigMap });
+    if (S.bigMapCanvas) S.engine.attachMinimap(S.bigMapCanvas, { big: true, labels: true });
+  }
+
+  function openBigMap() {
+    if (!S.mapModal) return;
+    S.mapModal.classList.add("is-open");
+    attachMinimaps();
+    // Her açılışta dünya görünümüyle başla (yakınlaştırma sıfırlanır).
+    if (S.engine && S.engine.minimaps && S.bigMapCanvas) {
+      const e = S.engine.minimaps.find((x) => x.canvas === S.bigMapCanvas);
+      if (e) { e.zoom = 1; e.panX = 0; e.panY = 0; }
+    }
+  }
+
+  function closeBigMap() {
+    if (S.mapModal) S.mapModal.classList.remove("is-open");
+  }
+
+  function bindMinimapUi(root) {
+    const mini = root.querySelector("#tv-minimap");
+    if (mini && !mini._mmBound) {
+      mini._mmBound = true;
+      // Motor tıklamayı yakalar (sürükleme değilse); dokunmatik için yedek.
+      mini.addEventListener("click", (ev) => {
+        if (ev && ev.detail === 0) openBigMap();
+      });
+    }
+    const close = root.querySelector("#tv-map-close");
+    if (close) close.addEventListener("click", closeBigMap);
+    if (S.mapModal && !S.mapModal._mmBound) {
+      S.mapModal._mmBound = true;
+      S.mapModal.addEventListener("click", (ev) => { if (ev.target === S.mapModal) closeBigMap(); });
+    }
+    if (!bindMinimapUi._esc) {
+      bindMinimapUi._esc = true;
+      document.addEventListener("keydown", (ev) => {
+        if (ev.key === "Escape" && S.mapModal && S.mapModal.classList.contains("is-open")) {
+          closeBigMap();
+          ev.stopPropagation();
+        }
+      }, true);
+    }
+  }
+
+  // Tam ekranda ölünce/çıkınca tarayıcı tam ekranda kilitli kalıyordu:
+  // sefer ekranı kapanırken tam ekran da kapatılmalı, yoksa oyuncu siyah
+  // bir tam ekranın içinde "downed" ekranına mahsur kalıyordu.
+  function exitFullscreenIfAny() {
+    try {
+      const doc = document;
+      const fsEl = doc.fullscreenElement || doc.webkitFullscreenElement;
+      if (!fsEl) return;
+      // Yalnızca sefer kabuğu tam ekrandaysa kapat (başka bir tam ekranı bozmayalım).
+      const shell = S.root && S.root.querySelector(".tv-shell");
+      if (shell && fsEl !== shell && !shell.contains(fsEl)) return;
+      const exit = doc.exitFullscreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+      if (exit) { const p = exit.call(doc); if (p && p.catch) p.catch(() => {}); }
+    } catch (e) { /* tam ekran API'si yoksa yoksay */ }
+  }
+
+  function toggleFullscreen() {    const el = S.root && S.root.querySelector(".tv-shell");
     if (!el) return;
     const doc = document;
     if (!doc.fullscreenElement && !doc.webkitFullscreenElement) {
@@ -558,6 +767,7 @@
       try {
         S.engine.setWorldBounds(map);
         applyRoom(S.room);
+        attachMinimaps();
         startHud();
         if (S.active && !S.engine.isRunning) {
           S.engine.isRunning = true;
@@ -576,6 +786,12 @@
       tileSize: 64,
       onInteract: handleInteract,
       onMove: (pos) => { if (S.active && typeof socket !== "undefined") socket.emit("travel:pos", pos); },
+      // Diğer oyunculara yerel yetenek/saldırı efektlerini yayınla (kozmetik).
+      allyFxEnabled: S.allyFxEnabled !== false,
+      onAllyAction: (fx) => {
+        if (!S.active || S.allyFxEnabled === false || !fx) return;
+        if (typeof socket !== "undefined") socket.emit("travel:fx", fx);
+      },
       // Görsel eklenti canavar `kind`ını değiştirir; ödül için orijinali yolla.
       onKill: (m) => { if (S.active && typeof socket !== "undefined") socket.emit("travel:kill", { kind: m && (m.baseKind || m.kind), exp: m && m.exp }); },
       onHpChange: (hp) => { if (typeof socket !== "undefined" && S.engine && S.engine._hpFromServer) socket.emit("travel:hp", { hp }); },
@@ -602,6 +818,7 @@
     } catch (e) { /* ayarlar isteğe bağlı */ }
     applyRoom(S.room);
     startHud();
+    attachMinimaps();
     bindSkinEvents();
     bindStatEvents();
     // Kapsayıcı boyutu değişince tuvali yeniden ölçekle (karakter ortada kalsın).
@@ -632,6 +849,8 @@
       S.poiSig = "";
       S.maxLives = 0;
       S.spawn = null;
+      S._selfSynced = false;
+      S.others = {};
     }
     S.map = map;
     // Yeni sefer: sefer raporu sayaçlarını sıfırla.
@@ -675,6 +894,8 @@
 
   function open() {
     S.active = true;
+    // Arka plan (menü/town) efekt döngüsünü durdur: görünmüyor, boşa CPU/GPU.
+    try { if (window.SetraBgFx) window.SetraBgFx.pause(); } catch (e) {}
     if (!S.root || !S.canvas || !S.root.contains(S.canvas)) return;
     if (!S.engine && S.map) boot();
     if (S.engine && !S.engine.isRunning) {
@@ -689,15 +910,32 @@
       if (S.engine) S.engine.resize();
     });
   }
-  function pause() { S.active = false; if (S.engine) S.engine.isRunning = false; }
-  function close() {
+  function pause() {
     S.active = false;
+    if (S.engine) {
+      S.engine.isRunning = false;
+      // Sefer ekranından çıkıldı: döngü ambiyansı susmalı.
+      try { if (S.engine.sound) S.engine.sound.stopLoop(); } catch (e) {}
+    }
+    hideSkillTip();
+    try { if (window.SetraBgFx) window.SetraBgFx.resume(); } catch (e) {}
+  }
+  function close() {
+    // Önce tam ekrandan çık: aksi halde tarayıcı tam ekranda kalır ve oyuncu
+    // menüye/kasabaya dönmüş olsa bile ekranda eski görüntü donar.
+    exitFullscreenIfAny();
+    S.active = false;
+    try { if (window.SetraBgFx) window.SetraBgFx.resume(); } catch (e) {}
+    hideSkillTip();
     stopHud();
     if (S.ro) { try { S.ro.disconnect(); } catch (e) {} S.ro = null; }
     if (S.engine) { try { S.engine.destroy(); } catch (e) {} S.engine = null; }
     if (downedEl) { try { downedEl.remove(); } catch (e) {} downedEl = null; }
     S.ready = false; S.root = null; S.canvas = null; S.map = null; S.poiSig = ""; S.pendingDungeon = null;
+    S.miniCanvas = null; S.bigMapCanvas = null; S.mapModal = null;
     S.room = null; S.maxLives = 0; S._potionSig = "";
+    S._selfSynced = false;
+    S.others = {};
   }
 
   function teleport(x, y) {
@@ -724,12 +962,13 @@
     }
     if (obj.type === "shrine") {
       // Seyahat taşı: seferi bitirip şehre döner (Back to Town ile aynı).
+      // Taş artık varış noktasının yanında olduğu için konum kontrolü geçer.
+      if (window.SetraTravel && typeof window.SetraTravel.canReturnToTown === "function" && !window.SetraTravel.canReturnToTown()) {
+        toast("Return from the stone where you arrived.");
+        return;
+      }
       if (typeof socket !== "undefined") socket.emit("travel:leave");
-      if (typeof state !== "undefined") state.travelOpen = false;
-      close();
-      if (typeof renderTown === "function" && typeof state !== "undefined" && state.room) renderTown(state.room);
-      if (typeof showToast === "function") showToast("Back in town.");
-      showReport({ title: "Safe Return", kicker: "Back in town", subtitle: "You close the trail and return to town with everything you gathered." });
+      toast("Returning to town...");
     }
   }
 
@@ -741,6 +980,79 @@
     el.classList.remove("hidden");
     clearTimeout(el._t);
     el._t = setTimeout(() => el.classList.add("hidden"), 2600);
+  }
+
+  // ---- Yetenek ipucu (hover tooltip) ------------------------------------
+  // Turn-based savaştaki skill tooltip'in ARPG karşılığı: hasar, ölçeklenme,
+  // bekleme, menzil ve etki alanı tek kutuda gösterilir.
+  function skillTipEl() {
+    return S.root ? S.root.querySelector("#tv-skill-tip") : null;
+  }
+
+  function isTurkishUi() {
+    try { return (document.documentElement.getAttribute("lang") || "").toLowerCase().startsWith("tr"); } catch (e) { return false; }
+  }
+
+  function skillTipHtml(sk) {
+    if (!sk) return "";
+    const tr = isTurkishUi();
+    const eng = S.engine;
+    const dmg = eng && typeof eng.skillDamage === "function" ? Math.round(eng.skillDamage(sk)) : 0;
+    const base = eng && typeof eng.skillPowerBonus === "function" ? Math.round(eng.skillPowerBonus(sk)) : 0;
+    const desc = (tr && sk.trDesc) ? sk.trDesc : (sk.desc || "");
+    const nums = [];
+    if (dmg > 0) nums.push(tr ? `${dmg} hasar` : `${dmg} dmg`);
+    if (Number(sk.power) > 0) nums.push(tr ? `\u00D7${Number(Number(sk.power).toFixed(2))} g\u00FC\u00E7` : `\u00D7${Number(Number(sk.power).toFixed(2))} power`);
+    if (Number(sk.cd) > 0) nums.push(tr ? `${Number(sk.cd)} sn bekleme` : `${Number(sk.cd)}s cooldown`);
+    nums.push(Number(sk.cost) > 0 ? `${Number(sk.cost)} mana` : (tr ? "Mana harcamaz" : "No mana cost"));
+    if (Number(sk.radius) > 0) nums.push(tr ? `${Math.round(Number(sk.radius))} yar\u0131\u00E7ap` : `${Math.round(Number(sk.radius))} radius`);
+    else if (Number(sk.range) > 0) nums.push(tr ? `${Math.round(Number(sk.range))} menzil` : `${Math.round(Number(sk.range))} range`);
+    if (Number(sk.arc) > 0) nums.push(`${Math.round((Number(sk.arc) * 180) / Math.PI)}\u00B0 ${tr ? "a\u00E7\u0131" : "arc"}`);
+    const prm = sk.params || {};
+    if (Number(prm.n) > 1) nums.push(tr ? `${Number(prm.n)} hedef` : `${Number(prm.n)} targets`);
+    if (Number(prm.stun) > 0) nums.push(tr ? `${Number(prm.stun)} sn sersemletme` : `${Number(prm.stun)}s stun`);
+    const st = sk.status && (sk.status.kind || sk.status.type || sk.status.name);
+    if (st) nums.push(String(st));
+    const bf = sk.buff && (sk.buff.label || sk.buff.stat || sk.buff.kind);
+    if (bf) nums.push(`${tr ? "etki" : "buff"}: ${String(bf)}`);
+    const pctTxt = sk.magic ? "80%" : "25%";
+    const scale = tr
+      ? `\u00D6l\u00E7ek: <b>Sald\u0131r\u0131</b> + <b>B\u00FCy\u00FC</b> (MP'nin ${pctTxt}'i)`
+      : `Scales with <b>Attack</b> + <b>Magic</b> (${pctTxt} of MP)`;
+    return `<h4>${escapeHtml(sk.name || "Skill")}</h4>
+      <span class="elem">${escapeHtml(sk.element || "physical")}</span>
+      ${desc ? `<div class="desc">${escapeHtml(desc)}</div>` : ""}
+      <div class="nums">${nums.map((n) => `<span>${escapeHtml(n)}</span>`).join("")}</div>
+      <div class="scale">${scale}${base ? ` &mdash; ${tr ? "temel" : "base"} ${base}` : ""}</div>`;
+  }
+
+  function moveSkillTip(x, y) {
+    const el = skillTipEl();
+    if (!el || !el.classList.contains("is-open")) return;
+    const w = el.offsetWidth || 280;
+    const h = el.offsetHeight || 140;
+    let lx = x + 16;
+    let ly = y - h - 14;
+    if (lx + w > window.innerWidth - 8) lx = x - w - 12;
+    if (ly < 8) ly = y + 18;
+    el.style.left = Math.max(8, lx) + "px";
+    el.style.top = Math.max(8, ly) + "px";
+  }
+
+  function showSkillTip(key, x, y) {
+    const sk = S.tipSkills && S.tipSkills[key];
+    const el = skillTipEl();
+    if (!sk || !el) return;
+    if (el._for !== key) { el.innerHTML = skillTipHtml(sk); el._for = key; }
+    el.classList.add("is-open");
+    moveSkillTip(x, y);
+  }
+
+  function hideSkillTip() {
+    const el = skillTipEl();
+    if (!el) return;
+    el.classList.remove("is-open");
+    el._for = null;
   }
 
   // ---- MANA RENGLERİ (skill skin) ----
@@ -929,6 +1241,7 @@
         cd: (sk && Number(sk.cd)) || 0,
         icon: sk && sk.id && typeof ext === "string" ? `/images/skills/${encodeURIComponent(sk.id)}.${ext}` : "",
         off: !sk,
+        sk: sk || null,
       });
     });
     out.push({ key: "dash", kind: "dash", label: "SPC", rune: "\u27A4", color: "#3c6f8c", name: "Dash" });
@@ -995,8 +1308,10 @@
           <div class="tv-vital__bar"><span class="tv-vital__fill"></span></div>
           <div class="tv-vital__num">&mdash;</div>
         </div>`;
+      S.tipSkills = {};
+      for (const s of slots) { if (s.sk) S.tipSkills[s.key] = s.sk; }
       bar.innerHTML = vitals + slots.map((s) => `<button type="button" class="tv-sb${s.kind === "attack" ? " is-auto" : ""}${s.off ? " is-off" : ""}${s.icon ? " has-ic" : ""}"
-          data-sb="${s.key}" data-kind="${s.kind}" title="${escapeHtml(s.name)}${s.cd ? ` · ${s.cd}s` : ""}"${s.icon ? ` style="--sk:${s.color};background-image:url('${s.icon}')"` : ` style="--sk:${s.color}"`}>
+          data-sb="${s.key}" data-kind="${s.kind}"${s.sk ? ` data-tip="${s.key}"` : ""} title="${escapeHtml(s.name)}${s.cd ? ` · ${s.cd}s` : ""}"${s.icon ? ` style="--sk:${s.color};background-image:url('${s.icon}')"` : ` style="--sk:${s.color}"`}>
           <span class="tv-sb__ic">${s.rune}</span>
           <span class="tv-sb__key">${s.label}</span>
           <span class="tv-sb__bar"></span>
@@ -1044,14 +1359,23 @@
     if (prompt) {
       const target = S.engine._interactTarget;
       if (target) {
-        const label = target.type === "poi" ? (target.name || target.kind) : "Kamp";
         let verb = "Inspect";
-        if (target.type === "poi" && (target.kind === "dungeon" || target.kind === "den")) {
-          verb = S.pendingDungeon === target.poiId ? "Enter" : "Form party at";
-        } else if (target.type === "poi" && target.kind === "chest") verb = "Open";
-        else if (target.type === "poi" && target.kind === "inn") verb = "Rest at";
-        else if (target.type === "poi" && target.kind === "ruin") verb = "Search";
-        prompt.innerHTML = `<b>E</b> &mdash; ${verb} ${escapeHtml(label)}`;
+        let label = "";
+        if (target.type === "poi") {
+          label = target.name || target.kind || "";
+          if (target.kind === "dungeon" || target.kind === "den") {
+            verb = S.pendingDungeon === target.poiId ? "Enter" : "Form party at";
+          } else if (target.kind === "chest") verb = "Open";
+          else if (target.kind === "inn") verb = "Rest at";
+          else if (target.kind === "ruin") verb = "Search";
+        } else if (target.type === "shrine") {
+          verb = "Use";
+          label = "Travel Stone";
+        } else {
+          label = target.label || target.name || "Camp";
+        }
+        const line = label ? `${verb} ${label}` : verb;
+        prompt.innerHTML = `<b>E</b> &mdash; ${escapeHtml(line)}`;
         prompt.classList.remove("hidden");
       } else {
         prompt.classList.add("hidden");
@@ -1080,12 +1404,20 @@
         S.engine.keys["s"] = dy > 0.28;
         S.engine.keys["a"] = dx < -0.28;
         S.engine.keys["d"] = dx > 0.28;
+        // Mobil nişan: yürüdüğümüz yöne bakalım ve skiller o yöne gitsin.
+        // Ekran (dx,dy) -> izometrik dünya yönü: ((dy+dx), (dy-dx)).
+        if (Math.hypot(dx, dy) > 0.22) S.engine.setTouchAim(dy + dx, dy - dx);
       };
       const resetMove = () => { if (S.engine) { S.engine.keys["w"] = S.engine.keys["s"] = S.engine.keys["a"] = S.engine.keys["d"] = false; } knob.style.transform = "translate(-50%, -50%)"; };
       stick.addEventListener("touchstart", (e) => {
         const t = e.changedTouches[0]; touchId = t.identifier;
         const r = stick.getBoundingClientRect();
         cx = r.left + r.width / 2; cy = r.top + r.height / 2;
+        // İlk dokunuşta da yön hesaplansın (sürüklemeden basitçe basınca çalışır).
+        const dx = Math.max(-1, Math.min(1, (t.clientX - cx) / 48));
+        const dy = Math.max(-1, Math.min(1, (t.clientY - cy) / 48));
+        knob.style.transform = `translate(calc(-50% + ${dx * 34}px), calc(-50% + ${dy * 34}px))`;
+        setMove(dx, dy);
         e.preventDefault();
       }, { passive: false });
       stick.addEventListener("touchmove", (e) => {
@@ -1105,8 +1437,10 @@
       stick.addEventListener("touchcancel", end);
     }
     const skillBtn = (b) => {
-      b.addEventListener("click", (e) => {
+      // pointerdown: mobilde 300ms tık gecikmesi/basma kaybı olmadan anında tepki.
+      b.addEventListener("pointerdown", (e) => {
         e.preventDefault();
+        e.stopPropagation();
         if (!S.engine) return;
         if (b.hasAttribute("data-skill")) {
           // E kanal yeteneği: basılı tutma pointerdown/up ile yönetilir.
@@ -1114,7 +1448,7 @@
           S.engine.triggerSkill(b.getAttribute("data-skill"));
         } else if (b.getAttribute("data-act") === "dash") S.engine.triggerDash();
         else if (b.getAttribute("data-act") === "attack") attackNearest();
-      });
+      }, { passive: false });
       if (b.getAttribute("data-skill") === "e") {
         b.addEventListener("pointerdown", (e) => {
           e.preventDefault();
@@ -1139,7 +1473,11 @@
       const d = Math.hypot(m.x - S.engine.player.x, m.y - S.engine.player.y);
       if (d < bestD) { bestD = d; best = m; }
     }
-    if (best) { S.engine.mouse.worldX = best.x; S.engine.mouse.worldY = best.y; }
+    if (best) {
+      // Mobil dahil: hedefe nişan al ve o yöne vur (aimPoint bunu kullanır).
+      S.engine.aimAtWorld(best.x, best.y, 0.9);
+      S.engine.mouse.worldX = best.x; S.engine.mouse.worldY = best.y;
+    }
     S.engine.triggerPrimaryAttack();
   }
 
@@ -1156,8 +1494,10 @@
     const me = meFrom(S.room);
     const slug = (me && me.character) || (S.engine && S.engine.playerData && S.engine.playerData.class);
     if (!slug) return null;
-    if (cat && cat.arpgSkills && cat.arpgSkills[slug]) return cat.arpgSkills[slug];
+    // Motorun kopyası öncelikli: TravelSkills yeni yetenek adlarını/beklemelerini
+    // oraya yazar (applyTravelSkills). Katalog yalnızca yedek.
     if (S.engine && S.engine.arpgSkills && S.engine.arpgSkills[slug]) return S.engine.arpgSkills[slug];
+    if (cat && cat.arpgSkills && cat.arpgSkills[slug]) return cat.arpgSkills[slug];
     return null;
   }
 
@@ -1450,15 +1790,41 @@
       S.others[id] = { x, y };
       if (!S.engine || !S.room) return;
       const pl = (S.room.players || []).find((p) => p.id === id);
+      // Odada olup seferden çıkmış oyuncunun geç gelen konumu hayaleti geri getirmesin.
+      if (pl && (!pl.travelId || (S.map && pl.travelId !== S.map.id))) {
+        delete S.engine.others[id];
+        delete S.others[id];
+        return;
+      }
       const w = S.engine.serverToWorld(x, y);
-      const prev = S.engine.others[id] || { id };
-      prev.wx = w.x; prev.wy = w.y;
+      const prev = S.engine.others[id] || { id, wx: w.x, wy: w.y, z: 0 };
+      prev.tx = w.x; prev.ty = w.y;   // motor yumuşakça bu hedefe kaydırır
+      prev._posTs = Date.now();
       prev.name = (pl && pl.name) || prev.name || "Adventurer";
-      prev.color = prev.color || classColor(pl && pl.character);
+      prev.character = (pl && pl.character) || prev.character || "warrior";
+      prev.color = classColor(prev.character);
       if (pl && pl.maxHp) prev.hpFrac = clamp01((pl.hp || 0) / pl.maxHp);
       S.engine.others[id] = prev;
     },
+    removeOther(id) {
+      if (!id) return;
+      delete S.others[id];
+      if (S.engine && S.engine.others) delete S.engine.others[id];
+    },
+    // Diğer oyuncuların yetenek/saldırı efektlerini motorda oynat.
+    allyFx(p) {
+      if (!p || !S.engine) return;
+      if (S.engine.allyFxEnabled === false) return;
+      try { S.engine.playAllyAction(p); } catch (e) { /* kozmetik */ }
+    },
+    setAllyFxEnabled(on) {
+      S.allyFxEnabled = !!on;
+      if (S.engine) S.engine.allyFxEnabled = !!on;
+      try { localStorage.setItem("setra_travel_allyfx", on ? "1" : "0"); } catch (e) {}
+    },
+    allyFxEnabled() { return S.allyFxEnabled !== false; },
     hasMap() { return !!S.map; },
+    mapId() { return (S.map && S.map.id) || null; },
     // Kasabaya dönüş yalnızca varış taşından (haritanın başlangıç noktası) yapılabilir.
     // Sunucu da aynı kuralı doğrular; bu yalnızca kullanıcıya erken geri bildirim verir.
     canReturnToTown() {

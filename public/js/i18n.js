@@ -50,6 +50,11 @@
     // ===== Ana menü / karakter yaratma / lobi =====
     "Singleplayer": "Tek Oyunculu",
     "Multiplayer": "Çok Oyunculu",
+    "Chronicle of the Ember Realm": "Köz Diyarı'nın Güncesi",
+    "A dying realm. One last warden. Choose your path.":
+      "Ölmekte olan bir diyar. Son bir muhafız. Yolunu seç.",
+    "Begin a lone pilgrimage": "Yalnız bir yolculuğa çık",
+    "Ride with sworn companions": "Yeminli yoldaşlarla at sür",
     "Create Character": "Karakter Oluştur",
     "Name": "İsim",
     "Your name": "Adınız",
@@ -218,30 +223,41 @@
     "Pets in Battle": "Savaşta Evcil Hayvanlar",
 
     // ===== Hikaye: başlık / prolog =====
-    "The Setra Game": "Setra Oyunu",
+    "The Setra Game": "Setra",
+    "Setra": "Setra",
     "Wake Up": "Uyan",
-    "The world is Krein. It has turned for five billion years, and for five billion years it has carried the tread of men.":
-      "Dünya Krein'dir. Beş milyar yıldır dönüyor ve beş milyar yıldır insanların ayak izlerini taşıyor.",
-    "In the green kingdom of Palendio, among warring crowns and old banners, lies a quiet village named Setra.":
-      "Palendio'nun yeşil krallığında, savaşan taçlar ve eski sancaklar arasında, Setra adında sessiz bir köy uzanır.",
-    "You wake in the grass of a valley you do not know, with a name you chose and a past you cannot recall.":
-      "Bilmediğin bir vadinin çimenlerinde uyanıyorsun; seçtiğin bir isim ve hatırlayamadığın bir geçmişle.",
+    "Krein is an old world of wind, stone and long roads. No map has ever held all of it.":
+      "Krein; rüzgârın, taşın ve uzun yolların eski dünyası. Hiçbir harita tamamını kapsamadı.",
+    "Krein is an old world, its lands worn smooth by ages of wind and stone. No map has ever held all of it.":
+      "Krein eski bir dünya; toprakları rüzgâr ve taşın yonttuğu çağlar boyunca aşınmış. Hiçbir harita tamamını kapsamadı.",
+    "You awake on the grass of an unknown valley with an empty memory and a warm stone in your hand.":
+      "Bilmediğin bir vadinin çimenlerinde, hafızan boş ve elinde sıcak bir taşla uyanıyorsun.",
+    "You wake on the grass of a valley you do not know. Your head is heavy, your memory empty, and a warm stone rests in your hand.":
+      "Bilmediğin bir vadinin çimenlerinde uyanıyorsun. Başın ağır, hafızan boş, elinde sıcak bir taş duruyor.",
+    "The stone is called Aetheria. You do not know where it came from, only that it brought you here.":
+      "Taşın adı Aetheria. Nereden geldiğini bilmiyorsun; yalnızca seni buraya getirdiğini biliyorsun.",
+    "The stone is Aetheria. You do not remember where it came from, or how you got here — only that it carried you.":
+      "Taş Aetheria. Nereden geldiğini de buraya nasıl geldiğini de hatırlamıyorsun — yalnızca seni taşıdığını biliyorsun.",
+    "Beyond the ridge lies Setra, a small village in the green kingdom of Palendio — the nearest roof and fire you have.":
+      "Tepenin ardında, Palendio'nun yeşil krallığındaki küçük Setra köyü var — sana en yakın çatı ve ateş orası.",
+    "Past the ridge lies Setra, a small village in the green kingdom of Palendio. It is the nearest place with a roof and a fire.":
+      "Tepenin ardında, Palendio'nun yeşil krallığındaki küçük Setra köyü var. Çatısı ve ateşi olan en yakın yer orası.",
 
     // ===== Hikaye: diyaloglar =====
-    "Cold grass. Birdsong. A shadow falls across your face, and a woman kneels beside you.":
-      "Soğuk çimenler. Kuş cıvıltısı. Yüzüne bir gölge düşüyor ve bir kadın yanına diz çöküyor.",
-    "Easy. You are breathing, that is the important part. I found you in the hollow with empty hands and emptier eyes. What is your name, wanderer?":
-      "Sakin ol. Nefes alıyorsun, önemli olan bu. Seni çukurda buldum; elleri boş, gözleri daha da boş. Adın ne, gezgin?",
-    "I... cannot remember. Only the road, and then nothing.":
-      "Ben... hatırlayamıyorum. Yalnızca yol, sonra hiçbir şey.",
-    "Then Setra Village will have to do as a beginning. I am Mira. I keep a small house and a smaller purse. Take this — fifty gold and ten days of food. It is nearly all I have, so spend it like it matters.":
-      "Öyleyse başlangıç olarak Setra Köyü yeter. Ben Mira. Küçük bir evim ve daha da küçük bir kesem var. Bunu al — elli altın ve on günlük yiyecek. Neredeyse sahip olduğum her şey, o yüzden önemliymiş gibi harca.",
-    "Why help a stranger with no past?":
-      "Neden geçmişi olmayan bir yabancıya yardım ediyorsun?",
-    "Because someone once did the same for me. And because Palendio has little kindness left to spare these days — the crowns quarrel, the roads grow unsafe. Grow strong, find work at the forge or the market, and sleep with a roof when you can afford it. Now stand. The village waits.":
-      "Çünkü bir zamanlar biri bana da aynısını yaptı. Ve çünkü Palendio'nun bu günlerde harcayacak az nezaketi kaldı — taçlar kavga ediyor, yollar güvensizleşiyor. Güçlen, demircide ya da pazarda iş bul, paran yettiğinde çatı altında uyu. Hadi kalk. Köy bekliyor.",
-    "Mira presses 50 gold and 10 food into your hands.":
-      "Mira avuçlarına 50 altın ve 10 yiyecek sıkıştırıyor.",
+    "Cold grass. Birdsong. Someone is shaking your shoulder.":
+      "Soğuk çimenler. Kuş cıvıltısı. Biri omzundan tutup sarsıyor.",
+    "Hey. Hey — can you hear me? You were lying face-down in the ditch. Are you hurt?":
+      "Hey. Hey — beni duyuyor musun? Hendekte yüz üstü yatıyordun. Bir yerin acıyor mu?",
+    "I... don't think so. I don't remember how I got here.":
+      "Sanırım... hayır. Buraya nasıl geldiğimi hatırlamıyorum.",
+    "You're not bleeding, so that's a start. I'm Mira. The village is just past the ridge — Setra. Can you stand? Here, take this: fifty gold and some food. Nobody in this valley helps for free, and you'll need it.":
+      "Kanaman yok, bu bir başlangıç. Ben Mira. Köy şu tepenin ardında — Setra. Kalkabilir misin? Dur, şunları al: elli altın ve biraz yiyecek. Bu vadide kimse bedavaya yardım etmez, ihtiyacın olacak.",
+    "Why? You don't know me.":
+      "Neden? Beni tanımıyorsun.",
+    "No. But I've been the stranger at the wrong end of the road before. Come on — walk slowly, and don't drop the stone. It's still warm.":
+      "Hayır. Ama ben de bir zamanlar yolun yanlış ucunda kalmıştım. Hadi — yavaş yürü ve taşı düşürme. Hâlâ sıcak.",
+    "Mira gives you fifty gold and ten days of food.":
+      "Mira sana elli altın ve on günlük yiyecek veriyor.",
 
     // ===== Kasaba arama sonuçları =====
     "You find a pouch of coins in the grass.": "Çimenlerde bir kese dolusu bozuk para buluyorsun.",
@@ -257,6 +273,9 @@
       "Meşalen hâlâ yanıyor. Bir müttefik seni ayağa kaldırabilir ya da bulduğun her şeyi koruyarak kasabaya dönebilirsin.",
     "Wait for a revive": "Diriltilmeyi bekle",
     "Return to town": "Kasabaya dön",
+    "Use Travel Stone": "Seyahat Taşını kullan",
+    "Return from the stone where you arrived.": "Yalnızca vardığın taştan dönebilirsin.",
+    "Returning to town...": "Kasabaya dönülüyor...",
     "A nearby ally revives you with": "Yakındaki bir müttefik seni şununla diriltir:",
     "The last light gutters out": "Son ışık sönüyor",
     "Safely returned": "Güvenle döndün",

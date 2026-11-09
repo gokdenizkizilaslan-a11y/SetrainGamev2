@@ -8,7 +8,7 @@
       "gold": 0,
       "wood": 0
     },
-    "image": "/images/items/egg_red.png",
+    "image": "/images/items/egg_red.webp",
     "description": "Red Egg - hatch to get a random pet. Drops in specific dungeons."
   },
   {
@@ -20,7 +20,7 @@
       "gold": 0,
       "wood": 0
     },
-    "image": "/images/items/egg_green.png",
+    "image": "/images/items/egg_green.webp",
     "description": "Green Egg - hatch to get a random pet. Drops in specific dungeons."
   },
   {
@@ -32,7 +32,7 @@
       "gold": 0,
       "wood": 0
     },
-    "image": "/images/items/egg_blue.png",
+    "image": "/images/items/egg_blue.webp",
     "description": "Blue Egg - hatch to get a random pet. Drops in specific dungeons."
   },
   {
@@ -44,7 +44,7 @@
       "gold": 0,
       "wood": 0
     },
-    "image": "/images/items/egg_brown.png",
+    "image": "/images/items/egg_brown.webp",
     "description": "Brown Egg - hatch to get a random pet. Drops in specific dungeons."
   },
   {
@@ -56,7 +56,7 @@
       "gold": 0,
       "wood": 0
     },
-    "image": "/images/items/egg_yellow.png",
+    "image": "/images/items/egg_yellow.webp",
     "description": "Yellow Egg - hatch to get a random pet. Drops in specific dungeons."
   },
   {
@@ -68,7 +68,7 @@
       "gold": 0,
       "wood": 0
     },
-    "image": "/images/items/egg_purple.png",
+    "image": "/images/items/egg_purple.webp",
     "description": "Purple Egg - hatch to get a random pet. Drops in specific dungeons."
   },
   {
@@ -80,7 +80,7 @@
       "gold": 0,
       "wood": 0
     },
-    "image": "/images/items/egg_cyan.png",
+    "image": "/images/items/egg_cyan.webp",
     "description": "Cyan Egg - hatch to get a random pet. Drops in specific dungeons."
   },
   {
@@ -92,7 +92,7 @@
       "gold": 0,
       "wood": 0
     },
-    "image": "/images/items/egg_dark.png",
+    "image": "/images/items/egg_dark.webp",
     "description": "Dark Egg - hatch to get a random pet. Drops in specific dungeons."
   },
   {
@@ -116,7 +116,7 @@
       "gold": 0,
       "wood": 0
     },
-    "image": "/images/items/egg_gold.png",
+    "image": "/images/items/egg_gold.webp",
     "description": "Gold Egg - hatch to get a random pet. Drops in specific dungeons."
   },
   {
@@ -860,7 +860,7 @@
       "wood": 0
     },
     "chestTier": "f",
-    "image": "/images/items/wooden_chest.png",
+    "image": "/images/items/wooden_chest.webp",
     "description": "A simple chest. Common odds of decent loot."
   },
   {
@@ -873,7 +873,7 @@
       "wood": 0
     },
     "chestTier": "d",
-    "image": "/images/items/iron_chest.png",
+    "image": "/images/items/iron_chest.webp",
     "description": "A sturdy chest. Better odds of uncommon loot."
   },
   {
@@ -886,7 +886,7 @@
       "wood": 0
     },
     "chestTier": "c",
-    "image": "/images/items/gold_chest.png",
+    "image": "/images/items/gold_chest.webp",
     "description": "A gilded chest. Decent odds of rare loot."
   },
   {
@@ -899,7 +899,7 @@
       "wood": 0
     },
     "chestTier": "b",
-    "image": "/images/items/emerald_chest.png",
+    "image": "/images/items/emerald_chest.webp",
     "description": "A gem-studded chest. Strong odds of epic loot."
   },
   {
@@ -912,7 +912,7 @@
       "wood": 0
     },
     "chestTier": "a",
-    "image": "/images/items/obsidian_chest.png",
+    "image": "/images/items/obsidian_chest.webp",
     "description": "A black-glass chest. Fine odds of legendary loot."
   },
   {
@@ -2123,7 +2123,7 @@
       "gold": 0,
       "wood": 0
     },
-    "image": "/images/items/boss_chest_ember.png",
+    "image": "/images/items/boss_chest_ember.webp",
     "chestTier": "a",
     "description": "Ember King's chest - rare+ guaranteed."
   },
@@ -2136,7 +2136,7 @@
       "gold": 0,
       "wood": 0
     },
-    "image": "/images/items/boss_chest_frost.png",
+    "image": "/images/items/boss_chest_frost.webp",
     "chestTier": "s",
     "description": "Frost Titan's chest - rare+ guaranteed."
   },
@@ -2149,7 +2149,7 @@
       "gold": 0,
       "wood": 0
     },
-    "image": "/images/items/boss_chest_void.png",
+    "image": "/images/items/boss_chest_void.webp",
     "chestTier": "s",
     "description": "Void Herald's chest - epic+ guaranteed."
   },
@@ -2162,7 +2162,7 @@
       "gold": 0,
       "wood": 0
     },
-    "image": "/images/items/boss_chest_storm.png",
+    "image": "/images/items/boss_chest_storm.webp",
     "chestTier": "ss",
     "description": "Storm Colossus chest - epic+ guaranteed."
   },
@@ -2175,7 +2175,7 @@
       "gold": 0,
       "wood": 0
     },
-    "image": "/images/items/boss_chest_world.png",
+    "image": "/images/items/boss_chest_world.webp",
     "chestTier": "ss",
     "description": "World Eater's chest - legendary+ guaranteed."
   },
@@ -2189,7 +2189,7 @@
       "wood": 0
     },
     "chestTier": "s",
-    "image": "/images/items/mythic_chest.png",
+    "image": "/images/items/mythic_chest.webp",
     "description": "A chest of legend. Great odds of mythic loot."
   },
   {
@@ -2202,7 +2202,7 @@
       "wood": 0
     },
     "chestTier": "b",
-    "image": "/images/items/buried_treasure.png",
+    "image": "/images/items/buried_treasure.webp",
     "description": "A dirt-caked hoard dug up on the road. Lucky find, honest loot."
   },
   {

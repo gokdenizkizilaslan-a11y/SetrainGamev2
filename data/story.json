@@ -1,65 +1,90 @@
 {
-  "title": "The Setra Game",
+  "title": "Setra",
   "paragraphs": [
-    "The world is Krein. It has turned for five billion years, and for five billion years it has carried the tread of men.",
-    "In the green kingdom of Palendio, among warring crowns and old banners, lies a quiet village named Setra.",
-    "You wake in the grass of a valley you do not know, with a name you chose and a past you cannot recall."
+    "Krein is an old world of wind, stone and long roads. No map has ever held all of it.",
+    "You awake on the grass of an unknown valley with an empty memory and a warm stone in your hand.",
+    "The stone is called Aetheria. You do not know where it came from, only that it brought you here.",
+    "Beyond the ridge lies Setra, a small village in the green kingdom of Palendio — the nearest roof and fire you have."
   ],
   "cta": "Wake Up",
   "intro": {
     "speaker": "Mira",
-    "image": "/images/npcs/mira.png",
-    "bgGrass": "",
-    "bgStanding": "",
+    "image": "/images/npcs/mira.webp?v=mw8o4wbq",
+    "bgGrass": "/images/backgrounds/story-intro-grass.webp?v=mw8ocx1t",
+    "bgStanding": "/images/backgrounds/story-intro-standing.webp?v=mw8o56no",
+    "audio": {
+      "stopMainMusic": true,
+      "music": "",
+      "musicVolume": 0.7,
+      "ambience": "",
+      "ambienceVolume": 0.5,
+      "cueVolume": 0.9,
+      "prologue1": "",
+      "prologue2": "",
+      "prologue3": "",
+      "prologue4": "",
+      "line1": "",
+      "line2": "",
+      "line3": "",
+      "line4": "",
+      "line5": "",
+      "line6": "",
+      "reward": ""
+    },
     "slides": [
       {
-        "text": "The world is Krein. It has turned for five billion years, and for five billion years it has carried the tread of men.",
-        "image": "",
+        "text": "Krein is an old world, its lands worn smooth by ages of wind and stone. No map has ever held all of it.",
+        "image": "/images/backgrounds/story-slide-1.webp?v=mw8o8pw2",
         "pan": "lr"
       },
       {
-        "text": "In the green kingdom of Palendio, among warring crowns and old banners, lies a quiet village named Setra.",
-        "image": "",
-        "pan": "lr"
-      },
-      {
-        "text": "You wake in the grass of a valley you do not know, with a name you chose and a past you cannot recall.",
-        "image": "",
+        "text": "You wake on the grass of a valley you do not know. Your head is heavy, your memory empty, and a warm stone rests in your hand.",
+        "image": "/images/backgrounds/story-slide-2.webp?v=mw8o8tpp",
         "pan": "zoom"
+      },
+      {
+        "text": "The stone is Aetheria. You do not remember where it came from, or how you got here — only that it carried you.",
+        "image": "/images/backgrounds/story-slide-3.webp?v=mw8o8w10",
+        "pan": "rl"
+      },
+      {
+        "text": "Past the ridge lies Setra, a small village in the green kingdom of Palendio. It is the nearest place with a roof and a fire.",
+        "image": "/images/backgrounds/story-slide-4.webp?v=mw8obn9w",
+        "pan": "lr"
       }
     ],
     "lines": [
       {
         "who": "narrator",
-        "text": "Cold grass. Birdsong. A shadow falls across your face, and a woman kneels beside you.",
+        "text": "Cold grass. Birdsong. Someone is shaking your shoulder.",
         "scene": "grass"
       },
       {
         "who": "npc",
-        "text": "Easy. You are breathing, that is the important part. I found you in the hollow with empty hands and emptier eyes. What is your name, wanderer?",
+        "text": "Hey. Hey — can you hear me? You were lying face-down in the ditch. Are you hurt?",
         "scene": "grass"
       },
       {
         "who": "you",
-        "text": "I... cannot remember. Only the road, and then nothing.",
+        "text": "I... don't think so. I don't remember how I got here.",
         "scene": "grass"
       },
       {
         "who": "npc",
-        "text": "Then Setra Village will have to do as a beginning. I am Mira. I keep a small house and a smaller purse. Take this — fifty gold and ten days of food. It is nearly all I have, so spend it like it matters.",
+        "text": "You're not bleeding, so that's a start. I'm Mira. The village is just past the ridge — Setra. Can you stand? Here, take this: fifty gold and some food. Nobody in this valley helps for free, and you'll need it.",
         "scene": "standing"
       },
       {
         "who": "you",
-        "text": "Why help a stranger with no past?",
+        "text": "Why? You don't know me.",
         "scene": "standing"
       },
       {
         "who": "npc",
-        "text": "Because someone once did the same for me. And because Palendio has little kindness left to spare these days — the crowns quarrel, the roads grow unsafe. Grow strong, find work at the forge or the market, and sleep with a roof when you can afford it. Now stand. The village waits.",
+        "text": "No. But I've been the stranger at the wrong end of the road before. Come on — walk slowly, and don't drop the stone. It's still warm.",
         "scene": "standing"
       }
     ],
-    "rewardNote": "Mira presses 50 gold and 10 food into your hands."
+    "rewardNote": "Mira gives you fifty gold and ten days of food."
   }
 }

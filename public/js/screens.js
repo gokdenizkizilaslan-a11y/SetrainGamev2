@@ -49,6 +49,7 @@ function injectElementTints(elements) {
 
 function applyCatalog(cat) {
   Object.assign(CATALOG, cat);
+  applyUiTheme();
   // content.js içindeki i18nTR sözlüğünü motora aktar (varsa).
   if (Array.isArray(cat.i18nTR) && cat.i18nTR.length && window.SetraI18n && typeof window.SetraI18n.loadExtra === "function") {
     try { window.SetraI18n.loadExtra(cat.i18nTR); } catch (e) { /* non-fatal */ }
@@ -63,6 +64,41 @@ function applyCatalog(cat) {
 
 function $(id) {
   return document.getElementById(id);
+}
+
+// GameCraft'tan ayarlanabilen global panel teması:
+//   images.ui.panelTint    -> koyu panel rengi (#07080a)
+//   images.ui.panelOpacity -> saydamlık 0..1 (0.9 = varsayılan)
+//   images.ui.panelRadius  -> köşe yarıçapı px (4 = varsayılan)
+function applyUiTheme() {
+  try {
+    const ui = (CATALOG.images && CATALOG.images.ui) || {};
+    const root = document.documentElement;
+    if (!root || !root.style) return;
+    const tint = String(ui.panelTint || "").trim();
+    const hex = /^#?([0-9a-f]{6})$/i.exec(tint);
+    if (hex) {
+      const n = parseInt(hex[1], 16);
+      root.style.setProperty("--ui-panel-rgb", `${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}`);
+    } else {
+      root.style.removeProperty("--ui-panel-rgb");
+    }
+    const parse01 = (v) => {
+      const n = parseFloat(v);
+      return isFinite(n) ? Math.min(1, Math.max(0, n)) : null;
+    };
+    const alpha = parse01(ui.panelOpacity);
+    if (alpha !== null) root.style.setProperty("--ui-panel-alpha", String(alpha));
+    else root.style.removeProperty("--ui-panel-alpha");
+    const radius = parseFloat(ui.panelRadius);
+    if (isFinite(radius) && radius >= 0 && radius <= 40) {
+      root.style.setProperty("--ui-radius", `${Math.round(radius)}px`);
+    } else {
+      root.style.removeProperty("--ui-radius");
+    }
+  } catch (e) {
+    /* tema opsiyonel */
+  }
 }
 
 function showScreen(id) {
@@ -299,7 +335,7 @@ const SFX_DEFAULTS = {
   "cinematic.rebirth": "neutralascension",
   "combat.win": "winningsound",
   "combat.lose": "losingsound",
-  "combat.crit": "skull_crush",
+  "combat.crit": "heavyswordhit",
 };
 
 function sfxResolve(key) {
@@ -385,19 +421,20 @@ function spawnPopup(el, text, kind, color) {
 const FX_CLASSES = ["fx-hit", "fx-heal", "fx-defend", "fx-hit-arcane", "fx-hit-holy", "fx-hit-shadow", "fx-hit-crit"];
 
 const ELEMENT_SOUNDS = {
-  physical: ["slash1", "slash2", "slash3", "slash4"],
-  fire: "firemagic",
-  frost: "frostmagic",
-  water: "frostmagic",
-  earth: "battleaxe",
-  lightning: "normalmagic",
-  blood: ["bloodmagic1", "bloodmagic2"],
-  dark: "bloodmagic2",
+  physical: ["slashfast1", "slashfast2", "sword1", "sword2", "sword3"],
+  fire: ["dragonfire", "meteorfall"],
+  frost: ["waterorb", "waterburst"],
+  water: ["waterburst", "waterorb"],
+  earth: ["irongate", "axeskill"],
+  lightning: ["lightningcast", "chargeshot"],
+  blood: ["bloodbolt", "cursedwhisper"],
+  dark: "darkascension",
   heal: "healingmagic",
-  shadow: ["bloodmagic1", "bloodmagic2"],
-  arcane: "normalmagic",
-  defend: "shield",
-  monster: "monstersound",
+  shadow: ["darkascension", "cursedwhisper"],
+  arcane: ["arcanebolt", "lightningcast", "manaflow"],
+  nature: ["vineserupt", "vineslash"],
+  defend: "shieldpulse",
+  monster: ["monsterroar", "terrifyingroar", "bonesrattle"],
 };
 
 function applyTargetFx(el, kind) {
@@ -721,15 +758,23 @@ function drainCombatFx(root) {
       }
     } catch (e) { /* gorsel fallback: vfxId aynen kalir */ }
     if (vfx && el) {
-      const fromRect = fromEl ? fromEl.getBoundingClientRect() : el.getBoundingClientRect();
-      const toRect = el.getBoundingClientRect();
-      const fromX = fromRect.left + fromRect.width/2;
-      const fromY = fromRect.top + fromRect.height/2;
-      const toX = toRect.left + toRect.width/2;
-      const toY = toRect.top + toRect.height/2;
-      // 400ms delay for pet-like smoothness, player skills also 0-400ms
+      // Konumları setTimeout anında YENİDEN ölç: kart DOM'u (popup/animasyon)
+      // değiştiğinde eski rect ile efekt başka yerde beliriyordu.
       const delay = ev.source==="pet" ? 400 : 0;
-      setTimeout(()=>{ try{ vfx.play(vfxId, {fromX, fromY, toX, toY, travel: _travel}); }catch(e){} }, delay);
+      const playVfx = () => {
+        try {
+          if (!el || !el.isConnected) return;
+          const anchor = (fromEl && fromEl.isConnected) ? fromEl : el;
+          const fromRect = anchor.getBoundingClientRect();
+          const toRect = el.getBoundingClientRect();
+          const fromX = fromRect.left + fromRect.width/2;
+          const fromY = fromRect.top + fromRect.height/2;
+          const toX = toRect.left + toRect.width/2;
+          const toY = toRect.top + toRect.height/2;
+          vfx.play(vfxId, {fromX, fromY, toX, toY, travel: _travel});
+        } catch(e){}
+      };
+      if (delay) setTimeout(playVfx, delay); else playVfx();
     }
     if (ev.type === "damage") {
       const r = fxRecipe(ev.effect, ev.elem);
@@ -747,7 +792,7 @@ function drainCombatFx(root) {
       const dmgColor = isTrue ? "#ffffff" : elemId === "physical" ? "#fde047" : r.color;
       if (ev.crit) {
         spawnPopup(el, "CRIT " + ev.amount, "crit", isTrue ? "#ffffff" : r.color);
-        const critSnd = ev.sound || "skull_crush";
+        const critSnd = ev.sound || "heavyswordhit";
         sfxPlay(critSnd);
         shakeCombat(root);
       } else {
@@ -904,7 +949,11 @@ function showAscendCinematic(ascend, fallbackText) {
   el.innerHTML = `<div class="ascend-overlay ascend-burst" style="--ascend:${color}"><div class="ascend-flash"></div></div>`;
   el.classList.remove("hidden");
   if (a.sound) sfxPlay(a.sound);
-  else sfxEvent("cinematic.ascend");
+  else {
+    sfxEvent("cinematic.ascend");
+    // Yükselme çınlaması: kısa süre sonra katman olarak level-up sesi.
+    setTimeout(() => { if (el._ascendToken === token) sfxPlay("levelup", 0.55); }, 320);
+  }
   // İkinci ses varsa kısa gecikmeyle katmanlanır (aynı anda üst üste biner).
   if (a.sound2) setTimeout(() => { if (el._ascendToken === token) sfxPlay(a.sound2); }, 300);
   setTimeout(() => {
@@ -945,11 +994,154 @@ function showRebirthCinematic(rb, fallbackText) {
   attachCineContinue(el);
 }
 
+// ---- Sinematik intro sesi (müzik burada durur, GameCraft'tan ses eklenir) ----
+// story.intro.audio altındaki alanlar editörden düzenlenir:
+//   music/ambience  -> "/music/x.mp3" yolu veya /sounds içindeki ses id'si
+//   prologue1..N    -> her prolog slaytının kendi sesi
+//   line1..N        -> her diyalog satırının kendi sesi
+const introSfxCache = {};
+const introLoops = { music: null, ambience: null };
+const introCueTimers = [];
+let introMusicResume = false;
+
+function introSoundUrl(id) {
+  const v = String(id == null ? "" : id).trim();
+  if (!v || v === "none") return "";
+  if (v.startsWith("/") || /^https?:/i.test(v)) return v;
+  if (soundMap && soundMap.has(v)) return soundMap.get(v);
+  return "/sounds/" + v + ".mp3";
+}
+
+function introPlaySound(id, vol, delay) {
+  const url = introSoundUrl(id);
+  if (!url) return null;
+  let node = null;
+  const fire = () => {
+    try {
+      let base = introSfxCache[url];
+      if (!base) { base = new Audio(url); base.preload = "auto"; introSfxCache[url] = base; }
+      node = base.cloneNode(true);
+      node.volume = Math.max(0, Math.min(1, vol == null ? 0.9 : Number(vol)));
+      const pr = node.play();
+      if (pr && pr.catch) pr.catch(() => {});
+    } catch (e) { /* ses asla sahneyi kırmaz */ }
+    return node;
+  };
+  if (delay) { introCueTimers.push(setTimeout(fire, Math.max(0, Number(delay)))); return null; }
+  return fire();
+}
+
+// Sinematik adımının süresini o adıma eklenen sesin uzunluğuna eşitler:
+// ses varsa sahne/kaydırma o ses bitene kadar sürer, sonra otomatik ilerler.
+const introCueDur = Object.create(null);
+function introCueSeconds(id) {
+  const url = introSoundUrl(id);
+  if (!url) return 0;
+  const d = introCueDur[url];
+  return Number.isFinite(d) && d > 0 ? d : 0;
+}
+function introPrefetchCue(id) {
+  const url = introSoundUrl(id);
+  if (!url || introCueDur[url] !== undefined) return;
+  introCueDur[url] = 0; // yükleniyor işareti
+  try {
+    const a = new Audio();
+    a.preload = "metadata";
+    a.addEventListener("loadedmetadata", () => {
+      if (Number.isFinite(a.duration) && a.duration > 0) introCueDur[url] = a.duration;
+    });
+    a.src = url;
+  } catch (e) { /* süre bilinmezse varsayılan animasyon süresi kullanılır */ }
+}
+
+function introStartLoop(key, id, vol) {
+  const url = introSoundUrl(id);
+  const cur = introLoops[key];
+  if (!url) {
+    if (cur) { try { cur.pause(); } catch (e) {} }
+    introLoops[key] = null;
+    return;
+  }
+  if (cur && cur.dataset && cur.dataset.url === url) return;
+  if (cur) { try { cur.pause(); } catch (e) {} }
+  try {
+    const a = new Audio(url);
+    a.loop = true;
+    a.dataset.url = url;
+    a.volume = Math.max(0, Math.min(1, vol == null ? 0.5 : Number(vol)));
+    const pr = a.play();
+    if (pr && pr.catch) pr.catch(() => {});
+    introLoops[key] = a;
+  } catch (e) { introLoops[key] = null; }
+}
+
+function introStopAllAudio() {
+  while (introCueTimers.length) {
+    try { clearTimeout(introCueTimers.pop()); } catch (e) {}
+  }
+  Object.keys(introLoops).forEach((k) => {
+    const a = introLoops[k];
+    if (a) { try { a.pause(); a.currentTime = 0; } catch (e) {} }
+    introLoops[k] = null;
+  });
+}
+
+// Ana menü/kasaba müziğini sahne boyunca sustur (kullanıcı tercihini bozmadan).
+function introDuckMainMusic() {
+  const audio = $("music-audio");
+  introMusicResume = false;
+  if (!audio) return;
+  introMusicResume = !audio.paused;
+  try { window.__setraIntroMuted = true; } catch (e) {}
+  const pause = () => { try { audio.pause(); } catch (e) {} };
+  if (typeof fadeAudioTo === "function") fadeAudioTo(audio, 0, 900, pause);
+  else pause();
+}
+
+function introUnduckMainMusic() {
+  try { window.__setraIntroMuted = false; } catch (e) {}
+  const audio = $("music-audio");
+  if (!audio || !introMusicResume) return;
+  introMusicResume = false;
+  if (typeof music !== "undefined" && music && music.playing === false) return;
+  try {
+    const pr = audio.play();
+    if (pr && pr.catch) pr.catch(() => {});
+    if (typeof fadeAudioTo === "function" && typeof musicTargetVolume === "function") {
+      fadeAudioTo(audio, musicTargetVolume(), 1400);
+    }
+  } catch (e) {}
+}
+
+// ---- Sinematik ekran geçişi ----
+// kind "wake": ekranı karartır, beyaz ışık patlaması + huzmelerle açar.
+// kind "dark": ekranı karartır, ardından sahneyi/menüyü yumuşakça ortaya çıkarır.
+function playScreenTransition(kind, onCovered, onDone) {
+  const wake = kind === "wake";
+  const prev = document.getElementById("screen-fx");
+  if (prev && prev.parentNode) prev.parentNode.removeChild(prev);
+  const fx = document.createElement("div");
+  fx.id = "screen-fx";
+  fx.className = "screen-fx " + (wake ? "screen-fx--wake" : "screen-fx--dark");
+  fx.innerHTML = `
+    <div class="screen-fx__black"></div>
+    <div class="screen-fx__rays"></div>
+    <div class="screen-fx__halo"></div>
+    <div class="screen-fx__veil"></div>`;
+  document.body.appendChild(fx);
+  // Ekran tamamen karardığında sahne değiştirilir (geçiş göze batmaz).
+  if (typeof onCovered === "function") setTimeout(onCovered, wake ? 470 : 500);
+  setTimeout(() => {
+    if (fx.parentNode) fx.parentNode.removeChild(fx);
+    if (typeof onDone === "function") onDone();
+  }, wake ? 3000 : 1950);
+}
+
 function showStoryIntro() {
   const el = $("story-overlay");
   if (!el) return;
   const story = CATALOG.story || {};
-  const title = story.title || "The Setra Game";
+  const title = story.title || "Setra";
   const paragraphs = Array.isArray(story.paragraphs) ? story.paragraphs : [];
   const cta = story.cta || "Set Forth";
   const intro = story.intro || null;
@@ -966,8 +1158,9 @@ function showStoryIntro() {
   const bgStanding = (intro && intro.bgStanding) || "";
   // Sinematik prolog slaytları: her paragrafın kendi görseli + kaydırma yönü.
   const slides = (intro && Array.isArray(intro.slides)) ? intro.slides : [];
-  // Resim yüklenmemişse eski tek-ekran (paragraflar) görünümü korunur.
-  const useSlides = slides.length > 0 && slides.some((s) => s && s.image);
+  // Sinematik prolog slaytları: her paragraf tek tek geçer (görsel varsa
+  // kaydırma/zoom, yoksa sahnenin kendi zemini). Adım sesleri de buna bağlı.
+  const useSlides = slides.length > 0;
 
   // Önceki oturumdan kalan dinleyicileri temizle (tekrar açılırsa üst üste binmez).
   if (typeof el._storyCleanup === "function") {
@@ -977,10 +1170,33 @@ function showStoryIntro() {
   el.classList.remove("hidden");
   el.classList.add("story-cine-on");
   el.innerHTML = `
-    <div class="story-scene" data-scene="grass"><span class="story-scene__img"></span></div>
-    <div class="story-scene" data-scene="standing"><span class="story-scene__img"></span></div>
+    <div class="story-scene" data-scene="grass"><span class="story-scene__backdrop"></span><span class="story-scene__img"></span></div>
+    <div class="story-scene" data-scene="standing"><span class="story-scene__backdrop"></span><span class="story-scene__img"></span></div>
     <div class="story-vignette"></div>
     <div class="story-cine" id="story-cine-stage"></div>`;
+
+  // Sinematik ses: ana müzik burada susar, adım sesleri story.intro.audio'dan gelir.
+  introStopAllAudio();
+  const audioCfg = (intro && intro.audio) || {};
+  const stopMain = !(audioCfg.stopMainMusic === false ||
+    /^(false|0|off|no)$/i.test(String(audioCfg.stopMainMusic == null ? "" : audioCfg.stopMainMusic).trim()));
+  if (stopMain) introDuckMainMusic();
+  else { introMusicResume = false; }
+  introStartLoop("music", audioCfg.music, audioCfg.musicVolume == null ? 0.7 : audioCfg.musicVolume);
+  introStartLoop("ambience", audioCfg.ambience, audioCfg.ambienceVolume == null ? 0.5 : audioCfg.ambienceVolume);
+  const cueVolume = audioCfg.cueVolume == null ? 0.9 : audioCfg.cueVolume;
+  const stepCue = (kind, idx) => {
+    const step = kind === "slide" ? slides[idx] : lines[idx];
+    if (step && step.sound) return step.sound;
+    const key = (kind === "slide" ? "prologue" : "line") + (idx + 1);
+    return audioCfg[key] || "";
+  };
+  // Sinematik süresi = eklenen sesin süresi. Adım sesleri önden yüklenir.
+  const introAutoAdvance = !/^(false|0|off|no)$/i.test(
+    String(audioCfg.autoAdvance == null ? "" : audioCfg.autoAdvance).trim());
+  slides.forEach((s, i) => introPrefetchCue((s && s.sound) || audioCfg["prologue" + (i + 1)] || ""));
+  lines.forEach((l, i) => introPrefetchCue((l && l.sound) || audioCfg["line" + (i + 1)] || ""));
+  introPrefetchCue(audioCfg.reward || "");
   const layerGrass = el.querySelector('[data-scene="grass"]');
   const layerStanding = el.querySelector('[data-scene="standing"]');
   const stageRoot = el.querySelector("#story-cine-stage");
@@ -990,15 +1206,62 @@ function showStoryIntro() {
   const sceneUrl = (name) => (name === "standing" ? (bgStanding || bgGrass) : (bgGrass || bgStanding));
   const bgUrl = (url) => `url("${String(url).replace(/"/g, "%22")}")`;
   // Katmana görsel + kaydırma animasyonu uygular. pan: "" | "lr" | "rl" | "zoom".
-  const paintLayer = (layer, url, pan) => {
-    const img = layer && layer.querySelector(".story-scene__img");
+  // Görsel iki katmana da yazılır: arkada bulanık dolgu (cover), önde kırpılmamış
+  // illüstrasyon (contain). Kaydırma arkadaki dolguda, yakınlaşma öndeki görselde.
+  // CSS keyframe sıfırlama hilesi bazı tarayıcılarda takılıp "donmuş" görüntü
+  // bırakıyordu; burada Web Animations API kullanılır: eski animasyon iptal
+  // edilir, yenisi ilk kareden itibaren akıcı çalışır.
+  const PAN_PRESETS = {
+    lr: { frames: [{ transform: "translate3d(-4%, 0, 0) scale(1.14)" }, { transform: "translate3d(4%, 0, 0) scale(1.14)" }], duration: 13000 },
+    rl: { frames: [{ transform: "translate3d(4%, 0, 0) scale(1.14)" }, { transform: "translate3d(-4%, 0, 0) scale(1.14)" }], duration: 13000 },
+    zoom: { frames: [{ transform: "scale(1)" }, { transform: "scale(1.07)" }], duration: 13000 }
+  };
+  const stopLayerAnimation = (el) => {
+    // Yalnızca kendi başlattığımız pan animasyonunu iptal et; CSS ken-burns
+    // animasyonuna dokunma (iptal edilirse bir daha başlamaz).
+    try {
+      if (el && el._panAnim) { el._panAnim.cancel(); el._panAnim = null; }
+    } catch (e) { /* yok say */ }
+  };
+  const runPan = (el, preset, durationMs) => {
+    if (!el) return;
+    el.style.animation = "none";
+    const dur = Number(durationMs) > 0 ? Math.max(1600, Math.min(120000, Number(durationMs))) : preset.duration;
+    try {
+      el._panAnim = el.animate(preset.frames, {
+        duration: dur,
+        easing: "cubic-bezier(0.22, 0.61, 0.36, 1)",
+        fill: "both"
+      });
+    } catch (e) {
+      el.style.transform = preset.frames[preset.frames.length - 1].transform;
+    }
+  };
+  const paintLayer = (layer, url, pan, durationMs) => {
+    if (!layer) return;
+    const img = layer.querySelector(".story-scene__img");
+    const backdrop = layer.querySelector(".story-scene__backdrop");
     if (!img) return;
-    img.className = "story-scene__img" + (pan ? " slide-pan-" + pan : "");
-    img.style.backgroundImage = url ? bgUrl(url) : "";
-    // Animasyonu baştan çalıştır (aynı katman yeniden kullanılınca).
-    img.style.animation = "none";
-    void img.offsetWidth;
+    stopLayerAnimation(img);
+    stopLayerAnimation(backdrop);
+    // İllüstrasyonun tamamı görünsün (kırpılmadan), arkası bulanık dolguyla kapansın.
+    if (img.style.backgroundImage !== (url ? bgUrl(url) : "")) {
+      img.style.backgroundImage = url ? bgUrl(url) : "";
+    }
+    if (backdrop) backdrop.style.backgroundImage = url ? bgUrl(url) : "";
+    const preset = url ? PAN_PRESETS[pan] : null;
+    // Öndeki görsel: sabit çok hafif yakınlaşma (kenar boşluğu oluşmaz).
     img.style.animation = "";
+    img.style.transform = "";
+    if (backdrop) backdrop.style.animation = "";
+    if (!preset) return;
+    if (pan === "zoom") {
+      stopLayerAnimation(img);
+      runPan(img, preset, durationMs);
+    } else if (backdrop) {
+      stopLayerAnimation(backdrop);
+      runPan(backdrop, preset, durationMs);
+    }
   };
   const crossFade = (on, off) => { on.classList.add("is-active"); off.classList.remove("is-active"); };
   const applyScene = (name) => {
@@ -1028,7 +1291,9 @@ function showStoryIntro() {
   // İlerletme: buton, sahneye tıklama ve Enter/Space aynı adımı tetikler.
   let currentNext = null;
   let lastAdvance = 0;
+  let locked = false; // sinematik geçiş sırasında tıklamayı yut
   const advance = () => {
+    if (locked) return;
     const now = Date.now();
     if (now - lastAdvance < 220) return;
     lastAdvance = now;
@@ -1055,8 +1320,19 @@ function showStoryIntro() {
   const finish = () => {
     cleanup();
     el._storyCleanup = null;
-    el.classList.add("hidden");
-    el.classList.remove("story-cine-on");
+    introStopAllAudio();
+    introUnduckMainMusic();
+    // Mira'yla son sahne bitti: ekran kararır, karanlık açılırken menü/sahne gelir.
+    locked = true;
+    playScreenTransition(
+      "dark",
+      () => {
+        el.classList.add("hidden");
+        el.classList.remove("story-cine-on");
+        el.innerHTML = "";
+      },
+      () => { locked = false; }
+    );
   };
 
   // Sabit sahne: her adımda yalnızca içerik değişir, görsel katmanlar sabit kalır.
@@ -1078,27 +1354,78 @@ function showStoryIntro() {
 
   const afterPrologue = () => {
     activeScene = ""; // bir sonraki sahnenin zorla kurulmasını sağla
-    if (lines.length) showLine(0);
-    else finish();
+    // Giriş yerinden uyandığımız yere geçiş: önce karart, sonra beyaz ışık
+    // patlamasıyla sahneyi aç (karanlıkta içerik kurulur, göze batmaz).
+    locked = true;
+    playScreenTransition(
+      "wake",
+      () => {
+        if (lines.length) showLine(0);
+        else finish();
+      },
+      () => { locked = false; }
+    );
   };
 
-  // Sinematik prolog: her paragraf kendi görseliyle (sol→sağ kaydırma/zoom) geçer.
+  // Sinematik prolog: her paragraf kendi görseliyle (yumuşak kaydırma/zoom) geçer.
   let slideFlip = false;
+  let slideToken = 0;
+  let stepToken = 0; // adım sırası: eski seslerin "ended" olayı yeni adımı atlatmasın
+  // Sese uzunluk eklendiyse (>= 3 sn) ses bitince sinematik kendiliğinden ilerler.
+  const hookCueAutoAdvance = (node, step) => {
+    if (!node || !introAutoAdvance) return;
+    node.addEventListener("ended", () => {
+      if (step !== stepToken || locked) return;
+      if (!(Number(node.duration) >= 3)) return;
+      advance();
+    });
+  };
   const showSlide = (idx) => {
     const s = slides[idx] || {};
+    const cueId = stepCue("slide", idx);
+    const cueMs = Math.round(introCueSeconds(cueId) * 1000);
+    const cueNode = introPlaySound(cueId, cueVolume);
+    const step = ++stepToken;
     const url = s.image || "";
     const pan = url ? (s.pan || "lr") : "";
     slideFlip = !slideFlip;
     const on = slideFlip ? layerGrass : layerStanding;
     const off = slideFlip ? layerStanding : layerGrass;
+    const token = ++slideToken;
     if (url) {
-      paintLayer(on, url, pan);
-      on.classList.add("is-active"); // hemen göster: yüklenince görsel belirir, koyu ekran beklemez
+      // Hedef katman her zaman opaklık 0'dan başlasın: hızlı ilerlemede bile
+      // görsel değişimi "kesme" değil yumuşak geçiş olur.
+      on.style.transition = "none";
+      on.classList.remove("is-active");
+      void on.offsetWidth;
+      on.style.transition = "";
+      paintLayer(on, url, pan, cueMs);
+      // Görsel hazır olunca yeni katman yumuşakça belirir; alttaki katman
+      // bir süre daha durur → koyu ekran yanıp sönmesi yok, akıcı geçiş olur.
+      let settled = false;
+      const reveal = () => {
+        if (settled || token !== slideToken) return;
+        settled = true;
+        on.classList.add("is-active");
+        setTimeout(() => {
+          if (token !== slideToken) return;
+          off.classList.remove("is-active");
+          activeScene = "";
+        }, 1000);
+      };
       const probe = new Image();
-      const done = () => { off.classList.remove("is-active"); activeScene = ""; };
-      probe.onload = done;
-      probe.onerror = done;
+      probe.onload = reveal;
+      probe.onerror = reveal;
       probe.src = url;
+      setTimeout(reveal, 700); // ağ/disk yavaşsa görsel asılı kalmasın
+      // Süre bilgisi ilk adımda gecikebilir: geldiyse kaydırmayı sesle eşitle.
+      if (!cueMs) {
+        setTimeout(() => {
+          if (token !== slideToken) return;
+          const late = Math.round(introCueSeconds(cueId) * 1000);
+          if (late > 0) paintLayer(on, url, pan, late);
+        }, 600);
+      }
     }
     const isLast = idx >= slides.length - 1;
     const label = isLast ? (lines.length ? "Wake Up" : cta) : "Continue";
@@ -1113,6 +1440,7 @@ function showStoryIntro() {
         else showSlide(idx + 1);
       }
     );
+    hookCueAutoAdvance(cueNode, step);
   };
 
   const showParagraphs = () => {
@@ -1130,6 +1458,8 @@ function showStoryIntro() {
 
   const showLine = (idx) => {
     const ln = lines[idx] || {};
+    const cueNode = introPlaySound(stepCue("line", idx), cueVolume);
+    const step = ++stepToken;
     const who = ln.who || "narrator";
     applyScene(sceneForLine(idx));
     let body;
@@ -1158,9 +1488,11 @@ function showStoryIntro() {
         else showReward();
       }
     );
+    hookCueAutoAdvance(cueNode, step);
   };
 
   const showReward = () => {
+    introPlaySound(audioCfg.reward, cueVolume);
     stage(
       `<div class="story-prologue story-prologue--reward">
         <h2 class="story-prologue__title">${escapeHtml(title)}</h2>
@@ -1217,6 +1549,15 @@ function initImages(root) {
       el.classList.remove("portrait--missing");
     };
     img.onerror = () => {
+      // Uzantı uyuşmazlığı (data .png diyor ama dosya .webp) için tek deneme.
+      const alt = /\.png$/i.test(path)
+        ? path.replace(/\.png$/i, ".webp")
+        : (/\.webp$/i.test(path) ? path.replace(/\.webp$/i, ".png") : "");
+      if (alt && !el._imgAltTried) {
+        el._imgAltTried = true;
+        img.src = alt;
+        return;
+      }
       el.style.backgroundImage = "";
       el.classList.remove("portrait--img");
       el.classList.add("portrait--missing");
@@ -1289,12 +1630,14 @@ function skillIconEl(skill) {
 }
 
 function itemIconEl(item) {
-  if (item.slot === "chest") {
+  const img = (item && item.image) || "";
+  if (item && item.slot === "chest") {
     const meta = (CATALOG.loot && CATALOG.loot.rarityMeta) || {};
     const m = meta[item.rarity] || {};
-    return `<span class="item-icon item-icon--chest" style="--rarity:${m.color || "#9aa7b5"}">${icon("chest")}</span>`;
+    // Sandık görseli varsa onu göster; yüklenemezse SVG ikon fallback kalır.
+    return `<span class="item-icon item-icon--chest" data-img="${escapeHtml(img)}" data-variant="${escapeHtml(item.id || "")}" style="--rarity:${m.color || "#9aa7b5"}">${icon("chest")}</span>`;
   }
-  return `<span class="item-icon" data-img="${escapeHtml(item.image || "")}" data-variant="${escapeHtml(item.id || "")}"></span>`;
+  return `<span class="item-icon" data-img="${escapeHtml(img)}" data-variant="${escapeHtml(item.id || "")}"></span>`;
 }
 
 // Combat zone backgrounds (data-driven, all optional):
@@ -1744,8 +2087,10 @@ function renderProfileCard(room, selfId) {
     return;
   }
   const trait = me.anomaly;
+  const traitName = trait && window.SetraI18n && window.SetraI18n.t ? window.SetraI18n.t(trait.name) : (trait ? trait.name : "");
+  const traitDesc = trait && window.SetraI18n && window.SetraI18n.t ? window.SetraI18n.t(trait.description) : (trait ? trait.description : "");
   const traitHtml = trait
-    ? `<span style="color:${trait.frameColor};font-weight:700">${escapeHtml(trait.name)}</span> — ${escapeHtml(trait.description)}`
+    ? `<span style="color:${trait.frameColor};font-weight:700">${escapeHtml(traitName)}</span> — ${escapeHtml(traitDesc)}`
     : `<span class="muted">No anomaly</span>`;
   const maxLives = (CATALOG.starting && CATALOG.starting.lives) || 3;
   const isDead = me.lives <= 0;
@@ -3018,7 +3363,7 @@ function renderTravelViewInner(room, root) {
   const isMember = !!(tv && tv.active && (tv.members || []).includes(state.playerId));
   if (!tv || !tv.active || !isMember) {
     // Yeni harita geldiği anda oda durumu bir kare gecikebilir; canlı canvas'ı silme.
-    if (!tv && window.SetraTravel && typeof SetraTravel.hasMap === "function" && SetraTravel.hasMap()) return;
+    if (!tv && window.SetraTravel && SetraTravel.ready && typeof SetraTravel.hasMap === "function" && SetraTravel.hasMap()) return;
     if (!state.travelType) state.travelType = "verdant";
     if (!state.travelSize) state.travelSize = "normal";
     const stamina = me ? me.stamina : 0;
@@ -3058,12 +3403,11 @@ function renderTravelViewInner(room, root) {
         </div>
         ${cannot ? `<p class="tv-warn">You need at least 10 stamina. Rest at the tavern or sleep to recover it.</p>` : ""}
       </div>
-      ${renderTravelManaHue(me)}
+      
       </div>
       ${renderTravelSkillTree(me)}
       </div>`;
       bindTravelSkillTree(root, me);
-      bindTravelManaHue(root);
       const startBtn = root.querySelector("#btn-exp-start");
       if (startBtn) startBtn.addEventListener("click", () => {
         if (startBtn.disabled) return;
@@ -3105,6 +3449,7 @@ function renderTravelViewInner(room, root) {
         </div>
         <div class="tv-start-actions">
           <button type="button" class="btn btn--gold tv-go" id="btn-travel-go"${cannot ? " disabled" : ""}>Create room <span class="tv-go-cost">10 stamina</span></button>
+          <button type="button" class="btn tv-leave" id="btn-world-setra"${cannot ? " disabled" : ""}>Enter Setra Continent <span class="tv-go-cost">10 stamina</span></button>
           ${cannot ? `<p class="tv-warn">You need at least 10 stamina. Rest at the tavern or sleep to recover it.</p>` : ""}
         </div>
         ${openExps.length ? `
@@ -3115,20 +3460,28 @@ function renderTravelViewInner(room, root) {
           </div>
         </div>` : ""}
       </div>
-      ${renderTravelManaHue(me)}
+      
       </div>
       ${renderTravelSkillTree(me)}
       </div>`;
     root.querySelectorAll("[data-tt]").forEach((b) => b.addEventListener("click", () => { state.travelType = b.getAttribute("data-tt"); renderTravelView(room); }));
     root.querySelectorAll("[data-ts]").forEach((b) => b.addEventListener("click", () => { state.travelSize = b.getAttribute("data-ts"); renderTravelView(room); }));
     bindTravelSkillTree(root, me);
-    bindTravelManaHue(root);
+    
     const go = root.querySelector("#btn-travel-go");
     if (go) go.addEventListener("click", () => {
       if (go.disabled) return;
       go.disabled = true;
       go.textContent = "Opening room...";
       socket.emit("travel:create", { type: state.travelType, size: state.travelSize });
+    });
+    // Tek, kalıcı Setra Kıtası: lobi kurmadan doğrudan açık dünyaya gir.
+    const worldBtn = root.querySelector("#btn-world-setra");
+    if (worldBtn) worldBtn.addEventListener("click", () => {
+      if (worldBtn.disabled) return;
+      worldBtn.disabled = true;
+      worldBtn.textContent = "Loading continent...";
+      socket.emit("travel:enter", { world: "setra" });
     });
     // Var olan bir odaya katıl.
     root.querySelectorAll("[data-exp]").forEach((b) => b.addEventListener("click", () => {
@@ -3147,8 +3500,10 @@ function renderTravelViewInner(room, root) {
 function renderDungeonView(room) {
   const d = myDungeon(room);
   const root = $("dungeon-content");
-  const dgUi = (CATALOG.images && CATALOG.images.ui) || {};
-  setCardBg($("dungeon-view"), dgUi.dungeonBg || "");
+  // Zindan arka plani: editor gorseli (images.ui.dungeonBg) panelin zeminine
+  // basilir; yoksa eski duz koyu zemin korunur.
+  const ui = (CATALOG.images && CATALOG.images.ui) || {};
+  setCardBg($("dungeon-view"), ui.dungeonBg || "");
   root.classList.remove("dg-browse-mode");
   if (!d) return renderDungeonBrowser(room, root);
   if (d.bossId) {
@@ -3731,19 +4086,28 @@ function renderCombat(room, root) {
     })
     .join("");
 
-  const itemButtons = [`<button type="button" class="item-btn${canAct && me.food > 0 ? "" : " item-btn--disabled"}" data-item="food">
-    ${itemIconEl({ id: "food", image: "/images/items/field_rations.webp" })}
-    <span>Eat Food (${me.food})</span>
-  </button>`];
+  const itemEntries = [{
+    itemId: "food",
+    iconHtml: itemIconEl({ id: "food", image: "/images/items/field_rations.webp" }),
+    label: `Eat Food (${me.food})`,
+    disabled: !(canAct && me.food > 0),
+  }];
   (me.inventory || []).forEach((inv) => {
     const item = CATALOG.items.find((x) => x.id === inv.itemId);
     if (!item || item.slot !== "consumable" || inv.qty < 1) return;
-    itemButtons.push(`<button type="button" class="item-btn${canAct ? "" : " item-btn--disabled"}" data-item="${inv.itemId}">
-      ${itemIconEl(item)}
-      <span>${escapeHtml(item.name)} (${inv.qty})</span>
-    </button>`);
+    itemEntries.push({
+      itemId: inv.itemId,
+      iconHtml: itemIconEl(item),
+      label: `${item.name} (${inv.qty})`,
+      disabled: !canAct,
+    });
   });
-  const itemsHtml = itemButtons.join("");
+  // 1-5 tuşları görünen sıradaki tüketilebilirleri kullanır (client.js keydown).
+  const itemsHtml = itemEntries.map((it, i) => `<button type="button" class="item-btn${it.disabled ? " item-btn--disabled" : ""}" data-item="${it.itemId}">
+    ${i < 5 ? `<span class="hotkey">${i + 1}</span>` : ""}
+    ${it.iconHtml}
+    <span>${escapeHtml(it.label)}</span>
+  </button>`).join("");
 
   let hint;
   if (d.status === "done") hint = d.result ? d.result.text : "";
@@ -3781,7 +4145,7 @@ function renderCombat(room, root) {
         <div class="skill-bar">${skillsHtml}</div>
         <div class="item-bar">${itemsHtml}</div>
       </div>
-      <div class="combat-hint">${escapeHtml(hint)}${canAct ? ' <span class="muted">[Q-T] skills · [1-5] target · [O] end · [P] flee</span>' : ""}</div>
+      <div class="combat-hint">${escapeHtml(hint)}${canAct ? ' <span class="muted">[Q-T] skills · [1-5] items/target · [O] end · [P] flee</span>' : ""}</div>
       ${logHtml}
     </div>
     ${d.result ? renderResultOverlay(d.result, firstChestId(me)) : ""}
@@ -4134,7 +4498,8 @@ function renderTavernView(room) {
     return;
   }
   const tavernArt = (CATALOG.images && CATALOG.images.ui) || {};
-  setCardBg($("tavern-view"), tavernArt.tavernBg || "");
+  // Taverna arka planı düz siyah (demirci gibi): manzara resmi basılmaz.
+  setCardBg($("tavern-view"), "");
   const t = me.tavern;
   if (t && t.status === "playing") state.bjDismissedKey = "";
   const bjOutcome = t
@@ -4851,6 +5216,17 @@ function shopResources(me) {
     </div>`;
 }
 
+// NPC portresi: önce editördeki UI görseli (images.ui.<id>Npc), sonra npc.image.
+// Blacksmith gibi NPC'lerde npcs/<id>.png hiç üretilmediği için boş kutu
+// görünüyordu; UI portresi varsa o kullanılır.
+function npcPortraitUrl(npc) {
+  if (!npc) return "";
+  const ui = (CATALOG.images && CATALOG.images.ui) || {};
+  const key = String(npc.id || "") + "Npc";
+  const uiUrl = ui[key] ? String(ui[key]).trim() : "";
+  return uiUrl || npc.image || "";
+}
+
 // Editördeki NPC görseli (images.ui.blacksmithNpc) varsa dükkan başlığında
 // gösterilir; yoksa hiçbir şey çizilmez (eski görünüm).
 function shopVendorPortrait(uiKey, label) {
@@ -4928,7 +5304,7 @@ function renderBlacksmithView(room) {
     <p class="plaza-title">Blacksmith</p>
     ${shopTalkHtml("blacksmith")}
     ${shopResources(me)}
-    <p class="subhead shop-head">Armor & Weapons — Week ${room.shopStock ? room.shopStock.week : 1} · ${rotGear.length} items (7 days rotation)${shopVendorPortrait("blacksmithNpc", "Blacksmith")}</p>
+    <p class="subhead shop-head">Armor & Weapons — Week ${room.shopStock ? room.shopStock.week : 1} · ${rotGear.length} items (7 days rotation)</p>
     ${pinned.length ? `<div class="temple-card temple-card--schematics"><p class="subhead">📐 Schematics — always in stock · 200 gold each</p><div class="shop-grid shop-grid--pinned">${pinned.map((i) => shopCardHtml(me, staminaOk, i, "blacksmith:buy", soldSet.includes(i.id))).join("")}</div></div>` : ""}
     <div class="shop-grid">${rotGear.map((i) => shopCardHtml(me, staminaOk, i, "blacksmith:buy", soldSet.includes(i.id))).join("") || '<div class="muted">Nothing for sale today.</div>'}</div>
     <div class="temple-card temple-card--forge">
@@ -5087,7 +5463,7 @@ function talkNode(npc, nodeId) {
 function talkLaunchHtml(npcId) {
   const npc = talkNpc(npcId);
   if (!npc) return "";
-  return `<div class="talk-launch"><button type="button" class="talk-launch-btn" data-talk="${escapeHtml(npc.id)}"><span class="talk-launch-portrait" data-img="${escapeHtml(npc.image || "")}" data-variant="${escapeHtml(npc.id)}"></span><span>Talk — ${escapeHtml(npc.name || npc.id)}</span></button></div>`;
+  return `<div class="talk-launch"><button type="button" class="talk-launch-btn" data-talk="${escapeHtml(npc.id)}"><span class="talk-launch-portrait" data-img="${escapeHtml(npcPortraitUrl(npc))}" data-variant="${escapeHtml(npc.id)}"></span><span>Talk — ${escapeHtml(npc.name || npc.id)}</span></button></div>`;
 }
 
 // Ortak diyalog paneli: metin solda, portre sağda, seçenekler altta sabit.
@@ -5177,7 +5553,7 @@ function talkPanelHtml(npc, node, withClose, nameOverride) {
         ${options.map((o, i) => `<button type="button" class="btn btn--smoke btn--mini" data-opt="${i}">${escapeHtml(o.label)}</button>`).join("")}
       </div>
     </div>
-    <span class="talk-portrait" data-img="${escapeHtml(npc.image || "")}" data-variant="${escapeHtml(npc.id)}" title="${escapeHtml(displayName)}"></span>
+    <span class="talk-portrait" data-img="${escapeHtml(npcPortraitUrl(npc))}" data-variant="${escapeHtml(npc.id)}" title="${escapeHtml(displayName)}"></span>
   </div>
   ${withClose ? `<div class="talk-close-row"><button type="button" class="btn btn--ghost btn--mini" data-talk-close>Close talk</button></div>` : ""}`;
 }
@@ -5350,14 +5726,37 @@ function renderInventory(room) {
   const rightCol = slotOrder.right.map(renderSlot).join("");
   const slots = `<div class="equip-column equip-column--left">${leftCol}</div><div class="equip-column equip-column--center">${centerCol}</div><div class="equip-column equip-column--right">${rightCol}</div>`;
 
-  const bag = (me.inventory || [])
+  // ---- Pack: ayni tur itemlar yan yana gelsin diye gruplu + sirali ----
+  const packGroups = [
+    { id: "weapon", label: "Weapons", glyph: "weapon", slots: ["weapon"] },
+    { id: "armor", label: "Armor", glyph: "armor", slots: ["head", "armor", "legs", "boots"] },
+    { id: "jewelry", label: "Jewelry", glyph: "amulet", slots: ["amulet", "ring", "book", "stone"] },
+    { id: "consumable", label: "Consumables", glyph: "heal", slots: ["consumable"] },
+    { id: "material", label: "Materials", glyph: "craft", slots: ["material"] },
+    { id: "chest", label: "Chests", glyph: "chest", slots: ["chest"] },
+    { id: "other", label: "Other", glyph: "scroll", slots: [] }
+  ];
+  const packGroupFor = (slot) => packGroups.find((g) => g.slots.indexOf(slot) >= 0) || packGroups[packGroups.length - 1];
+  const rarityRank = { common: 0, uncommon: 1, rare: 2, epic: 3, legendary: 4, mythic: 5 };
+  const bagEntries = (me.inventory || [])
     .filter((inv) => {
       const it = CATALOG.items.find((x) => x.id === inv.itemId);
       return it && it.slot !== "egg";
     })
-    .map((inv) => {
-      const item = CATALOG.items.find((x) => x.id === inv.itemId);
-      if (!item) return "";
+    .map((inv) => ({ inv, item: CATALOG.items.find((x) => x.id === inv.itemId) }))
+    .filter((e) => e.item);
+  const rankOf = (item) => (rarityRank[item.rarity] != null ? rarityRank[item.rarity] : -1);
+  bagEntries.sort((a, b) => {
+    const ga = packGroups.indexOf(packGroupFor(a.item.slot));
+    const gb = packGroups.indexOf(packGroupFor(b.item.slot));
+    if (ga !== gb) return ga - gb;
+    const rd = rankOf(b.item) - rankOf(a.item);
+    if (rd) return rd;
+    return String(a.item.name || "").localeCompare(String(b.item.name || ""));
+  });
+  const bagCard = (entry) => {
+      const inv = entry.inv;
+      const item = entry.item;
       const equipable = item.slot !== "consumable" && item.slot !== "material" && item.slot !== "chest";
       const isChest = item.slot === "chest";
       // Tüketilebilirler kasabada/seyahatte buradan kullanılabilir (can/azık).
@@ -5390,8 +5789,21 @@ function renderInventory(room) {
         ${chestRates ? `<span class="bag-rates" title="${escapeHtml(chestPlain)}">${chestRates}</span>` : ""}
         ${action}
       </div>`;
-    })
-    .join("");
+  };
+  // ---- Pack: 3 sütunlu kutular, her kutu kendi içinde kayar ----
+  const PRIMARY_PACK_GROUPS = new Set(["weapon", "armor", "jewelry"]);
+  const bag = packGroups.map((g) => {
+    const entries = bagEntries.filter((e) => packGroupFor(e.item.slot).id === g.id);
+    // Ana üç kutu (silah / zırh / takı) her zaman görünür; boşsa "Empty".
+    if (!entries.length && !PRIMARY_PACK_GROUPS.has(g.id)) return "";
+    const listHtml = entries.length
+      ? `<div class="bag-list bag-list--pack">${entries.map(bagCard).join("")}</div>`
+      : `<div class="bag-list bag-list--pack bag-list--empty"><span class="pack-empty">Empty</span></div>`;
+    return `<div class="bag-group bag-group--${g.id}">
+        <div class="bag-group-head"><span class="bag-group-icon">${icon(g.glyph)}</span><span class="bag-group-title">${escapeHtml(g.label)}</span><span class="bag-group-count">${entries.length}</span></div>
+        ${listHtml}
+      </div>`;
+  }).join("");
   const equippedCount = Object.values(me.equipment || {}).filter(Boolean).length;
   const slotTotal = (CATALOG.equipmentSlots || []).length || 10;
 
@@ -5407,7 +5819,7 @@ function renderInventory(room) {
     </section>
     <section class="inv-section">
       <div class="inv-section-head"><span class="subhead" style="margin:0">Pack</span><span class="inv-count">${(me.inventory || []).length} kinds</span></div>
-      <div class="bag-list">${bag || '<div class="muted">Your pack is empty.</div>'}</div>
+      <div class="bag-groups">${bag || '<div class="muted">Your pack is empty.</div>'}</div>
     </section>`;
   initImages(root);
 

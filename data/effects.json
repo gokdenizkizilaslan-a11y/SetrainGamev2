@@ -4,8 +4,9 @@
     "color": "#dc2626",
     "particles": "slash",
     "sound": [
-      "bloodmagic1",
-      "bloodmagic2"
+      "bloodbolt",
+      "cursedwhisper",
+      "darkascension"
     ]
   },
   "blood_splatter": {
@@ -13,8 +14,9 @@
     "color": "#b91c1c",
     "particles": "burst",
     "sound": [
-      "bloodmagic1",
-      "bloodmagic2"
+      "bloodbolt",
+      "cursedwhisper",
+      "darkascension"
     ]
   },
   "blood_eruption": {
@@ -22,8 +24,9 @@
     "color": "#e11d48",
     "particles": "burst",
     "sound": [
-      "bloodmagic1",
-      "bloodmagic2"
+      "bloodbolt",
+      "cursedwhisper",
+      "darkascension"
     ]
   },
   "blood_vortex": {
@@ -31,8 +34,9 @@
     "color": "#ef4444",
     "particles": "vortex",
     "sound": [
-      "bloodmagic1",
-      "bloodmagic2"
+      "bloodbolt",
+      "cursedwhisper",
+      "darkascension"
     ]
   },
   "blood_needles": {
@@ -40,8 +44,9 @@
     "color": "#f43f5e",
     "particles": "slash",
     "sound": [
-      "bloodmagic1",
-      "bloodmagic2"
+      "bloodbolt",
+      "cursedwhisper",
+      "darkascension"
     ]
   },
   "blood_drain": {
@@ -49,8 +54,9 @@
     "color": "#be123c",
     "particles": "slash",
     "sound": [
-      "bloodmagic1",
-      "bloodmagic2"
+      "bloodbolt",
+      "cursedwhisper",
+      "darkascension"
     ]
   },
   "blood_scythe_cross": {
@@ -58,8 +64,9 @@
     "color": "#991b1b",
     "particles": "slash",
     "sound": [
-      "bloodmagic1",
-      "bloodmagic2"
+      "bloodbolt",
+      "cursedwhisper",
+      "darkascension"
     ]
   },
   "blood_curse_mist": {
@@ -67,8 +74,9 @@
     "color": "#881337",
     "particles": "burst",
     "sound": [
-      "bloodmagic1",
-      "bloodmagic2"
+      "bloodbolt",
+      "cursedwhisper",
+      "darkascension"
     ]
   },
   "blood_cleave": {
@@ -76,8 +84,9 @@
     "color": "#b91c1c",
     "particles": "slash",
     "sound": [
-      "bloodmagic1",
-      "bloodmagic2"
+      "bloodbolt",
+      "cursedwhisper",
+      "darkascension"
     ]
   },
   "blood_nova": {
@@ -85,8 +94,9 @@
     "color": "#dc2626",
     "particles": "burst",
     "sound": [
-      "bloodmagic1",
-      "bloodmagic2"
+      "bloodbolt",
+      "cursedwhisper",
+      "darkascension"
     ]
   },
   "shadow_scythe_reap": {
@@ -94,7 +104,9 @@
     "color": "#9333ea",
     "particles": "slash",
     "sound": [
-      "bloodmagic2"
+      "bloodbolt",
+      "cursedwhisper",
+      "darkascension"
     ]
   },
   "void_rift_tear": {
@@ -102,7 +114,9 @@
     "color": "#7e22ce",
     "particles": "burst",
     "sound": [
-      "bloodmagic2"
+      "bloodbolt",
+      "cursedwhisper",
+      "darkascension"
     ]
   },
   "shadow_spikes_rise": {
@@ -110,7 +124,9 @@
     "color": "#581c87",
     "particles": "burst",
     "sound": [
-      "bloodmagic2"
+      "bloodbolt",
+      "cursedwhisper",
+      "darkascension"
     ]
   },
   "dark_matter_orb": {
@@ -118,7 +134,9 @@
     "color": "#a855f7",
     "particles": "orb",
     "sound": [
-      "bloodmagic2"
+      "bloodbolt",
+      "cursedwhisper",
+      "darkascension"
     ]
   },
   "soul_harvest_wisps": {
@@ -126,7 +144,9 @@
     "color": "#c084fc",
     "particles": "burst",
     "sound": [
-      "bloodmagic2"
+      "bloodbolt",
+      "cursedwhisper",
+      "darkascension"
     ]
   },
   "dark_cross_execution": {
@@ -134,7 +154,9 @@
     "color": "#6b21a8",
     "particles": "slash",
     "sound": [
-      "bloodmagic2"
+      "bloodbolt",
+      "cursedwhisper",
+      "darkascension"
     ]
   },
   "eclipse_wave": {
@@ -142,7 +164,9 @@
     "color": "#4c1d95",
     "particles": "burst",
     "sound": [
-      "bloodmagic2"
+      "bloodbolt",
+      "cursedwhisper",
+      "darkascension"
     ]
   },
   "shadow_tendrils": {
@@ -150,7 +174,9 @@
     "color": "#3b0764",
     "particles": "vortex",
     "sound": [
-      "bloodmagic2"
+      "bloodbolt",
+      "cursedwhisper",
+      "darkascension"
     ]
   },
   "phantom_dagger_barrage": {
@@ -158,7 +184,9 @@
     "color": "#7c3aed",
     "particles": "slash",
     "sound": [
-      "bloodmagic2"
+      "bloodbolt",
+      "cursedwhisper",
+      "darkascension"
     ]
   },
   "black_hole_implosion": {
@@ -166,7 +194,9 @@
     "color": "#2e1065",
     "particles": "burst",
     "sound": [
-      "bloodmagic2"
+      "bloodbolt",
+      "cursedwhisper",
+      "darkascension"
     ]
   },
   "fire_meteor_crash": {
@@ -174,7 +204,8 @@
     "color": "#ea580c",
     "particles": "burst",
     "sound": [
-      "firemagic"
+      "dragonfire",
+      "meteorfall"
     ]
   },
   "flame_pillar_inferno": {
@@ -182,7 +213,8 @@
     "color": "#f97316",
     "particles": "burst",
     "sound": [
-      "firemagic"
+      "dragonfire",
+      "meteorfall"
     ]
   },
   "fire_slash_arc": {
@@ -190,7 +222,8 @@
     "color": "#ff5722",
     "particles": "slash",
     "sound": [
-      "firemagic"
+      "dragonfire",
+      "meteorfall"
     ]
   },
   "dragon_breath_cone": {
@@ -198,7 +231,8 @@
     "color": "#dc2626",
     "particles": "burst",
     "sound": [
-      "firemagic"
+      "dragonfire",
+      "meteorfall"
     ]
   },
   "magma_eruption_burst": {
@@ -206,7 +240,8 @@
     "color": "#c2410c",
     "particles": "burst",
     "sound": [
-      "firemagic"
+      "dragonfire",
+      "meteorfall"
     ]
   },
   "phoenix_wings_sweep": {
@@ -214,7 +249,8 @@
     "color": "#f97316",
     "particles": "burst",
     "sound": [
-      "firemagic"
+      "dragonfire",
+      "meteorfall"
     ]
   },
   "ember_whirlwind": {
@@ -222,7 +258,8 @@
     "color": "#fb923c",
     "particles": "vortex",
     "sound": [
-      "firemagic"
+      "dragonfire",
+      "meteorfall"
     ]
   },
   "scorch_wave_ring": {
@@ -230,7 +267,8 @@
     "color": "#ef4444",
     "particles": "burst",
     "sound": [
-      "firemagic"
+      "dragonfire",
+      "meteorfall"
     ]
   },
   "fireball_streak": {
@@ -238,7 +276,8 @@
     "color": "#ea580c",
     "particles": "slash",
     "sound": [
-      "firemagic"
+      "dragonfire",
+      "meteorfall"
     ]
   },
   "supernova_blast": {
@@ -246,7 +285,8 @@
     "color": "#f59e0b",
     "particles": "burst",
     "sound": [
-      "firemagic"
+      "dragonfire",
+      "meteorfall"
     ]
   },
   "earth_fissure_rupture": {
@@ -254,7 +294,8 @@
     "color": "#854d0e",
     "particles": "burst",
     "sound": [
-      "battleaxe"
+      "irongate",
+      "axeskill"
     ]
   },
   "boulder_crush_drop": {
@@ -262,7 +303,8 @@
     "color": "#713f12",
     "particles": "burst",
     "sound": [
-      "battleaxe"
+      "irongate",
+      "axeskill"
     ]
   },
   "seismic_shockwave_ring": {
@@ -270,7 +312,8 @@
     "color": "#a16207",
     "particles": "burst",
     "sound": [
-      "battleaxe"
+      "irongate",
+      "axeskill"
     ]
   },
   "sandstorm_vortex_spin": {
@@ -278,7 +321,8 @@
     "color": "#d97706",
     "particles": "vortex",
     "sound": [
-      "battleaxe"
+      "irongate",
+      "axeskill"
     ]
   },
   "stone_spikes_impale": {
@@ -286,7 +330,8 @@
     "color": "#65a30d",
     "particles": "burst",
     "sound": [
-      "battleaxe"
+      "irongate",
+      "axeskill"
     ]
   },
   "rock_avalanche_barrage": {
@@ -294,7 +339,8 @@
     "color": "#78716c",
     "particles": "slash",
     "sound": [
-      "battleaxe"
+      "irongate",
+      "axeskill"
     ]
   },
   "earth_hammer_quake": {
@@ -302,7 +348,8 @@
     "color": "#b45309",
     "particles": "slash",
     "sound": [
-      "battleaxe"
+      "irongate",
+      "axeskill"
     ]
   },
   "crystal_earth_shards": {
@@ -318,7 +365,8 @@
     "color": "#451a03",
     "particles": "burst",
     "sound": [
-      "battleaxe"
+      "irongate",
+      "axeskill"
     ]
   },
   "granite_armor_shatter": {
@@ -326,7 +374,8 @@
     "color": "#57534e",
     "particles": "burst",
     "sound": [
-      "battleaxe"
+      "irongate",
+      "axeskill"
     ]
   },
   "frost_crystal_spear": {
@@ -334,7 +383,8 @@
     "color": "#38bdf8",
     "particles": "slash",
     "sound": [
-      "frostmagic"
+      "waterorb",
+      "waterburst"
     ]
   },
   "frost_nova_freeze": {
@@ -342,7 +392,8 @@
     "color": "#0284c7",
     "particles": "burst",
     "sound": [
-      "frostmagic"
+      "waterorb",
+      "waterburst"
     ]
   },
   "ice_sword_uppercut": {
@@ -350,7 +401,8 @@
     "color": "#7dd3fc",
     "particles": "slash",
     "sound": [
-      "frostmagic"
+      "waterorb",
+      "waterburst"
     ]
   },
   "blizzard_cyclone_vortex": {
@@ -358,7 +410,8 @@
     "color": "#0ea5e9",
     "particles": "vortex",
     "sound": [
-      "frostmagic"
+      "waterorb",
+      "waterburst"
     ]
   },
   "ice_spikes_ground": {
@@ -366,7 +419,8 @@
     "color": "#38bdf8",
     "particles": "burst",
     "sound": [
-      "frostmagic"
+      "waterorb",
+      "waterburst"
     ]
   },
   "tidal_wave_water": {
@@ -374,7 +428,8 @@
     "color": "#2563eb",
     "particles": "burst",
     "sound": [
-      "frostmagic"
+      "waterorb",
+      "waterburst"
     ]
   },
   "frozen_orb_shatter": {
@@ -382,7 +437,8 @@
     "color": "#06b6d4",
     "particles": "burst",
     "sound": [
-      "frostmagic"
+      "waterorb",
+      "waterburst"
     ]
   },
   "icicle_rain_barrage": {
@@ -390,7 +446,8 @@
     "color": "#0284c7",
     "particles": "burst",
     "sound": [
-      "frostmagic"
+      "waterorb",
+      "waterburst"
     ]
   },
   "water_whip_lash": {
@@ -398,7 +455,8 @@
     "color": "#3b82f6",
     "particles": "slash",
     "sound": [
-      "frostmagic"
+      "waterorb",
+      "waterburst"
     ]
   },
   "frost_prison_dome": {
@@ -406,7 +464,8 @@
     "color": "#0369a1",
     "particles": "burst",
     "sound": [
-      "frostmagic"
+      "waterorb",
+      "waterburst"
     ]
   },
   "lightning_strike_heavy": {
@@ -414,7 +473,8 @@
     "color": "#facc15",
     "particles": "slash",
     "sound": [
-      "normalmagic"
+      "lightningcast",
+      "chargeshot"
     ]
   },
   "chain_lightning_arc": {
@@ -422,7 +482,8 @@
     "color": "#eab308",
     "particles": "slash",
     "sound": [
-      "normalmagic"
+      "lightningcast",
+      "chargeshot"
     ]
   },
   "ball_lightning_plasma": {
@@ -430,7 +491,8 @@
     "color": "#ca8a04",
     "particles": "burst",
     "sound": [
-      "normalmagic"
+      "lightningcast",
+      "chargeshot"
     ]
   },
   "lightning_slash_blade": {
@@ -438,7 +500,8 @@
     "color": "#fde047",
     "particles": "slash",
     "sound": [
-      "normalmagic"
+      "lightningcast",
+      "chargeshot"
     ]
   },
   "electric_field_discharge": {
@@ -446,7 +509,8 @@
     "color": "#eab308",
     "particles": "burst",
     "sound": [
-      "normalmagic"
+      "lightningcast",
+      "chargeshot"
     ]
   },
   "storm_tornado_vortex": {
@@ -454,7 +518,8 @@
     "color": "#fbbf24",
     "particles": "vortex",
     "sound": [
-      "normalmagic"
+      "lightningcast",
+      "chargeshot"
     ]
   },
   "emp_shockwave_ring": {
@@ -462,7 +527,8 @@
     "color": "#facc15",
     "particles": "burst",
     "sound": [
-      "normalmagic"
+      "lightningcast",
+      "chargeshot"
     ]
   },
   "triple_thunder_judgement": {
@@ -470,7 +536,8 @@
     "color": "#fef08a",
     "particles": "burst",
     "sound": [
-      "normalmagic"
+      "lightningcast",
+      "chargeshot"
     ]
   },
   "electric_sparks_shower": {
@@ -478,7 +545,8 @@
     "color": "#fde047",
     "particles": "burst",
     "sound": [
-      "normalmagic"
+      "lightningcast",
+      "chargeshot"
     ]
   },
   "storm_spear_throw": {
@@ -486,7 +554,8 @@
     "color": "#eab308",
     "particles": "slash",
     "sound": [
-      "normalmagic"
+      "lightningcast",
+      "chargeshot"
     ]
   },
   "holy_pillar_smite": {
@@ -494,7 +563,8 @@
     "color": "#facc15",
     "particles": "burst",
     "sound": [
-      "healingmagic"
+      "divinejudgement",
+      "holyhammer"
     ]
   },
   "radiance_sword_slash": {
@@ -502,7 +572,8 @@
     "color": "#fef08a",
     "particles": "slash",
     "sound": [
-      "healingmagic"
+      "divinejudgement",
+      "holyhammer"
     ]
   },
   "holy_cross_burst": {
@@ -510,7 +581,8 @@
     "color": "#fde047",
     "particles": "burst",
     "sound": [
-      "healingmagic"
+      "divinejudgement",
+      "holyhammer"
     ]
   },
   "heal_aura_fountain": {
@@ -518,7 +590,8 @@
     "color": "#4ade80",
     "particles": "glow",
     "sound": [
-      "healingmagic"
+      "divinejudgement",
+      "holyhammer"
     ]
   },
   "radiant_halo_shield": {
@@ -526,10 +599,8 @@
     "color": "#f59e0b",
     "particles": "ring",
     "sound": [
-      "slash1",
-      "slash2",
-      "slash3",
-      "slash4"
+      "divinejudgement",
+      "holyhammer"
     ]
   },
   "angel_feathers_scatter": {
@@ -537,7 +608,8 @@
     "color": "#ffffff",
     "particles": "burst",
     "sound": [
-      "healingmagic"
+      "divinejudgement",
+      "holyhammer"
     ]
   },
   "judgement_solar_flare": {
@@ -545,7 +617,8 @@
     "color": "#facc15",
     "particles": "burst",
     "sound": [
-      "healingmagic"
+      "divinejudgement",
+      "holyhammer"
     ]
   },
   "holy_lance_projectile": {
@@ -553,7 +626,8 @@
     "color": "#fef08a",
     "particles": "slash",
     "sound": [
-      "healingmagic"
+      "divinejudgement",
+      "holyhammer"
     ]
   },
   "divine_retribution_ring": {
@@ -561,7 +635,8 @@
     "color": "#eab308",
     "particles": "burst",
     "sound": [
-      "healingmagic"
+      "divinejudgement",
+      "holyhammer"
     ]
   },
   "dawn_star_explosion": {
@@ -569,7 +644,8 @@
     "color": "#ffffff",
     "particles": "burst",
     "sound": [
-      "healingmagic"
+      "divinejudgement",
+      "holyhammer"
     ]
   },
   "rising_katana_slash": {
@@ -577,7 +653,8 @@
     "color": "#ffffff",
     "particles": "slash",
     "sound": [
-      "slash1"
+      "slashfast1",
+      "sword1"
     ]
   },
   "cross_cut_x_slash": {
@@ -585,7 +662,8 @@
     "color": "#f87171",
     "particles": "slash",
     "sound": [
-      "slash2"
+      "sword2",
+      "slashfast2"
     ]
   },
   "heavy_hammer_slam": {
@@ -593,10 +671,8 @@
     "color": "#fb923c",
     "particles": "slash",
     "sound": [
-      "slash1",
-      "slash2",
-      "slash3",
-      "slash4"
+      "holyhammer",
+      "heavyswordhit"
     ]
   },
   "whirlwind_blade_spin": {
@@ -604,10 +680,8 @@
     "color": "#cbd5e1",
     "particles": "vortex",
     "sound": [
-      "slash1",
-      "slash2",
-      "slash3",
-      "slash4"
+      "greatswordspin",
+      "slashfast4"
     ]
   },
   "piercing_rapier_thrust": {
@@ -615,10 +689,8 @@
     "color": "#ffffff",
     "particles": "slash",
     "sound": [
-      "slash1",
-      "slash2",
-      "slash3",
-      "slash4"
+      "sword3",
+      "bladehit"
     ]
   },
   "axe_cleave_horizontal": {
@@ -626,10 +698,9 @@
     "color": "#ea580c",
     "particles": "slash",
     "sound": [
-      "slash1",
-      "slash2",
-      "slash3",
-      "slash4"
+      "axeswing1",
+      "axeswing2",
+      "axeskill"
     ]
   },
   "sonic_air_blade": {
@@ -637,10 +708,8 @@
     "color": "#94a3b8",
     "particles": "slash",
     "sound": [
-      "slash1",
-      "slash2",
-      "slash3",
-      "slash4"
+      "greatswordslash",
+      "slashfast3"
     ]
   },
   "shield_bash_shock": {
@@ -648,10 +717,8 @@
     "color": "#64748b",
     "particles": "burst",
     "sound": [
-      "slash1",
-      "slash2",
-      "slash3",
-      "slash4"
+      "shieldpulse",
+      "bladesclash1"
     ]
   },
   "triple_dagger_slash": {
@@ -659,10 +726,8 @@
     "color": "#e2e8f0",
     "particles": "slash",
     "sound": [
-      "slash1",
-      "slash2",
-      "slash3",
-      "slash4"
+      "daggerthrow",
+      "slashfast1"
     ]
   },
   "guillotine_fall": {
@@ -670,10 +735,8 @@
     "color": "#dc2626",
     "particles": "slash",
     "sound": [
-      "slash1",
-      "slash2",
-      "slash3",
-      "slash4"
+      "twohanded",
+      "heavyswordhit"
     ]
   },
   "slash": {
@@ -681,10 +744,13 @@
     "color": "#ff7a5c",
     "particles": "slash",
     "sound": [
-      "slash1",
-      "slash2",
-      "slash3",
-      "slash4"
+      "slashfast1",
+      "slashfast2",
+      "slashfast3",
+      "slashfast4",
+      "sword1",
+      "sword2",
+      "sword3"
     ]
   },
   "heavy": {
@@ -692,8 +758,11 @@
     "color": "#ffb347",
     "particles": "shatter",
     "sound": [
-      "strongattack1",
-      "strongattack2"
+      "heavyslash1",
+      "heavyslash2",
+      "greatswordslash",
+      "twohanded",
+      "heavyswordhit"
     ]
   },
   "axe": {
@@ -701,7 +770,9 @@
     "color": "#ff9b4a",
     "particles": "shatter",
     "sound": [
-      "battleaxe"
+      "axeswing1",
+      "axeswing2",
+      "axeskill"
     ]
   },
   "crush": {
@@ -709,7 +780,8 @@
     "color": "#ffd23e",
     "particles": "burst",
     "sound": [
-      "skull_crush"
+      "hitgeneric",
+      "axehit"
     ]
   },
   "arcane": {
@@ -717,9 +789,8 @@
     "color": "#c9a0ff",
     "particles": "orb",
     "sound": [
-      "normalmagic",
-      "bloodmagic1",
-      "bloodmagic2"
+      "arcanebolt",
+      "lightningcast"
     ]
   },
   "fire": {
@@ -727,7 +798,8 @@
     "color": "#ff7a3c",
     "particles": "fire",
     "sound": [
-      "firemagic"
+      "dragonfire",
+      "meteorfall"
     ]
   },
   "frost": {
@@ -735,7 +807,8 @@
     "color": "#9fd4ff",
     "particles": "frost",
     "sound": [
-      "frostmagic"
+      "waterorb",
+      "waterburst"
     ]
   },
   "holy": {
@@ -743,7 +816,8 @@
     "color": "#ffe9a8",
     "particles": "rays",
     "sound": [
-      "healingmagic"
+      "divinejudgement",
+      "holyhammer"
     ]
   },
   "shadow": {
@@ -751,8 +825,9 @@
     "color": "#b98cff",
     "particles": "pulse",
     "sound": [
-      "bloodmagic1",
-      "bloodmagic2"
+      "bloodbolt",
+      "cursedwhisper",
+      "darkascension"
     ]
   },
   "heal": {
@@ -768,7 +843,9 @@
     "color": "#8fc9ff",
     "particles": "ring",
     "sound": [
-      "shield"
+      "shieldpulse",
+      "bladesclash1",
+      "bladesclash2"
     ]
   },
   "monster": {
@@ -776,7 +853,14 @@
     "color": "#ff7a5c",
     "particles": "slash",
     "sound": [
-      "monstersound"
+      "monsterroar",
+      "terrifyingroar",
+      "bonesrattle",
+      "undeadmoan",
+      "slimesquelch",
+      "wolfsnap",
+      "vampirehiss",
+      "dragonroar"
     ]
   },
   "crit": {
@@ -784,7 +868,8 @@
     "color": "#ffd23e",
     "particles": "burst",
     "sound": [
-      "skull_crush"
+      "heavyswordhit",
+      "holyhammer"
     ]
   },
   "buff": {
@@ -792,7 +877,7 @@
     "color": "#8fe08a",
     "particles": "glow",
     "sound": [
-      "shield"
+      "shieldpulse"
     ]
   },
   "dot": {
@@ -800,7 +885,8 @@
     "color": "#b98cff",
     "particles": "pulse",
     "sound": [
-      "bloodmagic1"
+      "bloodbolt",
+      "vineslash"
     ]
   }
 }

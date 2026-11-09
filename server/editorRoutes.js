@@ -17,6 +17,8 @@ const { execFileSync } = require("child_process");
 const { CONTENT } = require("../content.js");
 const { writeContent, CONTENT_FILE } = require("../editor-save.js");
 const defs = require("../editor-defs.js");
+const worldStore = require("./persistentWorld");
+const { renderOverview } = require("./worldPreview");
 
 const router = express.Router();
 
@@ -440,6 +442,85 @@ router.post("/api/editor/save-and-push", auth, (req, res) => {
     });
   } catch (e) {
     res.status(400).json({ ok: false, error: String(e.message).slice(0, 1200) });
+  }
+});
+
+// =====================================================================
+// DÜNYA KURUCU (world_setra.json) — GameCraft World Builder köprüsü
+// =====================================================================
+const WORLD_PATH = path.join(__dirname, "..", "world_setra.json");
+let previewCache = { key: "", png: null };
+
+router.get("/api/world", auth, (req, res) => {
+  try {
+    const raw = fs.readFileSync(WORLD_PATH, "utf8");
+    res.json({ ok: true, world: JSON.parse(raw) });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: "world_setra.json okunamadı: " + String(e.message).slice(0, 200) });
+  }
+});
+
+router.post("/api/world/save", auth, (req, res) => {
+  const world = req.body && req.body.world;
+  if (!world || typeof world !== "object" || Array.isArray(world)) {
+    return res.status(400).json({ ok: false, error: "Beklenen gövde: { world: { ... } }." });
+  }
+  try {
+    if (!world.id) throw new Error("world.id zorunlu.");
+    if (!world.spawn || !Number.isFinite(Number(world.spawn.x)) || !Number.isFinite(Number(world.spawn.y))) {
+      throw new Error("world.spawn.x/y zorunlu.");
+    }
+    if (!Number.isFinite(Number(world.width)) || !Number.isFinite(Number(world.height))) {
+      throw new Error("world.width/height zorunlu.");
+    }
+    // Yedek (content.js ile aynı klasör)
+    let backup = "";
+    try {
+      const backupsDir = process.env.SETRA_BACKUP_DIR || path.join(__dirname, "..", "..", "ForSetrain", "backups");
+      fs.mkdirSync(backupsDir, { recursive: true });
+      backup = path.join(backupsDir, `world_setra_${Date.now()}.json`);
+      if (fs.existsSync(WORLD_PATH)) fs.copyFileSync(WORLD_PATH, backup);
+    } catch (be) { backup = ""; }
+
+    // Önce bellekteki oyun dünyasını tazele (sürümü artırır), sonra dosyaya yaz.
+    let note = "";
+    let toWrite = world;
+    try {
+      worldStore.applyConfig(world);
+      toWrite = worldStore.config;
+      note = " Sunucu belleği canlı güncellendi (sürüm " + toWrite.version + ").";
+    } catch (ae) {
+      note = " Not: canlı güncelleme başarısız (" + String(ae.message).slice(0, 120) + "); oyunu yeniden başlat.";
+    }
+    fs.writeFileSync(WORLD_PATH, JSON.stringify(toWrite, null, 2) + "\n");
+    previewCache = { key: "", png: null };
+    // Bağlı oyunculara dünyanın değiştiğini bildir: oyun bir sonraki karede
+    // travel:sync yapıp yeni haritayı çeker (yeniden başlatma gerekmez).
+    try {
+      const io = req.app.get("io");
+      if (io) io.emit("world:updated", { version: toWrite.version || 1 });
+    } catch (_) { /* socket yoksa sorun değil */ }
+    res.json({ ok: true, backup: backup || null, note: "world_setra.json güncellendi." + note });
+  } catch (e) {
+    res.status(400).json({ ok: false, error: String(e.message).slice(0, 1200) });
+  }
+});
+
+router.get("/api/world/preview.png", auth, (req, res) => {
+  try {
+    const raw = fs.readFileSync(WORLD_PATH, "utf8");
+    const cfg = JSON.parse(raw);
+    const w = Math.round(Number(req.query.w) || 1024);
+    const key = (cfg.version || 1) + ":" + cfg.seed + ":" + w + ":" + raw.length;
+    if (previewCache.key !== key || !previewCache.png) {
+      const out = renderOverview(cfg, w);
+      previewCache = { key, png: out.png };
+    }
+    res.setHeader("Content-Type", "image/png");
+    res.setHeader("Cache-Control", "no-store");
+    res.end(previewCache.png);
+  } catch (e) {
+    res.status(500).json({ ok: false, error: String(e.message).slice(0, 300) });
   }
 });
 

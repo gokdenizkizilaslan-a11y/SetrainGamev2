@@ -207,6 +207,7 @@
       this.geysers = [];
       this.beams = []; // caster -> hedef arasi cizilen lazer/isinsal efektler (capraz dahil)
       this.registry = EFFECTS_REGISTRY;
+      this._dirty = true; // boştayken bir kez temizle, sonra hiç çizme
 
       this.resize();
       window.addEventListener('resize', () => this.resize());
@@ -216,6 +217,7 @@
     resize() {
       this.canvas.width = this.canvas.clientWidth || window.innerWidth;
       this.canvas.height = this.canvas.clientHeight || window.innerHeight;
+      this._dirty = true;
     }
 
     getEffectList() {
@@ -224,6 +226,7 @@
 
     // ANA ÇALIŞTIRICI METOD — registry tabanlı dispatch
     play(effectId, opts = {}) {
+      this._dirty = true;
       const fromX = opts.fromX !== undefined ? opts.fromX : this.canvas.width / 2;
       const fromY = opts.fromY !== undefined ? opts.fromY : this.canvas.height - 80;
       const toX = opts.toX !== undefined ? opts.toX : this.canvas.width / 2;
@@ -618,9 +621,24 @@
 
     // ---------------- DÖNGÜ ----------------
     loop() {
-      this.update();
-      this.render();
+      // Boşta hiçbir efekt yoksa tam ekran canvas'ı her karede temizleyip
+      // yeniden çizmek büyük israf (mobilde özellikle). Sadece efekt varken çiz.
+      if (this._hasActive()) {
+        this.update();
+        this.render();
+        this._dirty = false;
+      } else if (this._dirty) {
+        this.render();
+        this._dirty = false;
+      }
       requestAnimationFrame(() => this.loop());
+    }
+
+    _hasActive() {
+      return !!(this.particles.length || this.projectiles.length || this.slashes.length ||
+        this.lightnings.length || this.flashes.length || this.rings.length ||
+        this.swirls.length || this.pillars.length || this.spikes.length ||
+        this.domes.length || this.geysers.length || (this.beams && this.beams.length));
     }
 
     update() {

@@ -3388,10 +3388,6 @@
     "tr": "Kor Kuyusu"
   },
   {
-    "en": "Mana recovers more generously in town rest.",
-    "tr": "Kasaba dinlenmesinde mana daha cömertçe yenilenir."
-  },
-  {
     "en": "Arcane Reservoir",
     "tr": "Arkane Haznesi"
   },
@@ -5630,5 +5626,25 @@
   {
     "en": "Lightning obeys you, leaping across the whole battlefield.",
     "tr": "Yıldırım sana itaat eder, tüm savaş alanına sıçrar."
+  },
+  {
+    "en": "Mana flows back in battle: +4 mana at the start of every combat round.",
+    "tr": "Savaşta mana geri akar: her savaş turunun başında +4 mana."
+  },
+  {
+    "en": "Gale Veins",
+    "tr": "Rüzgar Damarları"
+  },
+  {
+    "en": "Attack speed +40%. Each hit has a 40% chance to echo for 50% damage.",
+    "tr": "Saldırı hızı +%40. Her vuruşun %50 hasarla yankılanma şansı %40."
+  },
+  {
+    "en": "Stormheart",
+    "tr": "Fırtına Kalbi"
+  },
+  {
+    "en": "Pure blood runs like lightning: attack speed +40% and +3 mana every combat round.",
+    "tr": "Saf kan şimşek gibi akar: saldırı hızı +%40 ve her savaş turunda +3 mana."
   }
 ]

@@ -2,9 +2,18 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="setra-build" content="20261106stat1" />
-    <title>The Setra Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="setra-build" content="20261109menu" />
+    <title>Setra</title>
+    <!-- 3D ağaç denemesi: yerel three.js (public/vendor/three). Kaldırmak için bu blok + /js/trees3d.js silinir. -->
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "/vendor/three/three.module.js",
+          "three/addons/": "/vendor/three/addons/"
+        }
+      }
+    </script>
     <script>
       // Gorunur hata paneli: bir JS hatasi oyunu bos ekrana dusururse sebebini yazar.
       (function () {
@@ -51,7 +60,7 @@
       href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/style.css?v=20261108a" />
+    <link rel="stylesheet" href="/style.css?v=20261109f" />
   </head>
   <body>
 <!-- ============================================================
@@ -132,20 +141,34 @@
       </div>
     </div>
 
-    <section id="screen-mode" class="screen">
-      <div class="menu menu--title">
-        <p class="menu-title">SETRA</p>
-        <div class="menu-actions">
-          <button type="button" class="btn btn--menu btn--gold" data-mode="single">
-            Singleplayer
-          </button>
-          <button type="button" class="btn btn--menu btn--bronze" data-mode="multi">
-            Multiplayer
-          </button>
+    <section id="screen-mode" class="screen screen--title">
+      <div class="title-frame">
+        <div class="title-hero">
+          <p class="title-eyebrow">Chronicle of the Ember Realm</p>
+          <h1 class="title-word">SETRA</h1>
+          <div class="title-rule" aria-hidden="true">
+            <span></span><b>✦</b><span></span>
+          </div>
+          <p class="title-tagline">A dying realm. One last warden. Choose your path.</p>
         </div>
-        <div class="menu-lang" role="group" aria-label="Language">
-          <button type="button" class="lang-btn" data-lang="en">English</button>
-          <button type="button" class="lang-btn" data-lang="tr">Türkçe</button>
+
+        <nav class="title-nav" aria-label="Main menu">
+          <button type="button" class="title-item" data-mode="single">
+            <span class="title-item__label">Singleplayer</span>
+            <span class="title-item__sub">Begin a lone pilgrimage</span>
+          </button>
+          <button type="button" class="title-item" data-mode="multi">
+            <span class="title-item__label">Multiplayer</span>
+            <span class="title-item__sub">Ride with sworn companions</span>
+          </button>
+        </nav>
+
+        <div class="title-footer">
+          <div class="menu-lang" role="group" aria-label="Language">
+            <button type="button" class="lang-btn" data-lang="en">English</button>
+            <span class="lang-sep" aria-hidden="true">·</span>
+            <button type="button" class="lang-btn" data-lang="tr">Türkçe</button>
+          </div>
         </div>
       </div>
     </section>
@@ -248,23 +271,22 @@
 
             <div class="action-panel">
               <div class="town-header">
-                <div>
-                  <p class="eyebrow">The Town</p>
+                <p class="eyebrow">The Town</p>
+                <div class="town-header__row">
                   <h2>Setra Village</h2>
-                </div>
-                <div class="town-day">
-                  <div class="town-day__info">
-                    <span id="town-omen" class="day-omen" title="Today's omen"></span>
-                    <div class="town-day__day">
-                      <span class="day-label">Day</span>
-                      <span id="town-day" class="day-value">1</span>
+                  <div class="town-day">
+                    <div class="town-day__info">
+                      <div class="town-day__day">
+                        <span class="day-label">Day</span>
+                        <span id="town-day" class="day-value">1</span>
+                      </div>
                     </div>
-                  </div>
-                  <div class="town-day__actions">
-                    <button type="button" id="btn-quests" class="btn btn--ghost town-day__btn" title="Quests">📜 Quests</button>
-                    <button type="button" id="btn-guide" class="btn btn--ghost town-day__btn" title="How to play">📖 Guide</button>
-                    <button type="button" id="btn-skilltree" class="btn btn--ghost town-day__btn" title="Open Skill Tree">✦ Skill Tree</button>
-                    <button type="button" id="btn-map" class="btn btn--ghost town-day__btn" title="Open Map">🗺️ Map</button>
+                    <div class="town-day__actions">
+                      <button type="button" id="btn-quests" class="btn btn--ghost town-day__btn" aria-label="Quests" title="Quests"><span class="town-day__ico" aria-hidden="true">📜</span></button>
+                      <button type="button" id="btn-guide" class="btn btn--ghost town-day__btn" aria-label="How to play" title="How to play"><span class="town-day__ico" aria-hidden="true">📖</span></button>
+                      <button type="button" id="btn-skilltree" class="btn btn--ghost town-day__btn" aria-label="Open Skill Tree" title="Open Skill Tree"><span class="town-day__ico" aria-hidden="true">🌳</span></button>
+                      <button type="button" id="btn-map" class="btn btn--ghost town-day__btn" aria-label="Open Map" title="Open Map"><span class="town-day__ico" aria-hidden="true">🗺️</span></button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -424,7 +446,7 @@
           type="text"
           maxlength="200"
           autocomplete="off"
-          placeholder="Say something…"
+          placeholder="Say something⬦"
         />
         <button type="button" id="chat-send" class="chat-send" title="Send" aria-label="Send">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -501,13 +523,17 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="/egg_animation.js"></script>
     <script src="/js/i18n.dialog.js?v=20261108a"></script>
-    <script src="/js/i18n.js?v=20261108e"></script>
-    <script src="/js/screens.js?v=20261108e"></script>
+    <script src="/js/i18n.js?v=20261109b"></script>
+    <script src="/js/screens.js?v=20261111d"></script>
     <script src="/js/bgfx.js?v=20260912k"></script>
-    <script src="/js/client.js?v=20261108e"></script>
-    <script src="/js/travelEngine.js?v=20261108e"></script>
-    <script src="/js/travel_visuals.js?v=20261108e"></script>
-    <script src="/js/travelArpg.js?v=20261108e"></script>
+    <script src="/js/client.js?v=20261109b"></script>
+    <script src="/js/monster_expansion.js?v=20261109a"></script>
+    <script src="/js/setraWorldCore.js?v=20261109a"></script>
+    <script src="/js/travelEngine.js?v=20261112a"></script>
+    <script src="/js/travel_visuals.js?v=20261108g"></script>
+<script src="/js/travelSkills.js?v=20261108h"></script>
+    <script src="/js/travelArpg.js?v=20261110a"></script>
+    <script type="module" src="/js/trees3d.js?v=20261112b"></script>
 
 <!-- ============================================================
   THE SETRA GAME - DUNGEON CHEST & 3D LOOT OPENING MODULE
@@ -541,7 +567,7 @@
     </div>
 
     <button id="btn-open-chest" class="btn-chest-action" onclick="ChestSystem.triggerOpen()">
-      Unlock Chest ➔
+      Unlock Chest —
     </button>
 
     <!-- Loot Cards Grid -->
@@ -669,7 +695,7 @@ window.ChestSystem = {
     document.getElementById('chest-box').className = "chest-3d-box";
     const btn = document.getElementById('btn-open-chest');
     btn.classList.remove('hidden');
-    btn.innerText = "Unlock Chest ➔";
+    btn.innerText = "Unlock Chest —";
     document.getElementById('loot-cards-container').classList.add('hidden');
     document.getElementById('loot-cards-container').innerHTML = '';
     document.getElementById('chest-footer-actions').classList.add('hidden');
@@ -712,7 +738,7 @@ window.ChestSystem = {
       document.getElementById('chest-footer-actions').classList.remove('hidden');
     } else {
       document.getElementById('chest-status-text').innerText = `Tap to reveal (${s.revealed}/${s.items.length})`;
-      btn.innerText = `Reveal Next ➔ (${s.revealed}/${s.items.length})`;
+      btn.innerText = `Reveal Next — (${s.revealed}/${s.items.length})`;
     }
   },
 
@@ -758,3 +784,4 @@ window.ChestSystem = {
 
 
 </html>
+

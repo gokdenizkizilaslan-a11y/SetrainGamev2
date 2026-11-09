@@ -963,33 +963,46 @@ input:focus {
 
 .town-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.7rem 1.1rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
   margin-bottom: 0.8rem;
   flex-shrink: 0;
-  flex-wrap: wrap;
+}
+
+.town-header__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
 }
 
 #screen-town .town-header h2 {
   margin: 0;
+  min-width: 0;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .town-day {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  flex: 1 1 auto;
-  flex-wrap: wrap;
-  gap: 0.7rem;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  gap: 0.4rem;
+  margin-left: auto; /* başlığın sağında, panelin sağ kenarına yaslanır */
   text-align: center;
-  padding: 0.4rem 1rem;
+  padding: 0.3rem 0.4rem;
   border: 1px solid var(--glass-line);
-  background: rgba(0, 0, 0, 0.25);
-  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 13px;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .town-day__info {
@@ -1001,22 +1014,43 @@ input:focus {
 .town-day__actions {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 0.55rem;
+  flex-wrap: nowrap;
+  gap: 0.26rem;
 }
 
+/* Sadece emoji: kare, ferah, taşmaz */
 .town-day__btn {
-  padding: 0.45rem 0.8rem;
-  font-size: 0.85rem;
+  width: 2.35rem;
+  height: 2.35rem;
+  min-width: 2.35rem;
+  aspect-ratio: 1 / 1;
+  flex: 0 0 auto;
+  padding: 0;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  line-height: 1;
   white-space: nowrap;
+  overflow: hidden;
+}
+
+.town-day__ico {
+  display: block;
+  font-size: 1.15rem;
+  line-height: 1;
+  pointer-events: none;
 }
 
 .town-day__day {
   display: flex;
   flex-direction: column;
   align-items: center;
-  line-height: 1;
-  padding: 0 0.3rem;
+  justify-content: center;
+  line-height: 1.05;
+  min-width: 2.1rem;
+  padding: 0 0.15rem;
 }
 
 /* Gün/quest kutucuğu arka plan görseli (editör: UI → townDayBg).
@@ -1033,27 +1067,34 @@ input:focus {
 .day-label {
   display: block;
   font-family: "Cinzel", serif;
-  font-size: 0.68rem;
-  letter-spacing: 0.2em;
+  font-size: 0.56rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--gold-bright);
+  white-space: nowrap;
 }
 
 .day-value {
   font-family: "Cinzel", serif;
-  font-size: 1.8rem;
+  font-size: 1.15rem;
   font-weight: 700;
+  line-height: 1.1;
   color: var(--ink);
 }
 
 .day-omen {
-  font-size: 0.72rem;
-  color: var(--gold-bright);
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(232, 183, 108, 0.3);
-  border-radius: 999px;
-  padding: 0.25rem 0.6rem;
-  white-space: nowrap;
+  display: none; /* Gün kutucuğundaki omen yazısı kaldırıldı (Bountiful Dawn vb.) */
+}
+
+/* Dar ekran: panel sığmazsa ikon hapı başlığın altına geçer. */
+@media (max-width: 620px) {
+  .town-header__row { flex-wrap: wrap; row-gap: 0.4rem; }
+  .town-day {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin-left: 0;
+  }
+  .town-day__actions { flex-wrap: wrap; }
 }
 
 .day-omen:empty {
@@ -3236,6 +3277,7 @@ input:focus {
 }
 
 .item-btn {
+  position: relative;
   display: inline-flex;
   flex-direction: column;
   align-items: center;
@@ -5463,57 +5505,76 @@ input:focus {
   position: absolute;
   inset: 0;
   opacity: 0;
-  transition: opacity 1.15s ease;
+  transition: opacity 0.95s ease;
   pointer-events: none;
   overflow: hidden;
+  will-change: opacity;
 }
 .story-scene.is-active {
   opacity: 1;
 }
+/* Görsel iki katman: arkada aynı görselin bulanık dolgusu (cover), önde
+   kırpılmadan tamamı (contain). Böylece hangi oranda olursa olsun illüstrasyon
+   "burnumuza yapışmış" gibi aşırı yakınlaşmaz; kenar boşlukları sinematik
+   bir bulanıklıkla dolar. Yakınlaştırma yalnızca çok hafif transform ile. */
+.story-scene__backdrop,
 .story-scene__img {
   position: absolute;
-  inset: -3%;
-  background-color: #0a0704;
-  background-size: cover;
-  background-position: center;
+  inset: 0;
   background-repeat: no-repeat;
-  transform: scale(1.03);
-  animation: story-kenburns 28s ease-in-out infinite alternate;
+  background-position: center center;
+  transform-origin: 50% 50%;
+  backface-visibility: hidden;
+  pointer-events: none;
+}
+.story-scene__backdrop {
+  inset: -8%;
+  background-size: cover;
+  transform: scale(1.08);
+  filter: blur(26px) brightness(0.52) saturate(1.1);
+  animation: story-backdrop-drift 26s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes story-backdrop-drift {
+  from { transform: scale(1.08) translate3d(-1.2%, 0, 0); }
+  to { transform: scale(1.13) translate3d(1.2%, 0, 0); }
+}
+.story-scene__img {
+  background-color: transparent;
+  background-size: cover;
+  transform: scale(1);
+  animation: story-kenburns 18s ease-in-out infinite alternate;
   will-change: transform;
 }
 @keyframes story-kenburns {
-  from { transform: scale(1.02); }
-  to { transform: scale(1.09); }
+  from { transform: scale(1); }
+  to { transform: scale(1.045); }
 }
-/* Prolog slaytları: görseli hafif yakınlaştırıp yavaşça kaydır (hikâye anlatımı). */
-.story-scene__img.slide-pan-lr {
-  inset: -14%;
-  animation: story-pan-lr 26s ease-in-out both;
-}
+/* Prolog slaytları: öndeki görsel çok yavaş yakınlaşır, arkadaki bulanık
+   dolgu yana kayar (pan). Süre kısa tutulur ki slayt ekranda kaldığı sürede
+   hareket GÖRÜLSÜN (eskiden 26s'lik animasyon donmuş gibi duruyordu). */
+.story-scene__img.slide-pan-lr,
 .story-scene__img.slide-pan-rl {
-  inset: -14%;
-  animation: story-pan-rl 26s ease-in-out both;
+  animation: story-zoom-in 13s cubic-bezier(0.25, 0.6, 0.32, 1) both;
 }
 .story-scene__img.slide-pan-zoom {
-  inset: -3%;
-  animation: story-zoom-in 22s ease-in-out both;
+  animation: story-zoom-in 13s cubic-bezier(0.25, 0.6, 0.32, 1) both;
 }
 .story-scene__img.slide-pan-none {
-  inset: -3%;
-  transform: scale(1.03);
+  transform: scale(1.01);
   animation: none;
 }
 @keyframes story-pan-lr {
-  from { transform: translateX(-8%) scale(1.12); }
-  to { transform: translateX(8%) scale(1.12); }
+  from { transform: translate3d(-4%, 0, 0) scale(1.12); }
+  to { transform: translate3d(4%, 0, 0) scale(1.12); }
 }
 @keyframes story-pan-rl {
-  from { transform: translateX(8%) scale(1.12); }
-  to { transform: translateX(-8%) scale(1.12); }
+  from { transform: translate3d(4%, 0, 0) scale(1.12); }
+  to { transform: translate3d(-4%, 0, 0) scale(1.12); }
 }
 @keyframes story-zoom-in {
-  from { transform: scale(1.02); }
-  to { transform: scale(1.17); }
+  from { transform: scale(1); }
+  to { transform: scale(1.07); }
 }
 .story-vignette {
   position: absolute;
@@ -5522,6 +5583,112 @@ input:focus {
   background:
     radial-gradient(125% 95% at 50% 38%, rgba(0, 0, 0, 0) 34%, rgba(0, 0, 0, 0.62) 100%),
     linear-gradient(to top, rgba(4, 2, 1, 0.94) 0%, rgba(4, 2, 1, 0.42) 26%, rgba(4, 2, 1, 0) 58%);
+}
+/* ---- Sinematik ekran geçişi: karart → (beyaz ışık patlaması) → sahne/menü ---- */
+/* JS: playScreenTransition("wake" | "dark") */
+.screen-fx {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  pointer-events: none;
+  overflow: hidden;
+}
+.screen-fx > div {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  will-change: opacity, transform;
+}
+.screen-fx__black {
+  background: #05030a;
+}
+.screen-fx__veil {
+  background: radial-gradient(circle at 50% 58%, #ffffff 0%, #fffdf4 46%, #fff7e4 100%);
+}
+.screen-fx__halo {
+  background: radial-gradient(
+    circle at 50% 58%,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 248, 222, 0.82) 16%,
+    rgba(255, 235, 184, 0.42) 38%,
+    rgba(255, 226, 152, 0) 68%
+  );
+  transform: scale(0.3);
+}
+.screen-fx__rays {
+  background: conic-gradient(
+    from 0deg at 50% 58%,
+    rgba(255, 240, 200, 0) 0deg,
+    rgba(255, 255, 255, 0.55) 10deg,
+    rgba(255, 240, 200, 0) 24deg,
+    rgba(255, 255, 255, 0.42) 40deg,
+    rgba(255, 240, 200, 0) 56deg,
+    rgba(255, 255, 255, 0.5) 72deg,
+    rgba(255, 240, 200, 0) 92deg,
+    rgba(255, 255, 255, 0.38) 116deg,
+    rgba(255, 240, 200, 0) 144deg,
+    rgba(255, 255, 255, 0.46) 178deg,
+    rgba(255, 240, 200, 0) 212deg,
+    rgba(255, 255, 255, 0.4) 248deg,
+    rgba(255, 240, 200, 0) 284deg,
+    rgba(255, 255, 255, 0.5) 320deg,
+    rgba(255, 240, 200, 0) 354deg,
+    rgba(255, 240, 200, 0) 360deg
+  );
+  -webkit-mask-image: radial-gradient(circle at 50% 58%, #000 0%, rgba(0, 0, 0, 0.85) 20%, rgba(0, 0, 0, 0.2) 46%, transparent 70%);
+  mask-image: radial-gradient(circle at 50% 58%, #000 0%, rgba(0, 0, 0, 0.85) 20%, rgba(0, 0, 0, 0.2) 46%, transparent 70%);
+  transform: scale(0.6);
+}
+/* Karart → menü (Mira'yla son sahne bittiğinde) */
+.screen-fx--dark .screen-fx__black {
+  animation: screen-fx-dark 1.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes screen-fx-dark {
+  0% { opacity: 0; }
+  26% { opacity: 1; }
+  54% { opacity: 1; }
+  100% { opacity: 0; }
+}
+/* Karart → beyaz ışık patlaması → uyandığımız yer */
+.screen-fx--wake .screen-fx__black {
+  animation: screen-fx-wake-black 2.9s linear forwards;
+}
+@keyframes screen-fx-wake-black {
+  0% { opacity: 0; }
+  16% { opacity: 1; }
+  50% { opacity: 1; }
+  74% { opacity: 0; }
+  100% { opacity: 0; }
+}
+.screen-fx--wake .screen-fx__veil {
+  animation: screen-fx-wake-veil 1.9s cubic-bezier(0.32, 0, 0.24, 1) 0.44s forwards;
+}
+@keyframes screen-fx-wake-veil {
+  0% { opacity: 0; }
+  18% { opacity: 1; }
+  40% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.screen-fx--wake .screen-fx__halo {
+  animation: screen-fx-wake-halo 1.9s cubic-bezier(0.16, 0.7, 0.24, 1) 0.44s forwards;
+}
+@keyframes screen-fx-wake-halo {
+  0% { opacity: 0; transform: scale(0.25); }
+  20% { opacity: 1; transform: scale(1); }
+  55% { opacity: 0.85; transform: scale(1.4); }
+  100% { opacity: 0; transform: scale(2.25); }
+}
+.screen-fx--wake .screen-fx__rays {
+  animation: screen-fx-wake-rays 2.2s ease-out 0.44s forwards;
+}
+@keyframes screen-fx-wake-rays {
+  0% { opacity: 0; transform: scale(0.55) rotate(-6deg); }
+  22% { opacity: 0.95; transform: scale(1.02) rotate(4deg); }
+  100% { opacity: 0; transform: scale(1.6) rotate(16deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .screen-fx--wake .screen-fx__halo,
+  .screen-fx--wake .screen-fx__rays { animation: none; }
 }
 .story-cine {
   position: absolute;
@@ -5574,11 +5741,21 @@ input:focus {
 .story-prologue__para:nth-child(3) { animation-delay: 0.24s; }
 .story-prologue__para:nth-child(4) { animation-delay: 0.36s; }
 .story-prologue--reward .story-prologue__para em { color: var(--ink-soft); }
-/* Sinematik prolog slaytı: metin altta (altyazı gibi), görseli kapatmasın. */
+/* Sinematik prolog slaytı: başlık en üstte, metin altta (altyazı gibi). */
 .story-slide {
   justify-content: flex-end;
   gap: 0.7rem;
   padding-bottom: clamp(6rem, 17vh, 10rem);
+}
+/* "Setra" başlığı: sahnenin tepesinde ortalanır (metin altta kalır). */
+.story-slide .story-prologue__title {
+  position: absolute;
+  top: clamp(1.1rem, 4.5vh, 2.6rem);
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 0 6vw;
+  text-align: center;
 }
 .story-slide .story-prologue__para {
   max-width: min(72vw, 660px);
@@ -5779,6 +5956,8 @@ input:focus {
   background-position: center top;
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
 }
+/* Görseli olmayan NPC'lerde boş çerçeve durmasın (görsel eklenince geri gelir) */
+.talk-portrait.portrait--missing { display: none; }
 /* Dükkan içi konuşma başlatma (sağ üstte NPC rozeti) */
 .talk-launch {
   display: flex;
@@ -5815,6 +5994,7 @@ input:focus {
   background-position: center;
   flex: none;
 }
+.talk-launch-portrait.portrait--missing { display: none; }
 .talk-close-row {
   display: flex;
   justify-content: flex-end;
@@ -5927,6 +6107,8 @@ input:focus {
   width: 1.1rem;
   height: 1.1rem;
 }
+/* Sandık görseli yüklendiğinde alttaki SVG fallback gizlenir. */
+.item-icon--chest.portrait--img svg { display: none; }
 
 /* ---- Rarity badges ---- */
 
@@ -7880,6 +8062,161 @@ input:focus {
   }
 }
 
+/* ---- Zindan + Taverna düz siyah zemin (demirci paneliyle aynı his) ---- */
+
+#dungeon-view,
+#tavern-view {
+  background: #050403;
+  border-radius: 16px;
+}
+/* Editor gorseli varsa duz siyah zemin resmin ustunu kapatmasin. */
+#dungeon-view.has-card-bg,
+#tavern-view.has-card-bg {
+  background: transparent;
+}
+
+#tavern-view::before {
+  background: #050403;
+}
+
+/* ---- Taverna kart görselleri kartın TAMAMINI kaplar (arka plan gibi) ---- */
+
+.tavern-sleep-card,
+.tavern-game-card,
+.tavern-leave-card,
+.tavern-rations-card {
+  position: relative;
+  isolation: isolate;
+}
+
+.tavern-sleep-card > .tavern-image,
+.tavern-game-card > .tavern-image,
+.tavern-leave-card > .tavern-image,
+.tavern-rations-card > .tavern-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  max-width: none;
+  border: 0;
+  border-radius: inherit;
+  z-index: 0;
+}
+
+/* Çerçeve yerine okunabilirlik perdesi: görselin üstüne koyu degrade. */
+.tavern-sleep-card > .tavern-image::after,
+.tavern-game-card > .tavern-image::after,
+.tavern-leave-card > .tavern-image::after,
+.tavern-rations-card > .tavern-image::after {
+  inset: 0;
+  border: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(to top, rgba(5, 3, 2, 0.95) 0%, rgba(5, 3, 2, 0.82) 38%, rgba(5, 3, 2, 0.42) 66%, rgba(5, 3, 2, 0.16) 100%),
+    linear-gradient(90deg, rgba(5, 3, 2, 0.9) 0%, rgba(5, 3, 2, 0.5) 46%, rgba(5, 3, 2, 0.12) 82%);
+}
+
+.tavern-sleep-card > .tavern-image.has-card-bg .tavern-img-hint,
+.tavern-game-card .tavern-image.has-card-bg .tavern-img-hint,
+.tavern-leave-card .tavern-image.has-card-bg .tavern-img-hint,
+.tavern-rations-card .tavern-image.has-card-bg .tavern-img-hint {
+  display: none;
+}
+
+.tavern-sleep-body,
+.tavern-game-body,
+.tavern-leave-text,
+.tavern-rations-body,
+.tavern-rations-card .btn {
+  position: relative;
+  z-index: 3;
+}
+
+/* Metinler görselin üstünde okunsun: cam panel + gölge + parlak renk. */
+.tavern-sleep-body,
+.tavern-rations-body {
+  align-self: center;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid rgba(232, 180, 92, 0.24);
+  border-radius: 12px;
+  background: linear-gradient(160deg, rgba(12, 8, 4, 0.78), rgba(8, 5, 3, 0.66));
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 230, 180, 0.07);
+  backdrop-filter: blur(2.5px);
+  -webkit-backdrop-filter: blur(2.5px);
+}
+
+.tavern-sleep-body {
+  max-width: min(24rem, 66%);
+  margin-right: auto;
+}
+
+/* Küçük oyun kartlarında görsel görünsün: panel yok, sadece hafif karartma. */
+.tavern-game-body {
+  max-width: 100%;
+  padding: 0.45rem 0.55rem;
+  border-radius: 10px;
+  background: linear-gradient(to top, rgba(5, 3, 2, 0.72), rgba(5, 3, 2, 0.18));
+}
+
+.tavern-rations-body {
+  max-width: min(18rem, 52%);
+  margin-right: auto;
+  padding: 0.45rem 0.7rem;
+}
+
+.tavern-leave-text {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  padding: 0.4rem 1.1rem;
+  border: 1px solid rgba(232, 180, 92, 0.28);
+  border-radius: 999px;
+  background: rgba(10, 6, 3, 0.68);
+  font-size: 0.74rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+}
+
+.tavern-sleep-body .tavern-card-kicker,
+.tavern-sleep-body .tavern-card-desc,
+.tavern-game-title,
+.tavern-game-sub,
+.tavern-rations-body .tavern-card-title,
+.tavern-rations-body .tavern-card-desc,
+.tavern-leave-text {
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95), 0 0 14px rgba(0, 0, 0, 0.75);
+}
+
+.tavern-sleep-body .tavern-card-kicker,
+.tavern-game-sub,
+.tavern-rations-body .tavern-card-desc {
+  color: #f1e6d2;
+}
+
+.tavern-sleep-body .tavern-card-desc {
+  color: #f6ecd9;
+}
+
+.tavern-game-title,
+.tavern-rations-body .tavern-card-title {
+  color: #ffd98a;
+}
+
+.tavern-sleep-body .tavern-card-title {
+  color: #ffe1a0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.98), 0 0 18px rgba(0, 0, 0, 0.8);
+}
+
+.tavern-sleep-body .tavern-card-price {
+  border-color: rgba(255, 214, 150, 0.55);
+  background: rgba(232, 180, 92, 0.2);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+}
+
 /* ============================================================
    VENDOR MARKET LAYOUT - merchant + ancient temple
    One tidy header, clickable category cards, no long scroll.
@@ -9537,6 +9874,169 @@ input:focus {
   transform: scale(1.08);
 }
 
+/* ============================================================
+   PACK — gruplu (silah / zirh / malzeme / sandik) kompakt grid
+   Ayni tur itemlar yan yana, kare ikonlar korunur.
+   ============================================================ */
+.bag-groups {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+  align-items: start;
+}
+/* Her kategori = kendi içinde kaydırılan ayrı kutu */
+.bag-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0.5rem 0.55rem 0.55rem;
+  border: 1px solid rgba(232, 183, 108, 0.16);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.22);
+}
+.bag-group-head {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 0.4rem;
+}
+.bag-group-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex: none;
+  color: var(--gold-bright);
+  opacity: 0.9;
+}
+.bag-group-icon svg {
+  width: 15px;
+  height: 15px;
+}
+.bag-group-title {
+  font-family: "Cinzel", serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-bright);
+  white-space: nowrap;
+}
+.bag-group-head::after {
+  content: "";
+  order: 1;
+  flex: 1 1 auto;
+  height: 1px;
+  min-width: 0.6rem;
+  background: linear-gradient(90deg, rgba(232, 183, 108, 0.35), rgba(232, 183, 108, 0));
+}
+.bag-group-count {
+  order: 2;
+  flex: none;
+  font-size: 0.58rem;
+  color: var(--muted);
+  background: rgba(0, 0, 0, 0.32);
+  border: 1px solid rgba(232, 183, 108, 0.18);
+  border-radius: 999px;
+  padding: 0.05rem 0.4rem;
+}
+
+/* Kompakt paket karti: eski 165px yerine ~120px kareler */
+.bag-list--pack {
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 0.4rem;
+  align-items: start;
+  /* Kutunun kendi kaydırması: sayfa değil, sadece bu liste kayar. */
+  max-height: clamp(170px, 34vh, 300px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  padding-right: 3px;
+  scrollbar-width: thin;
+}
+.bag-list--pack::-webkit-scrollbar { width: 6px; }
+.bag-list--pack::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.25); border-radius: 3px; }
+.bag-list--pack::-webkit-scrollbar-thumb { background: rgba(232, 183, 108, 0.3); border-radius: 3px; }
+.bag-list--pack::-webkit-scrollbar-thumb:hover { background: rgba(232, 183, 108, 0.5); }
+.bag-list--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 72px;
+}
+.pack-empty {
+  font-size: 0.64rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  opacity: 0.75;
+}
+/* Dar ekranda 3 kutu sığmaz: 2'ye, çok darsa 1'e iner. */
+@media (max-width: 860px) {
+  .bag-groups { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  .bag-groups { grid-template-columns: minmax(0, 1fr); }
+  .bag-list--pack { max-height: clamp(150px, 30vh, 230px); }
+}
+.bag-list--pack .bag-row.bag-card {
+  gap: 0.18rem;
+  padding: 0.35rem 0.35rem 0.4rem;
+  border-radius: 10px;
+}
+.bag-list--pack .bag-card > .bag-socket {
+  margin: 0 auto 0.22rem;
+  border-radius: 8px;
+}
+.bag-list--pack .bag-card > .bag-socket .item-icon {
+  border-radius: 7px;
+}
+.bag-list--pack .bag-card .bag-name {
+  font-size: 0.64rem;
+  line-height: 1.2;
+  gap: 0.2rem;
+}
+.bag-list--pack .bag-qty {
+  font-size: 0.58rem;
+  padding: 0 0.3rem;
+}
+.bag-list--pack .bag-badges {
+  gap: 0.15rem;
+}
+.bag-list--pack .bag-badges > * {
+  font-size: 0.5rem;
+  padding: 0 0.28rem;
+}
+.bag-list--pack .bag-stats {
+  gap: 0.14rem;
+}
+.bag-list--pack .bag-stats .stat-chip {
+  font-size: 0.52rem;
+  padding: 0.04rem 0.26rem;
+}
+.bag-list--pack .bag-desc {
+  font-size: 0.56rem;
+  line-height: 1.3;
+  min-height: 0;
+  -webkit-line-clamp: 2;
+}
+.bag-list--pack .bag-rates {
+  font-size: 0.52rem;
+  -webkit-line-clamp: 2;
+}
+.bag-list--pack .bag-card > .btn,
+.bag-list--pack .bag-row.bag-card > .bag-sell .btn {
+  font-size: 0.58rem;
+  padding: 0.3rem 0.35rem;
+  border-radius: 7px;
+}
+.bag-list--pack .bag-row.bag-card > .bag-sell {
+  gap: 0.25rem;
+}
+@media (max-width: 560px) {
+  .bag-list--pack { grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); }
+}
+
 @media (max-width: 420px) {
   .inv-section .equip-grid {
     gap: 0.55rem;
@@ -9897,4 +10397,1083 @@ input:focus {
   .market-talk-wrap .talk-text {
     max-height: min(36vh, 14rem);
   }
+}
+
+/* ============================================================
+   OVERLAY UI THEME - koyu, az saydam, kenarsiz, az yuvarlak
+   SADECE oyun ici paneller (dukkan / envanter / konusma / kartlar).
+   Ana menu + kasaba ekrani ESKI gorunumunde kalir.
+   GameCraft: images.ui.panelTint / panelOpacity / panelRadius
+   ============================================================ */
+:root {
+  --ui-panel-rgb: 7, 8, 10;
+  --ui-panel-alpha: 0.9;
+  --ui-radius: 4px;
+}
+
+/* Duz (gorselsiz) paneller: kahve gradyani yerine koyu yuzey */
+.overlay-view .talk-panel,
+.overlay-view .market-talk-wrap .talk-panel,
+.overlay-view .temple-card,
+.overlay-view .inv-section,
+.overlay-view .bag-group,
+.overlay-view .bag-row,
+.overlay-view .equip-slot,
+.overlay-view .craft-row {
+  background: rgba(var(--ui-panel-rgb), var(--ui-panel-alpha)) !important;
+  border: 1px solid transparent !important;
+  border-radius: var(--ui-radius) !important;
+  box-shadow: none !important;
+}
+
+/* Esya kartlari: zemini koyu, kenar yok, az yuvarlak */
+.overlay-view .shop-card {
+  background-color: rgba(var(--ui-panel-rgb), var(--ui-panel-alpha)) !important;
+}
+
+/* Gorselli kartlar: sadece kenar ve kose sadeleşir */
+.overlay-view .shop-card,
+.overlay-view .dungeon-card,
+.overlay-view .tavern-card,
+.overlay-view .pet-card,
+.overlay-view .vendor-head,
+.overlay-view .plaza-card,
+.overlay-view .party-card,
+.overlay-view .recruit-card,
+.overlay-view .talk-portrait,
+.overlay-view .shop-npc {
+  border-color: transparent !important;
+  border-radius: var(--ui-radius) !important;
+}
+
+/* Rozet / pill / ikon kose yumusamasi azaltilir */
+.overlay-view .shop-resources .chip,
+.overlay-view .stat-chip,
+.overlay-view .rarity-badge,
+.overlay-view .price-chip,
+.overlay-view .inv-count,
+.overlay-view .bag-group-count,
+.overlay-view .talk-launch-btn,
+.overlay-view .portrait,
+.overlay-view .item-icon,
+.overlay-view .equip-socket,
+.overlay-view .bag-socket,
+.overlay-view .pet-socket {
+  border-radius: var(--ui-radius) !important;
+}
+
+/* Hover'da cerceve geri gelmesin */
+.overlay-view .shop-card:hover,
+.overlay-view .bag-row:hover,
+.overlay-view .equip-slot:hover,
+.overlay-view .temple-card:hover {
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Panel ustundeki yazilarin okunurlugu */
+.overlay-view .talk-panel,
+.overlay-view .temple-card,
+.overlay-view .inv-section,
+.overlay-view .shop-card {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+}
+
+/* =====================================================================
+   ANA BASLIK EKRANI v2 (premium medieval)
+   Kapsam: #screen-mode, #screen-setup, #screen-lobby.
+   Genel .btn / .menu kurallarini bozmaz, sadece bu ekranlarda ezer.
+   ===================================================================== */
+
+/* --- Sinematik perde: solu karartip menuyu okunur kilar --- */
+#screen-mode {
+  position: relative;
+  align-items: center;
+  justify-content: flex-start;
+  padding: clamp(1.6rem, 5vh, 3.4rem) clamp(1.2rem, 8vw, 8.5rem);
+  isolation: isolate;
+}
+#screen-mode::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(100deg, rgba(3, 2, 2, 0.94) 0%, rgba(4, 3, 2, 0.8) 30%, rgba(6, 4, 3, 0.28) 60%, rgba(3, 2, 2, 0.62) 100%),
+    radial-gradient(120% 95% at 64% 38%, rgba(126, 22, 14, 0.24), transparent 62%),
+    radial-gradient(90% 70% at 50% 108%, rgba(0, 0, 0, 0.85), transparent 60%);
+}
+/* Ince film greni — duz dijital zemini tas/kagit dokusuna cevirir */
+#screen-mode::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.055;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.title-frame {
+  position: relative;
+  z-index: 2;
+  width: min(540px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.3rem, 3.2vh, 2.3rem);
+}
+/* Tabloyu cevreleyen ince altin hairline (sadece masaustu) */
+@media (min-width: 761px) {
+  .title-frame::after {
+    content: "";
+    position: fixed;
+    inset: 6px;
+    border: 1px solid rgba(214, 168, 96, 0.14);
+    box-shadow: inset 0 0 0 3px rgba(8, 6, 4, 0.35);
+    pointer-events: none;
+  }
+}
+
+/* --- Baslik --- */
+.title-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.title-eyebrow {
+  margin: 0;
+  font-family: "Cinzel", serif;
+  font-size: clamp(0.58rem, 1.05vw, 0.72rem);
+  font-weight: 500;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: rgba(224, 190, 138, 0.7);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+}
+.title-word {
+  margin: 0;
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  font-size: clamp(3.2rem, 8.2vw, 6.4rem);
+  line-height: 0.9;
+  letter-spacing: 0.1em;
+  background: linear-gradient(172deg, #fff7e4 0%, #eed9a8 34%, #c9a05a 62%, #f4e3bb 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+  filter:
+    drop-shadow(0 8px 26px rgba(0, 0, 0, 0.85))
+    drop-shadow(0 0 40px rgba(206, 140, 58, 0.22));
+}
+.title-rule {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  width: min(320px, 100%);
+  margin: 0.15rem 0 0.1rem;
+  color: rgba(226, 180, 104, 0.85);
+}
+.title-rule span {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(226, 180, 104, 0.65), transparent);
+}
+.title-rule b {
+  font-size: 0.6rem;
+  font-weight: 400;
+  line-height: 1;
+  opacity: 0.9;
+}
+.title-tagline {
+  margin: 0;
+  max-width: 34ch;
+  font-size: clamp(0.82rem, 1.15vw, 0.94rem);
+  font-style: italic;
+  line-height: 1.55;
+  letter-spacing: 0.015em;
+  color: rgba(216, 199, 174, 0.66);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
+}
+
+/* --- Menu listesi: duz metin, uzerine gelince ince altin cerceve --- */
+.title-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.title-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.22rem;
+  width: 100%;
+  text-align: left;
+  padding: 0.92rem 1.9rem 0.92rem 1.35rem;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: transparent;
+  font-family: "Cinzel", serif;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background 0.22s ease,
+    border-color 0.22s ease,
+    box-shadow 0.22s ease,
+    transform 0.22s ease;
+}
+.title-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 16%;
+  bottom: 16%;
+  width: 2px;
+  opacity: 0;
+  background: linear-gradient(180deg, transparent, rgba(240, 196, 116, 0.95), transparent);
+  transition: opacity 0.22s ease;
+}
+.title-item::after {
+  content: "✦";
+  position: absolute;
+  right: 1.05rem;
+  top: 50%;
+  font-size: 0.62rem;
+  color: rgba(240, 200, 128, 0.9);
+  opacity: 0;
+  transform: translateY(-50%) scale(0.7);
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+.title-item:hover,
+.title-item:focus-visible {
+  outline: none;
+  border-color: rgba(214, 168, 96, 0.5);
+  background:
+    linear-gradient(90deg, rgba(38, 25, 15, 0.9) 0%, rgba(20, 14, 9, 0.55) 70%, rgba(12, 8, 5, 0.15) 100%);
+  box-shadow:
+    inset 0 0 26px rgba(170, 110, 40, 0.16),
+    0 14px 34px rgba(0, 0, 0, 0.5);
+}
+.title-item:hover::before,
+.title-item:focus-visible::before {
+  opacity: 1;
+}
+.title-item:hover::after,
+.title-item:focus-visible::after {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}
+.title-item:active {
+  transform: translateY(1px);
+}
+.title-item__label {
+  font-size: clamp(1.02rem, 1.6vw, 1.3rem);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #d3b68c;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+  transition: color 0.22s ease, text-shadow 0.22s ease;
+}
+.title-item:hover .title-item__label,
+.title-item:focus-visible .title-item__label {
+  color: #fcecc9;
+  text-shadow: 0 0 20px rgba(232, 176, 88, 0.45), 0 2px 10px rgba(0, 0, 0, 0.9);
+}
+.title-item__sub {
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(190, 166, 128, 0.38);
+  transition: color 0.22s ease;
+}
+.title-item:hover .title-item__sub,
+.title-item:focus-visible .title-item__sub {
+  color: rgba(226, 198, 152, 0.72);
+}
+
+/* Ilk oge (tek oyunculu) her zaman cerceveli dursun: referanstaki
+   "New Game" kutusu gibi, ekran ilk acildiginda da dolu gorunur. */
+.title-item:first-child {
+  border-color: rgba(214, 168, 96, 0.4);
+  background:
+    linear-gradient(90deg, rgba(36, 23, 14, 0.86) 0%, rgba(18, 12, 8, 0.5) 72%, rgba(10, 7, 4, 0.1) 100%);
+  box-shadow:
+    inset 0 0 24px rgba(170, 110, 40, 0.13),
+    0 12px 30px rgba(0, 0, 0, 0.42);
+}
+.title-item:first-child::before {
+  opacity: 1;
+}
+.title-item:first-child::after {
+  opacity: 0.5;
+  transform: translateY(-50%) scale(0.85);
+}
+.title-item:first-child .title-item__label {
+  color: #f7e6c4;
+}
+.title-item:first-child .title-item__sub {
+  color: rgba(226, 198, 152, 0.6);
+}
+
+/* --- Alt satir: dil secimi (kutusuz, ince alt cizgi) --- */
+.title-footer {
+  display: flex;
+  align-items: center;
+  margin-top: 0.2rem;
+}
+.title-footer .menu-lang {
+  margin: 0;
+  gap: 0.5rem;
+  justify-content: flex-start;
+  align-items: center;
+}
+.title-footer .lang-btn {
+  min-width: 0;
+  padding: 0.12rem 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  font-family: "Cinzel", serif;
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(198, 174, 138, 0.44);
+  transition: color 0.18s ease;
+}
+.title-footer .lang-btn:hover,
+.title-footer .lang-btn:focus-visible {
+  border: 0;
+  background: none;
+  box-shadow: none;
+  color: #f0d8ac;
+}
+.title-footer .lang-btn.is-active {
+  border: 0;
+  background: none;
+  box-shadow: none;
+  color: #e8c78c;
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(232, 199, 140, 0.6);
+}
+.lang-sep {
+  font-size: 0.7rem;
+  color: rgba(198, 174, 138, 0.28);
+}
+
+/* Ana menude manzara daha net/parlak: menude okunurlugu perde sagliyor. */
+body[data-screen="screen-mode"] #bg-photo.has-photo {
+  opacity: var(--bg-photo-title-opacity, 0.82);
+}
+body[data-screen="screen-mode"] #bg-photo {
+  filter: blur(var(--bg-photo-blur)) saturate(0.68) contrast(1.12) brightness(0.78) sepia(0.14);
+}
+
+/* Ana menude ust koselerdeki arayuz dugmeleri: kutu degil, ince yazi. */
+body[data-screen="screen-mode"] .edge-btn {
+  padding: 0.5rem 0.9rem;
+  border-radius: 2px;
+  border-color: rgba(200, 152, 88, 0.28);
+  background: rgba(10, 7, 5, 0.5);
+  box-shadow: none;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(226, 196, 148, 0.7);
+}
+body[data-screen="screen-mode"] .edge-btn:hover {
+  border-color: rgba(232, 190, 120, 0.75);
+  background: rgba(28, 19, 12, 0.8);
+  color: #f4e2c0;
+}
+body[data-screen="screen-mode"] .edge-btn--next {
+  min-width: 2.2rem;
+}
+
+/* --- Kucuk ekran: ortal, dokunma alanini buyut --- */
+@media (max-width: 760px) {
+  body[data-screen="screen-mode"] {
+    overflow-x: hidden;
+  }
+  #screen-mode {
+    justify-content: center;
+    padding: 2.4rem 1.1rem 2rem;
+  }
+  .title-frame {
+    align-items: center;
+    text-align: center;
+    gap: 1.5rem;
+  }
+  .title-hero {
+    align-items: center;
+  }
+  .title-eyebrow {
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    line-height: 1.7;
+  }
+  .title-word {
+    letter-spacing: 0.06em;
+  }
+  .title-tagline {
+    max-width: 30ch;
+    text-align: center;
+  }
+  .title-rule {
+    width: min(240px, 80%);
+  }
+  .title-nav {
+    width: 100%;
+  }
+  .title-item {
+    align-items: center;
+    text-align: center;
+    padding: 0.95rem 1.2rem;
+  }
+  .title-item::before,
+  .title-item::after {
+    display: none;
+  }
+  .title-footer {
+    justify-content: center;
+  }
+}
+
+/* =====================================================================
+   KARAKTER YARATMA + LOBI: cam panel yerine tome/kitap cercevesi
+   ===================================================================== */
+#screen-setup,
+#screen-lobby {
+  padding-top: 4.6rem;
+}
+#screen-setup .menu,
+#screen-lobby .menu {
+  position: relative;
+  width: min(470px, 100%);
+  gap: 0.95rem;
+  padding: 2.1rem 2rem 1.75rem;
+  border: 1px solid rgba(196, 148, 84, 0.32);
+  border-radius: 3px;
+  background:
+    radial-gradient(120% 70% at 50% 0%, rgba(126, 78, 32, 0.16), transparent 62%),
+    linear-gradient(180deg, rgba(22, 15, 10, 0.94) 0%, rgba(9, 6, 4, 0.97) 100%);
+  box-shadow:
+    0 36px 90px rgba(0, 0, 0, 0.72),
+    inset 0 1px 0 rgba(255, 226, 170, 0.07);
+  -webkit-backdrop-filter: blur(6px) saturate(1.05);
+  backdrop-filter: blur(6px) saturate(1.05);
+  outline: 1px solid rgba(200, 152, 88, 0.14);
+  outline-offset: -9px;
+}
+#screen-setup .menu--wide {
+  width: min(1020px, 100%);
+  max-height: calc(100dvh - 6.6rem);
+  /* Karakter secme illustrasyonu panelin zemininde; arkada ana menu manzarasi. */
+  background-color: #0a0705;
+  background-image:
+    linear-gradient(180deg, rgba(12, 8, 5, 0.88) 0%, rgba(8, 5, 3, 0.94) 100%),
+    url("/images/backgrounds/setup.webp");
+  background-size: cover, cover;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
+}
+#screen-setup .menu-title,
+#screen-lobby .menu-title {
+  font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-indent: 0.2em;
+  text-transform: uppercase;
+  color: #f2ddb2;
+  margin: 0 0 0.2rem;
+  text-shadow: 0 3px 16px rgba(0, 0, 0, 0.8);
+}
+#screen-setup .menu-title::after,
+#screen-lobby .menu-title::after {
+  content: "";
+  display: block;
+  width: 104px;
+  height: 1px;
+  margin: 0.75rem auto 0;
+  background: linear-gradient(90deg, transparent, rgba(214, 168, 96, 0.85), transparent);
+}
+#screen-setup .field,
+#screen-lobby .field {
+  margin-bottom: 0.75rem;
+}
+#screen-setup .field span,
+#screen-lobby .field span {
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  color: rgba(226, 190, 132, 0.8);
+}
+#screen-setup input,
+#screen-lobby input {
+  background: rgba(0, 0, 0, 0.42);
+  border: 1px solid rgba(196, 148, 84, 0.26);
+  border-radius: 2px;
+  padding: 0.62rem 0.8rem;
+  font-size: 0.98rem;
+}
+#screen-setup input:focus,
+#screen-lobby input:focus {
+  border-color: rgba(226, 178, 104, 0.75);
+  box-shadow: 0 0 0 3px rgba(200, 146, 64, 0.16);
+}
+#screen-setup .menu-actions,
+#screen-lobby .menu-actions {
+  flex-direction: row;
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+#screen-setup .btn--menu,
+#screen-lobby .btn--menu {
+  flex: 1;
+  padding: 0.85rem 1.1rem;
+  border-radius: 2px;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  border: 1px solid rgba(214, 168, 96, 0.45);
+  background: linear-gradient(180deg, rgba(58, 38, 20, 0.92), rgba(26, 17, 10, 0.94));
+  color: #f0dcb4;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  box-shadow: inset 0 1px 0 rgba(255, 226, 170, 0.08);
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+#screen-setup .btn--menu:hover:not(:disabled),
+#screen-lobby .btn--menu:hover:not(:disabled) {
+  filter: none;
+  transform: none;
+  border-color: rgba(240, 198, 124, 0.85);
+  background: linear-gradient(180deg, rgba(92, 60, 28, 0.95), rgba(38, 24, 13, 0.96));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 226, 170, 0.14),
+    0 0 24px rgba(206, 142, 56, 0.22);
+}
+#screen-setup .btn--menu.btn--gold,
+#screen-lobby .btn--menu.btn--gold {
+  border-color: rgba(240, 198, 124, 0.75);
+  background: linear-gradient(180deg, rgba(206, 152, 74, 0.95), rgba(140, 92, 38, 0.95));
+  color: #22160a;
+  text-shadow: 0 1px 0 rgba(255, 235, 200, 0.35);
+}
+#screen-setup .btn--menu.btn--ghost,
+#screen-lobby .btn--menu.btn--ghost {
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(226, 210, 186, 0.8);
+}
+#screen-setup .btn--menu:disabled,
+#screen-lobby .btn--menu:disabled {
+  opacity: 0.35;
+}
+
+/* =====================================================================
+   TRAVEL (sefer) EKRANI v2 — simetrik iki kolon + ayni "tome" dili
+   ===================================================================== */
+
+/* Sefer / zindan / tapinak gibi tam ekran panellerde sohbet icerigin
+   ustune binmesin (overlay kapaliyken sohbet normal calisir). */
+body:has(.overlay-view:not(.hidden)) .chat {
+  display: none !important;
+}
+
+#travel-content { padding: 0 2px; }
+
+#travel-content .tv-hub {
+  display: grid;
+  grid-template-columns: minmax(0, 0.96fr) minmax(0, 1.04fr);
+  align-items: stretch;
+  gap: 1rem;
+  width: 100%;
+  max-width: 1180px;
+  margin: 1rem auto 1.2rem;
+  padding: 0;
+}
+#travel-content .tv-hub-side {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+#travel-content .tv-start,
+#travel-content .tv-tree {
+  position: relative;
+  margin: 0;
+  padding: 1.4rem 1.45rem;
+  border: 1px solid rgba(196, 148, 84, 0.3);
+  border-radius: 3px;
+  background:
+    radial-gradient(120% 70% at 50% 0%, rgba(126, 78, 32, 0.14), transparent 60%),
+    linear-gradient(180deg, rgba(24, 17, 11, 0.94), rgba(10, 7, 5, 0.97));
+  box-shadow:
+    0 22px 54px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 226, 170, 0.06);
+  outline: 1px solid rgba(200, 152, 88, 0.1);
+  outline-offset: -8px;
+  color: #e6d8c1;
+  gap: 0.95rem;
+  max-width: none;
+}
+#travel-content .tv-tree {
+  display: flex;
+  flex-direction: column;
+}
+#travel-content .tv-tree-head {
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid rgba(200, 152, 88, 0.18);
+}
+#travel-content .tv-start-head {
+  gap: 0.9rem;
+  align-items: flex-start;
+}
+#travel-content .tv-start-emblem {
+  font-size: 2rem;
+  line-height: 1;
+  color: #e8c482;
+  filter: drop-shadow(0 0 14px rgba(232, 196, 130, 0.3));
+}
+#travel-content .tv-start-title {
+  font-family: "Cinzel", serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #f0dcb4;
+  line-height: 1.3;
+}
+#travel-content .tv-start-sub {
+  margin-top: 0.35rem;
+  color: #a89a84;
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+#travel-content .tv-field {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.45rem;
+}
+#travel-content .tv-field-label {
+  width: auto;
+  padding-top: 0;
+  font-family: "Cinzel", serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  color: #9d8a6c;
+}
+#travel-content .tv-chips { gap: 0.4rem; }
+#travel-content .tv-chip {
+  font-family: "Cinzel", serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #d9c8ab;
+  background: rgba(0, 0, 0, 0.32);
+  border: 1px solid rgba(196, 148, 84, 0.28);
+  border-radius: 3px;
+  padding: 0.5rem 0.85rem;
+}
+#travel-content .tv-chip:hover {
+  background: rgba(58, 40, 20, 0.55);
+  border-color: rgba(226, 182, 108, 0.65);
+  color: #f6e7c6;
+}
+#travel-content .tv-chip.is-active {
+  background: linear-gradient(180deg, rgba(201, 147, 63, 0.28), rgba(124, 78, 30, 0.24));
+  border-color: rgba(240, 198, 124, 0.8);
+  color: #ffe9c4;
+  box-shadow: inset 0 0 18px rgba(232, 180, 92, 0.16);
+}
+#travel-content .tv-summary {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(196, 148, 84, 0.22);
+  border-radius: 3px;
+  padding: 0.8rem 0.95rem;
+}
+#travel-content .tv-summary-main {
+  font-family: "Cinzel", serif;
+  font-size: 0.98rem;
+  letter-spacing: 0.04em;
+  color: #f2ddb2;
+}
+#travel-content .tv-summary-sub {
+  margin-top: 0.25rem;
+  font-size: 0.74rem;
+  color: #a89a84;
+}
+#travel-content .tv-summary-sub b { color: #e8c482; }
+#travel-content .tv-start-actions {
+  margin-top: auto;
+  gap: 0.55rem;
+}
+#travel-content .tv-go {
+  width: 100%;
+  padding: 0.95rem 1.1rem;
+  border-radius: 3px;
+  font-size: 0.8rem;
+  letter-spacing: 0.16em;
+}
+#travel-content .tv-leave {
+  border-radius: 3px;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(226, 210, 186, 0.85);
+  border: 1px solid rgba(196, 148, 84, 0.28);
+}
+#travel-content .tv-warn {
+  font-size: 0.74rem;
+  line-height: 1.5;
+  color: #ff9a7b;
+}
+
+/* Yetenek agaci: esit iki kolon, ayni hairline dili */
+#travel-content .tv-tree-points {
+  flex: none;
+  gap: 0.35rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.34);
+  border: 1px solid rgba(196, 148, 84, 0.3);
+  font-family: "Cinzel", serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+}
+#travel-content .tv-tree-points span:first-child { color: #ffd479; font-size: 0.75rem; }
+#travel-content .tv-tree-points b { font-size: 0.95rem; color: #ffe6b8; }
+#travel-content .tv-tree-slots {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.45rem;
+  margin: 0.1rem 0 0.2rem;
+}
+#travel-content .tv-tree-slot {
+  padding: 0.55rem 0.7rem;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(196, 148, 84, 0.22);
+  gap: 0.5rem;
+}
+#travel-content .tv-tree-slot .k {
+  width: 22px;
+  height: 22px;
+  border-radius: 2px;
+  font-size: 0.7rem;
+}
+#travel-content .tv-tree-slot .nm {
+  font-family: "Cinzel", serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+}
+#travel-content .tv-tree-slot .cd {
+  font-size: 0.62rem;
+  color: #a89a80;
+}
+#travel-content .tv-tree-group { margin-top: 0.7rem; }
+#travel-content .tv-tree-group-head {
+  font-family: "Cinzel", serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  color: #9d8a6c;
+  margin-bottom: 0.5rem;
+}
+#travel-content .tv-tree-cards {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+#travel-content .tv-tree-group--base .tv-tree-cards {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+#travel-content .tv-tree-card {
+  gap: 0.55rem;
+  padding: 0.6rem 0.7rem;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(196, 148, 84, 0.18);
+}
+#travel-content .tv-tree-card:hover {
+  background: rgba(58, 40, 20, 0.5);
+  border-color: rgba(226, 182, 108, 0.55);
+}
+#travel-content .tv-tree-card .ic {
+  width: 26px;
+  height: 26px;
+  border-radius: 3px;
+  font-size: 0.78rem;
+}
+#travel-content .tv-tree-card .nm {
+  font-family: "Cinzel", serif;
+  font-size: 0.74rem;
+  letter-spacing: 0.02em;
+}
+#travel-content .tv-tree-card .meta {
+  font-size: 0.56rem;
+  letter-spacing: 0.12em;
+  color: #b7a077;
+}
+#travel-content .tv-tree-card .ds {
+  font-size: 0.68rem;
+  line-height: 1.45;
+  color: #9c917f;
+}
+#travel-content .tv-tree-foot {
+  margin-top: auto;
+  padding-top: 0.7rem;
+  border-top: 1px solid rgba(196, 148, 84, 0.16);
+  font-size: 0.66rem;
+  line-height: 1.55;
+  color: #8f8069;
+}
+#travel-content .tv-tree-learn {
+  border-radius: 2px;
+  font-family: "Cinzel", serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  background: linear-gradient(180deg, #e0b96e, #b9863c);
+  border-color: rgba(255, 224, 160, 0.5);
+}
+
+@media (max-width: 1020px) {
+  #travel-content .tv-hub {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 620px) {
+  #travel-content .tv-tree-cards,
+  #travel-content .tv-tree-group--base .tv-tree-cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  #travel-content .tv-tree-slots {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* =====================================================================
+   TRAVEL ARPG HUD v2 — simetrik yerlesim: sol alt stat, sag alt iksir,
+   alt orta skill bar; ince altin hairline dili.
+   ===================================================================== */
+.tv-shell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  box-shadow: inset 0 0 110px 18px rgba(0, 0, 0, 0.45);
+}
+
+.tv-shell .tv-minimap {
+  top: 14px;
+  left: 14px;
+  width: 156px;
+  height: 156px;
+  background: radial-gradient(circle at 50% 45%, rgba(10, 18, 22, 0.7), rgba(4, 7, 9, 0.94));
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.55),
+    inset 0 0 0 1px rgba(214, 178, 106, 0.32),
+    0 0 0 5px rgba(8, 6, 4, 0.42);
+}
+.tv-shell .tv-mini-cap {
+  bottom: 6px;
+  transform: translateX(-50%);
+  padding: 3px 10px;
+  border-radius: 2px;
+  background: rgba(10, 8, 6, 0.92);
+  border: 1px solid rgba(214, 178, 106, 0.34);
+  font-family: "Cinzel", serif;
+  font-size: 8px;
+  letter-spacing: 0.24em;
+}
+
+.tv-shell .tv-controls {
+  top: 14px;
+  right: 14px;
+  gap: 5px;
+}
+.tv-shell .tv-ctl {
+  width: 34px;
+  height: 34px;
+  border-radius: 2px;
+  background: rgba(12, 9, 6, 0.72);
+  border: 1px solid rgba(196, 148, 84, 0.3);
+  color: #e8c482;
+  font: 600 14px/1 "Cinzel", serif;
+}
+.tv-shell .tv-ctl:hover {
+  background: rgba(48, 32, 16, 0.92);
+  border-color: rgba(240, 198, 124, 0.75);
+}
+
+/* Stat panel: sol alt (minimap ile ayni hizada, skill bar'in ustunde) */
+.tv-shell .tv-statpanel {
+  top: auto;
+  bottom: 98px;
+  left: 14px;
+  transform: none;
+  gap: 3px;
+}
+.tv-shell .tv-strow {
+  min-width: 132px;
+  padding: 4px 10px;
+  border-radius: 2px;
+  border: 1px solid rgba(196, 148, 84, 0.2);
+  background: linear-gradient(100deg, rgba(12, 9, 7, 0.86), rgba(12, 9, 7, 0.45));
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+.tv-shell .tv-strow .lb {
+  font-family: "Cinzel", serif;
+  font-size: 8.5px;
+  letter-spacing: 0.16em;
+}
+.tv-shell .tv-strow .vl {
+  font-size: 12px;
+}
+
+/* Iksirler: sag alt (stat panelin aynasi) */
+.tv-shell .tv-potions {
+  top: auto;
+  bottom: 98px;
+  right: 14px;
+  align-items: flex-end;
+}
+.tv-shell .tv-potion {
+  border-radius: 2px;
+  border: 1px solid rgba(196, 148, 84, 0.26);
+  background: rgba(14, 10, 7, 0.8);
+  font-family: "Cinzel", serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+}
+.tv-shell .tv-potion .k {
+  border-radius: 2px;
+}
+
+/* Skill bar: alt orta, ince cerceve, esit kare yuvalar */
+.tv-shell .tv-skillbar {
+  bottom: 12px;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 3px;
+  border: 1px solid rgba(196, 148, 84, 0.3);
+  background: linear-gradient(180deg, rgba(20, 14, 10, 0.84), rgba(8, 6, 4, 0.94));
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 226, 170, 0.06);
+}
+.tv-shell .tv-sb {
+  width: 56px;
+  height: 56px;
+  border-radius: 2px;
+  border: 1px solid rgba(232, 196, 130, 0.3);
+}
+.tv-shell .tv-sb__key {
+  top: 2px;
+  left: 2px;
+  border-radius: 1px;
+  font-family: "Cinzel", serif;
+  font-size: 8px;
+}
+.tv-shell .tv-sb.is-auto {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+.tv-shell .tv-vital {
+  width: 138px;
+  margin-right: 4px;
+  padding-right: 8px;
+  border-right: 1px solid rgba(196, 148, 84, 0.24);
+}
+.tv-shell .tv-vital__hearts {
+  font-size: 10px;
+  letter-spacing: 3px;
+}
+.tv-shell .tv-vital__num {
+  font-family: "Cinzel", serif;
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .tv-shell .tv-potions {
+    top: auto;
+    bottom: 150px;
+    right: 12px;
+  }
+  .tv-shell .tv-statpanel {
+    display: none;
+  }
+  .tv-shell .tv-skillbar {
+    bottom: 92px;
+    gap: 6px;
+    padding: 6px 7px;
+  }
+  .tv-shell .tv-sb {
+    width: 46px;
+    height: 46px;
+  }
+  .tv-shell .tv-vital {
+    width: 92px;
+  }
+  .tv-shell .tv-minimap {
+    width: 116px;
+    height: 116px;
+    top: 10px;
+    left: 10px;
+  }
+}
+
+/* =====================================================================
+   TAPINAK / ASCENSION KARTLARI — sefer panelleri gibi yari saydam,
+   hafif kizil tonlu, ince altin cerceve.
+   NOT: 10417'deki .overlay-view .temple-card kurali !important ile duz
+   panel zemini basiyor; bu yuzden burada da !important kullanilir.
+   ===================================================================== */
+.temple-card--ascend,
+.overlay-view .temple-card--ascend {
+  position: relative;
+  background:
+    radial-gradient(130% 90% at 50% 0%, rgba(158, 44, 38, 0.18), transparent 62%),
+    linear-gradient(178deg, rgba(40, 17, 15, 0.6) 0%, rgba(12, 7, 6, 0.74) 100%) !important;
+  border: 1px solid rgba(206, 158, 94, 0.38) !important;
+  border-radius: 3px !important;
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 226, 170, 0.06) !important;
+  outline: 1px solid rgba(206, 158, 94, 0.12);
+  outline-offset: -7px;
+  -webkit-backdrop-filter: blur(3px) saturate(1.05);
+  backdrop-filter: blur(3px) saturate(1.05);
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+.temple-card--ascend:hover,
+.overlay-view .temple-card--ascend:hover {
+  border-color: rgba(232, 190, 118, 0.66) !important;
+  background:
+    radial-gradient(130% 90% at 50% 0%, rgba(184, 54, 46, 0.24), transparent 64%),
+    linear-gradient(178deg, rgba(52, 21, 18, 0.64) 0%, rgba(14, 8, 7, 0.78) 100%) !important;
+  box-shadow:
+    0 22px 54px rgba(0, 0, 0, 0.5),
+    0 0 26px rgba(184, 62, 48, 0.18),
+    inset 0 1px 0 rgba(255, 226, 170, 0.1) !important;
+}
+.temple-card--ascend .subhead {
+  font-family: "Cinzel", serif;
+  letter-spacing: 0.16em;
+  color: #f0dcb4;
+}
+.temple-card--ascend .btn {
+  border-radius: 3px !important;
+  letter-spacing: 0.14em;
+}
+.temple-card--ascend .ascend-portraits .portrait {
+  border-radius: 3px !important;
+  box-shadow: 0 0 0 1px rgba(206, 158, 94, 0.35);
 }

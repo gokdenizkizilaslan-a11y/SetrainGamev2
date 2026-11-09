@@ -5,6 +5,7 @@
 - Entry point: `server.js`. Game logic modules live in `server/` (combat, dungeon, shop, travel, pvp, quests, socketHandlers, ...).
 - Frontend lives in `public/` (`index.html`, `js/client.js`, `js/screens.js`, `js/bgfx.js`, `style.css`).
 - `content.js` is the single source of truth for all game data (items, skills, classes, monsters, bosses, pets, npcs, quests, dungeons, map, loot, ...).
+- 3D dekor (`.glb` → sprite) sistemi: **`3D-ASSETS.md`** rehberini oku; kod `public/js/trees3d.js`, hook `travelEngine.js` `drawSceneryItem`, modeller `newassets/` (`/newassets` static).
 
 ## Modular data (use this first)
 - `data/*.json` is a generated, read-only mirror of every top-level section of `content.js`.

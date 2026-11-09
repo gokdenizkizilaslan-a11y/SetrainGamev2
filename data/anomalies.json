@@ -32,22 +32,34 @@
       "pureBlood": false,
       "rarity": "rare",
       "frameColor": "#d4893a",
-      "description": "Mana recovers more generously in town rest.",
+      "description": "Mana flows back in battle: +4 mana at the start of every combat round.",
       "effect": {
-        "type": "manaOnDay",
-        "amount": 12
+        "type": "manaRegenBonus",
+        "amount": 4
       }
     },
     {
       "id": "arcane_reservoir",
       "name": "Arcane Reservoir",
       "pureBlood": false,
-      "rarity": "rare",
+      "rarity": "uncommon",
       "frameColor": "#7a9ec4",
       "description": "Mana regenerates a little faster each round.",
       "effect": {
         "type": "manaRegenBonus",
-        "amount": 1
+        "amount": 2
+      }
+    },
+    {
+      "id": "gale_veins",
+      "name": "Gale Veins",
+      "pureBlood": false,
+      "rarity": "rare",
+      "frameColor": "#6fd6c4",
+      "description": "Attack speed +40%. Each hit has a 40% chance to echo for 50% damage.",
+      "effect": {
+        "type": "attackSpeed",
+        "amount": 40
       }
     },
     {
@@ -72,6 +84,19 @@
       "effect": {
         "type": "staminaOnDay",
         "amount": 1
+      }
+    },
+    {
+      "id": "stormheart",
+      "name": "Stormheart",
+      "pureBlood": true,
+      "rarity": "pureblood",
+      "frameColor": "#b388ff",
+      "description": "Pure blood runs like lightning: attack speed +40% and +3 mana every combat round.",
+      "effect": {
+        "type": "attackSpeed",
+        "amount": 40,
+        "manaRegen": 3
       }
     }
   ]

@@ -71,13 +71,33 @@ function applyRaceStatBonus(player) {
   if (st.maxMana) player.mana = Math.min(player.maxMana, (player.mana || 0) + st.maxMana);
 }
 
+// Anomali: savaş turu başına ek mana yenilenmesi (Ember Well, Stormheart, ...).
+// Değer manaRegen'e ayrıca işlenir; ama türetilmiş değerler yeniden
+// hesaplandığında (rerollRace / applyPassiveStatBonus) burada tekrar eklenir.
+function anomalyManaRegen(player) {
+  const e = player && player.anomaly && player.anomaly.effect;
+  if (!e) return 0;
+  let bonus = 0;
+  if (e.type === "manaRegenBonus") bonus += Number(e.amount) || 0;
+  bonus += Number(e.manaRegen) || 0;
+  return Math.max(0, bonus);
+}
+
+// Anomali: saldırı hızı yüzdesi. Travel/ARPG gerçek hız olarak kullanır,
+// sıra tabanlı savaşta yankı (ek vuruş) şansına dönüşür.
+function anomalyAttackSpeedPct(player) {
+  const e = player && player.anomaly && player.anomaly.effect;
+  if (!e || e.type !== "attackSpeed") return 0;
+  return Math.max(0, Number(e.amount) || 0);
+}
+
 function applyAnomalyStatBonus(player) {
   if (!player.anomaly || !player.anomaly.effect) return;
   const e = player.anomaly.effect;
   if (e.type === "resistanceBonus") {
-    player.resistance += e.amount;
+    player.resistance += Number(e.amount) || 0;
   } else if (e.type === "manaRegenBonus") {
-    player.manaRegen += e.amount;
+    player.manaRegen += Number(e.amount) || 0;
   }
 }
 
@@ -112,7 +132,8 @@ function rerollRace(player) {
       const raceStats = (player.race && player.race.stats) || {};
       player.speed = (cls.speed || 0) + passives.speedBonus(player) + (Number(raceStats.speed) || 0);
       player.manaRegen = ((CONTENT.combat && CONTENT.combat.manaRegenPerRound) || 3)
-        + (cls.manaRegen || 0) + passives.manaRegenBonus(player) + (Number(raceStats.manaRegen) || 0);
+        + (cls.manaRegen || 0) + passives.manaRegenBonus(player) + (Number(raceStats.manaRegen) || 0)
+        + anomalyManaRegen(player);
     }
   } catch (e) {}
   player.hp = Math.min(Math.max(0, player.hp), player.maxHp);
@@ -147,7 +168,8 @@ function applyPassiveStatBonus(player, growth) {
       const raceStats = (player.race && player.race.stats) || {};
       player.speed = (cls.speed || 0) + passives.speedBonus(player) + (Number(raceStats.speed) || 0);
       player.manaRegen = ((CONTENT.combat && CONTENT.combat.manaRegenPerRound) || 3)
-        + (cls.manaRegen || 0) + passives.manaRegenBonus(player) + (Number(raceStats.manaRegen) || 0);
+        + (cls.manaRegen || 0) + passives.manaRegenBonus(player) + (Number(raceStats.manaRegen) || 0)
+        + anomalyManaRegen(player);
     }
   } catch (e) {}
 }
@@ -622,6 +644,7 @@ function publicPlayer(player) {
     attackSpeed += Number(clsDef && clsDef.attackSpeed) || 0;
     const raceStats = (player.race && player.race.stats) || {};
     attackSpeed += Number(raceStats.attackSpeed) || 0;
+    attackSpeed += anomalyAttackSpeedPct(player);
     for (const itemId of Object.values(player.equipment || {})) {
       if (!itemId) continue;
       const it = getItem(itemId);
@@ -713,13 +736,14 @@ function publicPlayer(player) {
           color: player.race.color || "",
           glow: player.race.glow || "",
           stats: player.race.stats || {},
-          passives: (player.race.passives || []).map((p) => ({
-            kind: p.kind,
-            name: p.name || p.kind,
-            desc: p.desc || "",
-          })),
+          // Tam pasif nesneleri: ARPG (seyahat) istemcisi sayısal alanları
+          // (mult/chance/pct/element) okuyup uygular. Sıra tabanlı savaşta
+          // zaten sunucu tarafında çalışıyorlar.
+          passives: (player.race.passives || []).map((p) => ({ ...p })),
         }
       : null,
+    // Sınıf pasifleri (tam): ARPG'de hasar/direnç/crit/dodge hesapları için.
+    classPassives: ((getClass(player.character) || {}).passives || []).map((p) => ({ ...p })),
     tavern: player.tavern
       ? {
           game: player.tavern.game,
@@ -1074,6 +1098,8 @@ module.exports = {
   applyStartLevelGrowth,
   rerollRace,
   publicPlayer,
+  anomalyManaRegen,
+  anomalyAttackSpeedPct,
   addXp,
   xpToNext,
   petXpToNext,

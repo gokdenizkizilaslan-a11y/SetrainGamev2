@@ -36,10 +36,10 @@ const CONTENT = {
     "action": {
       "rest": "",
       "search": "",
-      "blacksmith": "",
-      "merchant": "",
-      "temple": "",
-      "dungeon": "",
+      "blacksmith": "toolsound",
+      "merchant": "coinsound",
+      "temple": "bellsound",
+      "dungeon": "irongate",
       "eat": "eatingsound",
       "potion": "potiondrinksound",
       "revive": "revivesound"
@@ -50,24 +50,24 @@ const CONTENT = {
       "coin": "clicksound"
     },
     "cinematic": {
-      "ascend": "holy-ascensionsound",
-      "rebirth": "neutralascension",
+      "ascend": "holyascension",
+      "rebirth": "rebirthnew",
       "newDay": "",
       "nightFall": ""
     },
     "combat": {
       "win": "winningsound",
       "lose": "losingsound",
-      "crit": "skull_crush"
+      "crit": "heavyswordhit"
     },
     "tavern": {
-      "deal": "",
-      "hit": "",
-      "flip": "",
+      "deal": "dicemagic",
+      "hit": "dicemagic",
+      "flip": "dicemagic",
       "win": "",
       "lose": "",
       "push": "",
-      "chip": ""
+      "chip": "coinsound"
     },
     "travel": {
       "slash": "",
@@ -105,68 +105,93 @@ const CONTENT = {
     }
   },
   "story": {
-    "title": "The Setra Game",
+    "title": "Setra",
     "paragraphs": [
-      "The world is Krein. It has turned for five billion years, and for five billion years it has carried the tread of men.",
-      "In the green kingdom of Palendio, among warring crowns and old banners, lies a quiet village named Setra.",
-      "You wake in the grass of a valley you do not know, with a name you chose and a past you cannot recall."
+      "Krein is an old world of wind, stone and long roads. No map has ever held all of it.",
+      "You awake on the grass of an unknown valley with an empty memory and a warm stone in your hand.",
+      "The stone is called Aetheria. You do not know where it came from, only that it brought you here.",
+      "Beyond the ridge lies Setra, a small village in the green kingdom of Palendio — the nearest roof and fire you have."
     ],
     "cta": "Wake Up",
     "intro": {
       "speaker": "Mira",
-      "image": "/images/npcs/mira.png",
-      "bgGrass": "",
-      "bgStanding": "",
+      "image": "/images/npcs/mira.webp?v=mw8o4wbq",
+      "bgGrass": "/images/backgrounds/story-intro-grass.webp?v=mw8ocx1t",
+      "bgStanding": "/images/backgrounds/story-intro-standing.webp?v=mw8o56no",
+      "audio": {
+        "stopMainMusic": true,
+        "music": "",
+        "musicVolume": 0.7,
+        "ambience": "",
+        "ambienceVolume": 0.5,
+        "cueVolume": 0.9,
+        "prologue1": "",
+        "prologue2": "",
+        "prologue3": "",
+        "prologue4": "",
+        "line1": "",
+        "line2": "",
+        "line3": "",
+        "line4": "",
+        "line5": "",
+        "line6": "",
+        "reward": ""
+      },
       "slides": [
         {
-          "text": "The world is Krein. It has turned for five billion years, and for five billion years it has carried the tread of men.",
-          "image": "",
+          "text": "Krein is an old world, its lands worn smooth by ages of wind and stone. No map has ever held all of it.",
+          "image": "/images/backgrounds/story-slide-1.webp?v=mw8o8pw2",
           "pan": "lr"
         },
         {
-          "text": "In the green kingdom of Palendio, among warring crowns and old banners, lies a quiet village named Setra.",
-          "image": "",
-          "pan": "lr"
-        },
-        {
-          "text": "You wake in the grass of a valley you do not know, with a name you chose and a past you cannot recall.",
-          "image": "",
+          "text": "You wake on the grass of a valley you do not know. Your head is heavy, your memory empty, and a warm stone rests in your hand.",
+          "image": "/images/backgrounds/story-slide-2.webp?v=mw8o8tpp",
           "pan": "zoom"
+        },
+        {
+          "text": "The stone is Aetheria. You do not remember where it came from, or how you got here — only that it carried you.",
+          "image": "/images/backgrounds/story-slide-3.webp?v=mw8o8w10",
+          "pan": "rl"
+        },
+        {
+          "text": "Past the ridge lies Setra, a small village in the green kingdom of Palendio. It is the nearest place with a roof and a fire.",
+          "image": "/images/backgrounds/story-slide-4.webp?v=mw8obn9w",
+          "pan": "lr"
         }
       ],
       "lines": [
         {
           "who": "narrator",
-          "text": "Cold grass. Birdsong. A shadow falls across your face, and a woman kneels beside you.",
+          "text": "Cold grass. Birdsong. Someone is shaking your shoulder.",
           "scene": "grass"
         },
         {
           "who": "npc",
-          "text": "Easy. You are breathing, that is the important part. I found you in the hollow with empty hands and emptier eyes. What is your name, wanderer?",
+          "text": "Hey. Hey — can you hear me? You were lying face-down in the ditch. Are you hurt?",
           "scene": "grass"
         },
         {
           "who": "you",
-          "text": "I... cannot remember. Only the road, and then nothing.",
+          "text": "I... don't think so. I don't remember how I got here.",
           "scene": "grass"
         },
         {
           "who": "npc",
-          "text": "Then Setra Village will have to do as a beginning. I am Mira. I keep a small house and a smaller purse. Take this — fifty gold and ten days of food. It is nearly all I have, so spend it like it matters.",
+          "text": "You're not bleeding, so that's a start. I'm Mira. The village is just past the ridge — Setra. Can you stand? Here, take this: fifty gold and some food. Nobody in this valley helps for free, and you'll need it.",
           "scene": "standing"
         },
         {
           "who": "you",
-          "text": "Why help a stranger with no past?",
+          "text": "Why? You don't know me.",
           "scene": "standing"
         },
         {
           "who": "npc",
-          "text": "Because someone once did the same for me. And because Palendio has little kindness left to spare these days — the crowns quarrel, the roads grow unsafe. Grow strong, find work at the forge or the market, and sleep with a roof when you can afford it. Now stand. The village waits.",
+          "text": "No. But I've been the stranger at the wrong end of the road before. Come on — walk slowly, and don't drop the stone. It's still warm.",
           "scene": "standing"
         }
       ],
-      "rewardNote": "Mira presses 50 gold and 10 food into your hands."
+      "rewardNote": "Mira gives you fifty gold and ten days of food."
     }
   },
   "npcs": [
@@ -174,7 +199,7 @@ const CONTENT = {
       "id": "blacksmith",
       "name": "Blacksmith",
       "title": "Blacksmith of Setra Village",
-      "image": "/images/npcs/blacksmith.png",
+      "image": "/images/npcs/blacksmith.webp?v=mw8m4is0",
       "location": "blacksmith",
       "nodes": [
         {
@@ -244,7 +269,7 @@ const CONTENT = {
       "id": "merchant",
       "name": "Merchant",
       "title": "Merchant of Setra Village",
-      "image": "/images/npcs/merchant.png",
+      "image": "/images/npcs/merchant.webp?v=mw8m4kgc",
       "location": "merchant",
       "nodes": [
         {
@@ -314,7 +339,7 @@ const CONTENT = {
       "id": "tavernkeeper",
       "name": "Tavernkeeper",
       "title": "Keeper of the Village Tavern",
-      "image": "/images/npcs/tavernkeeper.png",
+      "image": "/images/npcs/tavernkeeper.png?v=mw8m4qn0",
       "location": "tavern",
       "nodes": [
         {
@@ -388,7 +413,7 @@ const CONTENT = {
       "id": "mira",
       "name": "Mira",
       "title": "Keeper's ward, friend of strays",
-      "image": "/images/npcs/mira.png",
+      "image": "/images/npcs/mira.png?v=mw8nnfd7",
       "location": "town",
       "nodes": [
         {
@@ -458,7 +483,7 @@ const CONTENT = {
       "id": "uncle",
       "name": "Old Vesryn",
       "title": "Mira's uncle, of the old blood",
-      "image": "/images/npcs/uncle.png",
+      "image": "/images/npcs/uncle.webp?v=mw8m4v0w",
       "location": "town",
       "nodes": [
         {
@@ -528,7 +553,7 @@ const CONTENT = {
       "id": "zeynep",
       "name": "Zeynep the Apothecary",
       "title": "Town lunatic (probably)",
-      "image": "/images/npcs/zeynep.png",
+      "image": "/images/npcs/zeynep.webp?v=mw8m4wy5",
       "location": "town",
       "nodes": [
         {
@@ -1467,22 +1492,34 @@ const CONTENT = {
         "pureBlood": false,
         "rarity": "rare",
         "frameColor": "#d4893a",
-        "description": "Mana recovers more generously in town rest.",
+        "description": "Mana flows back in battle: +4 mana at the start of every combat round.",
         "effect": {
-          "type": "manaOnDay",
-          "amount": 12
+          "type": "manaRegenBonus",
+          "amount": 4
         }
       },
       {
         "id": "arcane_reservoir",
         "name": "Arcane Reservoir",
         "pureBlood": false,
-        "rarity": "rare",
+        "rarity": "uncommon",
         "frameColor": "#7a9ec4",
         "description": "Mana regenerates a little faster each round.",
         "effect": {
           "type": "manaRegenBonus",
-          "amount": 1
+          "amount": 2
+        }
+      },
+      {
+        "id": "gale_veins",
+        "name": "Gale Veins",
+        "pureBlood": false,
+        "rarity": "rare",
+        "frameColor": "#6fd6c4",
+        "description": "Attack speed +40%. Each hit has a 40% chance to echo for 50% damage.",
+        "effect": {
+          "type": "attackSpeed",
+          "amount": 40
         }
       },
       {
@@ -1507,6 +1544,19 @@ const CONTENT = {
         "effect": {
           "type": "staminaOnDay",
           "amount": 1
+        }
+      },
+      {
+        "id": "stormheart",
+        "name": "Stormheart",
+        "pureBlood": true,
+        "rarity": "pureblood",
+        "frameColor": "#b388ff",
+        "description": "Pure blood runs like lightning: attack speed +40% and +3 mana every combat round.",
+        "effect": {
+          "type": "attackSpeed",
+          "amount": 40,
+          "manaRegen": 3
         }
       }
     ]
@@ -6495,7 +6545,7 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "image": "/images/items/egg_red.png",
+      "image": "/images/items/egg_red.webp",
       "description": "Red Egg - hatch to get a random pet. Drops in specific dungeons."
     },
     {
@@ -6507,7 +6557,7 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "image": "/images/items/egg_green.png",
+      "image": "/images/items/egg_green.webp",
       "description": "Green Egg - hatch to get a random pet. Drops in specific dungeons."
     },
     {
@@ -6519,7 +6569,7 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "image": "/images/items/egg_blue.png",
+      "image": "/images/items/egg_blue.webp",
       "description": "Blue Egg - hatch to get a random pet. Drops in specific dungeons."
     },
     {
@@ -6531,7 +6581,7 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "image": "/images/items/egg_brown.png",
+      "image": "/images/items/egg_brown.webp",
       "description": "Brown Egg - hatch to get a random pet. Drops in specific dungeons."
     },
     {
@@ -6543,7 +6593,7 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "image": "/images/items/egg_yellow.png",
+      "image": "/images/items/egg_yellow.webp",
       "description": "Yellow Egg - hatch to get a random pet. Drops in specific dungeons."
     },
     {
@@ -6555,7 +6605,7 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "image": "/images/items/egg_purple.png",
+      "image": "/images/items/egg_purple.webp",
       "description": "Purple Egg - hatch to get a random pet. Drops in specific dungeons."
     },
     {
@@ -6567,7 +6617,7 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "image": "/images/items/egg_cyan.png",
+      "image": "/images/items/egg_cyan.webp",
       "description": "Cyan Egg - hatch to get a random pet. Drops in specific dungeons."
     },
     {
@@ -6579,7 +6629,7 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "image": "/images/items/egg_dark.png",
+      "image": "/images/items/egg_dark.webp",
       "description": "Dark Egg - hatch to get a random pet. Drops in specific dungeons."
     },
     {
@@ -6603,7 +6653,7 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "image": "/images/items/egg_gold.png",
+      "image": "/images/items/egg_gold.webp",
       "description": "Gold Egg - hatch to get a random pet. Drops in specific dungeons."
     },
     {
@@ -7347,7 +7397,7 @@ const CONTENT = {
         "wood": 0
       },
       "chestTier": "f",
-      "image": "/images/items/wooden_chest.png",
+      "image": "/images/items/wooden_chest.webp",
       "description": "A simple chest. Common odds of decent loot."
     },
     {
@@ -7360,7 +7410,7 @@ const CONTENT = {
         "wood": 0
       },
       "chestTier": "d",
-      "image": "/images/items/iron_chest.png",
+      "image": "/images/items/iron_chest.webp",
       "description": "A sturdy chest. Better odds of uncommon loot."
     },
     {
@@ -7373,7 +7423,7 @@ const CONTENT = {
         "wood": 0
       },
       "chestTier": "c",
-      "image": "/images/items/gold_chest.png",
+      "image": "/images/items/gold_chest.webp",
       "description": "A gilded chest. Decent odds of rare loot."
     },
     {
@@ -7386,7 +7436,7 @@ const CONTENT = {
         "wood": 0
       },
       "chestTier": "b",
-      "image": "/images/items/emerald_chest.png",
+      "image": "/images/items/emerald_chest.webp",
       "description": "A gem-studded chest. Strong odds of epic loot."
     },
     {
@@ -7399,7 +7449,7 @@ const CONTENT = {
         "wood": 0
       },
       "chestTier": "a",
-      "image": "/images/items/obsidian_chest.png",
+      "image": "/images/items/obsidian_chest.webp",
       "description": "A black-glass chest. Fine odds of legendary loot."
     },
     {
@@ -8610,7 +8660,7 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "image": "/images/items/boss_chest_ember.png",
+      "image": "/images/items/boss_chest_ember.webp",
       "chestTier": "a",
       "description": "Ember King's chest - rare+ guaranteed."
     },
@@ -8623,7 +8673,7 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "image": "/images/items/boss_chest_frost.png",
+      "image": "/images/items/boss_chest_frost.webp",
       "chestTier": "s",
       "description": "Frost Titan's chest - rare+ guaranteed."
     },
@@ -8636,7 +8686,7 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "image": "/images/items/boss_chest_void.png",
+      "image": "/images/items/boss_chest_void.webp",
       "chestTier": "s",
       "description": "Void Herald's chest - epic+ guaranteed."
     },
@@ -8649,7 +8699,7 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "image": "/images/items/boss_chest_storm.png",
+      "image": "/images/items/boss_chest_storm.webp",
       "chestTier": "ss",
       "description": "Storm Colossus chest - epic+ guaranteed."
     },
@@ -8662,7 +8712,7 @@ const CONTENT = {
         "gold": 0,
         "wood": 0
       },
-      "image": "/images/items/boss_chest_world.png",
+      "image": "/images/items/boss_chest_world.webp",
       "chestTier": "ss",
       "description": "World Eater's chest - legendary+ guaranteed."
     },
@@ -8676,7 +8726,7 @@ const CONTENT = {
         "wood": 0
       },
       "chestTier": "s",
-      "image": "/images/items/mythic_chest.png",
+      "image": "/images/items/mythic_chest.webp",
       "description": "A chest of legend. Great odds of mythic loot."
     },
     {
@@ -8689,7 +8739,7 @@ const CONTENT = {
         "wood": 0
       },
       "chestTier": "b",
-      "image": "/images/items/buried_treasure.png",
+      "image": "/images/items/buried_treasure.webp",
       "description": "A dirt-caked hoard dug up on the road. Lucky find, honest loot."
     },
     {
@@ -13323,14 +13373,14 @@ const CONTENT = {
       "setup": "/images/backgrounds/setup.webp?v=mvzvhr9k",
       "lobby": "/images/backgrounds/lobby.webp?v=mvzvmxoj",
       "town": "/images/backgrounds/town.webp?v=mvzvyu13",
-      "dungeon": "/images/backgrounds/dungeon.png",
+      "dungeon": "/images/backgrounds/dungeon.webp",
       "tavern": "/images/backgrounds/tavern.png",
-      "blacksmith": "/images/backgrounds/blacksmith.png",
+      "blacksmith": "/images/backgrounds/blacksmith.webp?v=mw8l5138",
       "merchant": "/images/backgrounds/merchant.png",
       "temple": "/images/backgrounds/temple.png"
     },
     "combat": {
-      "enemy": "/images/backgrounds/combat_enemy.webp?v=mw4g1y88",
+      "enemy": "/images/backgrounds/combat_enemy.webp?v=mw8jkvj9",
       "party": "/images/backgrounds/combat_party.webp?v=mw4g20ag"
     },
     "ui": {
@@ -13338,27 +13388,27 @@ const CONTENT = {
       "profileBg": "/images/ui/profilebg.webp?v=mw2vz51q",
       "townPanelBg": "/images/ui/townpanelbg.webp?v=mw2wkt47",
       "townDayBg": "/images/ui/towndaybg.webp?v=mw2w19vj",
-      "dungeonBg": "",
-      "merchantBg": "",
-      "merchantChests": "",
-      "merchantPotions": "",
-      "merchantMaterials": "",
-      "templeBg": "",
-      "templeAscend": "",
-      "templeHearts": "",
-      "templeRebirth": "",
-      "templeRevive": "",
+      "dungeonBg": "/images/ui/dungeonbg.webp?v=mw8kya8u",
+      "merchantBg": "/images/ui/merchantbg.webp?v=mw8kxnov",
+      "merchantChests": "/images/ui/merchantchests.webp?v=mw8nd41p",
+      "merchantPotions": "/images/ui/merchantpotions.webp?v=mw8nd61p",
+      "merchantMaterials": "/images/ui/merchantmaterials.webp?v=mw8ndgon",
+      "templeBg": "/images/ui/templebg.webp?v=mw8kxima",
+      "templeAscend": "/images/ui/templeascend.webp?v=mw8ncq2t",
+      "templeHearts": "/images/ui/templehearts.webp?v=mw8ncs63",
+      "templeRebirth": "/images/ui/templerebirth.webp?v=mw8nctu4",
+      "templeRevive": "/images/ui/templerevive.webp?v=mw8ncw2l",
       "blacksmithButton": "/images/ui/blacksmithbutton.webp?v=mw2zkywk",
-      "blacksmithNpc": "",
-      "blacksmithBg": "",
+      "blacksmithNpc": "/images/ui/blacksmithnpc.webp?v=mw8ksp7x",
+      "blacksmithBg": "/images/ui/blacksmithbg.webp?v=mw8ksso4",
       "tavernButton": "/images/ui/tavernbutton.webp?v=mw2zltjf",
-      "tavernBg": "",
-      "tavernPortrait": "",
-      "tavernSleep": "",
-      "tavernRations": "",
-      "tavernCoin": "",
-      "tavernCards": "",
-      "tavernLeave": "",
+      "tavernBg": "/images/ui/tavernbg.webp?v=mw8m9gdl",
+      "tavernPortrait": "/images/ui/tavernportrait.webp?v=mw8mj4yk",
+      "tavernSleep": "/images/ui/tavernsleep.webp?v=mw8mf8ve",
+      "tavernRations": "/images/ui/tavernrations.webp?v=mw8me758",
+      "tavernCoin": "/images/ui/taverncoin.webp?v=mw8me56r",
+      "tavernCards": "/images/ui/taverncards.webp?v=mw8me3a1",
+      "tavernLeave": "/images/ui/tavernleave.webp?v=mw8mdchf",
       "merchantButton": "/images/ui/merchantbutton.webp?v=mw2zmzyf",
       "templeButton": "/images/ui/templebutton.webp?v=mw2zmdf3",
       "dungeonButton": "/images/ui/dungeonbutton.webp?v=mw2wszbb",
@@ -13369,7 +13419,10 @@ const CONTENT = {
       "restNight": "",
       "actionCardOpacity": "",
       "bgPhotoOpacity": "",
-      "bgPhotoTownOpacity": ""
+      "bgPhotoTownOpacity": "",
+      "panelTint": "#07080a",
+      "panelOpacity": "0.9",
+      "panelRadius": "4"
     }
   },
   "town": {
@@ -13643,8 +13696,9 @@ const CONTENT = {
       "color": "#dc2626",
       "particles": "slash",
       "sound": [
-        "bloodmagic1",
-        "bloodmagic2"
+        "bloodbolt",
+        "cursedwhisper",
+        "darkascension"
       ]
     },
     "blood_splatter": {
@@ -13652,8 +13706,9 @@ const CONTENT = {
       "color": "#b91c1c",
       "particles": "burst",
       "sound": [
-        "bloodmagic1",
-        "bloodmagic2"
+        "bloodbolt",
+        "cursedwhisper",
+        "darkascension"
       ]
     },
     "blood_eruption": {
@@ -13661,8 +13716,9 @@ const CONTENT = {
       "color": "#e11d48",
       "particles": "burst",
       "sound": [
-        "bloodmagic1",
-        "bloodmagic2"
+        "bloodbolt",
+        "cursedwhisper",
+        "darkascension"
       ]
     },
     "blood_vortex": {
@@ -13670,8 +13726,9 @@ const CONTENT = {
       "color": "#ef4444",
       "particles": "vortex",
       "sound": [
-        "bloodmagic1",
-        "bloodmagic2"
+        "bloodbolt",
+        "cursedwhisper",
+        "darkascension"
       ]
     },
     "blood_needles": {
@@ -13679,8 +13736,9 @@ const CONTENT = {
       "color": "#f43f5e",
       "particles": "slash",
       "sound": [
-        "bloodmagic1",
-        "bloodmagic2"
+        "bloodbolt",
+        "cursedwhisper",
+        "darkascension"
       ]
     },
     "blood_drain": {
@@ -13688,8 +13746,9 @@ const CONTENT = {
       "color": "#be123c",
       "particles": "slash",
       "sound": [
-        "bloodmagic1",
-        "bloodmagic2"
+        "bloodbolt",
+        "cursedwhisper",
+        "darkascension"
       ]
     },
     "blood_scythe_cross": {
@@ -13697,8 +13756,9 @@ const CONTENT = {
       "color": "#991b1b",
       "particles": "slash",
       "sound": [
-        "bloodmagic1",
-        "bloodmagic2"
+        "bloodbolt",
+        "cursedwhisper",
+        "darkascension"
       ]
     },
     "blood_curse_mist": {
@@ -13706,8 +13766,9 @@ const CONTENT = {
       "color": "#881337",
       "particles": "burst",
       "sound": [
-        "bloodmagic1",
-        "bloodmagic2"
+        "bloodbolt",
+        "cursedwhisper",
+        "darkascension"
       ]
     },
     "blood_cleave": {
@@ -13715,8 +13776,9 @@ const CONTENT = {
       "color": "#b91c1c",
       "particles": "slash",
       "sound": [
-        "bloodmagic1",
-        "bloodmagic2"
+        "bloodbolt",
+        "cursedwhisper",
+        "darkascension"
       ]
     },
     "blood_nova": {
@@ -13724,8 +13786,9 @@ const CONTENT = {
       "color": "#dc2626",
       "particles": "burst",
       "sound": [
-        "bloodmagic1",
-        "bloodmagic2"
+        "bloodbolt",
+        "cursedwhisper",
+        "darkascension"
       ]
     },
     "shadow_scythe_reap": {
@@ -13733,7 +13796,9 @@ const CONTENT = {
       "color": "#9333ea",
       "particles": "slash",
       "sound": [
-        "bloodmagic2"
+        "bloodbolt",
+        "cursedwhisper",
+        "darkascension"
       ]
     },
     "void_rift_tear": {
@@ -13741,7 +13806,9 @@ const CONTENT = {
       "color": "#7e22ce",
       "particles": "burst",
       "sound": [
-        "bloodmagic2"
+        "bloodbolt",
+        "cursedwhisper",
+        "darkascension"
       ]
     },
     "shadow_spikes_rise": {
@@ -13749,7 +13816,9 @@ const CONTENT = {
       "color": "#581c87",
       "particles": "burst",
       "sound": [
-        "bloodmagic2"
+        "bloodbolt",
+        "cursedwhisper",
+        "darkascension"
       ]
     },
     "dark_matter_orb": {
@@ -13757,7 +13826,9 @@ const CONTENT = {
       "color": "#a855f7",
       "particles": "orb",
       "sound": [
-        "bloodmagic2"
+        "bloodbolt",
+        "cursedwhisper",
+        "darkascension"
       ]
     },
     "soul_harvest_wisps": {
@@ -13765,7 +13836,9 @@ const CONTENT = {
       "color": "#c084fc",
       "particles": "burst",
       "sound": [
-        "bloodmagic2"
+        "bloodbolt",
+        "cursedwhisper",
+        "darkascension"
       ]
     },
     "dark_cross_execution": {
@@ -13773,7 +13846,9 @@ const CONTENT = {
       "color": "#6b21a8",
       "particles": "slash",
       "sound": [
-        "bloodmagic2"
+        "bloodbolt",
+        "cursedwhisper",
+        "darkascension"
       ]
     },
     "eclipse_wave": {
@@ -13781,7 +13856,9 @@ const CONTENT = {
       "color": "#4c1d95",
       "particles": "burst",
       "sound": [
-        "bloodmagic2"
+        "bloodbolt",
+        "cursedwhisper",
+        "darkascension"
       ]
     },
     "shadow_tendrils": {
@@ -13789,7 +13866,9 @@ const CONTENT = {
       "color": "#3b0764",
       "particles": "vortex",
       "sound": [
-        "bloodmagic2"
+        "bloodbolt",
+        "cursedwhisper",
+        "darkascension"
       ]
     },
     "phantom_dagger_barrage": {
@@ -13797,7 +13876,9 @@ const CONTENT = {
       "color": "#7c3aed",
       "particles": "slash",
       "sound": [
-        "bloodmagic2"
+        "bloodbolt",
+        "cursedwhisper",
+        "darkascension"
       ]
     },
     "black_hole_implosion": {
@@ -13805,7 +13886,9 @@ const CONTENT = {
       "color": "#2e1065",
       "particles": "burst",
       "sound": [
-        "bloodmagic2"
+        "bloodbolt",
+        "cursedwhisper",
+        "darkascension"
       ]
     },
     "fire_meteor_crash": {
@@ -13813,7 +13896,8 @@ const CONTENT = {
       "color": "#ea580c",
       "particles": "burst",
       "sound": [
-        "firemagic"
+        "dragonfire",
+        "meteorfall"
       ]
     },
     "flame_pillar_inferno": {
@@ -13821,7 +13905,8 @@ const CONTENT = {
       "color": "#f97316",
       "particles": "burst",
       "sound": [
-        "firemagic"
+        "dragonfire",
+        "meteorfall"
       ]
     },
     "fire_slash_arc": {
@@ -13829,7 +13914,8 @@ const CONTENT = {
       "color": "#ff5722",
       "particles": "slash",
       "sound": [
-        "firemagic"
+        "dragonfire",
+        "meteorfall"
       ]
     },
     "dragon_breath_cone": {
@@ -13837,7 +13923,8 @@ const CONTENT = {
       "color": "#dc2626",
       "particles": "burst",
       "sound": [
-        "firemagic"
+        "dragonfire",
+        "meteorfall"
       ]
     },
     "magma_eruption_burst": {
@@ -13845,7 +13932,8 @@ const CONTENT = {
       "color": "#c2410c",
       "particles": "burst",
       "sound": [
-        "firemagic"
+        "dragonfire",
+        "meteorfall"
       ]
     },
     "phoenix_wings_sweep": {
@@ -13853,7 +13941,8 @@ const CONTENT = {
       "color": "#f97316",
       "particles": "burst",
       "sound": [
-        "firemagic"
+        "dragonfire",
+        "meteorfall"
       ]
     },
     "ember_whirlwind": {
@@ -13861,7 +13950,8 @@ const CONTENT = {
       "color": "#fb923c",
       "particles": "vortex",
       "sound": [
-        "firemagic"
+        "dragonfire",
+        "meteorfall"
       ]
     },
     "scorch_wave_ring": {
@@ -13869,7 +13959,8 @@ const CONTENT = {
       "color": "#ef4444",
       "particles": "burst",
       "sound": [
-        "firemagic"
+        "dragonfire",
+        "meteorfall"
       ]
     },
     "fireball_streak": {
@@ -13877,7 +13968,8 @@ const CONTENT = {
       "color": "#ea580c",
       "particles": "slash",
       "sound": [
-        "firemagic"
+        "dragonfire",
+        "meteorfall"
       ]
     },
     "supernova_blast": {
@@ -13885,7 +13977,8 @@ const CONTENT = {
       "color": "#f59e0b",
       "particles": "burst",
       "sound": [
-        "firemagic"
+        "dragonfire",
+        "meteorfall"
       ]
     },
     "earth_fissure_rupture": {
@@ -13893,7 +13986,8 @@ const CONTENT = {
       "color": "#854d0e",
       "particles": "burst",
       "sound": [
-        "battleaxe"
+        "irongate",
+        "axeskill"
       ]
     },
     "boulder_crush_drop": {
@@ -13901,7 +13995,8 @@ const CONTENT = {
       "color": "#713f12",
       "particles": "burst",
       "sound": [
-        "battleaxe"
+        "irongate",
+        "axeskill"
       ]
     },
     "seismic_shockwave_ring": {
@@ -13909,7 +14004,8 @@ const CONTENT = {
       "color": "#a16207",
       "particles": "burst",
       "sound": [
-        "battleaxe"
+        "irongate",
+        "axeskill"
       ]
     },
     "sandstorm_vortex_spin": {
@@ -13917,7 +14013,8 @@ const CONTENT = {
       "color": "#d97706",
       "particles": "vortex",
       "sound": [
-        "battleaxe"
+        "irongate",
+        "axeskill"
       ]
     },
     "stone_spikes_impale": {
@@ -13925,7 +14022,8 @@ const CONTENT = {
       "color": "#65a30d",
       "particles": "burst",
       "sound": [
-        "battleaxe"
+        "irongate",
+        "axeskill"
       ]
     },
     "rock_avalanche_barrage": {
@@ -13933,7 +14031,8 @@ const CONTENT = {
       "color": "#78716c",
       "particles": "slash",
       "sound": [
-        "battleaxe"
+        "irongate",
+        "axeskill"
       ]
     },
     "earth_hammer_quake": {
@@ -13941,7 +14040,8 @@ const CONTENT = {
       "color": "#b45309",
       "particles": "slash",
       "sound": [
-        "battleaxe"
+        "irongate",
+        "axeskill"
       ]
     },
     "crystal_earth_shards": {
@@ -13957,7 +14057,8 @@ const CONTENT = {
       "color": "#451a03",
       "particles": "burst",
       "sound": [
-        "battleaxe"
+        "irongate",
+        "axeskill"
       ]
     },
     "granite_armor_shatter": {
@@ -13965,7 +14066,8 @@ const CONTENT = {
       "color": "#57534e",
       "particles": "burst",
       "sound": [
-        "battleaxe"
+        "irongate",
+        "axeskill"
       ]
     },
     "frost_crystal_spear": {
@@ -13973,7 +14075,8 @@ const CONTENT = {
       "color": "#38bdf8",
       "particles": "slash",
       "sound": [
-        "frostmagic"
+        "waterorb",
+        "waterburst"
       ]
     },
     "frost_nova_freeze": {
@@ -13981,7 +14084,8 @@ const CONTENT = {
       "color": "#0284c7",
       "particles": "burst",
       "sound": [
-        "frostmagic"
+        "waterorb",
+        "waterburst"
       ]
     },
     "ice_sword_uppercut": {
@@ -13989,7 +14093,8 @@ const CONTENT = {
       "color": "#7dd3fc",
       "particles": "slash",
       "sound": [
-        "frostmagic"
+        "waterorb",
+        "waterburst"
       ]
     },
     "blizzard_cyclone_vortex": {
@@ -13997,7 +14102,8 @@ const CONTENT = {
       "color": "#0ea5e9",
       "particles": "vortex",
       "sound": [
-        "frostmagic"
+        "waterorb",
+        "waterburst"
       ]
     },
     "ice_spikes_ground": {
@@ -14005,7 +14111,8 @@ const CONTENT = {
       "color": "#38bdf8",
       "particles": "burst",
       "sound": [
-        "frostmagic"
+        "waterorb",
+        "waterburst"
       ]
     },
     "tidal_wave_water": {
@@ -14013,7 +14120,8 @@ const CONTENT = {
       "color": "#2563eb",
       "particles": "burst",
       "sound": [
-        "frostmagic"
+        "waterorb",
+        "waterburst"
       ]
     },
     "frozen_orb_shatter": {
@@ -14021,7 +14129,8 @@ const CONTENT = {
       "color": "#06b6d4",
       "particles": "burst",
       "sound": [
-        "frostmagic"
+        "waterorb",
+        "waterburst"
       ]
     },
     "icicle_rain_barrage": {
@@ -14029,7 +14138,8 @@ const CONTENT = {
       "color": "#0284c7",
       "particles": "burst",
       "sound": [
-        "frostmagic"
+        "waterorb",
+        "waterburst"
       ]
     },
     "water_whip_lash": {
@@ -14037,7 +14147,8 @@ const CONTENT = {
       "color": "#3b82f6",
       "particles": "slash",
       "sound": [
-        "frostmagic"
+        "waterorb",
+        "waterburst"
       ]
     },
     "frost_prison_dome": {
@@ -14045,7 +14156,8 @@ const CONTENT = {
       "color": "#0369a1",
       "particles": "burst",
       "sound": [
-        "frostmagic"
+        "waterorb",
+        "waterburst"
       ]
     },
     "lightning_strike_heavy": {
@@ -14053,7 +14165,8 @@ const CONTENT = {
       "color": "#facc15",
       "particles": "slash",
       "sound": [
-        "normalmagic"
+        "lightningcast",
+        "chargeshot"
       ]
     },
     "chain_lightning_arc": {
@@ -14061,7 +14174,8 @@ const CONTENT = {
       "color": "#eab308",
       "particles": "slash",
       "sound": [
-        "normalmagic"
+        "lightningcast",
+        "chargeshot"
       ]
     },
     "ball_lightning_plasma": {
@@ -14069,7 +14183,8 @@ const CONTENT = {
       "color": "#ca8a04",
       "particles": "burst",
       "sound": [
-        "normalmagic"
+        "lightningcast",
+        "chargeshot"
       ]
     },
     "lightning_slash_blade": {
@@ -14077,7 +14192,8 @@ const CONTENT = {
       "color": "#fde047",
       "particles": "slash",
       "sound": [
-        "normalmagic"
+        "lightningcast",
+        "chargeshot"
       ]
     },
     "electric_field_discharge": {
@@ -14085,7 +14201,8 @@ const CONTENT = {
       "color": "#eab308",
       "particles": "burst",
       "sound": [
-        "normalmagic"
+        "lightningcast",
+        "chargeshot"
       ]
     },
     "storm_tornado_vortex": {
@@ -14093,7 +14210,8 @@ const CONTENT = {
       "color": "#fbbf24",
       "particles": "vortex",
       "sound": [
-        "normalmagic"
+        "lightningcast",
+        "chargeshot"
       ]
     },
     "emp_shockwave_ring": {
@@ -14101,7 +14219,8 @@ const CONTENT = {
       "color": "#facc15",
       "particles": "burst",
       "sound": [
-        "normalmagic"
+        "lightningcast",
+        "chargeshot"
       ]
     },
     "triple_thunder_judgement": {
@@ -14109,7 +14228,8 @@ const CONTENT = {
       "color": "#fef08a",
       "particles": "burst",
       "sound": [
-        "normalmagic"
+        "lightningcast",
+        "chargeshot"
       ]
     },
     "electric_sparks_shower": {
@@ -14117,7 +14237,8 @@ const CONTENT = {
       "color": "#fde047",
       "particles": "burst",
       "sound": [
-        "normalmagic"
+        "lightningcast",
+        "chargeshot"
       ]
     },
     "storm_spear_throw": {
@@ -14125,7 +14246,8 @@ const CONTENT = {
       "color": "#eab308",
       "particles": "slash",
       "sound": [
-        "normalmagic"
+        "lightningcast",
+        "chargeshot"
       ]
     },
     "holy_pillar_smite": {
@@ -14133,7 +14255,8 @@ const CONTENT = {
       "color": "#facc15",
       "particles": "burst",
       "sound": [
-        "healingmagic"
+        "divinejudgement",
+        "holyhammer"
       ]
     },
     "radiance_sword_slash": {
@@ -14141,7 +14264,8 @@ const CONTENT = {
       "color": "#fef08a",
       "particles": "slash",
       "sound": [
-        "healingmagic"
+        "divinejudgement",
+        "holyhammer"
       ]
     },
     "holy_cross_burst": {
@@ -14149,7 +14273,8 @@ const CONTENT = {
       "color": "#fde047",
       "particles": "burst",
       "sound": [
-        "healingmagic"
+        "divinejudgement",
+        "holyhammer"
       ]
     },
     "heal_aura_fountain": {
@@ -14157,7 +14282,8 @@ const CONTENT = {
       "color": "#4ade80",
       "particles": "glow",
       "sound": [
-        "healingmagic"
+        "divinejudgement",
+        "holyhammer"
       ]
     },
     "radiant_halo_shield": {
@@ -14165,10 +14291,8 @@ const CONTENT = {
       "color": "#f59e0b",
       "particles": "ring",
       "sound": [
-        "slash1",
-        "slash2",
-        "slash3",
-        "slash4"
+        "divinejudgement",
+        "holyhammer"
       ]
     },
     "angel_feathers_scatter": {
@@ -14176,7 +14300,8 @@ const CONTENT = {
       "color": "#ffffff",
       "particles": "burst",
       "sound": [
-        "healingmagic"
+        "divinejudgement",
+        "holyhammer"
       ]
     },
     "judgement_solar_flare": {
@@ -14184,7 +14309,8 @@ const CONTENT = {
       "color": "#facc15",
       "particles": "burst",
       "sound": [
-        "healingmagic"
+        "divinejudgement",
+        "holyhammer"
       ]
     },
     "holy_lance_projectile": {
@@ -14192,7 +14318,8 @@ const CONTENT = {
       "color": "#fef08a",
       "particles": "slash",
       "sound": [
-        "healingmagic"
+        "divinejudgement",
+        "holyhammer"
       ]
     },
     "divine_retribution_ring": {
@@ -14200,7 +14327,8 @@ const CONTENT = {
       "color": "#eab308",
       "particles": "burst",
       "sound": [
-        "healingmagic"
+        "divinejudgement",
+        "holyhammer"
       ]
     },
     "dawn_star_explosion": {
@@ -14208,7 +14336,8 @@ const CONTENT = {
       "color": "#ffffff",
       "particles": "burst",
       "sound": [
-        "healingmagic"
+        "divinejudgement",
+        "holyhammer"
       ]
     },
     "rising_katana_slash": {
@@ -14216,7 +14345,8 @@ const CONTENT = {
       "color": "#ffffff",
       "particles": "slash",
       "sound": [
-        "slash1"
+        "slashfast1",
+        "sword1"
       ]
     },
     "cross_cut_x_slash": {
@@ -14224,7 +14354,8 @@ const CONTENT = {
       "color": "#f87171",
       "particles": "slash",
       "sound": [
-        "slash2"
+        "sword2",
+        "slashfast2"
       ]
     },
     "heavy_hammer_slam": {
@@ -14232,10 +14363,8 @@ const CONTENT = {
       "color": "#fb923c",
       "particles": "slash",
       "sound": [
-        "slash1",
-        "slash2",
-        "slash3",
-        "slash4"
+        "holyhammer",
+        "heavyswordhit"
       ]
     },
     "whirlwind_blade_spin": {
@@ -14243,10 +14372,8 @@ const CONTENT = {
       "color": "#cbd5e1",
       "particles": "vortex",
       "sound": [
-        "slash1",
-        "slash2",
-        "slash3",
-        "slash4"
+        "greatswordspin",
+        "slashfast4"
       ]
     },
     "piercing_rapier_thrust": {
@@ -14254,10 +14381,8 @@ const CONTENT = {
       "color": "#ffffff",
       "particles": "slash",
       "sound": [
-        "slash1",
-        "slash2",
-        "slash3",
-        "slash4"
+        "sword3",
+        "bladehit"
       ]
     },
     "axe_cleave_horizontal": {
@@ -14265,10 +14390,9 @@ const CONTENT = {
       "color": "#ea580c",
       "particles": "slash",
       "sound": [
-        "slash1",
-        "slash2",
-        "slash3",
-        "slash4"
+        "axeswing1",
+        "axeswing2",
+        "axeskill"
       ]
     },
     "sonic_air_blade": {
@@ -14276,10 +14400,8 @@ const CONTENT = {
       "color": "#94a3b8",
       "particles": "slash",
       "sound": [
-        "slash1",
-        "slash2",
-        "slash3",
-        "slash4"
+        "greatswordslash",
+        "slashfast3"
       ]
     },
     "shield_bash_shock": {
@@ -14287,10 +14409,8 @@ const CONTENT = {
       "color": "#64748b",
       "particles": "burst",
       "sound": [
-        "slash1",
-        "slash2",
-        "slash3",
-        "slash4"
+        "shieldpulse",
+        "bladesclash1"
       ]
     },
     "triple_dagger_slash": {
@@ -14298,10 +14418,8 @@ const CONTENT = {
       "color": "#e2e8f0",
       "particles": "slash",
       "sound": [
-        "slash1",
-        "slash2",
-        "slash3",
-        "slash4"
+        "daggerthrow",
+        "slashfast1"
       ]
     },
     "guillotine_fall": {
@@ -14309,10 +14427,8 @@ const CONTENT = {
       "color": "#dc2626",
       "particles": "slash",
       "sound": [
-        "slash1",
-        "slash2",
-        "slash3",
-        "slash4"
+        "twohanded",
+        "heavyswordhit"
       ]
     },
     "slash": {
@@ -14320,10 +14436,13 @@ const CONTENT = {
       "color": "#ff7a5c",
       "particles": "slash",
       "sound": [
-        "slash1",
-        "slash2",
-        "slash3",
-        "slash4"
+        "slashfast1",
+        "slashfast2",
+        "slashfast3",
+        "slashfast4",
+        "sword1",
+        "sword2",
+        "sword3"
       ]
     },
     "heavy": {
@@ -14331,8 +14450,11 @@ const CONTENT = {
       "color": "#ffb347",
       "particles": "shatter",
       "sound": [
-        "strongattack1",
-        "strongattack2"
+        "heavyslash1",
+        "heavyslash2",
+        "greatswordslash",
+        "twohanded",
+        "heavyswordhit"
       ]
     },
     "axe": {
@@ -14340,7 +14462,9 @@ const CONTENT = {
       "color": "#ff9b4a",
       "particles": "shatter",
       "sound": [
-        "battleaxe"
+        "axeswing1",
+        "axeswing2",
+        "axeskill"
       ]
     },
     "crush": {
@@ -14348,7 +14472,8 @@ const CONTENT = {
       "color": "#ffd23e",
       "particles": "burst",
       "sound": [
-        "skull_crush"
+        "hitgeneric",
+        "axehit"
       ]
     },
     "arcane": {
@@ -14356,9 +14481,8 @@ const CONTENT = {
       "color": "#c9a0ff",
       "particles": "orb",
       "sound": [
-        "normalmagic",
-        "bloodmagic1",
-        "bloodmagic2"
+        "arcanebolt",
+        "lightningcast"
       ]
     },
     "fire": {
@@ -14366,7 +14490,8 @@ const CONTENT = {
       "color": "#ff7a3c",
       "particles": "fire",
       "sound": [
-        "firemagic"
+        "dragonfire",
+        "meteorfall"
       ]
     },
     "frost": {
@@ -14374,7 +14499,8 @@ const CONTENT = {
       "color": "#9fd4ff",
       "particles": "frost",
       "sound": [
-        "frostmagic"
+        "waterorb",
+        "waterburst"
       ]
     },
     "holy": {
@@ -14382,7 +14508,8 @@ const CONTENT = {
       "color": "#ffe9a8",
       "particles": "rays",
       "sound": [
-        "healingmagic"
+        "divinejudgement",
+        "holyhammer"
       ]
     },
     "shadow": {
@@ -14390,8 +14517,9 @@ const CONTENT = {
       "color": "#b98cff",
       "particles": "pulse",
       "sound": [
-        "bloodmagic1",
-        "bloodmagic2"
+        "bloodbolt",
+        "cursedwhisper",
+        "darkascension"
       ]
     },
     "heal": {
@@ -14407,7 +14535,9 @@ const CONTENT = {
       "color": "#8fc9ff",
       "particles": "ring",
       "sound": [
-        "shield"
+        "shieldpulse",
+        "bladesclash1",
+        "bladesclash2"
       ]
     },
     "monster": {
@@ -14415,7 +14545,14 @@ const CONTENT = {
       "color": "#ff7a5c",
       "particles": "slash",
       "sound": [
-        "monstersound"
+        "monsterroar",
+        "terrifyingroar",
+        "bonesrattle",
+        "undeadmoan",
+        "slimesquelch",
+        "wolfsnap",
+        "vampirehiss",
+        "dragonroar"
       ]
     },
     "crit": {
@@ -14423,7 +14560,8 @@ const CONTENT = {
       "color": "#ffd23e",
       "particles": "burst",
       "sound": [
-        "skull_crush"
+        "heavyswordhit",
+        "holyhammer"
       ]
     },
     "buff": {
@@ -14431,7 +14569,7 @@ const CONTENT = {
       "color": "#8fe08a",
       "particles": "glow",
       "sound": [
-        "shield"
+        "shieldpulse"
       ]
     },
     "dot": {
@@ -14439,7 +14577,8 @@ const CONTENT = {
       "color": "#b98cff",
       "particles": "pulse",
       "sound": [
-        "bloodmagic1"
+        "bloodbolt",
+        "vineslash"
       ]
     }
   },
@@ -27966,7 +28105,7 @@ const CONTENT = {
         "count": 3,
         "max": 6,
         "respawn": 9,
-        "eliteChance": 0.14
+        "eliteChance": 0.05
       },
       "monsters": [
         {
@@ -27997,6 +28136,10 @@ const CONTENT = {
               "power": 1.15,
               "radius": 34
             }
+          ],
+          "tags": [
+            "humanoid",
+            "plant"
           ]
         },
         {
@@ -28026,6 +28169,9 @@ const CONTENT = {
               "radius": 110,
               "power": 1.4
             }
+          ],
+          "tags": [
+            "plant"
           ]
         },
         {
@@ -28054,6 +28200,10 @@ const CONTENT = {
               "windup": 0.55,
               "power": 1.1
             }
+          ],
+          "tags": [
+            "undead",
+            "spirit"
           ]
         },
         {
@@ -28094,6 +28244,10 @@ const CONTENT = {
                 "slow": 0.5
               }
             }
+          ],
+          "tags": [
+            "beast",
+            "plant"
           ]
         },
         {
@@ -28133,6 +28287,129 @@ const CONTENT = {
               "radius": 130,
               "power": 1.45
             }
+          ],
+          "tags": [
+            "plant",
+            "construct"
+          ]
+        },
+        {
+          "painter": "sporeling",
+          "element": "nature",
+          "weight": 16,
+          "elite": false,
+          "attackCooldown": 2.1,
+          "exp": 20,
+          "gold": 3,
+          "speed": 112,
+          "radius": 11,
+          "kind": "sporeling",
+          "name": "Sporeling",
+          "color": "#a6c76a",
+          "accent": "#eaff91",
+          "hp": 190,
+          "damage": 21,
+          "aggroRange": 205,
+          "skills": [
+            {
+              "id": "sporeling_cloud",
+              "kind": "slam",
+              "cd": 8,
+              "range": 150,
+              "windup": 0.7,
+              "radius": 64,
+              "power": 0.6
+            }
+          ],
+          "tags": [
+            "plant",
+            "slime"
+          ]
+        },
+        {
+          "painter": "briarHound",
+          "element": "nature",
+          "weight": 9,
+          "elite": false,
+          "attackCooldown": 1.65,
+          "exp": 58,
+          "gold": 9,
+          "speed": 174,
+          "radius": 17,
+          "kind": "briarbound_hound",
+          "name": "Briarbound Hound",
+          "color": "#526b36",
+          "accent": "#b0c96a",
+          "hp": 430,
+          "damage": 46,
+          "aggroRange": 315,
+          "skills": [
+            {
+              "id": "briar_pounce",
+              "kind": "dash",
+              "cd": 6.5,
+              "range": 245,
+              "windup": 0.48,
+              "dist": 145,
+              "power": 1.15,
+              "radius": 38
+            }
+          ],
+          "tags": [
+            "beast",
+            "plant"
+          ]
+        },
+        {
+          "painter": "myceliumOracle",
+          "element": "nature",
+          "weight": 2,
+          "elite": true,
+          "attackCooldown": 2.2,
+          "exp": 470,
+          "gold": 95,
+          "speed": 84,
+          "radius": 28,
+          "kind": "mycelium_oracle",
+          "name": "Mycelium Oracle",
+          "color": "#667b4a",
+          "accent": "#d5ff9c",
+          "ability": "nova",
+          "hp": 2100,
+          "damage": 88,
+          "aggroRange": 390,
+          "skills": [
+            {
+              "id": "oracle_spore_nova",
+              "kind": "slam",
+              "cd": 9,
+              "range": 200,
+              "windup": 1.05,
+              "radius": 130,
+              "power": 1.15
+            },
+            {
+              "id": "oracle_root_prison",
+              "kind": "slam",
+              "cd": 13,
+              "range": 180,
+              "windup": 1.25,
+              "radius": 95,
+              "power": 0.85,
+              "status": "root"
+            },
+            {
+              "id": "oracle_spore_bolt",
+              "kind": "shot",
+              "cd": 3.8,
+              "range": 340,
+              "windup": 0.55,
+              "power": 1
+            }
+          ],
+          "tags": [
+            "plant",
+            "humanoid"
           ]
         }
       ]
@@ -28158,7 +28435,7 @@ const CONTENT = {
         "count": 3,
         "max": 6,
         "respawn": 11,
-        "eliteChance": 0.16
+        "eliteChance": 0.055
       },
       "monsters": [
         {
@@ -28189,6 +28466,10 @@ const CONTENT = {
               "power": 1.15,
               "radius": 34
             }
+          ],
+          "tags": [
+            "demon",
+            "humanoid"
           ]
         },
         {
@@ -28225,6 +28506,10 @@ const CONTENT = {
               "power": 1.3,
               "radius": 38
             }
+          ],
+          "tags": [
+            "undead",
+            "elemental"
           ]
         },
         {
@@ -28254,6 +28539,10 @@ const CONTENT = {
               "radius": 100,
               "power": 1.5
             }
+          ],
+          "tags": [
+            "elemental",
+            "construct"
           ]
         },
         {
@@ -28282,6 +28571,10 @@ const CONTENT = {
               "windup": 0.55,
               "power": 1.1
             }
+          ],
+          "tags": [
+            "beast",
+            "elemental"
           ]
         },
         {
@@ -28327,6 +28620,141 @@ const CONTENT = {
               "radius": 130,
               "power": 1.45
             }
+          ],
+          "tags": [
+            "demon",
+            "elemental"
+          ]
+        },
+        {
+          "painter": "scoriaCrawler",
+          "element": "fire",
+          "weight": 16,
+          "elite": false,
+          "attackCooldown": 2,
+          "exp": 22,
+          "gold": 4,
+          "speed": 108,
+          "radius": 12,
+          "kind": "scoria_crawler",
+          "name": "Scoria Crawler",
+          "color": "#34363b",
+          "accent": "#ff6b27",
+          "hp": 210,
+          "damage": 24,
+          "aggroRange": 195,
+          "skills": [
+            {
+              "id": "scoria_ember_spit",
+              "kind": "shot",
+              "cd": 4.5,
+              "range": 220,
+              "windup": 0.5,
+              "power": 0.7
+            }
+          ],
+          "tags": [
+            "beast",
+            "construct"
+          ]
+        },
+        {
+          "painter": "furnaceHound",
+          "element": "fire",
+          "weight": 8,
+          "elite": false,
+          "attackCooldown": 1.8,
+          "exp": 88,
+          "gold": 14,
+          "speed": 148,
+          "radius": 20,
+          "kind": "furnace_hound",
+          "name": "Furnace Hound",
+          "color": "#4c4648",
+          "accent": "#ff8a3c",
+          "hp": 640,
+          "damage": 64,
+          "aggroRange": 330,
+          "skills": [
+            {
+              "id": "furnace_charge",
+              "kind": "dash",
+              "cd": 7,
+              "range": 260,
+              "windup": 0.7,
+              "dist": 155,
+              "power": 1.3,
+              "radius": 48
+            },
+            {
+              "id": "furnace_bite",
+              "kind": "slam",
+              "cd": 3.2,
+              "range": 110,
+              "windup": 0.45,
+              "radius": 62,
+              "power": 1.05,
+              "status": "burn"
+            }
+          ],
+          "tags": [
+            "beast",
+            "elemental"
+          ]
+        },
+        {
+          "painter": "pyrewingMatriarch",
+          "element": "fire",
+          "weight": 2,
+          "elite": true,
+          "attackCooldown": 2.1,
+          "exp": 600,
+          "gold": 125,
+          "speed": 116,
+          "radius": 29,
+          "kind": "pyrewing_matriarch",
+          "name": "Pyrewing Matriarch",
+          "color": "#3b2525",
+          "accent": "#ffb64a",
+          "ability": "nova",
+          "hp": 2400,
+          "damage": 100,
+          "aggroRange": 430,
+          "skills": [
+            {
+              "id": "pyre_meteor_rain",
+              "kind": "slam",
+              "cd": 12,
+              "range": 240,
+              "windup": 1.4,
+              "radius": 160,
+              "power": 1.35,
+              "status": "burn"
+            },
+            {
+              "id": "pyre_infernal_dive",
+              "kind": "dash",
+              "cd": 8,
+              "range": 300,
+              "windup": 0.9,
+              "dist": 210,
+              "power": 1.5,
+              "radius": 58
+            },
+            {
+              "id": "pyre_flame_cyclone",
+              "kind": "slam",
+              "cd": 15,
+              "range": 210,
+              "windup": 1.1,
+              "radius": 115,
+              "power": 1.1,
+              "status": "burn"
+            }
+          ],
+          "tags": [
+            "dragon",
+            "elemental"
           ]
         }
       ]
@@ -28352,7 +28780,7 @@ const CONTENT = {
         "count": 3,
         "max": 6,
         "respawn": 10,
-        "eliteChance": 0.16
+        "eliteChance": 0.05
       },
       "monsters": [
         {
@@ -28383,6 +28811,9 @@ const CONTENT = {
               "power": 1.25,
               "radius": 40
             }
+          ],
+          "tags": [
+            "beast"
           ]
         },
         {
@@ -28416,6 +28847,10 @@ const CONTENT = {
               "windup": 0.55,
               "power": 1.1
             }
+          ],
+          "tags": [
+            "undead",
+            "spirit"
           ]
         },
         {
@@ -28451,6 +28886,10 @@ const CONTENT = {
               "radius": 100,
               "power": 1.5
             }
+          ],
+          "tags": [
+            "construct",
+            "elemental"
           ]
         },
         {
@@ -28485,6 +28924,9 @@ const CONTENT = {
                 "slow": 0.5
               }
             }
+          ],
+          "tags": [
+            "beast"
           ]
         },
         {
@@ -28530,6 +28972,9 @@ const CONTENT = {
               "radius": 130,
               "power": 1.45
             }
+          ],
+          "tags": [
+            "dragon"
           ]
         },
         {
@@ -28569,6 +29014,10 @@ const CONTENT = {
               "count": 3,
               "spread": 0.22
             }
+          ],
+          "tags": [
+            "humanoid",
+            "undead"
           ]
         },
         {
@@ -28608,6 +29057,179 @@ const CONTENT = {
               "count": 3,
               "spread": 0.22
             }
+          ],
+          "tags": [
+            "undead",
+            "humanoid"
+          ]
+        },
+        {
+          "painter": "rimeToad",
+          "element": "frost",
+          "weight": 15,
+          "elite": false,
+          "attackCooldown": 2.25,
+          "exp": 24,
+          "gold": 4,
+          "speed": 88,
+          "radius": 15,
+          "kind": "rime_toad",
+          "name": "Rime Toad",
+          "color": "#8ab8c4",
+          "accent": "#e3ffff",
+          "hp": 250,
+          "damage": 27,
+          "aggroRange": 205,
+          "skills": [
+            {
+              "id": "rime_frost_glob",
+              "kind": "shot",
+              "cd": 5,
+              "range": 240,
+              "windup": 0.55,
+              "power": 0.75,
+              "status": "slow"
+            }
+          ],
+          "tags": [
+            "beast"
+          ]
+        },
+        {
+          "painter": "borealStag",
+          "element": "frost",
+          "weight": 8,
+          "elite": false,
+          "attackCooldown": 1.9,
+          "exp": 98,
+          "gold": 16,
+          "speed": 162,
+          "radius": 21,
+          "kind": "boreal_stag",
+          "name": "Boreal Stag",
+          "color": "#b9d3d9",
+          "accent": "#9beaff",
+          "hp": 700,
+          "damage": 70,
+          "aggroRange": 350,
+          "skills": [
+            {
+              "id": "stag_crystal_charge",
+              "kind": "dash",
+              "cd": 7,
+              "range": 275,
+              "windup": 0.75,
+              "dist": 175,
+              "power": 1.35,
+              "radius": 50
+            },
+            {
+              "id": "stag_shard_burst",
+              "kind": "slam",
+              "cd": 9,
+              "range": 160,
+              "windup": 0.8,
+              "radius": 88,
+              "power": 0.9,
+              "status": "slow"
+            }
+          ],
+          "tags": [
+            "beast"
+          ]
+        },
+        {
+          "painter": "whiteoutSiren",
+          "element": "frost",
+          "weight": 5,
+          "elite": false,
+          "attackCooldown": 2.3,
+          "exp": 90,
+          "gold": 15,
+          "speed": 118,
+          "radius": 16,
+          "kind": "whiteout_siren",
+          "name": "Whiteout Siren",
+          "color": "#c6eaf0",
+          "accent": "#b6faff",
+          "hp": 470,
+          "damage": 58,
+          "aggroRange": 380,
+          "skills": [
+            {
+              "id": "siren_winter_scream",
+              "kind": "slam",
+              "cd": 10,
+              "range": 200,
+              "windup": 1.15,
+              "radius": 110,
+              "power": 1,
+              "status": "freeze"
+            },
+            {
+              "id": "siren_ice_shard",
+              "kind": "shot",
+              "cd": 3.6,
+              "range": 330,
+              "windup": 0.5,
+              "power": 0.9
+            }
+          ],
+          "tags": [
+            "spirit",
+            "humanoid"
+          ]
+        },
+        {
+          "painter": "borealDevourer",
+          "element": "frost",
+          "weight": 2,
+          "elite": true,
+          "attackCooldown": 2.15,
+          "exp": 660,
+          "gold": 140,
+          "speed": 98,
+          "radius": 31,
+          "kind": "boreal_devourer",
+          "name": "Boreal Devourer",
+          "color": "#527f91",
+          "accent": "#b5f3ff",
+          "ability": "nova",
+          "hp": 2500,
+          "damage": 110,
+          "aggroRange": 440,
+          "skills": [
+            {
+              "id": "devourer_glacial_breath",
+              "kind": "slam",
+              "cd": 8,
+              "range": 230,
+              "windup": 0.9,
+              "radius": 150,
+              "power": 1.3,
+              "status": "slow"
+            },
+            {
+              "id": "devourer_ground_shatter",
+              "kind": "slam",
+              "cd": 12,
+              "range": 210,
+              "windup": 1.25,
+              "radius": 145,
+              "power": 1.2
+            },
+            {
+              "id": "devourer_icefall",
+              "kind": "shot",
+              "cd": 4,
+              "range": 380,
+              "windup": 0.6,
+              "power": 1.05
+            }
+          ],
+          "tags": [
+            "beast",
+            "demon"
           ]
         }
       ]
@@ -28633,7 +29255,7 @@ const CONTENT = {
         "count": 3,
         "max": 7,
         "respawn": 9,
-        "eliteChance": 0.15
+        "eliteChance": 0.055
       },
       "monsters": [
         {
@@ -28670,6 +29292,10 @@ const CONTENT = {
               "power": 1.15,
               "radius": 34
             }
+          ],
+          "tags": [
+            "beast",
+            "slime"
           ]
         },
         {
@@ -28715,6 +29341,9 @@ const CONTENT = {
               "count": 3,
               "spread": 0.22
             }
+          ],
+          "tags": [
+            "humanoid"
           ]
         },
         {
@@ -28744,6 +29373,10 @@ const CONTENT = {
               "radius": 110,
               "power": 1.4
             }
+          ],
+          "tags": [
+            "plant",
+            "undead"
           ]
         },
         {
@@ -28784,6 +29417,10 @@ const CONTENT = {
                 "slow": 0.5
               }
             }
+          ],
+          "tags": [
+            "beast",
+            "slime"
           ]
         },
         {
@@ -28830,6 +29467,141 @@ const CONTENT = {
               "radius": 130,
               "power": 1.45
             }
+          ],
+          "tags": [
+            "humanoid",
+            "undead"
+          ]
+        },
+        {
+          "painter": "mireling",
+          "element": "poison",
+          "weight": 16,
+          "elite": false,
+          "attackCooldown": 1.9,
+          "exp": 20,
+          "gold": 3,
+          "speed": 122,
+          "radius": 10,
+          "kind": "mireling",
+          "name": "Mireling",
+          "color": "#78905a",
+          "accent": "#d5ff69",
+          "hp": 200,
+          "damage": 22,
+          "aggroRange": 190,
+          "skills": [
+            {
+              "id": "mireling_leech_bite",
+              "kind": "dash",
+              "cd": 5.5,
+              "range": 120,
+              "windup": 0.35,
+              "dist": 65,
+              "power": 0.8,
+              "radius": 22,
+              "status": "poison"
+            }
+          ],
+          "tags": [
+            "slime"
+          ]
+        },
+        {
+          "painter": "corpseLantern",
+          "element": "poison",
+          "weight": 6,
+          "elite": false,
+          "attackCooldown": 2.15,
+          "exp": 88,
+          "gold": 15,
+          "speed": 94,
+          "radius": 17,
+          "kind": "corpse_lantern",
+          "name": "Corpse Lantern",
+          "color": "#58675b",
+          "accent": "#8dff9b",
+          "hp": 450,
+          "damage": 55,
+          "aggroRange": 360,
+          "skills": [
+            {
+              "id": "lantern_spectral_burst",
+              "kind": "slam",
+              "cd": 9,
+              "range": 190,
+              "windup": 0.9,
+              "radius": 95,
+              "power": 1
+            },
+            {
+              "id": "lantern_false_light",
+              "kind": "shot",
+              "cd": 4.2,
+              "range": 300,
+              "windup": 0.55,
+              "power": 0.85,
+              "status": "poison"
+            }
+          ],
+          "tags": [
+            "undead",
+            "spirit"
+          ]
+        },
+        {
+          "painter": "drownedMatron",
+          "element": "poison",
+          "weight": 2,
+          "elite": true,
+          "attackCooldown": 2.35,
+          "exp": 620,
+          "gold": 130,
+          "speed": 80,
+          "radius": 30,
+          "kind": "drowned_matron",
+          "name": "Drowned Matron",
+          "color": "#617b63",
+          "accent": "#d8ff92",
+          "ability": "nova",
+          "hp": 2300,
+          "damage": 102,
+          "aggroRange": 410,
+          "skills": [
+            {
+              "id": "matron_mire_wave",
+              "kind": "slam",
+              "cd": 10,
+              "range": 230,
+              "windup": 1.1,
+              "radius": 150,
+              "power": 1.2,
+              "status": "poison"
+            },
+            {
+              "id": "matron_grasping_tendrils",
+              "kind": "slam",
+              "cd": 7,
+              "range": 190,
+              "windup": 0.8,
+              "radius": 100,
+              "power": 1.15,
+              "status": "root"
+            },
+            {
+              "id": "matron_rotting_flood",
+              "kind": "slam",
+              "cd": 15,
+              "range": 250,
+              "windup": 1.6,
+              "radius": 180,
+              "power": 1.4,
+              "status": "poison"
+            }
+          ],
+          "tags": [
+            "spirit",
+            "undead"
           ]
         }
       ]
@@ -28855,7 +29627,7 @@ const CONTENT = {
         "count": 3,
         "max": 7,
         "respawn": 10,
-        "eliteChance": 0.18
+        "eliteChance": 0.06
       },
       "monsters": [
         {
@@ -28886,6 +29658,10 @@ const CONTENT = {
               "power": 1.3,
               "radius": 38
             }
+          ],
+          "tags": [
+            "undead",
+            "humanoid"
           ]
         },
         {
@@ -28931,6 +29707,9 @@ const CONTENT = {
               "count": 3,
               "spread": 0.22
             }
+          ],
+          "tags": [
+            "humanoid"
           ]
         },
         {
@@ -28961,6 +29740,10 @@ const CONTENT = {
               "power": 1.3,
               "radius": 38
             }
+          ],
+          "tags": [
+            "undead",
+            "construct"
           ]
         },
         {
@@ -28989,6 +29772,10 @@ const CONTENT = {
               "windup": 0.55,
               "power": 1.1
             }
+          ],
+          "tags": [
+            "spirit",
+            "demon"
           ]
         },
         {
@@ -29033,6 +29820,10 @@ const CONTENT = {
               "radius": 130,
               "power": 1.45
             }
+          ],
+          "tags": [
+            "demon",
+            "humanoid"
           ]
         },
         {
@@ -29072,6 +29863,184 @@ const CONTENT = {
               "count": 3,
               "spread": 0.22
             }
+          ],
+          "tags": [
+            "undead"
+          ]
+        },
+        {
+          "painter": "graveMoth",
+          "element": "shadow",
+          "weight": 15,
+          "elite": false,
+          "attackCooldown": 1.8,
+          "exp": 23,
+          "gold": 4,
+          "speed": 148,
+          "radius": 12,
+          "kind": "grave_moth",
+          "name": "Grave Moth",
+          "color": "#282934",
+          "accent": "#ff5d70",
+          "hp": 215,
+          "damage": 24,
+          "aggroRange": 240,
+          "skills": [
+            {
+              "id": "moth_death_dust",
+              "kind": "slam",
+              "cd": 8,
+              "range": 140,
+              "windup": 0.55,
+              "radius": 60,
+              "power": 0.6,
+              "status": "bleed"
+            }
+          ],
+          "tags": [
+            "beast",
+            "spirit"
+          ]
+        },
+        {
+          "painter": "chainboundPenitent",
+          "element": "shadow",
+          "weight": 7,
+          "elite": false,
+          "attackCooldown": 2.05,
+          "exp": 115,
+          "gold": 19,
+          "speed": 90,
+          "radius": 22,
+          "kind": "chainbound_penitent",
+          "name": "Chainbound Penitent",
+          "color": "#4d4b50",
+          "accent": "#b2a9a0",
+          "hp": 780,
+          "damage": 78,
+          "aggroRange": 300,
+          "skills": [
+            {
+              "id": "penitent_chain_lash",
+              "kind": "slam",
+              "cd": 5.5,
+              "range": 170,
+              "windup": 0.65,
+              "radius": 82,
+              "power": 1.2
+            },
+            {
+              "id": "penitent_iron_punishment",
+              "kind": "dash",
+              "cd": 9,
+              "range": 185,
+              "windup": 0.85,
+              "dist": 110,
+              "power": 1.3,
+              "radius": 45
+            }
+          ],
+          "tags": [
+            "undead",
+            "humanoid"
+          ]
+        },
+        {
+          "painter": "carrionAbomination",
+          "element": "shadow",
+          "weight": 5,
+          "elite": false,
+          "attackCooldown": 2.2,
+          "exp": 160,
+          "gold": 26,
+          "speed": 74,
+          "radius": 25,
+          "kind": "carrion_abomination",
+          "name": "Carrion Abomination",
+          "color": "#765b54",
+          "accent": "#ffcf77",
+          "hp": 1080,
+          "damage": 92,
+          "aggroRange": 315,
+          "skills": [
+            {
+              "id": "abomination_carrion_slam",
+              "kind": "slam",
+              "cd": 8,
+              "range": 190,
+              "windup": 1,
+              "radius": 110,
+              "power": 1.3
+            },
+            {
+              "id": "abomination_cleaving_arms",
+              "kind": "slam",
+              "cd": 4.5,
+              "range": 150,
+              "windup": 0.55,
+              "radius": 78,
+              "power": 1.15,
+              "status": "bleed"
+            }
+          ],
+          "tags": [
+            "undead",
+            "beast"
+          ]
+        },
+        {
+          "painter": "bellRinger",
+          "element": "shadow",
+          "weight": 2,
+          "elite": true,
+          "attackCooldown": 2.3,
+          "exp": 730,
+          "gold": 155,
+          "speed": 82,
+          "radius": 29,
+          "kind": "the_bell_ringer",
+          "name": "The Bell-Ringer",
+          "color": "#393740",
+          "accent": "#e74e6c",
+          "ability": "nova",
+          "hp": 2700,
+          "damage": 118,
+          "aggroRange": 430,
+          "skills": [
+            {
+              "id": "bell_funeral_toll",
+              "kind": "slam",
+              "cd": 11,
+              "range": 240,
+              "windup": 1.25,
+              "radius": 160,
+              "power": 1.25,
+              "status": "shock"
+            },
+            {
+              "id": "bell_grave_summoning",
+              "kind": "slam",
+              "cd": 17,
+              "range": 220,
+              "windup": 1.5,
+              "radius": 120,
+              "power": 0.75,
+              "status": "slow"
+            },
+            {
+              "id": "bell_resonance_wave",
+              "kind": "slam",
+              "cd": 6,
+              "range": 200,
+              "windup": 0.7,
+              "radius": 120,
+              "power": 1.1,
+              "status": "stun"
+            }
+          ],
+          "tags": [
+            "undead",
+            "demon"
           ]
         }
       ]
@@ -32847,10 +33816,6 @@ const CONTENT = {
       "tr": "Kor Kuyusu"
     },
     {
-      "en": "Mana recovers more generously in town rest.",
-      "tr": "Kasaba dinlenmesinde mana daha cömertçe yenilenir."
-    },
-    {
       "en": "Arcane Reservoir",
       "tr": "Arkane Haznesi"
     },
@@ -35089,6 +36054,26 @@ const CONTENT = {
     {
       "en": "Lightning obeys you, leaping across the whole battlefield.",
       "tr": "Yıldırım sana itaat eder, tüm savaş alanına sıçrar."
+    },
+    {
+      "en": "Mana flows back in battle: +4 mana at the start of every combat round.",
+      "tr": "Savaşta mana geri akar: her savaş turunun başında +4 mana."
+    },
+    {
+      "en": "Gale Veins",
+      "tr": "Rüzgar Damarları"
+    },
+    {
+      "en": "Attack speed +40%. Each hit has a 40% chance to echo for 50% damage.",
+      "tr": "Saldırı hızı +%40. Her vuruşun %50 hasarla yankılanma şansı %40."
+    },
+    {
+      "en": "Stormheart",
+      "tr": "Fırtına Kalbi"
+    },
+    {
+      "en": "Pure blood runs like lightning: attack speed +40% and +3 mana every combat round.",
+      "tr": "Saf kan şimşek gibi akar: saldırı hızı +%40 ve her savaş turunda +3 mana."
     }
   ]
 };

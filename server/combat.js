@@ -10,7 +10,7 @@ const {
   getPetPowerMult,
   resolveDamageStat,
 } = require("../content");
-const { dealDamage, addShield, removeShieldInstance, tickShields, heal, loseLife, addXp, addPetXp, removeItem, healForFood, addItem } = require("./players");
+const { dealDamage, addShield, removeShieldInstance, tickShields, heal, loseLife, addXp, addPetXp, removeItem, healForFood, addItem, anomalyAttackSpeedPct } = require("./players");
 const passives = require("./passives");
 const stacks = require("./stacks");
 const chest = require("./chest");
@@ -788,7 +788,10 @@ function act(room, player, skillId, targetId) {
     const selfHpPct = player.maxHp > 0 ? player.hp / player.maxHp : 1;
     const pexec = passives.executeFor(player);
     const echoCfg = skill.echo || null;
-    const pEcho = !skill.echo ? passives.echoFor(player) : null;
+    // Anomali saldırı hızı (Gale Veins / Stormheart): yankı vuruş şansına dönüşür.
+    const anomalyAps = anomalyAttackSpeedPct(player);
+    const anomalyEcho = anomalyAps > 0 ? { chance: Math.min(1, anomalyAps / 100), mult: 0.5 } : null;
+    const pEcho = !skill.echo ? (passives.echoFor(player) || anomalyEcho) : null;
     if (skillPower > 0 || skillBase > 0 || trueFormula || (skill.secondHit && Number(skill.secondHit.mult) > 0)) {
       const statKey = resolveDamageStat(skill);
       const isPhysical = statKey === "attack";

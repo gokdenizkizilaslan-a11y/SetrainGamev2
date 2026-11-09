@@ -3,7 +3,7 @@
     "id": "blacksmith",
     "name": "Blacksmith",
     "title": "Blacksmith of Setra Village",
-    "image": "/images/npcs/blacksmith.png",
+    "image": "/images/npcs/blacksmith.webp?v=mw8m4is0",
     "location": "blacksmith",
     "nodes": [
       {
@@ -73,7 +73,7 @@
     "id": "merchant",
     "name": "Merchant",
     "title": "Merchant of Setra Village",
-    "image": "/images/npcs/merchant.png",
+    "image": "/images/npcs/merchant.webp?v=mw8m4kgc",
     "location": "merchant",
     "nodes": [
       {
@@ -143,7 +143,7 @@
     "id": "tavernkeeper",
     "name": "Tavernkeeper",
     "title": "Keeper of the Village Tavern",
-    "image": "/images/npcs/tavernkeeper.png",
+    "image": "/images/npcs/tavernkeeper.png?v=mw8m4qn0",
     "location": "tavern",
     "nodes": [
       {
@@ -217,7 +217,7 @@
     "id": "mira",
     "name": "Mira",
     "title": "Keeper's ward, friend of strays",
-    "image": "/images/npcs/mira.png",
+    "image": "/images/npcs/mira.png?v=mw8nnfd7",
     "location": "town",
     "nodes": [
       {
@@ -287,7 +287,7 @@
     "id": "uncle",
     "name": "Old Vesryn",
     "title": "Mira's uncle, of the old blood",
-    "image": "/images/npcs/uncle.png",
+    "image": "/images/npcs/uncle.webp?v=mw8m4v0w",
     "location": "town",
     "nodes": [
       {
@@ -357,7 +357,7 @@
     "id": "zeynep",
     "name": "Zeynep the Apothecary",
     "title": "Town lunatic (probably)",
-    "image": "/images/npcs/zeynep.png",
+    "image": "/images/npcs/zeynep.webp?v=mw8m4wy5",
     "location": "town",
     "nodes": [
       {

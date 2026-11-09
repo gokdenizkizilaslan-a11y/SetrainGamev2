@@ -8,6 +8,9 @@
 
   let W = 0;
   let H = 0;
+  // Seyahat/ARPG gibi tam ekran bir katman açıkken arka plan efektini durdur:
+  // görünmeyen bir tam ekran canvas'ı her karede çizmek boşa GPU/CPU yakıyor.
+  let paused = false;
   function resize() {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     W = window.innerWidth;
@@ -193,6 +196,13 @@
     const dt = Math.min(0.05, (ts - prev) / 1000);
     t = ts / 1000;
 
+    // Duraklatılmışken (veya sekme gizliyken) hiç çizme; sadece döngüyü sürdür.
+    if (paused || document.hidden) {
+      frame._last = ts;
+      requestAnimationFrame(frame);
+      return;
+    }
+
     ctx.clearRect(0, 0, W, H);
 
     // Town da artik gun isigi + huzme + parilti alir (ic acici meydan).
@@ -209,6 +219,13 @@
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
+
+  // Tam ekran katmanlar (seyahat ARPG, savaş) açılırken arka planı durdur.
+  window.SetraBgFx = {
+    pause() { paused = true; },
+    resume() { if (!paused) return; paused = false; frame._last = 0; },
+    get paused() { return paused; }
+  };
 })();
 
 /* ============================================================
@@ -233,7 +250,9 @@
 (function () {
   const SCREEN_TO_PHOTO = {
     "screen-mode": "menu",
-    "screen-setup": "setup",
+    // Karakter yaratma: sayfanin arkasinda acilistaki manzara kalir; setup
+    // illustrasyonu panelin zeminine basilir (bkz. style.css #screen-setup).
+    "screen-setup": "menu",
     "screen-lobby": "lobby",
     // Town'da en arkadaki ambient = Ana Menu arka plani (menu). Town meydani
     // (town) yalnizca Town Center panelinin ic kutusunda gosterilir, arkada

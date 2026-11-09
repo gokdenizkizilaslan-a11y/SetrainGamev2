@@ -47,6 +47,75 @@
   const ISO_RY = Math.SQRT2 * SIN_30;
   const TAU = Math.PI * 2;
 
+  // Yapı/nesne başına VARSAYILAN çarpışma yarıçapı (karo boyunun katı).
+  // Dünya Kurucu'da elle `solidRadius` verilmemişse binalar yine de geçilmez
+  // olsun → oyuncu evlerin içinden geçemez.
+  const DEFAULT_SOLID_RADIUS = {
+    // Büyük binalar
+    farmhouse: 0.5, stonehouse: 0.52, barn: 0.5, longhouse: 0.5, tavern: 0.55,
+    smithy: 0.46, chapel: 0.5, windmill: 0.48, gatehouse: 0.5, roundtower: 0.46,
+    watchtower: 0.46, hut: 0.4, stall: 0.38, tent: 0.4, wall: 0.22,
+    // Orta/küçük yapılar
+    well: 0.3, obelisk: 0.26, pillars: 0.3, banner: 0.16, campfire: 0.26,
+    chest: 0.2, cart: 0.32, barrels: 0.24, applecrates: 0.24, haybales: 0.28,
+    logs: 0.28, stump: 0.22, bigrock: 0.32, rocks: 0.22, crystals: 0.28,
+    graves: 0.24, lamp: 0.12, signpost: 0.12,
+    // Geçilmesi GEREKENLER (0 = çarpışmasız)
+    bridge: 0, fence: 0, bush: 0, flowers: 0,
+    // Ağaçlar
+    oak: 0.16, pine: 0.16, birch: 0.16, autumn: 0.16, deadtree: 0.14,
+    // Eski (vektör) tip adları
+    tree: 0.14, boulder: 0.3, mountain: 0.34, lantern: 0.12, shrine: 0.3, mushroom: 0.2,
+  };
+  function defaultSolidRadius(model) {
+    const v = DEFAULT_SOLID_RADIUS[model];
+    return Number.isFinite(v) ? v : 0;
+  }
+
+  // 17'lik canavar paketinin yaklaşık çizim yarı-genişliği / yüksekliği
+  // (piksel, ölçek 1 iken). drawMonster bunlara göre 200x200 tuvale sığdırır.
+  const EXP_PAINTER_EXTENT = {
+    sporeling: { w: 18, h: 37 },
+    briarHound: { w: 29, h: 30 },
+    myceliumOracle: { w: 31, h: 53 },
+    scoriaCrawler: { w: 18, h: 21 },
+    furnaceHound: { w: 30, h: 35 },
+    pyrewingMatriarch: { w: 48, h: 44 },
+    rimeToad: { w: 24, h: 21 },
+    borealStag: { w: 34, h: 49 },
+    whiteoutSiren: { w: 36, h: 43 },
+    borealDevourer: { w: 60, h: 37 },
+    mireling: { w: 13, h: 24 },
+    corpseLantern: { w: 21, h: 53 },
+    drownedMatron: { w: 32, h: 55 },
+    graveMoth: { w: 30, h: 38 },
+    chainboundPenitent: { w: 20, h: 39 },
+    carrionAbomination: { w: 34, h: 42 },
+    bellRinger: { w: 45, h: 61 },
+  };
+  const MINIMAP_PALETTES = {
+    verdant: { water: '#12303a', ground: '#3f7a32', path: '#b39a5d', tree: '#1e4620', rock: '#5d6a5f', rock2: '#77837a', accent: '#8ef0a0', ring: '#9ccc65' },
+    ashen:   { water: '#1d1a20', ground: '#6b4a34', path: '#8a6b46', tree: '#4a3325', rock: '#3f3a38', rock2: '#575049', accent: '#ff8a50', ring: '#ff8a50' },
+    frost:   { water: '#123044', ground: '#dfeef6', path: '#b9cdd8', tree: '#7fa8b8', rock: '#8798a5', rock2: '#a9bcc7', accent: '#b9f4ff', ring: '#8ceaff' },
+    swamp:   { water: '#15231c', ground: '#41543a', path: '#5d5238', tree: '#243a24', rock: '#4a4a3f', rock2: '#5f5f52', accent: '#8dff9b', ring: '#9dff53' },
+    cursed:  { water: '#161020', ground: '#3a2c45', path: '#5a4a5f', tree: '#241b30', rock: '#332a3c', rock2: '#4a3f57', accent: '#c084fc', ring: '#a855f7' },
+  };
+
+  // --------------------------------------------------------------------------
+  // TravelSkills (public/js/travelSkills.js) — sınıf başına Q/E/R davranışları.
+  // Modül yüklendiğinde `TravelEngine.registerClassSkills(slug, {q,e,r})` çağırır;
+  // kayıt modül seviyesinde tutulur (her `new TravelEngine` sıfırlamaz).
+  // --------------------------------------------------------------------------
+  const TS_HANDLERS = {};
+  function registerClassSkills(name, handlers) {
+    if (!name || !handlers) return;
+    TS_HANDLERS[String(name)] = handlers;
+  }
+  function tsHandlersFor(slug) {
+    if (!slug) return null;
+    return TS_HANDLERS[slug] || TS_HANDLERS[String(slug).toLowerCase()] || null;
+  }
+
   function worldToScreen(wx, wy, wz = 0, camera) {
     return { x: (wx - wy) * COS_30 + camera.x, y: (wx + wy) * SIN_30 - wz + camera.y };
   }
@@ -75,6 +144,57 @@
     speed: "SPD", attackspeed: "ATK SPD",
   };
 
+  // ---------------------------------------------------------------------------
+  // ELEMENT ETKİLEŞİM TABLOSU
+  // Saldıran element -> savunan element/etiket çarpanı.
+  //  > 1  : zayıflık (daha çok hasar)      < 1 : direnç (daha az hasar)
+  // Hem canavarın `element` alanına hem de `tags` (humanoid/undead/beast/...)
+  // alanına bakılır. Eşleşme yoksa 1.0 (nötr) döner.
+  const ELEMENT_CHART = {
+    physical: { slime: 0.85, construct: 0.9, spirit: 0.9, undead: 0.95 },
+    fire: { frost: 1.6, nature: 1.45, plant: 1.4, slime: 1.15, fire: 0.5, water: 0.65, demon: 0.85, dragon: 0.8 },
+    frost: { fire: 1.5, nature: 1.25, water: 1.35, frost: 0.5, construct: 0.85, slime: 1.1 },
+    lightning: { water: 1.5, frost: 1.15, construct: 1.4, dragon: 1.15, lightning: 0.5, earth: 0.85 },
+    nature: { water: 1.3, undead: 1.3, shadow: 1.2, fire: 0.7, plant: 0.5, nature: 0.75, construct: 0.9 },
+    earth: { lightning: 1.45, fire: 1.2, construct: 1.15, dragon: 1.1, nature: 0.85, earth: 0.6 },
+    holy: { shadow: 1.6, undead: 1.65, demon: 1.5, spirit: 1.35, blood: 1.2, holy: 0.5 },
+    shadow: { holy: 1.45, spirit: 1.3, humanoid: 1.15, plant: 1.1, shadow: 0.5, undead: 0.7 },
+    arcane: { construct: 1.35, slime: 1.2, dragon: 1.2, spirit: 1.15, arcane: 0.5, demon: 0.9 },
+    blood: { humanoid: 1.3, beast: 1.2, demon: 1.15, undead: 0.6, construct: 0.7, blood: 0.5 },
+    water: { fire: 1.5, earth: 1.15, construct: 1.15, slime: 1.2, frost: 0.6, water: 0.5 },
+    dark: { holy: 1.2, spirit: 1.25, shadow: 1.15, dark: 0.5 },
+    poison: { humanoid: 1.15, beast: 1.15, plant: 0.6, undead: 0.5, construct: 0.5 },
+  };
+  // Oyuncu element rengi (hasar yazısı rengi için).
+  const ELEMENT_COLOR = {
+    physical: "#ffffff", fire: "#ff8a50", frost: "#8fe4ff", lightning: "#fff176",
+    nature: "#9ccc65", earth: "#d4a373", holy: "#ffe082", shadow: "#b388ff",
+    arcane: "#e040fb", blood: "#ef5350", water: "#4fc3f7", dark: "#7c4dff", poison: "#aed581",
+  };
+  const WEAK_TAGS = { slime: 1, construct: 1, spirit: 1, undead: 1, plant: 1, demon: 1, dragon: 1, humanoid: 1, beast: 1, elemental: 1 };
+
+  // Bir canavara karşı element çarpanını hesapla (1.0 = nötr).
+  function elementMultFor(attackerElement, monster) {
+    if (!monster) return 1;
+    const el = String(attackerElement || "physical").toLowerCase();
+    const row = ELEMENT_CHART[el];
+    if (!row) return 1;
+    const targets = [];
+    if (monster.element) targets.push(String(monster.element).toLowerCase());
+    const tags = Array.isArray(monster.tags) ? monster.tags : [];
+    for (const t of tags) targets.push(String(t).toLowerCase());
+    // Tür etiketleri de "canavar türü" sayılır (element olarak verilmişse).
+    let bestUp = 1, bestDown = 1;
+    for (const t of targets) {
+      const m = row[t];
+      if (!Number.isFinite(m)) continue;
+      if (m > bestUp) bestUp = m;
+      if (m < bestDown) bestDown = m;
+    }
+    const total = bestUp * bestDown;
+    return clamp(total, 0.4, 2.4);
+  }
+
   function hash2(x, y) {
     const n = Math.sin(x * 127.1 + y * 311.7) * 43758.5453123;
     return n - Math.floor(n);
@@ -96,6 +216,24 @@
       t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
       return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
     };
+  }
+
+  // Sınıf dengeleme çarpanı (seyahat/ARPG). 1.0 = nötr.
+  // Bruiser'lar (yüksek atk + yüksek hp + yüksek resistance) biraz kısılır,
+  // düşük ataklı büyücü/şifacı sınıfları telafi edilir.
+  const CLASS_TRAVEL_SCALE = {
+    warrior: 0.82, paladin: 0.85, warlord: 0.85, war_emperor: 0.85,
+    juggernaut: 0.88, colossus: 0.88, crusader: 0.9, tank: 0.92, lightbringer: 0.9,
+    mage: 1.45, archmage: 1.45, support: 1.5, high_priest: 1.5,
+    lifeweaver: 1.45, divine_saint: 1.45, gardener: 1.35, rootbinder: 1.15,
+    gloomspawn: 1.25, sanguine_lord: 1.2, moderator: 1, ultra_moderator: 1,
+    ranger: 1.05, warden: 1.05, storm_warden: 1.05, beastmaster: 1.1, tamer: 1.1,
+    rogue: 0.95, assassin: 0.95, nightblade: 0.95, reaper: 0.95,
+    death_lord: 0.95, bloodspawn: 0.95, bloodlord: 0.95, shade_king: 0.95,
+  };
+  function classTravelScale(slug) {
+    const v = CLASS_TRAVEL_SCALE[String(slug || "").toLowerCase()];
+    return Number.isFinite(v) ? v : 1;
   }
 
   // ---- Renk yardımcıları ----
@@ -177,21 +315,31 @@
   // Ses anahtarı -> dosya id adayları (public/sounds/<id>.mp3). İlk bulunan çalar.
   // Yeni ses ekledikçe buraya id yazın veya `engine.sound.assign('slash', [...])` ile atayın.
   const SOUND_IDS = {
-    slash: ['slash1', 'slash2', 'slash3', 'slash4', 'travel_attack_melee'],
-    shoot: ['travel_attack_ranged'],
-    hit: ['travel_hit_light', 'travel_monster_hit', 'strongattack1'],
-    crit: ['skull_crush', 'travel_crit', 'strongattack2'],
-    dash: ['travel_dash'],
-    kill: ['travel_monster_death', 'monstersound'],
-    ultimate: ['evilascension', 'travel_ult'],
-    revive: ['revivesound', 'travel_revive'],
+    // Vuruş/savurma: kılıç, ağır silah, balta, hançer karışık havuz.
+    slash: ['slashfast1', 'slashfast2', 'slashfast3', 'slashfast4', 'sword1', 'sword2', 'sword3', 'greatswordslash'],
+    // Atış: yay sesi + ok/ hançer fırlatma varyantları.
+    shoot: ['bowshot', 'bowability', 'bowresonant', 'arrowvolley', 'daggerthrow'],
+    // ÇARPMA anı: mermi ya da kılıç bir hedefe değdiğinde.
+    hit: ['bladehit', 'axehit', 'hitgeneric', 'hitarcane'],
+    hit_physical: ['bladehit', 'axehit', 'hitgeneric'],
+    hit_ranged: ['bowhit', 'hitgeneric'],
+    hit_magic: ['hitarcane', 'bladesclash2'],
+    crit: ['heavyswordhit', 'holyhammer', 'greatswordspin'],
+    dash: ['shadowstep'],
+    kill: ['bonesrattle', 'undeadmoan', 'slimesquelch', 'monsterroar'],
+    ultimate: ['ultsound', 'greatswordspin', 'holyascension'],
+    levelup: ['levelup'],
+    boss: ['bossintro', 'dragonroar', 'terrifyingroar'],
+    revive: ['revivesound', 'neutralascend2', 'travel_revive'],
     downed: ['losingsound', 'travel_player_death'],
-    loot: ['lootsound', 'travel_loot_drop'],
-    footstep: ['travel_footstep_grass'],
-    ambience_day: ['travel_ambience_day'],
-    ambience_night: ['travel_ambience_night'],
+    loot: ['lootsound', 'coinsound', 'travel_loot_drop'],
+    footstep: ['footsteps'],
+    // Gündüz/gece ambiyansı bilinçli olarak BOŞ: arpg'de kendiliğinden ortam
+    // sesi çalmaz (haritadan çıkınca da hiçbir döngü kalmaz).
+    ambience_day: [],
+    ambience_night: [],
     ambience_rain: ['travel_ambience_rain', 'rain_loop'],
-    ambience_storm: ['travel_ambience_storm'],
+    ambience_storm: ['travel_ambience_storm', 'waterburst'],
   };
 
   class SoundFX {
@@ -226,16 +374,23 @@
         return hits.length ? hits[Math.floor(Math.random() * hits.length)] : null;
       } catch (e) { return null; }
     }
-    play(type) {
+    play(type, vol) {
       if (!this.enabled) return;
+      // Çarpma sesleri spam olmasın: aynı anda birden fazla isabet gelse de
+      // 55 ms içinde tek "hit" çalar (yetenek + hasar kodu üst üste binmesin).
+      if (String(type).indexOf('hit') === 0) {
+        const now = (typeof performance !== 'undefined' ? performance.now() : Date.now());
+        if (now - (this._lastHitAt || 0) < 55) return;
+        this._lastHitAt = now;
+      }
       this.init();
-      // Ambiyans döngüsünü ilk kullanıcı etkileşiminden sonra başlat.
-      if (!this._ambienceStarted) { this._ambienceStarted = true; this.loop('ambience_day'); }
+      // NOT: Arpg'de kendiliğinden ambiyans döngüsü YOK. Ses sadece yukarıdaki
+      // olaylar (vuruş, atış, yetenek...) ile çalar; haritadan çıkınca susar.
       const ids = this.map[type];
       if (ids && ids.length) {
         const id = this._file(ids);
         if (id && typeof window !== 'undefined' && typeof window.sfxPlay === 'function') {
-          window.sfxPlay([id], this.vol);
+          window.sfxPlay([id], vol == null ? this.vol : vol * (this.vol == null ? 1 : this.vol));
           return;
         }
       }
@@ -1828,13 +1983,24 @@
   const TILE_PALETTE = {
     grass: { top0: '#5da24a', top1: '#2f6b2b', leftTop: '#2a4a20', leftBot: '#142610', rightTop: '#355c28', rightBot: '#1a3314', lip: '#6bb457', lipDark: '#3f7a35' },
     path: { top0: '#a3835f', top1: '#74583b', leftTop: '#4e3a26', leftBot: '#261a10', rightTop: '#5f4730', rightBot: '#31230f', lip: null },
-    rock: { top0: '#7a838b', top1: '#4d565d', leftTop: '#363c42', leftBot: '#16191c', rightTop: '#464e55', rightBot: '#1e2226', lip: null }
+    rock: { top0: '#7a838b', top1: '#4d565d', leftTop: '#363c42', leftBot: '#16191c', rightTop: '#464e55', rightBot: '#1e2226', lip: null },
+    // Kalıcı kıta biyomları (SetraWorldCore.sample -> karo tipi)
+    water: { top0: '#2f7fa3', top1: '#1c5570', leftTop: '#174257', leftBot: '#0a2130', rightTop: '#1d4e66', rightBot: '#0d2635', lip: null },
+    deep: { top0: '#173a52', top1: '#0d2434', leftTop: '#0d2230', leftBot: '#050f16', rightTop: '#112a3b', rightBot: '#07141d', lip: null },
+    sand: { top0: '#c9b27a', top1: '#a8925f', leftTop: '#7a6a45', leftBot: '#42381f', rightTop: '#8f7c52', rightBot: '#514426', lip: null },
+    snow: { top0: '#e6eef0', top1: '#c6d6da', leftTop: '#93a6ad', leftBot: '#5c6d74', rightTop: '#aabcc2', rightBot: '#6c7f87', lip: null },
+    ash: { top0: '#5a5550', top1: '#3c3835', leftTop: '#2c2926', leftBot: '#141210', rightTop: '#37332f', rightBot: '#1c1917', lip: null },
+    swamp: { top0: '#4a5a3d', top1: '#33402b', leftTop: '#26301f', leftBot: '#121810', rightTop: '#2e3a25', rightBot: '#171d13', lip: null },
+    cursed: { top0: '#4d3f5c', top1: '#33283f', leftTop: '#241b2d', leftBot: '#100b15', rightTop: '#2e2339', rightBot: '#171020', lip: null }
   };
 
   // ==========================================================================
   // MOTOR
   // ==========================================================================
   class TravelEngine {
+
+    // TravelSkills.js buradan kaydolur (Q/E/R davranışları).
+    static registerClassSkills(name, handlers) { registerClassSkills(name, handlers); }
     constructor(canvas, options = {}) {
       this.canvas = canvas;
       this.ctx = canvas.getContext('2d');
@@ -1856,6 +2022,9 @@
       this.onBackToTown = options.onBackToTown || (() => console.log('Back to Town'));
       this.onInteract = options.onInteract || (() => console.log('Interact E'));
       this.onStatsChange = options.onStatsChange || null;
+      // Diğer oyuncuların efektleri: yerel tercih + yayın kancası.
+      this.allyFxEnabled = options.allyFxEnabled !== false;
+      this.onAllyAction = options.onAllyAction || null;
 
       this.camera = { x: 0, y: 0, targetX: 0, targetY: 0 };
       this.zoom = 1;
@@ -1884,7 +2053,9 @@
         attackCooldown: 1 / this.computeAttackPerSecond(), attackCooldownTimer: 0, isAttacking: false, attackAnimTimer: 0,
         cooldowns: { q: { max: 4.0, current: 0 }, e: { max: 7.0, current: 0 }, r: { max: 14.0, current: 0 } },
         ghostTrails: [], footprintTimer: 0,
-        walkPhase: 0, swingDir: 1
+        walkPhase: 0, swingDir: 1,
+        // TravelSkills (yeni Q/E/R seti) için durum alanları:
+        invuln: 0, phase: 0, skillLock: 0, speedMul: 1, hasteMul: 1
       };
       // Travel-only combat state (never touched by turn-based combat).
       this.arpgSkills = {};
@@ -1914,6 +2085,10 @@
 
       this.keys = {};
       this.mouse = { screenX: this.width / 2, screenY: this.height / 2, worldX: 0, worldY: 0, isDown: false };
+      // Dokunmatik nişan: joystick/ekran dokunuşu yön verir (mouse yoksa).
+      // (this.isTouch ilk resize() çağrısında belirlenir.)
+      this.touchAim = null;   // { x, y } dünya uzayında birim yön
+      this.aimOverride = null; // { x, y, t } — tek seferlik hedef (mobil ATK gibi)
       this.initInput();
 
       this.tileSize = options.tileSize || 64;
@@ -1930,6 +2105,10 @@
       this.serverSpawn = { x: 0, y: 0 };
       this.others = {};
       this.poiMarkers = [];
+      // Mini harita (kayıtlı tuvaller) + önbelleğe alınmış kuş bakışı zemin.
+      this.minimaps = [];
+      this._miniBase = null;
+      this._miniBaseKey = '';
       this.onMove = options.onMove || null;
       this._lastMoveEmit = 0;
       this.onKill = options.onKill || null;
@@ -1960,7 +2139,7 @@
       this.particles = [];
       this.impacts = [];
       this.ambientMotes = [];
-      this.initAmbientMotes(35);
+      this.initAmbientMotes(this.isTouch ? 16 : 35);
 
       // Hava durumu: zaman zaman yağmur yağar (ses + görsel). Oyunu etkilemez.
       this.weather = 'clear';
@@ -1974,7 +2153,8 @@
       this.isRunning = true;
       this._destroyed = false;
       // Uyarlanabilir efekt seviyesi: kare süresi uzarsa ağır görseller seyreltilir.
-      this.lowFx = false;
+      // Mobilde başlangıçta düşük efekt modu (pil/ısı ve FPS için).
+      this.lowFx = !!this.isTouch;
       this._fpsAcc = 0;
       this._fpsN = 0;
       // Sekme arka plandayken tarayıcı rAF'i ~1 Hz'e kısar; simülasyonun
@@ -1988,6 +2168,13 @@
         try { this.update(dt); } catch (e) { /* arka plan hatası oyunu durdurmasın */ }
       }, 200);
       this.loop = this.loop.bind(this);
+      // İlk kare de doğru yakınlıkta çizilsin (1 karelik "çok uzak" sıçraması olmasın).
+      if (!this._zoomInit && this.height > 0) {
+        this._zoomInit = true;
+        const dz = this.getDefaultZoom();
+        this.zoom = dz;
+        this.zoomTarget = dz;
+      }
       // İlk kareyi senkron çiz: canvas oluşturulduğu anda boş/siyah kalmasın.
       try { this.render(); } catch (e) { /* ilk kare hatası döngüyü engellemesin */ }
       requestAnimationFrame(this.loop);
@@ -2003,14 +2190,64 @@
       return screenToWorld(cx + (sx - cx) / z, cy + (sy - cy) / z, this.camera);
     }
 
+    // Zoom sınırları dikeyde GÖRÜNEN KARO SIRASINA göre hesaplanır.
+    // Bir karo sırasının ekran yüksekliği (zoom = 1): tileSize * SIN_30 = 32 px.
+    // Eskiden ekran yüksekliğine göre 24-26 sıra görünüyordu ("çok uzak" hissi);
+    // artık en geniş görünüm ~17.25 sıra, başlangıç ~10 sıra, en yakın ~6.5 sıra.
+    zoomRowH() { return Math.max(12, (this.tileSize || 64) * SIN_30); }
+
+    // Dikeyde `rows` karo sırası görünecek zoom değeri.
+    zoomForRows(rows) {
+      const h = Number.isFinite(this.height) && this.height > 0 ? this.height : 900;
+      return h / (Math.max(1, Number(rows) || 1) * this.zoomRowH());
+    }
+
+    // En fazla uzaklaşma: ~17.25 karo sırası görünür (15 → %15 daha geniş).
+    getMinZoom() { return clamp(this.zoomForRows(17.25), 0.85, 3.2); }
+
+    // En fazla yakınlaşma: ~6.5 karo sırası görünür.
+    getMaxZoom() {
+      const lo = this.getMinZoom();
+      return Math.max(lo + 0.2, Math.min(5.2, this.zoomForRows(6.5)));
+    }
+
+    // Yeni seferde/ilk açılışta başlangıç yakınlığı: ~10 karo sırası.
+    getDefaultZoom() { return this.clampZoomTarget(this.zoomForRows(10)); }
+    clampZoomTarget(v) {
+      const lo = this.getMinZoom(), hi = this.getMaxZoom();
+      return clamp(Number.isFinite(v) ? v : 1, lo, hi);
+    }
+
     later(fn, ms) {
       const id = setTimeout(() => { this.timeouts.delete(id); if (this.isRunning) fn(); }, ms);
       this.timeouts.add(id);
     }
 
     groundZAt(x, y) {
+      if (this.persistent && this.worldCore) {
+        const b = this.persistentBounds, w = this._persWindow, ts = this.tileSize;
+        if (b && w) {
+          const gi = Math.floor((x - b.minX) / ts), gj = Math.floor((y - b.minY) / ts);
+          const t = this.tileMap.get(gi * 100000 + gj);
+          if (t) return t.wz;
+        }
+        const sv = this.worldToServer(x, y);
+        const s = this.worldCore.sample(sv.x, sv.y);
+        return s.water ? 0 : clamp(Math.round((s.height || 0) / 10) * 10, 0, 120);
+      }
       const t = this.tileMap.get(Math.round(x / this.tileSize) * 1000 + Math.round(y / this.tileSize));
       return t ? t.wz : 0;
+    }
+
+    // Dünya görsel ayarları (GameCraft > Dünya Kurucu). Yoksa makul varsayılan.
+    worldTuning() {
+      const v = (this.worldConfig && this.worldConfig.visual) || {};
+      const ts = Number(v.treeScale);
+      const ss = Number(v.structureScale);
+      return {
+        treeScale: ts > 0 ? ts : 3.0,
+        structureScale: ss > 0 ? ss : 2.6
+      };
     }
 
     snapCamera() {
@@ -2038,7 +2275,13 @@
       const ph = (parent && parent.clientHeight) || 0;
       const w = Math.max(320, Math.round(rect.width || pw || window.innerWidth));
       const h = Math.max(240, Math.round(rect.height || ph || window.innerHeight));
-      const newDpr = Math.min(window.devicePixelRatio || 1, 2);
+      // Dokunmatik/alt seviye cihazlarda piksel oranını sınırla: mobilde 2x buffer
+      // 4x piksel demek; bu tek başına büyük FPS kaybı yaratıyordu.
+      const coarse = (typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches)
+        || (navigator && navigator.maxTouchPoints > 0);
+      this.isTouch = !!coarse;
+      const dprCap = coarse ? 1.5 : 2;
+      const newDpr = Math.min(window.devicePixelRatio || 1, dprCap);
       // Boyut değişmediyse canvas buffer'ını yeniden ayırma. Bu hem gereksiz
       // temizleme/kamera sıçramasını hem de kısa siyah kırpışmayı önler.
       if (!force && this.width === w && this.height === h && this.dpr === newDpr) return;
@@ -2102,11 +2345,26 @@
       this._onMouseDown = (e) => {
         if (e.button === 0) { this.mouse.isDown = true; this.triggerPrimaryAttack(); }
       };
-      this._onMouseUp = (e) => { if (e.button === 0) this.mouse.isDown = false; };
+      this._onMouseUp = (e) => { if (!e || e.button === 0 || e.button === undefined) this.mouse.isDown = false; };
+      this._onBlur = () => { this.mouse.isDown = false; };
       this._onContext = (e) => e.preventDefault();
+      // Dokunmatik: parmakla gösterilen noktaya nişan al (joystick yönü öncelikli).
+      this._onTouch = (e) => {
+        const t = (e.changedTouches && e.changedTouches[0]) || (e.touches && e.touches[0]);
+        if (!t) return;
+        const rect = this.canvas.getBoundingClientRect();
+        this.mouse.screenX = t.clientX - rect.left;
+        this.mouse.screenY = t.clientY - rect.top;
+        const w = this.screenWorld(this.mouse.screenX, this.mouse.screenY);
+        this.mouse.worldX = w.x;
+        this.mouse.worldY = w.y;
+        // Dokunmatikte basılı tutmak da otomatik saldırı sayılır.
+        this.mouse.isDown = e.type === "touchstart" || e.type === "touchmove";
+        this.aimAtWorld(w.x, w.y, 1.2);
+      };
       this._onWheel = (e) => {
         e.preventDefault();
-        this.zoomTarget = clamp(this.zoomTarget + (e.deltaY > 0 ? -0.1 : 0.1), 0.65, 2.2);
+        this.zoomTarget = this.clampZoomTarget(this.zoomTarget + (e.deltaY > 0 ? -0.1 : 0.1));
       };
 
       window.addEventListener('keydown', this._onKeyDown);
@@ -2114,7 +2372,15 @@
       this.canvas.addEventListener('mousemove', this._onMouseMove);
       this.canvas.addEventListener('mousedown', this._onMouseDown);
       this.canvas.addEventListener('mouseup', this._onMouseUp);
+      // İmleç tuvalin dışında bırakılırsa da "basılı" durumu sıfırla.
+      window.addEventListener('mouseup', this._onMouseUp);
+      window.addEventListener('blur', this._onBlur);
       this.canvas.addEventListener('contextmenu', this._onContext);
+      this.canvas.addEventListener('touchstart', this._onTouch, { passive: true });
+      this.canvas.addEventListener('touchmove', this._onTouch, { passive: true });
+      this.canvas.addEventListener('touchend', this._onMouseUp, { passive: true });
+      this.canvas.addEventListener('touchcancel', this._onMouseUp, { passive: true });
+      if (this.canvas.style) this.canvas.style.touchAction = 'none';
       this.canvas.addEventListener('wheel', this._onWheel, { passive: false });
       this._prevCursor = this.canvas.style ? this.canvas.style.cursor : '';
       if (this.canvas.style) this.canvas.style.cursor = 'none';
@@ -2141,6 +2407,7 @@
       this.tileMap = new Map();
       this.scenery = [];
       this.solids = [];
+      if (this.persistent && this.worldCore) { this.generatePersistentMap(); return; }
       // Bozuk/eksik yarıçap gelirse güvenli varsayılana dön.
       const R = Number.isFinite(this.mapRadius) ? Math.max(6, Math.min(70, Math.floor(this.mapRadius))) : 14;
       this.mapRadius = R;
@@ -2157,7 +2424,28 @@
           const isPath = Math.abs(gx + gy) <= 1 || (Math.abs(gx - gy) <= 1 && dist < 4);
           if (isPath) type = 'path';
 
-          const elevation = 0;
+          // --- Rastgele yükseklik (tepe/plato) ---
+          // Düşük frekanslı iki gürültü katmanı birleşir; yüksek bölgeler
+          // basamaklı teraslara (5px'lik dilimler) dönüşür. Patikalar, merkez
+          // ve harita kenarı düz kalır. `wz` hem karo sprite'ının yan yüzünü
+          // hem de oyuncu/canavar/mermi zemin yüksekliğini (groundZAt) besler.
+          let elevation = 0;
+          if (!isPath && dist > 3) {
+            const hn = valueNoise(gx * 0.14 + 31.7, gy * 0.14 + 71.3);
+            const hn2 = valueNoise(gx * 0.06 + 5.9, gy * 0.06 + 47.1);
+            const h = hn * 0.62 + hn2 * 0.38;
+            const flat = smooth(2.5, 7.5, dist);            // merkez düz kalsın
+            const rimFlat = 1 - smooth(R - 4, R - 0.5, dist); // kenar düz kalsın
+            // İzometrik görüş: ekranın ÜSTÜ (gx+gy çok negatif) yükselir.
+            // Böylece tepeler ufukta toplanır; oyuncunun önünü kapatmaz.
+            const northness = clamp(-(gx + gy) / (R * 1.5), 0, 1);
+            const norm = clamp((h - 0.34) / 0.26, 0, 1);    // daha çok tepe
+            const bias = 0.5 + 1.2 * northness;             // üstte 1.7x, altta 0.5x
+            let units = Math.round(Math.round(norm * 4) * bias * flat * rimFlat);
+            if (units < 0) units = 0;
+            if (units > 5) units = 5;                       // en yüksek ~30 px
+            elevation = units * 6;                          // 0 / 6 / ... / 30 px
+          }
           const tile = {
             gx, gy, wx, wy, wz: elevation, type,
             shade: (Math.sin(gx * 7 + gy * 13) + 1) * 0.08,
@@ -2186,14 +2474,14 @@
               const big = r > 0.6;
               // Dağ yok: aynı ölçekte, çok yüzlü 3D kaya kütlesi (kaya sırtı).
               this.scenery.push({
-                type: 'mountain', wx: px, wy: py,
+                type: 'mountain', wx: px, wy: py, z: elevation,
                 scale: big ? 1.15 + r * 0.45 : 0.85 + r * 0.3,
                 solidRadius: big ? 0.38 : 0.26,
               });
             } else if (forest > 0.57 && r > 0.2) {
               const big = r > 0.72;
               this.scenery.push({
-                type: 'tree', wx: px, wy: py,
+                type: 'tree', wx: px, wy: py, z: elevation,
                 scale: big ? 1.35 + r * 0.5 : 0.8 + forest * 0.45,
                 // Hitbox sadece gövde: artık ağaçların arasından rahatça geçilir.
                 solidRadius: big ? 0.22 : 0.14,
@@ -2202,7 +2490,7 @@
             } else if (stones > 0.64 && r > 0.45) {
               const big = r > 0.82;
               this.scenery.push({
-                type: 'boulder', wx: px, wy: py,
+                type: 'boulder', wx: px, wy: py, z: elevation,
                 scale: big ? 1.5 + r * 0.9 : 0.6 + stones * 0.5,
                 // Kaya hitbox'ı görselin çok altında: dar geçitler açılır.
                 solidRadius: big ? 0.28 : 0.16,
@@ -2210,12 +2498,12 @@
             } else if (r > 0.94) {
               // Süs çalıları: 3D hacimli, çarpışmasız (yürümeyi engellemez).
               this.scenery.push({
-                type: 'bush', wx: px + 5, wy: py - 2,
+                type: 'bush', wx: px + 5, wy: py - 2, z: elevation,
                 scale: 0.7 + hash2(gx * 1.7, gy * 2.3) * 0.6,
                 swayOffset: hash2(gx, gy) * TAU,
               });
             } else if (r > 0.975) {
-              this.scenery.push({ type: 'mushroom', wx: px + 4, wy: py - 3, scale: 0.8 + hash2(gx, gy * 2) * 0.5 });
+              this.scenery.push({ type: 'mushroom', wx: px + 4, wy: py - 3, z: elevation, scale: 0.8 + hash2(gx, gy * 2) * 0.5 });
             }
           } else if (type === 'path' && dist > 2.5 && hash2(gx * 2.2, gy * 3.3) > 0.88) {
             this.scenery.push({ type: 'lantern', wx: wx + 22, wy: wy - 22, scale: 1 });
@@ -2248,13 +2536,238 @@
       // Çarpışma listesi kırpmadan SONRA kurulur.
       this.solids = this.scenery.filter((s) => s.solidRadius > 0);
 
-      this.scenery.push({ type: 'shrine', wx: 0, wy: 120, scale: 1.1, interactable: true, label: 'Antik Seyahat Taşı [E]' });
+      // Varış taşı: oyuncunun doğduğu noktanın hemen yanında durur.
+      // (Sunucu kasabaya dönüşü yalnızca varış noktasından kabul eder.)
+      this.scenery.push({ type: 'shrine', wx: 0, wy: -14, scale: 1.1, interactable: true, label: 'Travel Stone' });
+      this.invalidateMinimap();
       this.sortRenderables();
+    }
+
+    // Kalıcı kıta: SetraWorldCore'dan yalnızca oyuncunun çevresindeki pencere
+    // üretilir. Kıta 42.000×32.000 birim (378.000×288.000 px) olduğundan
+    // tamamını karo yapmak imkânsızdır; pencere kaydıkça yenilenir.
+    generatePersistentMap(force) {
+      const core = this.worldCore;
+      const b = this.persistentBounds;
+      if (!core || !b) return;
+      const ts = this.tileSize;
+      const worldW = b.maxX - b.minX, worldH = b.maxY - b.minY;
+      const totalNX = Math.max(1, Math.ceil(worldW / ts));
+      const totalNY = Math.max(1, Math.ceil(worldH / ts));
+      const WIN = 72, EDGE = 18;
+      const px = this.player ? this.player.x : 0;
+      const py = this.player ? this.player.y : 0;
+      const ci = Math.floor((px - b.minX) / ts);
+      const cj = Math.floor((py - b.minY) / ts);
+      // Oyuncu mevcut pencerenin güvenli iç bölgesindeyse dokunma.
+      if (!force && this._persWindow) {
+        const w = this._persWindow;
+        if (ci >= w.i0 + EDGE && ci <= w.i0 + w.nx - EDGE &&
+            cj >= w.j0 + EDGE && cj <= w.j0 + w.ny - EDGE) return;
+      }
+      const nx = Math.min(WIN, totalNX), ny = Math.min(WIN, totalNY);
+      const i0 = clamp(ci - (nx >> 1), 0, Math.max(0, totalNX - nx));
+      const j0 = clamp(cj - (ny >> 1), 0, Math.max(0, totalNY - ny));
+      this.tiles = [];
+      this.tileMap = new Map();
+      this.scenery = [];
+      this.solids = [];
+      const BIOME_TILE = { meadow: 'grass', forest: 'grass', desert: 'sand', swamp: 'swamp', frost: 'snow', volcanic: 'ash', cursed: 'cursed', rock: 'rock' };
+      const walk = new Array(ny);
+      for (let j = 0; j < ny; j++) {
+        walk[j] = new Array(nx).fill(true);
+        for (let i = 0; i < nx; i++) {
+          const gi = i0 + i, gj = j0 + j;
+          const wx = b.minX + (gi + 0.5) * ts;
+          const wy = b.minY + (gj + 0.5) * ts;
+          const sv = this.worldToServer(wx, wy);
+          let s;
+          try { s = core.sample(sv.x, sv.y); }
+          catch (e) { s = { water: false, deep: false, biome: 'meadow', road: false, bridge: false }; }
+          let type = 'grass';
+          if (s.water) type = s.deep ? 'deep' : 'water';
+          else if (s.bridge || s.road) type = 'path';
+          else type = BIOME_TILE[s.biome] || 'grass';
+          const walkable = !(s.water && !s.bridge);
+          walk[j][i] = walkable;
+          const elevation = s.water ? 0 : clamp(Math.round((s.height || 0) / 10) * 10, 0, 120);
+          const tile = {
+            gx: gi, gy: gj, wx, wy, wz: elevation, type,
+            shade: (Math.sin(gi * 7 + gj * 13) + 1) * 0.08,
+            variant: Math.floor((core.randomAt ? core.randomAt(sv.x, sv.y, 3) : 0) * 4) % 4,
+            edge: 0
+          };
+          tile.sx = (wx - wy) * COS_30;
+          tile.sy = (wx + wy) * SIN_30 - elevation;
+          this.tiles.push(tile);
+          this.tileMap.set(gi * 100000 + gj, tile);
+          if (!walkable || s.road || s.bridge) continue;
+          const nearVillage = Math.hypot(wx, wy) < 4600;
+          const r = core.randomAt ? core.randomAt(sv.x, sv.y, 7) : 0.5;
+          const jx = (core.randomAt ? core.randomAt(sv.x, sv.y, 11) : 0.5) - 0.5;
+          const px2 = wx + (r - 0.5) * ts * 0.7;
+          const py2 = wy + jx * ts * 0.7;
+          // Eski haritanın yoğun "orman + kaya + çalı" dokusu korunur.
+          if (s.biome === 'forest') {
+            if (r < 0.74 && !nearVillage) this.scenery.push({ type: 'tree', wx: px2, wy: py2, z: elevation, scale: 0.85 + r * 0.45, solidRadius: r > 0.82 ? 0.2 : 0.12, swayOffset: r * TAU, tone: r });
+            else if (r < 0.80) this.scenery.push({ type: 'bush', wx: px2, wy: py2, z: elevation, scale: 0.9 + r, swayOffset: r * TAU, tone: r });
+          } else if (s.biome === 'meadow') {
+            if (r < 0.17 && !nearVillage) this.scenery.push({ type: 'tree', wx: px2, wy: py2, z: elevation, scale: 0.75 + r * 0.8, solidRadius: 0.11, swayOffset: r * TAU, tone: r });
+            else if (r > 0.985) this.scenery.push({ type: 'glb', model: 'flowers', wx: px2, wy: py2, z: elevation, scale: 1.1 + r, swayOffset: r * TAU });
+            else if (r > 0.96) this.scenery.push({ type: 'bush', wx: px2, wy: py2, z: elevation, scale: 1.1 + r, swayOffset: r * TAU, tone: r });
+          } else if (s.biome === 'rock' || s.biome === 'desert') {
+            if (r < 0.22) this.scenery.push({ type: 'boulder', wx: px2, wy: py2, z: elevation, scale: 0.7 + r * 1.1, solidRadius: 0.16 });
+            else if (r > 0.95) this.scenery.push({ type: 'glb', model: 'stump', wx: px2, wy: py2, z: elevation, scale: 0.9 });
+          } else if (s.biome === 'swamp' || s.biome === 'cursed') {
+            if (r < 0.19) this.scenery.push({ type: 'tree', wx: px2, wy: py2, z: elevation, scale: 0.7 + r * 0.5, solidRadius: 0.11, swayOffset: r * TAU, tone: r });
+            else if (r > 0.93) {
+              // Eski (vektör) çalı geri döndü; yalnızca çok nadir mezar 3D kalır.
+              if (r > 0.98) this.scenery.push({ type: 'glb', model: 'graves', wx: px2, wy: py2, z: elevation, scale: 0.9, swayOffset: r * TAU });
+              else this.scenery.push({ type: 'bush', wx: px2, wy: py2, z: elevation, scale: 1.0 + r, swayOffset: r * TAU, tone: r });
+            }
+          } else if (s.biome === 'frost') {
+            if (r < 0.30) this.scenery.push({ type: 'tree', wx: px2, wy: py2, z: elevation, scale: 0.7 + r * 0.5, solidRadius: 0.11, swayOffset: r * TAU, tone: r });
+            else if (r > 0.96) this.scenery.push({ type: 'glb', model: 'crystals', wx: px2, wy: py2, z: elevation, scale: 0.8 + r });
+          } else if (s.biome === 'volcanic') {
+            if (r < 0.20) this.scenery.push({ type: 'boulder', wx: px2, wy: py2, z: elevation, scale: 0.8 + r * 1.2, solidRadius: 0.18 });
+            else if (r > 0.96) this.scenery.push({ type: 'glb', model: 'crystals', wx: px2, wy: py2, z: elevation, scale: 0.9 });
+          }
+        }
+      }
+      this._persWalk = walk;
+      this._persWindow = { i0, j0, nx, ny, gi: ci, gj: cj };
+      if (!this._persistentStaticScenery) this.buildPersistentStaticScenery();
+      // Sabit yapılar + POI işaretleri her pencerede yeniden eklenir.
+      if (this._persistentStaticScenery) for (const s of this._persistentStaticScenery) this.scenery.push(s);
+      if (this.poiMarkers) for (const s of this.poiMarkers) this.scenery.push(s);
+      this.pushWindowProps();
+      const SCENERY_CAP = 2600;
+      if (this.scenery.length > SCENERY_CAP) {
+        // Önce sabit yapılar/POI'ler/elle boyanan props korunur, prosedürel dekor seyreltilir.
+        const isFixed = (s) => s._prop || s.type === 'glb' || s.type === 'poi' || s.interactable;
+        const fixed = this.scenery.filter(isFixed);
+        const loose = this.scenery.filter((s) => !isFixed(s));
+        const room = Math.max(0, SCENERY_CAP - fixed.length);
+        if (loose.length > room) {
+          const step = loose.length / Math.max(1, room);
+          const keep = [];
+          for (let i = 0; i < room; i++) keep.push(loose[Math.floor(i * step)]);
+          this.scenery = fixed.concat(keep);
+        }
+      }
+      this.solids = this.scenery.filter((s) => s.solidRadius > 0);
+      this.persistentTilesReady = true;
+      this.invalidateMinimap();
+      this.sortRenderables();
+    }
+
+    // Köy/kamp/köprü gibi sabit dünyayı bir kez hazırlar. Ölçekler eski
+    // haritadaki "evler oyuncudan büyük" hissini koruyacak şekilde seçildi.
+    buildPersistentStaticScenery() {
+      const list = [];
+      const pois = this.worldConfig.pois || [];
+      const structScale = this.worldTuning().structureScale;
+      for (const st of (this.worldConfig.structures || [])) {
+        if (pois.some((p) => p.model === st.model && Math.hypot(p.x - st.x, p.y - st.y) < 3)) continue;
+        const w = this.serverToWorld(st.x + 0.5, st.y + 0.5);
+        list.push({ type: 'glb', model: st.model, wx: w.x, wy: w.y,
+          z: this.groundZAt(w.x, w.y), scale: (st.scale || 1) * structScale,
+          rot: Number.isFinite(Number(st.rot)) ? Number(st.rot) : undefined, preScaled: true,
+          solidRadius: (Number.isFinite(Number(st.solidRadius)) ? Number(st.solidRadius) : defaultSolidRadius(st.model)) * 1.1,
+          swayOffset: 0, tone: 0.5 });
+      }
+      // SETRA Village çevresi: eski haritadaki gibi ağaç/çalı halkası.
+      const core = this.worldCore;
+      const seed = this.worldConfig.seed || 1;
+      const ringSeed = (i) => core.randomAt(seed % 997, i * 37, 23);
+      for (let i = 0; i < 56; i++) {
+        const a = i * 2.399963229728653 + ringSeed(i) * 0.35;
+        const rad = 2300 + ringSeed(i + 90) * 3400;
+        const wx = Math.cos(a) * rad, wy = Math.sin(a) * rad;
+        const sv = this.worldToServer(wx, wy);
+        const s = core.sample(sv.x, sv.y);
+        if (s.water || s.road) continue;
+        const big = ringSeed(i + 180) > 0.55;
+        if (big) list.push({ type: 'tree', wx, wy, z: this.groundZAt(wx, wy),
+          scale: 1.0 + ringSeed(i + 31) * 0.5, solidRadius: 0.14, swayOffset: i, tone: 0.5 });
+        else if (ringSeed(i + 55) > 0.5) list.push({ type: 'bush', wx, wy, z: this.groundZAt(wx, wy),
+          scale: 1.2 + ringSeed(i + 71), swayOffset: i, tone: 0.5 });
+        else list.push({ type: 'glb', model: 'flowers',
+          wx, wy, z: this.groundZAt(wx, wy), scale: 1.2 + ringSeed(i + 71), swayOffset: i, preScaled: true });
+      }
+      this._persistentStaticScenery = list;
+    }
+
+    // Dünya Kurucu'da boyanan/eklenen nesneler (world_setra.json `props`).
+    // Yalnızca o anki pencereye düşenler sahneye eklenir → binlerce prop olsa da
+    // kare başına maliyet sabit kalır.
+    pushWindowProps() {
+      const props = (this.worldConfig && this.worldConfig.props) || [];
+      if (!props.length) return;
+      const b = this.persistentBounds, w = this._persWindow, ts = this.tileSize;
+      if (!b || !w) return;
+      const m = ts; // 1 karo pay
+      const minX = b.minX + w.i0 * ts - m, maxX = b.minX + (w.i0 + w.nx) * ts + m;
+      const minY = b.minY + w.j0 * ts - m, maxY = b.minY + (w.j0 + w.ny) * ts + m;
+      for (const pr of props) {
+        if (!pr) continue;
+        const px = Number(pr.x), py = Number(pr.y);
+        if (!Number.isFinite(px) || !Number.isFinite(py)) continue;
+        const wpos = this.serverToWorld(px + 0.5, py + 0.5);
+        if (wpos.x < minX || wpos.x > maxX || wpos.y < minY || wpos.y > maxY) continue;
+        const isGlb = pr.type === 'glb' || !!pr.model;
+        const obj = {
+          type: isGlb ? 'glb' : (pr.type || 'tree'),
+          model: isGlb ? (pr.model || 'oak') : null,
+          wx: wpos.x, wy: wpos.y, z: this.groundZAt(wpos.x, wpos.y),
+          scale: Number(pr.scale) || 1,
+          rot: Number.isFinite(Number(pr.rot)) ? Number(pr.rot) : undefined,
+          swayOffset: Number(pr.swayOffset) || (px * 0.013 + py * 0.021),
+          tone: Number.isFinite(Number(pr.tone)) ? Number(pr.tone) : 0.5,
+          solidRadius: Number.isFinite(Number(pr.solidRadius)) ? Number(pr.solidRadius)
+            : defaultSolidRadius(pr.model || pr.type),
+          _prop: true
+        };
+        if (Number.isFinite(Number(pr.height)) && Number(pr.height) > 0) obj.height = Number(pr.height);
+        this.scenery.push(obj);
+      }
+    }
+
+    // Oyuncu pencere kenarına yaklaşınca arazi penceresini kaydır.
+    ensurePersistentWindow() {
+      if (!this.persistent || !this.worldCore) return;
+      if (!this._persWindow) { this.generatePersistentMap(true); return; }
+      const w = this._persWindow, ts = this.tileSize, b = this.persistentBounds;
+      const ci = Math.floor((this.player.x - b.minX) / ts);
+      const cj = Math.floor((this.player.y - b.minY) / ts);
+      if (ci < w.i0 + 18 || ci > w.i0 + w.nx - 18 ||
+          cj < w.j0 + 18 || cj > w.j0 + w.ny - 18) {
+        this.generatePersistentMap(true);
+      }
     }
 
     sortRenderables() {
       this.tiles.sort((a, b) => (a.wx + a.wy) - (b.wx + b.wy));
+      this.buildTileRows();
       this.rebuildRenderables();
+    }
+
+    // Karoları ekran-y düzleminde bantlara ayır (her bant sıralı kalır).
+    // Böylece her karede 10k+ karoyu taramak yerine yalnızca görünen bantlar
+    // dolaşılır; çizim sırası (sy artan) korunur.
+    buildTileRows() {
+      const CELL = 256, OFF = 512;
+      const rows = new Map();
+      for (let i = 0; i < this.tiles.length; i++) {
+        const t = this.tiles[i];
+        const ky = Math.floor(t.sy / CELL) + OFF;
+        let arr = rows.get(ky);
+        if (!arr) { arr = []; rows.set(ky, arr); }
+        arr.push(t);
+      }
+      this._tileRows = rows;
+      this._tileRowCell = CELL;
+      this._tileRowOff = OFF;
     }
 
     // Statik sahne listeleri: çizim sırası ve ekran koordinatları bir kez
@@ -2277,7 +2790,7 @@
         const s = scenery[i];
         entries[i] = { depth: s._depth, type: 'scenery', data: s };
         if (s.type === 'shrine' || s.type === 'lantern' || s.type === 'mushroom') lights.push(s);
-        if (s.type === 'tree' || s.type === 'boulder' || s.type === 'mountain' || s.type === 'shrine' || s.type === 'mushroom' || s.type === 'lantern') shadows.push(s);
+        if (s.type === 'tree' || s.type === 'boulder' || s.type === 'mountain' || s.type === 'shrine' || s.type === 'mushroom' || s.type === 'lantern' || s.type === 'glb') shadows.push(s);
         if (s.interactable || s.type === 'shrine') inter.push(s);
       }
       this._sceneryEntries = entries;
@@ -2297,6 +2810,43 @@
       if (d <= R) return { x, y };
       const a = Math.atan2(y, x);
       return { x: Math.cos(a) * R, y: Math.sin(a) * R };
+    }
+
+    // Kalıcı kıtada hareket: dikdörtgen sınır + su/geçilmez kare denetimi.
+    // Izgara yürünebilirliği generatePersistentMap'te O(1) için hazırlanır.
+    applyPersistentMovement(P) {
+      if (!P) return;
+      const b = this.persistentBounds;
+      if (!b) return;
+      if (P.x < b.minX) P.x = b.minX; else if (P.x > b.maxX) P.x = b.maxX;
+      if (P.y < b.minY) P.y = b.minY; else if (P.y > b.maxY) P.y = b.maxY;
+      const ts = this.tileSize;
+      const w = this._persWindow;
+      const gi = Math.floor((P.x - b.minX) / ts);
+      const gj = Math.floor((P.y - b.minY) / ts);
+      const row = this._persWalk && w ? this._persWalk[gj - w.j0] : null;
+      const blocked = !w || !row || row[gi - w.i0] === undefined || row[gi - w.i0] === false;
+      if (blocked) {
+        if (this._lastWalkPos) { P.x = this._lastWalkPos.x; P.y = this._lastWalkPos.y; }
+      } else {
+        this._lastWalkPos = { x: P.x, y: P.y };
+      }
+    }
+
+    updatePersistentBiome() {
+      if (!this.persistent || !this.worldCore || !this.player) return;
+      if ((this.time || 0) < (this._nextBiomeCheck || 0)) return;
+      this._nextBiomeCheck = (this.time || 0) + 0.75;
+      const sv = this.worldToServer(this.player.x, this.player.y);
+      const sample = this.worldCore.sample(sv.x, sv.y);
+      const def = (this.worldConfig.biomes || {})[sample.biome] || {};
+      const id = def.engineBiome || (sample.biome === 'frost' ? 'frost' : sample.biome === 'swamp' ? 'swamp' : sample.biome === 'cursed' ? 'cursed' : sample.biome === 'volcanic' ? 'ashen' : 'verdant');
+      if (id === this.biome) return;
+      this.biome = id;
+      this.biomeDef = (this.travelBiomes || {})[id] || null;
+      this.biomePalette = (this.biomeDef && this.biomeDef.palette) || null;
+      this.biomeAmbient = (this.biomeDef && this.biomeDef.ambient) || null;
+      if (this.ambientMotes) this.initAmbientMotes(this.isTouch ? 16 : 35);
     }
 
     // Oyuncuyu katı nesnelerden (ağaç, kaya, dağ) dışarı iter.
@@ -2329,6 +2879,39 @@
       if (cat.arpgSkills && typeof cat.arpgSkills === 'object') this.arpgSkills = cat.arpgSkills;
       if (cat.travelBiomes && typeof cat.travelBiomes === 'object') this.travelBiomes = cat.travelBiomes;
       if (cat.skillSkins && typeof cat.skillSkins === 'object') this.skins = cat.skillSkins;
+      this.applyTravelSkills();
+    }
+
+    // ------------------------------------------------------------------
+    // TravelSkills entegrasyonu
+    // ------------------------------------------------------------------
+    // ARPG yetenekleri artık content.js `arpgSkills` içinde yaşar (GameCraft
+    // "Travel ARPG" sekmesi burayı düzenler). Her yetenek:
+    //   { name, cd, behavior, params:{...}, ... }
+    // `behavior` = travelSkills.js davranış adı; `params` o davranışın ayarları.
+    // Bu fonksiyon SADECE veride `behavior` yoksa kod tablosundan geri doldurur
+    // (eski kayıtlar bozulmasın diye). Veri her zaman kazanır.
+    // ------------------------------------------------------------------
+    applyTravelSkills() {
+      const slug = this.playerData && this.playerData.class;
+      const TS = global.TravelSkills;
+      const current = slug && this.arpgSkills ? this.arpgSkills[slug] : null;
+      if (!TS || !TS.bySlug || !current) return false;
+      const rows = TS.bySlug[slug] || TS.bySlug[String(slug).toLowerCase()];
+      if (!rows || rows.length < 4) return false;
+      const patched = Object.assign({}, current);
+      let changed = false;
+      ['q', 'e', 'r'].forEach((slot, i) => {
+        const base = current[slot], def = rows[i + 1];
+        if (!base || !def || base.behavior) return; // veri dolu -> dokunma
+        const conv = TS.fromRow(def);
+        if (!conv) return;
+        patched[slot] = Object.assign({}, base, conv);
+        changed = true;
+      });
+      if (!changed) return false;
+      this.arpgSkills = Object.assign({}, this.arpgSkills, { [slug]: patched });
+      return true;
     }
 
     // Aktif "mana rengi"ni uygula (yetenek renkleri + parçacık efekti).
@@ -2381,6 +2964,7 @@
       if (!changed) return;
       // Yeni biyom: karo renkleri değiştiği için sprite önbelleğini boşalt.
       this.tileSprites = {};
+      this.invalidateMinimap();
       // Yeni biyom: eski canavarları temizle, yeni roster'ı doğur.
       this.monsters = [];
       this._respawnQueue = [];
@@ -2444,6 +3028,60 @@
       this.player.attackCooldown = 1 / aps;
     }
 
+    // ---- Dünya Kurucu spawn bölgeleri (world_setra.json `spawnZones`) ----
+    // Oyuncuya en yakın (içinde bulunduğu) bölgeyi döndürür.
+    pickSpawnZoneNear(sx, sy, pad) {
+      const zones = (this.worldConfig && this.worldConfig.spawnZones) || [];
+      if (!zones.length) return null;
+      const limit = pad === undefined ? 2600 : pad;
+      let best = null, bestD = Infinity;
+      for (const z of zones) {
+        if (!z || !Number.isFinite(Number(z.cx)) || !Number.isFinite(Number(z.cy))) continue;
+        const d = Math.hypot(Number(z.cx) - sx, Number(z.cy) - sy) - (Number(z.r) || 0);
+        if (d <= limit && d < bestD) { bestD = d; best = z; }
+      }
+      return best;
+    }
+    pickZoneMonster(zone) {
+      const list = (zone && zone.monsters) || [];
+      if (!list.length) return null;
+      const w = (m) => Math.max(0.0001, Number(m && m.weight) || 1);
+      const total = list.reduce((a, m) => a + w(m), 0);
+      let r = Math.random() * total;
+      for (const m of list) { r -= w(m); if (r <= 0) return m; }
+      return list[0];
+    }
+    // Bölge canavarı yalnızca `kind` taşır; tam statları (hp/hasar/painter)
+    // biome tanımlarından çöz. Bulunamazsa çağıran taraf varsayılana düşer.
+    resolveMonsterDef(kind) {
+      if (!kind) return null;
+      const eq = (m) => m && (m.kind === kind || m.id === kind);
+      const own = (this.biomeDef && this.biomeDef.monsters) || [];
+      const f0 = own.find(eq);
+      if (f0) return f0;
+      const tb = this.travelBiomes || {};
+      for (const k of Object.keys(tb)) {
+        const arr = (tb[k] && tb[k].monsters) || [];
+        const f = arr.find(eq);
+        if (f) return f;
+      }
+      return null;
+    }
+    // Oyuncunun bulunduğu bölgenin yoğunluğu (canavar cap çarpanı).
+    zoneDensityNear() {
+      const p = this.player;
+      if (!p) return 1;
+      const sv = this.worldToServer(p.x, p.y);
+      let best = 1;
+      const zones = (this.worldConfig && this.worldConfig.spawnZones) || [];
+      for (const z of zones) {
+        if (!z) continue;
+        const d = Math.hypot(Number(z.cx) - sv.x, Number(z.cy) - sv.y) - (Number(z.r) || 0);
+        if (d <= 240) { const dens = Number(z.density); if (dens > best) best = dens; }
+      }
+      return Math.max(0.5, Math.min(4, best));
+    }
+
     pickBiomeMonster() {
       const def = this.biomeDef;
       const list = (def && def.monsters) || null;
@@ -2464,29 +3102,46 @@
 
     spawnMonsters(count = 6) {
       const def = this.biomeDef;
+      let eliteSpawned = false;
       const legacy = [
         { kind: 'goblin', name: 'Koru Goblini', painter: 'goblin', color: '#56ab2f', accent: '#d9f99d', hp: 220, maxHp: 220, speed: 130, damage: 24, radius: 16, exp: 45 },
         { kind: 'treant', name: 'Yozlaşmış Treant', painter: 'treant', color: '#4a2c11', accent: '#a3e635', hp: 480, maxHp: 480, speed: 85, damage: 45, radius: 24, exp: 90 },
         { kind: 'wraith', name: 'Gölge Avcısı', painter: 'wraith', color: '#7b1fa2', accent: '#e9d5ff', hp: 180, maxHp: 180, speed: 175, damage: 32, radius: 15, exp: 60 }
       ];
 
+      const psx0 = this.player ? this.player.x : 0;
+      const psy0 = this.player ? this.player.y : 0;
+      const psrv = this.player ? this.worldToServer(psx0, psy0) : { x: 0, y: 0 };
       for (let i = 0; i < count; i++) {
-        const base = (def && this.pickBiomeMonster()) || legacy[i % legacy.length];
-        const angle = (i / Math.max(1, count)) * TAU + Math.random() * 0.4;
-        const dist = 300 + Math.random() * 320;
-        const pcx = this.player ? this.player.x : 0;
-        const pcy = this.player ? this.player.y : 0;
-        const raw = this.clampToWorld(pcx + Math.cos(angle) * dist, pcy + Math.sin(angle) * dist);
-        const px = raw.x, py = raw.y;
-        const scale = base.elite ? 1 : 1;
+        // Dünya Kurucu'da boyanmış bir spawn bölgesi yakındaysa oradan doğ.
+        const zone = this.pickSpawnZoneNear(psrv.x, psrv.y, 2600);
+        let base, px, py;
+        if (zone) {
+          const za = Math.random() * TAU;
+          const zr = Math.sqrt(Math.random()) * Math.max(120, Number(zone.r) || 400);
+          const sw = this.serverToWorld(Number(zone.cx) + Math.cos(za) * zr, Number(zone.cy) + Math.sin(za) * zr);
+          px = sw.x; py = sw.y;
+          const zm = this.pickZoneMonster(zone);
+          base = (zm && this.resolveMonsterDef(zm.kind)) || zm || (def && this.pickBiomeMonster()) || legacy[i % legacy.length];
+        } else {
+          base = (def && this.pickBiomeMonster()) || legacy[i % legacy.length];
+          const angle = (i / Math.max(1, count)) * TAU + Math.random() * 0.4;
+          const dist = 300 + Math.random() * 320;
+          const raw = this.clampToWorld(psx0 + Math.cos(angle) * dist, psy0 + Math.sin(angle) * dist);
+          px = raw.x; py = raw.y;
+        }
+        const isElite = !!base.elite;
         // --- Zorluk ölçeği: canavarlar oyuncu seviyesine göre de büyür ---
-        // (Tek vuruşta kesilmesinler: can x2.0, hasar x1.6, seviye başına +%16)
+        // (Tek vuruşta kesilmesinler: can x2, hasar x1.6, seviye başına +%16)
+        // Elitler (nadir) ayrıca çok daha dayanıklı ve vurucudur.
         const lvl = Math.max(1, Number(this.playerData && this.playerData.level) || 1);
         const lvlMult = 1 + (lvl - 1) * 0.16;
-        const hpMult = 2.0 * lvlMult;
-        const dmgMult = 1.6 * lvlMult;
-        const hp = Math.round((Number(base.hp) || 200) * scale * hpMult);
-        const dmg = Math.round((Number(base.damage) || 24) * dmgMult);
+        const hpMult = 4.0 * lvlMult;
+        const dmgMult = 2.6 * lvlMult;
+        const eliteHp = isElite ? 2.1 : 1;
+        const eliteDmg = isElite ? 1.45 : 1;
+        const hp = Math.round((Number(base.hp) || 200) * hpMult * eliteHp);
+        const dmg = Math.round((Number(base.damage) || 24) * dmgMult * eliteDmg);
         this.monsters.push({
           id: Math.random().toString(36).substr(2, 9),
           kind: base.kind,
@@ -2495,12 +3150,15 @@
           color: base.color || '#56ab2f',
           accent: base.accent || '#d9f99d',
           element: base.element || 'physical',
-          elite: !!base.elite,
+          tags: Array.isArray(base.tags) ? base.tags.slice() : [],
+          elite: isElite,
           ability: base.ability || null,
           statusOnHit: base.status || null,
           hp: hp, maxHp: hp,
-          speed: base.speed || 130, damage: dmg,
-          radius: base.radius || 16, exp: base.exp || 45, gold: base.gold || 6,
+          speed: (base.speed || 130) * (isElite ? 1.05 : 1), damage: dmg,
+          radius: Math.round((base.radius || 16) * (isElite ? 1.5 : 1.4)),
+          exp: Math.round((base.exp || 45) * (isElite ? 2.4 : 1)),
+          gold: Math.round((base.gold || 6) * (isElite ? 2.5 : 1)),
           x: px, y: py, z: 0,
           patrolCenterX: px, patrolCenterY: py,
           patrolTimer: Math.random() * 3, patrolTargetX: px, patrolTargetY: py,
@@ -2513,7 +3171,10 @@
           cast: null, aggroRange: Number(base.aggroRange) || 280, aggroTimer: 0,
           hpGhost: hp, walkPhase: Math.random() * 6, deathTimer: 0, dead: false
         });
+        if (isElite) eliteSpawned = true;
       }
+      // Elit/boss doğduğunda kısa bir giriş kükremesi.
+      if (eliteSpawned && this.sound) this.sound.play('boss');
     }
 
     // ======================================================================
@@ -2651,7 +3312,8 @@
       this.weather = (w === 'rain' && this.weatherEnabled !== false) ? 'rain' : 'clear';
       if (this.weather === 'rain') {
         this.rainDrops = [];
-        for (let i = 0; i < 130; i++) {
+        const nDrops = this.isTouch ? 60 : 130;
+        for (let i = 0; i < nDrops; i++) {
           this.rainDrops.push({
             x: Math.random() * (this.width || 800),
             y: Math.random() * (this.height || 600),
@@ -2661,8 +3323,10 @@
           });
         }
         if (this.sound) this.sound.loop('ambience_rain', cw.rainVolume != null ? cw.rainVolume : 0.28);
-      } else {
-        if (this.sound) this.sound.loop('ambience_day', cw.dayVolume != null ? cw.dayVolume : 0.22);
+      } else if (this.sound) {
+        // Açık havada ambiyans döngüsü çalmaz (tavuk/kuş sesi şikayeti):
+        // varsa önceki döngüyü kapat.
+        this.sound.stopLoop();
       }
     }
 
@@ -2711,7 +3375,9 @@
     // PARÇACIK SİSTEMİ
     // ======================================================================
     addParticle(o) {
-      if (this.particles.length > 700) return;
+      // Mobil/düşük güç: partikül tavanı daha düşük tutulur (kare süresi korunur).
+      const cap = this.isTouch ? 260 : 700;
+      if (this.particles.length > cap) return;
       const life = o.life || 0.5;
       this.particles.push({
         wx: o.wx, wy: o.wy, wz: o.wz || 0,
@@ -2793,6 +3459,7 @@
 
       this.addTrauma(0.2);
       this.createGhostTrail();
+      this.emitAllyAction({ kind: 'dash', x: this.player.x, y: this.player.y, angle: Math.atan2(this.player.dashVy, this.player.dashVx), color: this.getArchetypeColor() });
       // Dash tozu + zeminde küçük 3D halka dalgası
       for (let i = 0; i < 12; i++) {
         const a = Math.random() * TAU;
@@ -2819,18 +3486,24 @@
       if (this.player.attackCooldownTimer > 0) return;
 
       const stats = this.playerData.stats;
-      this.player.attackCooldownTimer = this.player.attackCooldown;
+      this.player.attackCooldownTimer = this.player.attackCooldown / (this.player.hasteMul || 1);
       this.player.isAttacking = true;
       this.player.attackAnimTimer = 0.22;
       this.player.swingDir *= -1; // görsel: savurma yönü dönüşümlü
 
       const archetype = this.player.archetype;
-      const aimAngle = Math.atan2(this.mouse.worldY - this.player.y, this.mouse.worldX - this.player.x);
+      const _ap = this.aimPoint();
+      const aimAngle = Math.atan2(_ap.y - this.player.y, _ap.x - this.player.x);
       this.player.facingAngle = aimAngle;
+      this.emitAllyAction({ kind: 'attack', x: this.player.x, y: this.player.y, angle: aimAngle });
 
-      const isCrit = Math.random() < (stats.critChance || 0.15);
-      const baseDamage = stats.attack || 50;
-      const damage = Math.round(isCrit ? baseDamage * (stats.critMultiplier || 2.0) : baseDamage);
+      const critBonusP = this.passiveCritBonus();
+      const isCrit = Math.random() < ((stats.critChance || 0.15) + critBonusP.chance);
+      const autoEl = this.autoElement();
+      this._castElement = autoEl;
+      this._castElementUntil = performance.now() + 400;
+      const baseDamage = (stats.attack || 50) * this.damageScale();
+      const damage = Math.round(isCrit ? baseDamage * ((stats.critMultiplier || 2.0) + critBonusP.damage) : baseDamage);
 
       if (archetype === ARCHETYPES.MELEE) {
         this.sound.play(isCrit ? 'crit' : 'slash');
@@ -2856,7 +3529,7 @@
         this.projectiles.push({
           type: 'arrow', x: this.player.x + Math.cos(aimAngle) * 20, y: this.player.y + Math.sin(aimAngle) * 20,
           vx: Math.cos(aimAngle) * 650, vy: Math.sin(aimAngle) * 650, radius: 6, life: 0.85,
-          damage, isCrit, color: this.player.style.proj
+          damage, isCrit, element: autoEl, color: this.player.style.proj
         });
 
       } else if (archetype === ARCHETYPES.MAGE) {
@@ -2864,7 +3537,7 @@
         this.projectiles.push({
           type: 'magic_orb', x: this.player.x + Math.cos(aimAngle) * 20, y: this.player.y + Math.sin(aimAngle) * 20,
           vx: Math.cos(aimAngle) * 520, vy: Math.sin(aimAngle) * 520, radius: 10, life: 1.0,
-          damage, isCrit, color: this.player.style.proj
+          damage, isCrit, element: autoEl, color: this.player.style.proj
         });
 
       } else if (archetype === ARCHETYPES.SHADOW) {
@@ -2890,7 +3563,7 @@
         this.projectiles.push({
           type: 'primal_fang', x: this.player.x + Math.cos(aimAngle) * 20, y: this.player.y + Math.sin(aimAngle) * 20,
           vx: Math.cos(aimAngle) * 580, vy: Math.sin(aimAngle) * 580, radius: 8, life: 0.9,
-          damage, isCrit, color: this.player.style.proj
+          damage, isCrit, element: autoEl, color: this.player.style.proj
         });
         this.commandPetAttack();
       }
@@ -2913,6 +3586,16 @@
       if (sk) {
         cd.max = Math.max(1, Number(sk.cd) || cd.max);
         cd.current = cd.max;
+        this.emitAllyAction({
+          kind: 'skill',
+          x: this.player.x, y: this.player.y,
+          angle: this.skillAim(),
+          color: sk.color || this.getArchetypeColor(),
+          radius: Number(sk.radius) || Number(sk.visualRadius) || 0,
+          range: Number(sk.range) || 0,
+          visual: sk.visual || '',
+          name: sk.name || '',
+        });
         return this.castClassSkill(key, sk);
       }
 
@@ -2922,13 +3605,36 @@
 
     // --- Yetenek önizlemesi (cooldown'dan bağımsız) ---
     skillAim() {
-      return Math.atan2(this.mouse.worldY - this.player.y, this.mouse.worldX - this.player.x);
+      const p = this.aimPoint();
+      return Math.atan2(p.y - this.player.y, p.x - this.player.x);
+    }
+
+    // Nişan alınan dünya noktası. Öncelik: tek seferlik hedef > mobil yön > fare.
+    aimPoint() {
+      const P = this.player;
+      const o = this.aimOverride;
+      if (o && o.t > this.time) return { x: o.x, y: o.y };
+      if (this.touchAim) return { x: P.x + this.touchAim.x * 300, y: P.y + this.touchAim.y * 300 };
+      return { x: this.mouse.worldX, y: this.mouse.worldY };
+    }
+
+    // Mobil joystick: dünya uzayında birim yön (ekran yönü değil).
+    setTouchAim(wx, wy) {
+      const l = Math.hypot(wx, wy);
+      if (!(l > 0.0001)) return;
+      this.touchAim = { x: wx / l, y: wy / l };
+    }
+
+    // Mobilde ekrana dokununca o noktaya nişan al.
+    aimAtWorld(x, y, hold = 0.6) {
+      this.aimOverride = { x, y, t: this.time + hold };
     }
     // Hedefli büyüler için menzil sınırı: imleç çok uzaksa hedefi `range`
     // yarıçapına çeker. Böylece haritanın öbür ucuna skill atılamaz.
     castTargetPoint(sk) {
       const P = this.player;
-      const mx = this.mouse.worldX, my = this.mouse.worldY;
+      const ap = this.aimPoint();
+      const mx = ap.x, my = ap.y;
       const kind = sk && sk.kind;
       let maxR = sk && sk.range != null ? Number(sk.range) : NaN;
       if (!Number.isFinite(maxR) || maxR <= 0) {
@@ -2954,11 +3660,18 @@
       const st = this.playerData.stats || {};
       const mp = Number(st.magicPower) || 0;
       const useMagic = sk && sk.magic;
-      return (Number(st.attack) || 0) + (useMagic ? mp * 0.8 : mp * 0.25);
+      const base = (Number(st.attack) || 0) + (useMagic ? mp * 0.8 : mp * 0.25);
+      return base * this.damageScale();
     }
+    // Sınıf dengeleme çarpanı (ARPG hasarı). travelSkills.js de bunu kullanır.
+    damageScale() { return classTravelScale(this.playerData && this.playerData.class); }
     skillDamage(sk) {
       return Math.max(1, Math.round(this.skillPowerBonus(sk) * (Number(sk.power) || 1)));
     }
+
+    // TravelSkills: efekt rengi mana rengine boyanır (yoksa sınıf rengi).
+    getManaColor() { return this.manaColor || null; }
+    setManaColor(hex) { this.manaColor = hex || null; return this.manaColor; }
 
     // Claude'un görsel kütüphanesi (travel_visuals.js) yüklüyse, yeteneğin
     // mekaniği çalışırken hazır efekti de oynat. Görsel yoksa sessizce atlanır.
@@ -3027,8 +3740,31 @@
       }
     }
 
-    // --- Sınıf yeteneği uygulama (jenerik türler) ---
+    // --- Sınıf yeteneği uygulama ---
     castClassSkill(key, sk) {
+      // Yeteneğin elementi: alan/konik vuruşların hasar hesabında kullanılır.
+      this._castElement = (sk && sk.element) || this.autoElement();
+      this._castElementUntil = performance.now() + 1500;
+      // --- 1) VERİDEN gelen davranış (content.js arpgSkills -> behavior + params) ---
+      // GameCraft "Travel ARPG" sekmesinde düzenlenen asıl yol.
+      if (sk && sk.behavior) {
+        const TS = global.TravelSkills;
+        if (TS && TS.runSkill) {
+          this.emitSkinFx(this.player.x, this.player.y, 10);
+          try { if (TS.runSkill(this, sk, key)) return; } catch (e) { console.error('[TravelSkills]', sk.name, e); }
+        }
+      }
+      // --- 2) Kod tablosu yedeği (veride behavior yoksa) ---
+      if (sk && sk.tsKey) {
+        const h = tsHandlersFor(this.playerData && this.playerData.class);
+        const fn = h && h[sk.tsKey];
+        if (fn) {
+          this.emitSkinFx(this.player.x, this.player.y, 10);
+          const c = { key: sk.tsKey, aimAngle: this.skillAim(), cd: this.player.cooldowns[sk.tsKey] || { max: 0, current: 0 } };
+          try { fn(this, c); } catch (e) { console.error('[TravelSkills]', sk.name, e); }
+          return;
+        }
+      }
       const st = this.playerData.stats;
       const aim = this.skillAim();
       const dmg = this.skillDamage(sk);
@@ -3345,7 +4081,7 @@
       const def = this.biomeDef || {};
       const spawn = def.spawn || {};
       // Aynı anda haritada daha az canavar: seyrek ama güçlü karşılaşmalar.
-      const max = Math.max(3, Math.round((Number(spawn.max) || 7) * 0.6));
+      const max = Math.max(3, Math.round((Number(spawn.max) || 7) * 0.6 * this.zoneDensityNear()));
       const delay = Math.max(3000, (Number(spawn.respawn) || 9) * 1000);
       const id = monster && monster.id;
       this.later(() => {
@@ -3366,12 +4102,23 @@
     }
 
     // Oyuncuya hasar: önce kalkan yutar, sonra can gider.
-    damagePlayer(amount, angle) {
+    damagePlayer(amount, angle, element, fromMonster) {
       // Yere düşmüşken/ölüyken hasar ve vuruş sesi olmasın (canavarlar
       // ölü bedene vurmaya devam edip ses çıkarmasın).
       if (this.downed || this._down) return;
+      // TravelSkills dokunulmazlığı (blink/leap/buff invuln).
+      if (this.player && (this.player.invuln > 0 || this.player.phase > 0)) return;
+      // Irk / sınıf dodge pasifi (wyvernkin, gölge sınıfları...).
+      const dodge = this.passiveDodgeChance();
+      if (dodge > 0 && Math.random() < dodge) {
+        this.spawnDamageNumber(this.player.x, this.player.y, "DODGE", "#b2ff59");
+        return;
+      }
       const st = this.playerData.stats || (this.playerData.stats = {});
       let dmg = Math.max(1, Math.round(Number(amount) || 0));
+      // Elemente duyarlı pasifler: "kutsal hasardan +%30 alır" gibi.
+      const takenMult = this.passiveTakenMult(element);
+      if (takenMult !== 1) dmg = Math.max(1, Math.round(dmg * takenMult));
       // Savunma buff'ı gelen hasarı azaltır (en fazla %75).
       const defBuff = Math.min(0.75, Math.max(0, this.buffPct("defense") + this.buffPct("resistance")));
       if (defBuff > 0) dmg = Math.max(1, Math.round(dmg * (1 - defBuff)));
@@ -3392,8 +4139,33 @@
         st.currentHp = Math.max(0, (st.currentHp || 0) - dmg);
         this.spawnDamageNumber(this.player.x, this.player.y, `-${dmg}`, '#ff5252');
         this.spawnBloodParticles(this.player.x, this.player.y, angle || 0, 6, '#ff5252');
+        if (this.sound) this.sound.play(element && element !== 'physical' ? 'hit_magic' : 'hit_physical');
+        // Diken pasifi (Gorgon "Petrifying Gaze" gibi): hasarın bir kısmını
+        // saldırana geri yansıt.
+        const thorns = this.passiveSum("thorns", "mult");
+        if (thorns > 0 && fromMonster && !fromMonster.dead && fromMonster.hp > 0) {
+          const back = Math.max(1, Math.round(dmg * thorns));
+          this.spawnDamageNumber(fromMonster.x, fromMonster.y, `-${back}`, '#b39ddb');
+          fromMonster.hp -= back;
+          if (fromMonster.hp <= 0) {
+            fromMonster.dead = true;
+            fromMonster.state = 'DEAD';
+            fromMonster.deathTimer = 0.45;
+            this.spawnExplosionParticles(fromMonster.x, fromMonster.y, 18, fromMonster.color);
+            if (this.onKill) this.onKill(fromMonster);
+            this.scheduleRespawn();
+          }
+        }
       } else {
         this.spawnDamageNumber(this.player.x, this.player.y, 'BLOCK', '#80deea');
+      }
+      // "Son Nefes" pasifi: ölümcül hasar bir kez 1 HP ile atlatılır.
+      if ((st.currentHp || 0) <= 0 && !this._secondWindUsed &&
+          this.passiveList().some((p) => p.kind === "secondWind")) {
+        this._secondWindUsed = true;
+        st.currentHp = 1;
+        this.spawnDamageNumber(this.player.x, this.player.y, "SON NEFES!", "#ffd54f", true);
+        this.spawnExplosionParticles(this.player.x, this.player.y, 26, "#ffd54f");
       }
       this.addTrauma(0.3);
       this.hurt = 0.35;
@@ -3511,6 +4283,8 @@
     }
 
     hitCone(cx, cy, radius, arc, aim, damage, sk, forceCrit) {
+      const el = (sk && sk.element) || this.autoElement();
+      const critBonus = this.passiveCritBonus();
       this.monsters.forEach((m) => {
         if (m.hp <= 0) return;
         const dist = Math.hypot(m.x - cx, m.y - cy);
@@ -3518,13 +4292,15 @@
         let diff = Math.abs(Math.atan2(m.y - cy, m.x - cx) - aim);
         while (diff > Math.PI) diff = Math.abs(diff - Math.PI * 2);
         if (diff > arc / 2) return;
-        const isCrit = Math.random() < (this.playerData.stats.critChance || 0);
-        this.applyDamageToMonster(m, Math.round(damage * (isCrit ? 1.6 : 1)), isCrit, aim, Number(sk.knockback) || 0);
-        if (sk.status) this.applyMonsterStatus(m, sk.status);
+        const isCrit = !!forceCrit || Math.random() < ((this.playerData.stats.critChance || 0) + critBonus.chance);
+        this.applyDamageToMonster(m, Math.round(damage * (isCrit ? 1.6 + critBonus.damage : 1)), isCrit, aim, Number(sk && sk.knockback) || 0, el);
+        if (sk && sk.status) this.applyMonsterStatus(m, sk.status);
       });
     }
 
     hitBeam(x, y, angle, range, width, damage, sk, forceCrit) {
+      const el = (sk && sk.element) || this.autoElement();
+      const critBonus = this.passiveCritBonus();
       const ex = x + Math.cos(angle) * range;
       const ey = y + Math.sin(angle) * range;
       const vx = ex - x, vy = ey - y;
@@ -3534,9 +4310,9 @@
         const t = Math.max(0, Math.min(1, ((m.x - x) * vx + (m.y - y) * vy) / len2));
         const px = x + vx * t, py = y + vy * t;
         if (Math.hypot(m.x - px, m.y - py) <= width / 2 + m.radius) {
-          const isCrit = Math.random() < (this.playerData.stats.critChance || 0);
-          this.applyDamageToMonster(m, Math.round(damage * (isCrit ? 1.6 : 1)), isCrit, angle, Number(sk.knockback) || 0);
-          if (sk.status) this.applyMonsterStatus(m, sk.status);
+          const isCrit = !!forceCrit || Math.random() < ((this.playerData.stats.critChance || 0) + critBonus.chance);
+          this.applyDamageToMonster(m, Math.round(damage * (isCrit ? 1.6 + critBonus.damage : 1)), isCrit, angle, Number(sk && sk.knockback) || 0, el);
+          if (sk && sk.status) this.applyMonsterStatus(m, sk.status);
         }
       });
     }
@@ -3674,15 +4450,21 @@
       }
     }
 
-    hitEnemiesInRadius(cx, cy, radius, damage, canCrit = false, knockback = 0) {
+    hitEnemiesInRadius(cx, cy, radius, damage, canCrit = false, knockback = 0, element = null) {
       this.monsters.forEach((m) => {
         if (m.hp <= 0) return;
         const dist = Math.hypot(m.x - cx, m.y - cy);
         if (dist <= radius + m.radius) {
-          const isCrit = canCrit && Math.random() < this.playerData.stats.critChance;
-          const finalDamage = Math.round(isCrit ? damage * 1.8 : damage);
+          const critBonus = this.passiveCritBonus();
+          const isCrit = canCrit && Math.random() < ((this.playerData.stats.critChance || 0) + critBonus.chance);
+          const finalDamage = Math.round(isCrit ? damage * (1.8 + critBonus.damage) : damage);
           const angle = Math.atan2(m.y - cy, m.x - cx);
-          this.applyDamageToMonster(m, finalDamage, isCrit, angle, knockback);
+          let el = element;
+          if (!el) {
+            const fresh = this._castElement && (performance.now() < (this._castElementUntil || 0));
+            el = fresh ? this._castElement : this.autoElement();
+          }
+          this.applyDamageToMonster(m, finalDamage, isCrit, angle, knockback, el);
         }
       });
     }
@@ -3732,11 +4514,127 @@
       }
     }
 
-    applyDamageToMonster(monster, damage, isCrit, hitAngle, knockbackStrength = 0) {
+    // ---- Sınıf / ırk pasifleri (ARPG tarafı) --------------------------------
+    // Sunucudaki server/passives.js ile aynı isimleri kullanır; böylece sıra
+    // tabanlı savaşta çalışan pasifler seyahatte de aynı şekilde işler.
+    passiveList() {
+      const list = (this.playerData && this.playerData.passives) || [];
+      return Array.isArray(list) ? list.filter((p) => p && typeof p.kind === "string") : [];
+    }
+
+    passiveOutMult(ctx) {
+      let mult = 1;
+      const c = ctx || {};
+      for (const p of this.passiveList()) {
+        if (p.kind !== "damageBonus") continue;
+        const m = Number(p.mult);
+        if (!(m > 0)) continue;
+        if (p.aboveHpPct != null && !(Number(c.targetHpPct) > Number(p.aboveHpPct))) continue;
+        if (p.belowHpPct != null && !(Number(c.targetHpPct) < Number(p.belowHpPct))) continue;
+        if (p.selfHpBelowPct != null && !(this.hpPct() < Number(p.selfHpBelowPct))) continue;
+        if (p.firstStrike && !c.isFirst) continue;
+        if (p.element && String(p.element).toLowerCase() !== String(c.element || "").toLowerCase()) continue;
+        if (Array.isArray(p.tags) && p.tags.length) {
+          const tags = Array.isArray(c.targetTags) ? c.targetTags : [];
+          if (!p.tags.some((t) => tags.includes(t))) continue;
+        }
+        mult *= 1 + m;
+      }
+      return mult;
+    }
+
+    hpPct() {
+      const st = (this.playerData && this.playerData.stats) || {};
+      const max = Number(st.maxHp) || 1;
+      return clamp((Number(st.currentHp) || 0) / max, 0, 1);
+    }
+
+    passiveTakenMult(fromElement) {
+      let mult = 1;
+      for (const p of this.passiveList()) {
+        if (p.kind !== "damageTaken") continue;
+        if (p.fromElement && String(p.fromElement).toLowerCase() !== String(fromElement || "").toLowerCase()) continue;
+        mult *= 1 + (Number(p.mult) || 0);
+      }
+      return Math.max(0, mult);
+    }
+
+    passiveSum(kind, field) {
+      let total = 0;
+      for (const p of this.passiveList()) if (p.kind === kind) total += Number(p[field]) || 0;
+      return total;
+    }
+
+    // statBonus pasifi: { kind:"statBonus", stat:"attack"|"maxHp"|"speed", pct:10 }
+    passiveStatPct(stat) {
+      let total = 0;
+      for (const p of this.passiveList()) {
+        if (p.kind !== "statBonus" || p.stat !== stat) continue;
+        total += Number(p.pct) || 0;
+      }
+      return total;
+    }
+
+    passiveCritBonus() {
+      let chance = 0, damage = 0;
+      for (const p of this.passiveList()) {
+        if (p.kind === "critChance") chance += Number(p.add) || 0;
+        if (p.kind === "critDamage") damage += Number(p.add) || 0;
+      }
+      return { chance, damage };
+    }
+
+    passiveDodgeChance() {
+      return clamp(this.passiveSum("dodge", "chance"), 0, 0.5);
+    }
+
+    passiveHealOnKill(pct) {
+      const rate = this.passiveSum("healOnKill", "pct");
+      if (!(rate > 0)) return;
+      const st = this.playerData.stats;
+      const heal = Math.max(1, Math.round((Number(st.maxHp) || 100) * rate));
+      st.currentHp = Math.min(st.maxHp, (st.currentHp || 0) + heal);
+      this.spawnDamageNumber(this.player.x, this.player.y, `+${heal}`, "#69f0ae");
+    }
+
+    // O an geçerli element: kısa süre önce cast edilen yetenek varsa o, yoksa
+    // sınıfın otomatik saldırı elementi.
+    currentElement() {
+      if (this._castElement && performance.now() < (this._castElementUntil || 0)) return this._castElement;
+      return this.autoElement();
+    }
+
+    // Otomatik saldırının elementi: sınıfın `auto.element` alanı (yoksa fiziksel).
+    autoElement() {
+      const now = performance.now();
+      if (this._autoElCache && now < (this._autoElUntil || 0)) return this._autoElCache;
+      const set = this.classSkillSet && this.classSkillSet();
+      const el = (set && set.auto && set.auto.element) || "physical";
+      this._autoElCache = el;
+      this._autoElUntil = now + 3000;
+      return el;
+    }
+
+    applyDamageToMonster(monster, damage, isCrit, hitAngle, knockbackStrength = 0, element = null) {
       if (monster.dead) return;
       // Buff'lı hasar: ATK buff'ı bütün giden hasarı çarpar.
       const atkBuff = this.buffPct("attack") + this.buffPct("damage");
       if (atkBuff) damage = Math.max(1, Math.round(damage * (1 + atkBuff)));
+      // Element etkileşimi (ateş -> buz = zayıf, ateş -> ateş = direnç ...).
+      const el = String(element || this.currentElement() || "physical").toLowerCase();
+      const elMult = elementMultFor(el, monster);
+      // Sınıf / ırk hasar pasifleri (etiket + element + can eşiği koşulları).
+      const tags = Array.isArray(monster.tags) ? monster.tags : [];
+      const passiveMult = this.passiveOutMult({
+        element: el,
+        targetTags: tags,
+        targetHpPct: monster.maxHp > 0 ? monster.hp / monster.maxHp : 0,
+        isFirst: !monster._passiveHit,
+      });
+      if (passiveMult !== 1) damage = damage * passiveMult;
+      if (elMult !== 1) damage = damage * elMult;
+      damage = Math.max(1, Math.round(damage));
+      monster._passiveHit = true;
       monster.hp -= damage;
       monster.flashTimer = 0.12;
       monster.state = 'CHASE';
@@ -3760,10 +4658,28 @@
         }
       }
 
-      const txt = isCrit ? `KRİTİK! -${Math.round(damage)}` : `-${Math.round(damage)}`;
-      this.spawnDamageNumber(monster.x, monster.y, txt, isCrit ? '#ffd54f' : '#ffffff', isCrit);
+      // Sınıf / ırk can çalma pasifi (sıra tabanlı savaşla aynı kural).
+      const passiveLeech = this.passiveSum("lifesteal", "pct");
+      if (passiveLeech > 0) {
+        const heal = Math.round(damage * passiveLeech);
+        if (heal > 0) {
+          this.playerData.stats.currentHp = Math.min(this.playerData.stats.maxHp, this.playerData.stats.currentHp + heal);
+          this.spawnDamageNumber(this.player.x, this.player.y, `+${heal}`, '#69f0ae');
+        }
+      }
+
+      const weakTxt = elMult > 1.15 ? " ZAYIF!" : (elMult < 0.9 ? " DİRENÇ" : "");
+      const elTint = elMult > 1.15 ? "#ffe082" : (elMult < 0.9 ? "#90a4ae" : null);
+      const txt = isCrit ? `KRİTİK! -${Math.round(damage)}${weakTxt}` : `-${Math.round(damage)}${weakTxt}`;
+      this.spawnDamageNumber(monster.x, monster.y, txt, isCrit ? '#ffd54f' : (elTint || '#ffffff'), isCrit);
+      if (elMult > 1.15) {
+        this.spawnImpact(monster.x, monster.y, ELEMENT_COLOR[el] || '#ffe082', true);
+        this.spawnExplosionParticles(monster.x, monster.y, 6, ELEMENT_COLOR[el] || '#ffe082');
+      }
       this.spawnImpact(monster.x, monster.y, isCrit ? '#ffd54f' : '#fff3e0', isCrit);
       this.spawnBloodParticles(monster.x, monster.y, hitAngle, isCrit ? 16 : 8, isCrit ? '#ffb300' : '#ef5350');
+      // ÇARPMA SESİ: kılıç/balta/ok/magic hedefe değdiğinde.
+      if (this.sound) this.sound.play(el === 'physical' ? 'hit_physical' : 'hit_magic');
 
       if (monster.hp <= 0) {
         monster.dead = true;
@@ -3784,6 +4700,7 @@
         if (this.onStatsChange) this.onStatsChange(this.playerData.stats);
         // Sunucuya bildir (xp/altın sunucu tarafından sınırlı verilir).
         if (this.onKill) this.onKill(monster);
+        this.passiveHealOnKill();
         this.scheduleRespawn();
       }
 
@@ -3898,8 +4815,109 @@
     // ======================================================================
     // GÜNCELLEME (UPDATE)
     // ======================================================================
+    // ---- Diğer oyuncuların yumuşak hareketi + animasyon durumu ----
+    updateOthers(dt) {
+      const others = this.others;
+      if (!others) return;
+      const stepT = Math.max(1e-4, dt);
+      for (const id of Object.keys(others)) {
+        const o = others[id];
+        if (!o) continue;
+        if (!Number.isFinite(o.wx)) o.wx = Number.isFinite(o.tx) ? o.tx : 0;
+        if (!Number.isFinite(o.wy)) o.wy = Number.isFinite(o.ty) ? o.ty : 0;
+        const tx = Number.isFinite(o.tx) ? o.tx : o.wx;
+        const ty = Number.isFinite(o.ty) ? o.ty : o.wy;
+        const dx = tx - o.wx, dy = ty - o.wy;
+        const dist = Math.hypot(dx, dy);
+        const px = o.wx, py = o.wy;
+        if (dist > 0.5 && !o.downed) {
+          // 10 Hz sunucu konumlarını yumuşat: ışınlanma yerine yürüyüş.
+          const k = Math.min(1, 1 - Math.exp(-16 * dt));
+          o.wx += dx * k; o.wy += dy * k;
+        }
+        o.vx = (o.wx - px) / stepT;
+        o.vy = (o.wy - py) / stepT;
+        const spd = Math.hypot(o.vx, o.vy);
+        o.moving = spd > 12;
+        if (o.moving) {
+          o.facingAngle = Math.atan2(o.vy, o.vx);
+          o.walkPhase = (o.walkPhase || 0) + Math.min(0.5, spd / 160) * dt * 12;
+        } else {
+          o.walkPhase = (o.walkPhase || 0) + dt * 1.6;
+        }
+        if (o.attackAnimTimer > 0) o.attackAnimTimer = Math.max(0, o.attackAnimTimer - dt);
+        if (!Number.isFinite(o.facingAngle)) o.facingAngle = 0;
+        if (!Number.isFinite(o.walkPhase)) o.walkPhase = 0;
+        if (!Number.isFinite(o.swingDir)) o.swingDir = 1;
+      }
+    }
+
+    // Sunucudan gelen diğer oyuncu efektini (saldırı/yetenek/dash) oynat.
+    playAllyAction(p) {
+      if (!p || !p.id) return;
+      const o = this.others && this.others[p.id];
+      if (!o) return;
+      const x = Number.isFinite(p.x) ? p.x : o.wx;
+      const y = Number.isFinite(p.y) ? p.y : o.wy;
+      if (this.player && Math.hypot(x - this.player.x, y - this.player.y) > 1400) return;
+      const angle = Number.isFinite(p.angle) ? p.angle : o.facingAngle || 0;
+      const color = p.color || '#8ec5ff';
+      const radius = Number.isFinite(p.radius) && p.radius > 0 ? p.radius : 70;
+      const S = o.style || (o.style = getClassStyle(o.character || 'warrior'));
+      const archetype = getArchetype(o.character || 'warrior');
+      o.facingAngle = angle;
+      o.attackAnimTimer = 0.22;
+      o.swingDir = -(o.swingDir || 1);
+
+      if (p.kind === 'revive') {
+        this.aoeEffects.push({ x, y, radius: radius, duration: 0.7, timer: 0.7, color: '#8dffc0', ring: true, dome: true });
+        if (typeof this.spawnExplosionParticles === 'function') this.spawnExplosionParticles(x, y, 16, '#8dffc0');
+        return;
+      }
+      if (p.kind === 'dash') {
+        this.aoeEffects.push({ x, y, radius: 34, duration: 0.28, timer: 0.28, color, ring: true });
+        return;
+      }
+      if (p.kind === 'attack') {
+        if (archetype === ARCHETYPES.MELEE || archetype === ARCHETYPES.SHADOW) {
+          this.slashes.push({ x, y, angle, radius: archetype === ARCHETYPES.MELEE ? 55 : 48, arc: Math.PI * 0.6, duration: 0.2, timer: 0.2, color: S.slash || color, dir: o.swingDir });
+        } else {
+          const type = archetype === ARCHETYPES.RANGED ? 'arrow' : archetype === ARCHETYPES.TAMER ? 'primal_fang' : 'magic_orb';
+          const spd = archetype === ARCHETYPES.RANGED ? 650 : archetype === ARCHETYPES.TAMER ? 580 : 520;
+          this.projectiles.push({
+            type, x: x + Math.cos(angle) * 20, y: y + Math.sin(angle) * 20,
+            vx: Math.cos(angle) * spd, vy: Math.sin(angle) * spd,
+            radius: type === 'magic_orb' ? 9 : 6, life: 0.8, damage: 0, isCrit: false, color: S.proj || color,
+            cosmetic: true,
+          });
+        }
+        return;
+      }
+      // skill
+      const visual = p.visual ? String(p.visual) : '';
+      if (visual && typeof this.castVisual === 'function') {
+        try { this.castVisual(visual, x, y, { color, radius, angle, follow: false }); } catch (e) {}
+      }
+      this.aoeEffects.push({ x, y, radius: Math.min(220, radius), duration: 0.45, timer: 0.45, color, ring: true });
+      if (p.range > 0) {
+        const dir = angle;
+        this.aoeEffects.push({
+          x: x + Math.cos(dir) * Math.min(420, p.range) * 0.5,
+          y: y + Math.sin(dir) * Math.min(420, p.range) * 0.5,
+          radius: Math.min(160, Math.max(40, radius * 0.7)), duration: 0.35, timer: 0.35, color, ring: true,
+        });
+      }
+    }
+
+    // Yerel eylemimizi diğer oyunculara yayınla (yalnızca kozmetik).
+    emitAllyAction(fx) {
+      if (!this.onAllyAction || this.allyFxEnabled === false || !fx) return;
+      try { this.onAllyAction(fx); } catch (e) { /* kozmetik */ }
+    }
+
     update(dt) {
       this.time += dt;
+      this.updateOthers(dt);
       const P = this.player;
       this.updateWeather(dt);
 
@@ -3910,6 +4928,16 @@
       }
       if (!Number.isFinite(this.camera.x) || !Number.isFinite(this.camera.y)) this.snapCamera();
       if (!Number.isFinite(this.zoom) || this.zoom <= 0) { this.zoom = 1; this.zoomTarget = 1; }
+      // İlk karede yakınlığı "11 sıra" hedefine oturt (eskiden çok uzaktı).
+      if (!this._zoomInit && Number.isFinite(this.height) && this.height > 0) {
+        this._zoomInit = true;
+        const dz = this.getDefaultZoom();
+        this.zoom = dz;
+        this.zoomTarget = dz;
+      }
+      // Ekran boyutu değişince (resize) zoom sınırı da değişir: hedefi kırp.
+      this.zoomTarget = this.clampZoomTarget(this.zoomTarget);
+      this.zoom = Math.max(this.getMinZoom(), Math.min(this.getMaxZoom(), this.zoom));
       if (!Number.isFinite(this.worldScale) || this.worldScale <= 0) this.worldScale = this.tileSize || 64;
       if (!Array.isArray(this.tiles) || this.tiles.length === 0) { try { this.generateMap(); } catch (e) { this.tiles = this.tiles || []; } }
       if (!this.playerData.stats) this.playerData.stats = {};
@@ -3917,6 +4945,11 @@
       const mw = this.screenWorld(this.mouse.screenX, this.mouse.screenY);
       this.mouse.worldX = mw.x;
       this.mouse.worldY = mw.y;
+
+      // --- TravelSkills zamanlayıcıları (dokunulmazlık / yetenek kilidi) ---
+      if (P.invuln > 0) P.invuln = Math.max(0, P.invuln - dt);
+      if (P.phase > 0) P.phase = Math.max(0, P.phase - dt);
+      if (P.skillLock > 0) P.skillLock = Math.max(0, P.skillLock - dt);
 
       // Can değişimini sunucuya bildir (0.25 sn'de bir, sadece değiştiyse).
       const stt = this.playerData.stats || {};
@@ -3984,8 +5017,11 @@
         const isoMoveX = ny * 0.707 + nx * 0.707;
         const isoMoveY = ny * 0.707 - nx * 0.707;
         const buffSpeed = 1 + this.buffPct("speed");
-        P.vx = isoMoveX * P.baseSpeed * (this.playerSlowMult || 1) * buffSpeed * (P.channel ? 0.45 : 1);
-        P.vy = isoMoveY * P.baseSpeed * (this.playerSlowMult || 1) * buffSpeed * (P.channel ? 0.45 : 1);
+        // skillLock: TravelSkills atılma/zıplama sırasında oyuncu girdisini kilitler.
+        const locked = (P.skillLock || 0) > 0;
+        const spd = locked ? 0 : P.baseSpeed * (P.speedMul || 1);
+        P.vx = isoMoveX * spd * (this.playerSlowMult || 1) * buffSpeed * (P.channel ? 0.45 : 1);
+        P.vy = isoMoveY * spd * (this.playerSlowMult || 1) * buffSpeed * (P.channel ? 0.45 : 1);
       } else { P.vx = 0; P.vy = 0; }
 
       // 3. Dash
@@ -4000,15 +5036,29 @@
         P.y += P.vy * dt;
       }
 
+      // Ayak sesi: yürürken kısa aralıklarla, dash sırasında susar.
+      if ((moveX || moveY) && !P.isDashing && !this.downed) {
+        this._stepTimer = (this._stepTimer || 0) - dt;
+        if (this._stepTimer <= 0) {
+          this._stepTimer = 0.4;
+          if (this.sound) this.sound.play('footstep', 0.45);
+        }
+      } else {
+        this._stepTimer = 0;
+      }
+
       const maxDistFromCenter = (this.mapRadius - 0.5) * this.tileSize;
       // Katı nesnelerden it, sonra harita sınırına kenetle.
       this.resolvePlayerCollision(P);
-      const currentDist = Math.hypot(P.x, P.y);
-      if (currentDist > maxDistFromCenter) {
-        const ang = Math.atan2(P.y, P.x);
-        P.x = Math.cos(ang) * maxDistFromCenter;
-        P.y = Math.sin(ang) * maxDistFromCenter;
+      if (!this.persistent) {
+        const currentDist = Math.hypot(P.x, P.y);
+        if (currentDist > maxDistFromCenter) {
+          const ang = Math.atan2(P.y, P.x);
+          P.x = Math.cos(ang) * maxDistFromCenter;
+          P.y = Math.sin(ang) * maxDistFromCenter;
+        }
       }
+      if (this.persistent) { this.applyPersistentMovement(P); this.ensurePersistentWindow(); }
 
       // Sunucuya pozisyon bildirimi (10 Hz).
       if (this.onMove && this.time - this._lastMoveEmit > 0.1) {
@@ -4016,8 +5066,10 @@
         this.onMove(this.worldToServer(P.x, P.y));
       }
 
-      P.facingAngle = Math.atan2(this.mouse.worldY - P.y, this.mouse.worldX - P.x);
+      // Yön: mobilde joystick/dokunuş yönü, masaüstünde fare.
+      P.facingAngle = this.skillAim();
       P.z += (this.groundZAt(P.x, P.y) - P.z) * (1 - Math.exp(-dt * 14)); // yüksek karolara yumuşak çıkış
+      if (this.persistent) this.updatePersistentBiome();
 
       // Yürüme animasyonu + ayak tozu
       const spd = Math.hypot(P.vx, P.vy);
@@ -4036,6 +5088,11 @@
 
       if (P.dashCooldownTimer > 0) P.dashCooldownTimer -= dt;
       if (P.attackCooldownTimer > 0) P.attackCooldownTimer -= dt;
+      // Basılı tutunca otomatik temel saldırı: cooldown dolduğu an yeniden vur.
+      if (this.mouse && this.mouse.isDown && !this.downed && !this._down &&
+          P.attackCooldownTimer <= 0 && !(P.skillLock > 0)) {
+        this.triggerPrimaryAttack();
+      }
       if (P.attackAnimTimer > 0) P.attackAnimTimer -= dt;
       this.updatePlayerStatuses(dt);
       this.updateChannel(dt);
@@ -4210,17 +5267,18 @@
                 const spd = 340;
                 this.projectiles.push({
                   type: 'monster_orb', hostile: true,
-                  x: m.x, y: m.y,
+                  x: m.x + Math.cos(angle) * (m.radius + 8), y: m.y + Math.sin(angle) * (m.radius + 8),
                   vx: Math.cos(angle) * spd, vy: Math.sin(angle) * spd,
-                  radius: 8, life: 2.0, damage: Math.round(monsterDmg), color: m.accent || m.color || '#b388ff'
+                  radius: 8, life: 2.0, damage: Math.round(monsterDmg), element: m.element || 'physical', from: m,
+                  color: m.accent || m.color || '#b388ff'
                 });
                 this.sound.play('shoot');
               } else {
-                this.damagePlayer(Math.round(monsterDmg), angle);
+                this.damagePlayer(Math.round(monsterDmg), angle, m.element || 'physical', m);
                 // Elit yeteneği: yakın alan patlaması.
                 if (m.ability === 'nova') {
                   this.aoeEffects.push({ x: m.x, y: m.y, radius: m.radius * 2.4, duration: 0.4, timer: 0.4, color: m.accent || '#ff8a65', ring: true });
-                  if (distToPlayer <= m.radius * 2.4 + P.radius) this.damagePlayer(Math.round(monsterDmg * 0.4), angle);
+                  if (distToPlayer <= m.radius * 2.4 + P.radius) this.damagePlayer(Math.round(monsterDmg * 0.4), angle, m.element || 'physical', m);
                 }
               }
               // Canavara özel durum (biyom tablosu): dondurma, zehir, yanma...
@@ -4273,18 +5331,23 @@
 
         let hit = false;
         if (p.hostile) {
+          // DÜŞMAN mermisi SADECE oyuncuya çarpar. Önceden bu bloktan sonra
+          // canavar çarpışma döngüsü de çalışıyordu; menzilli bir canavarın
+          // mermisi doğduğu anda kendi gövdesine denk gelip canavarı kendine
+          // hasar veriyordu (oyuncu hiçbir şey yapmadan canavar eriyordu).
           const dp = Math.hypot(P.x - p.x, P.y - p.y);
           if (dp <= P.radius + p.radius) {
             hit = true;
-            this.damagePlayer(p.damage, Math.atan2(p.vy, p.vx));
+            this.damagePlayer(p.damage, Math.atan2(p.vy, p.vx), p.element || 'physical', p.from || null);
           }
-        }
-        if (!hit) for (const m of this.monsters) {
+        } else if (!p.cosmetic) for (const m of this.monsters) {
           if (m.hp <= 0) continue;
           const d = Math.hypot(m.x - p.x, m.y - p.y);
           if (d <= m.radius + p.radius) {
             hit = true;
-            this.applyDamageToMonster(m, p.damage, p.isCrit, Math.atan2(p.vy, p.vx), 0);
+            // Mermi çarptı: ok/hançer sesi (yakın dövüşte kılıç sesi çalar).
+            if (this.sound) this.sound.play(p.type === 'arrow' ? 'hit_ranged' : p.type === 'magic_orb' ? 'hit_magic' : 'hit_physical');
+            this.applyDamageToMonster(m, p.damage, p.isCrit, Math.atan2(p.vy, p.vx), 0, (p.skill && p.skill.element) || p.element || null);
             if (p.skill && p.skill.status) this.applyMonsterStatus(m, p.skill.status);
             break;
           }
@@ -4321,7 +5384,7 @@
           if (aoe.tickTimer >= (aoe.tick || 0.5)) {
             aoe.tickTimer = 0;
             const dmg = Math.max(1, Math.round(this.skillDamage(aoe.skill) * 0.4));
-            this.hitEnemiesInRadius(aoe.x, aoe.y, aoe.radius, dmg, false, 0);
+            this.hitEnemiesInRadius(aoe.x, aoe.y, aoe.radius, dmg, false, 0, aoe.skill.element || null);
             if (aoe.skill.status) this.applyAreaStatus(aoe.x, aoe.y, aoe.radius, aoe.skill);
           }
         }
@@ -4552,6 +5615,438 @@
       this.renderAtmosphericVignette(ctx);
       this.renderWeather(ctx);
       this.renderWorldOverlay(ctx);
+      this.renderStoneCompass(ctx);
+      this.renderMinimaps();
+    }
+
+    // ======================================================================
+    // MİNİ HARİTA
+    // ======================================================================
+    invalidateMinimap() { this._miniBase = null; this._miniBaseKey = ''; }
+
+    minimapWorldRadius() {
+      const R = Math.max(6, Number(this.mapRadius) || 14);
+      return R * (this.tileSize || 64);
+    }
+
+    // Dünyanın basitleştirilmiş kuş bakışı görüntüsü (tek sefer üretilir).
+    buildMinimapBase() {
+      if (this.persistent && this.worldCore) {
+        const key = 'setra|' + this.worldConfig.seed + '|' + this.mapRadius;
+        if (this._miniBase && this._miniBaseKey === key) return this._miniBase;
+        const SIZE = 256, R = Math.max(6, Number(this.mapRadius) || 14);
+        const W = (R + 0.5) * this.tileSize;
+        const off = document.createElement('canvas'); off.width = off.height = SIZE;
+        const g = off.getContext('2d'), pal = this.worldCore.palettes;
+        g.fillStyle = pal.deep.minimap; g.fillRect(0, 0, SIZE, SIZE);
+        for (let py = 0; py < SIZE; py++) for (let px = 0; px < SIZE; px++) {
+          const wx = ((px + 0.5) / SIZE * 2 - 1) * W, wy = ((py + 0.5) / SIZE * 2 - 1) * W;
+          const sv = this.worldToServer(wx, wy);
+          if (sv.x < 0 || sv.y < 0 || sv.x > this.worldConfig.width || sv.y > this.worldConfig.height) continue;
+          const s = this.worldCore.sample(sv.x, sv.y);
+          const c = pal[s.surface] || pal[s.biome] || pal.meadow;
+          g.fillStyle = c.minimap; g.fillRect(px, py, 1, 1);
+          if (!s.water && s.height > 105) { g.fillStyle = 'rgba(255,255,255,0.16)'; g.fillRect(px, py, 1, 1); }
+        }
+        // Yol ve nehir ağını doğrudan çiz: 256 px'lik kıta görünümünde
+        // örnekleme ile kaybolmasınlar (eski haritanın okunabilir yolları).
+        const cfg = this.worldConfig;
+        const toBase = (x, y) => ({ x: ((x + W) / (2 * W)) * SIZE, y: ((y + W) / (2 * W)) * SIZE });
+        g.lineCap = 'round'; g.lineJoin = 'round';
+        for (const rv of (cfg.rivers || [])) {
+          const pts = rv.points || [];
+          if (pts.length < 2) continue;
+          g.strokeStyle = 'rgba(48,108,140,0.95)';
+          g.lineWidth = Math.max(1, (rv.width * this.worldScale) / (2 * W) * SIZE * 2);
+          g.beginPath();
+          pts.forEach((p, i) => { const q = toBase((p[0] - cfg.spawn.x) * this.worldScale, (p[1] - cfg.spawn.y) * this.worldScale); i ? g.lineTo(q.x, q.y) : g.moveTo(q.x, q.y); });
+          g.stroke();
+        }
+        for (const rd of (cfg.roads || [])) {
+          const pts = rd.points || [];
+          if (pts.length < 2) continue;
+          g.strokeStyle = 'rgba(190,164,112,0.95)';
+          g.lineWidth = Math.max(1, (rd.width * this.worldScale) / (2 * W) * SIZE * 2);
+          g.beginPath();
+          pts.forEach((p, i) => { const q = toBase((p[0] - cfg.spawn.x) * this.worldScale, (p[1] - cfg.spawn.y) * this.worldScale); i ? g.lineTo(q.x, q.y) : g.moveTo(q.x, q.y); });
+          g.stroke();
+        }
+        this._miniBase = off; this._miniBaseKey = key;
+        return off;
+      }
+      const R = Math.max(6, Number(this.mapRadius) || 14);
+      const ts = this.tileSize || 64;
+      const W = (R + 0.5) * ts;
+      const SIZE = 512;
+      const key = this.biome + '|' + R + '|' + ts;
+      if (this._miniBase && this._miniBaseKey === key) return this._miniBase;
+      const pal = MINIMAP_PALETTES[this.biome] || MINIMAP_PALETTES.verdant;
+      const off = document.createElement('canvas');
+      off.width = SIZE; off.height = SIZE;
+      const g = off.getContext('2d');
+      g.fillStyle = pal.water;
+      g.fillRect(0, 0, SIZE, SIZE);
+      const k = SIZE / (2 * W);
+      const cell = Math.max(1, ts * k);
+      const tiles = this.tiles || [];
+      for (let i = 0; i < tiles.length; i++) {
+        const t = tiles[i];
+        g.fillStyle = t.type === 'path' ? pal.path : pal.ground;
+        g.fillRect((t.wx + W) * k - cell / 2, (t.wy + W) * k - cell / 2, cell + 1, cell + 1);
+        // Yükseklik (tepe/plato): minimap'te hafif açık ton + eşik çizgisi.
+        if (t.wz > 0) {
+          g.fillStyle = `rgba(255,255,255,${Math.min(0.3, 0.05 + t.wz / 110)})`;
+          g.fillRect((t.wx + W) * k - cell / 2, (t.wy + W) * k - cell / 2, cell + 1, cell + 1);
+          if (t.wz >= 18) {
+            g.strokeStyle = 'rgba(255,255,255,0.18)';
+            g.lineWidth = 1;
+            g.strokeRect((t.wx + W) * k - cell / 2, (t.wy + W) * k - cell / 2, cell + 1, cell + 1);
+          }
+        }
+      }
+      // Ağaç/kaya/dağ kümeleri: haritanın "dokusu" böylece tanınır olur.
+      const scenery = this.scenery || [];
+      for (let i = 0; i < scenery.length; i++) {
+        const s = scenery[i];
+        if (s.type !== 'tree' && s.type !== 'mountain' && s.type !== 'boulder' && s.type !== 'mushroom') continue;
+        const px = (s.wx + W) * k, py = (s.wy + W) * k;
+        if (px < 0 || px > SIZE || py < 0 || py > SIZE) continue;
+        const sz = Math.max(1.2, (s.scale || 1) * ts * k * 0.42);
+        g.fillStyle = s.type === 'tree' ? pal.tree : (s.type === 'boulder' ? pal.rock2 : (s.type === 'mushroom' ? pal.accent : pal.rock));
+        g.beginPath(); g.arc(px, py, sz, 0, TAU); g.fill();
+      }
+      // Kıyı halkası (adadan okyanusa yumuşak geçiş)
+      g.strokeStyle = 'rgba(255,255,255,0.16)';
+      g.lineWidth = Math.max(1.5, SIZE * 0.006);
+      g.beginPath(); g.arc(SIZE / 2, SIZE / 2, R * ts * k, 0, TAU); g.stroke();
+      this._miniBase = off;
+      this._miniBaseKey = key;
+      return off;
+    }
+
+    attachMinimap(canvas, opts) {
+      if (!canvas || !canvas.getContext) return null;
+      if (!this.minimaps) this.minimaps = [];
+      const o = opts || {};
+      let e = this.minimaps.find((x) => x.canvas === canvas);
+      if (!e) {
+        e = { canvas, ctx: canvas.getContext('2d'), zoom: 1, panX: 0, panY: 0, big: false, labels: false, onClick: null };
+        this.minimaps.push(e);
+        this._bindMinimapInput(e);
+      }
+      e.big = !!o.big;
+      e.labels = !!o.labels;
+      e.onClick = typeof o.onClick === 'function' ? o.onClick : null;
+      return e;
+    }
+
+    detachMinimap(canvas) {
+      if (!this.minimaps) return;
+      this.minimaps = this.minimaps.filter((e) => e.canvas !== canvas);
+    }
+
+    minimapClampPan(e) {
+      const R = Math.max(6, Number(this.mapRadius) || 14) * (this.tileSize || 64);
+      const z = Math.max(1, e.zoom || 1);
+      const maxPan = R * Math.max(0, 1 - 1 / z);
+      e.panX = clamp(e.panX, -maxPan, maxPan);
+      e.panY = clamp(e.panY, -maxPan, maxPan);
+    }
+
+    minimapCenterOn(e, wx, wy) {
+      e.panX = Number.isFinite(wx) ? wx : 0;
+      e.panY = Number.isFinite(wy) ? wy : 0;
+      this.minimapClampPan(e);
+    }
+
+    _bindMinimapInput(e) {
+      const cv = e.canvas;
+      let drag = null;
+      const geo = () => {
+        const w = cv.clientWidth || 0, h = cv.clientHeight || 0;
+        const R = Math.max(6, Number(this.mapRadius) || 14) * (this.tileSize || 64);
+        return { w, h, cx: w / 2, cy: h / 2, rad: Math.min(w, h) / 2 - 2, R };
+      };
+      const onWheel = (ev) => {
+        ev.preventDefault();
+        const g = geo();
+        if (!g.w) return;
+        const rect = cv.getBoundingClientRect();
+        const mx = ev.clientX - rect.left, my = ev.clientY - rect.top;
+        const before = this.minimapScreenToWorld(e, mx, my, g);
+        const k = ev.deltaY > 0 ? 0.86 : 1.16;
+        e.zoom = clamp((e.zoom || 1) * k, 1, 6);
+        const after = this.minimapScreenToWorld(e, mx, my, g);
+        e.panX += before.x - after.x;
+        e.panY += before.y - after.y;
+        this.minimapClampPan(e);
+      };
+      const onDown = (ev) => {
+        const rect = cv.getBoundingClientRect();
+        drag = { x: ev.clientX - rect.left, y: ev.clientY - rect.top, sx: ev.clientX, sy: ev.clientY, moved: 0 };
+        try { cv.setPointerCapture(ev.pointerId); } catch (err) {}
+      };
+      const onMove = (ev) => {
+        if (!drag) return;
+        const rect = cv.getBoundingClientRect();
+        const x = ev.clientX - rect.left, y = ev.clientY - rect.top;
+        drag.moved = Math.max(drag.moved, Math.hypot(ev.clientX - drag.sx, ev.clientY - drag.sy));
+        const g = geo();
+        if (!g.w || (e.zoom || 1) <= 1.001) return;
+        const s = (g.rad / g.R) * (e.zoom || 1);
+        e.panX -= (x - drag.x) / s;
+        e.panY -= (y - drag.y) / s;
+        drag.x = x; drag.y = y;
+        this.minimapClampPan(e);
+      };
+      const onUp = () => {
+        if (drag && drag.moved < 5 && typeof e.onClick === 'function') e.onClick(e);
+        drag = null;
+      };
+      cv.addEventListener('wheel', onWheel, { passive: false });
+      cv.addEventListener('pointerdown', onDown);
+      cv.addEventListener('pointermove', onMove);
+      cv.addEventListener('pointerup', onUp);
+      cv.addEventListener('pointercancel', () => { drag = null; });
+      cv.addEventListener('pointerleave', () => { drag = null; });
+    }
+
+    minimapScreenToWorld(e, mx, my, g) {
+      const R = Math.max(6, Number(this.mapRadius) || 14) * (this.tileSize || 64);
+      const s = (g.rad / R) * (e.zoom || 1);
+      return { x: (mx - g.cx) / s + (e.panX || 0), y: (my - g.cy) / s + (e.panY || 0) };
+    }
+
+    renderMinimaps() {
+      if (!this.minimaps || !this.minimaps.length) return;
+      for (const e of this.minimaps) {
+        const cv = e.canvas;
+        if (!cv || !cv.isConnected) continue;
+        const cssW = cv.clientWidth, cssH = cv.clientHeight;
+        if (cssW < 12 || cssH < 12) continue; // kapalı panel
+        try { this.drawMinimap(e, cssW, cssH); } catch (err) { /* minimap oyunu durdurmasın */ }
+      }
+    }
+
+    drawMinimap(e, cssW, cssH) {
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      const pw = Math.max(1, Math.round(cssW * dpr)), ph = Math.max(1, Math.round(cssH * dpr));
+      if (e.canvas.width !== pw || e.canvas.height !== ph) { e.canvas.width = pw; e.canvas.height = ph; }
+      const g = e.ctx;
+      if (!g) return;
+      g.setTransform(dpr, 0, 0, dpr, 0, 0);
+      g.clearRect(0, 0, cssW, cssH);
+
+      const R = Math.max(6, Number(this.mapRadius) || 14) * (this.tileSize || 64);
+      const W = R + (this.tileSize || 64) * 0.5;
+      const pal = MINIMAP_PALETTES[this.biome] || MINIMAP_PALETTES.verdant;
+      const cx = cssW / 2, cy = cssH / 2;
+      const rad = Math.min(cssW, cssH) / 2 - 2;
+      const zoom = Math.max(1, e.zoom || 1);
+      const s = (rad / R) * zoom;
+      const toPx = (wx, wy) => ({ x: cx + (wx - (e.panX || 0)) * s, y: cy + (wy - (e.panY || 0)) * s });
+
+      // Dış çerçeve + zemin (okyanus)
+      g.save();
+      g.beginPath(); g.arc(cx, cy, rad + 1.5, 0, TAU);
+      g.fillStyle = 'rgba(8,14,18,0.92)'; g.fill();
+      g.beginPath(); g.arc(cx, cy, rad, 0, TAU); g.clip();
+      g.fillStyle = pal.water; g.fillRect(0, 0, cssW, cssH);
+
+      const base = this.buildMinimapBase();
+      if (base) {
+        const p0 = toPx(-W, -W);
+        const size = 2 * W * s;
+        g.imageSmoothingEnabled = true;
+        g.drawImage(base, p0.x, p0.y, size, size);
+      }
+
+      // POI'ler (dungeon/den/chest/inn/ruin/watch)
+      const POI_COL = { dungeon: '#b388ff', den: '#ffab40', chest: '#ffd54f', inn: '#69f0ae', ruin: '#b0bec5', watch: '#80d8ff' };
+      const pois = this.poiMarkers || [];
+      for (let i = 0; i < pois.length; i++) {
+        const p = pois[i];
+        if (p.consumed) continue;
+        const q = toPx(p.wx, p.wy);
+        if (q.x < -8 || q.y < -8 || q.x > cssW + 8 || q.y > cssH + 8) continue;
+        const col = POI_COL[p.kind] || '#ffffff';
+        const rr2 = e.big ? 4 : 2.6;
+        g.fillStyle = 'rgba(0,0,0,0.65)';
+        g.beginPath(); g.arc(q.x, q.y, rr2 + 1.2, 0, TAU); g.fill();
+        g.fillStyle = col;
+        g.beginPath(); g.arc(q.x, q.y, rr2, 0, TAU); g.fill();
+        if (e.labels && p.name) {
+          g.font = '600 9px Inter, system-ui, sans-serif';
+          g.textAlign = 'center';
+          g.fillStyle = 'rgba(0,0,0,0.75)';
+          g.fillText(p.name, q.x + 0.8, q.y - rr2 - 4 + 0.8);
+          g.fillStyle = col;
+          g.fillText(p.name, q.x, q.y - rr2 - 4);
+        }
+      }
+
+      // Canavarlar: küçük kırmızı noktalar (kalabalığı şişirmemek için seyreltilir)
+      const mobs = this.monsters || [];
+      const step = e.big ? 1 : (mobs.length > 40 ? 2 : 1);
+      g.fillStyle = 'rgba(255,84,84,0.85)';
+      for (let i = 0; i < mobs.length; i += step) {
+        const m = mobs[i];
+        if (!m || m.hp <= 0) continue;
+        const q = toPx(m.x, m.y);
+        if (q.x < 0 || q.y < 0 || q.x > cssW || q.y > cssH) continue;
+        g.beginPath(); g.arc(q.x, q.y, e.big ? 2.2 : 1.6, 0, TAU); g.fill();
+      }
+
+      // Diğer oyuncular
+      const others = this.others || {};
+      for (const id of Object.keys(others)) {
+        const o = others[id];
+        if (!o) continue;
+        const q = toPx(o.wx, o.wy);
+        if (q.x < -6 || q.y < -6 || q.x > cssW + 6 || q.y > cssH + 6) continue;
+        g.fillStyle = o.downed ? '#ff8a80' : (o.color || '#8ec5ff');
+        g.strokeStyle = 'rgba(0,0,0,0.7)'; g.lineWidth = 1.2;
+        g.beginPath(); g.arc(q.x, q.y, e.big ? 3.4 : 2.6, 0, TAU); g.fill(); g.stroke();
+        if (e.labels && o.name) {
+          g.font = '600 9px Inter, system-ui, sans-serif'; g.textAlign = 'center';
+          g.fillStyle = 'rgba(0,0,0,0.75)'; g.fillText(o.name, q.x + 0.8, q.y - 6.8);
+          g.fillStyle = '#eaf6ff'; g.fillText(o.name, q.x, q.y - 7.6);
+        }
+      }
+
+      // Yerel oyuncu: yön oku
+      const me = this.player;
+      if (me) {
+        const q = toPx(me.x, me.y);
+        const a = me.facingAngle || 0;
+        g.save();
+        g.translate(q.x, q.y);
+        g.rotate(a);
+        g.beginPath();
+        const sz = e.big ? 8 : 6;
+        g.moveTo(sz, 0); g.lineTo(-sz * 0.7, sz * 0.62); g.lineTo(-sz * 0.35, 0); g.lineTo(-sz * 0.7, -sz * 0.62);
+        g.closePath();
+        g.fillStyle = '#ffe082';
+        g.strokeStyle = '#241a06'; g.lineWidth = 1.2;
+        g.fill(); g.stroke();
+        g.restore();
+      }
+
+      // Seyahat taşı: mavi nokta. Görünüm dışındaysa kenara yaslanıp yön gösterir.
+      this.drawMinimapStoneMarker(g, e, { cx, cy, rad, toPx, cssW, cssH });
+
+      // Kamera görüş alanı (izo eşkenar dörtgen)
+      try {
+        const z = this.zoom || 1;
+        const ccx = this.width / 2, ccy = this.height / 2;
+        const inv = (sx, sy) => {
+          const ax = ccx + (sx - ccx) / z, ay = ccy + (sy - ccy) / z;
+          return screenToWorld(ax, ay, this.camera);
+        };
+        const corners = [inv(0, 0), inv(this.width, 0), inv(this.width, this.height), inv(0, this.height)];
+        g.beginPath();
+        corners.forEach((w, i) => { const q = toPx(w.x, w.y); if (i) g.lineTo(q.x, q.y); else g.moveTo(q.x, q.y); });
+        g.closePath();
+        g.strokeStyle = 'rgba(255,255,255,0.42)';
+        g.lineWidth = 1.2;
+        g.stroke();
+      } catch (err) {}
+
+      g.restore();
+
+      // Halka çerçeve
+      g.beginPath(); g.arc(cx, cy, rad + 1.2, 0, TAU);
+      g.strokeStyle = 'rgba(214,178,106,0.55)'; g.lineWidth = 2; g.stroke();
+      g.beginPath(); g.arc(cx, cy, rad - 1, 0, TAU);
+      g.strokeStyle = 'rgba(0,0,0,0.35)'; g.lineWidth = 1; g.stroke();
+    }
+
+    drawMinimapStoneMarker(g, e, geo) {
+      const { cx, cy, rad, toPx, cssW, cssH } = geo;
+      const stoneX = 0, stoneY = -14;
+      const q = toPx(stoneX, stoneY);
+      const dx = q.x - cx, dy = q.y - cy;
+      const dist = Math.hypot(dx, dy);
+      const pulse = 0.55 + 0.45 * Math.sin(this.time * 4);
+      const outside = dist > rad - 6;
+      const ang = Math.atan2(dy, dx);
+      const x = outside ? cx + Math.cos(ang) * (rad - 7) : q.x;
+      const y = outside ? cy + Math.sin(ang) * (rad - 7) : q.y;
+      const rr = e.big ? 5 : 3.4;
+      g.save();
+      // parlama
+      const gr = g.createRadialGradient(x, y, 0, x, y, rr * 4.2);
+      gr.addColorStop(0, 'rgba(79,195,247,' + (0.55 * pulse).toFixed(3) + ')');
+      gr.addColorStop(1, 'rgba(79,195,247,0)');
+      g.fillStyle = gr;
+      g.beginPath(); g.arc(x, y, rr * 4.2, 0, TAU); g.fill();
+      // nokta
+      g.fillStyle = '#4fc3f7';
+      g.strokeStyle = '#e8fbff';
+      g.lineWidth = 1.4;
+      g.beginPath(); g.arc(x, y, rr, 0, TAU); g.fill(); g.stroke();
+      // dışa dönük ok (yalnızca taş görünüm dışındaysa)
+      if (outside) {
+        g.translate(x, y);
+        g.rotate(ang);
+        g.beginPath();
+        g.moveTo(rr + 7, 0); g.lineTo(rr + 1, 4.2); g.lineTo(rr + 1, -4.2);
+        g.closePath();
+        g.fillStyle = '#4fc3f7';
+        g.fill();
+      }
+      g.restore();
+    }
+
+    // Taş ekran dışındaysa kenarda mavi pusula noktası (yön + mesafe).
+    renderStoneCompass(ctx) {
+      if (!this.player) return;
+      const p = this.iso(0, -14, 0);
+      const pad = 54;
+      if (p.x > pad && p.x < this.width - pad && p.y > pad && p.y < this.height - pad) return;
+      const ccx = this.width / 2, ccy = this.height / 2;
+      const dx = p.x - ccx, dy = p.y - ccy;
+      if (!Number.isFinite(dx) || !Number.isFinite(dy)) return;
+      const ang = Math.atan2(dy, dx);
+      const hw = Math.max(30, ccx - pad), hh = Math.max(30, ccy - pad);
+      const ca = Math.cos(ang), sa = Math.sin(ang);
+      const tx = Math.abs(ca) > 1e-4 ? hw / Math.abs(ca) : Infinity;
+      const ty = Math.abs(sa) > 1e-4 ? hh / Math.abs(sa) : Infinity;
+      const t = Math.min(tx, ty);
+      const x = ccx + ca * t, y = ccy + sa * t;
+      const pulse = 0.55 + 0.45 * Math.sin(this.time * 4);
+      ctx.save();
+      ctx.translate(x, y);
+      // hale
+      const gr = ctx.createRadialGradient(0, 0, 0, 0, 0, 30);
+      gr.addColorStop(0, 'rgba(79,195,247,' + (0.34 * pulse).toFixed(3) + ')');
+      gr.addColorStop(1, 'rgba(79,195,247,0)');
+      ctx.fillStyle = gr;
+      ctx.beginPath(); ctx.arc(0, 0, 30, 0, TAU); ctx.fill();
+      // ok
+      ctx.save();
+      ctx.rotate(ang);
+      ctx.beginPath();
+      ctx.moveTo(14, 0); ctx.lineTo(3, 7.5); ctx.lineTo(3, -7.5);
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(79,195,247,0.95)';
+      ctx.strokeStyle = 'rgba(232,251,255,0.9)';
+      ctx.lineWidth = 1.4;
+      ctx.fill(); ctx.stroke();
+      ctx.restore();
+      // nokta
+      ctx.beginPath(); ctx.arc(0, 0, 5 + pulse * 1.2, 0, TAU);
+      ctx.fillStyle = '#4fc3f7'; ctx.fill();
+      ctx.strokeStyle = '#e8fbff'; ctx.lineWidth = 1.6; ctx.stroke();
+      // mesafe (karo cinsinden)
+      const distTiles = Math.round(Math.hypot(this.player.x, this.player.y + 14) / (this.tileSize || 64));
+      ctx.font = '700 10px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = 'rgba(0,0,0,0.8)';
+      ctx.fillText('Seyahat Taşı · ' + distTiles, 0.8, 23.8);
+      ctx.fillStyle = '#bfeaff';
+      ctx.fillText('Seyahat Taşı · ' + distTiles, 0, 23);
+      ctx.restore();
     }
 
     // ---------------- KAROLAR ----------------
@@ -4701,6 +6196,20 @@
         g.strokeStyle = 'rgba(40,25,10,0.35)'; g.lineWidth = 1;
         const [cx, cy] = pt();
         g.beginPath(); g.moveTo(cx, cy); g.lineTo(cx + 5, cy + 2); g.lineTo(cx + 9, cy - 1); g.stroke();
+      } else if (type === 'water' || type === 'deep') {
+        // Su: yumuşak dalga çizgileri + parlama (kaya faseti değil).
+        g.strokeStyle = type === 'deep' ? 'rgba(120,180,210,0.16)' : 'rgba(180,225,240,0.30)';
+        g.lineWidth = 1.1;
+        for (let i = 0; i < 5; i++) {
+          const [x, y] = pt();
+          g.beginPath();
+          g.moveTo(x - 6, y);
+          g.quadraticCurveTo(x - 2, y - 2.2, x + 2, y);
+          g.quadraticCurveTo(x + 5, y + 1.8, x + 8, y);
+          g.stroke();
+        }
+        g.fillStyle = 'rgba(255,255,255,0.07)';
+        for (let i = 0; i < 4; i++) { const [x, y] = pt(); g.fillRect(x, y, 2, 1); }
       } else {
         // Kaya: açık faset + çatlaklar + yosun
         g.fillStyle = 'rgba(255,255,255,0.07)';
@@ -4761,18 +6270,39 @@
       const hw = this.tileSize * COS_30, hh = this.tileSize * SIN_30, th = this.tileThickness;
       const camX = this.camera.x, camY = this.camera.y;
       const W = this.width, H = this.height;
-      const tiles = this.tiles;
-      for (let i = 0; i < tiles.length; i++) {
-        const t = tiles[i];
-        // Önceden hesaplanmış taban konum + kamera (nesne ayırma yok).
+      const z = this.zoom || 1;
+      const cx = W / 2, cy = H / 2;
+      // Zoom uygulandığı için görünür alan zoom öncesi ekran uzayında büyür/küçülür.
+      const minX = cx - cx / z - 140, maxX = cx + cx / z + 140;
+      const minY = cy - cy / z - 170, maxY = cy + cy / z + 170;
+      const rows = this._tileRows;
+      const CELL = this._tileRowCell || 256, OFF = this._tileRowOff || 512;
+      const drawTile = (t) => {
         const sx = t.sx + camX, sy = t.sy + camY;
-        if (sx < -120 || sx > W + 120 || sy < -120 || sy > H + 140) continue;
-
+        if (sx < minX || sx > maxX || sy < minY || sy > maxY) return;
         const sp = this.getTileSprite(t.type, t.variant, t.wz);
-        if (!sp || !sp.canvas || !sp.canvas.width) continue;
+        if (!sp || !sp.canvas || !sp.canvas.width) return;
         ctx.drawImage(sp.canvas, sx - sp.ox, sy - sp.oy, sp.w, sp.h);
-
-        // Ada kenarına doğru kararma (derinlik hissi)
+        if (this.persistent && (t.type === 'water' || t.type === 'deep' || t.type === 'path')) {
+          ctx.save();
+          ctx.beginPath(); ctx.moveTo(sx, sy - hh); ctx.lineTo(sx + hw, sy);
+          ctx.lineTo(sx, sy + hh); ctx.lineTo(sx - hw, sy); ctx.closePath(); ctx.clip();
+          if (t.type === 'path') {
+            ctx.strokeStyle = 'rgba(64,42,24,0.22)'; ctx.lineWidth = 1;
+            for (const off of [-5, 5]) { ctx.beginPath(); ctx.moveTo(sx - hw * 0.55, sy + off); ctx.lineTo(sx + hw * 0.55, sy + off); ctx.stroke(); }
+          } else {
+          const drift = (this.time * 8 + t.variant * 13) % 18;
+          ctx.strokeStyle = t.type === 'deep' ? 'rgba(130,190,215,0.12)' : 'rgba(205,240,245,0.30)';
+          ctx.lineWidth = 1.1;
+          for (let k = -1; k <= 1; k++) {
+            const yy = sy + k * 10 + drift * 0.25;
+            ctx.beginPath(); ctx.moveTo(sx - hw * 0.48 + drift, yy);
+            ctx.quadraticCurveTo(sx - 5 + drift, yy - 3, sx + 7 + drift, yy);
+            ctx.quadraticCurveTo(sx + 16 + drift, yy + 2, sx + 25 + drift, yy); ctx.stroke();
+          }
+          }
+          ctx.restore();
+        }
         if (t.edgeStyle) {
           const full = th + t.wz;
           ctx.fillStyle = t.edgeStyle;
@@ -4781,6 +6311,17 @@
           ctx.lineTo(sx, sy + hh + full); ctx.lineTo(sx - hw, sy + full); ctx.lineTo(sx - hw, sy);
           ctx.closePath(); ctx.fill();
         }
+      };
+      if (!rows) {
+        for (let i = 0; i < this.tiles.length; i++) drawTile(this.tiles[i]);
+        return;
+      }
+      const ky0 = Math.floor((minY - camY) / CELL) + OFF;
+      const ky1 = Math.floor((maxY - camY) / CELL) + OFF;
+      for (let ky = ky0; ky <= ky1; ky++) {
+        const arr = rows.get(ky);
+        if (!arr) continue;
+        for (let i = 0; i < arr.length; i++) drawTile(arr[i]);
       }
     }
 
@@ -4833,16 +6374,22 @@
 
       const shadows = this._shadowScenery || this.scenery;
       const camX = this.camera.x, camY = this.camera.y;
+      // Gölge, nesnenin KENDİ zemin yüksekliğine düşmeli. Önceden z=0 idi;
+      // tepelerde ağaçlar gölgesinden kopup "havada" görünüyordu.
+      const tn = this.worldTuning();
+      const treeK = Math.sqrt(tn.treeScale / 3) * 1.7;
       for (let i = 0; i < shadows.length; i++) {
         const s = shadows[i];
         const x = s._bx + camX, y = s._by + camY;
         if (x < -160 || x > this.width + 160 || y < -160 || y > this.height + 160) continue;
-        if (s.type === 'tree') soft(s.wx, s.wy, 0, 34 * s.scale, 16 * s.scale, 0.6, 7, 3);
-        else if (s.type === 'boulder') soft(s.wx, s.wy, 0, 24 * s.scale, 11 * s.scale, 0.55, 4, 2);
-        else if (s.type === 'mountain') soft(s.wx, s.wy, 0, 46 * s.scale, 15 * s.scale, 0.5, 9, 4);
-        else if (s.type === 'shrine') soft(s.wx, s.wy, 0, 40, 19, 0.6);
-        else if (s.type === 'mushroom') soft(s.wx, s.wy, 0, 12 * s.scale, 6 * s.scale, 0.5);
-        else if (s.type === 'lantern') soft(s.wx, s.wy, 0, 12, 6, 0.5);
+        const z = s.z || 0;
+        if (s.type === 'tree') soft(s.wx, s.wy, z, 34 * s.scale * treeK, 16 * s.scale * treeK, 0.6, 7, 3);
+        else if (s.type === 'boulder') soft(s.wx, s.wy, z, 24 * s.scale, 11 * s.scale, 0.55, 4, 2);
+        else if (s.type === 'mountain') soft(s.wx, s.wy, z, 46 * s.scale, 15 * s.scale, 0.5, 9, 4);
+        else if (s.type === 'shrine') soft(s.wx, s.wy, z, 40, 19, 0.6);
+        else if (s.type === 'mushroom') soft(s.wx, s.wy, z, 12 * s.scale, 6 * s.scale, 0.5);
+        else if (s.type === 'lantern') soft(s.wx, s.wy, z, 12, 6, 0.5);
+        else if (s.type === 'glb') soft(s.wx, s.wy, z, 22 * (s.scale || 1), 10 * (s.scale || 1), 0.42, 3, 2);
       }
 
       this.monsters.forEach((m) => {
@@ -5091,14 +6638,14 @@
         for (let i = 0; i < count; i++) {
           const a = ang + (i - (count - 1) / 2) * spread;
           this.projectiles.push({
-            type: 'monster_orb', hostile: true, x: m.x, y: m.y,
+            type: 'monster_orb', hostile: true, x: m.x + Math.cos(a) * (m.radius + 8), y: m.y + Math.sin(a) * (m.radius + 8),
             vx: Math.cos(a) * 380, vy: Math.sin(a) * 380,
-            radius: 8, life: 2.2, damage: dmg, color
+            radius: 8, life: 2.2, damage: dmg, element: m.element || 'physical', from: m, color
           });
         }
       }
       if (landed) {
-        this.damagePlayer(dmg, ang);
+        this.damagePlayer(dmg, ang, m.element || 'physical', m);
         if (sk.status && this.playerData.stats.currentHp > 0) this.applyPlayerStatusFromMonster(sk.status);
       }
     }
@@ -5428,6 +6975,45 @@
     // ---------------- ÇEVRE: AĞAÇ / KAYA / FENER / MANTAR / TAŞ ----------------
     // İlgi noktaları (dungeon kapısı, in, sandık...). Oyunun karanlık-fantezi
     // izometrik tarzına uygun, el çizimi sahne parçaları.
+    // GLB yüklenene kadar (veya WebGL kapalıysa) yapıların görünür kalması
+    // için basit izometrik gövde+çatı silueti.
+    drawStructureFallback(ctx, s, x, y) {
+      const sc = s.scale || 1;
+      const model = s.model || '';
+      const dec = (window.Setra3DTrees && window.Setra3DTrees.decor && window.Setra3DTrees.decor.glb) || {};
+      const baseH = (dec.heights && dec.heights[model]) || dec.height || 64;
+      const h = baseH * sc, w = h * 0.62;
+      const isRock = model === 'bigrock' || model === 'rocks' || model === 'crystals';
+      const isTree = model === 'oak' || model === 'pine' || model === 'birch' || model === 'autumn' || model === 'deadtree';
+      const wood = /tavern|house|barn|hut|longhouse|smithy|chapel|tower|mill|gatehouse|stall|cart|barrel|crate|hay|fence|well|lamp|sign|bridge|tent|campfire|logs|stump/.test(model);
+      const body = isRock ? '#5d656b' : isTree ? '#244a26' : wood ? '#8a6a48' : '#9a8666';
+      const roof = isRock ? '#7b848a' : isTree ? '#2f6b33' : '#4a3226';
+      ctx.save(); ctx.translate(x, y);
+      ctx.fillStyle = 'rgba(0,0,0,0.32)';
+      ctx.beginPath(); ctx.ellipse(0, 0, w * 0.62, w * 0.28, 0, 0, TAU); ctx.fill();
+      if (isTree) {
+        ctx.fillStyle = '#4a2f18'; ctx.fillRect(-w * 0.09, -h * 0.3, w * 0.18, h * 0.3);
+        ctx.fillStyle = body;
+        ctx.beginPath(); ctx.moveTo(0, -h); ctx.lineTo(w * 0.55, -h * 0.34); ctx.lineTo(-w * 0.55, -h * 0.34); ctx.closePath(); ctx.fill();
+      } else if (isRock) {
+        ctx.fillStyle = body;
+        ctx.beginPath(); ctx.moveTo(-w * 0.55, 0); ctx.lineTo(-w * 0.3, -h * 0.72);
+        ctx.lineTo(w * 0.05, -h); ctx.lineTo(w * 0.45, -h * 0.55); ctx.lineTo(w * 0.55, 0); ctx.closePath(); ctx.fill();
+      } else {
+        ctx.fillStyle = body; ctx.fillRect(-w * 0.42, -h * 0.62, w * 0.84, h * 0.62);
+        ctx.fillStyle = roof;
+        ctx.beginPath(); ctx.moveTo(-w * 0.52, -h * 0.6); ctx.lineTo(0, -h); ctx.lineTo(w * 0.52, -h * 0.6); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = 'rgba(20,14,8,0.55)'; ctx.fillRect(-w * 0.1, -h * 0.3, w * 0.2, h * 0.3);
+      }
+      if (s.interactable && s.label) {
+        ctx.font = '600 10px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center'; ctx.fillStyle = 'rgba(0,0,0,0.7)';
+        ctx.fillText(s.label, 0.7, -h - 6.7);
+        ctx.fillStyle = '#ffe9b8'; ctx.fillText(s.label, 0, -h - 7);
+      }
+      ctx.restore();
+    }
+
     drawPOI(ctx, s, x, y, t) {
       const kind = s.kind || 'ruin';
       const stone = '#6b6459', stoneDark = '#46413a', stoneLight = '#8e8779';
@@ -5596,8 +7182,18 @@
       const t = this.time;
 
       if (s.type === 'poi') { this.drawPOI(ctx, s, x, y, t); return; }
+      // Bütün çevre modelleri aynı GLB bake/cache yolunu kullanır; model henüz
+      // hazır değilse mevcut vektör painter'a düşülür.
+      if (s.type !== 'tree' && window.Setra3DTrees && window.Setra3DTrees.drawScenery(ctx, s, x, y, this)) return;
+      if (s.type === 'glb') {
+        if (s.fallbackType === 'poi') this.drawPOI(ctx, s, x, y, t);
+        else this.drawStructureFallback(ctx, s, x, y);
+        return;
+      }
 
       if (s.type === 'tree') {
+        // 3D ağaç denemesi (public/js/trees3d.js). Hazır değilse vektör çizim.
+        if (window.Setra3DTrees && window.Setra3DTrees.drawScenery(ctx, s, x, y, this)) return;
         const sc = s.scale;
         const sway = Math.sin(t * 1.8 + (s.swayOffset || 0)) * 2.2 * sc;
         const tone = (s.tone - 0.5) * 0.18;
@@ -5862,72 +7458,26 @@
     }
 
     // ---------------- OYUNCU (37 sınıf görünümü) ----------------
+    // Diğer oyuncular da kendi sınıflarının tam görünümüyle çizilir; tek fark
+    // isim plakası, can barı ve yere düşme etiketidir.
     drawOtherPlayer(ctx, o) {
       const { x, y } = this.iso(o.wx, o.wy, 0);
-      if (x < -70 || x > this.width + 70 || y < -90 || y > this.height + 60) return;
+      if (x < -90 || x > this.width + 90 || y < -120 || y > this.height + 80) return;
       ctx.save();
       ctx.translate(x, y);
-      ctx.fillStyle = 'rgba(0,0,0,0.35)';
+      ctx.fillStyle = 'rgba(0,0,0,0.34)';
       ctx.beginPath(); ctx.ellipse(0, 0, 14, 6, 0, 0, TAU); ctx.fill();
-      // Düşen müttefik: yerde yatan figür + kırmızı halka.
-      if (o.downed) {
-        const pulse = 0.5 + 0.5 * Math.sin(this.time * 5);
-        ctx.strokeStyle = rgba('#ff5252', 0.6 + 0.3 * pulse);
-        ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.ellipse(0, 1, 22, 9, 0, 0, TAU); ctx.stroke();
-        ctx.save();
-        ctx.translate(0, 6);
-        ctx.rotate(-1.2);
-        ctx.fillStyle = o.color || '#8ec5ff';
-        ctx.beginPath(); ctx.moveTo(-8, -6); ctx.lineTo(8, -6); ctx.lineTo(6, -26); ctx.lineTo(-6, -26); ctx.closePath(); ctx.fill();
-        ctx.fillStyle = '#e8c39a';
-        ctx.beginPath(); ctx.arc(0, -33, 6, 0, TAU); ctx.fill();
-        ctx.restore();
-      } else {
-        ctx.fillStyle = o.color || '#8ec5ff';
-        ctx.beginPath(); ctx.moveTo(-8, -6); ctx.lineTo(8, -6); ctx.lineTo(6, -26); ctx.lineTo(-6, -26); ctx.closePath(); ctx.fill();
-        ctx.fillStyle = '#e8c39a';
-        ctx.beginPath(); ctx.arc(0, -33, 6, 0, TAU); ctx.fill();
-      }
-      ctx.font = '700 11px system-ui, sans-serif';
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillStyle = 'rgba(0,0,0,0.55)';
-      ctx.fillText(o.name || '?', 0, -45);
-      ctx.fillStyle = o.downed ? '#ff8a80' : '#cfe8ff';
-      ctx.fillText(o.name || '?', 0, -46);
-      const bw = 44, bh = 5, bx = -bw / 2, by = -56;
-      ctx.fillStyle = 'rgba(0,0,0,0.6)';
-      rr(ctx, bx - 1, by - 1, bw + 2, bh + 2, 3); ctx.fill();
-      const f = clamp(o.hpFrac != null ? o.hpFrac : 1, 0, 1);
-      if (f > 0) {
-        ctx.fillStyle = f > 0.35 ? '#2fbf4a' : '#d32f2f';
-        rr(ctx, bx, by, Math.max(2, bw * f), bh, 2); ctx.fill();
-      }
-      if (o.downed) {
-        const dw = 64;
-        ctx.fillStyle = 'rgba(40,6,8,0.8)';
-        rr(ctx, -dw / 2, by - 18, dw, 14, 7); ctx.fill();
-        ctx.fillStyle = '#ff8a80';
-        ctx.font = 'bold 9px Inter, sans-serif';
-        ctx.fillText('DOWNED', 0, by - 11);
-      }
-      // Yakındaysa diriltme ipucu
-      if (this._reviveTarget === o.id) {
-        ctx.font = 'bold 11px Inter, sans-serif';
-        const label = '[E] Revive';
-        const lw = ctx.measureText(label).width + 16;
-        ctx.fillStyle = 'rgba(10,24,18,0.82)';
-        rr(ctx, -lw / 2, by - 38, lw, 16, 8); ctx.fill();
-        ctx.strokeStyle = 'rgba(120,255,180,0.7)'; ctx.lineWidth = 1; ctx.stroke();
-        ctx.fillStyle = '#8dffc0'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText(label, 0, by - 30);
-      }
       ctx.restore();
+      // Tam sınıf görünümü + isim/can plakası drawPlayer içinde.
+      o.x = o.wx; o.y = o.wy; o.z = this.groundZAt(o.wx, o.wy);
+      this.drawPlayer(ctx, o);
     }
 
     drawPlayer(ctx, p) {
+      const isSelf = p === this.player;
       const { x, y } = this.iso(p.x, p.y, p.z);
-      const S = p.style || (p.style = getClassStyle(this.playerData.class));
+      const S = p.style || (p.style = getClassStyle(p.character || this.playerData.class));
+      const downed = isSelf ? this.downed : !!p.downed;
       const o = S.pal;
       const t = this.time;
       const fa = worldAngleToScreen(p.facingAngle);
@@ -5949,7 +7499,7 @@
       if (S.ground) groundFx(ctx, t, S.ground);
 
       ctx.save();
-      if (this.downed) {
+      if (downed) {
         // Yere yatmış: gövdeyi yana çevirip hafif çökert.
         ctx.translate(0, 7);
         ctx.rotate(-1.2);
@@ -6158,7 +7708,7 @@
 
       // İsim plakası (boy/başlık yüksekliğine göre yukarı kayar)
       const lift = Math.max(0, 46 * S.scale + (HEAD_TALL[S.head] || 0) + (S.halo ? 5 : 0) + (S.crown ? 4 : 0) - 50);
-      if (this.downed) {
+      if (downed) {
         // Yere düşme göstergesi: kırmızı nabız halkası + DOWNED etiketi.
         const pulse = 0.5 + 0.5 * Math.sin(t * 5);
         ctx.save();
@@ -6170,23 +7720,45 @@
         ctx.beginPath(); ctx.ellipse(0, 2, 26, 10, 0, 0, TAU); ctx.stroke();
         const dw = 78;
         ctx.fillStyle = 'rgba(40,6,8,0.78)';
-        rr(ctx, -dw / 2, -78 - lift, dw, 16, 8); ctx.fill();
+        rr(ctx, -dw / 2, -96 - lift, dw, 16, 8); ctx.fill();
         ctx.strokeStyle = rgba('#ff5252', 0.8); ctx.lineWidth = 1; ctx.stroke();
         ctx.font = 'bold 11px Inter, sans-serif';
         ctx.fillStyle = '#ff8a80'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText('DOWNED', 0, -70 - lift);
+        ctx.fillText('DOWNED', 0, -88 - lift);
       }
-      ctx.font = 'bold 12px Cinzel, Inter, sans-serif';
-      const nm = String(this.playerData.name || '');
-      const w = ctx.measureText(nm).width;
-      ctx.fillStyle = 'rgba(6,14,18,0.6)';
-      rr(ctx, -w / 2 - 6, -70 - lift, w + 12, 16, 8); ctx.fill();
-      ctx.strokeStyle = 'rgba(128,222,234,0.45)'; ctx.lineWidth = 1; ctx.stroke();
-      ctx.fillStyle = '#80deea'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillText(nm, 0, -62 - lift);
+      const nm = String((isSelf ? (this.playerData.name || p.name) : p.name) || '');
+      if (nm) {
+        const nameCol = isSelf ? '#80deea' : (p.color || '#cfe8ff');
+        ctx.font = 'bold 12px Cinzel, Inter, sans-serif';
+        const w = ctx.measureText(nm).width;
+        ctx.fillStyle = 'rgba(6,14,18,0.6)';
+        rr(ctx, -w / 2 - 6, -70 - lift, w + 12, 16, 8); ctx.fill();
+        ctx.strokeStyle = rgba(nameCol, isSelf ? 0.45 : 0.62); ctx.lineWidth = 1; ctx.stroke();
+        ctx.fillStyle = downed ? '#ff8a80' : nameCol; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(nm, 0, -62 - lift);
+      }
 
-      // Kendi can barı artık çizilmiyor: can, alttaki skill bar'ında gösterilir.
-      // (Diğer oyuncuların can barı isim plakalarında kalmaya devam eder.)
+      // Diğer oyuncuların can barı + diriltme ipucu (kendi canımız skill bar'da).
+      if (!isSelf) {
+        const bw = 48, bh = 5, bx = -bw / 2, by = -52 - lift;
+        ctx.fillStyle = 'rgba(0,0,0,0.62)';
+        rr(ctx, bx - 1, by - 1, bw + 2, bh + 2, 3); ctx.fill();
+        const f = clamp(p.hpFrac != null ? p.hpFrac : 1, 0, 1);
+        if (f > 0) {
+          ctx.fillStyle = f > 0.35 ? '#2fbf4a' : '#d32f2f';
+          rr(ctx, bx, by, Math.max(2, bw * f), bh, 2); ctx.fill();
+        }
+        if (this._reviveTarget === p.id) {
+          const label = '[E] Revive';
+          ctx.font = 'bold 11px Inter, sans-serif';
+          const lw = ctx.measureText(label).width + 16;
+          ctx.fillStyle = 'rgba(10,24,18,0.85)';
+          rr(ctx, -lw / 2, by - 26, lw, 17, 8); ctx.fill();
+          ctx.strokeStyle = 'rgba(120,255,180,0.75)'; ctx.lineWidth = 1; ctx.stroke();
+          ctx.fillStyle = '#8dffc0'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillText(label, 0, by - 17);
+        }
+      }
 
       ctx.restore();
     }
@@ -6319,7 +7891,18 @@
       g.translate(100, 150);
       g.translate(Math.cos(fa) * lunge, Math.sin(fa) * lunge * 0.6);
       const painter = m.painter || m.kind;
-      if (painter === 'treant') this.paintTreant(g, m, t, face, atkT);
+      const EXP = global.SETRA_MONSTER_EXPANSION;
+      const expPaint = EXP && EXP.painters ? EXP.painters[painter] : null;
+      if (expPaint) {
+        // 17'lik canavar paketi: prosedürel çizim, kendi ölçek/ayna mantığı var.
+        // Her painter'ın yaklaşık en/boy ölçüsü 200x200 ara tuvale sığdırılır
+        // (dev elitler kırpılmasın, küçükler de olduğundan büyük görünmesin).
+        const EXT = EXP_PAINTER_EXTENT[painter] || { w: 40, h: 50 };
+        let u = m.radius / 16;
+        u = Math.min(u, 92 / EXT.w, 138 / EXT.h);
+        if (!Number.isFinite(u) || u <= 0) u = 1;
+        try { expPaint(g, 0, 0, u, t, face, m); } catch (err) { /* çizim hatası oyunu durdurmasın */ }
+      } else if (painter === 'treant') this.paintTreant(g, m, t, face, atkT);
       else if (painter === 'wraith') this.paintWraith(g, m, t, face, atkT);
       else if (painter === 'beast') this.paintBeast(g, m, t, face, atkT);
       else if (painter === 'spider') this.paintSpider(g, m, t, face, atkT);
@@ -7396,7 +8979,12 @@
 
     // ---------------- NİŞANGAH ----------------
     renderWorldOverlay(ctx) {
-      const mx = this.mouse.screenX, my = this.mouse.screenY;
+      // Nişangah, gerçek nişan noktasını göstersin (zoom dahil).
+      const ap = this.aimPoint();
+      const s = this.iso(ap.x, ap.y, 0);
+      const z = this.zoom || 1;
+      const cxw = this.width / 2, cyw = this.height / 2;
+      const mx = cxw + (s.x - cxw) * z, my = cyw + (s.y - cyw) * z;
       ctx.save();
       ctx.translate(mx, my);
       ctx.rotate(this.time * 0.8);
@@ -7420,6 +9008,13 @@
     // ======================================================================
     loop(timestamp) {
       if (!this.isRunning) return;
+      // Mobil: kare hızı üst sınırı (~45 FPS). Dokunmatik cihazlarda ısınma ve
+      // pil tüketimini ciddi biçimde düşürür, akıcılık hissi korunur.
+      if (this.isTouch && this._lastFrameTs && (timestamp - this._lastFrameTs) < 22) {
+        requestAnimationFrame(this.loop);
+        return;
+      }
+      this._lastFrameTs = timestamp;
       const raw = this.lastTime ? (timestamp - this.lastTime) / 1000 : 0;
       try {
         const dt = Math.min(raw, 0.1);
@@ -7453,6 +9048,61 @@
     // ======================================================================
     setWorldBounds(map) {
       if (!map || typeof map !== 'object') return;
+      // --- Kalıcı kıta: SetraWorldCore ile gerçek deterministik dünya ---
+      // Tüm harita sabit bir görsel genişliğe ölçeklenir; kareler sunucu
+      // koordinatından örneklenir (biyom, su, yol, köprü). Detay/cila Kimi'ye.
+      if (map.persistent && map.world) {
+        const cfg = map.world;
+        this.persistent = true;
+        this.worldConfig = cfg;
+        // GameCraft > Dünya Kurucu'nun görsel ölçek ayarlarını 3D dekora aktar.
+        if (typeof window !== 'undefined') window.SETRA_WORLD_TUNING = cfg.visual || {};
+        const worldVer = Number(cfg.version) || 1;
+        const mapChanged = this._worldVersion !== worldVer;
+        const sameMap = !mapChanged && this._mapId === map.id && this.persistentTilesReady;
+        this._mapId = map.id || this._mapId;
+        if (!this.worldCore || mapChanged) {
+          if (typeof window !== 'undefined' && window.SetraWorldCore) {
+            this.worldCore = window.SetraWorldCore.createWorld(cfg);
+          }
+          this._worldVersion = worldVer;
+          this.persistentTilesReady = false;
+          this._persistentStaticScenery = null;
+          this._persWindow = null;
+        }
+        if (!this.worldCore) return;
+        if (sameMap) { this.snapCamera(); return; }
+        // Dünya gerçek ölçeğinde kalır: 1 sunucu birimi = cfg.worldScale piksel.
+        // (Eski 9000/genişlik katsayısı 30 dk'lık kıtayı ~45 sn'ye sıkıştırıyordu.)
+        this.worldScale = Math.max(1, Number(cfg.worldScale) || 9);
+        this.serverSpawn = { x: cfg.spawn.x, y: cfg.spawn.y };
+        this.persistentBounds = {
+          minX: -cfg.spawn.x * this.worldScale,
+          minY: -cfg.spawn.y * this.worldScale,
+          maxX: (cfg.width - cfg.spawn.x) * this.worldScale,
+          maxY: (cfg.height - cfg.spawn.y) * this.worldScale
+        };
+        const corner = Math.hypot(
+          Math.max(Math.abs(this.persistentBounds.minX), this.persistentBounds.maxX),
+          Math.max(Math.abs(this.persistentBounds.minY), this.persistentBounds.maxY)
+        );
+        this.mapRadius = Math.max(20, Math.ceil(corner / this.tileSize) + 2);
+        this.interactRadius = Math.max(60, Math.min(170, this.worldScale * 12));
+        this._lastWalkPos = null;
+        this.setBiome(map.type || 'verdant', true);
+        this.generateMap();
+        this.snapCamera();
+        return;
+      }
+      // Normal sefer: kalıcı kıta durumunu sıfırla (motor yeniden kullanılırsa).
+      this.persistent = false;
+      this.persistentTilesReady = false;
+      this.worldCore = null;
+      this.persistentBounds = null;
+      this._persWalk = null;
+      this._persWindow = null;
+      this._persistentStaticScenery = null;
+      this._lastWalkPos = null;
       const w = Number(map.w), h = Number(map.h);
       const mapW = Number.isFinite(w) && w > 0 ? w : 64;
       const mapH = Number.isFinite(h) && h > 0 ? h : 64;
@@ -7473,20 +9123,26 @@
       const R = Math.max(14, Math.min(64, Math.round(baseR)));
       this.worldScale = ((R - 0.5) * this.tileSize) / maxDist;
       if (!Number.isFinite(this.worldScale) || this.worldScale <= 0) this.worldScale = this.tileSize;
-      // Etkileşim yarıçapı sunucunun karo toleransını aşmasın.
-      this.interactRadius = Math.max(40, Math.min(130, this.worldScale * 2.0));
-      if (R !== this.mapRadius) {
-        this.mapRadius = R;
-        this.generateMap();
-      }
+      // Etkileşim yarıçapı: POI'lerin görsel boyutu büyük olduğu için oyuncu
+  // nesnenin içine girmek zorunda kalmamalı. Sunucu toleransı (16 karo) ile
+  // uyumlu olacak şekilde dünya pikseli cinsinden ~100px civarı tutulur.
+  this.interactRadius = Math.max(60, Math.min(150, this.worldScale * 12));
       // Biyom (harita türü) canavar tablosunu ve ambiyansını belirler.
       const newExpedition = map.id && map.id !== this._mapId;
       this._mapId = map.id || this._mapId;
+      if (R !== this.mapRadius || newExpedition) {
+        // Her yeni seferde arazi yeniden üretilir: tepeler/platolar da değişir.
+        this.mapRadius = R;
+        this.generateMap();
+      }
       if (newExpedition) {
         // Yeni sefer: canı bir kez daha sunucudan al. Aksi halde kasabada
         // iyileşen oyuncu eski (düşük) canıyla seyahate devam ediyordu.
         this._hpFromServer = false;
         this._lastHpSent = null;
+        this._secondWindUsed = false;
+        this._autoElCache = null;
+        this._castElement = null;
       }
       this.setBiome(map.type || 'verdant', newExpedition);
       this.snapCamera();
@@ -7495,17 +9151,27 @@
     placePOIs(pois) {
       const tile = this.worldScale || this.tileSize;
       const sp = this.serverSpawn;
-      const keep = (this.scenery || []).filter((s) => s.type !== 'poi');
+      const ss = this.worldTuning().structureScale;
+      const keep = (this.scenery || []).filter((s) => s.type !== 'poi' && s.fallbackType !== 'poi');
       this.poiMarkers = [];
       for (const p of pois || []) {
         if (p.consumed) continue;
+        const wx = (p.x + 0.5 - sp.x) * tile;
+        const wy = (p.y + 0.5 - sp.y) * tile;
+        const poiBase = p.kind === 'chest' ? 1.1 : p.kind === 'camp' ? 1.15 : 1.55;
+        const poiMul = p.kind === 'chest' || p.kind === 'camp' ? 1 : ss;
         this.poiMarkers.push({
-          type: 'poi', kind: p.kind, poiId: p.id, name: p.name,
-          wx: (p.x + 0.5 - sp.x) * tile, wy: (p.y + 0.5 - sp.y) * tile,
-          scale: 1, interactable: true, label: p.name,
+          type: this.persistent && p.model ? 'glb' : 'poi', fallbackType: 'poi', model: p.model || null,
+          kind: p.kind, poiId: p.id, name: p.name,
+          wx, wy, z: this.groundZAt(wx, wy),
+          scale: this.persistent && p.model ? poiBase * poiMul : 1,
+          preScaled: true,
+          solidRadius: this.persistent && p.model && p.kind !== 'chest' && p.kind !== 'camp' && p.kind !== 'inn' ? 0.55 : 0,
+          interactable: true, label: p.name,
         });
       }
       this.scenery = keep.concat(this.poiMarkers);
+      this.solids = this.scenery.filter((s) => s.solidRadius > 0);
       this.rebuildRenderables();
     }
 
@@ -7538,10 +9204,13 @@
       if (me.travelLoadout !== undefined) this.playerData.travelLoadout = Object.assign({}, me.travelLoadout || {});
       if (Array.isArray(me.travelSkills)) this.playerData.travelSkills = me.travelSkills.slice();
       const stats = this.playerData.stats || (this.playerData.stats = {});
-      stats.attack = me.attack != null ? me.attack : stats.attack;
+      // statBonus pasifleri (+%attack, +%maxHp) sunucu değerlerinin üstüne biner.
+      const atkPct = this.passiveStatPct("attack");
+      const hpPct = this.passiveStatPct("maxHp") + this.passiveStatPct("hp");
+      stats.attack = me.attack != null ? Math.round(Number(me.attack) * (1 + atkPct)) : stats.attack;
       stats.critChance = (me.critChance || 0) / 100;
       stats.critMultiplier = 1 + (me.critDamage || 0) / 100;
-      stats.maxHp = me.maxHp || stats.maxHp;
+      stats.maxHp = me.maxHp ? Math.round(Number(me.maxHp) * (1 + hpPct)) : stats.maxHp;
       // İlk gerçek oda verisinde canı sunucudan al; sonrasında motor yönetir.
       // hp=0 ama sunucu "downed" demiyorsa bu bayat/boş bir kayıttır (yeni sefer,
       // eski ölüm kalıntısı); tam canla başla. Yere düşme sunucu bayrağıyla gelir.
@@ -7573,6 +9242,7 @@
       this.player.archetype = getArchetype(newClass);
       this.player.style = getClassStyle(newClass);
       this.companion.active = this.player.archetype === ARCHETYPES.TAMER;
+      this.applyTravelSkills();
     }
 
     updateStats(newStats) {
@@ -7613,13 +9283,21 @@
       this.canvas.removeEventListener('mousemove', this._onMouseMove);
       this.canvas.removeEventListener('mousedown', this._onMouseDown);
       this.canvas.removeEventListener('mouseup', this._onMouseUp);
+      window.removeEventListener('mouseup', this._onMouseUp);
+      window.removeEventListener('blur', this._onBlur);
       this.canvas.removeEventListener('contextmenu', this._onContext);
+      this.canvas.removeEventListener('touchstart', this._onTouch);
+      this.canvas.removeEventListener('touchmove', this._onTouch);
+      this.canvas.removeEventListener('touchend', this._onMouseUp);
+      this.canvas.removeEventListener('touchcancel', this._onMouseUp);
       this.canvas.removeEventListener('wheel', this._onWheel);
       if (this._onVisibility) {
         document.removeEventListener('visibilitychange', this._onVisibility);
         window.removeEventListener('focus', this._onVisibility);
       }
       if (this.canvas.style) this.canvas.style.cursor = this._prevCursor || '';
+      // Harita kapanınca döngü sesleri (yağmur vb.) kesinlikle sussun.
+      if (this.sound) { try { this.sound.stopLoop(); } catch (e) {} }
       this.timeouts.forEach((id) => clearTimeout(id));
       this.timeouts.clear();
     }

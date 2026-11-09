@@ -315,6 +315,22 @@ function onRoomState(room) {
     state.dungeonOpen = false;
   }
   state.prevStatus = room.status;
+  // F5 / yeniden bağlanma: sunucu bizi bir seferde tutuyorsa haritayı yeniden iste.
+  // (Aksi halde oda "playing" der ama seyahat ekranı boş kalır.)
+  try {
+    const meNow = room.players ? room.players.find((p) => p.id === state.playerId) : null;
+    const tid = meNow && meNow.travelId;
+    const curMap = (window.SetraTravel && typeof SetraTravel.mapId === "function") ? SetraTravel.mapId() : null;
+    if (tid) {
+      const hasMap = !!(window.SetraTravel && typeof SetraTravel.hasMap === "function" && SetraTravel.hasMap());
+      if (state._travelSyncFor !== tid || curMap !== tid || !hasMap) {
+        state._travelSyncFor = tid;
+        socket.emit("travel:sync");
+      }
+    } else if (state._travelSyncFor) {
+      state._travelSyncFor = null;
+    }
+  } catch (e) { /* sefer geri yükleme asla oyunu kırmaz */ }
   if (room.status === "playing") {
     const myD = myDungeon(room);
     const inCombat = myD && (myD.status === "fighting" || myD.status === "done");
@@ -565,13 +581,9 @@ if (travelCloseBtn) travelCloseBtn.addEventListener("click", () => {
     else if (SetraTravel.toast) SetraTravel.toast(msg);
     return;
   }
+  // Ekranı hemen kapatma: sunucu onayı (`travel:left`) gelince kapanır.
+  if (window.SetraTravel && SetraTravel.toast) SetraTravel.toast("Returning to town...");
   socket.emit("travel:leave");
-  state.travelOpen = false;
-  if (window.SetraTravel) SetraTravel.close();
-  renderTown(state.room);
-  if (window.SetraTravel && SetraTravel.showReport) {
-    SetraTravel.showReport({ title: "Safe Return", kicker: "Back in town", subtitle: "You close the trail and return to town with everything you gathered." });
-  }
 });
 
 $("chat-send").addEventListener("click", sendChat);
@@ -732,9 +744,14 @@ socket.on("self", (payload) => {
   state.playerId = payload.playerId;
   state.mode = payload.mode;
   localStorage.setItem(ACTIVE_KEY, "1");
-  showScreen("screen-lobby");
-  if (payload.mode === "multi") {
-    setLobbyView(false);
+  // F5 sonrası devam ederken lobi ekranına sıçrama: oda durumu hemen gelir.
+  const resuming = !!state.resuming;
+  state.resuming = false;
+  if (!resuming) {
+    showScreen("screen-lobby");
+    if (payload.mode === "multi") {
+      setLobbyView(false);
+    }
   }
 });
 
@@ -802,13 +819,54 @@ socket.on("shop:buyResult", (payload) => {
 
 socket.on("travel:map", (map) => {
   if (!window.SetraTravel || !map) return;
+  const wasOpen = !!state.travelOpen;
   state.travelPending = 0;
   SetraTravel.setMap(map);
+  if (!wasOpen) sfxPlay("travelopen", 0.7);
   state.travelOpen = true;
   SetraTravel.open();
   if (state.room) renderTown(state.room);
 });
+// Dünya Kurucu "Oyuna Uygula": açık sefer varsa yeni haritayı sessizce çek.
+socket.on("world:updated", () => {
+  if (state.travelOpen && typeof socket !== "undefined") socket.emit("travel:sync", {});
+});
 socket.on("travel:pos", (p) => { if (window.SetraTravel && p) SetraTravel.setOtherPos(p.id, p.x, p.y); });
+socket.on("travel:left", (p) => {
+  if (!p) return;
+  if (p.self) {
+    // Sunucu seferden çıkışı onayladı: artık ekranı güvenle kapatabiliriz.
+    state.travelOpen = false;
+    // Kasabaya dönüşte can/mana tamdır. Oda durumu bir kare gecikse bile
+    // arayüz doğru değeri göstersin diye onay paketindeki değerleri uygula.
+    if (state.room && state.room.players && p.hp != null) {
+      const me = state.room.players.find((x) => x.id === state.playerId);
+      if (me) {
+        me.hp = p.hp;
+        if (p.maxHp != null) me.maxHp = p.maxHp;
+        if (p.mana != null) me.mana = p.mana;
+        if (p.maxMana != null) me.maxMana = p.maxMana;
+        me.downed = false;
+      }
+    }
+    if (window.SetraTravel) SetraTravel.close();
+    if (state.room) renderTown(state.room);
+    // "Güvenle döndün" raporu yalnızca gerçekten bir şey yapıldıysa gösterilir:
+    // sefere girip hiçbir şey yapmadan geri dönmek boş bir ödül ekranı açmasın.
+    let didSomething = false;
+    try {
+      const st = (window.SetraTravel && typeof SetraTravel.stats === "function") ? SetraTravel.stats() : null;
+      didSomething = !!(st && ((st.kills || 0) > 0 || (st.gold || 0) > 0 || (st.xp || 0) > 0 || (st.chests || 0) > 0));
+    } catch (e) { didSomething = false; }
+    if (didSomething && window.SetraTravel && SetraTravel.showReport) {
+      SetraTravel.showReport({ title: "Safe Return", kicker: "Back in town", subtitle: "You close the trail and return to town with everything you gathered." });
+    }
+    return;
+  }
+  // Biz seferde kalıyoruz: ayrılan oyuncunun hayaletini hemen kaldır.
+  if (window.SetraTravel && SetraTravel.removeOther) SetraTravel.removeOther(p.id);
+});
+socket.on("travel:allyFx", (p) => { if (window.SetraTravel && SetraTravel.allyFx) SetraTravel.allyFx(p); });
 socket.on("travel:teleport", (p) => { if (window.SetraTravel && p) SetraTravel.teleport(p.x, p.y); });
 socket.on("travel:reveal", () => { if (window.SetraTravel) SetraTravel.reveal(); });
 socket.on("travel:explored", (p) => { if (window.SetraTravel && p && p.add) SetraTravel.addExplored(p.add); });
@@ -844,6 +902,7 @@ socket.on("travel:allyDowned", (p) => {
 socket.on("travel:reviveFx", (p) => {
   if (!p || !window.SetraTravel) return;
   if (p.byId === state.playerId && SetraTravel.toast) SetraTravel.toast("You revived your ally!");
+  if (SetraTravel.allyFx) SetraTravel.allyFx({ id: p.id, kind: "revive", color: "#8dffc0", radius: 46 });
 });
 socket.on("travel:fallen", () => {
   if (!window.SetraTravel) return;
@@ -856,6 +915,17 @@ socket.on("travel:fallen", () => {
 socket.on("travel:returned", (p) => {
   // Can bitti: 1 kalp düştü ve sefer sona erdi. Oyuncu kasabada uyanır.
   state.travelOpen = false;
+  // Dönüşte can/mana tamdır; oda durumunu beklemeden arayüze uygula.
+  if (p && state.room && state.room.players) {
+    const me = state.room.players.find((x) => x.id === state.playerId);
+    if (me) {
+      if (p.hp != null) me.hp = p.hp;
+      if (p.maxHp != null) me.maxHp = p.maxHp;
+      if (p.mana != null) me.mana = p.mana;
+      if (p.maxMana != null) me.maxMana = p.maxMana;
+      me.downed = false;
+    }
+  }
   if (window.SetraTravel) SetraTravel.close();
   if (state.room) renderTown(state.room);
   showToast((p && p.text) || "You lost 1 heart. You wake up back in town.");
@@ -933,12 +1003,14 @@ socket.on("chest:loot", (payload) => {
 socket.on("connect", () => {
   if (window.setConnected) window.setConnected();
   if (localStorage.getItem(ACTIVE_KEY) === "1" && getSessionId()) {
+    state.resuming = true;
     socket.emit("session:resume", { sessionId: getSessionId() });
   }
 });
 
 socket.on("session:expired", () => {
   localStorage.setItem(ACTIVE_KEY, "0");
+  state.resuming = false;
   state.room = null;
   state.dungeonOpen = false;
   state.plazaOpen = false;
@@ -1054,6 +1126,7 @@ function playAudioReport(audio) {
 
 function resumeBlockedMusic() {
   if (!music.playing) return;
+  if (typeof window !== "undefined" && window.__setraIntroMuted) return;
   const audio = $("music-audio");
   if (!audio || !audio.paused) return;
   audio.volume = 0;
@@ -1100,7 +1173,7 @@ function startTrackNow() {
   if (!list.length) return;
   audio.src = "/music/" + list[musicPos() % list.length];
   updateMusicTrack();
-  if (music.playing) {
+  if (music.playing && !window.__setraIntroMuted) {
     audio.volume = 0;
     playAudioSafe(audio);
     fadeAudioTo(audio, musicTargetVolume(), FADE_IN_MS);
@@ -1239,7 +1312,8 @@ document.addEventListener("keydown", (e) => {
     hotkeyClickSlot([...root.querySelectorAll(sel)], qi);
     return;
   }
-  // Number keys pick a target in visual order (only dungeon has target picking).
+  // 1-5: bir yetenek seçiliyse hedef seçer (eski davranış). Aksi halde
+  // sıra tabanlı savaşta tüketilebilir (can/iksir/azık) kullanır.
   if (dOpen && state.selectedSkill) {
     if (state.selectedSkill.target === "enemy") {
       const list = [...dRoot.querySelectorAll(".enemy.enemy--targetable")];
@@ -1248,6 +1322,14 @@ document.addEventListener("keydown", (e) => {
       const list = [...dRoot.querySelectorAll(".fighter.fighter--targetable")];
       if (list[ni]) list[ni].click();
     }
+    return;
+  }
+  const root = dOpen ? dRoot : pRoot;
+  const items = [...root.querySelectorAll(".item-btn[data-item]")];
+  const slot = items[ni];
+  if (slot && !slot.classList.contains("item-btn--disabled")) {
+    e.preventDefault();
+    slot.click();
   }
 });
 

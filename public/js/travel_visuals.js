@@ -638,15 +638,22 @@
 
   // Animasyonlu zemin ışıkları (lav çatlağı nabzı, buz parıltısı, rün titremesi)
   function drawTileLife(eng, ctx) {
-    const bio = eng._bio; if (!bio || bio.biome === 'verdant') return; const t = eng.time, b = bio.biome;
-    for (const tile of eng.tiles) {
+    const bio = eng._bio; if (!bio || bio.biome === 'verdant') return;
+    const t = eng.time, b = bio.biome;
+    const cam = eng.camera, W = eng.width, H = eng.height;
+    const tiles = eng.tiles;
+    for (let i = 0; i < tiles.length; i++) {
+      const tile = tiles[i];
       if (tile.variant > 1 || tile.type === 'grass' && b !== 'cursed' && b !== 'frozen') continue;
-      const p = eng.iso(tile.wx, tile.wy, tile.wz); if (p.x < -80 || p.x > eng.width + 80 || p.y < -60 || p.y > eng.height + 60) continue;
+      // iso() her karo için nesne ayırıyordu (10k+ çöp/kare): önceden hesaplanmış
+      // ekran konumu + kamera kullanılır.
+      const px = tile.sx + cam.x, py = tile.sy + cam.y;
+      if (px < -80 || px > W + 80 || py < -60 || py > H + 60) continue;
       const h = hash2(tile.gx * 3.1, tile.gy * 1.7);
-      if (b === 'ashen' && (tile.type === 'path' || tile.type === 'rock')) glow(ctx, p.x, p.y, 34, '#ff5a14', 0.1 + 0.09 * Math.sin(t * 2 + h * 9));
-      else if (b === 'frozen' && tile.type === 'path') { const tw = Math.max(0, Math.sin(t * 2.4 + h * 20)); if (tw > 0.8) glow(ctx, p.x + (h - 0.5) * 40, p.y + (h - 0.5) * 12, 9, '#ffffff', tw); }
-      else if (b === 'mirefen' && tile.type === 'path') { const q = (t * 0.4 + h) % 1; ctx.strokeStyle = `rgba(200,240,230,${(1 - q) * 0.35})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.ellipse(p.x + (h - 0.5) * 30, p.y + 2, 14 * q, 6 * q, 0, 0, TAU); ctx.stroke(); }
-      else if (b === 'cursed' && (tile.type === 'path' || tile.type === 'rock')) glow(ctx, p.x, p.y, 30, '#8a3cff', 0.07 + 0.07 * Math.sin(t * 1.8 + h * 9));
+      if (b === 'ashen' && (tile.type === 'path' || tile.type === 'rock')) glow(ctx, px, py, 34, '#ff5a14', 0.1 + 0.09 * Math.sin(t * 2 + h * 9));
+      else if (b === 'frozen' && tile.type === 'path') { const tw = Math.max(0, Math.sin(t * 2.4 + h * 20)); if (tw > 0.8) glow(ctx, px + (h - 0.5) * 40, py + (h - 0.5) * 12, 9, '#ffffff', tw); }
+      else if (b === 'mirefen' && tile.type === 'path') { const q = (t * 0.4 + h) % 1; ctx.strokeStyle = `rgba(200,240,230,${(1 - q) * 0.35})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.ellipse(px + (h - 0.5) * 30, py + 2, 14 * q, 6 * q, 0, 0, TAU); ctx.stroke(); }
+      else if (b === 'cursed' && (tile.type === 'path' || tile.type === 'rock')) glow(ctx, px, py, 30, '#8a3cff', 0.07 + 0.07 * Math.sin(t * 1.8 + h * 9));
     }
   }
 
@@ -1017,6 +1024,42 @@
     { kind: 'glowGround', at: 0, len: 1, col: '#76ff03', a: 0.4 }, { kind: 'cracks', at: 0, len: 0.4, n: 10, col: '#76ff03' }, { kind: 'spikes', at: 0.1, len: 0.9, n: 14, h: 76, lean: 0.55 },
     { kind: 'ring', at: 0.3, len: 0.5, col: '#76ff03', w: 3 }, { kind: 'rise', at: 0.3, len: 0.7, n: 12, h: 90, col: '#b2ff59', size: 5 } ] });
 
+  // --- travelSkills.js uyumluluk efektleri (yeni 37x3 yetenek seti bunları çağırır) ---
+  defineFx('shadowStep', { duration: 0.5, radius: 55, color: '#9c6bff', layers: [
+    { kind: 'glowGround', at: 0, len: 1, a: 0.75 }, { kind: 'burst', at: 0, len: 0.75, n: 20, up: 26, size: 6, col2: '#2a0b45' },
+    { kind: 'rise', at: 0.1, len: 0.8, n: 12, h: 60, col2: '#d0b8ff' }, { kind: 'ring', at: 0.05, len: 0.6, r: 46, w: 4 } ] });
+  defineFx('lineSlash', { duration: 0.45, radius: 55, color: '#e8f4ff', layers: [
+    { kind: 'slash', at: 0, len: 0.55, r: 58, h: 26, ang: -0.6 }, { kind: 'streaks', at: 0.05, len: 0.6, n: 14 }, { kind: 'flash', at: 0, len: 0.4, r: 60, a: 0.5 } ] });
+  defineFx('crescentSlash', { duration: 0.5, radius: 70, color: '#ffd54f', layers: [
+    { kind: 'slash', at: 0, len: 0.6, r: 72, h: 30, ang: -0.5 }, { kind: 'slash', at: 0.08, len: 0.55, r: 56, h: 26, ang: 0.4 }, { kind: 'ring', at: 0.1, len: 0.5, r: 62, w: 3 } ] });
+  defineFx('beamLine', { duration: 0.7, radius: 60, color: '#9fe2ff', layers: [
+    { kind: 'glowGround', at: 0, len: 0.9, a: 0.5 }, { kind: 'pillar', at: 0, len: 0.55, h: 300, w: 16 },
+    { kind: 'streaks', at: 0, len: 0.7, n: 18 }, { kind: 'flash', at: 0.02, len: 0.35, r: 90, a: 0.7 } ] });
+  defineFx('pulseNova', { duration: 0.7, radius: 80, color: '#7c4dff', layers: [
+    { kind: 'glowGround', at: 0, len: 1, a: 0.6 }, { kind: 'ring', at: 0, len: 0.7, r: 90, w: 7 },
+    { kind: 'ring', at: 0.12, len: 0.7, r: 62, w: 3, col: '#ffffff' }, { kind: 'burst', at: 0, len: 0.6, n: 18, size: 6 } ] });
+  defineFx('shieldDome', { duration: 1.1, radius: 50, color: '#ffd54f', layers: [
+    { kind: 'glowGround', at: 0, len: 1, a: 0.55 }, { kind: 'ring', at: 0, len: 0.9, r: 52, w: 5 },
+    { kind: 'ring', at: 0.15, len: 0.8, r: 34, w: 2, col: '#ffffff' }, { kind: 'rise', at: 0.1, len: 0.9, n: 14, h: 80, size: 5 } ] });
+  defineFx('roarWave', { duration: 0.9, radius: 90, color: '#ffb74d', layers: [
+    { kind: 'glowGround', at: 0, len: 1, a: 0.5 }, { kind: 'ring', at: 0, len: 0.8, r: 100, w: 8 },
+    { kind: 'ring', at: 0.2, len: 0.7, r: 66, w: 4, col: '#ffffff' }, { kind: 'flash', at: 0, len: 0.5, r: 70, a: 0.55 } ] });
+  defineFx('speedAura', { duration: 0.9, radius: 50, color: '#80d8ff', layers: [
+    { kind: 'glowGround', at: 0, len: 1, a: 0.45 }, { kind: 'streaks', at: 0, len: 1, n: 22 },
+    { kind: 'ring', at: 0.1, len: 0.7, r: 52, w: 3 }, { kind: 'rise', at: 0.15, len: 0.8, n: 10, h: 70, size: 4 } ] });
+  defineFx('slashX', { duration: 0.5, radius: 60, color: '#ff8a65', layers: [
+    { kind: 'slash', at: 0, len: 0.5, r: 62, h: 27, ang: -0.7 }, { kind: 'slash', at: 0.1, len: 0.5, r: 62, h: 27, ang: 0.7 },
+    { kind: 'flash', at: 0.1, len: 0.4, r: 55, a: 0.5 } ] });
+  defineFx('glitchBurst', { duration: 0.7, radius: 60, color: '#00e5ff', layers: [
+    { kind: 'glowGround', at: 0, len: 1, a: 0.5 }, { kind: 'burst', at: 0, len: 0.8, n: 26, size: 5, col2: '#ff00e5' },
+    { kind: 'streaks', at: 0.05, len: 0.8, n: 20, col: '#7cffef' }, { kind: 'flash', at: 0.1, len: 0.3, r: 70, a: 0.4 } ] });
+  defineFx('coneBlast', { duration: 0.6, radius: 70, color: '#ff7043', layers: [
+    { kind: 'glowGround', at: 0, len: 1, a: 0.6 }, { kind: 'burst', at: 0, len: 0.6, n: 22, up: 18, size: 7 },
+    { kind: 'rise', at: 0.1, len: 0.7, n: 14, h: 80, col2: '#ffe0b2' }, { kind: 'ring', at: 0.05, len: 0.6, r: 76, w: 4 } ] });
+  defineFx('batSwarm', { duration: 1.0, radius: 70, color: '#7b1fa2', layers: [
+    { kind: 'glowGround', at: 0, len: 1, a: 0.45 }, { kind: 'orbit', at: 0, len: 1, n: 8, r: 55, h: 40, turns: 2.2, col: '#4a148c' },
+    { kind: 'orbit', at: 0.1, len: 0.9, n: 6, r: 34, h: 62, turns: 3, col: '#b39ddb' }, { kind: 'burst', at: 0.15, len: 0.7, n: 14, size: 5 } ] });
+
   // ==========================================================================
   //  10) 7 ÖZEL EPİK EFEKT  (kit yetmeyen karmaşık olanlar — kendi çizimleri var)
   // ==========================================================================
@@ -1177,8 +1220,10 @@
       m.kind = k;
       // İsim HER ZAMAN çizilen gövdeyle eşleşmeli: MOBS görselleri paintGoblin
       // üzerinden çizilir, yerli gövdeler (treant/wraith) kendi painter'ıyla.
-      if (d) { m.name = d.name; m.radius = d.radius; m.painter = 'goblin'; }
-      else if (nat) { m.name = nat[0]; m.radius = nat[1]; m.painter = k === 'goblin' ? 'goblin' : k; }
+      // Hitbox görsellere uysun: çizilen gövde iri, yarıçap eskiden küçük kalıyordu.
+      const RSCALE = 1.4;
+      if (d) { m.name = d.name; m.radius = Math.round(d.radius * RSCALE); m.painter = 'goblin'; }
+      else if (nat) { m.name = nat[0]; m.radius = Math.round(nat[1] * RSCALE); m.painter = k === 'goblin' ? 'goblin' : k; }
     });
   };
   P.paintGoblin = function (g, m, t, face, atkT) {

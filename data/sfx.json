@@ -9,10 +9,10 @@
   "action": {
     "rest": "",
     "search": "",
-    "blacksmith": "",
-    "merchant": "",
-    "temple": "",
-    "dungeon": "",
+    "blacksmith": "toolsound",
+    "merchant": "coinsound",
+    "temple": "bellsound",
+    "dungeon": "irongate",
     "eat": "eatingsound",
     "potion": "potiondrinksound",
     "revive": "revivesound"
@@ -23,24 +23,24 @@
     "coin": "clicksound"
   },
   "cinematic": {
-    "ascend": "holy-ascensionsound",
-    "rebirth": "neutralascension",
+    "ascend": "holyascension",
+    "rebirth": "rebirthnew",
     "newDay": "",
     "nightFall": ""
   },
   "combat": {
     "win": "winningsound",
     "lose": "losingsound",
-    "crit": "skull_crush"
+    "crit": "heavyswordhit"
   },
   "tavern": {
-    "deal": "",
-    "hit": "",
-    "flip": "",
+    "deal": "dicemagic",
+    "hit": "dicemagic",
+    "flip": "dicemagic",
     "win": "",
     "lose": "",
     "push": "",
-    "chip": ""
+    "chip": "coinsound"
   },
   "travel": {
     "slash": "",
