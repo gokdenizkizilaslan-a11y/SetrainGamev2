@@ -7,7 +7,9 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "check:anchors": "node scripts/check_agent_anchors.js",
-    "glb": "node scripts/glb_info.js"
+    "glb": "node scripts/glb_info.js",
+    "tune": "node scripts/asset_tune.js",
+    "world": "node scripts/world_reload.js"
   },
   "engines": {
     "node": ">=18"

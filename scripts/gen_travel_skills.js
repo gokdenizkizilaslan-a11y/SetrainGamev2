@@ -37,7 +37,8 @@ if (process.argv.indexOf("--force") < 0 && process.env.FORCE_GEN !== "1") {
 // Eski yeteneklerin tek doğru kaynağı: arşiv. Arşiv yoksa mevcut dosya
 // arşivlenir; böylece üreteç ikinci kez çalıştığında `legacy` alanı yeni
 // yeteneklerle üzerine YAZILMAZ.
-const LEGACY_FILE = path.join(ROOT, "claudeornekleri", "arpgSkillsLegacy.json");
+// (arsiv/claude-ornekler = eski "claudeornekleri" klasörü; arşiv gitignore'da)
+const LEGACY_FILE = path.join(ROOT, "arsiv", "claude-ornekler", "arpgSkillsLegacy.json");
 if (!fs.existsSync(LEGACY_FILE)) {
   fs.mkdirSync(path.dirname(LEGACY_FILE), { recursive: true });
   fs.copyFileSync(ARPG_FILE, LEGACY_FILE);

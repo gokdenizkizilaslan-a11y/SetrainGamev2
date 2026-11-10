@@ -57,6 +57,11 @@
     "ambience_day": "",
     "ambience_night": "",
     "ambience_rain": "",
-    "ambience_storm": ""
+    "ambience_storm": "",
+    "parry": "",
+    "guard": "",
+    "guardbreak": "",
+    "dodge": "",
+    "parry_cue": ""
   }
 }

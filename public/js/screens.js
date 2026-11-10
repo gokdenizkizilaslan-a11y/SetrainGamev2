@@ -1034,11 +1034,30 @@ function introPlaySound(id, vol, delay) {
 // Sinematik adımının süresini o adıma eklenen sesin uzunluğuna eşitler:
 // ses varsa sahne/kaydırma o ses bitene kadar sürer, sonra otomatik ilerler.
 const introCueDur = Object.create(null);
+// Süresi henüz yüklenmemiş sesler için bekleyen geri çağrılar: sahne süresi
+// sesle eşitlenirken dosya boyutu/uzunluğu geç gelebilir (ölü bekleme olmasın).
+const introCueWaiters = Object.create(null);
 function introCueSeconds(id) {
   const url = introSoundUrl(id);
   if (!url) return 0;
   const d = introCueDur[url];
   return Number.isFinite(d) && d > 0 ? d : 0;
+}
+function introFlushCueWaiters(url, seconds) {
+  const list = introCueWaiters[url];
+  if (!list) return;
+  delete introCueWaiters[url];
+  list.forEach((cb) => { try { cb(seconds); } catch (e) { /* yok say */ } });
+}
+// Sesi süresi bilinir olduğunda cb(seconds) çağırır; ses yoksa hiç çağırmaz.
+function introCueThen(id, cb) {
+  if (typeof cb !== "function") return;
+  const url = introSoundUrl(id);
+  if (!url) return;
+  const d = introCueDur[url];
+  if (Number.isFinite(d) && d > 0) { cb(d); return; }
+  if (!introCueWaiters[url]) introCueWaiters[url] = [];
+  introCueWaiters[url].push(cb);
 }
 function introPrefetchCue(id) {
   const url = introSoundUrl(id);
@@ -1048,8 +1067,13 @@ function introPrefetchCue(id) {
     const a = new Audio();
     a.preload = "metadata";
     a.addEventListener("loadedmetadata", () => {
-      if (Number.isFinite(a.duration) && a.duration > 0) introCueDur[url] = a.duration;
+      if (Number.isFinite(a.duration) && a.duration > 0) {
+        introCueDur[url] = a.duration;
+        introFlushCueWaiters(url, a.duration);
+      }
     });
+    // Dosya yoksa/okunamıyorsa bekleyenleri serbest bırak (sonsuz bekleme yok).
+    a.addEventListener("error", () => introFlushCueWaiters(url, 0));
     a.src = url;
   } catch (e) { /* süre bilinmezse varsayılan animasyon süresi kullanılır */ }
 }
@@ -1194,6 +1218,14 @@ function showStoryIntro() {
   // Sinematik süresi = eklenen sesin süresi. Adım sesleri önden yüklenir.
   const introAutoAdvance = !/^(false|0|off|no)$/i.test(
     String(audioCfg.autoAdvance == null ? "" : audioCfg.autoAdvance).trim());
+  // Paragraf sesleri: slayt yoksa bile ses eklenen her paragraf ayrı bir
+  // sinematik adım olur ve sahne o sesin süresi kadar ekranda kalır.
+  const paraCues = paragraphs.map((_p, i) => {
+    const own = intro && Array.isArray(intro.paragraphSounds) ? intro.paragraphSounds[i] : "";
+    return (own && String(own).trim()) || audioCfg["prologue" + (i + 1)] || "";
+  });
+  const useParagraphSteps = !useSlides && paraCues.some((c) => !!c);
+  paraCues.forEach((c) => introPrefetchCue(c));
   slides.forEach((s, i) => introPrefetchCue((s && s.sound) || audioCfg["prologue" + (i + 1)] || ""));
   lines.forEach((l, i) => introPrefetchCue((l && l.sound) || audioCfg["line" + (i + 1)] || ""));
   introPrefetchCue(audioCfg.reward || "");
@@ -1371,13 +1403,27 @@ function showStoryIntro() {
   let slideFlip = false;
   let slideToken = 0;
   let stepToken = 0; // adım sırası: eski seslerin "ended" olayı yeni adımı atlatmasın
-  // Sese uzunluk eklendiyse (>= 3 sn) ses bitince sinematik kendiliğinden ilerler.
-  const hookCueAutoAdvance = (node, step) => {
-    if (!node || !introAutoAdvance) return;
-    node.addEventListener("ended", () => {
+  // Sese uzunluk eklendiyse sinematik kendiliğinden ilerler: adıma eklenen
+  // sesin süresi kadar sahne ekranda kalır (5 sn'lik ses = 5 sn'lik sahne),
+  // oyuncu isterse tıklayarak hemen geçebilir.
+  const MIN_CUE_AUTO_MS = 1200;
+  const hookCueAutoAdvance = (cueId, step, node) => {
+    if (!introAutoAdvance) return;
+    let fired = false;
+    const go = () => {
+      if (fired) return;
+      fired = true;
       if (step !== stepToken || locked) return;
-      if (!(Number(node.duration) >= 3)) return;
       advance();
+    };
+    // Ses gerçekten çalabildiyse bitişi en doğru ölçü.
+    if (node) node.addEventListener("ended", go);
+    // Ses çalamasa bile (tarayıcı otomatik oynatmayı engelledi) sahne süresi
+    // yine ses uzunluğu kadar olur: metadata'dan süre gelince zamanlayıcı kur.
+    introCueThen(cueId, (sec) => {
+      const ms = Math.round(Number(sec) * 1000);
+      if (!(ms >= MIN_CUE_AUTO_MS)) return;
+      introCueTimers.push(setTimeout(go, ms + 220));
     });
   };
   const showSlide = (idx) => {
@@ -1425,6 +1471,12 @@ function showStoryIntro() {
           const late = Math.round(introCueSeconds(cueId) * 1000);
           if (late > 0) paintLayer(on, url, pan, late);
         }, 600);
+        // Metadata daha geç gelirse de sahne kaydırması ses süresine eşitlenir.
+        introCueThen(cueId, (sec) => {
+          if (token !== slideToken) return;
+          const late = Math.round(Number(sec) * 1000);
+          if (late > 0) paintLayer(on, url, pan, late);
+        });
       }
     }
     const isLast = idx >= slides.length - 1;
@@ -1440,11 +1492,12 @@ function showStoryIntro() {
         else showSlide(idx + 1);
       }
     );
-    hookCueAutoAdvance(cueNode, step);
+    hookCueAutoAdvance(cueId, step, cueNode);
   };
 
   const showParagraphs = () => {
     if (useSlides) { showSlide(0); return; }
+    if (useParagraphSteps) { showParagraphStep(0); return; }
     applyScene("grass");
     stage(
       `<div class="story-prologue">
@@ -1456,9 +1509,32 @@ function showStoryIntro() {
     );
   };
 
+  // Paragraflara ses eklendiyse: her paragraf tek tek geçer, sahne o sesin
+  // süresi kadar durur (ses bitince kendiliğinden sonraki paragrafa geçer).
+  function showParagraphStep(idx) {
+    const cueId = paraCues[idx] || "";
+    const cueNode = introPlaySound(cueId, cueVolume);
+    const step = ++stepToken;
+    const isLast = idx >= paragraphs.length - 1;
+    applyScene("grass");
+    stage(
+      `<div class="story-prologue">
+        ${idx === 0 ? `<h2 class="story-prologue__title">${escapeHtml(title)}</h2>` : ""}
+        <p class="story-prologue__para">${escapeHtml(paragraphs[idx] || "")}</p>
+      </div>`,
+      isLast ? (lines.length ? "Wake Up" : cta) : "Continue",
+      () => {
+        if (isLast) afterPrologue();
+        else showParagraphStep(idx + 1);
+      }
+    );
+    hookCueAutoAdvance(cueId, step, cueNode);
+  }
+
   const showLine = (idx) => {
     const ln = lines[idx] || {};
-    const cueNode = introPlaySound(stepCue("line", idx), cueVolume);
+    const cueId = stepCue("line", idx);
+    const cueNode = introPlaySound(cueId, cueVolume);
     const step = ++stepToken;
     const who = ln.who || "narrator";
     applyScene(sceneForLine(idx));
@@ -1488,11 +1564,12 @@ function showStoryIntro() {
         else showReward();
       }
     );
-    hookCueAutoAdvance(cueNode, step);
+    hookCueAutoAdvance(cueId, step, cueNode);
   };
 
   const showReward = () => {
-    introPlaySound(audioCfg.reward, cueVolume);
+    const cueNode = introPlaySound(audioCfg.reward, cueVolume);
+    const step = ++stepToken;
     stage(
       `<div class="story-prologue story-prologue--reward">
         <h2 class="story-prologue__title">${escapeHtml(title)}</h2>
@@ -1501,6 +1578,7 @@ function showStoryIntro() {
       cta,
       finish
     );
+    hookCueAutoAdvance(audioCfg.reward, step, cueNode);
   };
 
   showParagraphs();
@@ -2313,7 +2391,7 @@ const ACTIONS = [
   { id: "merchant", icon: "merchant", title: "Merchant", sub: "Chests, potions & materials", kind: "open" },
   { id: "tavern", icon: "tavern", title: "Tavern", sub: "Bet gold · Coin flip, blackjack & food", kind: "open" },
     { id: "temple", icon: "temple", title: "Ancient Temple", sub: "Ascend, mend hearts & rebirth", kind: "open" },
-  { id: "travel", icon: "travel", title: "Travel", sub: "Explore the wilds · 10 stamina", kind: "open" },
+  { id: "travel", icon: "travel", title: "Travel", sub: "Explore the wilds · 5 stamina", kind: "open" },
   { id: "sleep", icon: "rest", title: "Sleep Outside", sub: "End the day · Cold stars, small risk", kind: "emit", event: "town:sleepOutside" },
 ];
 
@@ -2354,6 +2432,7 @@ function renderActionCards(room, selfId) {
         const openSfx = { dungeon: "action.dungeon", blacksmith: "action.blacksmith", merchant: "action.merchant", temple: "action.temple" };
         if (openSfx[a.id]) sfxEvent(openSfx[a.id], 0.45);
         state.skillTreeOpen = false;
+        state.statsOpen = false;
         state.guideOpen = false;
         state.pvpOpen = false;
         state.petsOpen = false;
@@ -3026,6 +3105,353 @@ function renderTreeLoadout(me, max) {
   });
 }
 
+// ===================== STAT TREE — radyal pasif ağaç =====================
+// 160 düğüm, 4 ayrı dal, dallar arası köprüler. 1 düğüm = 1 puan, toplam 40.
+const STAT_BRANCH_GLYPH = { fury: "⚔", bulwark: "🛡", vitality: "❤", arcana: "✦" };
+
+// Yetenek ağacındaki gibi kaydır + yakınlaştır görünüm durumu.
+const statMap = { scale: 1, x: 0, y: 0, dragging: false, lastX: 0, lastY: 0, fitted: false, vw: 0, vh: 0 };
+let statMapWindowBound = false;
+
+function resetStatTreeMapView() {
+  statMap.fitted = false;
+}
+
+function statMapInner() {
+  return $("stattree-inner");
+}
+
+function updateStatMapTransform() {
+  const inner = statMapInner();
+  if (!inner) return;
+  inner.style.transform = `translate(${statMap.x}px, ${statMap.y}px) scale(${statMap.scale})`;
+  const label = $("stattree-zoom-label");
+  if (label) label.textContent = Math.round(statMap.scale * 100) + "%";
+}
+
+function fitStatTreeMap() {
+  const vp = $("stattree-viewport");
+  const inner = statMapInner();
+  if (!vp || !inner) return;
+  const sw = inner.offsetWidth || 1360;
+  const sh = inner.offsetHeight || sw;
+  const vw = vp.clientWidth || 1;
+  const vh = vp.clientHeight || 1;
+  statMap.vw = vw;
+  statMap.vh = vh;
+  statMap.scale = Math.max(0.2, Math.min(1.05, Math.min(vw / sw, vh / sh) * 0.98));
+  statMap.x = (vw - sw * statMap.scale) / 2;
+  statMap.y = (vh - sh * statMap.scale) / 2;
+  statMap.fitted = true;
+  updateStatMapTransform();
+}
+
+function statMapZoom(factor, px, py) {
+  const vp = $("stattree-viewport");
+  if (!vp) return;
+  const next = Math.max(0.2, Math.min(2.4, statMap.scale * factor));
+  if (next === statMap.scale) return;
+  const cx = px == null ? vp.clientWidth / 2 : px;
+  const cy = py == null ? vp.clientHeight / 2 : py;
+  statMap.x = cx - ((cx - statMap.x) * next) / statMap.scale;
+  statMap.y = cy - ((cy - statMap.y) * next) / statMap.scale;
+  statMap.scale = next;
+  updateStatMapTransform();
+}
+
+function initStatMapInteractions() {
+  const vp = $("stattree-viewport");
+  if (!vp || vp.dataset.bound) return;
+  vp.dataset.bound = "1";
+  vp.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    const rect = vp.getBoundingClientRect();
+    statMapZoom(e.deltaY > 0 ? 0.9 : 1.1, e.clientX - rect.left, e.clientY - rect.top);
+  }, { passive: false });
+  vp.addEventListener("mousedown", (e) => {
+    if (e.button !== 0 && e.button !== 1) return;
+    e.preventDefault();
+    statMap.dragging = true;
+    statMap.lastX = e.clientX;
+    statMap.lastY = e.clientY;
+    vp.classList.add("is-dragging");
+  });
+  let lastDist = 0;
+  vp.addEventListener("touchstart", (e) => {
+    if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      lastDist = Math.hypot(dx, dy);
+      statMap.dragging = false;
+    } else if (e.touches.length === 1) {
+      statMap.dragging = true;
+      statMap.lastX = e.touches[0].clientX;
+      statMap.lastY = e.touches[0].clientY;
+    }
+  }, { passive: true });
+  vp.addEventListener("touchmove", (e) => {
+    if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dist = Math.hypot(dx, dy);
+      if (lastDist) statMapZoom(dist / lastDist);
+      lastDist = dist;
+    } else if (e.touches.length === 1 && statMap.dragging) {
+      statMap.x += e.touches[0].clientX - statMap.lastX;
+      statMap.y += e.touches[0].clientY - statMap.lastY;
+      statMap.lastX = e.touches[0].clientX;
+      statMap.lastY = e.touches[0].clientY;
+      updateStatMapTransform();
+    }
+  }, { passive: true });
+  vp.addEventListener("touchend", () => {
+    statMap.dragging = false;
+    lastDist = 0;
+  });
+  // Sürükleme pencere seviyesinde izlenir (viewport her render'da yeniden kuruluyor).
+  if (!statMapWindowBound) {
+    statMapWindowBound = true;
+    window.addEventListener("mousemove", (e) => {
+      if (!statMap.dragging) return;
+      statMap.x += e.clientX - statMap.lastX;
+      statMap.y += e.clientY - statMap.lastY;
+      statMap.lastX = e.clientX;
+      statMap.lastY = e.clientY;
+      updateStatMapTransform();
+    });
+    window.addEventListener("mouseup", () => {
+      statMap.dragging = false;
+      const cur = $("stattree-viewport");
+      if (cur) cur.classList.remove("is-dragging");
+    });
+  }
+}
+
+function statTreeCatalog() {
+  const sp = (typeof CATALOG !== "undefined" && CATALOG.statPaths) || {};
+  return {
+    labels: sp.labels || {},
+    units: sp.units || {},
+    maxPoints: Number(sp.maxPoints) || 40,
+    pointsPerLevel: Number(sp.pointsPerLevel) || 1,
+  };
+}
+
+function statValueText(key, value, units) {
+  const n = Number(value) || 0;
+  const fixed = Math.abs(n - Math.round(n)) < 0.0001 ? String(Math.round(n)) : String(Math.round(n * 100) / 100);
+  return (n > 0 ? "+" : "") + fixed + ((units && units[key]) || "");
+}
+
+function renderStatsView(room) {
+  const content = $("stats-content");
+  const me = room.players.find((p) => p.id === state.playerId);
+  if (!content || !me) return;
+  const tree = (typeof CATALOG !== "undefined" && CATALOG.statTree) || null;
+  if (!tree || !Array.isArray(tree.nodes) || !tree.nodes.length) {
+    content.innerHTML = `<p class="stattree__hint">The stat tree could not be loaded. Restart the server and refresh (Ctrl+F5).</p>`;
+    return;
+  }
+  const cat = statTreeCatalog();
+  const box = Number(tree.box) || 1360;
+  const branches = Array.isArray(tree.paths) ? tree.paths : [];
+  const owned = new Set(Array.isArray(me.statNodes) ? me.statNodes : []);
+  const spent = Math.max(0, Number(me.statPointsSpent) || owned.size);
+  const avail = Math.max(0, Number(me.statPoints) || 0);
+  const totalPts = Math.max(1, Number(me.statPointsTotal) || cat.maxPoints);
+
+  // Renk ve isim araması için hızlı indeks.
+  const byId = new Map();
+  for (const n of tree.nodes) byId.set(n.id, n);
+  const branchOf = new Map();
+  for (const p of branches) branchOf.set(p.id, p);
+
+  // Erişilebilir (alınabilir) düğümler: merkeze ya da alınmış bir düğüme komşu.
+  const ready = new Set();
+  if (avail > 0) {
+    for (const pair of tree.links) {
+      const a = pair[0];
+      const b = pair[1];
+      if (a === "hub" || b === "hub") {
+        const other = a === "hub" ? b : a;
+        if (!owned.has(other)) ready.add(other);
+        continue;
+      }
+      if (owned.has(a) && !owned.has(b)) ready.add(b);
+      if (owned.has(b) && !owned.has(a)) ready.add(a);
+    }
+    for (const id of owned) ready.delete(id);
+  }
+
+  // --- Bağlantı çizgileri ---
+  const edges = tree.links
+    .map((pair) => {
+      const a = pair[0];
+      const b = pair[1];
+      if (a === "hub" || b === "hub") return "";
+      const na = byId.get(a);
+      const nb = byId.get(b);
+      if (!na || !nb) return "";
+      const on = owned.has(a) && owned.has(b);
+      const near = !on && (owned.has(a) || owned.has(b));
+      const color = on ? ((branchOf.get(nb.path) || {}).color || "#e8b45c") : "#5a452c";
+      const op = on ? 0.95 : near ? 0.5 : 0.22;
+      const w = on ? 2.6 : 1.5;
+      return `<line x1="${na.x}" y1="${na.y}" x2="${nb.x}" y2="${nb.y}" stroke="${color}" stroke-width="${w}" stroke-linecap="round" opacity="${op}"/>`;
+    })
+    .join("");
+
+  // --- Düğümler ---
+  const nodeHtml = tree.nodes
+    .map((n) => {
+      const isOn = owned.has(n.id);
+      const isReady = !isOn && ready.has(n.id);
+      const br = branchOf.get(n.path) || {};
+      const label = (cat.labels && cat.labels[n.stat]) || n.stat;
+      const value = Number(n.value) || 0;
+      const cls = `stnode${isOn ? " is-on" : ""}${isReady ? " is-ready" : ""}${!isOn && !isReady ? " is-locked" : ""}`;
+      // aria-label "+3.5 Attack" biçiminde: i18n autoStatLine bunu çevirir.
+      const aria = statValueText(n.stat, value, cat.units).replace(/^\+/, "") + " " + label;
+      return `<button type="button" class="${cls}" data-node="${escapeHtml(n.id)}" data-stat="${escapeHtml(n.stat)}"
+        style="left:${((n.x / box) * 100).toFixed(3)}%;top:${((n.y / box) * 100).toFixed(3)}%;--n:${br.color || "#e8b45c"}"
+        aria-label="${escapeHtml(aria)}"></button>`;
+    })
+    .join("");
+
+  // --- Dal sayaçları ---
+  const counts = {};
+  for (const p of branches) counts[p.id] = 0;
+  for (const id of owned) {
+    const n = byId.get(id);
+    if (n && counts[n.path] != null) counts[n.path] += 1;
+  }
+  const perBranch = Math.max(1, Math.round(tree.nodes.length / Math.max(1, branches.length)));
+  const branchRow = branches
+    .map((p) => {
+      const c = counts[p.id] || 0;
+      return `<span class="stbranch" style="--n:${p.color || "#e8b45c"}">
+        <span class="stbranch__glyph" aria-hidden="true">${escapeHtml(p.glyph || STAT_BRANCH_GLYPH[p.id] || "◆")}</span>
+        <span class="stbranch__name">${escapeHtml(p.name || p.id)}</span>
+        <span class="stbranch__num">${c}<em>/${perBranch}</em></span>
+      </span>`;
+    })
+    .join("");
+
+  const snapshot = [
+    ["Attack", Math.round(Number(me.attack) || 0)],
+    ["Atk Speed", Math.round(Number(me.attackSpeed) || 0) + "%"],
+    ["Crit", Math.round((Number(me.critChance) || 0) * 10) / 10 + "%"],
+    ["Crit Dmg", "+" + Math.round(Number(me.critDamage) || 0) + "%"],
+    ["HP", Math.round(Number(me.maxHp) || 0)],
+    ["Resist", Math.round(Number(me.resistance) || 0)],
+    ["Magic", Math.round(Number(me.magicPower) || 0)],
+    ["Heal", Math.round(Number(me.healPower) || 0)],
+    ["Mana", Math.round(Number(me.maxMana) || 0)],
+    ["Regen", Math.round((Number(me.manaRegen) || 0) * 10) / 10],
+    ["Omnivamp", Math.round((Number(me.omnivamp) || 0) * 10) / 10 + "%"],
+    ["Stamina", Math.round(Number(me.maxStamina) || 0)],
+  ]
+    .map(([l, v]) => `<span class="statsnap"><em>${escapeHtml(l)}</em><b>${escapeHtml(String(v))}</b></span>`)
+    .join("");
+
+  content.innerHTML = `
+    <div class="statviews">
+      <div class="stattree-wrap">
+        <div class="stattree-bar">
+          <span class="stattree-bar__title">Passive Paths <em>${spent}/${totalPts}</em></span>
+          <div class="stattree-bar__zoom">
+            <button type="button" class="btn btn--mini" data-statzoom="out" title="Zoom out">−</button>
+            <span class="stattree-bar__pct" id="stattree-zoom-label">100%</span>
+            <button type="button" class="btn btn--mini" data-statzoom="in" title="Zoom in">+</button>
+            <button type="button" class="btn btn--mini" data-statzoom="fit" title="Fit">⤢</button>
+          </div>
+        </div>
+        <div class="stattree-viewport" id="stattree-viewport">
+          <div class="stattree" id="stattree-inner" style="width:${box}px;height:${box}px">
+            <svg class="stattree__svg" viewBox="0 0 ${box} ${box}" aria-hidden="true">
+              <circle cx="${box / 2}" cy="${box / 2}" r="${box * 0.2}" fill="none" stroke="rgba(232,180,92,.07)" stroke-width="1"/>
+              <circle cx="${box / 2}" cy="${box / 2}" r="${box * 0.32}" fill="none" stroke="rgba(232,180,92,.05)" stroke-width="1"/>
+              <circle cx="${box / 2}" cy="${box / 2}" r="${box * 0.44}" fill="none" stroke="rgba(232,180,92,.04)" stroke-width="1"/>
+              ${edges}
+            </svg>
+            <div class="stattree__hub">
+              <span class="stattree__hub-label">Points</span>
+              <b class="stattree__hub-value">${avail}</b>
+              <span class="stattree__hub-sub">Lv ${me.level} · ${spent}/${totalPts}</span>
+            </div>
+            ${nodeHtml}
+          </div>
+        </div>
+        <p class="stattree__hint">160 nodes across four linked branches. Each node costs 1 point (40 total). Bridges let you cross from one branch into another — start in Fury, then reach for Vitality health nodes.</p>
+      </div>
+
+      <div class="statpanel">
+        <div class="statpanel__head">
+          <div class="statpanel__titles">
+            <h3>Character Paths</h3>
+            <p>${avail} point${avail === 1 ? "" : "s"} available · ${spent} of ${totalPts} spent · +${cat.pointsPerLevel} per level</p>
+          </div>
+          <div class="stbranch-row">${branchRow}</div>
+        </div>
+        <div class="statpanel__inspect" id="stat-inspect">Hover a node to inspect it. Glowing nodes are connected to your path.</div>
+        <div class="statsnap-grid">${snapshot}</div>
+      </div>
+    </div>`;
+
+  const inspect = $("stat-inspect");
+  const describe = (n, tag) => {
+    const br = branchOf.get(n.path) || {};
+    const label = (cat.labels && cat.labels[n.stat]) || n.stat;
+    const value = statValueText(n.stat, n.value, cat.units);
+    return `<b>${escapeHtml(value.replace(/^\+/, "") + " " + label)}</b>
+      <span class="statpanel__inspect-sub"><span>${escapeHtml(br.name || n.path)}</span> · <span>ring ${n.ring}</span></span>
+      ${tag ? `<span class="statpanel__inspect-tag">${escapeHtml(tag)}</span>` : ""}`;
+  };
+
+  content.querySelectorAll(".stnode").forEach((b) => {
+    const node = byId.get(b.getAttribute("data-node"));
+    if (!node) return;
+    b.addEventListener("mouseenter", () => {
+      if (!inspect) return;
+      const tag = b.classList.contains("is-on") ? "Taken" : b.classList.contains("is-ready") ? "Click to take" : "Not connected";
+      inspect.innerHTML = describe(node, tag);
+    });
+    b.addEventListener("click", () => {
+      if (b.classList.contains("is-on")) {
+        if (inspect) inspect.innerHTML = describe(node, "Taken");
+        return;
+      }
+      if (!b.classList.contains("is-ready")) {
+        if (inspect) inspect.innerHTML = describe(node, "Follow a connected path first");
+        return;
+      }
+      if (avail <= 0) {
+        if (inspect) inspect.innerHTML = `<span class="statpanel__inspect-tag">No stat points left</span>`;
+        return;
+      }
+      socket.emit("statTree:spend", { node: node.id });
+    });
+  });
+
+  content.querySelectorAll("[data-statzoom]").forEach((b) => {
+    b.addEventListener("click", () => {
+      const mode = b.getAttribute("data-statzoom");
+      if (mode === "fit") {
+        statMap.fitted = false;
+        fitStatTreeMap();
+      } else {
+        statMapZoom(mode === "in" ? 1.18 : 1 / 1.18);
+      }
+    });
+  });
+
+  // Kaydırma / yakınlaştırma (yetenek ağacındaki davranışın aynısı).
+  initStatMapInteractions();
+  const vp = $("stattree-viewport");
+  if (!statMap.fitted || !vp || statMap.vw !== vp.clientWidth || statMap.vh !== vp.clientHeight) fitStatTreeMap();
+  else updateStatMapTransform();
+}
+
 function renderSkillTreeView(room) {
   const content = $("skilltree-content");
   const me = room.players.find((p) => p.id === state.playerId);
@@ -3367,7 +3793,7 @@ function renderTravelViewInner(room, root) {
     if (!state.travelType) state.travelType = "verdant";
     if (!state.travelSize) state.travelSize = "normal";
     const stamina = me ? me.stamina : 0;
-    const cannot = stamina < 10;
+    const cannot = stamina < 5;
     const pickedType = (TRAVEL_TYPES.find(([id]) => id === state.travelType) || TRAVEL_TYPES[0])[1];
     const pickedSize = (TRAVEL_SIZES.find(([id]) => id === state.travelSize) || TRAVEL_SIZES[1])[1];
     // Sefer odaları: oyuncular önce oda kurar / katılır, lider başlatır.
@@ -3393,13 +3819,13 @@ function renderTravelViewInner(room, root) {
           </div>
           <div class="tv-gate__summary">
             <span class="tv-gate__summary-main">${escapeHtml(myExp.typeLabel || "Wilds")}</span>
-            <span class="tv-gate__summary-sub">${escapeHtml(myExp.sizeLabel || "Normal")} land &middot; every explorer pays <b>10 stamina</b></span>
+            <span class="tv-gate__summary-sub">${escapeHtml(myExp.sizeLabel || "Normal")} land &middot; every explorer pays <b>5 stamina</b></span>
           </div>
           <div class="tv-camp__actions">
-            ${isLeader ? `<button type="button" class="tv-gate__cta tv-gate__cta--stone" id="btn-exp-start"${cannot ? " disabled" : ""}><span class="tv-gate__cta-label">Start expedition</span><span class="tv-gate__cta-cost">10 stamina</span></button>` : ""}
+            ${isLeader ? `<button type="button" class="tv-gate__cta tv-gate__cta--stone" id="btn-exp-start"${cannot ? " disabled" : ""}><span class="tv-gate__cta-label">Start expedition</span><span class="tv-gate__cta-cost">5 stamina</span></button>` : ""}
             <button type="button" class="tv-leave" id="btn-exp-leave">Leave room</button>
           </div>
-          ${cannot ? `<p class="tv-warn">You need at least 10 stamina. Rest at the tavern or sleep to recover it.</p>` : ""}
+          ${cannot ? `<p class="tv-warn">You need at least 5 stamina. Rest at the tavern or sleep to recover it.</p>` : ""}
         </div>
         ${renderTravelSkillTree(me)}
       </div>`;
@@ -3451,14 +3877,14 @@ function renderTravelViewInner(room, root) {
               </div>
               <div class="tv-gate__summary">
                 <span class="tv-gate__summary-main">${escapeHtml(pickedType)}</span>
-                <span class="tv-gate__summary-sub">${escapeHtml(pickedSize)} land &middot; every explorer pays <b>10 stamina</b></span>
+                <span class="tv-gate__summary-sub">${escapeHtml(pickedSize)} land &middot; every explorer pays <b>5 stamina</b></span>
               </div>
             </div>
             <button type="button" class="tv-gate__cta tv-gate__cta--stone" id="btn-travel-go"${cannot ? " disabled" : ""}>
               <span class="tv-gate__cta-label">Step through the stone</span>
-              <span class="tv-gate__cta-cost">10 stamina</span>
+              <span class="tv-gate__cta-cost">5 stamina</span>
             </button>
-            ${cannot ? `<p class="tv-warn">You need at least 10 stamina. Rest at the tavern or sleep to recover it.</p>` : ""}
+            ${cannot ? `<p class="tv-warn">You need at least 5 stamina. Rest at the tavern or sleep to recover it.</p>` : ""}
             ${openExps.length ? `
             <div class="tv-field tv-field--rooms">
               <span class="tv-field-label">Open expedition rooms</span>
@@ -3485,9 +3911,9 @@ function renderTravelViewInner(room, root) {
             </ul>
             <button type="button" class="tv-gate__cta tv-gate__cta--continent" id="btn-world-setra"${cannot ? " disabled" : ""}>
               <span class="tv-gate__cta-label">Ride into the continent</span>
-              <span class="tv-gate__cta-cost">10 stamina</span>
+              <span class="tv-gate__cta-cost">5 stamina</span>
             </button>
-            ${cannot ? `<p class="tv-warn">You need at least 10 stamina. Rest at the tavern or sleep to recover it.</p>` : ""}
+            ${cannot ? `<p class="tv-warn">You need at least 5 stamina. Rest at the tavern or sleep to recover it.</p>` : ""}
           </article>
         </div>
 

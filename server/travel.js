@@ -1,4 +1,4 @@
-// Setra Travel - shared room world map exploration.
+﻿// Setra Travel - shared room world map exploration.
 // Server-authoritative map generation + POI/party/invite handling.
 // Combat is NOT reimplemented: encounters live in room.dungeons with
 // travel:true so the existing multiplayer combat engine runs unchanged.
@@ -8,7 +8,7 @@ const { idleDungeon } = require("./dungeon");
 const combat = require("./combat");
 const persistentWorld = require("./persistentWorld");
 
-const ENTRY_STAMINA = 10;
+const ENTRY_STAMINA = 5;
 
 const MAP_TYPES = [
   { id: "verdant", label: "Verdant Wilds" },
@@ -99,8 +99,8 @@ function tileAt(tiles, w, h, x, y) {
   return tiles[y * w + x];
 }
 
-// Verilen karonun çevresinde kaya/höyük var mı? Dungeon'lar kayaların içine
-// gömülsün diye yerleşim bunu tercih eder.
+// Verilen karonun Ã§evresinde kaya/hÃ¶yÃ¼k var mÄ±? Dungeon'lar kayalarÄ±n iÃ§ine
+// gÃ¶mÃ¼lsÃ¼n diye yerleÅŸim bunu tercih eder.
 function nearRock(tiles, w, h, x, y, rad = 3) {
   for (let dy = -rad; dy <= rad; dy++) for (let dx = -rad; dx <= rad; dx++) {
     const t = tileAt(tiles, w, h, x + dx, y + dy);
@@ -109,12 +109,12 @@ function nearRock(tiles, w, h, x, y, rad = 3) {
   return false;
 }
 
-// Yol kenarına serilmiş sandıklar: rastgele araziye saçılmak yerine
-// oyuncunun gerçekten yürüdüğü patikaların üstünde/kenarında dururlar.
-// Sandıklar birbirine ve diğer önemli noktalara çok yakın olamaz: keşif
-// hissi için aralarında en az CHEST_SPACING kare mesafe bırakılır.
-const CHEST_MIN_FROM_POI = 20;  // sandık <-> kale/mağara/köy vb.
-const CHEST_SPACING = 26;       // sandık <-> sandık (20-30 kare aralık)
+// Yol kenarÄ±na serilmiÅŸ sandÄ±klar: rastgele araziye saÃ§Ä±lmak yerine
+// oyuncunun gerÃ§ekten yÃ¼rÃ¼dÃ¼ÄŸÃ¼ patikalarÄ±n Ã¼stÃ¼nde/kenarÄ±nda dururlar.
+// SandÄ±klar birbirine ve diÄŸer Ã¶nemli noktalara Ã§ok yakÄ±n olamaz: keÅŸif
+// hissi iÃ§in aralarÄ±nda en az CHEST_SPACING kare mesafe bÄ±rakÄ±lÄ±r.
+const CHEST_MIN_FROM_POI = 20;  // sandÄ±k <-> kale/maÄŸara/kÃ¶y vb.
+const CHEST_SPACING = 26;       // sandÄ±k <-> sandÄ±k (20-30 kare aralÄ±k)
 const CHEST_MIN_FROM_SPAWN = 16;
 
 function pickRoadsideChests(rng, tiles, w, h, pois, spawn, count) {
@@ -124,8 +124,8 @@ function pickRoadsideChests(rng, tiles, w, h, pois, spawn, count) {
     if (tiles[y * w + x] === T.ROAD) road.push({ x, y });
   }
   if (!road.length) return out;
-  // Önce uzak noktaları deneyen ikinci bir tur: seyrek yerleşim olmazsa
-  // mesafeyi kademeli olarak düşürürüz (yine de yakın sandık çıkmaz).
+  // Ã–nce uzak noktalarÄ± deneyen ikinci bir tur: seyrek yerleÅŸim olmazsa
+  // mesafeyi kademeli olarak dÃ¼ÅŸÃ¼rÃ¼rÃ¼z (yine de yakÄ±n sandÄ±k Ã§Ä±kmaz).
   const passes = [CHEST_SPACING, Math.round(CHEST_SPACING * 0.8), CHEST_MIN_FROM_POI];
   for (const spacing of passes) {
     for (let a = 0; a < 6000 && out.length < count; a++) {
@@ -145,7 +145,7 @@ function pickRoadsideChests(rng, tiles, w, h, pois, spawn, count) {
 function pickPOIs(rng, tiles, w, h, size, count) {
   const pois = [];
   const kinds = [];
-  // Az sayıda ama anlamlı savaş alanı.
+  // Az sayÄ±da ama anlamlÄ± savaÅŸ alanÄ±.
   const dungeons = size.scale < 0.9 ? 1 : (size.scale > 1.8 ? 3 : 2);
   for (let i = 0; i < dungeons; i++) kinds.push("dungeon");
   kinds.push("inn");
@@ -160,7 +160,7 @@ function pickPOIs(rng, tiles, w, h, size, count) {
   let tries = 0;
   for (const kind of kinds) {
     let placed = null;
-    // İlk tur: türüne uygun arazi (dungeon kayaya gömülü, den orman/mağara).
+    // Ä°lk tur: tÃ¼rÃ¼ne uygun arazi (dungeon kayaya gÃ¶mÃ¼lÃ¼, den orman/maÄŸara).
     for (let a = 0; a < 1200 && !placed; a++) {
       const x = 3 + Math.floor(rng() * (w - 6));
       const y = 3 + Math.floor(rng() * (h - 6));
@@ -171,7 +171,7 @@ function pickPOIs(rng, tiles, w, h, size, count) {
       if (pois.some((p) => Math.hypot(p.x - x, p.y - y) < minDist)) continue;
       placed = { x, y };
     }
-    // Yedek tur: arazi şartını bırak (harita boş kalmasın).
+    // Yedek tur: arazi ÅŸartÄ±nÄ± bÄ±rak (harita boÅŸ kalmasÄ±n).
     for (let a = 0; a < 400 && !placed; a++) {
       const x = 3 + Math.floor(rng() * (w - 6));
       const y = 3 + Math.floor(rng() * (h - 6));
@@ -252,8 +252,8 @@ function generateMap(seed, typeId, sizeId) {
   }
   const { spawn, pois } = pickPOIs(rng, tiles, w, h, size, 0);
   for (const p of pois) carveRoad(tiles, w, h, spawn, p);
-  // Sandıklar yollar oyulduktan SONRA, patikaların üzerine yerleştirilir.
-  // Sayı düşük tutulur: sandık bulmak nadir ve değerli olmalı.
+  // SandÄ±klar yollar oyulduktan SONRA, patikalarÄ±n Ã¼zerine yerleÅŸtirilir.
+  // SayÄ± dÃ¼ÅŸÃ¼k tutulur: sandÄ±k bulmak nadir ve deÄŸerli olmalÄ±.
   const chests = pickRoadsideChests(rng, tiles, w, h, pois, spawn, Math.max(1, Math.round(2 * size.scale)));
   for (const c of chests) pois.push(c);
   // assign POI details
@@ -268,29 +268,29 @@ function generateMap(seed, typeId, sizeId) {
       p.name = genName(type.id, p.kind, pois.indexOf(p));
     }
   }
-  // Kare kodları sayısal dizi olarak kalır; base36 metni yalnızca istemci
-  // "terrain" istediğinde üretilir. (Büyük haritada 360k string birleştirme
-  // tüm sunucuyu kilitliyordu.)
+  // Kare kodlarÄ± sayÄ±sal dizi olarak kalÄ±r; base36 metni yalnÄ±zca istemci
+  // "terrain" istediÄŸinde Ã¼retilir. (BÃ¼yÃ¼k haritada 360k string birleÅŸtirme
+  // tÃ¼m sunucuyu kilitliyordu.)
   return {
     seed, type: type.id, typeLabel: type.label, size: size.id, sizeLabel: size.label,
     w, h, tiles, spawn, pois,
   };
 }
 
-// Birden fazla bağımsız sefer (dünya) aynı anda yaşayabilir. Her oyuncu
-// player.travelId ile kendi dünyasına bağlıdır; oyuncu verilmezse (eski
-// çağrılar) ilk aktif dünya döner.
+// Birden fazla baÄŸÄ±msÄ±z sefer (dÃ¼nya) aynÄ± anda yaÅŸayabilir. Her oyuncu
+// player.travelId ile kendi dÃ¼nyasÄ±na baÄŸlÄ±dÄ±r; oyuncu verilmezse (eski
+// Ã§aÄŸrÄ±lar) ilk aktif dÃ¼nya dÃ¶ner.
 function activeTravel(room, player) {
   if (!room) return null;
-  // Bir oyuncu verildiyse YALNIZCA kendi seferi döner. Eski "ilk aktif sefere
-  // düş" davranışı, kasabaya dönmüş/ölmüş bir oyuncunun başkasının seferinde
-  // sanılmasına ("zaten seferdesin"), hayalet konum göndermesine ve yanlış
-  // haritanın açılmasına yol açıyordu.
+  // Bir oyuncu verildiyse YALNIZCA kendi seferi dÃ¶ner. Eski "ilk aktif sefere
+  // dÃ¼ÅŸ" davranÄ±ÅŸÄ±, kasabaya dÃ¶nmÃ¼ÅŸ/Ã¶lmÃ¼ÅŸ bir oyuncunun baÅŸkasÄ±nÄ±n seferinde
+  // sanÄ±lmasÄ±na ("zaten seferdesin"), hayalet konum gÃ¶ndermesine ve yanlÄ±ÅŸ
+  // haritanÄ±n aÃ§Ä±lmasÄ±na yol aÃ§Ä±yordu.
   if (player) {
     const own = player.travelId && room.travels && room.travels[player.travelId];
     return own && own.active ? own : null;
   }
-  // Oyuncu verilmediyse (eski çağrılar / tüm seferler) ilk aktif dünya döner.
+  // Oyuncu verilmediyse (eski Ã§aÄŸrÄ±lar / tÃ¼m seferler) ilk aktif dÃ¼nya dÃ¶ner.
   for (const id of Object.keys(room.travels || {})) {
     const t = room.travels[id];
     if (t && t.active) return t;
@@ -324,17 +324,17 @@ function revealAround(travel, x, y, rad) {
 
 function enterTravel(room, player, typeId, sizeId, opts = {}) {
   if (player.stamina < ENTRY_STAMINA) throw new Error(`Travel costs ${ENTRY_STAMINA} stamina.`);
-  // Sefer her zaman tam can/mana ile başlar: eski düşük can (0 ya da 40) taşınmaz.
+  // Sefer her zaman tam can/mana ile baÅŸlar: eski dÃ¼ÅŸÃ¼k can (0 ya da 40) taÅŸÄ±nmaz.
   if (player.lives > 0) {
     player.hp = Math.max(1, player.maxHp || 100);
     player.mana = Math.max(0, player.maxMana || 0);
   }
   player.downed = false;
   if (!room.travels) room.travels = {};
-  // Zaten bir dünyadaysa önce oradan ayrıl (üst üste dünya olmasın).
+  // Zaten bir dÃ¼nyadaysa Ã¶nce oradan ayrÄ±l (Ã¼st Ã¼ste dÃ¼nya olmasÄ±n).
   if (player.travelId) leaveTravel(room, player);
-  // `travelId` boş kalmış hayalet üyelikleri de temizle: eski oturumdan kalan
-  // kayıt yeni seferde ikinci bir "gölge oyuncu" olarak görünmesin.
+  // `travelId` boÅŸ kalmÄ±ÅŸ hayalet Ã¼yelikleri de temizle: eski oturumdan kalan
+  // kayÄ±t yeni seferde ikinci bir "gÃ¶lge oyuncu" olarak gÃ¶rÃ¼nmesin.
   for (const id of Object.keys(room.travels)) {
     const tr = room.travels[id];
     if (!tr || !Array.isArray(tr.members) || !tr.members.includes(player.id)) continue;
@@ -354,7 +354,7 @@ function enterTravel(room, player, typeId, sizeId, opts = {}) {
     if (!travel || !travel.active) throw new Error("That expedition has ended.");
   }
   if (!travel) {
-    // Her "Set out" yepyeni bir dünya üretir; aynı tohum asla tekrar kullanılmaz.
+    // Her "Set out" yepyeni bir dÃ¼nya Ã¼retir; aynÄ± tohum asla tekrar kullanÄ±lmaz.
     const seed = Math.floor(Math.random() * 2147483647);
     const map = generateMap(seed, typeId || MAP_TYPES[0].id, sizeId || "normal");
     const id = newTravelId(room);
@@ -382,7 +382,7 @@ function enterTravel(room, player, typeId, sizeId, opts = {}) {
 
 function enterPersistent(room, player) {
   if (player.stamina < ENTRY_STAMINA) throw new Error(`Travel costs ${ENTRY_STAMINA} stamina.`);
-  // Tek, kalıcı kıta: her girişte tam can/mana ve hayalet üyelik temizliği.
+  // Tek, kalÄ±cÄ± kÄ±ta: her giriÅŸte tam can/mana ve hayalet Ã¼yelik temizliÄŸi.
   if (player.lives > 0) {
     player.hp = Math.max(1, player.maxHp || 100);
     player.mana = Math.max(0, player.maxMana || 0);
@@ -404,15 +404,16 @@ function enterPersistent(room, player) {
   return t;
 }
 
-// Kasabaya dönüş yalnızca seferin başladığı noktadan (varış taşından) yapılabilir.
-// Böylece canavarın ortasında savaşırken "kaçış" olarak kullanılamaz.
+// Kasabaya dÃ¶nÃ¼ÅŸ yalnÄ±zca seferin baÅŸladÄ±ÄŸÄ± noktadan (varÄ±ÅŸ taÅŸÄ±ndan) yapÄ±labilir.
+// BÃ¶ylece canavarÄ±n ortasÄ±nda savaÅŸÄ±rken "kaÃ§Ä±ÅŸ" olarak kullanÄ±lamaz.
 function atReturnPoint(travel, id, radius = 3) {
   if (!travel || !travel.spawn) return false;
   const p = travel.pos && travel.pos[id];
   if (!p) return false;
   if (travel.persistent) {
+    const reach = poiReach(travel);
     return travel.pois.some((poi) => (poi.checkpoint || poi.kind === "inn" || poi.kind === "checkpoint") &&
-      Math.hypot(p.x - poi.x - 0.5, p.y - poi.y - 0.5) <= 16);
+      Math.hypot(p.x - poi.x - 0.5, p.y - poi.y - 0.5) <= reach);
   }
   const sx = (travel.spawn.x || 0) + 0.5;
   const sy = (travel.spawn.y || 0) + 0.5;
@@ -422,14 +423,14 @@ function atReturnPoint(travel, id, radius = 3) {
 function healForTown(player) {
   if (!player) return;
   player.downed = false;
-  // Ölü (kalp 0) oyuncu tapınakta diriltilir; onun canı 0 kalır.
+  // Ã–lÃ¼ (kalp 0) oyuncu tapÄ±nakta diriltilir; onun canÄ± 0 kalÄ±r.
   if (Number.isFinite(player.lives) && player.lives <= 0) return;
   player.hp = Math.max(1, player.maxHp || 100);
   player.mana = Math.max(0, player.maxMana || 0);
 }
 
-// Oyuncu `travelId` taşımıyor ama bir seferin üyesi olarak listelenmiş mi?
-// (Eski istemci/sunucu karışıklığından kalan hayalet üyelik.)
+// Oyuncu `travelId` taÅŸÄ±mÄ±yor ama bir seferin Ã¼yesi olarak listelenmiÅŸ mi?
+// (Eski istemci/sunucu karÄ±ÅŸÄ±klÄ±ÄŸÄ±ndan kalan hayalet Ã¼yelik.)
 function memberOfAnyTravel(room, player) {
   if (!room || !player || !room.travels) return false;
   for (const id of Object.keys(room.travels)) {
@@ -441,14 +442,14 @@ function memberOfAnyTravel(room, player) {
 
 function leaveTravel(room, player) {
   if (!room || !player) return;
-  // Kasabaya dönüş her koşulda tam can/mana ile olur. Bu satır fonksiyonun en
-  // başında: aşağıdaki erken çıkışlar (travel bulunamazsa) canı eksik bırakmasın.
+  // Kasabaya dÃ¶nÃ¼ÅŸ her koÅŸulda tam can/mana ile olur. Bu satÄ±r fonksiyonun en
+  // baÅŸÄ±nda: aÅŸaÄŸÄ±daki erken Ã§Ä±kÄ±ÅŸlar (travel bulunamazsa) canÄ± eksik bÄ±rakmasÄ±n.
   healForTown(player);
   leaveExpedition(room, player);
-  // Oyuncunun `travelId`'si boş/eskimiş olsa bile üye olarak listelendiği TÜM
-  // seferlerden çıkar. Eski "ilk aktif sefer" mantığı yüzünden oluşan hayalet
-  // üyelikler burada temizlenir; aksi halde oyuncu kasabada görünürken sunucu
-  // onu hâlâ bir seferin üyesi sayıp "zaten seferdesin" diyebiliyordu.
+  // Oyuncunun `travelId`'si boÅŸ/eskimiÅŸ olsa bile Ã¼ye olarak listelendiÄŸi TÃœM
+  // seferlerden Ã§Ä±kar. Eski "ilk aktif sefer" mantÄ±ÄŸÄ± yÃ¼zÃ¼nden oluÅŸan hayalet
+  // Ã¼yelikler burada temizlenir; aksi halde oyuncu kasabada gÃ¶rÃ¼nÃ¼rken sunucu
+  // onu hÃ¢lÃ¢ bir seferin Ã¼yesi sayÄ±p "zaten seferdesin" diyebiliyordu.
   const targets = [];
   for (const id of Object.keys(room.travels || {})) {
     const tr = room.travels[id];
@@ -478,13 +479,13 @@ function leaveTravel(room, player) {
   }
   player.travelId = null;
   player.dungeonId = null;
-  // Son güvence: aradaki hiçbir işlem canı düşüremesin. `fall()` bunu takiben
-  // bilinçli olarak hp=0 yapar (gerçek ölüm), diğer tüm dönüşlerde tam can kalır.
+  // Son gÃ¼vence: aradaki hiÃ§bir iÅŸlem canÄ± dÃ¼ÅŸÃ¼remesin. `fall()` bunu takiben
+  // bilinÃ§li olarak hp=0 yapar (gerÃ§ek Ã¶lÃ¼m), diÄŸer tÃ¼m dÃ¶nÃ¼ÅŸlerde tam can kalÄ±r.
   healForTown(player);
 }
 
-// ---- Yere düşme / diriltme (çok oyunculu seyahat) ----
-// Yere düşen oyuncu seferde kalır; yakındaki bir takım arkadaşı onu diriltebilir.
+// ---- Yere dÃ¼ÅŸme / diriltme (Ã§ok oyunculu seyahat) ----
+// Yere dÃ¼ÅŸen oyuncu seferde kalÄ±r; yakÄ±ndaki bir takÄ±m arkadaÅŸÄ± onu diriltebilir.
 function isDowned(travel, id) {
   return !!(travel && travel.downed && travel.downed[id]);
 }
@@ -496,7 +497,7 @@ function setDowned(travel, id, on) {
   else delete travel.downed[id];
 }
 
-// Yakındaki düşmüş bir oyuncuyu ayağa kaldırır; canı doldurulur.
+// YakÄ±ndaki dÃ¼ÅŸmÃ¼ÅŸ bir oyuncuyu ayaÄŸa kaldÄ±rÄ±r; canÄ± doldurulur.
 function revive(room, player, targetId) {
   const travel = activeTravel(room, player);
   if (!travel) throw new Error("No active travel map.");
@@ -515,7 +516,7 @@ function revive(room, player, targetId) {
   return { target };
 }
 
-// Yere düşen oyuncu vazgeçip kasabaya döner (kalp zaten düşmüştü).
+// Yere dÃ¼ÅŸen oyuncu vazgeÃ§ip kasabaya dÃ¶ner (kalp zaten dÃ¼ÅŸmÃ¼ÅŸtÃ¼).
 function giveUp(room, player) {
   const travel = activeTravel(room, player);
   if (!travel) return null;
@@ -527,7 +528,7 @@ function giveUp(room, player) {
   return travel;
 }
 
-// Düşen oyuncuyu ölüme götür (kalbi kalmadı): kasabada tapınakta diriltilmeli.
+// DÃ¼ÅŸen oyuncuyu Ã¶lÃ¼me gÃ¶tÃ¼r (kalbi kalmadÄ±): kasabada tapÄ±nakta diriltilmeli.
 function fall(room, player) {
   const travel = activeTravel(room, player);
   if (!travel) return null;
@@ -535,7 +536,7 @@ function fall(room, player) {
   player.downed = false;
   player.hp = 0;
   leaveTravel(room, player);
-  // leaveTravel yerde kalan oyuncuyu iyileştirir; gerçek ölümde can 0 kalmalı.
+  // leaveTravel yerde kalan oyuncuyu iyileÅŸtirir; gerÃ§ek Ã¶lÃ¼mde can 0 kalmalÄ±.
   player.hp = 0;
   player.dungeonId = null;
   return travel;
@@ -546,10 +547,21 @@ function nearPOI(travel, player, poiId) {
   if (!poi) throw new Error("That place does not exist.");
   const pos = travel.pos[player.id];
   if (!pos) throw new Error("You are not travelling.");
-  // POI'lerin görsel boyutu büyük: oyuncu nesnenin içine girmek zorunda kalmasın.
-  // (İstemci etkileşim yarıçapı ~12 karo; sunucu biraz daha toleranslı.)
-  if (Math.hypot(pos.x - poi.x - 0.5, pos.y - poi.y - 0.5) > 16) throw new Error("Too far away.");
+  // POI'lerin gÃ¶rsel boyutu bÃ¼yÃ¼k: oyuncu nesnenin iÃ§ine girmek zorunda kalmasÄ±n.
+  // KalÄ±cÄ± kÄ±tada istemci etkileÅŸim yarÄ±Ã§apÄ± px cinsindendir; sunucu aynÄ±
+  // yarÄ±Ã§apÄ± birime Ã§evirir (yoksa "Too far away" hatasÄ± Ã§Ä±kÄ±yordu).
+  if (Math.hypot(pos.x - poi.x - 0.5, pos.y - poi.y - 0.5) > poiReach(travel)) throw new Error("Too far away.");
   return poi;
+}
+
+// Bir POI'ye "yanÄ±ndayÄ±m" sayÄ±lan yarÄ±Ã§ap (dÃ¼nya birimi).
+function poiReach(travel) {
+  if (!travel || !travel.persistent) return 16;
+  let ws = 2;
+  try { ws = Math.max(1, Number(require("./persistentWorld").config.worldScale) || 9); } catch (e) { ws = 9; }
+  // Ä°stemci: Math.max(95, Math.min(190, worldScale * 14)) piksel.
+  const px = Math.max(95, Math.min(190, ws * 14));
+  return Math.max(16, px / ws);
 }
 
 function weightedPick(weights) {
@@ -564,8 +576,8 @@ function weightedPick(weights) {
 // Travel loot is luck-based: chest POIs hand over a CHEST whose quality is
 // rolled against the map tier. The chest's own tier then bounds what spills
 // out when opened, so a lucky find never dumps a directly-overpowered item.
-// Denge: yüksek tier'lerde bile efsanevi/mythic sandık çıkışı düşük tutulur
-// (dungeon sonu sandık şansına yakın bir his).
+// Denge: yÃ¼ksek tier'lerde bile efsanevi/mythic sandÄ±k Ã§Ä±kÄ±ÅŸÄ± dÃ¼ÅŸÃ¼k tutulur
+// (dungeon sonu sandÄ±k ÅŸansÄ±na yakÄ±n bir his).
 const TRAVEL_CHEST_TABLE = {
   t1: { wooden_chest: 70, iron_chest: 25, gold_chest: 5 },
   t2: { wooden_chest: 55, iron_chest: 32, gold_chest: 11, emerald_chest: 1.5, buried_treasure: 0.5 },
@@ -762,7 +774,7 @@ function publicTravel(room, player) {
   };
 }
 
-// Aynı odadaki tüm aktif seferler (oyuncular birbirine katılabilsin diye).
+// AynÄ± odadaki tÃ¼m aktif seferler (oyuncular birbirine katÄ±labilsin diye).
 function publicTravels(room) {
   const out = {};
   for (const id of Object.keys(room.travels || {})) {
@@ -777,8 +789,8 @@ function publicTravels(room) {
   return out;
 }
 
-// ---- Sefer odaları (lobi) ----
-// Oyuncular doğrudan dünyaya düşmez; önce oda kurar / katılır, lider başlatır.
+// ---- Sefer odalarÄ± (lobi) ----
+// Oyuncular doÄŸrudan dÃ¼nyaya dÃ¼ÅŸmez; Ã¶nce oda kurar / katÄ±lÄ±r, lider baÅŸlatÄ±r.
 const MAX_PARTY = 4;
 
 function publicExpeditions(room) {
@@ -878,7 +890,7 @@ function exploredString(travel) {
 function publicMap(room, player, opts = {}) {
   const travel = activeTravel(room, player);
   if (!travel) return null;
-  // Kalıcı kıta: tam dünya konfigürasyonu, POI'ler ve oyuncunun keşfi istemciye gider.
+  // KalÄ±cÄ± kÄ±ta: tam dÃ¼nya konfigÃ¼rasyonu, POI'ler ve oyuncunun keÅŸfi istemciye gider.
   if (travel.persistent) return persistentWorld.publicMap(travel, player);
   const sizeDef = MAP_SIZES.find((s) => s.id === travel.size) || MAP_SIZES[1];
   const typeDef = MAP_TYPES.find((t) => t.id === travel.type) || MAP_TYPES[0];
@@ -888,11 +900,11 @@ function publicMap(room, player, opts = {}) {
     size: travel.size, sizeLabel: sizeDef.label, scale: sizeDef.scale,
     w: travel.w, h: travel.h, spawn: travel.spawn,
     // 2+ oyuncu bu seferdeyse canavarlar sunucu otoritesindedir; istemci kendi
-    // canavar simülasyonunu kapatır (tek oyunculu seferlerde daima false).
+    // canavar simÃ¼lasyonunu kapatÄ±r (tek oyunculu seferlerde daima false).
     shared: !!travel.sharedWorld,
   };
   if (opts.terrain) {
-    // Legacy explorer için base36 karo metni (istek üzerine üretilir).
+    // Legacy explorer iÃ§in base36 karo metni (istek Ã¼zerine Ã¼retilir).
     let tilesStr = "";
     if (typeof travel.tiles === "string") tilesStr = travel.tiles;
     else {
@@ -907,10 +919,10 @@ function publicMap(room, player, opts = {}) {
   return out;
 }
 
-// İstemci canavarları yerel olarak simüle eder; sunucu yalnızca ölüm
-// bildirimini alır ve ödülü tabloya göre sınırlar (spam koruması dahil).
-// Ödül tablosu artık CONTENT.travelBiomes içinden gelir: her biyomun kendi
-// canavar listesi (kind/exp/gold) vardır. Bilinmeyen kind güvenli tabana düşer.
+// Ä°stemci canavarlarÄ± yerel olarak simÃ¼le eder; sunucu yalnÄ±zca Ã¶lÃ¼m
+// bildirimini alÄ±r ve Ã¶dÃ¼lÃ¼ tabloya gÃ¶re sÄ±nÄ±rlar (spam korumasÄ± dahil).
+// Ã–dÃ¼l tablosu artÄ±k CONTENT.travelBiomes iÃ§inden gelir: her biyomun kendi
+// canavar listesi (kind/exp/gold) vardÄ±r. Bilinmeyen kind gÃ¼venli tabana dÃ¼ÅŸer.
 const KILL_FALLBACK = { xp: 18, gold: 6 };
 const KILL_MIN_GAP_MS = 320;
 
@@ -945,7 +957,7 @@ function resetTravel(room) {
   for (const p of room.players) {
     p.travelId = null;
     if (p.dungeonId && String(p.dungeonId).startsWith("trav_")) p.dungeonId = null;
-    // Sefer sıfırlandıysa kimse yaralı canla kasabada kalmasın.
+    // Sefer sÄ±fÄ±rlandÄ±ysa kimse yaralÄ± canla kasabada kalmasÄ±n.
     healForTown(p);
   }
 }

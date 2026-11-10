@@ -2,7 +2,7 @@
 /**
  * SETRA — 17 MONSTER EXPANSION (veri ekleme)
  * ------------------------------------------------------------
- * `claudeornekleri/setra_17_monster_expansion.js` içindeki 17 canavarı
+ * `arsiv/claude-ornekler/setra_17_monster_expansion.js` içindeki 17 canavarı
  * dengelenmiş istatistikler ve motorun desteklediği yetenek türleriyle
  * `data/travelBiomes.json` dosyasına ekler.
  *

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <meta name="setra-build" content="20261112travel" />
+    <meta name="setra-build" content="20261114stats3" />
     <title>Setra</title>
     <!-- 3D ağaç denemesi: yerel three.js (public/vendor/three). Kaldırmak için bu blok + /js/trees3d.js silinir. -->
     <script type="importmap">
@@ -60,7 +60,7 @@
       href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/style.css?v=20261112c" />
+    <link rel="stylesheet" href="/style.css?v=20261114c" />
   </head>
   <body>
 <!-- ============================================================
@@ -285,6 +285,7 @@
                       <button type="button" id="btn-quests" class="btn btn--ghost town-day__btn" aria-label="Quests" title="Quests"><span class="town-day__ico" aria-hidden="true">📜</span></button>
                       <button type="button" id="btn-guide" class="btn btn--ghost town-day__btn" aria-label="How to play" title="How to play"><span class="town-day__ico" aria-hidden="true">📖</span></button>
                       <button type="button" id="btn-skilltree" class="btn btn--ghost town-day__btn" aria-label="Open Skill Tree" title="Open Skill Tree"><span class="town-day__ico" aria-hidden="true">🌳</span></button>
+                      <button type="button" id="btn-stats" class="btn btn--ghost town-day__btn town-day__btn--stats" aria-label="Character Stats" title="Character Stats"><span class="town-day__ico" aria-hidden="true">⚔️</span><span id="btn-stats-badge" class="town-day__statbadge hidden" aria-hidden="true">0</span></button>
                       <button type="button" id="btn-map" class="btn btn--ghost town-day__btn" aria-label="Open Map" title="Open Map"><span class="town-day__ico" aria-hidden="true">🗺️</span></button>
                     </div>
                   </div>
@@ -306,6 +307,14 @@
             <button type="button" class="btn btn--ghost" id="btn-skilltree-close">Back to Town</button>
           </div>
           <div id="skilltree-content"></div>
+        </div>
+
+        <div id="stats-view" class="overlay-view hidden">
+          <div class="overlay-head">
+            <p class="eyebrow">Character Paths</p>
+            <button type="button" class="btn btn--ghost" id="btn-stats-close">Back to Town</button>
+          </div>
+          <div id="stats-content"></div>
         </div>
 
         <div id="guide-view" class="overlay-view hidden">
@@ -499,6 +508,17 @@
         </div>
 
         <div class="settings-row">
+          <span class="settings-label">Atmosphere (F9)</span>
+          <button type="button" id="settings-fx-toggle" class="btn btn--ghost">Shaders: On</button>
+        </div>
+
+        <div class="settings-row settings-row--toggles" id="settings-fx-quality">
+          <button type="button" class="btn btn--ghost" data-fxq="light">Light</button>
+          <button type="button" class="btn btn--ghost" data-fxq="normal">Normal</button>
+          <button type="button" class="btn btn--ghost" data-fxq="extreme">Extreme</button>
+        </div>
+
+        <div class="settings-row">
           <span class="settings-label">Secret class password</span>
           <input id="settings-class-secret" class="settings-text" type="text" autocomplete="off" placeholder="Empty = no secret classes" />
         </div>
@@ -523,17 +543,19 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="/egg_animation.js"></script>
     <script src="/js/i18n.dialog.js?v=20261108a"></script>
-    <script src="/js/i18n.js?v=20261112c"></script>
-    <script src="/js/screens.js?v=20261112c"></script>
+    <script src="/js/i18n.js?v=20261114c"></script>
+    <script src="/js/screens.js?v=20261114c"></script>
     <script src="/js/bgfx.js?v=20260912k"></script>
-    <script src="/js/client.js?v=20261112c"></script>
+    <script src="/js/shaderfx.js?v=20261115a"></script>
+    <script src="/js/client.js?v=20261114c"></script>
     <script src="/js/monster_expansion.js?v=20261109a"></script>
     <script src="/js/setraWorldCore.js?v=20261109a"></script>
-    <script src="/js/travelEngine.js?v=20261113a"></script>
+    <script src="/js/travelEngine.js?v=20261113e"></script>
     <script src="/js/travel_visuals.js?v=20261108g"></script>
-<script src="/js/travelSkills.js?v=20261113a"></script>
-    <script src="/js/travelArpg.js?v=20261113a"></script>
-    <script type="module" src="/js/trees3d.js?v=20261112b"></script>
+<script src="/js/travelSkills.js?v=20261113e"></script>
+    <script src="/js/travelArpg.js?v=20261113e"></script>
+    <script type="module" src="/js/trees3d.js?v=20261113c"></script>
+    <script type="module" src="/js/live3d.js?v=20261115a"></script>
 
 <!-- ============================================================
   THE SETRA GAME - DUNGEON CHEST & 3D LOOT OPENING MODULE

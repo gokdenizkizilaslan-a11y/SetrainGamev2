@@ -73,6 +73,89 @@ node scripts/glb_info.js newassets/hut.glb      # veya klasör: node scripts/glb
 Birimler: `heights` dünya pikseli, `solidRadius` karo (1 karo = 64 px →
 çarpışma yarıçapı `solidRadius × 64`).
 
+## Model ayarı — tek yerden TÜM aynı model (tüm balyalar, tüm taşlar)
+
+`world_setra.json` → `visual.modelTune[model]`:
+
+```json
+{
+  "visual": {
+    "modelTune": {
+      "haybales": { "hMul": 1.15, "sink": 3 },
+      "obelisk":  { "sink": 6, "solid": 1.05 }
+    }
+  }
+}
+```
+
+| Alan | Etki |
+|---|---|
+| `hMul` | yükseklik çarpanı (1 = değişmez, 1.15 = %15 uzun) |
+| `sink` | sprite'ı dünya px **aşağı** kaydır (negatif = yukarı) — "havada duruyor" düzeltmesi |
+| `solid` | mutlak çarpışma yarıçapı (karo; 1 karo = 96 px) |
+| `solidMul` | otomatik (gerçek ayak izi) yarıçapın çarpanı |
+
+Komut satırından (sunucuyu yeniden başlatmayı unutma):
+
+```powershell
+node scripts/asset_tune.js haybales --hMul 1.15 --sink 3
+node scripts/asset_tune.js obelisk  --sink 6 --solid 1.05
+node scripts/asset_tune.js --list
+node scripts/asset_tune.js haybales --clear
+```
+
+## Çarpışma (hitbox) — modelin kendisinden + GameCraft'ta şekil
+
+GameCraft > Dünya Kurucu > **Çarpışma (global)** paneli: her model için
+**Otomatik / Yuvarlak / Kare** seç, yarıçap veya genişlik–derinlik ver.
+Yazdığı yer `visual.modelTune[model].shape` → o modelin **tüm kopyaları** aynı
+şekli kullanır (tüm balyalar, tüm taş evler).
+
+```json
+"modelTune": {
+  "haybales": { "shape": { "type": "circle", "r": 0.45 } },
+  "stonehouse": { "shape": { "type": "box", "w": 1.4, "d": 1.5, "ox": 0, "oy": 0 } }
+}
+```
+
+- Birim **karo** (1 karo = 96 px). `box` `rot` ile döner, `ox/oy` merkez kaydırır.
+- Şekil yoksa **otomatik**: sadece binalar gerçek ayak izinden (`×0.72`),
+  props (balya/fıçı/sandık) verideki değerin `×0.60`'ı.
+- `visual.solidScale` → TÜM çarpışmalara global çarpan (panelde "Tüm çarpışmalar").
+- İnce/uzun modeller (`fence, wall, bridge, banner, signpost, flowers, lamp,
+  bush, stump, graves, logs, campfire, chest`) otomatiğe girmez.
+- `tune.solid` (karo) eski kısa yol olarak hâlâ çalışır → yuvarlak kabul edilir.
+
+## Köy zemini düzleştirme
+
+Köy evleri kendi zemin yüksekliğine oturduğu için eğimde "gömülü/havada"
+görünür. `flattenZones` düz bir çekirdek üretir: düz alan ≈ `radius × 0.42`.
+
+```powershell
+node scripts/asset_tune.js --villages 2800          # tüm köyler (r=2800 → ~1176px düz)
+node scripts/asset_tune.js --flatten setra_village 2800
+```
+
+## Sadece haritayı uygula (içerik verisine dokunmadan)
+
+Harita (`world_setra.json`) ayrı bir dosyadır; `content.js` / `data/*.json` ile
+ilgisi yoktur. Üç yol var:
+
+| Yol | Ne yapar |
+|---|---|
+| GameCraft > **Diskten Yükle** | Dosyayı **okur**, sunucu belleğini tazeler, istemcilere haber verir. Dosyaya **yazmaz** (elle yapılan değişiklikleri ezmez). |
+| GameCraft > **Oyuna Uygula** | Editördeki kopyayı **yazar** + canlı günceller. |
+| `node scripts/world_reload.js` | Aynı "Diskten Yükle" işlemini terminalden yapar. |
+
+```powershell
+node scripts/world_reload.js              # http://localhost:3000
+node scripts/world_reload.js --port 3054
+```
+
+Sunucu tarafı: `POST /editor/api/world/reload` (`server/editorRoutes.js`) →
+`worldStore.applyConfig()` → sürüm +1 → `world:updated` yayını → oyun haritayı
+kendisi yeniden kurar (yenileme/restart gerekmez). İçerik verisi değişmez.
+
 ## Aç / kapa (geri dönüş)
 
 | Yöntem | Etki |

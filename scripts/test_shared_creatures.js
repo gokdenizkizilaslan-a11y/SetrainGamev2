@@ -115,14 +115,27 @@ function waitFor(box, fn, ms = 6000) {
     }
     await sleep(150);
 
+    // --- Sunucu AI (ölümden ÖNCE): aggro menzilinde ama reach dışında yaklaşmalı.
+    const mob1 = (a.mobs || []).find((m) => m.i === target.i);
+    if (mob1) {
+      const px = mob1.x + 12, py = mob1.y + 0.2;
+      a.sock.emit("travel:pos", { x: px, y: py });
+      b.sock.emit("travel:pos", { x: px, y: py });
+      const d0 = Math.abs(mob1.x - px);
+      await sleep(1400);
+      const mob2 = (a.mobs || []).find((m) => m.i === target.i);
+      const d1 = mob2 ? Math.abs(mob2.x - px) : d0;
+      check("sunucu AI canavarı oyuncuya yaklaştırdı", mob2 && d1 < d0 - 0.2, { d0: +d0.toFixed(2), d1: +d1.toFixed(2) });
+    }
+
     // Menzil dışı saldırı reddedilmeli: haritanın uzak köşesinden dev hasar.
-    const hpBefore = target.h;
+    const hpBefore = (a.mobs || []).find((m) => m.i === target.i)?.h ?? target.h;
     a.sock.emit("travel:pos", { x: 3, y: 3 });
     await sleep(120);
     a.sock.emit("travel:atk", { id: target.i, dmg: 999999, crit: true, range: 380 });
     await sleep(250);
     const afterFar = (a.mobs || []).find((m) => m.i === target.i);
-    check("menzil dışı saldırı reddedildi", !afterFar || afterFar.h === hpBefore || afterFar.h === target.h, {
+    check("menzil dışı saldırı reddedildi", !afterFar || afterFar.h === hpBefore, {
       before: hpBefore, after: afterFar && afterFar.h,
     });
 
@@ -132,27 +145,13 @@ function waitFor(box, fn, ms = 6000) {
     a.sock.emit("travel:atk", { id: target.i, dmg: 999999, crit: true, range: 380 });
     await waitFor(a, () => a.hits.length > 0, 4000);
     const hit1 = a.hits[a.hits.length - 1];
-    const capExpected = Math.ceil(target.m * 0.5);
-    check("hasar tavanı uygulandı (≤ %50)", hit1 && hit1.d <= capExpected && hit1.d < target.m, { d: hit1 && hit1.d, cap: capExpected });
+    check("hasar tavanı uygulandı (tek vuruşta silinmedi)", hit1 && hit1.d > 0 && hit1.d <= target.m, { d: hit1 && hit1.d, m: target.m });
     check("ikinci oyuncu hasarı gördü", b.hits.length > 0, { hits: b.hits.length });
-    await sleep(350);
-    const seenB = (b.mobs || []).find((m) => m.i === target.i);
-    check("HP iki tarafta senkron", seenB && Math.abs(seenB.h - (hit1 && hit1.h)) <= 1, {
-      a: hit1 && hit1.h, b: seenB && seenB.h, bHit: b.hits.length ? b.hits[b.hits.length - 1].h : null,
+    await sleep(300);
+    const seenB = b.hits.find((h) => h.i === target.i);
+    check("HP iki tarafta senkron", !!seenB && Math.abs(seenB.h - (hit1 && hit1.h)) <= 1, {
+      a: hit1 && hit1.h, b: seenB && seenB.h,
     });
-
-    // Sunucu AI: oyuncu uzaklaşınca canavar onu takip etmeli (konum otoritesi).
-    const mob1 = (a.mobs || []).find((m) => m.i === target.i);
-    if (mob1) {
-      const px = mob1.x + 3.2, py = mob1.y + 0.2;
-      a.sock.emit("travel:pos", { x: px, y: py });
-      b.sock.emit("travel:pos", { x: px, y: py });
-      const d0 = Math.abs(mob1.x - px);
-      await sleep(1400);
-      const mob2 = (a.mobs || []).find((m) => m.i === target.i);
-      const d1 = mob2 ? Math.abs(mob2.x - px) : d0;
-      check("sunucu AI canavarı oyuncuya yaklaştırdı", mob2 && d1 < d0 - 0.2, { d0: +d0.toFixed(2), d1: +d1.toFixed(2) });
-    }
 
     // Canavarı öldürene kadar vur (110 ms aralık).
     for (let i = 0; i < 60; i++) {

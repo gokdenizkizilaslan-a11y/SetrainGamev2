@@ -142,7 +142,7 @@
     "Ancient Temple": "Antik Tapınak",
     "Ascend, mend hearts & rebirth": "Yüksel, kalpleri onar ve yeniden doğ",
     "Travel": "Seyahat",
-    "Explore the wilds · 10 stamina": "Vahşi doğayı keşfet · 10 dayanıklılık",
+    "Explore the wilds · 5 stamina": "Vahşi doğayı keşfet · 5 dayanıklılık",
 
     // ===== Seyahat: gecit ekrani (v3) =====
     "Expedition Gate · Setra Village": "Sefer Kapısı · Setra Köyü",
@@ -670,8 +670,8 @@
     "Your turn — choose an action.": "Sıra sende — bir eylem seç.",
     "Zoom in": "Yakınlaştır",
     "Zoom out": "Uzaklaştır",
-    "You need at least 10 stamina. Rest at the tavern or sleep to recover it.":
-      "En az 10 dayanıklılığa ihtiyacın var. Geri kazanmak için meyhanede dinlen ya da uyu.",
+    "You need at least 5 stamina. Rest at the tavern or sleep to recover it.":
+      "En az 5 dayanıklılığa ihtiyacın var. Geri kazanmak için meyhanede dinlen ya da uyu.",
     "You have transcended into": "Şuna yükseldin:",
     "Set Forth": "Yola Çık",
     "Form party at": "Grup kur:",
@@ -699,6 +699,46 @@
     "Water": "Su",
     "Earth": "Toprak",
     "Dark": "Karanlık",
+
+    // ===== Stat ağacı (Character Paths) =====
+    "Character Stats": "Karakter Statları",
+    "Character Paths": "Karakter Yolları",
+    "Passive Paths": "Pasif Yollar",
+    "Points": "Puan",
+    "Fit": "Sığdır",
+    "Zoom out": "Uzaklaştır",
+    "Taken": "Alındı",
+    "Click to take": "Almak için tıkla",
+    "Not connected": "Bağlı değil",
+    "Follow a connected path first": "Önce bağlı bir yoldan ilerle",
+    "No stat points left": "Stat puanı kalmadı",
+    "Hover a node to inspect it. Glowing nodes are connected to your path.":
+      "İncelemek için bir düğümün üzerine gel. Parlayan düğümler yoluna bağlıdır.",
+    "160 nodes across four linked branches. Each node costs 1 point (40 total). Bridges let you cross from one branch into another — start in Fury, then reach for Vitality health nodes.":
+      "Dört bağlantılı dalda 160 düğüm. Her düğüm 1 puan (toplam 40). Köprüler dallar arası geçiş sağlar — Öfke'den başlayıp Canlılık'ın can düğümlerine ulaşabilirsin.",
+    "The stat tree could not be loaded. Restart the server and refresh (Ctrl+F5).":
+      "Stat ağacı yüklenemedi. Sunucuyu yeniden başlat ve sayfayı Ctrl+F5 ile yenile.",
+    // Yol (dal) adları — arayüz etiketi, özel isim değil.
+    "Fury": "Öfke",
+    "Bulwark": "Siper",
+    "Vitality": "Canlılık",
+    "Arcana": "Arkana",
+    // Stat etiketleri
+    "Attack Speed": "Saldırı Hızı",
+    "Atk Speed": "Saldırı Hızı",
+    "Max HP": "Maks. Can",
+    "HP": "Can",
+    "Max Mana": "Maks. Mana",
+    "Mana Regen": "Mana Yenilenmesi",
+    "Regen": "Yenilenme",
+    "Resistance": "Direnç",
+    "Resist": "Direnç",
+    "Healing": "İyileştirme",
+    "Speed": "Hız",
+    "Max Stamina": "Maks. Dayanıklılık",
+    "Omnivamp": "Omnivamp",
+    "Crit Chance": "Kritik Şansı",
+    "Crit Damage": "Kritik Hasarı",
   };
 
   // Diyalog sözlüğü (public/js/i18n.dialog.js) bu dosyadan önce yüklenir;
@@ -712,6 +752,11 @@
 
   // Bileşik (değişkenli) metinler için desenler.
   const TR_PATTERNS = [
+    [/^Lv (\d+) · (\d+)\/(\d+)$/, "Sv $1 · $2/$3"],
+    [/^(\d+) points? available · (\d+) of (\d+) spent · \+(\d+) per level$/i,
+      "$1 puan mevcut · $2/$3 harcandı · seviye başına +$4"],
+    [/^ring (\d+)$/i, "halka $1"],
+    [/^(.+) spends 1 stat point\.$/i, "$1 1 stat puanı harcadı."],
     [/^Lv (\d+)$/, "Sv $1"],
     [/^Level (\d+)$/, "Seviye $1"],
     [/^HEALING\s*(\d+)$/i, "ŞİFA $1"],
@@ -1095,11 +1140,14 @@
     mana: "Mana",
     "mana regen": "Mana Yenilenmesi", manaregen: "Mana Yenilenmesi",
     resistance: "Direnç", res: "Direnç",
-    "magic power": "Büyü Gücü", magicpower: "Büyü Gücü", mgc: "Büyü Gücü",
-    "heal power": "İyileştirme Gücü", healpower: "İyileştirme Gücü", heal: "İyileştirme",
+    "magic power": "Büyü Gücü", magicpower: "Büyü Gücü", mgc: "Büyü Gücü", magic: "Büyü",
+    "heal power": "İyileştirme Gücü", healpower: "İyileştirme Gücü", heal: "İyileştirme", healing: "İyileştirme",
     speed: "Hız",
     "crit chance": "Kritik Şansı", critchance: "Kritik Şansı",
     "crit damage": "Kritik Hasarı", critdamage: "Kritik Hasarı",
+    "attack speed": "Saldırı Hızı", attackspeed: "Saldırı Hızı",
+    "max mana": "Maks. Mana", maxmana: "Maks. Mana",
+    "max stamina": "Maks. Dayanıklılık", maxstamina: "Maks. Dayanıklılık",
     omnivamp: "Omnivamp",
     food: "Yiyecek", gold: "Altın", wood: "Odun", stamina: "Dayanıklılık",
   };

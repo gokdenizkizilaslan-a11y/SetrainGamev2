@@ -76,7 +76,13 @@
   function hitLine(X, x1, y1, x2, y2, w, mult, o = {}, seen) { const ang = Math.atan2(y2 - y1, x2 - x1); let n = 0; alive(X.eng).forEach((m) => { if (seen && seen.has(m)) return; if (segDist(m.x, m.y, x1, y1, x2, y2) <= w / 2 + m.radius) { if (seen) seen.add(m); hurt(X, m, mult, ang, o); n++; } }); return n; }
   function hitCone(X, cx, cy, ang, range, arc, mult, o = {}) { let n = 0; alive(X.eng).forEach((m) => { const d = Math.hypot(m.x - cx, m.y - cy); if (d > range + m.radius) return; let df = Math.abs(Math.atan2(m.y - cy, m.x - cx) - ang); while (df > Math.PI) df = Math.abs(df - TAU); if (df <= arc / 2 || d < m.radius + 22) { hurt(X, m, mult, ang, o); n++; } }); return n; }
   const ghostLine = (X, x1, y1, x2, y2, n = 5) => { const P = X.P; for (let i = 1; i <= n; i++) { const u = i / n; P.ghostTrails.push({ x: lerp(x1, x2, u), y: lerp(y1, y2, u), facingAngle: P.facingAngle, alpha: 0.6 * (0.3 + 0.7 * u), color: X.col }); } };
-  const teleport = (X, x, y) => { const c = clampMap(X.eng, x, y); X.P.x = c.x; X.P.y = c.y; };
+  const teleport = (X, x, y) => {
+    const e = X.eng;
+    // Motorun ışınlanma efekti: çıkışta içe çöken halka, arada yırtık iz,
+    // varışta patlama + materyalize. Yoksa eski davranışa düşer.
+    if (e && typeof e.teleportPlayer === 'function') { e.teleportPlayer(x, y, { color: X.col }); return; }
+    const c = clampMap(e, x, y); X.P.x = c.x; X.P.y = c.y;
+  };
   // Silah savurma (yetenekler de gerçek bir vuruş animasyonu oynatsın).
   function swing(X, kind, angle, dur) {
     const e = X.eng;
@@ -145,7 +151,7 @@
       const { eng, P } = X, d = Math.min(Math.hypot(eng.mouse.worldX - P.x, eng.mouse.worldY - P.y), p.range || 240), a = X.aim, ox = P.x, oy = P.y;
       invulnerable(X, p.invuln || 0.3, 0.12); fx(X, p.fx || 'shadowStep', ox, oy, { radius: p.fxr || 55 }); eng.createGhostTrail();
       swing(X, 'thrust', a, 0.28);
-      const dst = world(X, d, a); teleport(X, dst.x, dst.y); ghostLine(X, ox, oy, P.x, P.y, 6); fx(X, 'lineSlash', ox, oy, { tx: P.x, ty: P.y, radius: 50 });
+      const dst = world(X, d, a); teleport(X, dst.x, dst.y); fx(X, 'lineSlash', ox, oy, { tx: P.x, ty: P.y, radius: 50 });
       later(X, 40, () => { fx(X, p.fx || 'shadowStep', P.x, P.y, { radius: p.fxr || 55 }); if (p.nova) { hitRadius(X, P.x, P.y, p.nova.radius, p.nova.dmg, { kb: 260, stun: p.nova.stun }); fx(X, 'pulseNova', P.x, P.y, { radius: p.nova.radius }); eng.addTrauma(0.3); } });
       if (p.refund) X.refund = p.refund; return true;
     },
@@ -153,7 +159,7 @@
       const { eng, P } = X, a = X.aim, ox = P.x, oy = P.y, dst = clampMap(eng, ox + Math.cos(a) * (p.range || 250), oy + Math.sin(a) * (p.range || 250));
       invulnerable(X, p.invuln || 0.3, 0.22); fx(X, 'shadowStep', ox, oy, { radius: 50 }); eng.createGhostTrail();
       swing(X, 'thrust', a, 0.3);
-      later(X, 70, () => { fx(X, 'lineSlash', ox, oy, { tx: dst.x, ty: dst.y, radius: 70 }); ghostLine(X, ox, oy, dst.x, dst.y, 8); hitLine(X, ox, oy, dst.x, dst.y, p.width || 56, p.dmg || 2, { crit: true, kb: 320, stun: p.stun }, new Set()); P.x = dst.x; P.y = dst.y; fx(X, 'shadowStep', dst.x, dst.y, { radius: 50 }); fx(X, 'slashX', dst.x, dst.y, { radius: 55 }); eng.addTrauma(0.4); eng.sound.play('hit'); });
+      later(X, 70, () => { fx(X, 'lineSlash', ox, oy, { tx: dst.x, ty: dst.y, radius: 70 }); hitLine(X, ox, oy, dst.x, dst.y, p.width || 56, p.dmg || 2, { crit: true, kb: 320, stun: p.stun }, new Set()); teleport(X, dst.x, dst.y); fx(X, 'slashX', dst.x, dst.y, { radius: 55 }); eng.addTrauma(0.4); eng.sound.play('hit'); });
       return true;
     },
     dash(X, p) {
@@ -200,6 +206,34 @@
       fx(X, p.fx || 'crescentSlash', P.x, P.y, fxo(X, p, { tx, ty, duration: p.fxd || (dur ? dur / 1000 + 0.3 : undefined) }));
       for (let i = 0; i < ticks; i++) later(X, ticks > 1 ? dur * i / (ticks - 1) : 0, () => { hitCone(X, P.x, P.y, a, p.range || 120, p.arc || 1.6, p.dmg || 1.5, { kb: p.kb === undefined ? 220 : p.kb, stun: p.stun, slow: p.slow, leech: p.leech, exec: p.exec }); if (i === 0) e.addTrauma(0.3); });
       if (p.lock) P.skillLock = Math.max(P.skillLock || 0, dur / 1000); return true;
+    },
+    // Delici ok: büyük, auralı bir ok fırlatır; önüne çıkan her canavarı deler
+    // ve yavaşlatır (Archer "Piercing Shot").
+    pierceArrow(X, p) {
+      const { eng, P } = X, a = X.aim;
+      const speed = Math.max(320, Number(p.speed) || 1000);
+      const len = Math.max(220, Number(p.len) || 760);
+      const radius = Math.max(10, Number(p.radius) || 22);
+      P.skillLock = Math.max(P.skillLock || 0, 0.18);
+      swing(X, 'thrust', a, 0.3);
+      eng.sound.play('shoot');
+      eng.projectiles.push({
+        type: 'pierce_arrow', x: P.x + Math.cos(a) * 24, y: P.y + Math.sin(a) * 24,
+        vx: Math.cos(a) * speed, vy: Math.sin(a) * speed,
+        radius, life: Math.min(2.4, len / speed + 0.12),
+        damage: X.atk * (p.dmg || 2.0), isCrit: !!p.crit,
+        color: X.col, element: p.element || 'physical',
+        pierce: true, hitIds: new Set(),
+        slow: p.slow == null ? 0.45 : p.slow, slowDur: p.slowDur || 1.8,
+        stun: p.stun || 0, ang: a, skill: { element: p.element || 'physical' }
+      });
+      eng.aoeEffects.push({ x: P.x + Math.cos(a) * 20, y: P.y + Math.sin(a) * 20, radius: 42, duration: 0.3, timer: 0.3, color: X.col, ring: true });
+      for (let i = 0; i < 10; i++) {
+        const sp = 60 + Math.random() * 200, aa = a + (Math.random() - 0.5) * 0.8;
+        eng.addParticle({ wx: P.x, wy: P.y, wz: 18, vx: Math.cos(aa) * sp, vy: Math.sin(aa) * sp, vz: 30 + Math.random() * 60, color: i % 2 ? X.col : '#ffffff', size: 2 + Math.random() * 2, life: 0.3 + Math.random() * 0.25, grav: 20, additive: true });
+      }
+      eng.addTrauma(0.18);
+      return true;
     },
     beam(X, p) {
       const { P } = X, a = X.aim, L = p.len || 340, ticks = p.ticks || 1, dur = p.dur || 150, ex = P.x + Math.cos(a) * L, ey = P.y + Math.sin(a) * L;
@@ -273,8 +307,10 @@
       const { eng, P } = X, a = X.aim, R = p.range || 400, w = p.width || 80, ex = P.x + Math.cos(a) * R, ey = P.y + Math.sin(a) * R;
       const list = alive(eng).filter((m) => segDist(m.x, m.y, P.x, P.y, ex, ey) <= w / 2 + m.radius).sort((u, v) => dist(u, P) - dist(v, P)).slice(0, p.n || 1);
       fx(X, p.fx || 'lineSlash', P.x, P.y, { tx: list.length ? list[0].x : ex, ty: list.length ? list[0].y : ey, radius: 50 });
+      // Kılıç her durumda savrulsun (boşa atılsa da animasyon görünür).
+      swing(X, 'slash', a, 0.32);
       if (!list.length) { X.refund = 0.4; return true; }
-      swing(X, 'thrust', a, 0.3);
+      swing(X, 'thrust', a, 0.26);
       list.forEach((m, k) => {
         const ox = m.x, oy = m.y, off = (k - (list.length - 1) / 2) * 38, perp = a + Math.PI / 2;
         const tx = P.x + Math.cos(a) * (m.radius + 34) + Math.cos(perp) * off, ty = P.y + Math.sin(a) * (m.radius + 34) + Math.sin(perp) * off;
@@ -648,7 +684,7 @@
       ['Berserker Flurry', 9, 'flurry', { n: 6, gap: 85, adv: 22, range: 118, arc: 2.2, dmg: 0.9, stun: 0.4, fx: 'crescentSlash' }],
       ['Earthsplitter', 24, 'leap', { range: 310, radius: 155, dmg: 3.3, stun: 1, h: 95, fx: 'groundSlam' }]],
     'Archer': ['#aed581',
-      ['Piercing Shot', 4, 'beam', { len: 540, width: 34, dmg: 1.9, crit: true, fx: 'beamLine', head: true }],
+      ['Piercing Shot', 4, 'pierceArrow', { len: 780, radius: 22, dmg: 2.0, speed: 1020, slow: 0.45, slowDur: 1.8, stun: 0.3, crit: true }],
       ['Trap Roll', 9, [['trap', { at: 'self', radius: 85, arm: 350, life: 7000, dmg: 2.0, stun: 1.0, fx: 'arcaneCircle' }], ['dash', { back: true, dist: 210, invuln: 0.35, fx: 'lineSlash' }]]],
       ['Arrow Cyclone', 24, 'ring', { n: 12, waves: 4, gap: 140, twist: 0.26, dmg: 0.7, ptype: 'arrow', speed: 600 }]],
     'Mage': ['#7c4dff',

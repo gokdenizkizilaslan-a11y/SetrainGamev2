@@ -54,11 +54,14 @@
   // ==========================================================================
   const COMBAT_CFG = {
     parry: {
-      startup: 0.08,        // kısa hazırlık -> parry duruşu
-      window: 0.20,         // kusursuz parry penceresi
+      startup: 0.06,        // kısa hazırlık -> parry duruşu
+      window: 0.24,         // kusursuz parry penceresi
       whiffRecovery: 0.75,  // kaçırılan parry cezası
       successRecovery: 0,   // başarılı parry cezası YOK (zincir parry)
       counterWindow: 0.55,  // parry sonrası karşı atak fırsatı
+      // Gelen parry edilebilir vuruş varken pencere otomatik uzar:
+      // telegraph göründüğü ANDA F'ye basmak her zaman kusursuz parry olur.
+      threatExtend: 1.2,    // bu süre içindeki vuruşlar için pencere açık tutulur
     },
     guard: {
       max: 100,
@@ -68,10 +71,15 @@
       breakSlow: 0.4,       // guardbreak sırasında hız çarpanı
       fadeDelay: 2.6,       // HUD çubuğu ne kadar görünür kalır
     },
-    stamina: { max: 100, sprintDrain: 12, dashCost: 20, regen: 20, regenDelay: 1.0 },
+    // Stamina: tüm karakterlerde taban 200 (%100 → 2 katı). Sınıfın `stamina`
+    // istatistiği varsa o kullanılır (GameCraft stat düzenlemesi).
+    stamina: { max: 200, sprintDrain: 12, dashCost: 20, regen: 20, regenDelay: 1.0 },
     dash: { duration: 0.22, cooldown: 1.05, speed: 680, iframes: 0.15, staminaCost: 20 },
     sprint: { mult: 1.4 },
-    telegraph: { light: 0.20, normal: 0.35, heavy: 0.65, skill: 0.7 },
+    // Telegraph süreleri: kırmızı/mor uyarı göz kırpacak kadar kısa olmasın.
+    // (En az 0.28 sn görünür kalır; görsel rampa + afterglow ile yumuşatılır.)
+    telegraph: { light: 0.30, normal: 0.44, heavy: 0.72, skill: 0.76 },
+    telegraphMin: 0.28,
   };
   // Guard Pressure: saldırı sınıfı başına varsayılan baskı (per-attack override edilebilir).
   const GUARD_PRESSURE = { light: 12, medium: 18, heavy: 25, skill: 35, ultimate: 45, none: 0 };
@@ -98,6 +106,22 @@
     // Eski (vektör) tip adları
     tree: 0.14, boulder: 0.3, mountain: 0.34, lantern: 0.12, shrine: 0.3, mushroom: 0.2,
   };
+
+  // Otomatik ayak izi hesabı bu modellerde yanıltıcı (ince/uzun/dekoratif):
+  // verideki solidRadius korunur.
+  const SOLID_KEEP = new Set([
+    'fence', 'wall', 'bridge', 'banner', 'signpost', 'flowers', 'lamp',
+    'bush', 'stump', 'graves', 'logs', 'campfire', 'chest',
+  ]);
+
+  // Otomatik ayak izi SADECE binalarda kullanılır. Props (balya, fıçı, sandık,
+  // direk...) verideki değeri × 0.6 ile kullanır → aralarından geçilebilir.
+  const BUILDING_MODELS = new Set([
+    'hut', 'stonehouse', 'farmhouse', 'barn', 'longhouse', 'tavern', 'smithy',
+    'chapel', 'windmill', 'gatehouse', 'roundtower', 'watchtower',
+  ]);
+  const BUILDING_SOLID_FACTOR = 0.72;  // görünür yarı-genişliğin %72'si
+  const PROP_SOLID_FACTOR = 0.60;      // props: verideki değerin %60'ı
   function defaultSolidRadius(model) {
     const v = DEFAULT_SOLID_RADIUS[model];
     return Number.isFinite(v) ? v : 0;
@@ -240,6 +264,43 @@
     return (a * (1 - u) + b * u) * (1 - v) + (c * (1 - u) + d * u) * v;
   }
 
+  // --- Dekor serpme: minimum mesafe kısıtı (Poisson-disk yaklaşımı) ---
+  // Komşu karolar bağımsız karar verdiği için taşlar/ağaçlar üst üste biniyordu.
+  // Her prop konmadan önce 3×3 hücre komşuluğu taranır; `minDist` px'ten
+  // yakın prop varsa yerleştirilmez. Maliyet O(1) — kare başına çalışmaz.
+  function makeScatter(tileSize) {
+    const CELL = (Number(tileSize) || 64) * 1.25;
+    const grid = new Map();
+    const keyOf = (cx, cy) => ((cx * 73856093) ^ (cy * 19349663));
+    return {
+      canPlace(x, y, minDist) {
+        const cx = Math.floor(x / CELL), cy = Math.floor(y / CELL);
+        const m2 = minDist * minDist;
+        for (let i = -1; i <= 1; i++) {
+          for (let j = -1; j <= 1; j++) {
+            const arr = grid.get(keyOf(cx + i, cy + j));
+            if (!arr) continue;
+            for (let k = 0; k < arr.length; k += 2) {
+              const dx = arr[k] - x, dy = arr[k + 1] - y;
+              if (dx * dx + dy * dy < m2) return false;
+            }
+          }
+        }
+        return true;
+      },
+      mark(x, y) {
+        const key = keyOf(Math.floor(x / CELL), Math.floor(y / CELL));
+        let arr = grid.get(key);
+        if (!arr) { arr = []; grid.set(key, arr); }
+        arr.push(x, y);
+      },
+    };
+  }
+
+  // Sunucu biyom adı → 3D dekor biyom havuzu (trees3d.js DECOR.biomes).
+  const BIOME_LOOK = { meadow: 'verdant', forest: 'forest', desert: 'desert', swamp: 'mirefen',
+    frost: 'frozen', volcanic: 'ashen', cursed: 'cursed', rock: 'verdant' };
+
   function mulberry32(a) {
     return function () {
       a |= 0; a = (a + 0x6D2B79F5) | 0;
@@ -345,7 +406,13 @@
     parry: { w: 'square', f0: 950, f1: 1700, fd: 0.06, g: 0.2, gd: 0.2 },
     guard: { w: 'triangle', f0: 320, f1: 140, fd: 0.09, g: 0.16, gd: 0.12 },
     guardbreak: { w: 'sawtooth', f0: 240, f1: 55, fd: 0.42, g: 0.3, gd: 0.42 },
-    dodge: { w: 'sine', f0: 520, f1: 980, fd: 0.07, g: 0.1, gd: 0.1 }
+    dodge: { w: 'sine', f0: 520, f1: 980, fd: 0.07, g: 0.1, gd: 0.1 },
+    // Parry zamanlama ipucu: dosya atanmazsa kısa, net bir "tik" duyulur.
+    parry_cue: { w: 'triangle', f0: 1250, f1: 820, fd: 0.035, g: 0.13, gd: 0.07 },
+    // Büyü hazırlığı: hafif yükselen "toplanma" tonu (dosya yoksa synth).
+    cast: { w: 'sine', f0: 260, f1: 720, fd: 0.22, g: 0.11, gd: 0.24 },
+    // Işınlanma: kısa "vın" (dosya yoksa synth).
+    teleport: { w: 'sine', f0: 900, f1: 170, fd: 0.2, g: 0.14, gd: 0.24 }
   };
 
   // Ses anahtarı -> dosya id adayları (public/sounds/<id>.mp3). İlk bulunan çalar.
@@ -367,6 +434,10 @@
     guard: ['axehit', 'bladehit'],
     guardbreak: ['greatswordspin'],
     dodge: [],
+    // GameCraft > ARPG Sounds: bu anahtara dosya atanır (boşsa synth tik).
+    parry_cue: [],
+    cast: ['travel_cast', 'magic_cast', 'chargeup'],
+    teleport: ['travel_teleport', 'shadowstep', 'teleport'],
     ultimate: ['ultsound', 'greatswordspin', 'holyascension'],
     levelup: ['levelup'],
     boss: ['bossintro', 'dragonroar', 'terrifyingroar'],
@@ -2105,11 +2176,14 @@
         parryPhase: 'idle', parryTimer: 0, parryHeld: false, parryRecovery: 0, parrySuccessAt: -99,
         counterUntil: -99,
         guard: 0, guardDecayDelay: 0, guardVisible: 0, guardbreakTimer: 0,
-        stamina: COMBAT_CFG.stamina.max, staminaMax: COMBAT_CFG.stamina.max,
+        stamina: Number(this.playerData.stats && this.playerData.stats.stamina) || COMBAT_CFG.stamina.max,
+        staminaMax: Number(this.playerData.stats && this.playerData.stats.stamina) || COMBAT_CFG.stamina.max,
         staminaIdle: 0, sprinting: false,
         dodgeIframes: 0, lastDodgeAt: -99,
         // Silah animasyonu: kind 'swing' | 'slash' | 'slam' | 'thrust' | 'spin' | 'cast'
         weaponSwing: null,
+        // Büyü hazırlığı (anticipation) ve ışınlanma "materyalize" durumu.
+        castState: null, teleportFx: null,
         // TravelSkills (yeni Q/E/R seti) için durum alanları:
         invuln: 0, phase: 0, skillLock: 0, speedMul: 1, hasteMul: 1
       };
@@ -2121,6 +2195,11 @@
         dash: Object.assign({}, COMBAT_CFG.dash),
         sprint: Object.assign({}, COMBAT_CFG.sprint),
         telegraph: Object.assign({}, COMBAT_CFG.telegraph),
+        // Parry zamanlama sesi: vuruştan `lead` saniye önce çalar.
+        parryCue: { enabled: true, lead: 0.18, volume: 0.85 },
+        // Canavar parry-dayanıklılığı: her başarılı parry doldurur, dolunca sersemletir.
+        // steps: kaç parry gerektiği (zayıf 2 · güçlü 5). Bosslar ayrı (bossSteps).
+        monsterStagger: { max: 100, gain: 34, duration: 2.4, decayDelay: 3.0, decay: 14, minSteps: 2, maxSteps: 5, bossSteps: 8 },
       };
       // Düşük seviye efektlerde kapalı; yeni sistemlerde kullanılıyor.
       this.lastDodgeTime = -99;
@@ -2206,6 +2285,8 @@
       this.projectiles = [];
       this.slashes = [];
       this.aoeEffects = [];
+      // Işınlanma izleri: iki nokta arasında açılan "yırtık" + parıltı.
+      this.teleportStreaks = [];
       // Menzil göstergeleri (LoL tarzı): tuşa basınca kısa süre zeminde görünür.
       // Yalnızca yerel oyuncuya çizilir; sunucuya gönderilmez.
       this.rangePings = [];
@@ -2242,6 +2323,7 @@
         try { this.update(dt); } catch (e) { /* arka plan hatası oyunu durdurmasın */ }
       }, 200);
       this.loop = this.loop.bind(this);
+      this._loopQueued = false;
       // İlk kare de doğru yakınlıkta çizilsin (1 karelik "çok uzak" sıçraması olmasın).
       if (!this._zoomInit && this.height > 0) {
         this._zoomInit = true;
@@ -2251,6 +2333,15 @@
       }
       // İlk kareyi senkron çiz: canvas oluşturulduğu anda boş/siyah kalmasın.
       try { this.render(); } catch (e) { /* ilk kare hatası döngüyü engellemesin */ }
+      this._scheduleFrame();
+    }
+
+    // rAF zinciri TEK olmalı. Önceden constructor + boot() + open() ayrı ayrı
+    // requestAnimationFrame başlatabiliyor; sekmeyi yenileyip seferi açınca
+    // iki-üç döngü aynı anda çalışıp oyunu kilitliyordu. Bu kilit onu önler.
+    _scheduleFrame() {
+      if (this._loopQueued || this._destroyed || !this.isRunning) return;
+      this._loopQueued = true;
       requestAnimationFrame(this.loop);
     }
 
@@ -2346,6 +2437,68 @@
         treeScale: ts > 0 ? ts : 3.0,
         structureScale: ss > 0 ? ss : 2.6
       };
+    }
+
+    // Model ayarı (Dünya Kurucu -> world_setra.json `visual.modelTune[model]`).
+    // Tek yerden TÜM aynı model nesneleri ayarlanır (tüm balyalar, tüm taşlar...).
+    modelTuneFor(model) {
+      const t = this.worldConfig && this.worldConfig.visual && this.worldConfig.visual.modelTune;
+      const v = model ? (t && t[model]) : null;
+      return v && typeof v === 'object' ? v : null;
+    }
+    // Global çarpışma çarpanı (Dünya Kurucu -> visual.solidScale, varsayılan 1).
+    solidScale() {
+      const v = this.worldConfig && this.worldConfig.visual && this.worldConfig.visual.solidScale;
+      const n = Number(v);
+      return Number.isFinite(n) && n > 0 ? n : 1;
+    }
+    // Modelin çarpışma ŞEKLİ (dünya px). Öncelik:
+    //   1) tune.shape  { type:'circle', r } | { type:'box', w, d, ox, oy }  (karo)
+    //   2) bina ise modelin gerçek ayak izi × BUILDING_SOLID_FACTOR
+    //   3) verideki solidRadius
+    colliderFor(obj, fallbackTiles) {
+      const model = obj && obj.model;
+      const ts = this.tileSize;
+      const sc = this.solidScale();
+      const tn = this.modelTuneFor(model);
+      const sh = tn && tn.shape;
+      if (sh && typeof sh === 'object') {
+        if (sh.type === 'box') {
+          const hw = (Number(sh.w) > 0 ? Number(sh.w) : 1) * ts * 0.5 * sc;
+          const hh = (Number(sh.d) > 0 ? Number(sh.d) : 1) * ts * 0.5 * sc;
+          return { t: 'b', hw, hh, ox: (Number(sh.ox) || 0) * ts, oy: (Number(sh.oy) || 0) * ts,
+            rot: -(Number(obj && obj.rot) || 0) };
+        }
+        const r = Number(sh.r);
+        if (r > 0) return { t: 'c', r: r * ts * sc };
+      }
+      // 1b) Eski kısa yol: tune.solid (karo) → yuvarlak
+      if (tn && Number(tn.solid) > 0) return { t: 'c', r: Number(tn.solid) * ts * sc };
+      if (model && BUILDING_MODELS.has(model) && !SOLID_KEEP.has(model)) {
+        const d3 = (typeof window !== 'undefined' && window.Setra3DTrees) || null;
+        if (d3 && d3.solidPx) {
+          try {
+            const px = d3.solidPx(obj, this);
+            if (px > 0) return { t: 'c', r: px * BUILDING_SOLID_FACTOR * sc };
+          } catch (_) { /* 3D kapalıysa veriye düş */ }
+        }
+      }
+      const base = Number.isFinite(Number(fallbackTiles)) ? Number(fallbackTiles) : 0;
+      return base > 0 ? { t: 'c', r: base * ts * sc } : null;
+    }
+    // Sahne nesnesi için { col (px), solidRadius (karo) } üretir.
+    makeCollider(obj, fallbackTiles) {
+      const col = this.colliderFor(obj, fallbackTiles);
+      const bound = !col ? 0 : (col.t === 'c' ? col.r : Math.hypot(col.hw, col.hh));
+      return { col, solidRadius: bound / this.tileSize };
+    }
+    // Prop'lar (fıçı/sandık/balya): verideki değerin PROP_SOLID_FACTOR kadarı.
+    propSolidRadius(pr) {
+      const tn = this.modelTuneFor(pr && pr.model);
+      if (tn && Number(tn.solid) > 0) return Number(tn.solid);
+      const authored = Number.isFinite(Number(pr && pr.solidRadius)) ? Number(pr.solidRadius)
+        : defaultSolidRadius((pr && (pr.model || pr.type)) || '');
+      return authored > 0 ? authored * PROP_SOLID_FACTOR : 0;
     }
 
     // TÜR/MODEL bazlı GLOBAL ölçek çarpanı (Dünya Kurucu > "Tür Ölçekleri").
@@ -2543,6 +2696,12 @@
       const R = Number.isFinite(this.mapRadius) ? Math.max(6, Math.min(70, Math.floor(this.mapRadius))) : 14;
       this.mapRadius = R;
 
+      // Dekor serpme ızgarası: aynı noktaya iki taş/ağaç binmesin.
+      const scatter = makeScatter(this.tileSize);
+      const look = this._pendingBiome || this.biome || 'verdant';
+      // Rastgele seferde köy yok; merkez `dist > 2.2` şartıyla zaten boş kalır.
+      const nearVillage = false;
+
       for (let gx = -R; gx <= R; gx++) {
         for (let gy = -R; gy <= R; gy++) {
           const dist = Math.sqrt(gx * gx + gy * gy);
@@ -2591,6 +2750,7 @@
           this.tiles.push(tile);
           this.tileMap.set(gx * 1000 + gy, tile);
 
+          try {
           if (type === 'grass' && dist > 2.2) {
             // Doğal serpme: ızgara/çizgi görünümünü kırmak için her karo için
             // İKİ aday nokta üretilir; yoğunluk gürültüsü yüksek olan kazanır
@@ -2600,83 +2760,110 @@
             const forest = valueNoise(gx * 0.26 + 11.3, gy * 0.26 + 7.9) * 0.68 +
                            valueNoise(gx * 0.62 - 3.4, gy * 0.58 + 9.1) * 0.32;
             const stones = valueNoise(gx * 0.34 - 5.1, gy * 0.34 + 3.7);
-            const ridge = valueNoise(gx * 0.19 + 41.2, gy * 0.19 + 12.8);
-            const px = wx + (h1 - 0.5) * this.tileSize * 1.35;
-            const py = wy + (h2 - 0.5) * this.tileSize * 1.35;
+            const px = wx + (h1 - 0.5) * this.tileSize * 1.3;
+            const py = wy + (h2 - 0.5) * this.tileSize * 1.3;
+            // add(): minimum mesafe + konum kaydı. Aynı noktaya iki büyük taş
+            // binemez (eski "yan yana kocaman taşlar" hatası).
+            const add = (obj, minDist) => {
+              if (!scatter.canPlace(obj.wx, obj.wy, minDist)) return false;
+              scatter.mark(obj.wx, obj.wy);
+              this.scenery.push(obj);
+              return true;
+            };
             // Boyutlar sınırlı: tek bir ağaç/kaya ekranı doldurmasın.
-            if (forest > 0.50 && h1 > 0.13) {
-              this.scenery.push({
-                type: 'tree', wx: px, wy: py, z: elevation,
-                scale: 0.72 + h1 * 0.52,
-                solidRadius: h1 > 0.7 ? 0.2 : 0.13,
-                swayOffset: h2 * TAU, tone: h1,
-              });
-            } else if (ridge > 0.74 && h2 > 0.45) {
-              this.scenery.push({
-                type: 'mountain', wx: px, wy: py, z: elevation,
-                scale: 0.70 + h1 * 0.48,
-                solidRadius: h1 > 0.62 ? 0.32 : 0.24,
-              });
-            } else if (stones > 0.66 && h2 > 0.5) {
-              this.scenery.push({
-                type: 'boulder', wx: px, wy: py, z: elevation,
-                scale: 0.50 + h1 * 0.62,
-                solidRadius: h1 > 0.78 ? 0.24 : 0.15,
-              });
-            } else if (h2 > 0.955) {
-              this.scenery.push({
-                type: 'bush', wx: px, wy: py, z: elevation,
-                scale: 0.55 + h1 * 0.45,
-                swayOffset: h2 * TAU,
-              });
+            if (look === 'swamp' || look === 'mirefen' || look === 'cursed') {
+              if (forest > 0.40 && h1 > 0.12 && !nearVillage) {
+                add({
+                  type: 'tree', biome: look, model: h2 > 0.5 ? 'willow' : 'deadtree',
+                  wx: px, wy: py, z: elevation,
+                  scale: 0.66 + h1 * 0.34,
+                  solidRadius: h1 > 0.75 ? 0.16 : 0.12,
+                  swayOffset: h2 * TAU, tone: h1,
+                }, 60);
+              } else if (h2 > 0.86) {
+                add({ type: 'reeds', biome: look, wx: px, wy: py, z: elevation,
+                  scale: 0.85 + h1 * 0.45, swayOffset: h2 * TAU }, 26);
+              } else if (h2 > 0.78) {
+                add({ type: 'bush', biome: look, wx: px, wy: py, z: elevation,
+                  scale: 0.75 + h1 * 0.4, swayOffset: h2 * TAU, tone: h1 }, 34);
+              }
+            } else if (look === 'frost' || look === 'frozen') {
+              if (forest > 0.48 && h1 > 0.2 && !nearVillage) {
+                add({ type: 'tree', biome: 'frozen', model: h2 > 0.5 ? 'pine' : 'birch',
+                  wx: px, wy: py, z: elevation, scale: 0.6 + h1 * 0.35,
+                  solidRadius: 0.12, swayOffset: h2 * TAU, tone: h1 }, 58);
+              } else if (h2 > 0.975) {
+                add({ type: 'glb', model: 'crystals', wx: px, wy: py, z: elevation, scale: 0.75 }, 34);
+              }
+            } else if (look === 'ashen' || look === 'volcanic') {
+              if (stones > 0.62 && h2 > 0.5) {
+                add({ type: 'boulder', biome: 'ashen', model: h1 > 0.5 ? 'bigrock' : 'rocks',
+                  wx: px, wy: py, z: elevation, scale: 0.5 + h1 * 0.4,
+                  solidRadius: 0.17, tone: h1 }, 78);
+              } else if (h2 > 0.965) {
+                add({ type: 'tree', biome: 'ashen', model: 'deadtree', wx: px, wy: py,
+                  z: elevation, scale: 0.55 + h1 * 0.3, solidRadius: 0.11,
+                  swayOffset: h2 * TAU, tone: h1 }, 70);
+              }
+            } else {
+              // verdant / meadow / forest / rock: orman + kaya + çalı.
+              if (forest > 0.50 && h1 > 0.14 && !nearVillage) {
+                add({ type: 'tree', biome: 'verdant', wx: px, wy: py, z: elevation,
+                  scale: 0.68 + h1 * 0.36, solidRadius: h1 > 0.72 ? 0.17 : 0.12,
+                  swayOffset: h2 * TAU, tone: h1 }, 56);
+              } else if (stones > 0.70 && h2 > 0.58) {
+                add({ type: 'boulder', biome: 'verdant', model: h1 > 0.55 ? 'bigrock' : 'rocks',
+                  wx: px, wy: py, z: elevation, scale: 0.5 + h1 * 0.4,
+                  solidRadius: 0.16, tone: h1 }, 80);
+              } else if (h2 > 0.93) {
+                add({ type: 'bush', biome: 'verdant', wx: px, wy: py, z: elevation,
+                  scale: 0.75 + h1 * 0.4, swayOffset: h2 * TAU, tone: h1 }, 34);
+              }
             }
           } else if (type === 'path' && dist > 2.5 && hash2(gx * 2.2, gy * 3.3) > 0.88) {
             this.scenery.push({ type: 'lantern', wx: wx + 22, wy: wy - 22, scale: 1 });
+          }
+          } catch (err) {
+            // Tek karo dekoru hata verse bile harita üretimi sürsün (asla çökme).
+            if (!this._decorWarned) { this._decorWarned = true; console.warn('[travel] dekor hatası:', err && err.message); }
           }
         }
       }
 
       // Büyük dünyalarda ağaç/taş sayısını sınırla (mobil performansı).
-      const SCENERY_CAP = 1400;
+      const SCENERY_CAP = 1200;
       if (this.scenery.length > SCENERY_CAP) {
         const step = this.scenery.length / SCENERY_CAP;
         const keep = [];
         for (let i = 0; i < SCENERY_CAP; i++) keep.push(this.scenery[Math.floor(i * step)]);
         this.scenery = keep;
       }
-      // Harita kenarını görünür kaya duvarıyla çevir (görünmez sınır yerine).
-      // Tek sıra düzgün halka "çizgi" gibi duruyordu: açı/yarıçap/boyut
-      // titretilir ve ikinci bir seyrek sıra eklenir.
-      const rimR = (R - 0.42) * this.tileSize;
-      const rimCount = Math.max(24, Math.round(R * 7));
+      // Harita kenarı: görünmez sınır yerine TEK sıra, seyrek kaya kütlesi.
+      // (Eskiden iki sıra dev kaya "duvar" gibi duruyordu.)
+      const rimR = (R - 0.5) * this.tileSize;
+      const rimCount = Math.max(16, Math.round(R * 4));
       for (let i = 0; i < rimCount; i++) {
-        const a = (i / rimCount) * TAU + (hash2(i, 13.1) - 0.5) * 0.14;
-        const rr = rimR + (hash2(i, 3.7) - 0.5) * 26;
+        const a = (i / rimCount) * TAU + (hash2(i, 13.1) - 0.5) * 0.24;
+        const rr = rimR + (hash2(i, 3.7) - 0.5) * 20;
         this.scenery.push({
-          type: 'mountain',
+          type: 'mountain', biome: look,
+          model: hash2(i, 9.2) > 0.45 ? 'bigrock' : 'rocks',
           wx: Math.cos(a) * rr, wy: Math.sin(a) * rr,
-          scale: 0.72 + hash2(i, 7.1) * 0.5,
+          scale: 0.78 + hash2(i, 7.1) * 0.3,
           rot: a,
-          solidRadius: 0.28,
+          solidRadius: 0.26,
         });
-        if (hash2(i, 21.7) > 0.55) {
-          const a2 = a + 0.05 + hash2(i, 5.3) * 0.08;
-          const rr2 = rimR - 18 - hash2(i, 9.4) * 22;
-          this.scenery.push({
-            type: 'mountain',
-            wx: Math.cos(a2) * rr2, wy: Math.sin(a2) * rr2,
-            scale: 0.55 + hash2(i, 2.9) * 0.4,
-            solidRadius: 0.2,
-          });
-        }
       }
 
       // Çarpışma listesi kırpmadan SONRA kurulur.
       this.solids = this.scenery.filter((s) => s.solidRadius > 0);
 
-      // Varış taşı: oyuncunun doğduğu noktanın hemen yanında durur.
-      // (Sunucu kasabaya dönüşü yalnızca varış noktasından kabul eder.)
-      this.scenery.push({ type: 'shrine', wx: 0, wy: -14, scale: 1.1, interactable: true, label: 'Travel Stone' });
+      // Varış taşı: yalnızca rastgele seferlerde. Kalıcı kıtada gerçek varış
+      // noktası köyün "Seyahat Taşı" POI'sidir; burada ikinci bir taş koymak
+      // (çalışmayan) kopya bir nesne yaratıyordu.
+      if (!this.persistent) {
+        this.scenery.push({ type: 'shrine', wx: 0, wy: -14, scale: 1.1, interactable: true, label: 'Travel Stone' });
+      }
       this.invalidateMinimap();
       this.sortRenderables();
     }
@@ -2711,7 +2898,13 @@
       this.scenery = [];
       this.solids = [];
       const BIOME_TILE = { meadow: 'grass', forest: 'grass', desert: 'sand', swamp: 'swamp', frost: 'snow', volcanic: 'ash', cursed: 'cursed', rock: 'rock' };
+      this._pendingBiome = null;
       const walk = new Array(ny);
+      // Dekor çakışmasını önle: aynı noktaya iki taş/ağaç binmesin.
+      const scatter = makeScatter(this.tileSize);
+      const canPlace = (x, y, d) => scatter.canPlace(x, y, d);
+      const markPlaced = (x, y) => scatter.mark(x, y);
+      const LOOK = BIOME_LOOK;
       for (let j = 0; j < ny; j++) {
         walk[j] = new Array(nx).fill(true);
         for (let i = 0; i < nx; i++) {
@@ -2745,32 +2938,41 @@
           const jx = (core.randomAt ? core.randomAt(sv.x, sv.y, 11) : 0.5) - 0.5;
           const px2 = wx + (r - 0.5) * ts * 0.7;
           const py2 = wy + jx * ts * 0.7;
-          // Eski haritanın yoğun "orman + kaya + çalı" dokusu korunur — FAKAT
-          // kıta 4x büyüdüğü için karo başına 1 ağaç ekranı tamamen kapatıyordu.
-          // Artık seyrek, kümelenmiş ve daha küçük ağaçlar kullanılır.
+          // Eski haritanın yoğun "orman + kaya + çalı" dokusu korunur; yalnızca
+          // üst üste binme engellenir ve dev ölçekler kırpılır.
+          try {
+          const look = LOOK[s.biome] || 'verdant';
+          const add = (obj, minDist) => {
+            if (minDist && !canPlace(obj.wx, obj.wy, minDist)) return;
+            if (minDist) markPlaced(obj.wx, obj.wy);
+            this.scenery.push(obj);
+          };
           if (s.biome === 'forest') {
-            if (r < 0.18 && !nearVillage) this.scenery.push({ type: 'tree', wx: px2, wy: py2, z: elevation, scale: 0.62 + r * 0.5, solidRadius: r > 0.12 ? 0.18 : 0.12, swayOffset: r * TAU, tone: r });
-            else if (r < 0.23) this.scenery.push({ type: 'bush', wx: px2, wy: py2, z: elevation, scale: 0.9 + r, swayOffset: r * TAU, tone: r });
+            if (r < 0.18 && !nearVillage) add({ type: 'tree', biome: look, wx: px2, wy: py2, z: elevation, scale: 0.62 + r * 0.5, solidRadius: r > 0.12 ? 0.18 : 0.12, swayOffset: r * TAU, tone: r }, 34);
+            else if (r < 0.23) add({ type: 'bush', biome: look, wx: px2, wy: py2, z: elevation, scale: 0.9 + r * 0.5, swayOffset: r * TAU, tone: r }, 28);
           } else if (s.biome === 'meadow') {
-            if (r < 0.05 && !nearVillage) this.scenery.push({ type: 'tree', wx: px2, wy: py2, z: elevation, scale: 0.6 + r * 0.8, solidRadius: 0.1, swayOffset: r * TAU, tone: r });
-            else if (r > 0.985) this.scenery.push({ type: 'glb', model: 'flowers', wx: px2, wy: py2, z: elevation, scale: 1.1 + r, swayOffset: r * TAU });
-            else if (r > 0.992) this.scenery.push({ type: 'bush', wx: px2, wy: py2, z: elevation, scale: 1.1 + r, swayOffset: r * TAU, tone: r });
+            if (r < 0.05 && !nearVillage) add({ type: 'tree', biome: look, wx: px2, wy: py2, z: elevation, scale: 0.6 + r * 0.5, solidRadius: 0.1, swayOffset: r * TAU, tone: r }, 64);
+            else if (r > 0.985) add({ type: 'glb', model: 'flowers', wx: px2, wy: py2, z: elevation, scale: 1.1 + r * 0.4, swayOffset: r * TAU }, 26);
+            else if (r > 0.992) add({ type: 'bush', biome: look, wx: px2, wy: py2, z: elevation, scale: 1.0 + r * 0.35, swayOffset: r * TAU, tone: r }, 30);
           } else if (s.biome === 'rock' || s.biome === 'desert') {
-            if (r < 0.12) this.scenery.push({ type: 'boulder', wx: px2, wy: py2, z: elevation, scale: 0.7 + r * 1.1, solidRadius: 0.16 });
-            else if (r > 0.95) this.scenery.push({ type: 'glb', model: 'stump', wx: px2, wy: py2, z: elevation, scale: 0.9 });
+            if (r < 0.10) add({ type: 'boulder', biome: look, model: r < 0.045 ? 'bigrock' : 'rocks', wx: px2, wy: py2, z: elevation, scale: 0.55 + r * 0.8, solidRadius: 0.16, tone: r }, 58);
+            else if (r > 0.95) add({ type: 'glb', model: 'stump', wx: px2, wy: py2, z: elevation, scale: 0.9 }, 0);
           } else if (s.biome === 'swamp' || s.biome === 'cursed') {
-            if (r < 0.06) this.scenery.push({ type: 'tree', wx: px2, wy: py2, z: elevation, scale: 0.6 + r * 0.5, solidRadius: 0.11, swayOffset: r * TAU, tone: r });
+            if (r < 0.07) add({ type: 'tree', biome: s.biome === 'swamp' ? 'mirefen' : 'cursed', model: s.biome === 'swamp' && r < 0.05 ? 'willow' : 'deadtree', wx: px2, wy: py2, z: elevation, scale: 0.6 + r * 0.35, solidRadius: 0.11, swayOffset: r * TAU, tone: r }, 40);
             else if (r > 0.93) {
-              // Eski (vektör) çalı geri döndü; yalnızca çok nadir mezar 3D kalır.
-              if (r > 0.98) this.scenery.push({ type: 'glb', model: 'graves', wx: px2, wy: py2, z: elevation, scale: 0.9, swayOffset: r * TAU });
-              else this.scenery.push({ type: 'bush', wx: px2, wy: py2, z: elevation, scale: 1.0 + r, swayOffset: r * TAU, tone: r });
+              // Çok nadir mezar 3D kalır; geri kalan çalı.
+              if (r > 0.98) add({ type: 'glb', model: 'graves', wx: px2, wy: py2, z: elevation, scale: 0.9, swayOffset: r * TAU }, 30);
+              else add({ type: 'bush', biome: look, wx: px2, wy: py2, z: elevation, scale: 1.0 + r * 0.3, swayOffset: r * TAU, tone: r }, 26);
             }
           } else if (s.biome === 'frost') {
-            if (r < 0.09) this.scenery.push({ type: 'tree', wx: px2, wy: py2, z: elevation, scale: 0.6 + r * 0.5, solidRadius: 0.11, swayOffset: r * TAU, tone: r });
-            else if (r > 0.995) this.scenery.push({ type: 'glb', model: 'crystals', wx: px2, wy: py2, z: elevation, scale: 0.8 + r });
+            if (r < 0.09) add({ type: 'tree', biome: 'frozen', model: r > 0.05 ? 'pine' : 'birch', wx: px2, wy: py2, z: elevation, scale: 0.6 + r * 0.35, solidRadius: 0.11, swayOffset: r * TAU, tone: r }, 46);
+            else if (r > 0.995) add({ type: 'glb', model: 'crystals', wx: px2, wy: py2, z: elevation, scale: 0.8 + r * 0.3 }, 34);
           } else if (s.biome === 'volcanic') {
-            if (r < 0.12) this.scenery.push({ type: 'boulder', wx: px2, wy: py2, z: elevation, scale: 0.8 + r * 1.2, solidRadius: 0.18 });
-            else if (r > 0.99) this.scenery.push({ type: 'glb', model: 'crystals', wx: px2, wy: py2, z: elevation, scale: 0.9 });
+            if (r < 0.10) add({ type: 'boulder', biome: 'ashen', model: 'bigrock', wx: px2, wy: py2, z: elevation, scale: 0.55 + r * 0.8, solidRadius: 0.16, tone: r }, 64);
+            else if (r > 0.99) add({ type: 'glb', model: 'crystals', wx: px2, wy: py2, z: elevation, scale: 0.9 }, 34);
+          }
+          } catch (err) {
+            if (!this._decorWarned) { this._decorWarned = true; console.warn('[travel] dekor hatası:', err && err.message); }
           }
         }
       }
@@ -2810,11 +3012,17 @@
       for (const st of (this.worldConfig.structures || [])) {
         if (pois.some((p) => p.model === st.model && Math.hypot(p.x - st.x, p.y - st.y) < 3)) continue;
         const w = this.serverToWorld(st.x + 0.5, st.y + 0.5);
+        const authored = Number.isFinite(Number(st.solidRadius)) ? Number(st.solidRadius) : defaultSolidRadius(st.model);
+        const isB = BUILDING_MODELS.has(st.model);
+        const c = this.makeCollider(
+          { type: 'glb', model: st.model, scale: (st.scale || 1) * structScale, preScaled: true, rot: st.rot },
+          isB ? authored : authored * PROP_SOLID_FACTOR
+        );
         list.push({ type: 'glb', model: st.model, wx: w.x, wy: w.y,
           z: this.groundZAt(w.x, w.y), scale: (st.scale || 1) * structScale,
           rot: Number.isFinite(Number(st.rot)) ? Number(st.rot) : undefined, preScaled: true,
           tint: st.tint || null,
-          solidRadius: (Number.isFinite(Number(st.solidRadius)) ? Number(st.solidRadius) : defaultSolidRadius(st.model)) * 1.1,
+          solidRadius: c.solidRadius, col: c.col,
           swayOffset: 0, tone: 0.5 });
       }
       // SETRA Village çevresi: seyrek ağaç halkası + birkaç çalı/çiçek.
@@ -2872,10 +3080,13 @@
           rot: Number.isFinite(Number(pr.rot)) ? Number(pr.rot) : undefined,
           swayOffset: Number(pr.swayOffset) || (px * 0.013 + py * 0.021),
           tone: Number.isFinite(Number(pr.tone)) ? Number(pr.tone) : 0.5,
-          solidRadius: Number.isFinite(Number(pr.solidRadius)) ? Number(pr.solidRadius)
-            : defaultSolidRadius(pr.model || pr.type),
           _prop: true
         };
+        const pc = isGlb && pr.model
+          ? this.makeCollider({ type: 'glb', model: pr.model, scale: Number(pr.scale) || 1, rot: pr.rot }, this.propSolidRadius(pr))
+          : { col: null, solidRadius: this.propSolidRadius(pr) };
+        obj.solidRadius = pc.solidRadius;
+        obj.col = pc.col;
         if (Number.isFinite(Number(pr.height)) && Number(pr.height) > 0) obj.height = Number(pr.height);
         this.scenery.push(obj);
       }
@@ -3008,7 +3219,43 @@
       for (let pass = 0; pass < 2; pass++) {
         for (let i = 0; i < solids.length; i++) {
           const s = solids[i];
-          const sr = (s.solidRadius || 0) * this.tileSize;
+          // --- Kutu (kare) çarpışma: GameCraft > Çarpışma > "Kare" ---
+          const c = s.col;
+          if (c && c.t === 'b') {
+            const ang = -(Number(c.rot) || 0);          // dünya -> kutu yereli
+            const ca = Math.cos(ang), sa = Math.sin(ang);
+            const dx0 = P.x - (s.wx + (c.ox || 0)), dy0 = P.y - (s.wy + (c.oy || 0));
+            const lx = dx0 * ca - dy0 * sa, ly = dx0 * sa + dy0 * ca;
+            const qx = Math.max(-c.hw, Math.min(c.hw, lx));
+            const qy = Math.max(-c.hh, Math.min(c.hh, ly));
+            const ox = lx - qx, oy = ly - qy;
+            const d2 = ox * ox + oy * oy;
+            if (d2 >= pr * pr) continue;
+            let nx, ny, inside = false;
+            if (d2 < 1e-6) {
+              // İçeride: en yakın yüzden dışarı it.
+              inside = true;
+              const px = c.hw - Math.abs(lx), py = c.hh - Math.abs(ly);
+              if (px < py) { nx = (lx < 0 ? -1 : 1); ny = 0; }
+              else { nx = 0; ny = (ly < 0 ? -1 : 1); }
+            } else {
+              const d = Math.sqrt(d2);
+              nx = ox / d; ny = oy / d;
+            }
+            let tx, ty;
+            if (inside) {
+              tx = nx ? nx * (c.hw + pr) : lx;
+              ty = ny ? ny * (c.hh + pr) : ly;
+            } else {
+              tx = qx + nx * pr; ty = qy + ny * pr;
+            }
+            const ca2 = Math.cos(-ang), sa2 = Math.sin(-ang);
+            P.x = s.wx + (c.ox || 0) + (tx * ca2 - ty * sa2);
+            P.y = s.wy + (c.oy || 0) + (tx * sa2 + ty * ca2);
+            continue;
+          }
+          // --- Yuvarlak çarpışma (varsayılan) ---
+          const sr = c && c.t === 'c' ? c.r : (s.solidRadius || 0) * this.tileSize;
           if (sr <= 0) continue;
           const dx = P.x - s.wx, dy = P.y - s.wy;
           const min = sr + pr;
@@ -3107,6 +3354,8 @@
       const def = (this.travelBiomes && this.travelBiomes[bid]) || null;
       const changed = bid !== this.biome || !!force;
       this.biome = bid;
+      // Üretim ipucu tüketildi: sonraki generateMap çağrıları güncel biyomu kullanır.
+      this._pendingBiome = null;
       this.biomeDef = def;
       this.biomePalette = (def && def.palette) || null;
       this.biomeAmbient = (def && def.ambient) || null;
@@ -3114,6 +3363,14 @@
       if (!changed) return;
       // Yeni biyom: karo renkleri değiştiği için sprite önbelleğini boşalt.
       this.tileSprites = {};
+      // Rastgele sefer: harita yeniden üretilmez, dekorun biyom havuzu güncellenir
+      // (bataklıkta söğüt, karda çam...). Kalıcı kıtada karo bazlı biyom korunur.
+      if (!this.persistent && this.scenery && this.scenery.length) {
+        const look = BIOME_LOOK[bid] || bid;
+        for (const s of this.scenery) {
+          if (s.type === 'tree' || s.type === 'bush' || s.type === 'boulder' || s.type === 'reeds') s.biome = look;
+        }
+      }
       this.invalidateMinimap();
       // Yeni biyom: eski canavarları temizle, yeni roster'ı doğur.
       this.monsters = [];
@@ -3351,8 +3608,11 @@
           attackKind: base.attackKind || null,
           attackTelegraph: Number(base.attackTelegraph) || 0,
           guardPressure: base.guardPressure != null ? Number(base.guardPressure) : null,
-          boss: !!(base.boss || base.isBoss),
-          meleeWindup: null, parriedTimer: 0,
+          boss: !!(base.boss || base.isBoss || base.rarity === 'boss' || /boss/i.test(String(base.kind || base.name || ''))),
+          meleeWindup: null, parriedTimer: 0, telegraphGhost: null,
+          // Parry ile biriken canavar dayanıklılığı (guardbreak)
+          parryStagger: 0, parryStaggerMax: 100, staggerTimer: 0, staggerDecayDelay: 0,
+          parrySteps: Number(base.parrySteps) || 0,
           hpGhost: hp, walkPhase: Math.random() * 6, deathTimer: 0, dead: false
         });
         if (isElite) eliteSpawned = true;
@@ -3470,9 +3730,55 @@
         weather: { enabled: true, rainChance: 0.4, minDelay: 50, maxDelay: 160, rainVolume: 0.28, dayVolume: 0.22 },
         downed: { enabled: true, reviveRange: 110 },
         sound: { master: 0.85 },
+        combat: { parryCue: { enabled: true, lead: 0.18, volume: 0.85 }, monsterStagger: { max: 100, gain: 34, duration: 2.4, decayDelay: 3.0, decay: 14, minSteps: 2, maxSteps: 5, bossSteps: 8 } },
       }, cfg || {});
       const cw = this.config.weather || {};
       const cd = this.config.downed || {};
+      const cc = this.config.combat || {};
+      const pc = cc.parryCue || {};
+      // Parry zamanlama sesi (GameCraft > Travel Combat)
+      if (!this.combatCfg.parryCue) this.combatCfg.parryCue = { enabled: true, lead: 0.18, volume: 0.85 };
+      if (pc.enabled !== undefined) this.combatCfg.parryCue.enabled = pc.enabled !== false && pc.enabled !== 'false';
+      if (Number.isFinite(Number(pc.lead)) && pc.lead !== '' && pc.lead !== null) {
+        this.combatCfg.parryCue.lead = Math.max(0.02, Math.min(0.6, Number(pc.lead)));
+      }
+      if (Number.isFinite(Number(pc.volume)) && pc.volume !== '' && pc.volume !== null) {
+        this.combatCfg.parryCue.volume = Math.max(0, Math.min(1, Number(pc.volume)));
+      }
+      // Canavar parry-dayanıklılığı (guardbreak) ayarları
+      const ms = cc.monsterStagger || {};
+      if (!this.combatCfg.monsterStagger) {
+        this.combatCfg.monsterStagger = { max: 100, gain: 34, duration: 2.4, decayDelay: 3.0, decay: 14 };
+      }
+      const msCfg = this.combatCfg.monsterStagger;
+      const num = (v, min, max) => {
+        const n = Number(v);
+        if (v === '' || v === null || v === undefined || !Number.isFinite(n)) return null;
+        return Math.max(min, Math.min(max, n));
+      };
+      const msMax = num(ms.max, 10, 1000); if (msMax != null) msCfg.max = msMax;
+      const msGain = num(ms.gain, 1, 1000); if (msGain != null) msCfg.gain = msGain;
+      const msDur = num(ms.duration, 0.3, 10); if (msDur != null) msCfg.duration = msDur;
+      const msDelay = num(ms.decayDelay, 0, 30); if (msDelay != null) msCfg.decayDelay = msDelay;
+      const msDecay = num(ms.decay, 0, 200); if (msDecay != null) msCfg.decay = msDecay;
+      const msMin = num(ms.minSteps, 1, 30); if (msMin != null) msCfg.minSteps = Math.round(msMin);
+      const msMaxS = num(ms.maxSteps, 1, 30); if (msMaxS != null) msCfg.maxSteps = Math.max(msCfg.minSteps || 1, Math.round(msMaxS));
+      const msBoss = num(ms.bossSteps, 1, 50); if (msBoss != null) msCfg.bossSteps = Math.round(msBoss);
+      // Stamina ayarları (GameCraft > Travel Combat). Varsayılan: 200 (2x).
+      const stCfg = cc.stamina || {};
+      if (!this.combatCfg.stamina) this.combatCfg.stamina = { max: 200, sprintDrain: 12, dashCost: 20, regen: 20, regenDelay: 1.0 };
+      const stMax = num(stCfg.max, 10, 10000);
+      if (stMax != null) {
+        this.combatCfg.stamina.max = stMax;
+        const P0 = this.player;
+        if (P0) {
+          P0.staminaMax = stMax;
+          P0.stamina = Math.min(stMax, P0.stamina == null ? stMax : P0.stamina);
+        }
+      }
+      const stDash = num(stCfg.dashCost, 0, 1000); if (stDash != null) { this.combatCfg.stamina.dashCost = stDash; this.combatCfg.dash.staminaCost = stDash; }
+      const stDrain = num(stCfg.sprintDrain, 0, 1000); if (stDrain != null) this.combatCfg.stamina.sprintDrain = stDrain;
+      const stRegen = num(stCfg.regen, 0, 1000); if (stRegen != null) this.combatCfg.stamina.regen = stRegen;
       this.weatherEnabled = cw.enabled !== false;
       this.rainChance = clamp(Number(cw.rainChance) || 0, 0, 1);
       this.weatherMinDelay = Math.max(5, Number(cw.minDelay) || 50);
@@ -3616,6 +3922,22 @@
       this._hitstop = Math.max(this._hitstop || 0, s);
     }
 
+    // Parry zamanlama sesi: isabet anından `lead` saniye önce çalar.
+    // Ses dosyası GameCraft > ARPG Sounds > "parry_cue" alanından atanır.
+    parryCueLead() {
+      const pc = (this.combatCfg && this.combatCfg.parryCue) || {};
+      const n = Number(pc.lead);
+      return Number.isFinite(n) ? Math.max(0.02, n) : 0.18;
+    }
+
+    playParryCue() {
+      const pc = (this.combatCfg && this.combatCfg.parryCue) || {};
+      if (pc.enabled === false || this.downed) return;
+      if (!this.sound) return;
+      const v = Number(pc.volume);
+      this.sound.play('parry_cue', Number.isFinite(v) ? v : 0.85);
+    }
+
     // F'ye basıldı: hazırlık -> parry penceresi. Basılı tutulursa bloka geçer.
     parryPress() {
       const P = this.player;
@@ -3692,6 +4014,8 @@
         });
       }
       if (fromMonster && fromMonster.hp > 0) {
+        // Parry sayacı: 3 civarı başarılı parry canavarı sersemletir.
+        this.addMonsterStagger(fromMonster, atkKind);
         // Saldırıyı iptal et + kısa sersemletme (karşı atak penceresi).
         // allowInterrupt === false ise (mermi parry) canavarın cast'i bozulmaz.
         if (allowInterrupt !== false) {
@@ -3742,6 +4066,76 @@
       this.aoeEffects.push({ x: P.x, y: P.y, radius: 66, duration: 0.5, timer: 0.5, color: '#ff7043', ring: true, cracks: true });
       this.spawnExplosionParticles(P.x, P.y, 28, '#ff7043');
       if (this.onCombatEvent) { try { this.onCombatEvent('guardbreak'); } catch (e) {} }
+    }
+
+    // ======================================================================
+    // CANAVAR PARRY-DAYANIKLILIĞI (guardbreak)
+    // Her başarılı perfect parry canavarın dayanıklılığını doldurur; dolunca
+    // canavar sersemler (hareket/saldırı yok, savunmasız).
+    // ======================================================================
+    monsterStaggerCfg() {
+      return (this.combatCfg && this.combatCfg.monsterStagger) || { max: 100, gain: 34, duration: 2.4, decayDelay: 3.0, decay: 14 };
+    }
+
+    // Bir canavarı sersemletmek için gereken parry sayısı.
+    // Zayıf yaratık 2, güçlü yaratık 5 (ayarlanabilir). Bosslar bu kuralın
+    // dışında: kendi `bossSteps` değerini kullanır (ileride eklenecek bosslar).
+    monsterParrySteps(m) {
+      const cfg = this.monsterStaggerCfg();
+      const explicit = Number(m && m.parrySteps);
+      if (Number.isFinite(explicit) && explicit > 0) return Math.max(1, Math.round(explicit));
+      const min = Math.max(1, Math.round(Number(cfg.minSteps) || 2));
+      const max = Math.max(min, Math.round(Number(cfg.maxSteps) || 5));
+      if (m && m.boss) return Math.max(1, Math.round(Number(cfg.bossSteps) || 8));
+      const dmg = Number(m && m.damage) || 20;
+      const hp = Number(m && m.maxHp) || 100;
+      const lvl = Math.max(1, Number(this.playerData && this.playerData.level) || 1);
+      const lvlMult = 1 + (lvl - 1) * 0.16;
+      // Normalize: bu seviyede "ortalama" canavar ≈ hasar 40, can 220 (taban).
+      const dScore = dmg / (40 * 2.6 * lvlMult);
+      const hScore = hp / (220 * 4.0 * lvlMult);
+      let score = dScore * 0.6 + hScore * 0.4;
+      if (m && m.elite) score *= 1.2;
+      const t = clamp((score - 0.45) / 2.4, 0, 1);
+      return Math.round(min + (max - min) * t);
+    }
+
+    addMonsterStagger(m, atkKind) {
+      if (!m || m.hp <= 0 || m.dead) return;
+      const cfg = this.monsterStaggerCfg();
+      // Bosslar bu mekanizmanın dışında tutulabilir (bossSteps = 0).
+      if (m.boss && Number(cfg.bossSteps) === 0) return;
+      const max = Math.max(1, Number(cfg.max) || 100);
+      if (m.parryStaggerMax == null) m.parryStaggerMax = max;
+      if ((Number(m.staggerTimer) || 0) > 0) return;   // zaten sersem
+      // Kaç parry gerektiği canavarın gücüne göre değişir: max / steps.
+      const steps = this.monsterParrySteps(m);
+      const gain = Math.max(1, max / Math.max(1, steps));
+      m.parryStagger = Math.min(max, (Number(m.parryStagger) || 0) + gain);
+      m.staggerDecayDelay = Math.max(0, Number(cfg.decayDelay) || 0);
+      if (m.parryStagger >= max - 0.001) this.staggerMonster(m);
+    }
+
+    staggerMonster(m) {
+      if (!m || m.hp <= 0 || m.dead) return;
+      const cfg = this.monsterStaggerCfg();
+      m.parryStagger = 0;
+      m.staggerTimer = Math.max(0.3, Number(cfg.duration) || 2.4);
+      m.staggerDecayDelay = 0;
+      m.cast = null;
+      m.meleeWindup = null;
+      m.telegraphGhost = null;
+      m.parriedTimer = 0;
+      m.state = 'STAGGER';
+      m.attackTimer = Math.max(m.attackTimer || 0, m.staggerTimer);
+      m.flashTimer = Math.max(m.flashTimer || 0, 0.25);
+      this.spawnDamageNumber(m.x, m.y, 'STAGGERED', '#ffb74d', true);
+      this.aoeEffects.push({ x: m.x, y: m.y, radius: (m.radius || 18) * 2.4, duration: 0.55, timer: 0.55, color: '#ffb74d', ring: true, cracks: true });
+      this.spawnExplosionParticles(m.x, m.y, 20, '#ffb74d');
+      this.addTrauma(0.3);
+      this.hitstop(0.08);
+      if (this.sound) this.sound.play('guardbreak', 0.8);
+      if (this.onCombatEvent) { try { this.onCombatEvent('monster_stagger'); } catch (e) {} }
     }
 
     // Sprint: Shift + hareket. Stamina biterse durur.
@@ -3795,14 +4189,22 @@
       } else if (P.parryRecovery <= 0) {
         if (P.parryPhase === 'startup') {
           P.parryTimer -= dt;
-          if (P.parryTimer <= 0) {
+          // Vuruş hazırlık penceresinde gelecekse doğrudan parry penceresine geç:
+          // telegraph anında basılan F asla "sapmaz".
+          const leadS = this.imminentParryable();
+          if (P.parryTimer <= 0 || (leadS > 0 && leadS <= P.parryTimer + 0.03)) {
             P.parryPhase = 'window';
-            P.parryTimer = Math.max(0.02, Number(cfg.parry.window) || 0.2);
+            P.parryTimer = Math.max(0.06, Number(cfg.parry.window) || 0.24);
           }
         } else if (P.parryPhase === 'window') {
           P.parryTimer -= dt;
           if (P.parryTimer <= 0) {
-            if (P.parryHeld) {
+            // Gelen parry edilebilir vuruş varsa pencereyi vuruşa kadar açık tut:
+            // telegraph göründüğü anda basılan F her zaman kusursuz parry olur.
+            const lead = this.imminentParryable();
+            if (lead > 0) {
+              P.parryTimer = Math.max(0.06, lead + 0.04);
+            } else if (P.parryHeld) {
               // Pencere bitti ama F hâlâ basılı -> normal blok
               P.parryPhase = 'block';
               P.parryTimer = 0;
@@ -3973,17 +4375,29 @@
     // --- Düşman saldırı sınıflandırma (per-attack ayarlanabilir) ---
     telegraphDurationFor(kind) {
       const t = this.combatCfg.telegraph;
-      return Number(t[kind] != null ? t[kind] : t.normal) || 0.35;
+      const min = Number(this.combatCfg.telegraphMin) || 0.28;
+      return Math.max(min, Number(t[kind] != null ? t[kind] : t.normal) || 0.35);
+    }
+
+    // Telegraph rengi: savunma türüne göre okunur/sabit kod.
+    //   parryable -> KIRMIZI   · dodge/block -> MAVİ-MOR   · none -> gri
+    telegraphStyle(defense) {
+      const d = defense || DEFENSE.PARRYABLE;
+      if (d === DEFENSE.PARRYABLE) return { col: '#ff3b30', edge: '#ff8a80', glow: '#ff1744', hot: '#ffd0cb' };
+      if (d === DEFENSE.DODGE) return { col: '#7c4dff', edge: '#b388ff', glow: '#651fff', hot: '#d9ccff' };
+      if (d === DEFENSE.BLOCK) return { col: '#4a63d8', edge: '#8f9bff', glow: '#3046c8', hot: '#d6dcff' };
+      return { col: '#9e9e9e', edge: '#e0e0e0', glow: '#bdbdbd', hot: '#ffffff' };
     }
 
     classifyMonsterAttack(m) {
       const ranged = m.ability === 'ranged';
       const boss = !!(m.boss || m.isBoss);
       const kind = m.attackKind || (boss ? 'heavy' : (ranged ? 'medium' : 'light'));
+      const min = Number(this.combatCfg.telegraphMin) || 0.28;
       return {
         kind,
         defense: m.attackDefense || DEFENSE.PARRYABLE,
-        telegraph: Number(m.attackTelegraph) || this.telegraphDurationFor(kind),
+        telegraph: Math.max(min, Number(m.attackTelegraph) || this.telegraphDurationFor(kind)),
         guardPressure: m.guardPressure != null ? Number(m.guardPressure) : (GUARD_PRESSURE[kind] || GUARD_PRESSURE.medium),
         ranged,
         // Yakın dövüş erişimi: AI'nın kullandığı gerçek reach (yarıçap + oyuncu yarıçapı).
@@ -4003,12 +4417,55 @@
         const power = Number(sk.power) || 1;
         kind = (sk.kind === 'slam' || sk.kind === 'dash') ? 'ultimate' : (power >= 1.6 ? 'skill' : 'medium');
       }
+      const min = Number(this.combatCfg.telegraphMin) || 0.28;
       return {
         kind,
         defense,
-        telegraph: Number(sk.windup) || Number(sk.telegraph) || this.telegraphDurationFor(sk.kind === 'slam' ? 'heavy' : 'normal'),
+        telegraph: Math.max(min, Number(sk.windup) || Number(sk.telegraph) ||
+          this.telegraphDurationFor(sk.kind === 'slam' ? 'heavy' : 'normal')),
         guardPressure: sk.guardPressure != null ? Number(sk.guardPressure) : (GUARD_PRESSURE[kind] || 25),
       };
+    }
+
+    // Yakında oyuncuya isabet edecek PARRY edilebilir vuruş var mı?
+    // 0 = yok, >0 = vuruşa kalan yaklaşık saniye. Parry penceresi bununla
+    // uzatıldığı için telegraph anında basılan F asla "sapmaz".
+    imminentParryable() {
+      const P = this.player;
+      if (!P) return 0;
+      const limit = Math.max(0.15, Number(this.combatCfg.parry.threatExtend) || 0.5);
+      let lead = 0;
+      const consider = (t, ok) => {
+        if (!ok) return;
+        const n = Math.max(0, Number(t) || 0);
+        if (n > limit) return;
+        if (!lead || n < lead) lead = n;
+      };
+      if (this.monsters) {
+        for (const m of this.monsters) {
+          if (!m || m.hp <= 0 || m.dead) continue;
+          const d = Math.hypot(P.x - m.x, P.y - m.y);
+          const mw = m.meleeWindup;
+          if (mw && mw.defense === DEFENSE.PARRYABLE) {
+            const reach = mw.ranged ? 520 : (Number(mw.range) || 56) + 26;
+            consider(mw.timer, d <= reach);
+          }
+          const c = m.cast;
+          if (c) {
+            const def = (c.info && c.info.defense) || DEFENSE.PARRYABLE;
+            if (def === DEFENSE.PARRYABLE) consider(c.timer, d <= 300);
+          }
+        }
+      }
+      if (this.projectiles) {
+        for (const pr of this.projectiles) {
+          if (!pr || !pr.hostile || pr.defense !== DEFENSE.PARRYABLE) continue;
+          const d = Math.hypot(P.x - pr.x, P.y - pr.y);
+          const spd = Math.hypot(pr.vx || 0, pr.vy || 0) || 300;
+          consider(d / spd, d <= 460);
+        }
+      }
+      return lead;
     }
 
     // ======================================================================
@@ -4122,6 +4579,113 @@
       });
     }
 
+    // ------------------------------------------------------------------
+    // BÜYÜ HAZIRLIĞI (anticipation)
+    // Yetenek tıklanır tıklanmaz patlamak yerine kısa bir "toplanma" aşaması
+    // oynar: karakter asasını kaldırır, elinin önünde küre büyür, yerde rün
+    // daralır. Süre bitince mekanik (hasar/mermi) çalışır.
+    // ------------------------------------------------------------------
+    skillWindupMs(sk) {
+      if (!sk) return 0;
+      if (sk.windup != null) return Math.max(0, Math.round((Number(sk.windup) || 0) * 1000));
+      // Sadece büyü/caster sınıfları: kılıç sınıflarının anlık hissi korunur.
+      const caster = !!sk.magic
+        || this.player.archetype === ARCHETYPES.MAGE
+        || (this.player.style && this.player.style.atkMode === 'cast');
+      if (!caster) return 0;
+      const kind = sk.kind;
+      const MAP = { projectile: 120, fan: 145, beam: 200, nova: 180, aoe: 180, ground: 240, meteor: 280, pillar: 240, heal: 160, shield: 160, buff: 110 };
+      if (kind && (kind in MAP)) return MAP[kind];
+      // Davranış tabanlı (content.js `behavior`) yetenekler için de hazırlık.
+      const beh = sk.behavior;
+      if (beh && beh !== 'multi') {
+        const BM = { projectile: 120, fan: 145, beam: 200, nova: 180, slam: 180, pillar: 240, rain: 260, zone: 200, heal: 160, buff: 110, turret: 150, decoy: 120, trap: 110, mark: 220, arc: 130, seek: 140 };
+        if (beh in BM) return BM[beh];
+      }
+      return 0;
+    }
+
+    startCastPose(ms, sk, color, aim) {
+      const P = this.player; if (!P || this.downed) return null;
+      const dur = Math.max(0.08, (Number(ms) || 180) / 1000);
+      const col = color || (this.skin && this.skin.primary) || (sk && sk.color) || this.getArchetypeColor();
+      const a = aim != null ? Number(aim) : P.facingAngle;
+      P.castState = { timer: dur, duration: dur, color: col, angle: a, kind: (sk && sk.kind) || 'cast', name: sk && sk.name };
+      P.facingAngle = a;
+      const radius = Number(sk && sk.radius) > 0 ? Math.min(140, Number(sk.radius) * 0.75) : 56;
+      this.aoeEffects.push({ x: P.x, y: P.y, radius, duration: dur + 0.05, timer: dur + 0.05, color: col, ring: true, charge: true, followPlayer: true });
+      // Toplanan kıvılcımlar: çevreden ele doğru emilir.
+      const hx = P.x + Math.cos(a) * 24, hy = P.y + Math.sin(a) * 24;
+      for (let i = 0; i < 10; i++) {
+        const ang = Math.random() * TAU, rad = 32 + Math.random() * 34;
+        this.addParticle({
+          wx: hx + Math.cos(ang) * rad, wy: hy + Math.sin(ang) * rad, wz: 14 + Math.random() * 30,
+          vx: -Math.cos(ang) * 150, vy: -Math.sin(ang) * 150, vz: -18,
+          color: i % 3 === 0 ? '#ffffff' : col, size: 1.5 + Math.random() * 1.9,
+          life: dur * (0.7 + Math.random() * 0.6), grav: 0, additive: true, grow: 0
+        });
+      }
+      this.sound.play('cast', 0.55);
+      return P.castState;
+    }
+
+    // ------------------------------------------------------------------
+    // IŞINLANMA
+    // Anlık ışınlanma "donmuş" görünmesin: çıkışta içe çöken halka, iki
+    // nokta arasında parlayan yırtık + art görüntü izi, varışta patlama ve
+    // karakterin kısa süre "materyalize" olması.
+    // ------------------------------------------------------------------
+    teleportPlayer(x, y, opts = {}) {
+      const P = this.player; if (!P) return { x: P ? P.x : 0, y: P ? P.y : 0 };
+      const col = opts.color || (this.skin && this.skin.primary) || this.getArchetypeColor();
+      const ox = P.x, oy = P.y;
+      const prevX = ox, prevY = oy;
+      P.x = x; P.y = y;
+      if (typeof this.clampPlayerToWorld === 'function') this.clampPlayerToWorld();
+      const dx = P.x - prevX, dy = P.y - prevY, len = Math.hypot(dx, dy);
+      if (len < 6) return { x: P.x, y: P.y };
+      const a = Math.atan2(dy, dx);
+      P.facingAngle = a;
+      // 1) Çıkış noktası: içe çöken halka + emilen parçacıklar.
+      this.aoeEffects.push({ x: ox, y: oy, radius: 46, duration: 0.34, timer: 0.34, color: col, ring: true, collapse: true });
+      for (let i = 0; i < 14; i++) {
+        const ang = Math.random() * TAU, rad = 12 + Math.random() * 30;
+        this.addParticle({
+          wx: ox + Math.cos(ang) * rad, wy: oy + Math.sin(ang) * rad, wz: 4 + Math.random() * 34,
+          vx: -Math.cos(ang) * 190, vy: -Math.sin(ang) * 190, vz: 26 + Math.random() * 40,
+          color: i % 4 === 0 ? '#ffffff' : col, size: 2 + Math.random() * 2.4,
+          life: 0.26 + Math.random() * 0.22, grav: 30, additive: true, grow: 6
+        });
+      }
+      // 2) İki nokta arasında yırtık + art görüntüler.
+      this.teleportStreaks.push({ x1: ox, y1: oy, x2: P.x, y2: P.y, color: col, life: 0.5, max: 0.5, seed: Math.random() });
+      const n = Math.max(3, Math.min(12, Math.round(len / 26)));
+      for (let i = 1; i <= n; i++) {
+        const u = i / (n + 1);
+        P.ghostTrails.push({
+          x: ox + dx * u, y: oy + dy * u, facingAngle: a,
+          alpha: 0.28 + 0.4 * u, color: col
+        });
+      }
+      // 3) Varış: patlama halkası + parıltı + kısa materyalize.
+      P.teleportFx = { timer: 0.3, duration: 0.3, color: col, angle: a };
+      this.aoeEffects.push({ x: P.x, y: P.y, radius: 52, duration: 0.42, timer: 0.42, color: col, ring: true });
+      this.createGhostTrail();
+      for (let i = 0; i < 16; i++) {
+        const ang = a + Math.PI + (Math.random() - 0.5) * 1.9;
+        const sp = 90 + Math.random() * 190;
+        this.addParticle({
+          wx: P.x, wy: P.y, wz: 8 + Math.random() * 24,
+          vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, vz: 30 + Math.random() * 60,
+          color: i % 3 === 0 ? '#ffffff' : col, size: 1.8 + Math.random() * 2.4,
+          life: 0.22 + Math.random() * 0.3, grav: 40, additive: true, grow: 8
+        });
+      }
+      this.addTrauma(0.22);
+      if (opts.sound !== false) this.sound.play('teleport', 0.7);
+      return { x: P.x, y: P.y };
+    }
+
     triggerPrimaryAttack() {
       if (this.downed || this._down) return;
       if (this.player.guardbreakTimer > 0) return;      // guardbreak: saldırı kilitli
@@ -4230,6 +4794,11 @@
       this.showSkillPreview(key, sk);
 
       if (cd.current > 0) return;
+
+      // Büyü glow'u (shaderfx): yetenek anında ekran katmanına renkli ışıma.
+      if (window.SetraShaderFX) {
+        try { window.SetraShaderFX.skillFlash(this, key, sk && sk.color); } catch (e) { /* kozmetik */ }
+      }
 
       if (sk) {
         cd.max = Math.max(1, Number(sk.cd) || cd.max);
@@ -4389,16 +4958,35 @@
     }
 
     // --- Sınıf yeteneği uygulama ---
-    castClassSkill(key, sk) {
+    castClassSkill(key, sk, skipWind) {
       // Yeteneğin elementi: alan/konik vuruşların hasar hesabında kullanılır.
       this._castElement = (sk && sk.element) || this.autoElement();
       this._castElementUntil = performance.now() + 1500;
+      // --- BÜYÜ HAZIRLIĞI ---
+      // Büyü sınıflarında tıkla-patla yerine kısa bir "toplanma" aşaması:
+      // asa kalkar, elin önünde küre büyür, yerdeki rün daralır; mekanik
+      // ancak bu süre bitince çalışır. Kılıç sınıflarında süre 0'dır.
+      const wind = skipWind ? 0 : this.skillWindupMs(sk);
+      if (wind > 0) {
+        const aimNow = this.skillAim();
+        const colNow = (this.skin && this.skin.primary) || (sk && sk.color) || this.getArchetypeColor();
+        this.startCastPose(wind, sk, colNow, aimNow);
+        this.swingWeapon('cast', { angle: aimNow, color: colNow, duration: Math.min(0.45, wind / 1000 + 0.14), trail: false });
+        this.player.attackAnimTimer = Math.max(this.player.attackAnimTimer || 0, wind / 1000);
+      }
       // --- 1) VERİDEN gelen davranış (content.js arpgSkills -> behavior + params) ---
       // GameCraft "Travel ARPG" sekmesinde düzenlenen asıl yol.
       if (sk && sk.behavior) {
         const TS = global.TravelSkills;
         if (TS && TS.runSkill) {
           this.emitSkinFx(this.player.x, this.player.y, 10);
+          if (wind > 0) {
+            this.later(() => {
+              if (this.downed || !this.player) return;
+              try { TS.runSkill(this, sk, key); } catch (e) { console.error('[TravelSkills]', sk.name, e); }
+            }, wind);
+            return;
+          }
           try { if (TS.runSkill(this, sk, key)) return; } catch (e) { console.error('[TravelSkills]', sk.name, e); }
         }
       }
@@ -4409,9 +4997,25 @@
         if (fn) {
           this.emitSkinFx(this.player.x, this.player.y, 10);
           const c = { key: sk.tsKey, aimAngle: this.skillAim(), cd: this.player.cooldowns[sk.tsKey] || { max: 0, current: 0 } };
+          if (wind > 0) {
+            this.later(() => {
+              if (this.downed || !this.player) return;
+              try { fn(this, c); } catch (e) { console.error('[TravelSkills]', sk.name, e); }
+            }, wind);
+            return;
+          }
           try { fn(this, c); } catch (e) { console.error('[TravelSkills]', sk.name, e); }
           return;
         }
+      }
+      // Veri davranışı yoksa: mekanik kısım hazırlık süresi bitince çalışır.
+      // (Hazırlık görseli yukarıda başlatıldı; burada sadece bekleme var.)
+      if (wind > 0) {
+        this.later(() => {
+          if (this.downed || !this.player) return;
+          try { this.castClassSkill(key, sk, true); } catch (e) { console.error('[cast]', sk && sk.name, e); }
+        }, wind);
+        return;
       }
       const st = this.playerData.stats;
       const aim = this.skillAim();
@@ -4591,17 +5195,11 @@
         this.applyAreaStatus(this.player.x, this.player.y, radius, sk);
         this.spawnExplosionParticles(this.player.x, this.player.y, 18, color);
       } else if (kind === 'teleport') {
-        this.sound.play('dash');
-        this.createGhostTrail();
         const range = Number(sk.range) || 175;
         const dx = this.mouse.worldX - this.player.x, dy = this.mouse.worldY - this.player.y;
         const len = Math.hypot(dx, dy) || 1;
         const step = Math.min(range, len);
-        this.aoeEffects.push({ x: this.player.x, y: this.player.y, radius: radius * 0.8, duration: 0.35, timer: 0.35, color, ring: true });
-        this.player.x += (dx / len) * step;
-        this.player.y += (dy / len) * step;
-        this.clampPlayerToWorld();
-        this.aoeEffects.push({ x: this.player.x, y: this.player.y, radius, duration: 0.4, timer: 0.4, color, ring: true });
+        this.teleportPlayer(this.player.x + (dx / len) * step, this.player.y + (dy / len) * step, { color });
         this.hitEnemiesInRadius(this.player.x, this.player.y, radius, dmg, crit, 0);
         this.applyAreaStatus(this.player.x, this.player.y, radius, sk);
       } else if (kind === 'ground') {
@@ -5499,8 +6097,11 @@
         attackKind: base.attackKind || null,
         attackTelegraph: Number(base.attackTelegraph) || 0,
         guardPressure: base.guardPressure != null ? Number(base.guardPressure) : null,
-        boss: !!(base.boss || base.isBoss),
-        meleeWindup: null, parriedTimer: 0,
+        boss: !!(base.boss || base.isBoss || base.rarity === 'boss' || /boss/i.test(String(base.kind || base.name || ''))),
+        meleeWindup: null, parriedTimer: 0, telegraphGhost: null,
+        // Parry ile biriken canavar dayanıklılığı
+        parryStagger: 0, parryStaggerMax: 100, staggerTimer: 0, staggerDecayDelay: 0,
+        parrySteps: Number(base.parrySteps) || 0,
         walkPhase: Math.random() * 6, deathTimer: 0, dead: false,
       };
     }
@@ -6009,6 +6610,14 @@
         if (P.weaponSwing.timer <= 0) P.weaponSwing = null;
         else P.attackAnimTimer = Math.max(P.attackAnimTimer, 0.02);
       }
+      if (P.castState) {
+        P.castState.timer -= dt;
+        if (P.castState.timer <= 0) P.castState = null;
+      }
+      if (P.teleportFx) {
+        P.teleportFx.timer -= dt;
+        if (P.teleportFx.timer <= 0) P.teleportFx = null;
+      }
       this.updatePlayerStatuses(dt);
       this.updateChannel(dt);
 
@@ -6020,6 +6629,11 @@
         const gt = P.ghostTrails[i];
         gt.alpha -= dt * 3.5;
         if (gt.alpha <= 0) P.ghostTrails.splice(i, 1);
+      }
+      for (let i = this.teleportStreaks.length - 1; i >= 0; i--) {
+        const st = this.teleportStreaks[i];
+        st.life -= dt;
+        if (st.life <= 0) this.teleportStreaks.splice(i, 1);
       }
 
       // 4. Pet
@@ -6064,6 +6678,13 @@
         m.vy *= Math.pow(0.05, dt);
         m.z += (this.groundZAt(m.x, m.y) - m.z) * (1 - Math.exp(-dt * 14));
 
+        // Telegraph afterglow: zamana bağlı, her kareden ÖNCE işlenir ki
+        // sersemlik/ölüm gibi erken dönüşlerde ekranda takılı kalmasın.
+        if (m.telegraphGhost) {
+          if (this.time >= (m.telegraphGhost.until || 0)) m.telegraphGhost = null;
+          else m.telegraphGhost.timer = Math.max(0, (m.telegraphGhost.until || 0) - this.time);
+        }
+
         if (m.hp <= 0) { if (m.deathTimer > 0) m.deathTimer -= dt; return; }
 
         // --- Durum efektleri (freeze/stun/root/slow/poison/burn/bleed/shock) ---
@@ -6106,6 +6727,28 @@
 
         const distToPlayer = Math.hypot(P.x - m.x, P.y - m.y);
         let walking = false;
+
+        // --- Parry ile biriken canavar dayanıklılığı (guardbreak) ---
+        {
+          const sCfg = this.monsterStaggerCfg();
+          if ((Number(m.staggerTimer) || 0) > 0) {
+            // Sersem: saldırı/hareket yok, savunmasız.
+            m.staggerTimer = Math.max(0, m.staggerTimer - dt);
+            m.cast = null;
+            m.meleeWindup = null;
+            m.telegraphGhost = null;   // telegraph izi sersemlikte takılı kalmasın
+            m.parriedTimer = 0;
+            m.moving = false;
+            m.walkPhase += dt * 1.4;
+            if (m.attackTimer > 0) m.attackTimer -= dt;
+            if (m.staggerTimer === 0) m.state = 'PATROL';
+            return;   // bu canavar için kareyi bitir
+          }
+          if ((Number(m.parryStagger) || 0) > 0) {
+            if ((Number(m.staggerDecayDelay) || 0) > 0) m.staggerDecayDelay = Math.max(0, m.staggerDecayDelay - dt);
+            else m.parryStagger = Math.max(0, m.parryStagger - (Number(sCfg.decay) || 0) * dt);
+          }
+        }
 
         // Oyuncu çok uzaklaştıysa canavarı yakınına taşı (dünya boş kalmasın).
         // Ortak dünyada konum sunucunun; bu "geri doldurma" kapalı.
@@ -6150,13 +6793,29 @@
           m.parriedTimer = Math.max(0, m.parriedTimer - dt);
           m.cast = null;
           m.meleeWindup = null;
+          m.telegraphGhost = null;
         }
 
         if (m.cast) {
           // Telegraph sürüyor: canavar yerinde sabitlenir, oyuncu kaçabilir.
           m.cast.timer -= dt;
           m.facingAngle = Math.atan2(m.cast.ty - m.y, m.cast.tx - m.x);
+          // Parry zamanlama sesi: isabetten `lead` saniye önce (yalnızca parry edilebilir saldırı).
+          const cinfo = m.cast.info || {};
+          if (!m.cast.cuePlayed && m.cast.timer <= this.parryCueLead() &&
+              (cinfo.defense || DEFENSE.PARRYABLE) === DEFENSE.PARRYABLE) {
+            m.cast.cuePlayed = true;
+            this.playParryCue();
+          }
           if (m.cast.timer <= 0) {
+            // Impact afterglow: telegraph anında kaybolmasın, kısa iz bırakır.
+            m.telegraphGhost = {
+              defense: (m.cast.info && m.cast.info.defense) || DEFENSE.PARRYABLE,
+              kind: (m.cast.info && m.cast.info.kind) || 'medium',
+              angle: m.cast.angle, tx: m.cast.tx, ty: m.cast.ty,
+              radius: m.radius, ranged: false, range: 0, timer: 0.18, total: 0.18,
+              until: this.time + 0.18
+            };
             this.executeMonsterSkill(m, m.cast);
             m.cast = null;
           }
@@ -6168,7 +6827,20 @@
             const mw = m.meleeWindup;
             mw.timer -= dt;
             m.facingAngle = mw.angle;
+            // Sesli parry ipucu (menzilli saldırıda mermi yaklaşınca çalar).
+            if (!mw.cue && !mw.ranged && mw.defense === DEFENSE.PARRYABLE &&
+                mw.timer <= this.parryCueLead()) {
+              mw.cue = true;
+              this.playParryCue();
+            }
             if (mw.timer <= 0) {
+              // Impact afterglow: vuruş anında kırmızı/mor iz hemen sönmesin.
+              m.telegraphGhost = {
+                defense: mw.defense, kind: mw.kind, angle: mw.angle,
+                tx: mw.tx, ty: mw.ty, range: mw.range, ranged: mw.ranged,
+                radius: m.radius, timer: 0.20, total: 0.20,
+                until: this.time + 0.20
+              };
               this.resolveMonsterMelee(m, mw);
               m.meleeWindup = null;
             }
@@ -6266,16 +6938,39 @@
         p.life -= dt;
         if (!p.trail) p.trail = [];
         p.trail.push({ x: p.x, y: p.y });
-        if (p.trail.length > 9) p.trail.shift();
+        const trailMax = p.pierce ? 16 : 9;
+        if (p.trail.length > trailMax) p.trail.shift();
         if (p.type === 'magic_orb' || p.type === 'primal_fang' || p.type === 'dagger') {
           this.addParticle({
             wx: p.x, wy: p.y, wz: 15, vx: (Math.random() - 0.5) * 30, vy: (Math.random() - 0.5) * 30, vz: 10,
             color: p.color, size: 2 + Math.random() * 1.5, life: 0.28, grav: 0
           });
+        } else if (p.type === 'pierce_arrow') {
+          // Aura izi: arkada parlayan toz + halka.
+          for (let k = 0; k < 2; k++) {
+            this.addParticle({
+              wx: p.x - Math.cos(p.ang || Math.atan2(p.vy, p.vx)) * (6 + Math.random() * 14),
+              wy: p.y - Math.sin(p.ang || Math.atan2(p.vy, p.vx)) * (6 + Math.random() * 14),
+              wz: 14 + Math.random() * 10,
+              vx: (Math.random() - 0.5) * 40, vy: (Math.random() - 0.5) * 40, vz: 8 + Math.random() * 16,
+              color: k ? '#ffffff' : p.color, size: 1.8 + Math.random() * 2.2,
+              life: 0.3 + Math.random() * 0.25, grav: -10, additive: true
+            });
+          }
         }
 
         let hit = false;
         if (p.hostile) {
+          // Parry zamanlama sesi: mermi isabetine `lead` saniye kala.
+          if (!p.cuePlayed) {
+            const dNow = Math.hypot(P.x - p.x, P.y - p.y);
+            const sp = Math.hypot(p.vx, p.vy) || 1;
+            const tImpact = (dNow - (P.radius + p.radius)) / sp;
+            if (tImpact <= this.parryCueLead()) {
+              p.cuePlayed = true;
+              if ((p.defense || DEFENSE.PARRYABLE) === DEFENSE.PARRYABLE) this.playParryCue();
+            }
+          }
           // DÜŞMAN mermisi SADECE oyuncuya çarpar. Önceden bu bloktan sonra
           // canavar çarpışma döngüsü de çalışıyordu; menzilli bir canavarın
           // mermisi doğduğu anda kendi gövdesine denk gelip canavarı kendine
@@ -6288,14 +6983,29 @@
           }
         } else if (!p.cosmetic) for (const m of this.monsters) {
           if (m.hp <= 0) continue;
+          // Delici mermiler aynı canavara yalnızca bir kez vurur, sonra geçer.
+          if (p.pierce) {
+            if (!p.hitIds) p.hitIds = new Set();
+            if (p.hitIds.has(m.id)) continue;
+          }
           const d = Math.hypot(m.x - p.x, m.y - p.y);
           if (d <= m.radius + p.radius) {
-            hit = true;
+            if (p.pierce) p.hitIds.add(m.id);
+            else hit = true;
             // Mermi çarptı: ok/hançer sesi (yakın dövüşte kılıç sesi çalar).
-            if (this.sound) this.sound.play(p.type === 'arrow' ? 'hit_ranged' : p.type === 'magic_orb' ? 'hit_magic' : 'hit_physical');
+            if (this.sound) this.sound.play(p.type === 'arrow' || p.type === 'pierce_arrow' ? 'hit_ranged' : p.type === 'magic_orb' ? 'hit_magic' : 'hit_physical');
             this.applyDamageToMonster(m, p.damage, p.isCrit, Math.atan2(p.vy, p.vx), 0, (p.skill && p.skill.element) || p.element || null);
             if (p.skill && p.skill.status) this.applyMonsterStatus(m, p.skill.status);
-            break;
+            // Delici ok: yavaşlatma + delme efekti.
+            if (p.pierce) {
+              if (p.slow) this.applyMonsterStatus(m, { type: 'slow', duration: Number(p.slowDur) || 1.8, slow: Number(p.slow) || 0.45 });
+              if (p.stun) this.applyMonsterStatus(m, { type: 'stun', duration: Number(p.stun) || 0.3 });
+              this.spawnDamageNumber(m.x, m.y - 10, 'PIERCE', '#b3e5fc');
+              this.aoeEffects.push({ x: m.x, y: m.y, radius: m.radius * 1.8, duration: 0.28, timer: 0.28, color: p.color || '#b3e5fc', ring: true });
+              this.spawnExplosionParticles(m.x, m.y, 8, p.color || '#b3e5fc');
+              this.addTrauma(0.1);
+            }
+            if (!p.pierce) break;
           }
         }
         if (hit || p.life <= 0) this.projectiles.splice(i, 1);
@@ -6311,6 +7021,8 @@
       for (let i = this.aoeEffects.length - 1; i >= 0; i--) {
         const aoe = this.aoeEffects[i];
         aoe.timer -= dt;
+        // Oyuncuya bağlı alanlar (cast hazırlığı halkası) karakteri takip eder.
+        if (aoe.followPlayer && this.player) { aoe.x = this.player.x; aoe.y = this.player.y; }
         // Sürekli hasar veren zemin alanı (ground) ve girdap (vortex).
         if ((aoe.zone || aoe.vortex) && aoe.skill && aoe.timer > 0) {
           aoe.tickTimer = (aoe.tickTimer || 0) + dt;
@@ -6557,6 +7269,7 @@
       this.renderAoEEffects(ctx);
       this.renderOrbitAura(ctx);
       this.renderChannelFx(ctx);
+      this.renderTeleportStreaks(ctx);
       this.renderSortedEntities(ctx);
       this.renderPlayerDefenseFx(ctx);
       this.renderProjectilesAndSlashes(ctx);
@@ -7493,22 +8206,89 @@
     }
 
     // ---------------- CANAVAR YETENEKLERİ ----------------
-    // Kırmızı telegraph: dash şeridi / slam dairesi / ok çizgisi. Oyuncu
-    // kırmızı alandan çıkarsa hasar almaz (dodge edilebilir).
+    // Telegraph renkleri savunma türünü anlatır:
+    //   KIRMIZI   → parry edilebilir (F ile kusursuz parry)
+    //   MAVİ-MOR  → parry edilemez, sadece dodge/kaçış
+    // Yumuşak rampa + vuruş anında parlak darbe + kısa afterglow sayesinde
+    // uyarı bir kare yanıp kaybolmaz.
+    telegraphVisibility(prog) {
+      const e = clamp(prog, 0, 1);
+      return { vis: 0.44 + 0.56 * e, impact: e > 0.8 ? (e - 0.8) / 0.2 : 0 };
+    }
+
+    // Vuruş sonrası kısa iz: telegraph aniden silinmesin.
+    renderTelegraphGhost(ctx, m) {
+      const g = m.telegraphGhost;
+      if (!g) return;
+      // Zaman tabanlı: herhangi bir nedenle sayaç işlenmezse de asla takılı kalmaz.
+      const remain = g.until != null ? (g.until - this.time) : (Number(g.timer) || 0);
+      if (!(remain > 0)) { m.telegraphGhost = null; return; }
+      const st = this.telegraphStyle(g.defense);
+      const k = clamp(remain / Math.max(0.01, g.total || 0.2), 0, 1);
+      const a = 0.42 * k;
+      const p0 = this.iso(m.x, m.y, 1);
+      ctx.save();
+      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      if (g.ranged) {
+        const t = this.iso(g.tx != null ? g.tx : m.x, g.ty != null ? g.ty : m.y, 1);
+        ctx.globalAlpha = a * 0.8;
+        ctx.strokeStyle = st.edge;
+        ctx.lineWidth = 1.4;
+        ctx.beginPath(); ctx.moveTo(p0.x, p0.y - 12); ctx.lineTo(t.x, t.y); ctx.stroke();
+      } else if (g.range) {
+        const range = Math.max(34, (Number(g.range) || 56) + 14);
+        const half = (g.kind === 'heavy' || g.kind === 'skill' || g.kind === 'ultimate') ? 0.62 : 0.5;
+        ctx.beginPath();
+        ctx.moveTo(p0.x, p0.y);
+        for (let i = 0; i <= 12; i++) {
+          const ang = g.angle - half + (i / 12) * half * 2;
+          const p = this.iso(m.x + Math.cos(ang) * range, m.y + Math.sin(ang) * range, 0);
+          ctx.lineTo(p.x, p.y);
+        }
+        ctx.closePath();
+        ctx.globalAlpha = a * 0.8;
+        ctx.fillStyle = st.col;
+        ctx.fill();
+        ctx.globalAlpha = a;
+        ctx.strokeStyle = st.edge;
+        ctx.lineWidth = 1.8;
+        ctx.stroke();
+      }
+      // Darbe anı halkası (kısa, hafif genişleyen)
+      const rr = (m.radius || 18) * (1.1 + (1 - k) * 0.9);
+      ctx.globalAlpha = a * 0.9;
+      ctx.strokeStyle = st.hot;
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.ellipse(p0.x, p0.y, rr * ISO_RX, rr * ISO_RY, 0, 0, TAU); ctx.stroke();
+      ctx.globalAlpha = 1;
+      ctx.restore();
+    }
+
     renderMonsterTelegraphs(ctx) {
       if (!this.monsters || !this.monsters.length) return;
       ctx.save();
       ctx.lineCap = 'round'; ctx.lineJoin = 'round';
       for (const m of this.monsters) {
         if (m.hp <= 0 || m.dead) continue;
+        // Posture kırıldı / parry ile bölündü: telegraph ASLA çizilmez.
+        if ((Number(m.staggerTimer) || 0) > 0 || (Number(m.parriedTimer) || 0) > 0) {
+          m.cast = null; m.meleeWindup = null; m.telegraphGhost = null;
+          continue;
+        }
         // Temel saldırı telegraph'ı (melee/ranged)
         if (m.meleeWindup) { this.renderMeleeTelegraph(ctx, m); continue; }
-        if (!m.cast) continue;
+        if (!m.cast) {
+          if (m.telegraphGhost) this.renderTelegraphGhost(ctx, m);
+          continue;
+        }
         const sk = m.cast.skill || {};
+        const info = m.cast.info || {};
+        const st = this.telegraphStyle(info.defense || sk.defense || DEFENSE.PARRYABLE);
+        const col = st.col;
         const total = Math.max(0.15, m.cast.total || 0.7);
         const prog = clamp(1 - m.cast.timer / total, 0, 1);
-        const alpha = 0.16 + prog * 0.30;
-        const col = '#ff3b30';
+        const tv = this.telegraphVisibility(prog);
+        const alpha = (0.18 + prog * 0.28) * tv.vis;
         if (sk.kind === 'dash') {
           const a = Math.atan2(m.cast.ty - m.y, m.cast.tx - m.x);
           const len = Math.min(Number(sk.dist) || 150, Math.hypot(m.cast.tx - m.x, m.cast.ty - m.y) + 40);
@@ -7520,15 +8300,15 @@
           ctx.strokeStyle = col;
           ctx.lineWidth = Math.max(10, w * 1.15);
           ctx.beginPath(); ctx.moveTo(p0.x, p0.y); ctx.lineTo(p1.x, p1.y); ctx.stroke();
-          ctx.globalAlpha = 0.85;
-          ctx.strokeStyle = '#ff8a80';
+          ctx.globalAlpha = 0.55 + prog * 0.35;
+          ctx.strokeStyle = st.edge;
           ctx.lineWidth = 2;
           ctx.setLineDash([7, 7]);
           ctx.lineDashOffset = -this.time * 70;
           ctx.beginPath(); ctx.moveTo(p0.x, p0.y); ctx.lineTo(p1.x, p1.y); ctx.stroke();
           ctx.setLineDash([]);
-          ctx.fillStyle = '#ff3b30';
-          ctx.globalAlpha = 0.5 + 0.4 * Math.sin(this.time * 12);
+          ctx.fillStyle = col;
+          ctx.globalAlpha = 0.42 + prog * 0.35 + tv.impact * 0.2;
           ctx.beginPath(); ctx.ellipse(p1.x, p1.y, d * 0.9 * ISO_RX, d * 0.9 * ISO_RY, 0, 0, TAU); ctx.fill();
         } else if (sk.kind === 'slam') {
           const c = this.iso(m.x, m.y, 0);
@@ -7537,22 +8317,22 @@
           ctx.globalAlpha = alpha * 0.75;
           ctx.fillStyle = col;
           ctx.beginPath(); ctx.ellipse(c.x, c.y, rx, ry, 0, 0, TAU); ctx.fill();
-          ctx.globalAlpha = 0.9;
-          ctx.strokeStyle = '#ff8a80';
+          ctx.globalAlpha = 0.6 + prog * 0.3;
+          ctx.strokeStyle = st.edge;
           ctx.lineWidth = 2.4;
           ctx.setLineDash([8, 6]);
           ctx.lineDashOffset = -this.time * 50;
           ctx.beginPath(); ctx.ellipse(c.x, c.y, rx, ry, 0, 0, TAU); ctx.stroke();
           ctx.setLineDash([]);
           // dolan iç halka: süre azaldıkça daralır
-          ctx.globalAlpha = 0.5;
+          ctx.globalAlpha = 0.42 + prog * 0.3;
           ctx.strokeStyle = col;
           ctx.lineWidth = 2;
           ctx.beginPath(); ctx.ellipse(c.x, c.y, rx * (1 - prog * 0.85), ry * (1 - prog * 0.85), 0, 0, TAU); ctx.stroke();
         } else {
           const c = this.iso(m.x, m.y, 0);
           const t = this.iso(m.cast.tx, m.cast.ty, 0);
-          ctx.globalAlpha = 0.55;
+          ctx.globalAlpha = 0.42 + prog * 0.3;
           ctx.strokeStyle = col;
           ctx.lineWidth = 1.6;
           ctx.setLineDash([5, 9]);
@@ -7564,9 +8344,9 @@
           ctx.beginPath(); ctx.ellipse(t.x, t.y, 18, 9, 0, 0, TAU); ctx.fill();
         }
         ctx.globalAlpha = 1;
-        // Canavarın üstünde uyarı halkası
+        // Canavarın üstünde uyarı halkası (savunma rengiyle).
         const top = this.iso(m.x, m.y, m.radius * 2 + 18);
-        drawGlow(ctx, top.x, top.y, 14, '#ff1744', 0.5 + 0.3 * Math.sin(this.time * 10));
+        drawGlow(ctx, top.x, top.y, 14 + tv.impact * 6, st.glow, 0.5 + 0.22 * Math.sin(this.time * 7));
       }
       ctx.restore();
     }
@@ -7610,30 +8390,33 @@
       if (landed && m.statusOnHit && this.playerData.stats.currentHp > 0) this.applyPlayerStatusFromMonster(m.statusOnHit);
     }
 
-    // Temel (otomatik) canavar saldırısı telegraph'ı: küçük, kırmızı, sade.
+    // Temel (otomatik) canavar saldırısı telegraph'ı.
+    // Renk savunma türünü anlatır: KIRMIZI = parry edilebilir, MAVİ-MOR = sadece dodge.
     renderMeleeTelegraph(ctx, m) {
       const mw = m.meleeWindup;
       if (!mw) return;
       const total = Math.max(0.08, Number(mw.total) || 0.3);
       const prog = clamp(1 - mw.timer / total, 0, 1);
+      const tv = this.telegraphVisibility(prog);
       const heavy = mw.kind === 'heavy' || mw.kind === 'skill' || mw.kind === 'ultimate';
-      const col = '#ff3b30';
+      const st = this.telegraphStyle(mw.defense);
+      const col = st.col;
       const p0 = this.iso(m.x, m.y, 1);
       ctx.save();
       ctx.lineCap = 'round';
       if (mw.ranged) {
-        // Menzilli: gövdede nabız atan kırmızı nokta + ince nişan çizgisi.
+        // Menzilli: gövdede nabız atan uyarı noktası + ince nişan çizgisi.
         const t = this.iso(mw.tx, mw.ty, 1);
-        ctx.globalAlpha = 0.16 + prog * 0.2;
+        ctx.globalAlpha = (0.20 + prog * 0.24) * tv.vis;
         ctx.strokeStyle = col;
         ctx.lineWidth = 1.2;
         ctx.setLineDash([4, 9]);
         ctx.lineDashOffset = -this.time * 26;
         ctx.beginPath(); ctx.moveTo(p0.x, p0.y - 12); ctx.lineTo(t.x, t.y); ctx.stroke();
         ctx.setLineDash([]);
-        drawGlow(ctx, p0.x, p0.y - 16, 7 + prog * 7, col, 0.28 + prog * 0.42);
+        drawGlow(ctx, p0.x, p0.y - 16, 7 + prog * 7 + tv.impact * 4, st.glow, 0.30 + prog * 0.42);
       } else {
-        // Yakın dövüş: canavarın önünde ince kırmızı yelpaze (hitbox ile uyumlu).
+        // Yakın dövüş: canavarın önünde uyarı yelpazesi (hitbox ile uyumlu).
         const range = Math.max(34, (Number(mw.range) || 56) + 14);
         const half = heavy ? 0.62 : 0.5;
         ctx.beginPath();
@@ -7644,19 +8427,26 @@
           ctx.lineTo(p.x, p.y);
         }
         ctx.closePath();
-        ctx.globalAlpha = (heavy ? 0.16 : 0.10) + prog * (heavy ? 0.26 : 0.18);
+        ctx.globalAlpha = ((heavy ? 0.18 : 0.12) + prog * (heavy ? 0.26 : 0.18)) * tv.vis;
         ctx.fillStyle = col;
         ctx.fill();
-        ctx.globalAlpha = (heavy ? 0.45 : 0.3) + prog * 0.4;
-        ctx.strokeStyle = '#ff8a80';
-        ctx.lineWidth = heavy ? 2.2 : 1.3;
+        ctx.globalAlpha = ((heavy ? 0.42 : 0.30) + prog * 0.38) * tv.vis;
+        ctx.strokeStyle = st.edge;
+        ctx.lineWidth = heavy ? 2.2 : 1.4;
         ctx.stroke();
-        // Silah / gövde üzerinde kısa kırmızı parlama.
+        // Vuruş anı: kenar parlar (telegraph kaybolmadan önce net darbe hissi).
+        if (tv.impact > 0) {
+          ctx.globalAlpha = tv.impact * 0.85;
+          ctx.strokeStyle = st.hot;
+          ctx.lineWidth = heavy ? 3 : 2.2;
+          ctx.stroke();
+        }
+        // Silah / gövde üzerinde kısa parlama.
         const hx = p0.x + Math.cos(mw.angle) * 13;
         const hy = p0.y + Math.sin(mw.angle) * 7 - 15;
-        drawGlow(ctx, hx, hy, (heavy ? 11 : 7) + prog * 5, col, 0.22 + prog * (heavy ? 0.5 : 0.36));
+        drawGlow(ctx, hx, hy, (heavy ? 11 : 7) + prog * 5, st.glow, 0.22 + prog * (heavy ? 0.5 : 0.36));
         if (heavy) {
-          ctx.globalAlpha = 0.22 + prog * 0.4;
+          ctx.globalAlpha = (0.22 + prog * 0.4) * tv.vis;
           ctx.strokeStyle = col;
           ctx.lineWidth = 1.8;
           const rr2 = (m.radius || 18) * 1.4;
@@ -7665,11 +8455,11 @@
         // Alan patlaması olan canavarlar (elite nova): zemin uyarı dairesi.
         if (m.ability === 'nova') {
           const nr = (m.radius || 18) * 2.4;
-          ctx.globalAlpha = 0.10 + prog * 0.16;
+          ctx.globalAlpha = (0.10 + prog * 0.16) * tv.vis;
           ctx.fillStyle = col;
           ctx.beginPath(); ctx.ellipse(p0.x, p0.y, nr * ISO_RX, nr * ISO_RY, 0, 0, TAU); ctx.fill();
-          ctx.globalAlpha = 0.28 + prog * 0.32;
-          ctx.strokeStyle = '#ff8a80';
+          ctx.globalAlpha = (0.28 + prog * 0.32) * tv.vis;
+          ctx.strokeStyle = st.edge;
           ctx.lineWidth = 1.6;
           ctx.setLineDash([6, 7]);
           ctx.lineDashOffset = -this.time * 30;
@@ -7777,6 +8567,36 @@
             const p = this.iso(aoe.x + Math.cos(a) * rr, aoe.y + Math.sin(a) * rr, 4 + q * 20);
             drawGlow(ctx, p.x, p.y, 7, col, 0.7 * (1 - q) * prog);
           }
+        } else if (aoe.charge) {
+          // Büyü toplanması: dıştan içe daralan rün halkası + büyüyen merkez.
+          const k = 1 - 0.72 * easeOut(t);
+          drawGlowEllipse(ctx, c.x, c.y, rx * k * 1.15, ry * k * 1.15, col, 0.28 + 0.35 * t);
+          ctx.strokeStyle = rgba(col, 0.45 + 0.5 * t);
+          ctx.lineWidth = 2 + 2.5 * t;
+          ctx.beginPath(); ctx.ellipse(c.x, c.y, Math.max(1, rx * k), Math.max(1, ry * k), 0, 0, TAU); ctx.stroke();
+          ctx.strokeStyle = rgba('#ffffff', 0.25 + 0.55 * t);
+          ctx.lineWidth = 1.2;
+          ctx.beginPath(); ctx.ellipse(c.x, c.y, Math.max(1, rx * k * 0.94), Math.max(1, ry * k * 0.94), 0, 0, TAU); ctx.stroke();
+          for (let i = 0; i < 14; i++) {
+            const a = (i / 14) * TAU - t * 5;
+            const p1 = this.iso(aoe.x + Math.cos(a) * aoe.radius * k * 0.82, aoe.y + Math.sin(a) * aoe.radius * k * 0.82, 0);
+            const p2 = this.iso(aoe.x + Math.cos(a) * aoe.radius * k * 1.05, aoe.y + Math.sin(a) * aoe.radius * k * 1.05, 0);
+            ctx.strokeStyle = rgba(i % 2 ? '#ffffff' : col, 0.75 * (0.25 + 0.75 * t));
+            ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+          }
+          drawGlow(ctx, c.x, c.y - 12, 12 + 22 * t, col, 0.45 + 0.4 * t);
+        } else if (aoe.collapse) {
+          // Işınlanma çıkışı: dıştan içe çöken halka, merkeze doğru kapanır.
+          const k = 1 - easeOut(t);
+          drawGlowEllipse(ctx, c.x, c.y, rx * k * 1.1, ry * k * 1.1, col, 0.5 * prog);
+          ctx.strokeStyle = rgba(col, 0.85 * prog);
+          ctx.lineWidth = 1.5 + 6 * prog;
+          ctx.beginPath(); ctx.ellipse(c.x, c.y, Math.max(1, rx * k), Math.max(1, ry * k), 0, 0, TAU); ctx.stroke();
+          ctx.strokeStyle = rgba('#ffffff', 0.9 * prog);
+          ctx.lineWidth = 1.4;
+          ctx.stroke();
+          drawGlow(ctx, c.x, c.y - 16, 16 + 34 * (1 - k), col, 0.6 * prog);
         } else if (aoe.ring) {
           const k = 0.25 + 0.75 * easeOut(t);
           drawGlowEllipse(ctx, c.x, c.y, rx * k * 1.05, ry * k * 1.05, col, 0.55 * prog);
@@ -7979,6 +8799,48 @@
         ctx.fillStyle = rgba('#ffffff', 0.75 * fade);
         ctx.beginPath(); ctx.moveTo(0, -14); ctx.lineTo(1.6, 0); ctx.lineTo(0, 14); ctx.closePath(); ctx.fill();
         ctx.restore();
+      }
+      ctx.restore();
+    }
+
+    // Işınlanma izi: iki nokta arasında açılan parlak "yırtık" ve kıvılcımlar.
+    renderTeleportStreaks(ctx) {
+      if (!this.teleportStreaks || !this.teleportStreaks.length) return;
+      const t = this.time;
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.lineCap = 'round';
+      for (const s of this.teleportStreaks) {
+        const k = clamp(s.life / s.max, 0, 1);      // 1 -> 0
+        const fade = Math.pow(k, 0.75);
+        const a = this.iso(s.x1, s.y1, 0), b = this.iso(s.x2, s.y2, 0);
+        const dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy) || 1;
+        const nx = -dy / len, ny = dx / len;
+        const grow = Math.min(1, (1 - k) * 4 + 0.25);
+        const w1 = 17 * fade * grow, w2 = 3 * fade * grow;
+        ctx.beginPath();
+        ctx.moveTo(a.x + nx * w1, a.y + ny * w1);
+        ctx.lineTo(b.x + nx * w2, b.y + ny * w2);
+        ctx.lineTo(b.x - nx * w2, b.y - ny * w2);
+        ctx.lineTo(a.x - nx * w1, a.y - ny * w1);
+        ctx.closePath();
+        const g = ctx.createLinearGradient(a.x, a.y, b.x, b.y);
+        g.addColorStop(0, rgba(s.color, 0.02 * fade));
+        g.addColorStop(0.45, rgba(s.color, 0.34 * fade));
+        g.addColorStop(1, rgba('#ffffff', 0.55 * fade));
+        ctx.fillStyle = g;
+        ctx.fill();
+        // beyaz çekirdek çizgi
+        ctx.strokeStyle = rgba('#ffffff', 0.7 * fade);
+        ctx.lineWidth = 1.4;
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+        // çizgi boyunca akan kıvılcımlar
+        for (let i = 0; i < 7; i++) {
+          const u = ((i / 7) + (t * 1.7) % 1) % 1;
+          drawGlow(ctx, a.x + dx * u, a.y + dy * u, 5 + 6 * fade, i % 2 ? '#ffffff' : s.color, 0.8 * fade);
+        }
+        drawGlow(ctx, a.x, a.y, 26 * fade, s.color, 0.45 * fade);
+        drawGlow(ctx, b.x, b.y, 42 * fade, s.color, 0.6 * fade);
       }
       ctx.restore();
     }
@@ -8272,6 +9134,10 @@
       const t = this.time;
 
       if (s.type === 'poi') { this.drawPOI(ctx, s, x, y, t); return; }
+      // Canlı 3D NPR katmanı (public/js/live3d.js). Kapalıysa / hata olursa
+      // false döner ve mevcut sprite yolu aynen devam eder.
+      if (window.SetraLive3D && window.SetraLive3D.shouldDraw(s) &&
+          window.SetraLive3D.draw(ctx, s, x, y, this)) return;
       // Bütün çevre modelleri aynı GLB bake/cache yolunu kullanır; model henüz
       // hazır değilse mevcut vektör painter'a düşülür.
       if (s.type !== 'tree' && window.Setra3DTrees && window.Setra3DTrees.drawScenery(ctx, s, x, y, this)) return;
@@ -8364,17 +9230,19 @@
           pts.forEach((p, i) => (i ? ctx.lineTo(p[0] * sc, p[1] * sc) : ctx.moveTo(p[0] * sc, p[1] * sc)));
           ctx.closePath(); ctx.fill();
         };
-        face([[-17, 1], [-13, -14], [-4, -22], [-2, -3]], '#8fa3ad');   // ışıklı sol
-        face([[-4, -22], [8, -23], [16, -12], [18, 1], [-2, -3]], '#5d717b'); // üst/sağ
-        face([[-2, -3], [18, 1], [8, 4], [-8, 3]], '#3c4a52');           // alt gölge
-        face([[-13, -14], [-4, -22], [2, -20], [-6, -13]], '#b0c4ce');   // üst ışık fasesi
-        ctx.strokeStyle = '#263238'; ctx.lineWidth = 1.2;
+        // Nötr granit: 3D sprite hazır olana kadar "renkli taş" görünmesin.
+        face([[-17, 1], [-13, -14], [-4, -22], [-2, -3]], '#8d9296');   // ışıklı sol
+        face([[-4, -22], [8, -23], [16, -12], [18, 1], [-2, -3]], '#63696d'); // üst/sağ
+        face([[-2, -3], [18, 1], [8, 4], [-8, 3]], '#43484b');           // alt gölge
+        face([[-13, -14], [-4, -22], [2, -20], [-6, -13]], '#a8adaf');   // üst ışık fasesi
+        ctx.strokeStyle = '#2e3133'; ctx.lineWidth = 1.2;
         ctx.beginPath();
         ctx.moveTo(-3 * sc, -16 * sc); ctx.lineTo(-1 * sc, -9 * sc); ctx.lineTo(5 * sc, -6 * sc);
         ctx.stroke();
-        ctx.fillStyle = '#6a9e3a';
+        // Taban yosunu: doygunluğu düşük, sadece temas noktasında.
+        ctx.fillStyle = 'rgba(86,112,62,0.55)';
         ctx.beginPath(); ctx.ellipse(-9 * sc, -1.5 * sc, 7 * sc, 2.6 * sc, 0, 0, TAU); ctx.fill();
-        ctx.fillStyle = '#8bc34a';
+        ctx.fillStyle = 'rgba(110,138,78,0.45)';
         ctx.beginPath(); ctx.ellipse(-11 * sc, -2.4 * sc, 3.5 * sc, 1.3 * sc, 0, 0, TAU); ctx.fill();
         ctx.restore();
 
@@ -8603,6 +9471,25 @@
       const handCol = S.skin || '#d7a06a';
       const armCol = S.body === 'bare' ? S.skin : o.cloth;
 
+      // Büyü hazırlığı: hafif geriye yüklenme + yükselme (anticipation).
+      const cs = !downed ? p.castState : null;
+      let castLean = 0, castLift = 0, castK = 0;
+      if (cs && cs.timer > 0) {
+        const u = clamp(1 - cs.timer / Math.max(0.001, cs.duration), 0, 1);
+        castK = easeOut(Math.min(1, u * 1.25));
+        castLean = -0.055 * castK * (fx >= 0 ? 1 : -1);
+        castLift = -2.6 * castK;
+      }
+      // Işınlanma varışı: karakter aniden "yapıştırılmış" gibi durmasın,
+      // kısa süre küçükten büyüyüp parlayarak materyalize olsun.
+      let tpScale = 1, tpAlpha = 1;
+      const tp = !downed ? p.teleportFx : null;
+      if (tp) {
+        const u = clamp(1 - tp.timer / Math.max(0.001, tp.duration), 0, 1);
+        tpScale = 0.7 + 0.3 * easeOut(u);
+        tpAlpha = 0.25 + 0.75 * easeOut(Math.min(1, u * 1.7));
+      }
+
       ctx.save();
       ctx.translate(x, y);
       if (S.ground) groundFx(ctx, t, S.ground);
@@ -8614,9 +9501,10 @@
         ctx.rotate(-1.2);
         ctx.scale(S.scale, S.scale);
       } else {
-        ctx.translate(fx * (lunge + stanceShift), bob + fy * (lunge + stanceShift) * 0.55 + stanceDrop);
-        ctx.rotate(lean + swingLean + stanceLean);
-        ctx.scale(S.scale, S.scale);
+        ctx.translate(fx * (lunge + stanceShift), bob + fy * (lunge + stanceShift) * 0.55 + stanceDrop + castLift);
+        ctx.rotate(lean + swingLean + stanceLean + castLean);
+        ctx.scale(S.scale * tpScale, S.scale * tpScale);
+        if (tpAlpha < 1) ctx.globalAlpha *= tpAlpha;
       }
 
       // --- arka katman efektleri ---
@@ -8778,6 +9666,27 @@
         ctx.beginPath(); ctx.moveTo(fx >= 0 ? 7 : -7, -23); ctx.lineTo(sxh, syh); ctx.stroke();
         ctx.fillStyle = handCol;
         ctx.beginPath(); ctx.arc(sxh, syh, 2.3, 0, TAU); ctx.fill();
+      }
+
+      // Büyü toplanması: elin önünde büyüyen küre + dönen rün halkası.
+      if (castK > 0 && cs) {
+        const ox2 = hx + Math.cos(cs.angle) * 3.5, oy2 = hy - 2;
+        const rr2 = 3.6 + 7.4 * castK;
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        drawGlow(ctx, ox2, oy2, rr2 * 3.6, cs.color, 0.5 * castK);
+        drawGlow(ctx, ox2, oy2, rr2 * 1.5, '#ffffff', 0.75 * castK);
+        ctx.strokeStyle = rgba(cs.color, 0.85 * castK);
+        ctx.lineWidth = 1.4;
+        ctx.beginPath(); ctx.ellipse(ox2, oy2, rr2 * 1.9, rr2 * 1.9 * 0.55, 0, 0, TAU); ctx.stroke();
+        ctx.strokeStyle = rgba('#ffffff', 0.5 * castK);
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.ellipse(ox2, oy2, rr2 * 1.3, rr2 * 1.3 * 0.55, 0, 0, TAU); ctx.stroke();
+        for (let i = 0; i < 3; i++) {
+          const a2 = t * 5 + i * (TAU / 3);
+          drawGlow(ctx, ox2 + Math.cos(a2) * rr2 * 1.9, oy2 + Math.sin(a2) * rr2 * 1.06, 3.6, '#ffffff', 0.85 * castK);
+        }
+        ctx.restore();
       }
 
       // Yan el kalkanı (önde)
@@ -9092,6 +10001,13 @@
       g.save();
       g.translate(100, 150);
       g.translate(Math.cos(fa) * lunge, Math.sin(fa) * lunge * 0.6);
+      // Sersemleme (parry guardbreak): gövde titrer ve öne düşer.
+      const stagT = Math.max(0, Number(m.staggerTimer) || 0);
+      if (stagT > 0) {
+        const k = Math.min(1, stagT / 0.6);
+        g.rotate(Math.sin(t * 17) * 0.10 * k);
+        g.translate(0, 2.4 * k);
+      }
       const painter = m.painter || m.kind;
       const EXP = global.SETRA_MONSTER_EXPANSION;
       const expPaint = EXP && EXP.painters ? EXP.painters[painter] : null;
@@ -9177,6 +10093,42 @@
       rr(ctx, bx - 1.5, by2 - 1.5, barW + 3, barH + 3, 3); ctx.stroke();
       ctx.fillStyle = '#ffd54f';
       ctx.beginPath(); ctx.arc(bx - 1.5, by2 + barH / 2, 1.8, 0, TAU); ctx.arc(bx + barW + 1.5, by2 + barH / 2, 1.8, 0, TAU); ctx.fill();
+
+      // --- Parry dayanıklılığı (guardbreak) çubuğu ---
+      {
+        const stagMax = Math.max(1, Number(m.parryStaggerMax) || 100);
+        const stagPct = clamp((Number(m.parryStagger) || 0) / stagMax, 0, 1);
+        const breaking = (Number(m.staggerTimer) || 0) > 0;
+        if (stagPct > 0.002 || breaking) {
+          const sy2 = by2 + barH + 3.5;
+          ctx.fillStyle = 'rgba(8,10,14,0.88)';
+          rr(ctx, bx - 1, sy2 - 1, barW + 2, 4.4, 2); ctx.fill();
+          const sg = ctx.createLinearGradient(bx, sy2, bx + barW, sy2);
+          if (breaking) { sg.addColorStop(0, '#ffe082'); sg.addColorStop(1, '#fffde7'); }
+          else { sg.addColorStop(0, '#e65100'); sg.addColorStop(1, '#ffb74d'); }
+          ctx.fillStyle = sg;
+          ctx.fillRect(bx, sy2, barW * (breaking ? 1 : stagPct), 2.4);
+          if (breaking) {
+            ctx.save();
+            ctx.globalCompositeOperation = 'lighter';
+            ctx.globalAlpha = 0.4 + 0.3 * Math.sin(t * 18);
+            ctx.fillStyle = '#ffd54f';
+            ctx.fillRect(bx, sy2, barW, 2.4);
+            ctx.restore();
+            ctx.font = '900 7.5px Inter, system-ui, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#ffe082';
+            ctx.fillText('STAGGERED', 0, sy2 + 11);
+          } else if (stagPct >= 0.99) {
+            ctx.save();
+            ctx.globalCompositeOperation = 'lighter';
+            ctx.globalAlpha = 0.35 + 0.35 * Math.sin(t * 22);
+            ctx.fillStyle = '#ffcc80';
+            ctx.fillRect(bx, sy2, barW, 2.4);
+            ctx.restore();
+          }
+        }
+      }
 
       ctx.font = 'bold 10px Cinzel, Inter, sans-serif';
       ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
@@ -9834,13 +10786,53 @@
             const a = this.iso(p.trail[i - 1].x, p.trail[i - 1].y, gz + 15);
             const b = this.iso(p.trail[i].x, p.trail[i].y, gz + 15);
             const f = i / p.trail.length;
-            ctx.strokeStyle = rgba(p.color, f * 0.7);
-            ctx.lineWidth = (p.type === 'magic_orb' ? 9 : 4) * f;
+            ctx.strokeStyle = rgba(p.color, f * (p.pierce ? 0.85 : 0.7));
+            ctx.lineWidth = (p.type === 'magic_orb' ? 9 : (p.pierce ? 11 : 4)) * f;
             ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
           }
         }
 
-        if (p.type === 'arrow') {
+        if (p.type === 'pierce_arrow') {
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(sa);
+          const pulse = 1 + 0.07 * Math.sin(this.time * 22);
+          // Aura halesi (arkasında)
+          ctx.save();
+          ctx.globalCompositeOperation = 'lighter';
+          drawGlow(ctx, -4, 0, 42 * pulse, p.color, 0.5);
+          ctx.globalAlpha = 0.35;
+          ctx.strokeStyle = '#e1f5fe';
+          ctx.lineWidth = 1.4;
+          ctx.beginPath(); ctx.ellipse(-4, 0, 27 * pulse, 9.5 * pulse, 0, 0, TAU); ctx.stroke();
+          ctx.restore();
+          // Gövde
+          const gr = ctx.createLinearGradient(-30, 0, 24, 0);
+          gr.addColorStop(0, 'rgba(255,255,255,0.06)');
+          gr.addColorStop(0.45, p.color);
+          gr.addColorStop(1, '#ffffff');
+          ctx.strokeStyle = gr; ctx.lineWidth = 3.6; ctx.lineCap = 'round';
+          ctx.beginPath(); ctx.moveTo(-28, 0); ctx.lineTo(14, 0); ctx.stroke();
+          // Tüyler
+          ctx.strokeStyle = p.color; ctx.lineWidth = 2;
+          for (const d2 of [-1, 1]) {
+            ctx.beginPath(); ctx.moveTo(-26, 0); ctx.lineTo(-34, 7 * d2); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(-20, 0); ctx.lineTo(-27, 6 * d2); ctx.stroke();
+          }
+          // Büyük uç
+          const hg = ctx.createLinearGradient(12, -9, 28, 9);
+          hg.addColorStop(0, '#ffffff'); hg.addColorStop(1, p.color);
+          ctx.fillStyle = hg;
+          ctx.beginPath(); ctx.moveTo(29, 0); ctx.lineTo(10, -8.5); ctx.lineTo(14, 0); ctx.lineTo(10, 8.5); ctx.closePath(); ctx.fill();
+          ctx.save();
+          ctx.globalCompositeOperation = 'lighter';
+          drawGlow(ctx, 23, 0, 22 * pulse, '#ffffff', 0.7);
+          for (let k = 0; k < 3; k++) {
+            drawGlow(ctx, -16 + k * 12, 0, 5, p.color, 0.5 + 0.35 * Math.sin(this.time * 12 + k));
+          }
+          ctx.restore();
+          ctx.restore();
+        } else if (p.type === 'arrow') {
           ctx.translate(x, y); ctx.rotate(sa);
           ctx.strokeStyle = '#e8f5e9'; ctx.lineWidth = 1.8;
           ctx.beginPath(); ctx.moveTo(-14, 0); ctx.lineTo(8, 0); ctx.stroke();
@@ -10209,13 +11201,16 @@
     // DÖNGÜ
     // ======================================================================
     loop(timestamp) {
-      if (!this.isRunning) return;
+      // Bu kare tüketildi: zinciri buradan yeniden kur (tek zincir garantisi).
+      this._loopQueued = false;
+      if (!this.isRunning || this._destroyed) return;
+      this._scheduleFrame();
+      // Sekme arka planda: çizim/efekt yok (rAF zaten ~1 Hz). Simülasyon
+      // _bgTimer ile yürür; burada render etmek boşuna CPU yakıyordu.
+      if (typeof document !== 'undefined' && document.hidden) return;
       // Mobil: kare hızı üst sınırı (~45 FPS). Dokunmatik cihazlarda ısınma ve
       // pil tüketimini ciddi biçimde düşürür, akıcılık hissi korunur.
-      if (this.isTouch && this._lastFrameTs && (timestamp - this._lastFrameTs) < 22) {
-        requestAnimationFrame(this.loop);
-        return;
-      }
+      if (this.isTouch && this._lastFrameTs && (timestamp - this._lastFrameTs) < 22) return;
       this._lastFrameTs = timestamp;
       const raw = this.lastTime ? (timestamp - this.lastTime) / 1000 : 0;
       try {
@@ -10228,12 +11223,20 @@
           this.update(dt);
           this.render();
         }
+        // Atmosfer/renk shader katmanı (public/js/shaderfx.js). Kapalıysa veya
+        // WebGL yoksa hiçbir maliyeti yoktur; hata oyunu asla durdurmaz.
+        if (window.SetraShaderFX) {
+          try { window.SetraShaderFX.present(this); } catch (e) { /* kozmetik katman */ }
+        }
+        // Canlı 3D çevre katmanı: ışık taraması + kare bütçesi (hata → yoksay).
+        if (window.SetraLive3D) {
+          try { window.SetraLive3D.tick(this, dt); } catch (e) { /* çevre katmanı */ }
+        }
         this.trackPerf(raw);
       } catch (err) {
         // Tek karelik bir hata döngüyü durdurmasın (ekran siyah kalmasın).
         if (!this._errLogged) { this._errLogged = true; console.error('[travel] frame error:', err); }
       }
-      requestAnimationFrame(this.loop);
     }
 
     // Ortalama kare süresini izler ve ağır efektleri otomatik seyreltir.
@@ -10353,6 +11356,9 @@
       // Biyom (harita türü) canavar tablosunu ve ambiyansını belirler.
       const newExpedition = map.id && map.id !== this._mapId;
       this._mapId = map.id || this._mapId;
+      // Dekor üretimi biyoma göre seçilir (söğüt/sazlık/kaya havuzu). Biyom
+      // bundan sonra setBiome ile uygulanır; burada sadece üretim ipucu verilir.
+      this._pendingBiome = map.type || 'verdant';
       if (R !== this.mapRadius || newExpedition) {
         // Her yeni seferde arazi yeniden üretilir: tepeler/platolar da değişir.
         this.mapRadius = R;
@@ -10384,6 +11390,9 @@
         const wy = (p.y + 0.5 - sp.y) * tile;
         const poiBase = p.kind === 'chest' ? 1.1 : p.kind === 'camp' ? 1.15 : 1.15;
         const poiMul = p.kind === 'chest' || p.kind === 'camp' ? 1 : ss;
+        const poiSolid = this.persistent && p.model && p.kind !== 'chest' && p.kind !== 'camp' && p.kind !== 'inn'
+          ? this.makeCollider({ type: 'glb', model: p.model, scale: poiBase * poiMul, preScaled: true, rot: p.rot }, 0.55)
+          : { col: null, solidRadius: 0 };
         this.poiMarkers.push({
           type: this.persistent && p.model ? 'glb' : 'poi', fallbackType: 'poi', model: p.model || null,
           kind: p.kind, poiId: p.id, name: p.name,
@@ -10391,18 +11400,25 @@
           scale: this.persistent && p.model ? poiBase * poiMul : 1,
           preScaled: true,
           tint: p.tint || null,
-          solidRadius: this.persistent && p.model && p.kind !== 'chest' && p.kind !== 'camp' && p.kind !== 'inn' ? 0.55 : 0,
+          solidRadius: poiSolid.solidRadius, col: poiSolid.col,
           interactable: true, label: p.name,
         });
         // Köy merkezine (çeşme/kamp ateşi değil) seyahat taşı dikilitaşı:
         // Her köyün/checkpoint'in ortasında bir obelisk dursun — E ile o köyün
         // menüsü (dinlenme/kayıt) açılır. POI zaten obelisk ise tekrar eklenmez.
-        if (this.persistent && (p.checkpoint || p.kind === 'inn' || p.kind === 'checkpoint') && p.model !== 'obelisk') {
+        // Ayrıca yakında başka bir checkpoint/taş varsa (ör. köy meydanındaki
+        // obelisk) kopya taş dikilmez: tek bir "Seyahat Taşı" kalır.
+        const hasNearbyStone = (pois || []).some((q) => q && q !== p &&
+          (q.checkpoint || q.kind === 'checkpoint' || q.kind === 'inn') &&
+          Math.hypot((q.x || 0) - (p.x || 0), (q.y || 0) - (p.y || 0)) < 260);
+        if (this.persistent && !hasNearbyStone && (p.checkpoint || p.kind === 'inn' || p.kind === 'checkpoint') && p.model !== 'obelisk') {
           const ox = wx + tile * 1.1, oy = wy + tile * 1.1;
+          const stoneCol = this.makeCollider({ type: 'glb', model: 'obelisk', scale: 2.6, preScaled: true }, 0.3);
           this.poiMarkers.push({
             type: 'glb', model: 'obelisk', kind: 'checkpoint', poiId: p.id, poiStone: true,
             village: p.name, name: p.name + ' Taşı', wx: ox, wy: oy, z: this.groundZAt(ox, oy),
-            scale: 2.6, preScaled: true, solidRadius: 0.3,
+            scale: 2.6, preScaled: true,
+            solidRadius: stoneCol.solidRadius, col: stoneCol.col,
             interactable: true, label: 'Seyahat Taşı',
           });
         }

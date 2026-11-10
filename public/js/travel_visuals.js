@@ -607,12 +607,47 @@
       const p = eng.iso(d.wx, d.wy, 0); if (p.x < -140 || p.x > eng.width + 140 || p.y < -100 || p.y > eng.height + 100) continue;
       const rx = d.r * 1.2247, ry = d.r * 0.7071; ctx.save(); ctx.translate(p.x, p.y);
       if (d.type === 'pond') {
-        ctx.fillStyle = '#2a2414'; ell(ctx, 0, 1, rx * 1.1, ry * 1.1); ctx.fill();
-        const gr = ctx.createRadialGradient(-rx * 0.25, -ry * 0.3, 2, 0, 0, rx); gr.addColorStop(0, '#4a8f8a'); gr.addColorStop(0.7, '#1f5a55'); gr.addColorStop(1, '#123a38');
+        // --- kıyı: ıslak çamur + yosun halkası ---
+        ctx.fillStyle = '#241f12'; ell(ctx, 0, 2, rx * 1.16, ry * 1.16); ctx.fill();
+        ctx.fillStyle = 'rgba(70,86,52,0.55)'; ell(ctx, 0, 0, rx * 1.1, ry * 1.1); ctx.fill();
+        // --- su gövdesi: gerçek derinlik (merkez sığ, dış koyu) ---
+        const gr = ctx.createRadialGradient(-rx * 0.28, -ry * 0.34, 2, 0, 0, rx * 1.02);
+        gr.addColorStop(0, '#5aa79a'); gr.addColorStop(0.45, '#2c7a70');
+        gr.addColorStop(0.82, '#155451'); gr.addColorStop(1, '#0c3433');
         ctx.fillStyle = gr; ell(ctx, 0, 0, rx, ry); ctx.fill();
-        for (let k = 0; k < 3; k++) { const q = (t * 0.35 + k / 3 + d.seed) % 1; ctx.strokeStyle = `rgba(200,240,230,${(1 - q) * 0.4})`; ctx.lineWidth = 1; ell(ctx, Math.sin(d.seed * 9 + k) * rx * 0.3, Math.cos(d.seed * 7 + k) * ry * 0.3, rx * 0.5 * q, ry * 0.5 * q); ctx.stroke(); }
-        ctx.fillStyle = '#3f7a2e'; [[-0.4, 0.1], [0.3, -0.2], [0.1, 0.35]].forEach(([u, v], i) => { ell(ctx, u * rx, v * ry, 7, 3.6, 0.2 * i); ctx.fill(); });
-        ctx.fillStyle = 'rgba(255,255,255,0.18)'; ell(ctx, -rx * 0.3, -ry * 0.4, rx * 0.3, ry * 0.12); ctx.fill();
+        // gökyüzü yansıması (üst yarı açık bant)
+        const sky = ctx.createLinearGradient(0, -ry, 0, ry * 0.35);
+        sky.addColorStop(0, 'rgba(186,228,228,0.34)'); sky.addColorStop(1, 'rgba(186,228,228,0)');
+        ctx.fillStyle = sky; ell(ctx, 0, 0, rx * 0.92, ry * 0.92); ctx.fill();
+        // kıyı köpüğü: nefes alan kesikli halka
+        const breathe = 0.5 + 0.5 * Math.sin(t * 1.5 + d.seed * 9);
+        ctx.strokeStyle = `rgba(226,244,236,${0.20 + 0.18 * breathe})`;
+        ctx.lineWidth = 1.6;
+        for (let k = 0; k < 14; k++) {
+          const a0 = (k / 14) * TAU + d.seed * 3, a1 = a0 + 0.20;
+          ctx.beginPath(); ctx.ellipse(0, 0, rx * 0.985, ry * 0.985, 0, a0, a1); ctx.stroke();
+        }
+        // su halkaları: yavaşça büyüyüp sönen dalgalar
+        const waves = eng.lowFx ? 1 : 2;
+        for (let k = 0; k < waves; k++) {
+          const q = (t * 0.16 + k / waves + d.seed) % 1;
+          ctx.strokeStyle = `rgba(210,245,238,${(1 - q) * 0.30})`;
+          ctx.lineWidth = 1 + (1 - q);
+          ell(ctx, 0, 0, rx * (0.2 + q * 0.72), ry * (0.2 + q * 0.72)); ctx.stroke();
+        }
+        // nilüfer yaprakları (seed'e bağlı sabit)
+        for (let k = 0; k < 3; k++) {
+          const a = d.seed * 6 + k * 2.1, dd = 0.34 + 0.36 * hash2(k + 1, d.seed);
+          const lx = Math.cos(a) * rx * dd, ly = Math.sin(a) * ry * dd;
+          const lr = 6 + 4 * hash2(k + 4, d.seed);
+          ctx.fillStyle = '#3f7a2e'; ell(ctx, lx, ly, lr, lr * 0.48, 0.3 * k); ctx.fill();
+          ctx.fillStyle = 'rgba(126,190,86,0.55)'; ell(ctx, lx - lr * 0.2, ly - 1, lr * 0.45, lr * 0.2, 0.3 * k); ctx.fill();
+        }
+        // güneş parıltısı
+        const tw = Math.max(0, Math.sin(t * 2.2 + d.seed * 11));
+        ctx.fillStyle = `rgba(255,255,255,${0.10 + 0.26 * tw})`;
+        ell(ctx, -rx * 0.34, -ry * 0.38, rx * 0.30, ry * 0.10); ctx.fill();
+        ell(ctx, rx * 0.18, -ry * 0.12, rx * 0.12, ry * 0.05); ctx.fill();
       } else if (d.type === 'lava') {
         ctx.fillStyle = '#1a0e0a'; ell(ctx, 0, 1, rx * 1.12, ry * 1.12); ctx.fill();
         const pu = 0.75 + 0.25 * Math.sin(t * 2 + d.seed * 5), gr = ctx.createRadialGradient(0, 0, 2, 0, 0, rx); gr.addColorStop(0, '#fff0a0'); gr.addColorStop(0.35, '#ffb300'); gr.addColorStop(0.75, '#e64a19'); gr.addColorStop(1, '#7a1a0a');
@@ -720,9 +755,26 @@
       s.origType = s.type; s.type = list[Math.floor(hash2(s.wx * 0.37, s.wy * 0.53) * list.length) % list.length]; s.biome = b;
       if (s.type === 'reeds' || s.type === 'glowShroom') s.scale *= 1.1;
     });
-    const place = (n, fn) => { let tries = 0, c = 0; while (c < n && tries++ < 400) { const a = r() * TAU, d = 150 + r() * (R * 0.78), wx = Math.cos(a) * d, wy = Math.sin(a) * d, gx = wx / eng.tileSize, gy = wy / eng.tileSize; if (Math.abs(gx + gy) <= 1.8 || Math.hypot(wx, wy - 120) < 70) continue; fn(wx, wy); c++; } };
+    const place = (n, fn) => { let tries = 0, c = 0; while (c < n && tries++ < 400) { const a = r() * TAU, d = 150 + r() * (R * 0.78), wx = Math.cos(a) * d, wy = Math.sin(a) * d, gx = wx / eng.tileSize, gy = wy / eng.tileSize; if (Math.abs(gx + gy) <= 1.8 || Math.hypot(wx, wy - 120) < 70) continue; if (fn(wx, wy) === false) continue; c++; } };
     const dec = (type, lo, hi) => (wx, wy) => bio.decals.push({ type, wx, wy, r: lo + r() * (hi - lo), seed: r() });
-    if (b === 'mirefen') { place(7, dec('pond', 38, 70)); place(16, (wx, wy) => eng.scenery.push({ type: 'reeds', wx, wy, scale: 0.8 + r() * 0.5, swayOffset: r() * TAU, biome: b })); }
+    if (b === 'mirefen') {
+      // Göller: az sayıda ama büyük + birbirine girmesin; çevresine sazlık halkası.
+      // (Eskiden 7 küçük düz daire vardı; "2D leke" görüntüsünün nedeni buydu.)
+      const ponds = [];
+      place(5, (wx, wy) => {
+        const rad = 58 + r() * 42;
+        for (const p of ponds) if (Math.hypot(p.wx - wx, p.wy - wy) < (p.r + rad) * 1.15) return false;
+        ponds.push({ wx, wy, r: rad });
+        bio.decals.push({ type: 'pond', wx, wy, r: rad, seed: r() });
+        const n = 5 + Math.floor(r() * 4);
+        for (let k = 0; k < n; k++) {
+          const a = r() * TAU, dd = rad * (0.92 + r() * 0.4);
+          eng.scenery.push({ type: 'reeds', wx: wx + Math.cos(a) * dd, wy: wy + Math.sin(a) * dd, scale: 0.8 + r() * 0.5, swayOffset: r() * TAU, biome: b });
+        }
+        return true;
+      });
+      place(12, (wx, wy) => eng.scenery.push({ type: 'reeds', wx, wy, scale: 0.8 + r() * 0.5, swayOffset: r() * TAU, biome: b }));
+    }
     if (b === 'ashen') { place(5, dec('lava', 30, 55)); place(7, (wx, wy) => eng.scenery.push({ type: 'deadtree', wx, wy, scale: 0.7 + r() * 0.5, swayOffset: r() * TAU, biome: b })); }
     if (b === 'frozen') { place(6, dec('ice', 40, 80)); place(8, (wx, wy) => eng.scenery.push({ type: 'iceSpike', wx, wy, scale: 0.6 + r() * 0.5, biome: b })); }
     if (b === 'cursed') { place(4, dec('rune', 45, 70)); place(6, dec('bones', 22, 34)); place(8, (wx, wy) => eng.scenery.push({ type: 'tombstone', wx, wy, scale: 0.8 + r() * 0.4, biome: b })); }
@@ -1186,6 +1238,12 @@
     if (!painter) return _scn.apply(this, arguments);
     const { x, y } = this.iso(s.wx, s.wy, 0);
     if (x < -110 || x > this.width + 110 || y < -150 || y > this.height + 70) return;
+    // 3D sprite hazırsa vektör boyacıdan ÖNCE o çizilir: söğüt/deadtree gibi
+    // biyom dekorları artık GLB modelinden (sarkan sarmaşıklar dahil) gelir.
+    if (window.Setra3DTrees) {
+      const p3 = this.iso(s.wx, s.wy, s.z || 0);
+      try { if (window.Setra3DTrees.drawScenery(ctx, s, p3.x, p3.y, this)) return; } catch (e) {}
+    }
     ctx.save(); ctx.translate(x, y); glowE(ctx, 0, 1, 30 * (s.scale || 1), 9 * (s.scale || 1), '#000000', 0.4); ctx.scale(s.scale || 1, s.scale || 1);
     painter(ctx, s, this.time); ctx.restore();
   };

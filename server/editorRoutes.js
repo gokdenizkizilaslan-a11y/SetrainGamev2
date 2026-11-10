@@ -506,6 +506,35 @@ router.post("/api/world/save", auth, (req, res) => {
   }
 });
 
+// ---------------------------------------------------------------------------
+// SADECE HARİTA: world_setra.json'ı DİSKTEN yeniden yükle.
+//   - Dosyaya YAZMAZ → elle / başka bir araçla yapılan değişiklikleri ezmez.
+//   - İçerik verisine (content.js) dokunmaz.
+//   - Sunucu belleğini tazeler, sürümü artırır, istemcilere world:updated yollar.
+// Kullanım: harita değişti ama "Oyuna Uygula"daki editör kopyası eski → bunu çağır.
+// ---------------------------------------------------------------------------
+router.post("/api/world/reload", auth, (req, res) => {
+  try {
+    const raw = fs.readFileSync(WORLD_PATH, "utf8");
+    const world = JSON.parse(raw);
+    const prevVer = Number(worldStore.config.version) || 1;
+    worldStore.applyConfig(world);
+    const ver = Number(worldStore.config.version) || prevVer + 1;
+    previewCache = { key: "", png: null };
+    try {
+      const io = req.app.get("io");
+      if (io) io.emit("world:updated", { version: ver });
+    } catch (_) { /* socket yoksa sorun değil */ }
+    res.json({
+      ok: true,
+      version: ver,
+      note: `Harita diskten yüklendi (v${prevVer} → v${ver}). İçerik verisi değişmedi.`,
+    });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: "world_setra.json okunamadı: " + String(e.message || e).slice(0, 800) });
+  }
+});
+
 router.get("/api/world/preview.png", auth, (req, res) => {
   try {
     const raw = fs.readFileSync(WORLD_PATH, "utf8");

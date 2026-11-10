@@ -91,11 +91,20 @@ function enter(room, player) {
   if (!room.travels) room.travels = {};
   if (player.travelId && player.travelId !== t.id) require("./travel").leaveTravel(room, player);
   const saved = playerState(player);
+  // Köy (setra_village) checkpoint'i her zaman güncel dünya başlangıcıdır:
+  // world_setra.json'da spawn taşındığında eski kayıtlar eski yerde kalmasın.
+  if (!saved.checkpoint || saved.checkpointId === "setra_village") {
+    saved.checkpoint = { x: config.spawn.x + 0.5, y: config.spawn.y + 0.5 };
+    saved.checkpointId = saved.checkpointId || "setra_village";
+  }
+  // Kıtaya giriş: son checkpoint'ten başla (köyde doğarsın), ışınlanma yok.
+  const start = saved.checkpoint ? { x: saved.checkpoint.x, y: saved.checkpoint.y } : { x: saved.pos.x, y: saved.pos.y };
   if (player.travelId && room.travels[player.travelId] && player.travelId !== t.id) require("./travel").leaveTravel(room, player);
   room.travels[t.id] = t;
   player.travelId = t.id;
   if (!t.members.includes(player.id)) t.members.push(player.id);
-  t.pos[player.id] = { x: saved.pos.x, y: saved.pos.y };
+  t.pos[player.id] = { x: start.x, y: start.y };
+  saved.pos = { x: start.x, y: start.y };
   t.playerStates[player.id] = saved;
   if (!t.leaderId) t.leaderId = player.id;
   player.hp = Math.max(1, Math.min(player.maxHp || 100, player.hp || player.maxHp || 100));
@@ -195,7 +204,9 @@ function publicMap(t, player) {
       consumed: !!saved.consumed[p.id], revealed: !!saved.discovered[p.id]
     })),
     metrics: geography.metrics(), checkpoint: saved.checkpoint,
-    explored: Object.keys(saved.explored)
+    explored: Object.keys(saved.explored),
+    // 2+ oyuncu kıtadaysa canavarlar sunucu otoritesindedir.
+    shared: !!t.sharedWorld,
   };
 }
 function descriptor() { return config; }

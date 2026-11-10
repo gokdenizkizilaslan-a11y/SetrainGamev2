@@ -310,13 +310,17 @@
       .tv-vital.is-guard-full .tv-vital__guardfill { animation: tvGuardFull .28s steps(2,end) infinite; }
       @keyframes tvGuardFull { from { opacity: 1; } to { opacity: .45; } }
       /* --- Stamina — can barının hemen altında --- */
-      .tv-vital__stam { position: relative; height: 6px; border-radius: 4px; overflow: hidden;
+      .tv-vital__stam { position: relative; height: 9px; border-radius: 4px; overflow: hidden;
         background: rgba(0,0,0,0.6); box-shadow: inset 0 0 0 1px rgba(160,220,160,0.14);
         opacity: 0; transform: translateY(2px); transition: opacity .3s ease, transform .3s ease; }
       .tv-vital.is-stam .tv-vital__stam { opacity: 1; transform: none; }
       .tv-vital__stamfill { position: absolute; inset: 0;
         background: linear-gradient(90deg, #2f6b45, #66bb6a 55%, #b9f6ca);
         transform-origin: left center; transform: scaleX(1); transition: transform .12s linear; }
+      .tv-vital__stamnum { position: absolute; right: 3px; top: 50%; transform: translateY(-52%);
+        font: 800 7.5px/1 "Inter", system-ui, sans-serif; color: #f1fff5; letter-spacing: .02em;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.95), 0 0 4px rgba(0,0,0,0.6);
+        pointer-events: none; font-variant-numeric: tabular-nums; }
       .tv-vital.is-stam-low .tv-vital__stamfill { background: linear-gradient(90deg, #6d4c41, #c0ca33 60%, #e6ee9c); }
       .tv-sb.has-ic { background-size: cover; background-position: center; background-repeat: no-repeat; }
       .tv-sb.has-ic .tv-sb__ic { display: none; }
@@ -330,7 +334,8 @@
         border-radius: 12px; border: 1px solid rgba(214,178,106,0.55);
         background: linear-gradient(170deg, rgba(34,26,16,0.98), rgba(12,9,6,0.99));
         box-shadow: 0 18px 44px rgba(0,0,0,0.7); pointer-events: none; color: #efe2c9;
-        font: 12px/1.5 Inter, system-ui, sans-serif; display: none; }
+        font: 12px/1.5 Inter, system-ui, sans-serif; display: none;
+        max-height: calc(100vh - 16px); overflow: hidden; white-space: normal; }
       .tv-skill-tip.is-open { display: block; }
       .tv-skill-tip h4 { margin: 0 0 2px; font: 800 14px Cinzel, Georgia, serif; letter-spacing: .4px; color: #ffe6b8; }
       .tv-skill-tip .elem { display: inline-block; font-size: 9.5px; letter-spacing: 1.4px; text-transform: uppercase;
@@ -653,7 +658,6 @@
             </div>
           </div>
         </div>
-        <div class="tv-skill-tip" id="tv-skill-tip"></div>
         <div class="tv-mobile" id="tv-mobile">
           <div class="tv-stick" id="tv-stick"><div class="tv-knob" id="tv-knob"></div></div>
           <div class="tv-buttons">
@@ -723,10 +727,18 @@
       tipBar.addEventListener("mousemove", (e) => {
         const b = e.target && e.target.closest ? e.target.closest("[data-tip]") : null;
         if (!b) { hideSkillTip(); return; }
-        showSkillTip(b.getAttribute("data-tip"), e.clientX, e.clientY);
+        let rect = null;
+        try { rect = b.getBoundingClientRect(); } catch (err) { rect = null; }
+        showSkillTip(b.getAttribute("data-tip"), e.clientX, e.clientY, rect);
       });
       tipBar.addEventListener("mouseleave", hideSkillTip);
       tipBar.addEventListener("pointerdown", hideSkillTip, true);
+      // Pencere boyutu/scroll değişince ipucu ekranda kalmasın.
+      if (!S._tipViewportBound) {
+        S._tipViewportBound = true;
+        window.addEventListener("resize", hideSkillTip);
+        window.addEventListener("scroll", hideSkillTip, true);
+      }
     }
     // Tüketilebilir çubuğu: tıklayınca kullan (1-5 tuşları da aynı işi yapar).
     const potions = root.querySelector("#tv-potions");
@@ -888,7 +900,8 @@
         if (S.active && !S.engine.isRunning) {
           S.engine.isRunning = true;
           S.engine.lastTime = performance.now();
-          requestAnimationFrame(S.engine.loop);
+          if (S.engine._scheduleFrame) S.engine._scheduleFrame();
+          else requestAnimationFrame(S.engine.loop);
         }
       } catch (e) { /* motor sağlıklıysa devam */ }
       return;
@@ -1034,7 +1047,8 @@
     if (S.engine && !S.engine.isRunning) {
       S.engine.isRunning = true;
       S.engine.lastTime = performance.now();
-      requestAnimationFrame(S.engine.loop);
+      if (S.engine._scheduleFrame) S.engine._scheduleFrame();
+      else requestAnimationFrame(S.engine.loop);
     }
     // Ekran yeni görünür olduğu için boyut bir sonraki karede kesinleşir.
     // Gizliyken motor kurulmadıysa burada kurulur; boyut değişmediyse resize no-op.
@@ -1191,7 +1205,19 @@
   // Turn-based savaştaki skill tooltip'in ARPG karşılığı: hasar, ölçeklenme,
   // bekleme, menzil ve etki alanı tek kutuda gösterilir.
   function skillTipEl() {
-    return S.root ? S.root.querySelector("#tv-skill-tip") : null;
+    // İpucu her zaman <body> altında durur: `position: fixed` atalarında
+    // transform/zoom olan bir kapsayıcıya hapsolup ekran dışına taşmasın.
+    let el = S.skillTipEl;
+    if (el && document.body && document.body.contains(el)) return el;
+    el = document.getElementById("tv-skill-tip");
+    if (!el) {
+      el = document.createElement("div");
+      el.className = "tv-skill-tip";
+      el.id = "tv-skill-tip";
+    }
+    if (document.body && el.parentElement !== document.body) document.body.appendChild(el);
+    S.skillTipEl = el;
+    return el;
   }
 
   function isTurkishUi() {
@@ -1231,26 +1257,39 @@
       <div class="scale">${scale}${base ? ` &mdash; ${tr ? "temel" : "base"} ${base}` : ""}</div>`;
   }
 
-  function moveSkillTip(x, y) {
+  // İpucunu ekran içinde tut: fare varsa imlecin yanında, buton verilmişse
+  // doğrudan butonun üstünde (yer yoksa altında) açılır.
+  function moveSkillTip(x, y, anchorRect) {
     const el = skillTipEl();
     if (!el || !el.classList.contains("is-open")) return;
+    const vw = window.innerWidth || document.documentElement.clientWidth || 1280;
+    const vh = window.innerHeight || document.documentElement.clientHeight || 720;
     const w = el.offsetWidth || 280;
     const h = el.offsetHeight || 140;
-    let lx = x + 16;
-    let ly = y - h - 14;
-    if (lx + w > window.innerWidth - 8) lx = x - w - 12;
-    if (ly < 8) ly = y + 18;
-    el.style.left = Math.max(8, lx) + "px";
-    el.style.top = Math.max(8, ly) + "px";
+    let lx, ly;
+    if (anchorRect) {
+      lx = anchorRect.left + anchorRect.width / 2 - w / 2;
+      ly = anchorRect.top - h - 10;
+      if (ly < 8) ly = anchorRect.bottom + 10;   // üstte yer yoksa altına
+    } else {
+      lx = x + 16;
+      ly = y - h - 14;
+      if (ly < 8) ly = y + 18;
+    }
+    // Her iki eksende viewport'a kenetle (ekran dışına taşmasın).
+    lx = Math.max(8, Math.min(lx, Math.max(8, vw - w - 8)));
+    ly = Math.max(8, Math.min(ly, Math.max(8, vh - h - 8)));
+    el.style.left = Math.round(lx) + "px";
+    el.style.top = Math.round(ly) + "px";
   }
 
-  function showSkillTip(key, x, y) {
+  function showSkillTip(key, x, y, anchorRect) {
     const sk = S.tipSkills && S.tipSkills[key];
     const el = skillTipEl();
     if (!sk || !el) return;
     if (el._for !== key) { el.innerHTML = skillTipHtml(sk); el._for = key; }
     el.classList.add("is-open");
-    moveSkillTip(x, y);
+    moveSkillTip(x, y, anchorRect);
   }
 
   function hideSkillTip() {
@@ -1516,7 +1555,14 @@
       const stam = Math.max(0, Math.min(sMax, P.stamina != null ? Number(P.stamina) : sMax));
       const stamFill = bar.querySelector(".tv-vital__stamfill");
       if (stamFill) stamFill.style.transform = `scaleX(${stam / sMax})`;
-      const showStam = stam < sMax - 0.5 || !!P.sprinting || (Number(P.staminaIdle) || 0) > 0;
+      const stamNum = bar.querySelector(".tv-vital__stamnum");
+      if (stamNum) {
+        const txt = String(Math.ceil(stam));
+        if (stamNum.textContent !== txt) stamNum.textContent = txt;
+        stamNum.title = `${Math.ceil(stam)} / ${Math.ceil(sMax)}`;
+      }
+      // Stamina çubuğu + sayısı her zaman görünür (oyuncu değerini görebilsin).
+      const showStam = true;
       vitalEl.classList.toggle("is-stam", showStam);
       vitalEl.classList.toggle("is-stam-low", stam <= sMax * 0.25 || !!(P.sprinting && stam < sMax * 0.15));
     }
@@ -1560,7 +1606,7 @@
           <div class="tv-vital__guard" title="Guard Pressure"><span class="tv-vital__guardfill"></span></div>
           <div class="tv-vital__bar"><span class="tv-vital__fill"></span></div>
           <div class="tv-vital__num">&mdash;</div>
-          <div class="tv-vital__stam" title="Stamina"><span class="tv-vital__stamfill"></span></div>
+          <div class="tv-vital__stam" title="Stamina"><span class="tv-vital__stamfill"></span><span class="tv-vital__stamnum">&mdash;</span></div>
         </div>`;
       S.tipSkills = {};
       for (const s of slots) { if (s.sk) S.tipSkills[s.key] = s.sk; }

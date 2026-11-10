@@ -26,6 +26,9 @@
 - `node extract_content.js` — rebuild `data/*.json` from `content.js`
 - `node build_content.js` — rebuild `content.js` from `data/*.json` (only writes if changed; `--check` for CI, `--out` for a side file)
 - `npm run check:anchors` — verify the agent task-map anchors still exist; run it after renaming any exported symbol
+- `node scripts/glb_info.js <model.glb|newassets>` — GLB ölçüsü (heights + solidRadius önerisi)
+- `node scripts/asset_tune.js <model> --hMul/--sink/--solid` — tüm aynı modeli ayarla; `--villages 2800` köyleri düzleştir
+- `node scripts/world_reload.js` — SADECE haritayı (world_setra.json) diskten oyuna yükle; içerik verisine dokunmaz
 - Custom agents: `.opencode/agents/setra.md` (primary developer: task map + token budget) and `.opencode/agents/setra-lite.md` (read-only locator subagent, max 10 `file:line` lines).
 
 ## Backups

@@ -13,5 +13,28 @@
   },
   "sound": {
     "master": 0.85
+  },
+  "combat": {
+    "parryCue": {
+      "enabled": true,
+      "lead": 0.18,
+      "volume": 0.85
+    },
+    "monsterStagger": {
+      "max": 100,
+      "gain": 34,
+      "duration": 2.4,
+      "decayDelay": 3,
+      "decay": 14,
+      "minSteps": 2,
+      "maxSteps": 5,
+      "bossSteps": 8
+    },
+    "stamina": {
+      "max": 200,
+      "dashCost": 20,
+      "sprintDrain": 12,
+      "regen": 20
+    }
   }
 }

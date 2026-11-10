@@ -84,7 +84,12 @@ const CONTENT = {
       "ambience_day": "",
       "ambience_night": "",
       "ambience_rain": "",
-      "ambience_storm": ""
+      "ambience_storm": "",
+      "parry": "",
+      "guard": "",
+      "guardbreak": "",
+      "dodge": "",
+      "parry_cue": ""
     }
   },
   "travel": {
@@ -102,6 +107,29 @@ const CONTENT = {
     },
     "sound": {
       "master": 0.85
+    },
+    "combat": {
+      "parryCue": {
+        "enabled": true,
+        "lead": 0.18,
+        "volume": 0.85
+      },
+      "monsterStagger": {
+        "max": 100,
+        "gain": 34,
+        "duration": 2.4,
+        "decayDelay": 3,
+        "decay": 14,
+        "minSteps": 2,
+        "maxSteps": 5,
+        "bossSteps": 8
+      },
+      "stamina": {
+        "max": 200,
+        "dashCost": 20,
+        "sprintDrain": 12,
+        "regen": 20
+      }
     }
   },
   "story": {
@@ -16869,6 +16897,102 @@ const CONTENT = {
       ]
     }
   ],
+  "statPaths": {
+    "maxPoints": 40,
+    "pointsPerLevel": 1,
+    "startingPoints": 1,
+    "rings": 10,
+    "paths": [
+      {
+        "id": "fury",
+        "name": "Fury",
+        "tagline": "Attack speed and sharpened strikes",
+        "color": "#ff8a4c",
+        "glyph": "⚔",
+        "stats": [
+          "attackSpeed",
+          "attack",
+          "critChance",
+          "critDamage"
+        ]
+      },
+      {
+        "id": "bulwark",
+        "name": "Bulwark",
+        "tagline": "Resistance, footing and life-drinking blows",
+        "color": "#7fb2e8",
+        "glyph": "🛡",
+        "stats": [
+          "resistance",
+          "maxHp",
+          "speed",
+          "omnivamp"
+        ]
+      },
+      {
+        "id": "vitality",
+        "name": "Vitality",
+        "tagline": "Health, healing and long roads",
+        "color": "#7fd18f",
+        "glyph": "❤",
+        "stats": [
+          "maxHp",
+          "healPower",
+          "maxStamina",
+          "omnivamp"
+        ]
+      },
+      {
+        "id": "arcana",
+        "name": "Arcana",
+        "tagline": "Spell power, deep mana and mending magic",
+        "color": "#b48bea",
+        "glyph": "✦",
+        "stats": [
+          "magicPower",
+          "maxMana",
+          "manaRegen",
+          "healPower"
+        ]
+      }
+    ],
+    "nodeValues": {
+      "attackSpeed": 1.2,
+      "attack": 3.5,
+      "critChance": 0.4,
+      "critDamage": 1.5,
+      "resistance": 2.2,
+      "maxHp": 30,
+      "speed": 0.12,
+      "omnivamp": 0.08,
+      "healPower": 1.2,
+      "maxStamina": 0.15,
+      "magicPower": 3.5,
+      "maxMana": 2.5,
+      "manaRegen": 0.12
+    },
+    "labels": {
+      "attack": "Attack",
+      "attackSpeed": "Attack Speed",
+      "resistance": "Resistance",
+      "magicPower": "Magic",
+      "healPower": "Healing",
+      "maxHp": "Max HP",
+      "maxMana": "Max Mana",
+      "manaRegen": "Mana Regen",
+      "critChance": "Crit Chance",
+      "critDamage": "Crit Damage",
+      "speed": "Speed",
+      "omnivamp": "Omnivamp",
+      "maxStamina": "Max Stamina"
+    },
+    "units": {
+      "attackSpeed": "%",
+      "critChance": "%",
+      "critDamage": "%",
+      "omnivamp": "%"
+    }
+  },
   "skillTree": {
     "pointsPerLevel": 3,
     "startingPoints": 3,
@@ -36598,6 +36722,24 @@ function publicCatalog() {
       global: (CONTENT.skillTree && CONTENT.skillTree.global) || [],
       lineages: (CONTENT.skillTree && CONTENT.skillTree.lineages) || {},
     },
+    statPaths: {
+      maxPoints: (CONTENT.statPaths && CONTENT.statPaths.maxPoints) || 40,
+      pointsPerLevel: (CONTENT.statPaths && CONTENT.statPaths.pointsPerLevel) || 1,
+      startingPoints: (CONTENT.statPaths && CONTENT.statPaths.startingPoints) || 1,
+      rings: (CONTENT.statPaths && CONTENT.statPaths.rings) || 10,
+      paths: (CONTENT.statPaths && CONTENT.statPaths.paths) || [],
+      nodeValues: (CONTENT.statPaths && CONTENT.statPaths.nodeValues) || {},
+      labels: (CONTENT.statPaths && CONTENT.statPaths.labels) || {},
+      units: (CONTENT.statPaths && CONTENT.statPaths.units) || {},
+    },
+    // Radyal pasif ağaç (160 düğüm, komşuluklar dahil). Tek kaynak: server/statTree.js
+    statTree: (function () {
+      try {
+        return require("./server/statTree").publicTree();
+      } catch (e) {
+        return null;
+      }
+    })(),
     pets: (CONTENT.pets || []).map((p) => ({ id: p.id, name: p.name, image: p.image, imageYoung: p.imageYoung || "", imageAdult: p.imageAdult || "", element: p.element, description: p.description || "", egg: p.egg || "", stats: p.stats || {}, buffKind: p.buffKind || "", petSkills: p.petSkills || null })),
     food: CONTENT.food,
     loot: {

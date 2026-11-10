@@ -20,6 +20,8 @@ const state = {
   petsOpen: false,
   travelOpen: false,
   skillTreeOpen: false,
+  statsOpen: false,
+  statsPath: "fury",
   guideOpen: false,
   skillTreeTab: "global",
   timerDeadline: null,
@@ -194,9 +196,20 @@ function renderTown(room) {
     state.travelOpen = false;
     if (typeof showToast === "function") showToast("Arayüz eski sürümde. Sayfayı Ctrl+F5 ile yenileyin.");
   }
-  const inOverlay = state.dungeonOpen || state.plazaOpen || state.tavernOpen || state.blacksmithOpen || state.merchantOpen || state.templeOpen || state.inventoryOpen || state.pvpOpen || state.petsOpen || state.travelOpen || state.skillTreeOpen || state.guideOpen;
+  const inOverlay = state.dungeonOpen || state.plazaOpen || state.tavernOpen || state.blacksmithOpen || state.merchantOpen || state.templeOpen || state.inventoryOpen || state.pvpOpen || state.petsOpen || state.travelOpen || state.skillTreeOpen || state.statsOpen || state.guideOpen;
   $("town-main").classList.toggle("hidden", inOverlay);
   $("skilltree-view").classList.toggle("hidden", !state.skillTreeOpen);
+  const statsViewEl = $("stats-view");
+  if (statsViewEl) statsViewEl.classList.toggle("hidden", !state.statsOpen);
+  // Karakter stat puanı rozeti (kullanılabilir puan varsa parlar).
+  const statsBadge = $("btn-stats-badge");
+  if (statsBadge) {
+    const pts = me ? Number(me.statPoints) || 0 : 0;
+    statsBadge.textContent = pts > 99 ? "99+" : String(pts);
+    statsBadge.classList.toggle("hidden", pts <= 0);
+    const b = $("btn-stats");
+    if (b) b.classList.toggle("has-points", pts > 0);
+  }
   const guideEl = $("guide-view");
   if (guideEl) guideEl.classList.toggle("hidden", !state.guideOpen);
   $("dungeon-view").classList.toggle("hidden", !state.dungeonOpen);
@@ -248,6 +261,8 @@ function renderTown(room) {
     renderTownLog(room);
   } else if (state.skillTreeOpen) {
     renderSkillTreeView(room);
+  } else if (state.statsOpen) {
+    if (typeof renderStatsView === "function") renderStatsView(room);
   } else if (state.guideOpen) {
     renderGuideView();
   } else if (state.dungeonOpen) {
@@ -497,7 +512,20 @@ $("btn-skilltree").addEventListener("click", () => {
 });
 
 $("btn-skilltree-close").addEventListener("click", () => {
-  state.skillTreeOpen = false; state.guideOpen = false;
+  state.skillTreeOpen = false; state.statsOpen = false; state.guideOpen = false;
+  renderTown(state.room);
+});
+
+$("btn-stats").addEventListener("click", () => {
+  state.statsOpen = true;
+  state.skillTreeOpen = false;
+  state.guideOpen = false;
+  if (typeof resetStatTreeMapView === "function") resetStatTreeMapView();
+  renderTown(state.room);
+});
+
+$("btn-stats-close").addEventListener("click", () => {
+  state.statsOpen = false;
   renderTown(state.room);
 });
 
@@ -508,6 +536,7 @@ $("btn-guide").addEventListener("click", () => {
 
 $("btn-quests").addEventListener("click", () => {
   state.skillTreeOpen = false;
+  state.statsOpen = false;
   state.guideOpen = true;
   const first = (typeof CATALOG !== "undefined" && CATALOG.quests && CATALOG.quests[0]) || null;
   state.guideSel = { section: "quests", item: first ? first.id : null };
@@ -607,7 +636,7 @@ function leaveToMainMenu() {
   state.inventoryOpen = false;
   state.travelOpen = false;
   if (window.SetraTravel) SetraTravel.close();
-  state.skillTreeOpen = false; state.guideOpen = false;
+  state.skillTreeOpen = false; state.statsOpen = false; state.guideOpen = false;
   state.pendingFx = [];
   stopCombatTimer();
   $("settings-overlay").classList.add("hidden");
@@ -634,9 +663,55 @@ function openSettings() {
   $("settings-sfx-volume").value = sfxVolume;
   updateSettingsToggles();
   refreshClassSecretInput();
+  refreshFxSettings();
   stopCombatTimer();
   $("settings-overlay").classList.remove("hidden");
 }
+
+// --- Atmosfer shader katmanı (public/js/shaderfx.js) ayarları ---
+// Modül yoksa (veya bu oturumda WebGL hatası verdiyse) satırlar gizlenir;
+// oyun davranışı hiç değişmez.
+function refreshFxSettings() {
+  const FX = window.SetraShaderFX;
+  const btn = $("settings-fx-toggle");
+  const wrap = $("settings-fx-quality");
+  const row = btn ? btn.closest(".settings-row") : null;
+  const usable = !!FX && !(FX.getSettings && FX.getSettings().failed);
+  if (row) row.style.display = usable ? "" : "none";
+  if (wrap) wrap.style.display = usable ? "" : "none";
+  if (!usable) return;
+  const on = FX.isEnabled();
+  if (btn) {
+    btn.textContent = "Shaders: " + (on ? "On" : "Off");
+    btn.classList.toggle("sound-off", !on);
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+  }
+  if (wrap) {
+    const q = FX.getQuality();
+    wrap.querySelectorAll("[data-fxq]").forEach((b) => {
+      const active = b.getAttribute("data-fxq") === q;
+      b.classList.toggle("btn--bronze", active);
+      b.classList.toggle("btn--ghost", !active);
+    });
+  }
+}
+
+(function wireFxSettings() {
+  const btn = $("settings-fx-toggle");
+  if (btn) btn.addEventListener("click", () => {
+    if (!window.SetraShaderFX) return;
+    window.SetraShaderFX.setEnabled(!window.SetraShaderFX.isEnabled());
+    refreshFxSettings();
+  });
+  const wrap = $("settings-fx-quality");
+  if (wrap) wrap.addEventListener("click", (ev) => {
+    const b = ev.target && ev.target.closest ? ev.target.closest("[data-fxq]") : null;
+    if (!b || !window.SetraShaderFX) return;
+    window.SetraShaderFX.setQuality(b.getAttribute("data-fxq"));
+    refreshFxSettings();
+  });
+})();
+
 
 function closeSettings() {
   $("settings-overlay").classList.add("hidden");
@@ -792,7 +867,7 @@ socket.on("room:left", () => {
   state.inventoryOpen = false;
   state.travelOpen = false;
   if (window.SetraTravel) SetraTravel.close();
-  state.skillTreeOpen = false; state.guideOpen = false;
+  state.skillTreeOpen = false; state.statsOpen = false; state.guideOpen = false;
   state.pendingFx = [];
   stopCombatTimer();
   $("chat").classList.add("hidden");
@@ -1022,7 +1097,7 @@ socket.on("session:expired", () => {
   state.inventoryOpen = false;
   state.travelOpen = false;
   if (window.SetraTravel) SetraTravel.close();
-  state.skillTreeOpen = false; state.guideOpen = false;
+  state.skillTreeOpen = false; state.statsOpen = false; state.guideOpen = false;
   state.pendingFx = [];
   stopCombatTimer();
   $("chat").classList.add("hidden");

@@ -9,8 +9,8 @@
   "tileSize": 96,
   "baseWalkSpeed": 200,
   "spawn": {
-    "x": 18360,
-    "y": 107600
+    "x": 18000,
+    "y": 108012
   },
   "endgame": {
     "x": 154000,
@@ -140,20 +140,26 @@
     {
       "x": 18000,
       "y": 108000,
-      "radius": 1819.9999999999998,
+      "radius": 2800,
       "height": 12
     },
     {
       "x": 92000,
       "y": 58000,
-      "radius": 1800,
+      "radius": 2800,
       "height": 24
     },
     {
       "x": 124000,
       "y": 38000,
-      "radius": 1800,
+      "radius": 2800,
       "height": 52
+    },
+    {
+      "x": 31372,
+      "y": 97997,
+      "radius": 2800,
+      "height": 30
     }
   ],
   "lakes": [
@@ -10178,6 +10184,12 @@
     "structureScale": 2.6,
     "typeScales": {
       "bush": 0.7
+    },
+    "modelTune": {
+      "obelisk": {
+        "sink": 6,
+        "solid": 1.05
+      }
     }
   },
   "props": [

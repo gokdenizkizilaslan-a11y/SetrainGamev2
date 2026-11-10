@@ -130,10 +130,11 @@ function rerollRace(player) {
     const cls = getClass(player.character);
     if (cls) {
       const raceStats = (player.race && player.race.stats) || {};
-      player.speed = (cls.speed || 0) + passives.speedBonus(player) + (Number(raceStats.speed) || 0);
+      player.speed = (cls.speed || 0) + passives.speedBonus(player) + (Number(raceStats.speed) || 0)
+        + statTreeFieldBonus(player, "speed");
       player.manaRegen = ((CONTENT.combat && CONTENT.combat.manaRegenPerRound) || 3)
         + (cls.manaRegen || 0) + passives.manaRegenBonus(player) + (Number(raceStats.manaRegen) || 0)
-        + anomalyManaRegen(player);
+        + anomalyManaRegen(player) + statTreeFieldBonus(player, "manaRegen");
     }
   } catch (e) {}
   player.hp = Math.min(Math.max(0, player.hp), player.maxHp);
@@ -194,7 +195,99 @@ function rollStats(player) {
   applyAnomalyStatBonus(player);
   applyRaceStatBonus(player);
   applyPassiveStatBonus(player, null);
+  // Stat yolları: taban statlar yeniden atıldıysa harcanan puanlar tekrar
+  // uygulanır (çift sayım olmaz; taban sıfırdan kuruluyor).
+  applyStatTreeBonuses(player);
   return player;
+}
+
+// ---- Stat Tree (karakter stat ağacı) ----
+// Düğümler/komşuluklar server/statTree.js içinde tek kaynaktan üretilir.
+// Seviye başına 1 puan; en fazla 40 puan (level 40).
+function statTreeApi() {
+  try {
+    return require("./statTree");
+  } catch (e) {
+    return null;
+  }
+}
+
+function statPointsTotal(player) {
+  const api = statTreeApi();
+  if (api) return api.pointsTotal(player);
+  return 1;
+}
+
+function statPointsSpent(player) {
+  const api = statTreeApi();
+  return api ? api.pointsSpent(player) : 0;
+}
+
+function statPointsAvailable(player) {
+  return Math.max(0, statPointsTotal(player) - statPointsSpent(player));
+}
+
+// Tek düğümün stat kazancı. Kayan nokta kirliliği 2 basamağa yuvarlanır.
+function applyStatNodeGrant(player, stat, value) {
+  const r2 = (v) => Math.round((Number(v) || 0) * 100) / 100;
+  const n = Number(value) || 0;
+  if (!stat || !n) return;
+  if (stat === "maxHp") {
+    const before = Number(player.maxHp) || 0;
+    player.maxHp = r2(before + n);
+    player.hp = Math.min(player.maxHp, r2((Number(player.hp) || 0) + (player.maxHp - before)));
+  } else if (stat === "maxMana") {
+    const before = Number(player.maxMana) || 0;
+    player.maxMana = r2(before + n);
+    player.mana = Math.min(player.maxMana, r2((Number(player.mana) || 0) + (player.maxMana - before)));
+  } else if (stat === "attackSpeed") {
+    player.attackSpeedBonus = r2((Number(player.attackSpeedBonus) || 0) + n);
+  } else {
+    player[stat] = r2((Number(player[stat]) || 0) + n);
+  }
+}
+
+// Taban statlar yeniden kurulduğunda (rollStats) tüm alınan düğümler tekrar uygulanır.
+function applyStatTreeBonuses(player) {
+  const api = statTreeApi();
+  if (!api || !player || !Array.isArray(player.statNodes)) return;
+  for (const id of player.statNodes) {
+    const node = api.nodeById(id);
+    if (node) applyStatNodeGrant(player, node.stat, node.value);
+  }
+}
+
+// Türetilmiş değerler (speed / manaRegen) sıfırdan hesaplanırken kullanılır.
+function statTreeFieldBonus(player, field) {
+  const api = statTreeApi();
+  if (!api || !player || !Array.isArray(player.statNodes)) return 0;
+  let total = 0;
+  for (const id of player.statNodes) {
+    const node = api.nodeById(id);
+    if (node && node.stat === field) total += Number(node.value) || 0;
+  }
+  return Math.round(total * 100) / 100;
+}
+
+function spendStatNode(player, nodeId) {
+  const api = statTreeApi();
+  if (!api) throw new Error("The stat tree is hidden.");
+  const node = api.nodeById(nodeId);
+  if (!node) throw new Error("Unknown stat node.");
+  if (!Array.isArray(player.statNodes)) player.statNodes = [];
+  if (player.statNodes.includes(node.id)) throw new Error("That node is already taken.");
+  if (!api.isReachable(player, node.id)) throw new Error("That node is not connected to your path yet.");
+  if (statPointsAvailable(player) <= 0) throw new Error("No stat points left.");
+  player.statNodes.push(node.id);
+  applyStatNodeGrant(player, node.stat, node.value);
+  return {
+    node: node.id,
+    path: node.path,
+    stat: node.stat,
+    value: node.value,
+    available: statPointsAvailable(player),
+    total: statPointsTotal(player),
+  };
 }
 
 function xpToNext(currentLevel) {
@@ -552,6 +645,9 @@ function createPlayer({ id, name, character, isHost = false }) {
     quests: {},
     skillPoints: (CONTENT.skillTree && CONTENT.skillTree.startingPoints) || 3,
     learnedTreeNodes: [],
+    // Stat yolları: { fury: 0, bulwark: 0, vitality: 0, arcana: 0 }
+    statNodes: [],
+    attackSpeedBonus: 0,
     hp: 0,
     maxHp: 0,
     attack: 0,
@@ -698,7 +794,12 @@ function publicPlayer(player) {
     speed: player.speed,
     critChance: player.critChance || 0,
     critDamage: player.critDamage || 0,
-    attackSpeed,
+    attackSpeed: attackSpeed + (Number(player.attackSpeedBonus) || 0),
+    // Stat yolları (4 yol) — istemci yuvarlak pencereyi bundan çizer.
+    statNodes: Array.isArray(player.statNodes) ? player.statNodes.slice() : [],
+    statPoints: statPointsAvailable(player),
+    statPointsTotal: statPointsTotal(player),
+    statPointsSpent: statPointsSpent(player),
     manaRegen: player.manaRegen || (CONTENT.combat.manaRegenPerRound || 3),
     level: player.level,
     xp: player.xp,
@@ -1096,6 +1197,10 @@ module.exports = {
   createPlayer,
   rollStats,
   applyStartLevelGrowth,
+  statPointsTotal,
+  statPointsSpent,
+  statPointsAvailable,
+  spendStatNode,
   rerollRace,
   publicPlayer,
   anomalyManaRegen,

@@ -16,6 +16,19 @@ skilllersetrain/
 opencode-ip-rotator/
 *.tmp
 Thumbs.db
+desktop.ini
+
+# Arsiv: Claude ornek dosyalari, eski denemeler, gecici gorseller
+arsiv/
+claudeornekleri/
+claude_*.js
+preview_test.png
+world_setra_debug.png
+
+# Arac klasorleri
+.claude/
+.freebuff/
+.opencode/node_modules/
 
 # Derleme / onbellek / yedek dosyalar
 dist/

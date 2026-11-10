@@ -21,7 +21,7 @@ const travel = require("./travel");
 const creatures = require("./creatures");
 const persistentWorld = require("./persistentWorld");
 const travelSkills = require("./travelSkills");
-const { onNewDay, equipItem, unequipSlot, setSkillLoadout, learnTreeNode, consumeItem, addXp } = require("./players");
+const { onNewDay, equipItem, unequipSlot, setSkillLoadout, learnTreeNode, consumeItem, addXp, spendStatNode } = require("./players");
 const { CONTENT, publicCatalog, getClass } = require("../content");
 
 function isDead(p) { return p && p.lives <= 0; }
@@ -713,6 +713,23 @@ function registerSocketHandlers(io) {
         requireAlive(player);
         const res = learnTreeNode(player, payload.nodeId);
         room.log = { type: "inventory", text: `You learn ${res.name} for ${res.cost} skill point${res.cost === 1 ? "" : "s"}.` };
+        emitRoomState(io, room);
+      } catch (err) {
+        emitError(socket, err);
+      }
+    });
+
+    socket.on("statTree:spend", (payload = {}) => {
+      try {
+        const { room, player } = gameContext(socket);
+        requireAlive(player);
+        town.requirePlaying(room, player);
+        const res = spendStatNode(player, payload.node);
+        room.log = {
+          type: "inventory",
+          text: `${player.name} spends 1 stat point.`,
+          name: player.name,
+        };
         emitRoomState(io, room);
       } catch (err) {
         emitError(socket, err);

@@ -1,0 +1,432 @@
+﻿<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8"><title>Setra — 3D NPR Prototip</title>
+<script type="importmap">
+{ "imports": { "three": "/vendor/three/three.module.js", "three/addons/": "/vendor/three/addons/" } }
+</script>
+<style>
+html,body{margin:0;background:#10140f;color:#e6f0e2;font:13px/1.4 "Segoe UI",system-ui,sans-serif;overflow:hidden}
+#stage{position:absolute;inset:0}
+canvas.game{position:absolute;inset:0;width:100%;height:100%;display:block}
+#ui{position:absolute;left:14px;top:12px;z-index:9;display:flex;flex-direction:column;gap:8px;max-width:420px}
+#panel{background:#0b120ccc;border:1px solid #4c6b3f;border-radius:12px;padding:10px 12px;backdrop-filter:blur(4px)}
+#panel h1{margin:0 0 6px;font:600 14px Georgia,serif;color:#ffd9a0;letter-spacing:.3px}
+#panel p{margin:0 0 8px;color:#9fb79a;font-size:12px}
+.row{display:flex;gap:6px;flex-wrap:wrap}
+button{font:600 12px "Segoe UI",sans-serif;color:#f0e4c8;background:#22301c;border:1px solid #5c7d4a;border-radius:8px;padding:6px 10px;cursor:pointer}
+button:hover{background:#2e4126}
+button.on{background:#7a5a22;border-color:#e0b062;color:#fff4d8}
+#stats{margin-top:8px;color:#8fb08a;font:11px ui-monospace,Consolas,monospace;white-space:pre}
+a{color:#ffd9a0}
+#tuneBox{position:absolute;right:12px;top:12px;z-index:10;width:300px;max-width:calc(100vw - 24px);
+  background:#0b120ceb;border:1px solid #4c6b3f;border-radius:12px;backdrop-filter:blur(4px);
+  color:#e6f0e2;font:12px/1.35 "Segoe UI",system-ui,sans-serif;overflow:hidden;box-shadow:0 6px 18px #0006;
+  display:flex;flex-direction:column;max-height:calc(100vh - 24px)}
+#tuneBox header{flex:0 0 auto}
+#tuneBox header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 10px;
+  background:#16210f;border-bottom:1px solid #3c5530;cursor:pointer;user-select:none}
+#tuneBox header b{font:600 13px Georgia,serif;color:#ffd9a0;letter-spacing:.3px}
+#tuneBox header span{font:11px ui-monospace,Consolas,monospace;color:#9fb79a}
+#tuneBody{padding:8px 10px 10px;flex:1 1 auto;min-height:0;overflow:auto;max-height:calc(100vh - 24px)}
+#tuneBody .hint{margin:0 0 8px;color:#9fb79a;font-size:11px}
+.grp{border:1px solid #33472a;border-radius:9px;margin:0 0 8px;background:#0f180b99}
+.grpHead{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 8px;
+  cursor:pointer;user-select:none;border-bottom:1px solid #2a3a22}
+.grpHead b{font:600 12px Georgia,serif;color:#ffd9a0;letter-spacing:.2px}
+.grpHead span{font:11px ui-monospace,Consolas,monospace;color:#9fb79a}
+.grpBody{padding:6px 8px 6px}
+.grp.collapsed .grpBody{display:none}
+.grp.collapsed .grpHead{border-bottom:0}
+.sl{margin:0 0 6px}
+.sl .top{display:flex;justify-content:space-between;align-items:baseline;gap:6px}
+.sl .top i{font-style:normal;color:#cfe0c6}
+.sl .top b{font:600 11px ui-monospace,Consolas,monospace;color:#ffd9a0}
+.sl input[type=range]{display:block;width:100%;height:16px;margin:1px 0 0;background:transparent;
+  accent-color:#e0b062;cursor:pointer}
+#tuneFoot,#atmoFoot{display:flex;align-items:center;gap:8px;margin-top:6px}
+#tuneFoot button,#atmoFoot button{padding:4px 9px;font-size:11px}
+#tuneNote,#atmoNote{color:#8fb08a;font:10px ui-monospace,Consolas,monospace}
+#tuneBox.collapsed #tuneBody{display:none}
+</style></head><body>
+<div id="stage"><canvas class="game" id="gc"></canvas></div>
+<div id="ui"><div id="panel">
+  <h1>Canlı 3D NPR Prototip</h1>
+  <p>Sprite'a değil: bu sayfa aynı GLB geometrisini gerçek 3D + gerçek ışıkla çiziyor.
+     <a href="/">← oyuna dön</a></p>
+  <div class="row" id="hours"></div>
+  <div id="stats">yükleniyor…</div>
+</div></div>
+<div id="tuneBox">
+  <header id="tuneToggle" role="button" aria-expanded="true" title="Paneli aç/kapat">
+    <b>Ayarlar</b><span id="tuneCaret">▾</span>
+  </header>
+  <div id="tuneBody">
+    <p class="hint">Bu değerler oyunda da geçerli (localStorage).</p>
+    <section class="grp" id="grpNpr">
+      <div class="grpHead" id="grpNprHead" role="button" tabindex="0" aria-expanded="true" title="Grubu aç/kapat">
+        <b>NPR görünüm</b><span id="grpNprCaret">▾</span>
+      </div>
+      <div class="grpBody">
+        <div id="tuneSliders"></div>
+        <div id="tuneFoot">
+          <button id="tuneReset" type="button">Sıfırla</button>
+          <span id="tuneNote"></span>
+        </div>
+      </div>
+    </section>
+    <section class="grp" id="grpAtmo">
+      <div class="grpHead" id="grpAtmoHead" role="button" tabindex="0" aria-expanded="true" title="Grubu aç/kapat">
+        <b>Atmosfer (oyun geneli)</b><span id="grpAtmoCaret">▾</span>
+      </div>
+      <div class="grpBody">
+        <div id="atmoSliders"></div>
+        <div class="grpFoot" id="atmoFoot">
+          <button id="atmoReset" type="button">Sıfırla</button>
+          <span id="atmoNote"></span>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+<script src="/js/shaderfx.js?v=20261116a"></script>
+<script type="module" src="/js/live3d.js?v=p2"></script>
+<script type="module">
+const q = new URLSearchParams(location.search);
+let hour = Number(q.get('hour') || 16.2);
+
+const W = () => Math.min(window.innerWidth, 1600);
+const H = () => Math.min(window.innerHeight, 1000);
+const gc = document.getElementById('gc');
+const g = gc.getContext('2d');
+function fit(){ gc.width = W(); gc.height = H(); }
+fit(); addEventListener('resize', fit);
+let zoom = Math.max(0.6, Math.min(6, Number(q.get('zoom') || 1)));
+addEventListener('wheel', (e) => {
+  e.preventDefault();
+  zoom = Math.max(0.6, Math.min(6, zoom * (e.deltaY < 0 ? 1.12 : 1 / 1.12)));
+}, { passive: false });
+addEventListener('keydown', (e) => {
+  if (e.key === '+' || e.key === '=') zoom = Math.min(6, zoom * 1.15);
+  if (e.key === '-') zoom = Math.max(0.6, zoom / 1.15);
+});
+
+const HOURS = [
+  ['Gündüz', 13.5], ['Öğleden sonra', 16.2], ['Gün batımı', 18.9],
+  ['Gece', 23.0], ['Şafak', 6.4],
+];
+const hoursBox = document.getElementById('hours');
+HOURS.forEach(([label, h]) => {
+  const b = document.createElement('button');
+  b.textContent = label; b.onclick = () => setHour(h);
+  b.dataset.h = String(h);
+  hoursBox.appendChild(b);
+});
+function paintButtons(){
+  [...hoursBox.children].forEach(b => b.classList.toggle('on', Math.abs(Number(b.dataset.h) - hour) < 0.05));
+}
+function setHour(h){ hour = h; const FX = window.SetraLive3D; if (FX) FX.setTimeOfDay(h); paintButtons(); }
+
+// ---- Ayarlar paneli: canlı NPR parametreleri (localStorage ile kalıcı) ----
+const TUNE_KEY = 'setra.live3d.tune';
+const TUNE_DEF = { outline:1.6, bands:2.6, sat:1.12, paint:0.45, ao:0.85, rim:0.40, sun:1.0, amb:1.0, night:1.0 };
+const TUNE_SPEC = [
+  ['outline', 'Kontur',          0,   4,   0.1,  2],
+  ['bands',   'Ton bandı',       1.5, 6,   0.1,  1],
+  ['sat',     'Doygunluk',       0.6, 1.8, 0.02, 2],
+  ['paint',   'Boya gürültüsü',  0,   1.5, 0.05, 2],
+  ['ao',      'Gölge / AO',      0,   1.2, 0.05, 2],
+  ['rim',     'Kenar ışığı',     0,   1.5, 0.05, 2],
+  ['sun',     'Güneş',           0,   2,   0.05, 2],
+  ['amb',     'Ortam ışığı',     0,   2,   0.05, 2],
+  ['night',   'Gece karanlığı',  0.5, 2.5, 0.05, 2],
+];
+const tune = {};
+for (const k in TUNE_DEF) tune[k] = TUNE_DEF[k];
+try {
+  const raw = localStorage.getItem(TUNE_KEY);
+  if (raw) {
+    const o = JSON.parse(raw);
+    for (const k in TUNE_DEF) { const v = Number(o && o[k]); if (isFinite(v)) tune[k] = v; }
+  }
+} catch (e) {}
+const tuneInputs = {};
+const tuneBox = document.getElementById('tuneBox');
+const tuneNote = document.getElementById('tuneNote');
+let tuneTimer = 0, tuneSupported = null;
+
+const tuneFmt = (v, dec) => Number(v || 0).toFixed(dec);
+
+function saveTune(){ try { localStorage.setItem(TUNE_KEY, JSON.stringify(tune)); } catch (e) {} }
+function paintTuneNote(){
+  if (tuneSupported) { tuneNote.textContent = 'motor: canlı ✅'; tuneNote.style.color = '#8fb08a'; }
+  else if (tuneSupported === false) { tuneNote.textContent = 'motor hazır değil: bırakınca yenilenir'; tuneNote.style.color = '#e0b062'; }
+  else tuneNote.textContent = '';
+}
+function pushTune(){
+  saveTune();
+  const FX = window.SetraLive3D;
+  if (FX && typeof FX.setTune === 'function') {
+    tuneSupported = true; try { FX.setTune(tune); } catch (e) { tuneSupported = false; }
+  } else if (FX) { tuneSupported = false; } else { tuneSupported = null; }
+  paintTuneNote();
+  return tuneSupported === true;
+}
+// setTune yoksa anında uygulanamaz: slider bırakılınca sayfayı aynı saatle tazele.
+function tuneReloadSoon(){
+  if (tuneSupported !== false) return;
+  clearTimeout(tuneTimer);
+  tuneTimer = setTimeout(() => {
+    try { const u = new URL(location.href); u.searchParams.set('hour', String(hour)); location.replace(u.toString()); } catch (e) { location.reload(); }
+  }, 420);
+}
+function syncTuneLabels(){
+  for (const k in tuneInputs) tuneInputs[k].__val.textContent = tuneFmt(tune[k], tuneInputs[k].__dec);
+}
+function readTuneInputs(){
+  for (const k in tuneInputs) tune[k] = Number(tuneInputs[k].value);
+}
+function applyTune(){
+  readTuneInputs();
+  syncTuneLabels();
+  pushTune();
+  try { draw(0); } catch (e) {}   // anında bir kare
+}
+function resetTune(){
+  for (const k in TUNE_DEF) {
+    tune[k] = TUNE_DEF[k];
+    if (tuneInputs[k]) tuneInputs[k].value = String(TUNE_DEF[k]);
+  }
+  syncTuneLabels();
+  pushTune();
+  try { draw(0); } catch (e) {}
+  tuneReloadSoon();
+}
+(function buildTunePanel(){
+  const box = document.getElementById('tuneSliders');
+  for (const [key, label, min, max, step, dec] of TUNE_SPEC) {
+    const wrap = document.createElement('div'); wrap.className = 'sl';
+    const top = document.createElement('div'); top.className = 'top';
+    const name = document.createElement('i'); name.textContent = label;
+    const val = document.createElement('b'); val.textContent = tuneFmt(tune[key], dec);
+    top.appendChild(name); top.appendChild(val);
+    const inp = document.createElement('input');
+    inp.type = 'range';
+    inp.min = String(min); inp.max = String(max); inp.step = String(step);
+    inp.value = String(tune[key]);
+    inp.dataset.k = key;
+    inp.setAttribute('aria-label', label);
+    inp.__val = val; inp.__dec = dec;
+    inp.addEventListener('input', applyTune);
+    inp.addEventListener('change', tuneReloadSoon);
+    wrap.appendChild(top); wrap.appendChild(inp);
+    box.appendChild(wrap);
+    tuneInputs[key] = inp;
+  }
+  document.getElementById('tuneReset').addEventListener('click', resetTune);
+  const head = document.getElementById('tuneToggle');
+  head.addEventListener('click', () => {
+    tuneBox.classList.toggle('collapsed');
+    const collapsed = tuneBox.classList.contains('collapsed');
+    document.getElementById('tuneCaret').textContent = collapsed ? '▸' : '▾';
+    head.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+  });
+  syncTuneLabels();
+})();
+
+// ---- Grup katlama (ortak) ----
+function wireGroup(headId, grpId, caretId){
+  const head = document.getElementById(headId);
+  const grp = document.getElementById(grpId);
+  const caret = document.getElementById(caretId);
+  if (!head || !grp) return;
+  const flip = () => {
+    grp.classList.toggle('collapsed');
+    const c = grp.classList.contains('collapsed');
+    if (caret) caret.textContent = c ? '▸' : '▾';
+    head.setAttribute('aria-expanded', c ? 'false' : 'true');
+  };
+  head.addEventListener('click', flip);
+  head.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); }
+  });
+}
+wireGroup('grpNprHead', 'grpNpr', 'grpNprCaret');
+wireGroup('grpAtmoHead', 'grpAtmo', 'grpAtmoCaret');
+
+// ---- Atmosfer grubu: shaderfx çarpanları (oyun geneli, aynı localStorage) ----
+const ATMO_KEY = 'setra.shaderfx.tune';
+const ATMO_DEF = { fog:1, bloom:1, vignette:1, rays:1, night:1, exposure:1 };
+const ATMO_SPEC = [
+  ['fog',      'Sis',             0,   3,   0.05, 2],
+  ['bloom',    'Bloom',           0,   3,   0.05, 2],
+  ['vignette', 'Vignette',        0,   2,   0.05, 2],
+  ['rays',     'Işınlar',         0,   3,   0.05, 2],
+  ['night',    'Gece karanlığı',  0.2, 3,   0.05, 2],
+  ['exposure', 'Pozlama',         0.4, 2,   0.02, 2],
+];
+const atmo = {};
+for (const k in ATMO_DEF) atmo[k] = ATMO_DEF[k];
+try {
+  const raw = localStorage.getItem(ATMO_KEY);
+  if (raw) {
+    const o = JSON.parse(raw);
+    for (const k in ATMO_DEF) { const v = Number(o && o[k]); if (isFinite(v)) atmo[k] = v; }
+  }
+} catch (e) {}
+const atmoInputs = {};
+const atmoNote = document.getElementById('atmoNote');
+
+function atmoSave(){ try { localStorage.setItem(ATMO_KEY, JSON.stringify(atmo)); } catch (e) {} }
+function atmoSyncLabels(){
+  for (const k in atmoInputs) atmoInputs[k].__val.textContent = Number(atmo[k]).toFixed(atmoInputs[k].__dec);
+}
+function atmoPush(){
+  atmoSave();
+  const FX = window.SetraShaderFX;
+  if (FX && typeof FX.setTune === 'function') {
+    try {
+      const r = FX.setTune(atmo);
+      if (r) for (const k in atmo) if (isFinite(Number(r[k]))) atmo[k] = Number(r[k]);
+      atmoSyncLabels();
+      atmoNote.textContent = 'shaderfx: canlı ✓';
+      atmoNote.style.color = '#8fb08a';
+      return;
+    } catch (e) {}
+  }
+  atmoNote.textContent = 'shaderfx yok: kaydedildi';
+  atmoNote.style.color = '#e0b062';
+}
+function atmoApply(){
+  for (const k in atmoInputs) atmo[k] = Number(atmoInputs[k].value);
+  atmoSyncLabels();
+  atmoPush();
+  try { draw(0); } catch (e) {}   // anında bir kare
+}
+function atmoReset(){
+  for (const k in ATMO_DEF) {
+    atmo[k] = ATMO_DEF[k];
+    if (atmoInputs[k]) atmoInputs[k].value = String(ATMO_DEF[k]);
+  }
+  atmoSyncLabels();
+  atmoPush();
+  try { draw(0); } catch (e) {}
+  const FX = window.SetraShaderFX;
+  if (FX && typeof FX.resetTune === 'function') { try { FX.resetTune(); } catch (e) {} }
+}
+(function buildAtmoPanel(){
+  const box = document.getElementById('atmoSliders');
+  if (!box) return;
+  for (const [key, label, min, max, step, dec] of ATMO_SPEC) {
+    const wrap = document.createElement('div'); wrap.className = 'sl';
+    const top = document.createElement('div'); top.className = 'top';
+    const name = document.createElement('i'); name.textContent = label;
+    const val = document.createElement('b'); val.textContent = Number(atmo[key]).toFixed(dec);
+    top.appendChild(name); top.appendChild(val);
+    const inp = document.createElement('input');
+    inp.type = 'range';
+    inp.min = String(min); inp.max = String(max); inp.step = String(step);
+    inp.value = String(atmo[key]);
+    inp.dataset.k = key;
+    inp.setAttribute('aria-label', label);
+    inp.__val = val; inp.__dec = dec;
+    inp.addEventListener('input', atmoApply);
+    wrap.appendChild(top); wrap.appendChild(inp);
+    box.appendChild(wrap);
+    atmoInputs[key] = inp;
+  }
+  const rb = document.getElementById('atmoReset');
+  if (rb) rb.addEventListener('click', atmoReset);
+  atmoSyncLabels();
+  atmoPush();
+})();
+
+
+const COS = 0.8660, SIN = 0.5;
+const OBJS = [
+  { model:'oak',      wx: 0,   wy: 0,   height: 96 },
+  { model:'bigrock',  wx: 120, wy: 0,   height: 66 },
+  { model:'hut',      wx: 0,   wy: 130, height: 92 },
+  { model:'campfire', wx: 120, wy: 130, height: 34 },
+  { model:'pine',     wx: 240, wy: -30, height: 104 },
+  { model:'well',     wx: -130, wy: 120, height: 60 },
+];
+const fake = { canvas: gc, time: 0, biome: 'verdant', decorScale: 1, lowFx: false,
+               biomePalette: { fog: '#9bd47a', sky: '#1a2e14', accent: '#9ccc65', grade: 0.08 },
+               biomeAmbient: { color: '#b8e986', color2: '#ffd54f', fog: 0.16 },
+               scenery: [], player: { x: 0, y: 0 }, camera: { x: 0, y: 0 }, iso(){ return {x:0,y:0}; } };
+
+function ground(){
+  const grd = g.createLinearGradient(0,0,0,gc.height);
+  grd.addColorStop(0,'#3e5a30'); grd.addColorStop(1,'#22301c');
+  g.fillStyle = grd; g.fillRect(0,0,gc.width,gc.height);
+  const T=64; g.strokeStyle='rgba(0,0,0,0.10)'; g.lineWidth=1;
+  for(let r=0;r<40;r++)for(let c=-20;c<20;c++){
+    const x=gc.width/2+(c-r)*T*COS, y=gc.height*0.14+(c+r)*T*SIN;
+    if(y<-40||y>gc.height+40) continue;
+    g.beginPath(); g.moveTo(x,y+T*SIN); g.lineTo(x+T*COS,y+T); g.lineTo(x,y+T*1.5); g.lineTo(x-T*COS,y+T); g.closePath(); g.stroke();
+  }
+}
+function char2d(x,y,z){
+  z = z || 1;
+  g.save(); g.translate(x,y); g.scale(z,z);
+  g.fillStyle='#e8d5b0'; g.beginPath(); g.arc(0,-34,11,0,7); g.fill();
+  g.fillStyle='#8f5b33'; g.beginPath(); g.moveTo(-12,0); g.lineTo(-9,-24); g.lineTo(9,-24); g.lineTo(12,0); g.closePath(); g.fill();
+  g.fillStyle='#c9a06a'; g.fillRect(-9,-20,18,6);
+  g.strokeStyle='rgba(0,0,0,0.35)'; g.lineWidth=1.5; g.stroke();
+  g.restore();
+}
+
+let acc = 0, n = 0, fps = 0;
+function draw(dt){
+  const t0 = performance.now();
+  const FX = window.SetraLive3D;
+  fake.time += dt || 0.016;
+  ground();
+  const camX = gc.width/2, camY = gc.height*0.46;
+  const z = zoom;
+  const charAt = { wx: 60, wy: 62 };
+  const order = OBJS.map(o=>({...o, depth:o.wx+o.wy})).sort((a,b)=>a.depth-b.depth);
+  let live = 0, charDrawn = false;
+  for(const o of order){
+    if(!charDrawn && o.depth > charAt.wx+charAt.wy){
+      char2d(camX+(charAt.wx-charAt.wy)*COS*z, camY+(charAt.wx+charAt.wy)*SIN*z, z);
+      charDrawn = true;
+    }
+    const x = camX + (o.wx-o.wy)*COS*z, y = camY + (o.wx+o.wy)*SIN*z;
+    g.fillStyle='rgba(0,0,0,0.30)';
+    g.beginPath(); g.ellipse(x, y+2*z, o.height*z*0.42, o.height*z*0.13, 0, 0, 7); g.fill();
+    // Yakınlaştırma: nesne yüksekliği zoom ile ölçeklenir → motor daha yüksek
+    // çözünürlükte render eder (pixel görünmez).
+    const oo = { ...o, height: o.height * z };
+    if(FX && FX.draw(g, oo, x, y, fake)) live++;
+  }
+  if(!charDrawn) char2d(camX+(charAt.wx-charAt.wy)*COS*z, camY+(charAt.wx+charAt.wy)*SIN*z, z);
+  if(FX) FX.tick(fake);
+  // Atmosfer katmanları (shaderfx) — çizim bittikten sonra üstüne bindir.
+  if (window.SetraShaderFX) { try { window.SetraShaderFX.present(fake); } catch (e) {} }
+  const ms = performance.now() - t0;
+  acc += ms; n++;
+  if(n >= 20){ fps = Math.round(1000 / Math.max(0.1, acc/n)); acc = 0; n = 0; }
+  const st = FX ? FX.stats() : null;
+  document.getElementById('stats').textContent =
+    'tür: ' + (st && st.ready ? 'CANLI 3D ✅' : 'yükleniyor…') +
+    '  |  çizilen 3D: ' + live + '/' + OBJS.length +
+    '\nrender: ' + (st?st.rendered:0) + '  önbellek: ' + (st?st.hits:0) +
+    '  kare: ' + ms.toFixed(1) + ' ms  fps~' + fps +
+    (st && st.failed ? '\nHATA: ' + st.failed : '');
+  document.title = 'Setra NPR — ' + hour + 'h';
+}
+
+const FX0 = window.SetraLive3D;
+if (FX0) { FX0.setTimeOfDay(hour); FX0.addLight(120, 26, 130, [1.0,0.62,0.28], 260, 3.4, 'campfire'); }
+pushTune();   // slider değerlerini motora (ve localStorage'a) uygula
+paintButtons();
+
+let last = performance.now();
+function frame(ts){
+  const dt = Math.min(0.1, (ts - last) / 1000); last = ts;
+  draw(dt);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body></html>
