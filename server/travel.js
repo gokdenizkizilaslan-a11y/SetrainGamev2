@@ -887,6 +887,9 @@ function publicMap(room, player, opts = {}) {
     type: travel.type, typeLabel: typeDef.label,
     size: travel.size, sizeLabel: sizeDef.label, scale: sizeDef.scale,
     w: travel.w, h: travel.h, spawn: travel.spawn,
+    // 2+ oyuncu bu seferdeyse canavarlar sunucu otoritesindedir; istemci kendi
+    // canavar simülasyonunu kapatır (tek oyunculu seferlerde daima false).
+    shared: !!travel.sharedWorld,
   };
   if (opts.terrain) {
     // Legacy explorer için base36 karo metni (istek üzerine üretilir).
@@ -949,6 +952,7 @@ function resetTravel(room) {
 
 module.exports = {
   ENTRY_STAMINA,
+  isWalkable,
   MAP_TYPES,
   MAP_SIZES,
   generateMap,

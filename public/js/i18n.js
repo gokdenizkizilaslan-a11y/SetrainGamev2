@@ -143,6 +143,29 @@
     "Ascend, mend hearts & rebirth": "Yüksel, kalpleri onar ve yeniden doğ",
     "Travel": "Seyahat",
     "Explore the wilds · 10 stamina": "Vahşi doğayı keşfet · 10 dayanıklılık",
+
+    // ===== Seyahat: gecit ekrani (v3) =====
+    "Expedition Gate · Setra Village": "Sefer Kapısı · Setra Köyü",
+    "Where will you wander?": "Nereye yolculuk edeceksin?",
+    "Two roads leave the village. Touch the stone for an uncharted expedition, or ride out into the one unbroken continent.":
+      "Köyden iki yol ayrılır. Haritasız bir sefer için taşa dokun ya da tek parça kıtaya doğru at sür.",
+    "Aetherial Stone": "Aetheria Taşı",
+    "Random Expedition": "Rastgele Sefer",
+    "Touch the stone and let it choose the land. Every expedition is forged anew — no two roads are alike.":
+      "Taşa dokun ve diyarı onun seçmesine izin ver. Her sefer yeniden dövülür — iki yol asla aynı olmaz.",
+    "Fixed Map · Open World": "Sabit Harita · Açık Dünya",
+    "One unbroken land of villages, roads and ruins. Nothing is rerolled — the continent remembers every step you take.":
+      "Köyler, yollar ve harabelerle dolu tek parça bir diyar. Hiçbir şey yeniden kurulmaz — kıta attığın her adımı hatırlar.",
+    "Fixed, hand-built world": "Sabit, elle kurulmuş dünya",
+    "Villages, inns and hidden ruins": "Köyler, hanlar ve gizli harabeler",
+    "Progress saved at travel stones": "İlerleme seyahat taşlarında kaydedilir",
+    "Step through the stone": "Taştan geç",
+    "Ride into the continent": "Kıtaya at sür",
+    "Open expedition rooms": "Açık sefer odaları",
+    "Expedition Camp": "Sefer Kampı",
+    "Gathered at the stone": "Taşın başında toplandınız",
+    "Party": "Grup",
+    "Leave room": "Odadan ayrıl",
     "Sleep Outside": "Dışarıda Uyu",
     "End the day · Cold stars, small risk": "Günü bitir · Soğuk yıldızlar, küçük risk",
 
@@ -276,6 +299,13 @@
     "Use Travel Stone": "Seyahat Taşını kullan",
     "Return from the stone where you arrived.": "Yalnızca vardığın taştan dönebilirsin.",
     "Returning to town...": "Kasabaya dönülüyor...",
+    "Travel Stone": "Seyahat Taşı",
+    "Continue exploring": "Keşfetmeye devam et",
+    "Your journey is written down. HP and Mana restored at the stone.":
+      "Yolculuğun kaydedildi. Taşta canın ve manan yenilendi.",
+    "Your journey is written down.": "Yolculuğun kaydedildi.",
+    "The stone hums beneath your palm. Your expedition can end here.":
+      "Taş avucunun altında uğulduyor. Seferin burada sona erebilir.",
     "A nearby ally revives you with": "Yakındaki bir müttefik seni şununla diriltir:",
     "The last light gutters out": "Son ışık sönüyor",
     "Safely returned": "Güvenle döndün",

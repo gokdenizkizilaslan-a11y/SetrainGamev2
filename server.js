@@ -94,6 +94,13 @@ app.get("/api/sounds", (req, res) => {
 const httpServer = http.createServer(app);
 const io = new Server(httpServer, {
   cors: { origin: "*" },
+  // Kalıcı kıta yapılandırması (world_setra.json: 12 bin props) tek pakette
+  // ~1.3 MB. Sıkıştırma açık olmadan her "travel:map" isteği tarayıcıyı
+  // kilitliyordu; eşik altındaki küçük paketler sıkıştırılmaz.
+  perMessageDeflate: {
+    threshold: 1024,
+    zlibDeflateOptions: { level: 6 },
+  },
 });
 
 // Dünya Kurucu (editorRoutes) "Oyuna Uygula" sonrası tüm istemcilere haber

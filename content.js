@@ -28134,13 +28134,20 @@ const CONTENT = {
               "windup": 0.55,
               "dist": 130,
               "power": 1.15,
-              "radius": 34
+              "radius": 34,
+              "defense": "dodge",
+              "attackKind": "heavy",
+              "guardPressure": 25
             }
           ],
           "tags": [
             "humanoid",
             "plant"
-          ]
+          ],
+          "attackKind": "medium",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.38,
+          "guardPressure": 18
         },
         {
           "painter": "treant",
@@ -28167,12 +28174,19 @@ const CONTENT = {
               "range": 190,
               "windup": 1,
               "radius": 110,
-              "power": 1.4
+              "power": 1.4,
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             }
           ],
           "tags": [
             "plant"
-          ]
+          ],
+          "attackKind": "heavy",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.65,
+          "guardPressure": 25
         },
         {
           "painter": "wraith",
@@ -28198,13 +28212,20 @@ const CONTENT = {
               "cd": 4.5,
               "range": 340,
               "windup": 0.55,
-              "power": 1.1
+              "power": 1.1,
+              "defense": "parryable",
+              "attackKind": "medium",
+              "guardPressure": 18
             }
           ],
           "tags": [
             "undead",
             "spirit"
-          ]
+          ],
+          "attackKind": "light",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.22,
+          "guardPressure": 12
         },
         {
           "painter": "spider",
@@ -28242,13 +28263,20 @@ const CONTENT = {
                 "type": "slow",
                 "duration": 2,
                 "slow": 0.5
-              }
+              },
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             }
           ],
           "tags": [
             "beast",
             "plant"
-          ]
+          ],
+          "attackKind": "medium",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.38,
+          "guardPressure": 18
         },
         {
           "painter": "treant",
@@ -28276,7 +28304,10 @@ const CONTENT = {
               "range": 190,
               "windup": 1,
               "radius": 110,
-              "power": 1.4
+              "power": 1.4,
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             },
             {
               "id": "quake",
@@ -28285,13 +28316,20 @@ const CONTENT = {
               "range": 210,
               "windup": 0.85,
               "radius": 130,
-              "power": 1.45
+              "power": 1.45,
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             }
           ],
           "tags": [
             "plant",
             "construct"
-          ]
+          ],
+          "attackKind": "heavy",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.65,
+          "guardPressure": 25
         },
         {
           "painter": "sporeling",
@@ -28318,13 +28356,20 @@ const CONTENT = {
               "range": 150,
               "windup": 0.7,
               "radius": 64,
-              "power": 0.6
+              "power": 0.6,
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             }
           ],
           "tags": [
             "plant",
             "slime"
-          ]
+          ],
+          "attackKind": "medium",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.38,
+          "guardPressure": 18
         },
         {
           "painter": "briarHound",
@@ -28352,13 +28397,20 @@ const CONTENT = {
               "windup": 0.48,
               "dist": 145,
               "power": 1.15,
-              "radius": 38
+              "radius": 38,
+              "defense": "dodge",
+              "attackKind": "heavy",
+              "guardPressure": 25
             }
           ],
           "tags": [
             "beast",
             "plant"
-          ]
+          ],
+          "attackKind": "medium",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.38,
+          "guardPressure": 18
         },
         {
           "painter": "myceliumOracle",
@@ -28386,7 +28438,10 @@ const CONTENT = {
               "range": 200,
               "windup": 1.05,
               "radius": 130,
-              "power": 1.15
+              "power": 1.15,
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             },
             {
               "id": "oracle_root_prison",
@@ -28396,7 +28451,10 @@ const CONTENT = {
               "windup": 1.25,
               "radius": 95,
               "power": 0.85,
-              "status": "root"
+              "status": "root",
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             },
             {
               "id": "oracle_spore_bolt",
@@ -28404,13 +28462,20 @@ const CONTENT = {
               "cd": 3.8,
               "range": 340,
               "windup": 0.55,
-              "power": 1
+              "power": 1,
+              "defense": "parryable",
+              "attackKind": "medium",
+              "guardPressure": 18
             }
           ],
           "tags": [
             "plant",
             "humanoid"
-          ]
+          ],
+          "attackKind": "heavy",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.65,
+          "guardPressure": 25
         }
       ]
     },
@@ -28464,13 +28529,20 @@ const CONTENT = {
               "windup": 0.55,
               "dist": 130,
               "power": 1.15,
-              "radius": 34
+              "radius": 34,
+              "defense": "dodge",
+              "attackKind": "heavy",
+              "guardPressure": 25
             }
           ],
           "tags": [
             "demon",
             "humanoid"
-          ]
+          ],
+          "attackKind": "light",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.22,
+          "guardPressure": 12
         },
         {
           "painter": "knight",
@@ -28504,13 +28576,20 @@ const CONTENT = {
               "windup": 0.65,
               "dist": 155,
               "power": 1.3,
-              "radius": 38
+              "radius": 38,
+              "defense": "dodge",
+              "attackKind": "heavy",
+              "guardPressure": 25
             }
           ],
           "tags": [
             "undead",
             "elemental"
-          ]
+          ],
+          "attackKind": "heavy",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.65,
+          "guardPressure": 25
         },
         {
           "painter": "golem",
@@ -28537,13 +28616,20 @@ const CONTENT = {
               "range": 170,
               "windup": 0.95,
               "radius": 100,
-              "power": 1.5
+              "power": 1.5,
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             }
           ],
           "tags": [
             "elemental",
             "construct"
-          ]
+          ],
+          "attackKind": "heavy",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.65,
+          "guardPressure": 25
         },
         {
           "painter": "wraith",
@@ -28569,13 +28655,20 @@ const CONTENT = {
               "cd": 4.5,
               "range": 340,
               "windup": 0.55,
-              "power": 1.1
+              "power": 1.1,
+              "defense": "parryable",
+              "attackKind": "medium",
+              "guardPressure": 18
             }
           ],
           "tags": [
             "beast",
             "elemental"
-          ]
+          ],
+          "attackKind": "light",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.22,
+          "guardPressure": 12
         },
         {
           "painter": "golem",
@@ -28609,7 +28702,10 @@ const CONTENT = {
               "range": 170,
               "windup": 0.95,
               "radius": 100,
-              "power": 1.5
+              "power": 1.5,
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             },
             {
               "id": "quake",
@@ -28618,13 +28714,20 @@ const CONTENT = {
               "range": 210,
               "windup": 0.85,
               "radius": 130,
-              "power": 1.45
+              "power": 1.45,
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             }
           ],
           "tags": [
             "demon",
             "elemental"
-          ]
+          ],
+          "attackKind": "heavy",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.65,
+          "guardPressure": 25
         },
         {
           "painter": "scoriaCrawler",
@@ -28650,13 +28753,20 @@ const CONTENT = {
               "cd": 4.5,
               "range": 220,
               "windup": 0.5,
-              "power": 0.7
+              "power": 0.7,
+              "defense": "parryable",
+              "attackKind": "medium",
+              "guardPressure": 18
             }
           ],
           "tags": [
             "beast",
             "construct"
-          ]
+          ],
+          "attackKind": "medium",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.38,
+          "guardPressure": 18
         },
         {
           "painter": "furnaceHound",
@@ -28684,7 +28794,10 @@ const CONTENT = {
               "windup": 0.7,
               "dist": 155,
               "power": 1.3,
-              "radius": 48
+              "radius": 48,
+              "defense": "dodge",
+              "attackKind": "heavy",
+              "guardPressure": 25
             },
             {
               "id": "furnace_bite",
@@ -28694,13 +28807,20 @@ const CONTENT = {
               "windup": 0.45,
               "radius": 62,
               "power": 1.05,
-              "status": "burn"
+              "status": "burn",
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             }
           ],
           "tags": [
             "beast",
             "elemental"
-          ]
+          ],
+          "attackKind": "heavy",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.65,
+          "guardPressure": 25
         },
         {
           "painter": "pyrewingMatriarch",
@@ -28729,7 +28849,10 @@ const CONTENT = {
               "windup": 1.4,
               "radius": 160,
               "power": 1.35,
-              "status": "burn"
+              "status": "burn",
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             },
             {
               "id": "pyre_infernal_dive",
@@ -28739,7 +28862,10 @@ const CONTENT = {
               "windup": 0.9,
               "dist": 210,
               "power": 1.5,
-              "radius": 58
+              "radius": 58,
+              "defense": "dodge",
+              "attackKind": "heavy",
+              "guardPressure": 25
             },
             {
               "id": "pyre_flame_cyclone",
@@ -28749,13 +28875,20 @@ const CONTENT = {
               "windup": 1.1,
               "radius": 115,
               "power": 1.1,
-              "status": "burn"
+              "status": "burn",
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             }
           ],
           "tags": [
             "dragon",
             "elemental"
-          ]
+          ],
+          "attackKind": "heavy",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.65,
+          "guardPressure": 25
         }
       ]
     },
@@ -28809,12 +28942,19 @@ const CONTENT = {
               "windup": 0.6,
               "dist": 165,
               "power": 1.25,
-              "radius": 40
+              "radius": 40,
+              "defense": "dodge",
+              "attackKind": "heavy",
+              "guardPressure": 25
             }
           ],
           "tags": [
             "beast"
-          ]
+          ],
+          "attackKind": "light",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.22,
+          "guardPressure": 12
         },
         {
           "painter": "wraith",
@@ -28845,13 +28985,20 @@ const CONTENT = {
               "cd": 4.5,
               "range": 340,
               "windup": 0.55,
-              "power": 1.1
+              "power": 1.1,
+              "defense": "parryable",
+              "attackKind": "medium",
+              "guardPressure": 18
             }
           ],
           "tags": [
             "undead",
             "spirit"
-          ]
+          ],
+          "attackKind": "medium",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.38,
+          "guardPressure": 18
         },
         {
           "painter": "golem",
@@ -28884,13 +29031,20 @@ const CONTENT = {
               "range": 170,
               "windup": 0.95,
               "radius": 100,
-              "power": 1.5
+              "power": 1.5,
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             }
           ],
           "tags": [
             "construct",
             "elemental"
-          ]
+          ],
+          "attackKind": "heavy",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.65,
+          "guardPressure": 25
         },
         {
           "painter": "spider",
@@ -28922,12 +29076,19 @@ const CONTENT = {
                 "type": "slow",
                 "duration": 2,
                 "slow": 0.5
-              }
+              },
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             }
           ],
           "tags": [
             "beast"
-          ]
+          ],
+          "attackKind": "medium",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.38,
+          "guardPressure": 18
         },
         {
           "painter": "beast",
@@ -28961,7 +29122,10 @@ const CONTENT = {
               "windup": 0.6,
               "dist": 165,
               "power": 1.25,
-              "radius": 40
+              "radius": 40,
+              "defense": "dodge",
+              "attackKind": "heavy",
+              "guardPressure": 25
             },
             {
               "id": "quake",
@@ -28970,12 +29134,19 @@ const CONTENT = {
               "range": 210,
               "windup": 0.85,
               "radius": 130,
-              "power": 1.45
+              "power": 1.45,
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             }
           ],
           "tags": [
             "dragon"
-          ]
+          ],
+          "attackKind": "heavy",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.65,
+          "guardPressure": 25
         },
         {
           "painter": "archer",
@@ -29002,7 +29173,10 @@ const CONTENT = {
               "cd": 3.6,
               "range": 380,
               "windup": 0.75,
-              "power": 1.15
+              "power": 1.15,
+              "defense": "parryable",
+              "attackKind": "medium",
+              "guardPressure": 18
             },
             {
               "id": "volley",
@@ -29012,13 +29186,20 @@ const CONTENT = {
               "windup": 0.7,
               "power": 0.9,
               "count": 3,
-              "spread": 0.22
+              "spread": 0.22,
+              "defense": "parryable",
+              "attackKind": "medium",
+              "guardPressure": 18
             }
           ],
           "tags": [
             "humanoid",
             "undead"
-          ]
+          ],
+          "attackKind": "medium",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.38,
+          "guardPressure": 18
         },
         {
           "painter": "archer",
@@ -29045,7 +29226,10 @@ const CONTENT = {
               "cd": 3.6,
               "range": 380,
               "windup": 0.75,
-              "power": 1.15
+              "power": 1.15,
+              "defense": "parryable",
+              "attackKind": "medium",
+              "guardPressure": 18
             },
             {
               "id": "volley",
@@ -29055,13 +29239,20 @@ const CONTENT = {
               "windup": 0.7,
               "power": 0.9,
               "count": 3,
-              "spread": 0.22
+              "spread": 0.22,
+              "defense": "parryable",
+              "attackKind": "medium",
+              "guardPressure": 18
             }
           ],
           "tags": [
             "undead",
             "humanoid"
-          ]
+          ],
+          "attackKind": "medium",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.38,
+          "guardPressure": 18
         },
         {
           "painter": "rimeToad",
@@ -29088,12 +29279,19 @@ const CONTENT = {
               "range": 240,
               "windup": 0.55,
               "power": 0.75,
-              "status": "slow"
+              "status": "slow",
+              "defense": "parryable",
+              "attackKind": "medium",
+              "guardPressure": 18
             }
           ],
           "tags": [
             "beast"
-          ]
+          ],
+          "attackKind": "medium",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.38,
+          "guardPressure": 18
         },
         {
           "painter": "borealStag",
@@ -29121,7 +29319,10 @@ const CONTENT = {
               "windup": 0.75,
               "dist": 175,
               "power": 1.35,
-              "radius": 50
+              "radius": 50,
+              "defense": "dodge",
+              "attackKind": "heavy",
+              "guardPressure": 25
             },
             {
               "id": "stag_shard_burst",
@@ -29131,12 +29332,19 @@ const CONTENT = {
               "windup": 0.8,
               "radius": 88,
               "power": 0.9,
-              "status": "slow"
+              "status": "slow",
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             }
           ],
           "tags": [
             "beast"
-          ]
+          ],
+          "attackKind": "heavy",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.65,
+          "guardPressure": 25
         },
         {
           "painter": "whiteoutSiren",
@@ -29164,7 +29372,10 @@ const CONTENT = {
               "windup": 1.15,
               "radius": 110,
               "power": 1,
-              "status": "freeze"
+              "status": "freeze",
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             },
             {
               "id": "siren_ice_shard",
@@ -29172,13 +29383,20 @@ const CONTENT = {
               "cd": 3.6,
               "range": 330,
               "windup": 0.5,
-              "power": 0.9
+              "power": 0.9,
+              "defense": "parryable",
+              "attackKind": "medium",
+              "guardPressure": 18
             }
           ],
           "tags": [
             "spirit",
             "humanoid"
-          ]
+          ],
+          "attackKind": "medium",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.38,
+          "guardPressure": 18
         },
         {
           "painter": "borealDevourer",
@@ -29207,7 +29425,10 @@ const CONTENT = {
               "windup": 0.9,
               "radius": 150,
               "power": 1.3,
-              "status": "slow"
+              "status": "slow",
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             },
             {
               "id": "devourer_ground_shatter",
@@ -29216,7 +29437,10 @@ const CONTENT = {
               "range": 210,
               "windup": 1.25,
               "radius": 145,
-              "power": 1.2
+              "power": 1.2,
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             },
             {
               "id": "devourer_icefall",
@@ -29224,13 +29448,20 @@ const CONTENT = {
               "cd": 4,
               "range": 380,
               "windup": 0.6,
-              "power": 1.05
+              "power": 1.05,
+              "defense": "parryable",
+              "attackKind": "medium",
+              "guardPressure": 18
             }
           ],
           "tags": [
             "beast",
             "demon"
-          ]
+          ],
+          "attackKind": "heavy",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.65,
+          "guardPressure": 25
         }
       ]
     },
@@ -29290,13 +29521,20 @@ const CONTENT = {
               "windup": 0.55,
               "dist": 130,
               "power": 1.15,
-              "radius": 34
+              "radius": 34,
+              "defense": "dodge",
+              "attackKind": "heavy",
+              "guardPressure": 25
             }
           ],
           "tags": [
             "beast",
             "slime"
-          ]
+          ],
+          "attackKind": "medium",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.38,
+          "guardPressure": 18
         },
         {
           "painter": "wraith",
@@ -29329,7 +29567,10 @@ const CONTENT = {
               "cd": 4.5,
               "range": 340,
               "windup": 0.55,
-              "power": 1.1
+              "power": 1.1,
+              "defense": "parryable",
+              "attackKind": "medium",
+              "guardPressure": 18
             },
             {
               "id": "volley",
@@ -29339,12 +29580,19 @@ const CONTENT = {
               "windup": 0.7,
               "power": 0.9,
               "count": 3,
-              "spread": 0.22
+              "spread": 0.22,
+              "defense": "parryable",
+              "attackKind": "medium",
+              "guardPressure": 18
             }
           ],
           "tags": [
             "humanoid"
-          ]
+          ],
+          "attackKind": "medium",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.38,
+          "guardPressure": 18
         },
         {
           "painter": "treant",
@@ -29371,13 +29619,20 @@ const CONTENT = {
               "range": 190,
               "windup": 1,
               "radius": 110,
-              "power": 1.4
+              "power": 1.4,
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             }
           ],
           "tags": [
             "plant",
             "undead"
-          ]
+          ],
+          "attackKind": "heavy",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.65,
+          "guardPressure": 25
         },
         {
           "painter": "spider",
@@ -29415,13 +29670,20 @@ const CONTENT = {
                 "type": "slow",
                 "duration": 2,
                 "slow": 0.5
-              }
+              },
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             }
           ],
           "tags": [
             "beast",
             "slime"
-          ]
+          ],
+          "attackKind": "medium",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.38,
+          "guardPressure": 18
         },
         {
           "painter": "knight",
@@ -29456,7 +29718,10 @@ const CONTENT = {
               "windup": 0.65,
               "dist": 155,
               "power": 1.3,
-              "radius": 38
+              "radius": 38,
+              "defense": "dodge",
+              "attackKind": "heavy",
+              "guardPressure": 25
             },
             {
               "id": "quake",
@@ -29465,13 +29730,20 @@ const CONTENT = {
               "range": 210,
               "windup": 0.85,
               "radius": 130,
-              "power": 1.45
+              "power": 1.45,
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             }
           ],
           "tags": [
             "humanoid",
             "undead"
-          ]
+          ],
+          "attackKind": "heavy",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.65,
+          "guardPressure": 25
         },
         {
           "painter": "mireling",
@@ -29500,12 +29772,19 @@ const CONTENT = {
               "dist": 65,
               "power": 0.8,
               "radius": 22,
-              "status": "poison"
+              "status": "poison",
+              "defense": "dodge",
+              "attackKind": "heavy",
+              "guardPressure": 25
             }
           ],
           "tags": [
             "slime"
-          ]
+          ],
+          "attackKind": "medium",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.38,
+          "guardPressure": 18
         },
         {
           "painter": "corpseLantern",
@@ -29532,7 +29811,10 @@ const CONTENT = {
               "range": 190,
               "windup": 0.9,
               "radius": 95,
-              "power": 1
+              "power": 1,
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             },
             {
               "id": "lantern_false_light",
@@ -29541,13 +29823,20 @@ const CONTENT = {
               "range": 300,
               "windup": 0.55,
               "power": 0.85,
-              "status": "poison"
+              "status": "poison",
+              "defense": "parryable",
+              "attackKind": "medium",
+              "guardPressure": 18
             }
           ],
           "tags": [
             "undead",
             "spirit"
-          ]
+          ],
+          "attackKind": "medium",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.38,
+          "guardPressure": 18
         },
         {
           "painter": "drownedMatron",
@@ -29576,7 +29865,10 @@ const CONTENT = {
               "windup": 1.1,
               "radius": 150,
               "power": 1.2,
-              "status": "poison"
+              "status": "poison",
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             },
             {
               "id": "matron_grasping_tendrils",
@@ -29586,7 +29878,10 @@ const CONTENT = {
               "windup": 0.8,
               "radius": 100,
               "power": 1.15,
-              "status": "root"
+              "status": "root",
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             },
             {
               "id": "matron_rotting_flood",
@@ -29596,13 +29891,20 @@ const CONTENT = {
               "windup": 1.6,
               "radius": 180,
               "power": 1.4,
-              "status": "poison"
+              "status": "poison",
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             }
           ],
           "tags": [
             "spirit",
             "undead"
-          ]
+          ],
+          "attackKind": "heavy",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.65,
+          "guardPressure": 25
         }
       ]
     },
@@ -29656,13 +29958,20 @@ const CONTENT = {
               "windup": 0.65,
               "dist": 155,
               "power": 1.3,
-              "radius": 38
+              "radius": 38,
+              "defense": "dodge",
+              "attackKind": "heavy",
+              "guardPressure": 25
             }
           ],
           "tags": [
             "undead",
             "humanoid"
-          ]
+          ],
+          "attackKind": "heavy",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.65,
+          "guardPressure": 25
         },
         {
           "painter": "wraith",
@@ -29695,7 +30004,10 @@ const CONTENT = {
               "cd": 4.5,
               "range": 340,
               "windup": 0.55,
-              "power": 1.1
+              "power": 1.1,
+              "defense": "parryable",
+              "attackKind": "medium",
+              "guardPressure": 18
             },
             {
               "id": "volley",
@@ -29705,12 +30017,19 @@ const CONTENT = {
               "windup": 0.7,
               "power": 0.9,
               "count": 3,
-              "spread": 0.22
+              "spread": 0.22,
+              "defense": "parryable",
+              "attackKind": "medium",
+              "guardPressure": 18
             }
           ],
           "tags": [
             "humanoid"
-          ]
+          ],
+          "attackKind": "heavy",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.65,
+          "guardPressure": 25
         },
         {
           "painter": "knight",
@@ -29738,13 +30057,20 @@ const CONTENT = {
               "windup": 0.65,
               "dist": 155,
               "power": 1.3,
-              "radius": 38
+              "radius": 38,
+              "defense": "dodge",
+              "attackKind": "heavy",
+              "guardPressure": 25
             }
           ],
           "tags": [
             "undead",
             "construct"
-          ]
+          ],
+          "attackKind": "heavy",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.65,
+          "guardPressure": 25
         },
         {
           "painter": "wraith",
@@ -29770,13 +30096,20 @@ const CONTENT = {
               "cd": 4.5,
               "range": 340,
               "windup": 0.55,
-              "power": 1.1
+              "power": 1.1,
+              "defense": "parryable",
+              "attackKind": "medium",
+              "guardPressure": 18
             }
           ],
           "tags": [
             "spirit",
             "demon"
-          ]
+          ],
+          "attackKind": "light",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.22,
+          "guardPressure": 12
         },
         {
           "painter": "golem",
@@ -29809,7 +30142,10 @@ const CONTENT = {
               "range": 170,
               "windup": 0.95,
               "radius": 100,
-              "power": 1.5
+              "power": 1.5,
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             },
             {
               "id": "quake",
@@ -29818,13 +30154,20 @@ const CONTENT = {
               "range": 210,
               "windup": 0.85,
               "radius": 130,
-              "power": 1.45
+              "power": 1.45,
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             }
           ],
           "tags": [
             "demon",
             "humanoid"
-          ]
+          ],
+          "attackKind": "heavy",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.65,
+          "guardPressure": 25
         },
         {
           "painter": "archer",
@@ -29851,7 +30194,10 @@ const CONTENT = {
               "cd": 3.6,
               "range": 380,
               "windup": 0.75,
-              "power": 1.15
+              "power": 1.15,
+              "defense": "parryable",
+              "attackKind": "medium",
+              "guardPressure": 18
             },
             {
               "id": "volley",
@@ -29861,12 +30207,19 @@ const CONTENT = {
               "windup": 0.7,
               "power": 0.9,
               "count": 3,
-              "spread": 0.22
+              "spread": 0.22,
+              "defense": "parryable",
+              "attackKind": "medium",
+              "guardPressure": 18
             }
           ],
           "tags": [
             "undead"
-          ]
+          ],
+          "attackKind": "heavy",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.65,
+          "guardPressure": 25
         },
         {
           "painter": "graveMoth",
@@ -29894,13 +30247,20 @@ const CONTENT = {
               "windup": 0.55,
               "radius": 60,
               "power": 0.6,
-              "status": "bleed"
+              "status": "bleed",
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             }
           ],
           "tags": [
             "beast",
             "spirit"
-          ]
+          ],
+          "attackKind": "medium",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.38,
+          "guardPressure": 18
         },
         {
           "painter": "chainboundPenitent",
@@ -29927,7 +30287,10 @@ const CONTENT = {
               "range": 170,
               "windup": 0.65,
               "radius": 82,
-              "power": 1.2
+              "power": 1.2,
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             },
             {
               "id": "penitent_iron_punishment",
@@ -29937,13 +30300,20 @@ const CONTENT = {
               "windup": 0.85,
               "dist": 110,
               "power": 1.3,
-              "radius": 45
+              "radius": 45,
+              "defense": "dodge",
+              "attackKind": "heavy",
+              "guardPressure": 25
             }
           ],
           "tags": [
             "undead",
             "humanoid"
-          ]
+          ],
+          "attackKind": "heavy",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.65,
+          "guardPressure": 25
         },
         {
           "painter": "carrionAbomination",
@@ -29970,7 +30340,10 @@ const CONTENT = {
               "range": 190,
               "windup": 1,
               "radius": 110,
-              "power": 1.3
+              "power": 1.3,
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             },
             {
               "id": "abomination_cleaving_arms",
@@ -29980,13 +30353,20 @@ const CONTENT = {
               "windup": 0.55,
               "radius": 78,
               "power": 1.15,
-              "status": "bleed"
+              "status": "bleed",
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             }
           ],
           "tags": [
             "undead",
             "beast"
-          ]
+          ],
+          "attackKind": "heavy",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.65,
+          "guardPressure": 25
         },
         {
           "painter": "bellRinger",
@@ -30015,7 +30395,10 @@ const CONTENT = {
               "windup": 1.25,
               "radius": 160,
               "power": 1.25,
-              "status": "shock"
+              "status": "shock",
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             },
             {
               "id": "bell_grave_summoning",
@@ -30025,7 +30408,10 @@ const CONTENT = {
               "windup": 1.5,
               "radius": 120,
               "power": 0.75,
-              "status": "slow"
+              "status": "slow",
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             },
             {
               "id": "bell_resonance_wave",
@@ -30035,13 +30421,20 @@ const CONTENT = {
               "windup": 0.7,
               "radius": 120,
               "power": 1.1,
-              "status": "stun"
+              "status": "stun",
+              "defense": "dodge",
+              "attackKind": "ultimate",
+              "guardPressure": 45
             }
           ],
           "tags": [
             "undead",
             "demon"
-          ]
+          ],
+          "attackKind": "heavy",
+          "attackDefense": "parryable",
+          "attackTelegraph": 0.65,
+          "guardPressure": 25
         }
       ]
     }

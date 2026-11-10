@@ -11,7 +11,7 @@ const SAVE_PATH = path.join(SAVE_DIR, "setra_world_state.json");
 const config = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf8"));
 const geography = core.createWorld(config);
 
-let state = { version: 1, worldId: config.id, seed: config.seed, players: {}, world: { revealed: {}, consumed: {} }, updatedAt: Date.now() };
+let state = { version: 1, worldId: config.id, seed: config.seed, worldVersion: Number(config.version) || 1, players: {}, world: { revealed: {}, consumed: {} }, updatedAt: Date.now() };
 let world = null;
 let saveTimer = null;
 let saving = false;
@@ -20,7 +20,11 @@ function load() {
   try {
     if (!fs.existsSync(SAVE_PATH)) return;
     const loaded = JSON.parse(fs.readFileSync(SAVE_PATH, "utf8"));
-    if (loaded && loaded.worldId === config.id && loaded.seed === config.seed) {
+    const myVer = Number(config.version) || 1;
+    // Harita sürümü değişince eski koordinatlar (küçük dünyanın spawn'ı)
+    // yeni kıtada okyanusun ortasına düşüyordu: sürüm uyuşmazsa sıfırdan başla.
+    if (loaded && loaded.worldId === config.id && loaded.seed === config.seed &&
+        Number(loaded.worldVersion) === myVer) {
       state = Object.assign(state, loaded);
       state.players = loaded.players || {};
       state.world = Object.assign({ revealed: {}, consumed: {} }, loaded.world || {});

@@ -871,6 +871,7 @@ socket.on("travel:teleport", (p) => { if (window.SetraTravel && p) SetraTravel.t
 socket.on("travel:reveal", () => { if (window.SetraTravel) SetraTravel.reveal(); });
 socket.on("travel:explored", (p) => { if (window.SetraTravel && p && p.add) SetraTravel.addExplored(p.add); });
 socket.on("travel:hp", (p) => { if (window.SetraTravel && p && p.hp != null) SetraTravel.setHp(p.hp); });
+socket.on("travel:restored", (p) => { if (window.SetraTravel && SetraTravel.applyRestored) SetraTravel.applyRestored(p); });
 
 // Tüketilebilir kullanımı (iksir/azık): seyahatte motora canı uygula, her yerde bildir.
 socket.on("inventory:used", (p) => {

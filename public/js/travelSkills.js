@@ -77,6 +77,30 @@
   function hitCone(X, cx, cy, ang, range, arc, mult, o = {}) { let n = 0; alive(X.eng).forEach((m) => { const d = Math.hypot(m.x - cx, m.y - cy); if (d > range + m.radius) return; let df = Math.abs(Math.atan2(m.y - cy, m.x - cx) - ang); while (df > Math.PI) df = Math.abs(df - TAU); if (df <= arc / 2 || d < m.radius + 22) { hurt(X, m, mult, ang, o); n++; } }); return n; }
   const ghostLine = (X, x1, y1, x2, y2, n = 5) => { const P = X.P; for (let i = 1; i <= n; i++) { const u = i / n; P.ghostTrails.push({ x: lerp(x1, x2, u), y: lerp(y1, y2, u), facingAngle: P.facingAngle, alpha: 0.6 * (0.3 + 0.7 * u), color: X.col }); } };
   const teleport = (X, x, y) => { const c = clampMap(X.eng, x, y); X.P.x = c.x; X.P.y = c.y; };
+  // Silah savurma (yetenekler de gerçek bir vuruş animasyonu oynatsın).
+  function swing(X, kind, angle, dur) {
+    const e = X.eng;
+    if (!e || typeof e.swingWeapon !== 'function') return;
+    e.swingWeapon(kind, { angle: angle == null ? X.aim : angle, color: X.col, duration: dur || 0.32, trail: false });
+  }
+  // Kısa yay sıçrayışı: ışınlanma yerine "atlayarak gitme" hissi (assassin chain).
+  function hopTo(X, x, y, ms, height, done) {
+    const { eng, P } = X;
+    const c = clampMap(eng, x, y);
+    const sx = P.x, sy = P.y;
+    const steps = 6, dur = ms || 130, h = height == null ? 46 : height;
+    P.skillLock = Math.max(P.skillLock || 0, dur / 1000);
+    for (let i = 1; i <= steps; i++) {
+      later(X, (dur * i) / steps, () => {
+        const u = i / steps;
+        P.x = lerp(sx, c.x, u);
+        P.y = lerp(sy, c.y, u);
+        P.z = Math.sin(u * Math.PI) * h;
+        if (i % 2 === 0) eng.createGhostTrail();
+        if (i === steps) { P.z = 0; if (done) done(); }
+      });
+    }
+  }
   const invulnerable = (X, sec, lock) => { const P = X.P; P.invuln = Math.max(P.invuln || 0, sec); P.phase = Math.max(P.phase || 0, sec); P.skillLock = Math.max(P.skillLock || 0, lock === undefined ? sec : lock); };
   const world = (X, d, ang) => ({ x: X.P.x + Math.cos(ang) * d, y: X.P.y + Math.sin(ang) * d });
   const target = (X, p) => (p.at === 'self' ? { x: X.P.x, y: X.P.y } : { x: X.eng.mouse.worldX, y: X.eng.mouse.worldY });
@@ -101,18 +125,26 @@
       list.forEach((m, i) => later(X, 90 + i * step, () => {
         const ox = P.x, oy = P.y, a = Math.atan2(m.y - oy, m.x - ox), nx = m.x + Math.cos(a) * (m.radius + 16), ny = m.y + Math.sin(a) * (m.radius + 16);   // hedefin ARKASINA
         const lastHit = i === list.length - 1;
+        // Kılıç savurma: atılış anında ileri saplama.
+        swing(X, 'thrust', a, 0.26);
+        eng.sound.play('slash');
         fx(X, 'lineSlash', ox, oy, { tx: nx, ty: ny, radius: 60 }); ghostLine(X, ox, oy, nx, ny, 6);
-        teleport(X, nx, ny); P.facingAngle = a + Math.PI;
-        fx(X, 'shadowStep', P.x, P.y, { radius: 52 }); fx(X, 'slashX', m.x, m.y, { radius: 62, dir: Math.atan2(m.y - ny, m.x - nx) * 0 });
-        hurt(X, m, lastHit ? (p.dmg || 1.7) * (p.last || 1.5) : (p.dmg || 1.7), a, { crit: lastHit || Math.random() < 0.5, kb: lastHit ? 360 : 200, stun: lastHit ? 0.5 : 0.2 });
-        eng.addTrauma(lastHit ? 0.5 : 0.25); eng.sound.play(lastHit ? 'hit' : 'slash');
-        if (lastHit) { fx(X, 'bloodScythe', m.x, m.y, { radius: 55 }); eng.spawnExplosionParticles(m.x, m.y, 14, X.col); }
+        // Işınlanma yerine yay çizen kısa sıçrayış (Warrior leap hissi).
+        hopTo(X, nx, ny, 130, lastHit ? 58 : 44, () => {
+          P.facingAngle = a + Math.PI;
+          swing(X, lastHit ? 'slash' : 'slash', a + Math.PI, lastHit ? 0.36 : 0.28);
+          fx(X, 'shadowStep', P.x, P.y, { radius: 52 }); fx(X, 'slashX', m.x, m.y, { radius: 62, dir: Math.atan2(m.y - ny, m.x - nx) * 0 });
+          hurt(X, m, lastHit ? (p.dmg || 1.7) * (p.last || 1.5) : (p.dmg || 1.7), a, { crit: lastHit || Math.random() < 0.5, kb: lastHit ? 360 : 200, stun: lastHit ? 0.5 : 0.2 });
+          eng.addTrauma(lastHit ? 0.5 : 0.25); eng.sound.play(lastHit ? 'hit' : 'slash');
+          if (lastHit) { fx(X, 'bloodScythe', m.x, m.y, { radius: 55 }); eng.spawnExplosionParticles(m.x, m.y, 14, X.col); }
+        });
       }));
       return true;
     },
     blink(X, p) {
       const { eng, P } = X, d = Math.min(Math.hypot(eng.mouse.worldX - P.x, eng.mouse.worldY - P.y), p.range || 240), a = X.aim, ox = P.x, oy = P.y;
       invulnerable(X, p.invuln || 0.3, 0.12); fx(X, p.fx || 'shadowStep', ox, oy, { radius: p.fxr || 55 }); eng.createGhostTrail();
+      swing(X, 'thrust', a, 0.28);
       const dst = world(X, d, a); teleport(X, dst.x, dst.y); ghostLine(X, ox, oy, P.x, P.y, 6); fx(X, 'lineSlash', ox, oy, { tx: P.x, ty: P.y, radius: 50 });
       later(X, 40, () => { fx(X, p.fx || 'shadowStep', P.x, P.y, { radius: p.fxr || 55 }); if (p.nova) { hitRadius(X, P.x, P.y, p.nova.radius, p.nova.dmg, { kb: 260, stun: p.nova.stun }); fx(X, 'pulseNova', P.x, P.y, { radius: p.nova.radius }); eng.addTrauma(0.3); } });
       if (p.refund) X.refund = p.refund; return true;
@@ -120,6 +152,7 @@
     pierce(X, p) {
       const { eng, P } = X, a = X.aim, ox = P.x, oy = P.y, dst = clampMap(eng, ox + Math.cos(a) * (p.range || 250), oy + Math.sin(a) * (p.range || 250));
       invulnerable(X, p.invuln || 0.3, 0.22); fx(X, 'shadowStep', ox, oy, { radius: 50 }); eng.createGhostTrail();
+      swing(X, 'thrust', a, 0.3);
       later(X, 70, () => { fx(X, 'lineSlash', ox, oy, { tx: dst.x, ty: dst.y, radius: 70 }); ghostLine(X, ox, oy, dst.x, dst.y, 8); hitLine(X, ox, oy, dst.x, dst.y, p.width || 56, p.dmg || 2, { crit: true, kb: 320, stun: p.stun }, new Set()); P.x = dst.x; P.y = dst.y; fx(X, 'shadowStep', dst.x, dst.y, { radius: 50 }); fx(X, 'slashX', dst.x, dst.y, { radius: 55 }); eng.addTrauma(0.4); eng.sound.play('hit'); });
       return true;
     },
@@ -127,6 +160,7 @@
       const { eng, P } = X, a = p.back ? X.aim + Math.PI : X.aim, dist0 = p.dist || 210, steps = 9, dur = p.dur || 190, sx = P.x, sy = P.y, seen = new Set();
       const end = clampMap(eng, sx + Math.cos(a) * dist0, sy + Math.sin(a) * dist0);
       P.skillLock = dur / 1000 + 0.04; if (p.invuln) { P.invuln = Math.max(P.invuln || 0, p.invuln); }
+      swing(X, 'thrust', a, 0.28);
       fx(X, p.fx || 'lineSlash', sx, sy, fxo(X, p, { tx: end.x, ty: end.y }));
       for (let i = 1; i <= steps; i++) later(X, dur * i / steps, () => {
         P.x = lerp(sx, end.x, i / steps); P.y = lerp(sy, end.y, i / steps); if (i % 2 === 0) eng.createGhostTrail();
@@ -137,10 +171,11 @@
     leap(X, p) {
       const { eng, P } = X, d = Math.min(Math.hypot(eng.mouse.worldX - P.x, eng.mouse.worldY - P.y), p.range || 260), a = X.aim, sx = P.x, sy = P.y, steps = 16, dur = p.dur || 420;
       const end = clampMap(eng, sx + Math.cos(a) * d, sy + Math.sin(a) * d); P.skillLock = dur / 1000 + 0.05; P.invuln = Math.max(P.invuln || 0, dur / 1000);
+      swing(X, 'thrust', a, 0.3);
       fx(X, 'pulseNova', sx, sy, { radius: 40 });
       for (let i = 1; i <= steps; i++) later(X, dur * i / steps, () => {
         const u = i / steps; P.x = lerp(sx, end.x, u); P.y = lerp(sy, end.y, u); P.z = Math.sin(u * Math.PI) * (p.h || 70); if (i % 4 === 0) eng.createGhostTrail();
-        if (i === steps) { P.z = 0; hitRadius(X, P.x, P.y, p.radius || 100, p.dmg || 1.8, { kb: 320, stun: p.stun, leech: p.leech }); fx(X, p.fx || 'groundSlam', P.x, P.y, fxo(X, p, { radius: p.fxr || p.radius })); eng.addTrauma(0.5); eng.sound.play('hit'); eng.spawnExplosionParticles(P.x, P.y, 14, X.col); }
+        if (i === steps) { P.z = 0; swing(X, 'slam', a, 0.46); hitRadius(X, P.x, P.y, p.radius || 100, p.dmg || 1.8, { kb: 320, stun: p.stun, leech: p.leech }); fx(X, p.fx || 'groundSlam', P.x, P.y, fxo(X, p, { radius: p.fxr || p.radius })); eng.addTrauma(0.5); eng.sound.play('hit'); eng.spawnExplosionParticles(P.x, P.y, 14, X.col); }
       });
       return true;
     },
@@ -149,23 +184,26 @@
       fx(X, 'arcaneCircle', t.x, t.y, { radius: (p.radius || 100) * 0.9, duration: Math.max(0.4, (base + 200) / 1000) });
       waves.forEach((w, i) => later(X, base + (w.delay || 0), () => {
         const cx = p.at === 'self' ? X.P.x : t.x, cy = p.at === 'self' ? X.P.y : t.y;
+        swing(X, 'slam', X.aim, 0.42);
         hitRadius(X, cx, cy, w.radius, w.dmg, { kb: p.kb === undefined ? 300 : p.kb, stun: p.stun, slow: p.slow, leech: p.leech, crit: i === waves.length - 1 && p.crit });
         fx(X, p.fx || 'groundSlam', cx, cy, fxo(X, p, { radius: p.fxr || w.radius })); X.eng.addTrauma(0.45); X.eng.sound.play('hit'); X.eng.spawnExplosionParticles(cx, cy, 12, X.col);
       }));
       return true;
     },
     nova(X, p) {
-      const run = () => { const { P } = X; hitRadius(X, P.x, P.y, p.radius || 120, p.dmg || 1.5, { kb: p.kb === undefined ? 260 : p.kb, stun: p.stun, slow: p.slow, leech: p.leech, exec: p.exec }); fx(X, p.fx || 'pulseNova', P.x, P.y, fxo(X, p, { radius: p.fxr || p.radius })); X.eng.addTrauma(0.4); X.eng.spawnExplosionParticles(P.x, P.y, 12, X.col); };
+      const run = () => { const { P } = X; swing(X, 'slam', X.aim, 0.42); hitRadius(X, P.x, P.y, p.radius || 120, p.dmg || 1.5, { kb: p.kb === undefined ? 260 : p.kb, stun: p.stun, slow: p.slow, leech: p.leech, exec: p.exec }); fx(X, p.fx || 'pulseNova', P.x, P.y, fxo(X, p, { radius: p.fxr || p.radius })); X.eng.addTrauma(0.4); X.eng.spawnExplosionParticles(P.x, P.y, 12, X.col); };
       p.delay ? later(X, p.delay, run) : run(); return true;
     },
     cone(X, p) {
       const { P } = X, a = X.aim, ticks = p.ticks || 1, dur = p.dur || 0, e = X.eng, tx = P.x + Math.cos(a) * (p.range || 120), ty = P.y + Math.sin(a) * (p.range || 120);
+      swing(X, 'swing', a, 0.32);
       fx(X, p.fx || 'crescentSlash', P.x, P.y, fxo(X, p, { tx, ty, duration: p.fxd || (dur ? dur / 1000 + 0.3 : undefined) }));
       for (let i = 0; i < ticks; i++) later(X, ticks > 1 ? dur * i / (ticks - 1) : 0, () => { hitCone(X, P.x, P.y, a, p.range || 120, p.arc || 1.6, p.dmg || 1.5, { kb: p.kb === undefined ? 220 : p.kb, stun: p.stun, slow: p.slow, leech: p.leech, exec: p.exec }); if (i === 0) e.addTrauma(0.3); });
       if (p.lock) P.skillLock = Math.max(P.skillLock || 0, dur / 1000); return true;
     },
     beam(X, p) {
       const { P } = X, a = X.aim, L = p.len || 340, ticks = p.ticks || 1, dur = p.dur || 150, ex = P.x + Math.cos(a) * L, ey = P.y + Math.sin(a) * L;
+      swing(X, 'thrust', a, 0.3);
       fx(X, p.fx || 'beamLine', P.x, P.y, fxo(X, p, { tx: ex, ty: ey, head: p.head, duration: dur / 1000 + 0.4 }));
       for (let i = 0; i < ticks; i++) later(X, ticks > 1 ? dur * i / (ticks - 1) : 60, () => { hitLine(X, P.x, P.y, P.x + Math.cos(a) * L, P.y + Math.sin(a) * L, p.width || 46, p.dmg || 1.8, { kb: 240, stun: p.stun, slow: p.slow, leech: p.leech, crit: p.crit }); if (i === 0) X.eng.addTrauma(0.3); });
       return true;
@@ -173,6 +211,7 @@
     fan(X, p) {
       const { eng, P } = X, a = X.aim, n = p.n || 5, waves = p.waves || 1;
       if (p.recoil !== 0) { eng.createGhostTrail(); P.x -= Math.cos(a) * (p.recoil || 12); P.y -= Math.sin(a) * (p.recoil || 12); }
+      swing(X, 'thrust', a, 0.24);
       for (let w = 0; w < waves; w++) later(X, w * (p.gap || 110), () => {
         eng.sound.play('shoot');
         for (let i = 0; i < n; i++) { const ang = a + (i - (n - 1) / 2) * (p.spread || 0.12) + (w % 2 ? (p.spread || 0.12) * 0.5 : 0); eng.projectiles.push({ type: p.ptype || 'arrow', x: P.x + Math.cos(ang) * 16, y: P.y + Math.sin(ang) * 16, vx: Math.cos(ang) * (p.speed || 650), vy: Math.sin(ang) * (p.speed || 650), radius: 6, life: 0.95, damage: X.atk * (p.dmg || 0.8), isCrit: !!p.crit, color: X.col }); }
@@ -180,6 +219,7 @@
     },
     rain(X, p) {
       const t = target(X, p), n = p.n || 10, dur = p.dur || 1600, R = p.radius || 150;
+      swing(X, 'cast', Math.atan2(t.y - X.P.y, t.x - X.P.x), 0.34);
       if (p.zonefx) fx(X, p.zonefx, t.x, t.y, { radius: R, duration: dur / 1000 + 0.3 }); else fx(X, 'arcaneCircle', t.x, t.y, { radius: R * 0.95, duration: dur / 1000 + 0.2 });
       for (let i = 0; i < n; i++) { const a = Math.random() * TAU, r = Math.sqrt(Math.random()) * R, x = t.x + Math.cos(a) * r, y = t.y + Math.sin(a) * r, at = dur * i / n + 120;
         later(X, at, () => { fx(X, p.fx || 'arrowDrop', x, y, { radius: p.fxr, duration: p.fxd, color: X.col }); });
@@ -187,7 +227,8 @@
       X.eng.addTrauma(0.2); return true;
     },
     pillar(X, p) {
-      const t = target(X, p), cnt = p.count || 1, spread = p.spread || 0, rnd = (i) => { if (cnt === 1) return { x: t.x, y: t.y }; const a = i / cnt * TAU + 0.4; return { x: t.x + Math.cos(a) * spread, y: t.y + Math.sin(a) * spread }; };
+      const t = target(X, p), cnt = p.count || 1, spread = p.spread || 0; swing(X, 'cast', Math.atan2(t.y - X.P.y, t.x - X.P.x), 0.34);
+      const rnd = (i) => { if (cnt === 1) return { x: t.x, y: t.y }; const a = i / cnt * TAU + 0.4; return { x: t.x + Math.cos(a) * spread, y: t.y + Math.sin(a) * spread }; };
       for (let i = 0; i < cnt; i++) { const q = rnd(i), at = (p.gap || 0) * i;
         later(X, at, () => fx(X, p.fx || 'holyBeam', q.x, q.y, fxo(X, p, { radius: p.fxr || p.radius })));
         later(X, at + (p.delay || 400), () => { hitRadius(X, q.x, q.y, p.radius || 90, p.dmg || 1.8, { kb: 300, stun: p.stun, slow: p.slow }); X.eng.addTrauma(0.35); X.eng.sound.play('hit'); X.eng.spawnExplosionParticles(q.x, q.y, 10, X.col); }); }
@@ -195,6 +236,7 @@
     },
     zone(X, p) {
       const t = target(X, p), dur = p.dur || 3000, tick = p.tick || 500, R = p.radius || 130, n = Math.max(1, Math.floor(dur / tick));
+      swing(X, 'cast', Math.atan2(t.y - X.P.y, t.x - X.P.x), 0.34);
       fx(X, p.fx || 'arcaneCircle', t.x, t.y, fxo(X, p, { radius: p.fxr || R, duration: dur / 1000 + 0.2 }));
       for (let i = 1; i <= n; i++) later(X, tick * i, () => {
         if (p.dmg) hitRadius(X, t.x, t.y, R, p.dmg, { kb: 60, stun: p.stun, slow: p.slow, leech: p.leech, pull: p.pull });
@@ -205,12 +247,14 @@
     orbit(X, p) {
       const dur = p.dur || 3000, tick = p.tick || 400, R = p.radius || 100, n = Math.max(1, Math.floor(dur / tick));
       if (p.invuln) invulnerable(X, dur / 1000 + 0.15, dur / 1000);
+      swing(X, 'spin', X.aim, 0.42);
       fx(X, p.fx || 'bladeStorm', X.P.x, X.P.y, fxo(X, p, { radius: p.fxr || R, follow: true, duration: dur / 1000 + 0.3 }));
       for (let i = 1; i <= n; i++) later(X, tick * i, () => { const { P } = X; const last = i === n && p.final; hitRadius(X, P.x, P.y, last ? p.final.radius : R, last ? p.final.dmg : p.dmg || 0.6, { kb: last ? 420 : 140, leech: p.leech, stun: last ? p.final.stun : 0, crit: !!last }); if (last) { fx(X, 'pulseNova', P.x, P.y, { radius: p.final.radius }); X.eng.addTrauma(0.5); X.eng.spawnExplosionParticles(P.x, P.y, 20, X.col); } else if (i % 2 === 0) X.eng.addTrauma(0.1); });
       return true;
     },
     buff(X, p) {
       const { eng, P } = X, dur = (p.dur || 4) * 1000;
+      swing(X, 'cast', X.aim, 0.36);
       if (p.invuln) invulnerable(X, p.invuln, 0);
       if (p.shield) shieldSet(X, X.stats.maxHp * p.shield, (p.dur || 4));
       if (p.heal) heal(X, X.stats.maxHp * p.heal);
@@ -222,7 +266,7 @@
       if (p.endHeal) later(X, dur, () => heal(X, X.stats.maxHp * p.endHeal));
       fx(X, p.fx || 'shieldDome', P.x, P.y, fxo(X, p, { follow: true, duration: dur / 1000, radius: p.fxr || 46 })); eng.addTrauma(0.2); eng.sound.play('ultimate'); return true;
     },
-    heal(X, p) { heal(X, X.stats.maxHp * (p.pct || 0.2)); if (p.fx !== null) fx(X, p.fx || 'healPulse', X.P.x, X.P.y, fxo(X, p, { follow: true, radius: p.fxr || 60 })); X.eng.sound.play('ultimate'); return true; },
+    heal(X, p) { swing(X, 'cast', X.aim, 0.34); heal(X, X.stats.maxHp * (p.pct || 0.2)); if (p.fx !== null) fx(X, p.fx || 'healPulse', X.P.x, X.P.y, fxo(X, p, { follow: true, radius: p.fxr || 60 })); X.eng.sound.play('ultimate'); return true; },
     // ===================== YENİ DAVRANIŞLAR =====================
     // Zincir kanca: önündeki düşman(lar)ı yanına çeker
     hook(X, p) {
@@ -230,6 +274,7 @@
       const list = alive(eng).filter((m) => segDist(m.x, m.y, P.x, P.y, ex, ey) <= w / 2 + m.radius).sort((u, v) => dist(u, P) - dist(v, P)).slice(0, p.n || 1);
       fx(X, p.fx || 'lineSlash', P.x, P.y, { tx: list.length ? list[0].x : ex, ty: list.length ? list[0].y : ey, radius: 50 });
       if (!list.length) { X.refund = 0.4; return true; }
+      swing(X, 'thrust', a, 0.3);
       list.forEach((m, k) => {
         const ox = m.x, oy = m.y, off = (k - (list.length - 1) / 2) * 38, perp = a + Math.PI / 2;
         const tx = P.x + Math.cos(a) * (m.radius + 34) + Math.cos(perp) * off, ty = P.y + Math.sin(a) * (m.radius + 34) + Math.sin(perp) * off;
@@ -246,6 +291,7 @@
       for (let i = 0; i < n; i++) later(X, i * gap, () => {
         const c = clampMap(eng, P.x + Math.cos(a) * adv, P.y + Math.sin(a) * adv); P.x = c.x; P.y = c.y; P.facingAngle = a;
         const sa = a + (i % 2 ? 0.55 : -0.55), last = i === n - 1;
+        swing(X, last ? 'swing' : 'slash', sa, last ? 0.34 : 0.2);
         hitCone(X, P.x, P.y, a, p.range || 115, p.arc || 2, last ? (p.dmg || 0.9) * 1.6 : (p.dmg || 0.9), { kb: last ? 320 : 70, stun: last ? (p.stun || 0.4) : 0, crit: last });
         fx(X, p.fx || 'crescentSlash', P.x, P.y, { tx: P.x + Math.cos(sa) * 100, ty: P.y + Math.sin(sa) * 100, radius: p.fxr || 80 });
         if (i % 2 === 0) eng.createGhostTrail(); eng.addTrauma(last ? 0.45 : 0.15); eng.sound.play(last ? 'hit' : 'slash');
@@ -256,6 +302,7 @@
     // Tuzak: yere kurulur, düşman yaklaşınca patlar
     trap(X, p) {
       const base = target(X, p), cnt = p.count || 1, R = p.radius || 90, life = p.life || 6000, arm = p.arm || 500;
+      swing(X, 'cast', Math.atan2(base.y - X.P.y, base.x - X.P.x), 0.32);
       for (let i = 0; i < cnt; i++) {
         const ang = i / cnt * TAU + 0.5, sp = p.spread || 100, pos = cnt === 1 ? { x: base.x, y: base.y } : { x: base.x + Math.cos(ang) * sp, y: base.y + Math.sin(ang) * sp };
         let done = false;
@@ -274,6 +321,7 @@
     // Yem: geride kopya bırakır, gecikmeyle patlar (isteğe bağlı geri sıçrama)
     decoy(X, p) {
       const { eng, P } = X, cnt = p.count || 1, R = p.radius || 110, origin = { x: P.x, y: P.y }, a = X.aim;
+      swing(X, 'cast', a, 0.32);
       if (p.invuln) invulnerable(X, p.invuln, 0.1);
       if (p.back) { fx(X, 'shadowStep', origin.x, origin.y, { radius: 50 }); eng.createGhostTrail(); const d = world(X, p.back, a + Math.PI); teleport(X, d.x, d.y); ghostLine(X, origin.x, origin.y, P.x, P.y, 6); }
       for (let i = 0; i < cnt; i++) {
@@ -286,6 +334,7 @@
     // Sabit kule: süre boyunca en yakın düşmanlara ateş eder
     turret(X, p) {
       const t = target(X, p), dur = p.dur || 4000, tick = p.tick || 500, n = Math.max(1, Math.floor(dur / tick)), Rg = p.range || 340;
+      swing(X, 'cast', Math.atan2(t.y - X.P.y, t.x - X.P.x), 0.34);
       fx(X, p.fx || 'treeOfLife', t.x, t.y, { radius: p.fxr || 60, duration: dur / 1000 + 0.2 });
       for (let i = 1; i <= n; i++) later(X, tick * i, () => {
         near(X, t.x, t.y, Rg).slice(0, p.shots || 1).forEach((m) => {
@@ -299,6 +348,7 @@
     // Takipçi: oyuncuyu izler, süre boyunca en yakın düşmanlara saldırır
     familiar(X, p) {
       const dur = p.dur || 4000, tick = p.tick || 450, n = Math.max(1, Math.floor(dur / tick)), Rg = p.range || 380;
+      swing(X, 'cast', X.aim, 0.34);
       fx(X, p.fx || 'spiritWolves', X.P.x, X.P.y, fxo(X, p, { follow: true, duration: dur / 1000 + 0.2, radius: p.fxr || 85 }));
       for (let i = 1; i <= n; i++) later(X, tick * i, () => {
         const { P } = X, oa = i * 1.7;
@@ -315,6 +365,7 @@
       const { eng, P } = X, n = p.n || 4, hop = p.hop || 250, seen = new Set(), links = []; let cur = { x: P.x, y: P.y };
       for (let i = 0; i < n; i++) { const m = near(X, cur.x, cur.y, i ? hop : (p.range || 400), seen)[0]; if (!m) break; seen.add(m); links.push({ m, from: { x: cur.x, y: cur.y } }); cur = m; }
       if (!links.length) { X.refund = 0.4; return true; }
+      swing(X, 'cast', X.aim, 0.32);
       links.forEach((l, i) => later(X, 40 + i * (p.gap || 85), () => {
         fx(X, p.fx || 'lineSlash', l.from.x, l.from.y, { tx: l.m.x, ty: l.m.y, radius: 45 });
         if (p.hitfx) fx(X, p.hitfx, l.m.x, l.m.y, { radius: p.fxr || 50 });
@@ -327,6 +378,7 @@
     // İşaret: imlece en yakın düşmanı işaretler, gecikmeyle infaz eder
     mark(X, p) {
       const { eng } = X, c = { x: eng.mouse.worldX, y: eng.mouse.worldY }, m = near(X, c.x, c.y, p.range || 300)[0], delay = p.delay || 1000, at = m ? { x: m.x, y: m.y } : c;
+      swing(X, 'cast', Math.atan2(at.y - X.P.y, at.x - X.P.x), 0.34);
       fx(X, p.markfx || 'arcaneCircle', at.x, at.y, { radius: 55, duration: delay / 1000 });
       later(X, delay, () => {
         const ok = m && m.hp > 0 && !m.dead, x = ok ? m.x : at.x, y = ok ? m.y : at.y;
@@ -340,7 +392,7 @@
     // Zaman geri sarma: süre sonunda eski konuma ve (düşmüşse) eski cana döner
     rewind(X, p) {
       const { eng, P, stats } = X, sx = P.x, sy = P.y, hp0 = stats.currentHp, dur = p.dur || 2500;
-      invulnerable(X, p.invuln || 0.3, 0); fx(X, 'dimensionRift', sx, sy, { radius: 55, duration: dur / 1000 });
+      invulnerable(X, p.invuln || 0.3, 0); fx(X, 'dimensionRift', sx, sy, { radius: 55, duration: dur / 1000 }); swing(X, 'cast', X.aim, 0.34);
       later(X, dur, () => {
         const ox = P.x, oy = P.y; eng.createGhostTrail(); fx(X, 'dimensionRift', ox, oy, { radius: 55 }); ghostLine(X, ox, oy, sx, sy, 8);
         teleport(X, sx, sy); fx(X, 'pulseNova', sx, sy, { radius: p.radius || 110 }); hitRadius(X, sx, sy, p.radius || 110, p.dmg || 1.2, { kb: 240 });
@@ -353,7 +405,7 @@
     swap(X, p) {
       const { eng, P } = X, c = { x: eng.mouse.worldX, y: eng.mouse.worldY }, m = near(X, c.x, c.y, 220).filter((q) => dist(q, P) <= (p.range || 480))[0];
       if (!m) return B.blink(X, { range: 200, invuln: 0.3, fx: 'shadowStep', refund: 0.5 });
-      const ox = P.x, oy = P.y, mx = m.x, my = m.y; invulnerable(X, 0.35, 0.1); eng.createGhostTrail();
+      const ox = P.x, oy = P.y, mx = m.x, my = m.y; invulnerable(X, 0.35, 0.1); eng.createGhostTrail(); swing(X, 'thrust', Math.atan2(my - oy, mx - ox), 0.3);
       fx(X, 'shadowStep', ox, oy, { radius: 55 }); fx(X, 'shadowStep', mx, my, { radius: 55 }); fx(X, 'lineSlash', ox, oy, { tx: mx, ty: my, radius: 50 });
       teleport(X, mx, my); m.x = ox; m.y = oy; ghostLine(X, ox, oy, P.x, P.y, 6);
       later(X, 60, () => { hurt(X, m, p.dmg || 1.3, Math.atan2(m.y - P.y, m.x - P.x), { kb: 0, stun: p.stun || 0.7 }); if (p.nova) { hitRadius(X, P.x, P.y, p.nova.radius, p.nova.dmg, { kb: 220 }); fx(X, 'pulseNova', P.x, P.y, { radius: p.nova.radius }); } eng.addTrauma(0.35); eng.sound.play('hit'); });
@@ -365,18 +417,19 @@
       stats.currentHp -= cost; if (eng.onStatsChange) eng.onStatsChange(stats); eng.spawnDamageNumber(P.x, P.y, `-${Math.round(cost)}`, '#ff1744');
       const mult = (p.dmg || 1.2) + (cost / stats.maxHp) * (p.scale || 10), cx = P.x, cy = P.y;
       fx(X, p.fx || 'bloodRitual', cx, cy, { radius: p.fxr || 140, duration: (p.delay || 400) / 1000 + 0.3 });
-      later(X, p.delay || 400, () => { hitRadius(X, cx, cy, p.radius || 170, mult, { kb: 340, stun: p.stun, leech: p.leech }); fx(X, 'pulseNova', cx, cy, { radius: p.radius || 170 }); eng.addTrauma(0.55); eng.sound.play('hit'); eng.spawnExplosionParticles(cx, cy, 20, X.col); });
+      later(X, p.delay || 400, () => { swing(X, 'slam', X.aim, 0.44); hitRadius(X, cx, cy, p.radius || 170, mult, { kb: 340, stun: p.stun, leech: p.leech }); fx(X, 'pulseNova', cx, cy, { radius: p.radius || 170 }); eng.addTrauma(0.55); eng.sound.play('hit'); eng.spawnExplosionParticles(cx, cy, 20, X.col); });
       return true;
     },
     // Can emme: vurulan düşman sayısı kadar iyileştirir
     siphon(X, p) {
-      const run = () => { const { P } = X; const hits = hitRadius(X, P.x, P.y, p.radius || 150, p.dmg || 1.5, { kb: 240, leech: p.leech, stun: p.stun }); heal(X, X.stats.maxHp * (p.per || 0.03) * Math.min(hits, p.cap || 8)); fx(X, p.fx || 'soulHarvest', P.x, P.y, fxo(X, p, { radius: p.fxr || p.radius })); X.eng.addTrauma(0.4); X.eng.spawnExplosionParticles(P.x, P.y, 14, X.col); };
+      const run = () => { const { P } = X; swing(X, 'spin', X.aim, 0.4); const hits = hitRadius(X, P.x, P.y, p.radius || 150, p.dmg || 1.5, { kb: 240, leech: p.leech, stun: p.stun }); heal(X, X.stats.maxHp * (p.per || 0.03) * Math.min(hits, p.cap || 8)); fx(X, p.fx || 'soulHarvest', P.x, P.y, fxo(X, p, { radius: p.fxr || p.radius })); X.eng.addTrauma(0.4); X.eng.spawnExplosionParticles(P.x, P.y, 14, X.col); };
       p.delay ? later(X, p.delay, run) : run();
       return true;
     },
     // Duvar: önünde yan yana bir hat boyunca kalıcı hasar/yavaşlatma
     wall(X, p) {
       const { P } = X, a = X.aim, N = p.n || 5, L = p.len || 340, dur = p.dur || 3000, tick = p.tick || 500, perp = a + Math.PI / 2, cx = P.x + Math.cos(a) * (p.dist || 160), cy = P.y + Math.sin(a) * (p.dist || 160), seenK = {};
+      swing(X, 'cast', a, 0.34);
       for (let i = 0; i < N; i++) {
         const u = N === 1 ? 0 : (i / (N - 1) - 0.5) * L, pos = { x: cx + Math.cos(perp) * u, y: cy + Math.sin(perp) * u };
         later(X, i * 55, () => fx(X, p.fx || 'vineGrasp', pos.x, pos.y, fxo(X, p, { radius: p.fxr || 50, duration: dur / 1000, follow: false })));
@@ -388,6 +441,7 @@
     trail(X, p) {
       const { eng, P } = X, a = X.aim, d0 = p.dist || 240, dur = p.dur || 220, steps = 10, sx = P.x, sy = P.y, end = clampMap(eng, sx + Math.cos(a) * d0, sy + Math.sin(a) * d0), seenK = {};
       P.skillLock = dur / 1000 + 0.04; P.invuln = Math.max(P.invuln || 0, dur / 1000 + 0.1);
+      swing(X, 'thrust', a, 0.28);
       fx(X, 'lineSlash', sx, sy, { tx: end.x, ty: end.y, radius: 55 }); eng.createGhostTrail();
       for (let i = 1; i <= steps; i++) later(X, dur * i / steps, () => {
         P.x = lerp(sx, end.x, i / steps); P.y = lerp(sy, end.y, i / steps); if (i % 3 === 0) eng.createGhostTrail();
@@ -406,6 +460,7 @@
     ram(X, p) {
       const { eng, P } = X, a = X.aim, d0 = p.dist || 260, dur = p.dur || 260, steps = 10, sx = P.x, sy = P.y, end = clampMap(eng, sx + Math.cos(a) * d0, sy + Math.sin(a) * d0), caught = [], perp = a + Math.PI / 2;
       P.skillLock = dur / 1000 + 0.05; P.invuln = Math.max(P.invuln || 0, (p.invuln || 0.3) + dur / 1000);
+      swing(X, 'thrust', a, 0.32);
       fx(X, p.fx || 'lineSlash', sx, sy, fxo(X, p, { tx: end.x, ty: end.y, radius: 70 })); eng.createGhostTrail();
       for (let i = 1; i <= steps; i++) later(X, dur * i / steps, () => {
         P.x = lerp(sx, end.x, i / steps); P.y = lerp(sy, end.y, i / steps); if (i % 3 === 0) eng.createGhostTrail();
@@ -418,6 +473,7 @@
     // Fay hattı: ileri doğru art arda yer patlamaları (isteğe bağlı çok şeritli)
     quake(X, p) {
       const { P } = X, a = X.aim, n = p.n || 5, step = p.step || 85, lanes = p.lanes || 1, perp = a + Math.PI / 2, ox = P.x, oy = P.y;
+      swing(X, 'slam', a, 0.4);
       for (let l = 0; l < lanes; l++) {
         const off = (l - (lanes - 1) / 2) * (p.lanegap || 110);
         for (let i = 0; i < n; i++) {
@@ -429,7 +485,7 @@
     },
     // 360° mermi halkası, dalga başına dönerek (spiral)
     ring(X, p) {
-      const { eng, P } = X, n = p.n || 10, waves = p.waves || 3; fx(X, p.fx || 'pulseNova', P.x, P.y, { radius: 60 });
+      const { eng, P } = X, n = p.n || 10, waves = p.waves || 3; swing(X, 'cast', X.aim, 0.36); fx(X, p.fx || 'pulseNova', P.x, P.y, { radius: 60 });
       for (let w = 0; w < waves; w++) later(X, w * (p.gap || 130), () => {
         eng.sound.play('shoot'); const rot = w * (p.twist || 0.3);
         for (let i = 0; i < n; i++) { const ang = i / n * TAU + rot; eng.projectiles.push({ type: p.ptype || 'arrow', x: P.x + Math.cos(ang) * 16, y: P.y + Math.sin(ang) * 16, vx: Math.cos(ang) * (p.speed || 600), vy: Math.sin(ang) * (p.speed || 600), radius: 6, life: 0.9, damage: X.atk * (p.dmg || 0.7), isCrit: !!p.crit, color: X.col }); }
@@ -440,13 +496,15 @@
     boomerang(X, p) {
       const { eng, P } = X, a = X.aim, L = p.len || 320, ex = P.x + Math.cos(a) * L, ey = P.y + Math.sin(a) * L, ox = P.x, oy = P.y, back = p.back || 420, w = p.width || 60;
       eng.sound.play('slash'); fx(X, p.fx || 'lineSlash', ox, oy, { tx: ex, ty: ey, radius: 55 });
+      swing(X, 'thrust', a, 0.3);
       later(X, 90, () => { hitLine(X, ox, oy, ex, ey, w, p.dmg || 1.3, { kb: 160, crit: p.crit, leech: p.leech, stun: p.stun }, new Set()); fx(X, 'slashX', ex, ey, { radius: 60 }); eng.addTrauma(0.2); });
-      later(X, back, () => { const px = X.P.x, py = X.P.y; fx(X, p.fx || 'lineSlash', ex, ey, { tx: px, ty: py, radius: 55 }); hitLine(X, ex, ey, px, py, w, p.dmg || 1.3, { kb: 120, crit: p.crit, leech: p.leech, stun: p.stun }, new Set()); fx(X, 'slashX', px, py, { radius: 50 }); eng.addTrauma(0.2); eng.sound.play('hit'); });
+      later(X, back, () => { const px = X.P.x, py = X.P.y; swing(X, 'thrust', a + Math.PI, 0.26); fx(X, p.fx || 'lineSlash', ex, ey, { tx: px, ty: py, radius: 55 }); hitLine(X, ex, ey, px, py, w, p.dmg || 1.3, { kb: 120, crit: p.crit, leech: p.leech, stun: p.stun }, new Set()); fx(X, 'slashX', px, py, { radius: 50 }); eng.addTrauma(0.2); eng.sound.play('hit'); });
       return true;
     },
     // Zaman durdurma: alandaki herkesi sersemletir, isteğe bağlı hasar + final patlaması
     freeze(X, p) {
       const { eng, P } = X, R = p.radius || 320, cx = P.x, cy = P.y, st = p.stun || 2.5, tick = p.tick || 500, ticks = p.ticks || 0;
+      swing(X, 'cast', X.aim, 0.38);
       fx(X, p.fx || 'arcaneCircle', cx, cy, fxo(X, p, { radius: p.fxr || R * 0.8, duration: st + 0.4, follow: false })); eng.addTrauma(0.4); eng.sound.play('ultimate');
       alive(eng).forEach((m) => { if (Math.hypot(m.x - cx, m.y - cy) <= R + m.radius) m.stun = Math.max(m.stun || 0, st); });
       for (let k = 1; k <= ticks; k++) later(X, tick * k, () => { hitRadius(X, cx, cy, R, p.dmg || 0.4, { kb: 0 }); });
@@ -456,6 +514,7 @@
     // Girdap: düşmanları merkeze çeker, sonunda büyük patlama
     vortex(X, p) {
       const t = target(X, p), R = p.radius || 250, dur = p.dur || 1800, tick = p.tick || 250, n = Math.max(1, Math.floor(dur / tick));
+      swing(X, 'cast', Math.atan2(t.y - X.P.y, t.x - X.P.x), 0.38);
       fx(X, p.fx || 'gravityWell', t.x, t.y, fxo(X, p, { radius: p.fxr || R * 0.7, duration: dur / 1000 + 0.3, follow: false }));
       for (let i = 1; i <= n; i++) later(X, tick * i, () => {
         alive(X.eng).forEach((m) => { if (Math.hypot(m.x - t.x, m.y - t.y) <= R + m.radius) { m.x += (t.x - m.x) * (p.pull || 0.15); m.y += (t.y - m.y) * (p.pull || 0.15); if (p.slow) { m.slow = Math.max(m.slow || 0, p.slow); m.slowMul = 0.45; } } });
@@ -469,6 +528,7 @@
     tether(X, p) {
       const { eng, P } = X, dur = p.dur || 2500, tick = p.tick || 400, n = Math.max(1, Math.floor(dur / tick)), Rg = p.range || 400, list = near(X, P.x, P.y, Rg).slice(0, p.n || 3);
       if (!list.length) { X.refund = 0.4; return true; }
+      swing(X, 'cast', X.aim, 0.34);
       for (let i = 1; i <= n; i++) later(X, tick * i, () => {
         const Q = X.P;
         list.forEach((m) => {
@@ -484,6 +544,7 @@
     // Parçalama: koni vuruşu + vurulanlara kanama (zamanla hasar)
     rend(X, p) {
       const { eng, P } = X, a = X.aim, hit = coneList(X, P.x, P.y, a, p.range || 130, p.arc || 1.4);
+      swing(X, 'swing', a, 0.3);
       fx(X, p.fx || 'bloodScythe', P.x, P.y, fxo(X, p, { tx: P.x + Math.cos(a) * (p.range || 130), ty: P.y + Math.sin(a) * (p.range || 130) }));
       hit.forEach((m) => hurt(X, m, p.dmg || 1.3, a, { kb: 160, slow: p.slow, stun: p.stun })); if (hit.length) eng.addTrauma(0.3);
       for (let k = 1; k <= (p.ticks || 4); k++) later(X, (p.tick || 400) * k, () => hit.forEach((m) => { if (m.hp > 0 && !m.dead) { hurt(X, m, p.bleed || 0.25, a, { kb: 0 }); eng.spawnExplosionParticles(m.x, m.y, 4, X.col); } }));
@@ -496,6 +557,7 @@
       const end = clampMap(eng, sx + Math.cos(a0) * d, sy + Math.sin(a0) * d), steps = 14, dur = 380;
       P.skillLock = dur / 1000 + 0.05; P.invuln = Math.max(P.invuln || 0, dur / 1000 + 0.1); P.facingAngle = a0;
       fx(X, 'lineSlash', sx, sy, { tx: end.x, ty: end.y, radius: 55 });
+      swing(X, 'thrust', a0, 0.3);
       for (let i = 1; i <= steps; i++) later(X, dur * i / steps, () => {
         const u = i / steps; P.x = lerp(sx, end.x, u); P.y = lerp(sy, end.y, u); P.zLift = Math.sin(u * Math.PI) * 55; if (i % 4 === 0) eng.createGhostTrail();
         if (i === steps) { P.zLift = 0; hitRadius(X, P.x, P.y, p.radius || 90, p.dmg || 1.9, { kb: 280, stun: p.stun, crit: true }); fx(X, p.fx || 'pulseNova', P.x, P.y, { radius: p.radius || 90 }); fx(X, 'bloodScythe', P.x, P.y, { radius: 70 }); eng.addTrauma(0.5); eng.sound.play('hit'); eng.spawnExplosionParticles(P.x, P.y, 14, X.col); }
@@ -506,6 +568,7 @@
     seek(X, p) {
       const { eng, P } = X, list = near(X, P.x, P.y, p.range || 440).slice(0, p.n || 3);
       if (!list.length) { X.refund = 0.4; return true; }
+      swing(X, 'slash', Math.atan2(list[0].y - X.P.y, list[0].x - X.P.x), 0.28);
       list.forEach((m, i) => later(X, 30 + i * (p.gap || 70), () => {
         if (m.hp <= 0 || m.dead) return;
         fx(X, p.fx || 'lineSlash', X.P.x, X.P.y, { tx: m.x, ty: m.y, radius: 40 }); if (p.hitfx) fx(X, p.hitfx, m.x, m.y, { radius: p.fxr || 50 });

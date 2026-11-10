@@ -3245,7 +3245,7 @@ function renderTravelSkillTree(me) {
       <div class="tv-tree-points"><span>✦</span><b>${points}</b><span>Travel Points</span></div>
     </div>
     <div class="tv-tree-slots">${TRAVEL_SKILL_SLOTS.map(slotBtn).join("")}</div>
-    ${groups}
+    <div class="tv-tree-groups">${groups}</div>
     <div class="tv-tree-foot">Travel points come from hunting in expeditions — every 4 kills grants 1. These points are separate from the turn-based skill tree.</div>
   </div>`;
 }
@@ -3377,35 +3377,31 @@ function renderTravelViewInner(room, root) {
     if (myExp) {
       const isLeader = myExp.leaderId === state.playerId;
       root.innerHTML = `
-      <div class="tv-hub">
-      <div class="tv-hub-side">
-      <div class="tv-start">
-        <div class="tv-start-head">
-          <span class="tv-start-emblem">${TRAVEL_EMBLEM}</span>
-          <div>
-            <h3 class="tv-start-title">Expedition camp</h3>
-            <p class="tv-start-sub">${escapeHtml(myExp.typeLabel || "Wilds")} &middot; ${escapeHtml(myExp.sizeLabel || "Normal")} &middot; ${(myExp.memberIds || []).length}/4 explorers${isLeader ? " &middot; you are the leader" : " &middot; waiting for the leader to set out"}</p>
+      <div class="tv-screen tv-screen--camp">
+        <header class="tv-screen__head">
+          <p class="tv-screen__eyebrow">Expedition Camp</p>
+          <h2 class="tv-screen__title">Gathered at the stone</h2>
+          <div class="tv-screen__rule" aria-hidden="true"><span></span><b>✦</b><span></span></div>
+          <p class="tv-screen__lead">${escapeHtml(myExp.typeLabel || "Wilds")} &middot; ${escapeHtml(myExp.sizeLabel || "Normal")} &middot; ${(myExp.memberIds || []).length}/4 explorers${isLeader ? " &middot; you hold the lead" : " &middot; waiting for the leader to set out"}</p>
+        </header>
+        <div class="tv-camp">
+          <div class="tv-camp__party">
+            <span class="tv-field-label">Party</span>
+            <div class="tv-chips">
+              ${(myExp.memberIds || []).map((id) => `<span class="tv-chip${id === myExp.leaderId ? " is-active" : ""}">${escapeHtml(nameOf(id))}${id === myExp.leaderId ? " &#9733;" : ""}</span>`).join("")}
+            </div>
           </div>
-        </div>
-        <div class="tv-field">
-          <span class="tv-field-label">Party</span>
-          <div class="tv-chips">
-            ${(myExp.memberIds || []).map((id) => `<span class="tv-chip${id === myExp.leaderId ? " is-active" : ""}">${escapeHtml(nameOf(id))}${id === myExp.leaderId ? " &#9733;" : ""}</span>`).join("")}
+          <div class="tv-gate__summary">
+            <span class="tv-gate__summary-main">${escapeHtml(myExp.typeLabel || "Wilds")}</span>
+            <span class="tv-gate__summary-sub">${escapeHtml(myExp.sizeLabel || "Normal")} land &middot; every explorer pays <b>10 stamina</b></span>
           </div>
+          <div class="tv-camp__actions">
+            ${isLeader ? `<button type="button" class="tv-gate__cta tv-gate__cta--stone" id="btn-exp-start"${cannot ? " disabled" : ""}><span class="tv-gate__cta-label">Start expedition</span><span class="tv-gate__cta-cost">10 stamina</span></button>` : ""}
+            <button type="button" class="tv-leave" id="btn-exp-leave">Leave room</button>
+          </div>
+          ${cannot ? `<p class="tv-warn">You need at least 10 stamina. Rest at the tavern or sleep to recover it.</p>` : ""}
         </div>
-        <div class="tv-summary">
-          <div class="tv-summary-main">${escapeHtml(myExp.typeLabel || "Wilds")}</div>
-          <div class="tv-summary-sub">${escapeHtml(myExp.sizeLabel || "Normal")} land &middot; every explorer pays <b>10 stamina</b></div>
-        </div>
-        <div class="tv-start-actions">
-          ${isLeader ? `<button type="button" class="btn btn--gold tv-go" id="btn-exp-start"${cannot ? " disabled" : ""}>Start expedition <span class="tv-go-cost">10 stamina</span></button>` : ""}
-          <button type="button" class="btn tv-leave" id="btn-exp-leave">Leave room</button>
-        </div>
-        ${cannot ? `<p class="tv-warn">You need at least 10 stamina. Rest at the tavern or sleep to recover it.</p>` : ""}
-      </div>
-      
-      </div>
-      ${renderTravelSkillTree(me)}
+        ${renderTravelSkillTree(me)}
       </div>`;
       bindTravelSkillTree(root, me);
       const startBtn = root.querySelector("#btn-exp-start");
@@ -3421,48 +3417,81 @@ function renderTravelViewInner(room, root) {
     }
     const openExps = Object.values(exps);
     root.innerHTML = `
-      <div class="tv-hub">
-      <div class="tv-hub-side">
-      <div class="tv-start">
-        <div class="tv-start-head">
-          <span class="tv-start-emblem">${TRAVEL_EMBLEM}</span>
-          <div>
-            <h3 class="tv-start-title">Create an expedition room</h3>
-            <p class="tv-start-sub">Dünya, lider "Start expedition" dediğinde üretilir. Arkadaşların aşağıdaki odalara katılır.</p>
-          </div>
+      <div class="tv-screen">
+        <header class="tv-screen__head">
+          <p class="tv-screen__eyebrow">Expedition Gate &middot; Setra Village</p>
+          <h2 class="tv-screen__title">Where will you wander?</h2>
+          <div class="tv-screen__rule" aria-hidden="true"><span></span><b>✦</b><span></span></div>
+          <p class="tv-screen__lead">Two roads leave the village. Touch the stone for an uncharted expedition, or ride out into the one unbroken continent.</p>
+        </header>
+
+        <div class="tv-gates">
+          <article class="tv-gate tv-gate--stone">
+            <div class="tv-gate__aura" aria-hidden="true"></div>
+            <header class="tv-gate__head">
+              <span class="tv-gate__emblem" aria-hidden="true">✦</span>
+              <div class="tv-gate__titles">
+                <p class="tv-gate__kicker">Aetherial Stone</p>
+                <h3 class="tv-gate__title">Random Expedition</h3>
+              </div>
+            </header>
+            <p class="tv-gate__desc">Touch the stone and let it choose the land. Every expedition is forged anew — no two roads are alike.</p>
+            <div class="tv-gate__form">
+              <div class="tv-field">
+                <span class="tv-field-label">Land</span>
+                <div class="tv-chips">
+                  ${TRAVEL_TYPES.map(([id, l]) => `<button type="button" class="tv-chip${state.travelType === id ? " is-active" : ""}" data-tt="${id}">${escapeHtml(l)}</button>`).join("")}
+                </div>
+              </div>
+              <div class="tv-field">
+                <span class="tv-field-label">Size</span>
+                <div class="tv-chips">
+                  ${TRAVEL_SIZES.map(([id, l]) => `<button type="button" class="tv-chip${state.travelSize === id ? " is-active" : ""}" data-ts="${id}">${escapeHtml(l)}</button>`).join("")}
+                </div>
+              </div>
+              <div class="tv-gate__summary">
+                <span class="tv-gate__summary-main">${escapeHtml(pickedType)}</span>
+                <span class="tv-gate__summary-sub">${escapeHtml(pickedSize)} land &middot; every explorer pays <b>10 stamina</b></span>
+              </div>
+            </div>
+            <button type="button" class="tv-gate__cta tv-gate__cta--stone" id="btn-travel-go"${cannot ? " disabled" : ""}>
+              <span class="tv-gate__cta-label">Step through the stone</span>
+              <span class="tv-gate__cta-cost">10 stamina</span>
+            </button>
+            ${cannot ? `<p class="tv-warn">You need at least 10 stamina. Rest at the tavern or sleep to recover it.</p>` : ""}
+            ${openExps.length ? `
+            <div class="tv-field tv-field--rooms">
+              <span class="tv-field-label">Open expedition rooms</span>
+              <div class="tv-chips">
+                ${openExps.map((e) => `<button type="button" class="tv-chip" data-exp="${escapeHtml(e.id)}"${cannot ? " disabled" : ""}>${escapeHtml(e.typeLabel || "Wilds")} &middot; ${escapeHtml(e.sizeLabel || "")} &middot; ${(e.memberIds || []).length}p</button>`).join("")}
+              </div>
+            </div>` : ""}
+          </article>
+
+          <article class="tv-gate tv-gate--continent">
+            <div class="tv-gate__aura" aria-hidden="true"></div>
+            <header class="tv-gate__head">
+              <span class="tv-gate__emblem" aria-hidden="true">⚜</span>
+              <div class="tv-gate__titles">
+                <p class="tv-gate__kicker">Fixed Map &middot; Open World</p>
+                <h3 class="tv-gate__title tv-gate__title--word">Setra Continent</h3>
+              </div>
+            </header>
+            <p class="tv-gate__desc">One unbroken land of villages, roads and ruins. Nothing is rerolled — the continent remembers every step you take.</p>
+            <ul class="tv-gate__facts">
+              <li>Fixed, hand-built world</li>
+              <li>Villages, inns and hidden ruins</li>
+              <li>Progress saved at travel stones</li>
+            </ul>
+            <button type="button" class="tv-gate__cta tv-gate__cta--continent" id="btn-world-setra"${cannot ? " disabled" : ""}>
+              <span class="tv-gate__cta-label">Ride into the continent</span>
+              <span class="tv-gate__cta-cost">10 stamina</span>
+            </button>
+            ${cannot ? `<p class="tv-warn">You need at least 10 stamina. Rest at the tavern or sleep to recover it.</p>` : ""}
+          </article>
         </div>
-        <div class="tv-field">
-          <span class="tv-field-label">Land</span>
-          <div class="tv-chips">
-            ${TRAVEL_TYPES.map(([id, l]) => `<button type="button" class="tv-chip${state.travelType === id ? " is-active" : ""}" data-tt="${id}">${escapeHtml(l)}</button>`).join("")}
-          </div>
-        </div>
-        <div class="tv-field">
-          <span class="tv-field-label">Size</span>
-          <div class="tv-chips">
-            ${TRAVEL_SIZES.map(([id, l]) => `<button type="button" class="tv-chip${state.travelSize === id ? " is-active" : ""}" data-ts="${id}">${escapeHtml(l)}</button>`).join("")}
-          </div>
-        </div>
-        <div class="tv-summary">
-          <div class="tv-summary-main">${escapeHtml(pickedType)}</div>
-          <div class="tv-summary-sub">${escapeHtml(pickedSize)} land &middot; every explorer pays <b>10 stamina</b></div>
-        </div>
-        <div class="tv-start-actions">
-          <button type="button" class="btn btn--gold tv-go" id="btn-travel-go"${cannot ? " disabled" : ""}>Create room <span class="tv-go-cost">10 stamina</span></button>
-          <button type="button" class="btn tv-leave" id="btn-world-setra"${cannot ? " disabled" : ""}>Enter Setra Continent <span class="tv-go-cost">10 stamina</span></button>
-          ${cannot ? `<p class="tv-warn">You need at least 10 stamina. Rest at the tavern or sleep to recover it.</p>` : ""}
-        </div>
-        ${openExps.length ? `
-        <div class="tv-field">
-          <span class="tv-field-label">Open expedition rooms</span>
-          <div class="tv-chips">
-            ${openExps.map((e) => `<button type="button" class="tv-chip" data-exp="${escapeHtml(e.id)}"${cannot ? " disabled" : ""}>${escapeHtml(e.typeLabel || "Wilds")} &middot; ${escapeHtml(e.sizeLabel || "")} &middot; ${(e.memberIds || []).length}p</button>`).join("")}
-          </div>
-        </div>` : ""}
-      </div>
-      
-      </div>
-      ${renderTravelSkillTree(me)}
+
+        ${renderTravelSkillTree(me)}
       </div>`;
     root.querySelectorAll("[data-tt]").forEach((b) => b.addEventListener("click", () => { state.travelType = b.getAttribute("data-tt"); renderTravelView(room); }));
     root.querySelectorAll("[data-ts]").forEach((b) => b.addEventListener("click", () => { state.travelSize = b.getAttribute("data-ts"); renderTravelView(room); }));

@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
-    "check:anchors": "node scripts/check_agent_anchors.js"
+    "check:anchors": "node scripts/check_agent_anchors.js",
+    "glb": "node scripts/glb_info.js"
   },
   "engines": {
     "node": ">=18"

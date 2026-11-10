@@ -18,6 +18,7 @@ const sessions = require("./sessions");
 const pvp = require("./pvp");
 const pets = require("./pets");
 const travel = require("./travel");
+const creatures = require("./creatures");
 const persistentWorld = require("./persistentWorld");
 const travelSkills = require("./travelSkills");
 const { onNewDay, equipItem, unequipSlot, setSkillLoadout, learnTreeNode, consumeItem, addXp } = require("./players");
@@ -114,6 +115,14 @@ function emitCombatFx(io, room) {
 function emitPvpFx(io, room){ emitCombatFx(io,room); }
 
 function registerSocketHandlers(io) {
+  // Ortak canavar dünyası tick'i (10 Hz). Yalnızca 2+ oyunculu seferler
+  // simüle edilir; boş/tek kişilik seferlerde döngü hiçbir iş yapmaz.
+  if (!registerSocketHandlers._creatureTimer) {
+    registerSocketHandlers._creatureTimer = setInterval(() => {
+      try { creatures.tick(io); } catch (e) { console.error("[creatures:tick]", e && e.message); }
+    }, creatures.TICK_MS);
+    if (registerSocketHandlers._creatureTimer.unref) registerSocketHandlers._creatureTimer.unref();
+  }
   io.on("connection", (socket) => {
     socket.data.mode = null;
     socket.data.profile = null;
@@ -947,7 +956,10 @@ function registerSocketHandlers(io) {
         requireAlive(player);
         town.requirePlaying(room, player);
         const t = travel.launchExpedition(room, player, payload.id);
-        if (t) emitToTravel(io, t, "travel:map", travel.publicMap(room, player));
+        if (t) {
+          creatures.ensure(io, room, t);
+          emitToTravel(io, t, "travel:map", travel.publicMap(room, player));
+        }
         room.log = { type: "travel", text: `${player.name}'s expedition sets out into the wilds.`, ts: Date.now() };
         emitRoomState(io, room);
       } catch (err) { emitError(socket, err); }
@@ -988,6 +1000,9 @@ function registerSocketHandlers(io) {
         } else {
           travel.enterTravel(room, player, payload.type, payload.size, { joinId: payload.joinId });
         }
+        // İkinci oyuncu sefere girdiği anda canavarlar sunucu otoritesine geçer;
+        // `travel:map` bu yüzden `shared` bayrağıyla gönderilir.
+        creatures.ensure(io, room, travel.activeTravel(room, player));
         socket.emit("travel:map", travel.publicMap(room, player));
         room.log = { type: "travel", text: `${player.name} sets out into the wilds.`, ts: Date.now() };
         emitRoomState(io, room);
@@ -1041,6 +1056,8 @@ function registerSocketHandlers(io) {
         const t = travel.activeTravel(room, player);
         if (!t || !t.members.includes(player.id)) return;
         if (travel.isDowned(t, player.id)) return; // yerdeyken hareket etmez
+        // Ortak dünya: ikinci oyuncu katıldıysa canavarlar sunucu otoritesine geçer.
+        creatures.ensure(io, room, t);
         const x = Number(payload.x), y = Number(payload.y);
         if (!Number.isFinite(x) || !Number.isFinite(y)) return;
         if (t.persistent) {
@@ -1103,12 +1120,27 @@ function registerSocketHandlers(io) {
       } catch (err) { /* kozmetik; hata oyunu etkilemez */ }
     });
 
+    // --- ORTAK CANAVAR: saldırı niyeti ---
+    // İstemci yalnızca "hangi canavara, ne kadar, ne kadar menzilden" bilgisini
+    // yollar. Menzil, hız sınırı ve hasar tavanı sunucuda doğrulanır; canavar HP,
+    // ölüm ve ödül dağıtımı tamamen burada karara bağlanır.
+    socket.on("travel:atk", (payload = {}) => {
+      try {
+        const { room, player } = gameContext(socket);
+        if (!player) return;
+        creatures.attack(io, room, player, payload || {});
+      } catch (err) { /* saldırı niyeti best-effort; oyunu kilitlemez */ }
+    });
+
     // İstemci canavarı yerel simüle eder; sunucu ödülü sınırlı verir.
+    // ORTAK DÜNYA: 2+ oyunculu seferlerde canavar/HP/ölüm/ödül sunucudadır,
+    // bu yüzden eski "kill bildirimi" yolu tamamen kapatılır (çift ödül olmaz).
     socket.on("travel:kill", (payload = {}) => {
       try {
         const { room, player } = gameContext(socket);
         const t = travel.activeTravel(room, player);
         if (!t || travel.isDowned(t, player.id)) return; // yerdeki oyuncu öldürme ödülü alamaz
+        if (t.sharedWorld) return;                        // sunucu otoritesi devrede
         const res = travel.rewardKill(room, player, payload);
         if (!res) return;
         addXp(player, res.xp);
@@ -1234,6 +1266,10 @@ function registerSocketHandlers(io) {
         const t = travel.activeTravel(room, player);
         if (t && travel.isDowned(t, player.id)) throw new Error("You are down. Wait for an ally to revive you.");
         const res = travel.interact(room, player, payload.poiId);
+        // Taşta/handa dinlenme: can ve mana yenilendi; istemci HUD'u hemen tazelensin.
+        if (res.checkpoint) socket.emit("travel:restored", {
+          hp: player.hp, maxHp: player.maxHp, mana: player.mana, maxMana: player.maxMana,
+        });
         if (res.loot) socket.emit("travel:reward", { kind: "chest", loot: res.loot, poiId: res.poi.id });
         else if (res.gold) socket.emit("travel:reward", { kind: "gold", gold: res.gold, poiId: res.poi.id });
         else if (res.reveal) {

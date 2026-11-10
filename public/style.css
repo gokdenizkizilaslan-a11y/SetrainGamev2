@@ -11477,3 +11477,524 @@ body:has(.overlay-view:not(.hidden)) .chat {
   border-radius: 3px !important;
   box-shadow: 0 0 0 1px rgba(206, 158, 94, 0.35);
 }
+
+/* =====================================================================
+   TRAVEL GATE SCREEN v3 — ana menu kalitesinde sefer secim ekrani
+   (sol: Aetherial Stone / rastgele sefer · sag: Setra Continent / sabit map)
+   ===================================================================== */
+
+#travel-content .tv-screen {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.1rem, 2.4vh, 1.9rem);
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0.4rem 0.2rem 1.4rem;
+}
+
+/* --- Baslik: ana menudeki Cinzel + altin hairline dili --- */
+#travel-content .tv-screen__head {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.55rem;
+  padding: 0.2rem 0 0.2rem;
+}
+#travel-content .tv-screen__eyebrow {
+  margin: 0;
+  font-family: "Cinzel", serif;
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: rgba(224, 190, 138, 0.7);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+}
+#travel-content .tv-screen__title {
+  margin: 0;
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  font-size: clamp(1.6rem, 3.4vw, 2.7rem);
+  line-height: 1.06;
+  letter-spacing: 0.08em;
+  background: linear-gradient(172deg, #fff7e4 0%, #eed9a8 34%, #c9a05a 62%, #f4e3bb 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter:
+    drop-shadow(0 6px 20px rgba(0, 0, 0, 0.8))
+    drop-shadow(0 0 30px rgba(206, 140, 58, 0.18));
+}
+#travel-content .tv-screen__rule {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  width: min(340px, 70%);
+  color: rgba(226, 180, 104, 0.85);
+}
+#travel-content .tv-screen__rule span {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(226, 180, 104, 0.6), transparent);
+}
+#travel-content .tv-screen__rule b { font-size: 0.58rem; font-weight: 400; line-height: 1; opacity: 0.9; }
+#travel-content .tv-screen__lead {
+  margin: 0;
+  max-width: 62ch;
+  font-size: clamp(0.8rem, 1.05vw, 0.92rem);
+  font-style: italic;
+  line-height: 1.6;
+  color: rgba(216, 199, 174, 0.62);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
+}
+
+/* --- Iki gecit karti --- */
+#travel-content .tv-gates {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: stretch;
+  gap: clamp(0.9rem, 1.8vw, 1.4rem);
+}
+#travel-content .tv-gate {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: clamp(1.25rem, 2.2vw, 1.85rem);
+  border: 1px solid rgba(196, 148, 84, 0.32);
+  border-radius: 3px;
+  background:
+    radial-gradient(130% 80% at 50% -10%, rgba(126, 78, 32, 0.18), transparent 62%),
+    linear-gradient(180deg, rgba(26, 18, 12, 0.96), rgba(9, 6, 4, 0.98));
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 226, 170, 0.07);
+  outline: 1px solid rgba(200, 152, 88, 0.1);
+  outline-offset: -8px;
+  color: #e6d8c1;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+#travel-content .tv-gate::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+#travel-content .tv-gate:hover {
+  border-color: rgba(232, 190, 118, 0.62);
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.6),
+    0 0 34px rgba(206, 140, 58, 0.14),
+    inset 0 1px 0 rgba(255, 226, 170, 0.1);
+  transform: translateY(-3px);
+}
+#travel-content .tv-gate--continent {
+  border-color: rgba(214, 168, 96, 0.46);
+  background:
+    radial-gradient(120% 80% at 50% -10%, rgba(158, 60, 32, 0.2), transparent 62%),
+    linear-gradient(180deg, rgba(30, 19, 13, 0.97), rgba(9, 6, 4, 0.99));
+}
+#travel-content .tv-gate__aura {
+  position: absolute;
+  top: -40%;
+  left: 50%;
+  width: 120%;
+  height: 90%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: -1;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(232, 176, 88, 0.14), transparent 70%);
+  opacity: 0.85;
+}
+#travel-content .tv-gate--continent .tv-gate__aura {
+  background: radial-gradient(50% 50% at 50% 50%, rgba(226, 128, 58, 0.2), transparent 70%);
+}
+
+#travel-content .tv-gate__head {
+  display: flex;
+  align-items: center;
+  gap: 0.95rem;
+}
+#travel-content .tv-gate__emblem {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 3.1rem;
+  height: 3.1rem;
+  border-radius: 2px;
+  font-size: 1.45rem;
+  color: #f4dca6;
+  background: radial-gradient(circle at 50% 38%, rgba(232, 176, 88, 0.2), rgba(0, 0, 0, 0.4) 72%);
+  border: 1px solid rgba(214, 168, 96, 0.45);
+  box-shadow: inset 0 0 18px rgba(232, 176, 88, 0.14), 0 8px 20px rgba(0, 0, 0, 0.45);
+  filter: drop-shadow(0 0 12px rgba(232, 196, 130, 0.28));
+}
+#travel-content .tv-gate--continent .tv-gate__emblem {
+  color: #ffd9a0;
+  border-color: rgba(236, 178, 96, 0.7);
+  box-shadow: inset 0 0 20px rgba(236, 168, 84, 0.2), 0 10px 26px rgba(0, 0, 0, 0.5);
+}
+#travel-content .tv-gate__titles { min-width: 0; }
+#travel-content .tv-gate__kicker {
+  margin: 0;
+  font-family: "Cinzel", serif;
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(214, 178, 126, 0.72);
+}
+#travel-content .tv-gate__title {
+  margin: 0.28rem 0 0;
+  font-family: "Cinzel", serif;
+  font-size: clamp(1.05rem, 1.7vw, 1.35rem);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #f3e2c0;
+  line-height: 1.18;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+}
+#travel-content .tv-gate__title--word {
+  font-size: clamp(1.65rem, 3vw, 2.55rem);
+  letter-spacing: 0.06em;
+  background: linear-gradient(172deg, #fff7e4 0%, #eed9a8 38%, #cf9f55 66%, #f4e3bb 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  text-transform: none;
+  filter:
+    drop-shadow(0 6px 18px rgba(0, 0, 0, 0.85))
+    drop-shadow(0 0 26px rgba(220, 140, 58, 0.22));
+}
+#travel-content .tv-gate__desc {
+  margin: 0;
+  font-size: 0.82rem;
+  font-style: italic;
+  line-height: 1.62;
+  color: rgba(210, 194, 168, 0.62);
+}
+#travel-content .tv-gate__facts {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 0.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+#travel-content .tv-gate__facts li {
+  position: relative;
+  padding-left: 1.1rem;
+  font-size: 0.76rem;
+  letter-spacing: 0.03em;
+  color: rgba(226, 210, 186, 0.78);
+}
+#travel-content .tv-gate__facts li::before {
+  content: "✦";
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 0.6rem;
+  color: rgba(232, 190, 118, 0.85);
+}
+
+#travel-content .tv-gate__form { display: flex; flex-direction: column; gap: 0.75rem; }
+#travel-content .tv-gate__summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid rgba(196, 148, 84, 0.22);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.3);
+}
+#travel-content .tv-gate__summary-main {
+  font-family: "Cinzel", serif;
+  font-size: 0.92rem;
+  letter-spacing: 0.05em;
+  color: #f2ddb2;
+}
+#travel-content .tv-gate__summary-sub {
+  font-size: 0.71rem;
+  color: #a89a84;
+}
+#travel-content .tv-gate__summary-sub b { color: #e8c482; }
+
+#travel-content .tv-gate__cta {
+  position: relative;
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  width: 100%;
+  padding: 0.92rem 1.15rem;
+  border-radius: 3px;
+  border: 1px solid rgba(214, 168, 96, 0.55);
+  background: linear-gradient(180deg, rgba(52, 35, 18, 0.95), rgba(28, 18, 10, 0.96));
+  color: #f4e4c6;
+  font-family: "Cinzel", serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: inset 0 1px 0 rgba(255, 226, 170, 0.1), 0 10px 26px rgba(0, 0, 0, 0.4);
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+#travel-content .tv-gate__cta::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -60%;
+  width: 45%;
+  background: linear-gradient(100deg, transparent, rgba(255, 236, 196, 0.22), transparent);
+  transform: skewX(-18deg);
+  transition: left 0.55s ease;
+}
+#travel-content .tv-gate__cta:hover::before { left: 120%; }
+#travel-content .tv-gate__cta--continent {
+  border-color: rgba(240, 198, 124, 0.8);
+  background: linear-gradient(180deg, rgba(214, 158, 78, 0.96), rgba(146, 96, 40, 0.96));
+  color: #241708;
+  text-shadow: 0 1px 0 rgba(255, 235, 200, 0.35);
+}
+#travel-content .tv-gate__cta:hover,
+#travel-content .tv-gate__cta:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(246, 214, 150, 0.95);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 240, 208, 0.16),
+    0 0 26px rgba(206, 142, 56, 0.22),
+    0 14px 34px rgba(0, 0, 0, 0.5);
+}
+#travel-content .tv-gate__cta:active { transform: translateY(1px); }
+#travel-content .tv-gate__cta[disabled] { opacity: 0.45; cursor: not-allowed; transform: none; }
+#travel-content .tv-gate__cta[disabled]::before { display: none; }
+#travel-content .tv-gate__cta-label { position: relative; }
+#travel-content .tv-gate__cta-cost {
+  flex: none;
+  padding: 0.22rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(232, 190, 118, 0.4);
+  color: #ffe6b8;
+}
+#travel-content .tv-gate__cta--continent .tv-gate__cta-cost {
+  background: rgba(255, 240, 208, 0.22);
+  border-color: rgba(80, 50, 20, 0.4);
+  color: #2a1908;
+}
+
+/* --- Sefer kampi (arkadasla oda kurulmus) --- */
+#travel-content .tv-camp {
+  align-self: center;
+  width: min(620px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: clamp(1.25rem, 2.4vw, 1.9rem);
+  border: 1px solid rgba(196, 148, 84, 0.34);
+  border-radius: 3px;
+  background:
+    radial-gradient(120% 70% at 50% 0%, rgba(126, 78, 32, 0.16), transparent 60%),
+    linear-gradient(180deg, rgba(24, 17, 11, 0.95), rgba(10, 7, 5, 0.98));
+  box-shadow: 0 22px 54px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 226, 170, 0.06);
+  outline: 1px solid rgba(200, 152, 88, 0.1);
+  outline-offset: -8px;
+}
+#travel-content .tv-camp__party { display: flex; flex-direction: column; gap: 0.45rem; }
+#travel-content .tv-camp__actions { display: flex; flex-direction: column; gap: 0.55rem; }
+#travel-content .tv-camp .tv-leave,
+#travel-content .tv-camp__actions .tv-leave {
+  width: 100%;
+  padding: 0.72rem 1rem;
+  border-radius: 3px;
+  font-family: "Cinzel", serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(226, 210, 186, 0.85);
+  border: 1px solid rgba(196, 148, 84, 0.28);
+  cursor: pointer;
+}
+#travel-content .tv-camp .tv-leave:hover { background: rgba(60, 42, 18, 0.6); border-color: rgba(232, 190, 118, 0.6); }
+
+/* --- Yetenek agaci: en altta, tam genislik --- */
+#travel-content .tv-screen > .tv-tree {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: clamp(1.15rem, 2vw, 1.6rem);
+  border: 1px solid rgba(196, 148, 84, 0.3);
+  border-radius: 3px;
+  background:
+    radial-gradient(120% 70% at 50% 0%, rgba(126, 78, 32, 0.12), transparent 60%),
+    linear-gradient(180deg, rgba(22, 16, 11, 0.94), rgba(9, 6, 4, 0.98));
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 226, 170, 0.05);
+  outline: 1px solid rgba(200, 152, 88, 0.08);
+  outline-offset: -8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  color: #e6d8c1;
+}
+#travel-content .tv-screen > .tv-tree .tv-tree-head {
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid rgba(200, 152, 88, 0.18);
+}
+#travel-content .tv-screen > .tv-tree .tv-tree-slots {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin: 0;
+}
+#travel-content .tv-screen > .tv-tree .tv-tree-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.9rem;
+}
+
+@media (max-width: 900px) {
+  #travel-content .tv-gates { grid-template-columns: minmax(0, 1fr); }
+  #travel-content .tv-screen > .tv-tree .tv-tree-slots { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 560px) {
+  #travel-content .tv-screen__head { text-align: left; align-items: flex-start; }
+  #travel-content .tv-screen__lead { max-width: none; }
+  #travel-content .tv-gate__head { gap: 0.7rem; }
+  #travel-content .tv-gate__emblem { width: 2.5rem; height: 2.5rem; font-size: 1.15rem; }
+  #travel-content .tv-gate__cta { font-size: 0.7rem; letter-spacing: 0.1em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #travel-content .tv-gate,
+  #travel-content .tv-gate__cta { transition: none !important; }
+  #travel-content .tv-gate:hover { transform: none; }
+  #travel-content .tv-gate__cta:hover { transform: none; }
+}
+
+/* --- Premium cila: giris animasyonu, ince altin cizgi, baslik parlamasi --- */
+/* Sinematik zemin: panelin arkasinda soluk kasaba gorseli — ana menudeki
+   perde hissi. Aktif seferde tuval bunun ustunu tamamen kaplar. */
+#travel-view:not(.hidden) {
+  position: relative;
+  isolation: isolate;
+  border-radius: 6px;
+}
+#travel-view:not(.hidden)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background-image:
+    linear-gradient(180deg, rgba(6, 4, 3, 0.84) 0%, rgba(5, 4, 3, 0.9) 100%),
+    url("/images/backgrounds/town.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  animation: backdrop-in 0.6s ease both;
+}
+
+#travel-view > .overlay-head { padding: 0.05rem 0.15rem 0.55rem; }
+#travel-view > .overlay-head .eyebrow {
+  font-family: "Cinzel", serif;
+  letter-spacing: 0.4em;
+  color: rgba(224, 190, 138, 0.72);
+}
+
+@keyframes tv-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes tv-title-sheen {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Giris: kartlar sirayla yumusakca yukselir (fill: backwards -> hover
+   transform'u animasyon bitince normal calisir). */
+#travel-content .tv-screen > * { animation: tv-rise 0.5s ease backwards; }
+#travel-content .tv-screen > *:nth-child(2) { animation-delay: 0.07s; }
+#travel-content .tv-screen > *:nth-child(3) { animation-delay: 0.15s; }
+
+#travel-content .tv-gate--continent::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(240, 198, 124, 0.7), transparent);
+}
+#travel-content .tv-gate__title--word {
+  background-image: linear-gradient(100deg, #eed9a8 0%, #fff7e4 18%, #cf9f55 38%, #f4e3bb 60%, #eed9a8 100%);
+  background-size: 220% 100%;
+  animation: tv-title-sheen 9s ease-in-out infinite;
+}
+
+/* Aetheria Tasi: soguk mavi kristal vurgusu (motordaki tas rengiyle uyumlu) */
+#travel-content .tv-gate--stone {
+  border-color: rgba(120, 200, 230, 0.26);
+  background:
+    radial-gradient(120% 80% at 50% -10%, rgba(30, 90, 110, 0.2), transparent 62%),
+    linear-gradient(180deg, rgba(18, 24, 28, 0.96), rgba(6, 9, 11, 0.98));
+}
+#travel-content .tv-gate--stone:hover {
+  border-color: rgba(150, 224, 255, 0.55);
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.6),
+    0 0 34px rgba(80, 200, 255, 0.14),
+    inset 0 1px 0 rgba(200, 245, 255, 0.1);
+}
+#travel-content .tv-gate--stone .tv-gate__aura {
+  background: radial-gradient(50% 50% at 50% 50%, rgba(90, 200, 240, 0.16), transparent 70%);
+}
+#travel-content .tv-gate--stone .tv-gate__emblem {
+  color: #eaffff;
+  border-color: rgba(120, 220, 255, 0.5);
+  background: radial-gradient(circle at 38% 30%, rgba(200, 245, 255, 0.85), rgba(64, 150, 190, 0.5) 40%, rgba(12, 30, 40, 0.92) 74%);
+  box-shadow:
+    inset 0 0 18px rgba(120, 220, 255, 0.32),
+    0 0 22px rgba(80, 200, 255, 0.22),
+    0 8px 20px rgba(0, 0, 0, 0.45);
+}
+#travel-content .tv-gate--stone .tv-gate__kicker { color: rgba(150, 214, 236, 0.74); }
+
+/* Sefer kapisi basliginin altinda ince isik huzmesi */
+#travel-content .tv-screen__head::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -0.55rem;
+  width: min(520px, 82%);
+  height: 1px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(196, 148, 84, 0.34), transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #travel-content .tv-screen > * { animation: none !important; }
+  #travel-content .tv-gate__title--word { animation: none !important; }
+}

@@ -47,6 +47,37 @@
   const ISO_RY = Math.SQRT2 * SIN_30;
   const TAU = Math.PI * 2;
 
+  // ==========================================================================
+  // SAVAŞ DENGESİ — Deepwoken esintili savunma sistemi
+  // Bütün süre / maliyet / ceza değerleri tek yerde; `engine.combatCfg` ile
+  // canlı olarak da değiştirilebilir (menü, test, editör).
+  // ==========================================================================
+  const COMBAT_CFG = {
+    parry: {
+      startup: 0.08,        // kısa hazırlık -> parry duruşu
+      window: 0.20,         // kusursuz parry penceresi
+      whiffRecovery: 0.75,  // kaçırılan parry cezası
+      successRecovery: 0,   // başarılı parry cezası YOK (zincir parry)
+      counterWindow: 0.55,  // parry sonrası karşı atak fırsatı
+    },
+    guard: {
+      max: 100,
+      decayDelay: 1.35,     // baskı kesildikten sonra bekleme
+      decayRate: 24,        // saniyede azalma
+      breakDuration: 1.5,   // guardbreak savunmasızlığı
+      breakSlow: 0.4,       // guardbreak sırasında hız çarpanı
+      fadeDelay: 2.6,       // HUD çubuğu ne kadar görünür kalır
+    },
+    stamina: { max: 100, sprintDrain: 12, dashCost: 20, regen: 20, regenDelay: 1.0 },
+    dash: { duration: 0.22, cooldown: 1.05, speed: 680, iframes: 0.15, staminaCost: 20 },
+    sprint: { mult: 1.4 },
+    telegraph: { light: 0.20, normal: 0.35, heavy: 0.65, skill: 0.7 },
+  };
+  // Guard Pressure: saldırı sınıfı başına varsayılan baskı (per-attack override edilebilir).
+  const GUARD_PRESSURE = { light: 12, medium: 18, heavy: 25, skill: 35, ultimate: 45, none: 0 };
+  // Savunma sınıflandırması.
+  const DEFENSE = { PARRYABLE: 'parryable', DODGE: 'dodge', BLOCK: 'block', NONE: 'none' };
+
   // Yapı/nesne başına VARSAYILAN çarpışma yarıçapı (karo boyunun katı).
   // Dünya Kurucu'da elle `solidRadius` verilmemişse binalar yine de geçilmez
   // olsun → oyuncu evlerin içinden geçemez.
@@ -309,7 +340,12 @@
     hit: { w: 'sawtooth', f0: 180, f1: 60, fd: 0.1, g: 0.25, gd: 0.1 },
     crit: { w: 'square', f0: 500, f1: 900, fd: 0.08, g: 0.2, gd: 0.2 },
     dash: { w: 'sine', f0: 220, f1: 440, fd: 0.18, g: 0.15, gd: 0.18 },
-    kill: { w: 'triangle', f0: 300, f1: 80, fd: 0.25, g: 0.25, gd: 0.25 }
+    kill: { w: 'triangle', f0: 300, f1: 80, fd: 0.25, g: 0.25, gd: 0.25 },
+    // --- Savunma sistemi sesleri (dosya yoksa synth'e düşer) ---
+    parry: { w: 'square', f0: 950, f1: 1700, fd: 0.06, g: 0.2, gd: 0.2 },
+    guard: { w: 'triangle', f0: 320, f1: 140, fd: 0.09, g: 0.16, gd: 0.12 },
+    guardbreak: { w: 'sawtooth', f0: 240, f1: 55, fd: 0.42, g: 0.3, gd: 0.42 },
+    dodge: { w: 'sine', f0: 520, f1: 980, fd: 0.07, g: 0.1, gd: 0.1 }
   };
 
   // Ses anahtarı -> dosya id adayları (public/sounds/<id>.mp3). İlk bulunan çalar.
@@ -327,6 +363,10 @@
     crit: ['heavyswordhit', 'holyhammer', 'greatswordspin'],
     dash: ['shadowstep'],
     kill: ['bonesrattle', 'undeadmoan', 'slimesquelch', 'monsterroar'],
+    parry: ['bladesclash2', 'sword3'],
+    guard: ['axehit', 'bladehit'],
+    guardbreak: ['greatswordspin'],
+    dodge: [],
     ultimate: ['ultsound', 'greatswordspin', 'holyascension'],
     levelup: ['levelup'],
     boss: ['bossintro', 'dragonroar', 'terrifyingroar'],
@@ -2025,6 +2065,9 @@
       // Diğer oyuncuların efektleri: yerel tercih + yayın kancası.
       this.allyFxEnabled = options.allyFxEnabled !== false;
       this.onAllyAction = options.onAllyAction || null;
+      this.onLevelUp = options.onLevelUp || null;
+      // Arayüz menüsü açıkken dünya güncellemesini durdurur (çizim sürer).
+      this.uiPaused = false;
 
       this.camera = { x: 0, y: 0, targetX: 0, targetY: 0 };
       this.zoom = 1;
@@ -2034,6 +2077,9 @@
       this.hurt = 0;
       this.dustTimer = 0;
       this.dpr = 1;
+      // 3D dekorun dünya ölçeğine ek çarpanı. Kalıcı kıtada 1; rastgele
+      // seferlerde < 1 (setWorldBounds ayarlar) → ağaç/kaya "dev" görünmez.
+      this.decorScale = 1;
       this.tileSprites = {};
       this.stars = [];
       this.scratch = document.createElement('canvas'); // canavar sprite'ı için ara tuval
@@ -2049,14 +2095,39 @@
         baseSpeed: this.playerData.stats.speed || 200,
         archetype,
         style: getClassStyle(this.playerData.class),
-        isDashing: false, dashTimer: 0, dashDuration: 0.22, dashCooldown: 0.85, dashCooldownTimer: 0, dashVx: 0, dashVy: 0, channel: null,
+        isDashing: false, dashTimer: 0, dashDuration: COMBAT_CFG.dash.duration, dashCooldown: COMBAT_CFG.dash.cooldown, dashCooldownTimer: 0, dashVx: 0, dashVy: 0, channel: null,
         attackCooldown: 1 / this.computeAttackPerSecond(), attackCooldownTimer: 0, isAttacking: false, attackAnimTimer: 0,
         cooldowns: { q: { max: 4.0, current: 0 }, e: { max: 7.0, current: 0 }, r: { max: 14.0, current: 0 } },
         ghostTrails: [], footprintTimer: 0,
         walkPhase: 0, swingDir: 1,
+        // --- Savunma / dayanıklılık (Deepwoken esintili) ---
+        // parryPhase: idle -> startup -> window -> block -> idle
+        parryPhase: 'idle', parryTimer: 0, parryHeld: false, parryRecovery: 0, parrySuccessAt: -99,
+        counterUntil: -99,
+        guard: 0, guardDecayDelay: 0, guardVisible: 0, guardbreakTimer: 0,
+        stamina: COMBAT_CFG.stamina.max, staminaMax: COMBAT_CFG.stamina.max,
+        staminaIdle: 0, sprinting: false,
+        dodgeIframes: 0, lastDodgeAt: -99,
+        // Silah animasyonu: kind 'swing' | 'slash' | 'slam' | 'thrust' | 'spin' | 'cast'
+        weaponSwing: null,
         // TravelSkills (yeni Q/E/R seti) için durum alanları:
         invuln: 0, phase: 0, skillLock: 0, speedMul: 1, hasteMul: 1
       };
+      // Savunma dengesi (instance kopyası: canlıda güvenle değiştirilebilir).
+      this.combatCfg = {
+        parry: Object.assign({}, COMBAT_CFG.parry),
+        guard: Object.assign({}, COMBAT_CFG.guard),
+        stamina: Object.assign({}, COMBAT_CFG.stamina),
+        dash: Object.assign({}, COMBAT_CFG.dash),
+        sprint: Object.assign({}, COMBAT_CFG.sprint),
+        telegraph: Object.assign({}, COMBAT_CFG.telegraph),
+      };
+      // Düşük seviye efektlerde kapalı; yeni sistemlerde kullanılıyor.
+      this.lastDodgeTime = -99;
+      this._hitstop = 0;
+      this._hitstopCooldown = 0;
+      // Savaş göstergeleri (oyuncunun yanında beliren küçük simgeler).
+      this.combatIndicators = [];
       // Travel-only combat state (never touched by turn-based combat).
       this.arpgSkills = {};
       this.travelBiomes = {};
@@ -2126,6 +2197,9 @@
       this._reviveName = null;
 
       this.monsters = [];
+      // ORTAK DÜNYA: sunucu otoritesinde canavar listesi varsa yerel spawn kapalı.
+      this.sharedMobs = !!options.sharedMobs;
+      this._sharedMap = new Map();
       // Biyom tablosu henüz gelmediyse eski varsayılan akış kullanılır.
       this.spawnMonsters(3);
 
@@ -2192,8 +2266,11 @@
 
     // Zoom sınırları dikeyde GÖRÜNEN KARO SIRASINA göre hesaplanır.
     // Bir karo sırasının ekran yüksekliği (zoom = 1): tileSize * SIN_30 = 32 px.
-    // Eskiden ekran yüksekliğine göre 24-26 sıra görünüyordu ("çok uzak" hissi);
-    // artık en geniş görünüm ~17.25 sıra, başlangıç ~10 sıra, en yakın ~6.5 sıra.
+    //
+    // İKİ AYRI KAMERA: kalıcı kıtada yakın/atmosferik (~10 sıra), rastgele
+    // seferlerde ise eski geniş kamera (~28 sıra). Sefer haritaları küçük
+    // olduğu için yakın kamerada ağaç/kayalar ekranı doldurup "her şey dev"
+    // görünüyordu; kalıcı kıta ise geniş kamerada boş/cılız kalıyordu.
     zoomRowH() { return Math.max(12, (this.tileSize || 64) * SIN_30); }
 
     // Dikeyde `rows` karo sırası görünecek zoom değeri.
@@ -2202,20 +2279,41 @@
       return h / (Math.max(1, Number(rows) || 1) * this.zoomRowH());
     }
 
-    // En fazla uzaklaşma: ~17.25 karo sırası görünür (15 → %15 daha geniş).
-    getMinZoom() { return clamp(this.zoomForRows(17.25), 0.85, 3.2); }
-
-    // En fazla yakınlaşma: ~6.5 karo sırası görünür.
-    getMaxZoom() {
-      const lo = this.getMinZoom();
-      return Math.max(lo + 0.2, Math.min(5.2, this.zoomForRows(6.5)));
+    // Moda göre görünmesi gereken karo sırası: min = en uzak, def = başlangıç,
+    // max = en yakın. (Satır sayısı büyükse kamera uzaktır.)
+    // MAX zoom iki modda da aynı (6.5 sıra): kıtadaki gibi yakına gelinebilsin.
+    camRows() {
+      return this.persistent
+        ? { min: 17.25, def: 10, max: 6.5 }
+        : { min: 30, def: 20, max: 6.5 };
     }
 
-    // Yeni seferde/ilk açılışta başlangıç yakınlığı: ~10 karo sırası.
-    getDefaultZoom() { return this.clampZoomTarget(this.zoomForRows(10)); }
+    // En fazla uzaklaşma.
+    getMinZoom() {
+      const rows = this.camRows().min;
+      return clamp(this.zoomForRows(rows), 0.5, 3.2);
+    }
+
+    // En fazla yakınlaşma.
+    getMaxZoom() {
+      const lo = this.getMinZoom();
+      return Math.max(lo + 0.2, Math.min(6.2, this.zoomForRows(this.camRows().max)));
+    }
+
+    // İlk açılış yakınlığı (moda göre).
+    getDefaultZoom() { return this.clampZoomTarget(this.zoomForRows(this.camRows().def)); }
     clampZoomTarget(v) {
       const lo = this.getMinZoom(), hi = this.getMaxZoom();
       return clamp(Number.isFinite(v) ? v : 1, lo, hi);
+    }
+
+    // Mod değişiminde (kıta ↔ rastgele sefer) kamerayı yeni modun varsayılan
+    // yakınlığına oturt: seferde kıtanın yakın kamerası kalmasın.
+    resetZoomForMode() {
+      const dz = this.getDefaultZoom();
+      this.zoom = dz;
+      this.zoomTarget = dz;
+      this._zoomInit = true;
     }
 
     later(fn, ms) {
@@ -2248,6 +2346,30 @@
         treeScale: ts > 0 ? ts : 3.0,
         structureScale: ss > 0 ? ss : 2.6
       };
+    }
+
+    // TÜR/MODEL bazlı GLOBAL ölçek çarpanı (Dünya Kurucu > "Tür Ölçekleri").
+    // Anahtar = model ('oak','bush','farmhouse'...) ya da tür ('tree','bush'...).
+    typeScaleOf(key) {
+      if (!key) return 1;
+      const m = (this.worldConfig && this.worldConfig.visual && this.worldConfig.visual.typeScales) || null;
+      if (!m) return 1;
+      const v = Number(m[key]);
+      return Number.isFinite(v) && v > 0 ? v : 1;
+    }
+
+    // Her sahne nesnesine tür çarpanını uygular. Nesnenin KENDİ ölçeği
+    // `_baseScale` olarak bir kez saklanır → çağrı tekrarları idempotent kalır
+    // ve her nesne kendi boyutuna göre birlikte büyür (eşitlenmez).
+    applyTypeScales() {
+      const scenery = this.scenery || [];
+      for (let i = 0; i < scenery.length; i++) {
+        const s = scenery[i];
+        if (!s) continue;
+        if (s._baseScale === undefined) s._baseScale = Number(s.scale) > 0 ? Number(s.scale) : 1;
+        const g = this.typeScaleOf(s.model || s.type);
+        s.scale = s._baseScale * g;
+      }
     }
 
     snapCamera() {
@@ -2321,6 +2443,8 @@
         // Basılı tutma (repeat) yetenekleri tekrar tekrar tetiklemesin.
         if (e.repeat) return;
         if (e.code === 'Space') { e.preventDefault(); this.triggerDash(); }
+        // F = parry / blok (basılı tutunca blok, doğru zamanda basınca kusursuz parry).
+        if (e.key.toLowerCase() === 'f') { e.preventDefault(); this.parryPress(); }
         if (e.key.toLowerCase() === 'q') this.triggerSkill('q');
         if (e.key.toLowerCase() === 'e') {
           // Önce yakındaki düşmüş müttefiki dirilt.
@@ -2333,6 +2457,7 @@
       this._onKeyUp = (e) => {
         this.keys[e.key.toLowerCase()] = false;
         this.keys[e.code] = false;
+        if (e.key.toLowerCase() === 'f') this.parryRelease();
       };
       this._onMouseMove = (e) => {
         const rect = this.canvas.getBoundingClientRect();
@@ -2346,7 +2471,13 @@
         if (e.button === 0) { this.mouse.isDown = true; this.triggerPrimaryAttack(); }
       };
       this._onMouseUp = (e) => { if (!e || e.button === 0 || e.button === undefined) this.mouse.isDown = false; };
-      this._onBlur = () => { this.mouse.isDown = false; };
+      this._onBlur = () => {
+        this.mouse.isDown = false;
+        // Odak kaybında tuşlar "basılı" kalmasın: F basılı kalmışsa parry/blok
+        // makinesi kilitleniyordu.
+        this.keys = {};
+        try { this.parryRelease(); } catch (e) {}
+      };
       this._onContext = (e) => e.preventDefault();
       // Dokunmatik: parmakla gösterilen noktaya nişan al (joystick yönü öncelikli).
       this._onTouch = (e) => {
@@ -2461,49 +2592,43 @@
           this.tileMap.set(gx * 1000 + gy, tile);
 
           if (type === 'grass' && dist > 2.2) {
-            // Doğal kümelenme: düşük frekanslı gürültü ormanları, kayalıkları
-            // ve dağ sırtlarını oluşturur; konumlar hafifçe titretilir.
-            const px = wx + (hash2(gx, gy) - 0.5) * this.tileSize * 0.85;
-            const py = wy + (hash2(gy * 1.7, gx * 2.3) - 0.5) * this.tileSize * 0.85;
-            const forest = valueNoise(gx * 0.30 + 11.3, gy * 0.30 + 7.9);
-            const stones = valueNoise(gx * 0.38 - 5.1, gy * 0.38 + 3.7);
+            // Doğal serpme: ızgara/çizgi görünümünü kırmak için her karo için
+            // İKİ aday nokta üretilir; yoğunluk gürültüsü yüksek olan kazanır
+            // (kümelenme) ve konum karo sınırını aşacak kadar titretilir.
+            const h1 = hash2(gx * 3.1 + 0.5, gy * 5.7 + 0.25);
+            const h2 = hash2(gx * 7.9 + 11.3, gy * 2.3 + 4.7);
+            const forest = valueNoise(gx * 0.26 + 11.3, gy * 0.26 + 7.9) * 0.68 +
+                           valueNoise(gx * 0.62 - 3.4, gy * 0.58 + 9.1) * 0.32;
+            const stones = valueNoise(gx * 0.34 - 5.1, gy * 0.34 + 3.7);
             const ridge = valueNoise(gx * 0.19 + 41.2, gy * 0.19 + 12.8);
-            const r = hash2(gx * 3.1 + 0.5, gy * 5.7 + 0.25);
-
-            if (ridge > 0.72 && dist > 4 && r > 0.4) {
-              const big = r > 0.6;
-              // Dağ yok: aynı ölçekte, çok yüzlü 3D kaya kütlesi (kaya sırtı).
-              this.scenery.push({
-                type: 'mountain', wx: px, wy: py, z: elevation,
-                scale: big ? 1.15 + r * 0.45 : 0.85 + r * 0.3,
-                solidRadius: big ? 0.38 : 0.26,
-              });
-            } else if (forest > 0.57 && r > 0.2) {
-              const big = r > 0.72;
+            const px = wx + (h1 - 0.5) * this.tileSize * 1.35;
+            const py = wy + (h2 - 0.5) * this.tileSize * 1.35;
+            // Boyutlar sınırlı: tek bir ağaç/kaya ekranı doldurmasın.
+            if (forest > 0.50 && h1 > 0.13) {
               this.scenery.push({
                 type: 'tree', wx: px, wy: py, z: elevation,
-                scale: big ? 1.35 + r * 0.5 : 0.8 + forest * 0.45,
-                // Hitbox sadece gövde: artık ağaçların arasından rahatça geçilir.
-                solidRadius: big ? 0.22 : 0.14,
-                swayOffset: hash2(gx, gy) * TAU, tone: hash2(gx * 0.7, gy * 0.9),
+                scale: 0.72 + h1 * 0.52,
+                solidRadius: h1 > 0.7 ? 0.2 : 0.13,
+                swayOffset: h2 * TAU, tone: h1,
               });
-            } else if (stones > 0.64 && r > 0.45) {
-              const big = r > 0.82;
+            } else if (ridge > 0.74 && h2 > 0.45) {
+              this.scenery.push({
+                type: 'mountain', wx: px, wy: py, z: elevation,
+                scale: 0.70 + h1 * 0.48,
+                solidRadius: h1 > 0.62 ? 0.32 : 0.24,
+              });
+            } else if (stones > 0.66 && h2 > 0.5) {
               this.scenery.push({
                 type: 'boulder', wx: px, wy: py, z: elevation,
-                scale: big ? 1.5 + r * 0.9 : 0.6 + stones * 0.5,
-                // Kaya hitbox'ı görselin çok altında: dar geçitler açılır.
-                solidRadius: big ? 0.28 : 0.16,
+                scale: 0.50 + h1 * 0.62,
+                solidRadius: h1 > 0.78 ? 0.24 : 0.15,
               });
-            } else if (r > 0.94) {
-              // Süs çalıları: 3D hacimli, çarpışmasız (yürümeyi engellemez).
+            } else if (h2 > 0.955) {
               this.scenery.push({
-                type: 'bush', wx: px + 5, wy: py - 2, z: elevation,
-                scale: 0.7 + hash2(gx * 1.7, gy * 2.3) * 0.6,
-                swayOffset: hash2(gx, gy) * TAU,
+                type: 'bush', wx: px, wy: py, z: elevation,
+                scale: 0.55 + h1 * 0.45,
+                swayOffset: h2 * TAU,
               });
-            } else if (r > 0.975) {
-              this.scenery.push({ type: 'mushroom', wx: px + 4, wy: py - 3, z: elevation, scale: 0.8 + hash2(gx, gy * 2) * 0.5 });
             }
           } else if (type === 'path' && dist > 2.5 && hash2(gx * 2.2, gy * 3.3) > 0.88) {
             this.scenery.push({ type: 'lantern', wx: wx + 22, wy: wy - 22, scale: 1 });
@@ -2520,17 +2645,30 @@
         this.scenery = keep;
       }
       // Harita kenarını görünür kaya duvarıyla çevir (görünmez sınır yerine).
+      // Tek sıra düzgün halka "çizgi" gibi duruyordu: açı/yarıçap/boyut
+      // titretilir ve ikinci bir seyrek sıra eklenir.
       const rimR = (R - 0.42) * this.tileSize;
       const rimCount = Math.max(24, Math.round(R * 7));
       for (let i = 0; i < rimCount; i++) {
-        const a = (i / rimCount) * TAU;
-        const rr = rimR + (hash2(i, 3.7) - 0.5) * 14;
+        const a = (i / rimCount) * TAU + (hash2(i, 13.1) - 0.5) * 0.14;
+        const rr = rimR + (hash2(i, 3.7) - 0.5) * 26;
         this.scenery.push({
           type: 'mountain',
           wx: Math.cos(a) * rr, wy: Math.sin(a) * rr,
-          scale: 0.9 + hash2(i, 7.1) * 0.35,
-          solidRadius: 0.3,
+          scale: 0.72 + hash2(i, 7.1) * 0.5,
+          rot: a,
+          solidRadius: 0.28,
         });
+        if (hash2(i, 21.7) > 0.55) {
+          const a2 = a + 0.05 + hash2(i, 5.3) * 0.08;
+          const rr2 = rimR - 18 - hash2(i, 9.4) * 22;
+          this.scenery.push({
+            type: 'mountain',
+            wx: Math.cos(a2) * rr2, wy: Math.sin(a2) * rr2,
+            scale: 0.55 + hash2(i, 2.9) * 0.4,
+            solidRadius: 0.2,
+          });
+        }
       }
 
       // Çarpışma listesi kırpmadan SONRA kurulur.
@@ -2607,30 +2745,32 @@
           const jx = (core.randomAt ? core.randomAt(sv.x, sv.y, 11) : 0.5) - 0.5;
           const px2 = wx + (r - 0.5) * ts * 0.7;
           const py2 = wy + jx * ts * 0.7;
-          // Eski haritanın yoğun "orman + kaya + çalı" dokusu korunur.
+          // Eski haritanın yoğun "orman + kaya + çalı" dokusu korunur — FAKAT
+          // kıta 4x büyüdüğü için karo başına 1 ağaç ekranı tamamen kapatıyordu.
+          // Artık seyrek, kümelenmiş ve daha küçük ağaçlar kullanılır.
           if (s.biome === 'forest') {
-            if (r < 0.74 && !nearVillage) this.scenery.push({ type: 'tree', wx: px2, wy: py2, z: elevation, scale: 0.85 + r * 0.45, solidRadius: r > 0.82 ? 0.2 : 0.12, swayOffset: r * TAU, tone: r });
-            else if (r < 0.80) this.scenery.push({ type: 'bush', wx: px2, wy: py2, z: elevation, scale: 0.9 + r, swayOffset: r * TAU, tone: r });
+            if (r < 0.18 && !nearVillage) this.scenery.push({ type: 'tree', wx: px2, wy: py2, z: elevation, scale: 0.62 + r * 0.5, solidRadius: r > 0.12 ? 0.18 : 0.12, swayOffset: r * TAU, tone: r });
+            else if (r < 0.23) this.scenery.push({ type: 'bush', wx: px2, wy: py2, z: elevation, scale: 0.9 + r, swayOffset: r * TAU, tone: r });
           } else if (s.biome === 'meadow') {
-            if (r < 0.17 && !nearVillage) this.scenery.push({ type: 'tree', wx: px2, wy: py2, z: elevation, scale: 0.75 + r * 0.8, solidRadius: 0.11, swayOffset: r * TAU, tone: r });
+            if (r < 0.05 && !nearVillage) this.scenery.push({ type: 'tree', wx: px2, wy: py2, z: elevation, scale: 0.6 + r * 0.8, solidRadius: 0.1, swayOffset: r * TAU, tone: r });
             else if (r > 0.985) this.scenery.push({ type: 'glb', model: 'flowers', wx: px2, wy: py2, z: elevation, scale: 1.1 + r, swayOffset: r * TAU });
-            else if (r > 0.96) this.scenery.push({ type: 'bush', wx: px2, wy: py2, z: elevation, scale: 1.1 + r, swayOffset: r * TAU, tone: r });
+            else if (r > 0.992) this.scenery.push({ type: 'bush', wx: px2, wy: py2, z: elevation, scale: 1.1 + r, swayOffset: r * TAU, tone: r });
           } else if (s.biome === 'rock' || s.biome === 'desert') {
-            if (r < 0.22) this.scenery.push({ type: 'boulder', wx: px2, wy: py2, z: elevation, scale: 0.7 + r * 1.1, solidRadius: 0.16 });
+            if (r < 0.12) this.scenery.push({ type: 'boulder', wx: px2, wy: py2, z: elevation, scale: 0.7 + r * 1.1, solidRadius: 0.16 });
             else if (r > 0.95) this.scenery.push({ type: 'glb', model: 'stump', wx: px2, wy: py2, z: elevation, scale: 0.9 });
           } else if (s.biome === 'swamp' || s.biome === 'cursed') {
-            if (r < 0.19) this.scenery.push({ type: 'tree', wx: px2, wy: py2, z: elevation, scale: 0.7 + r * 0.5, solidRadius: 0.11, swayOffset: r * TAU, tone: r });
+            if (r < 0.06) this.scenery.push({ type: 'tree', wx: px2, wy: py2, z: elevation, scale: 0.6 + r * 0.5, solidRadius: 0.11, swayOffset: r * TAU, tone: r });
             else if (r > 0.93) {
               // Eski (vektör) çalı geri döndü; yalnızca çok nadir mezar 3D kalır.
               if (r > 0.98) this.scenery.push({ type: 'glb', model: 'graves', wx: px2, wy: py2, z: elevation, scale: 0.9, swayOffset: r * TAU });
               else this.scenery.push({ type: 'bush', wx: px2, wy: py2, z: elevation, scale: 1.0 + r, swayOffset: r * TAU, tone: r });
             }
           } else if (s.biome === 'frost') {
-            if (r < 0.30) this.scenery.push({ type: 'tree', wx: px2, wy: py2, z: elevation, scale: 0.7 + r * 0.5, solidRadius: 0.11, swayOffset: r * TAU, tone: r });
-            else if (r > 0.96) this.scenery.push({ type: 'glb', model: 'crystals', wx: px2, wy: py2, z: elevation, scale: 0.8 + r });
+            if (r < 0.09) this.scenery.push({ type: 'tree', wx: px2, wy: py2, z: elevation, scale: 0.6 + r * 0.5, solidRadius: 0.11, swayOffset: r * TAU, tone: r });
+            else if (r > 0.995) this.scenery.push({ type: 'glb', model: 'crystals', wx: px2, wy: py2, z: elevation, scale: 0.8 + r });
           } else if (s.biome === 'volcanic') {
-            if (r < 0.20) this.scenery.push({ type: 'boulder', wx: px2, wy: py2, z: elevation, scale: 0.8 + r * 1.2, solidRadius: 0.18 });
-            else if (r > 0.96) this.scenery.push({ type: 'glb', model: 'crystals', wx: px2, wy: py2, z: elevation, scale: 0.9 });
+            if (r < 0.12) this.scenery.push({ type: 'boulder', wx: px2, wy: py2, z: elevation, scale: 0.8 + r * 1.2, solidRadius: 0.18 });
+            else if (r > 0.99) this.scenery.push({ type: 'glb', model: 'crystals', wx: px2, wy: py2, z: elevation, scale: 0.9 });
           }
         }
       }
@@ -2673,27 +2813,29 @@
         list.push({ type: 'glb', model: st.model, wx: w.x, wy: w.y,
           z: this.groundZAt(w.x, w.y), scale: (st.scale || 1) * structScale,
           rot: Number.isFinite(Number(st.rot)) ? Number(st.rot) : undefined, preScaled: true,
+          tint: st.tint || null,
           solidRadius: (Number.isFinite(Number(st.solidRadius)) ? Number(st.solidRadius) : defaultSolidRadius(st.model)) * 1.1,
           swayOffset: 0, tone: 0.5 });
       }
-      // SETRA Village çevresi: eski haritadaki gibi ağaç/çalı halkası.
+      // SETRA Village çevresi: seyrek ağaç halkası + birkaç çalı/çiçek.
+      // (Eskiden 56 parça vardı; köyün etrafı çalı duvarı gibi görünüyordu.)
       const core = this.worldCore;
       const seed = this.worldConfig.seed || 1;
       const ringSeed = (i) => core.randomAt(seed % 997, i * 37, 23);
-      for (let i = 0; i < 56; i++) {
+      for (let i = 0; i < 18; i++) {
         const a = i * 2.399963229728653 + ringSeed(i) * 0.35;
-        const rad = 2300 + ringSeed(i + 90) * 3400;
+        const rad = 2500 + ringSeed(i + 90) * 3200;
         const wx = Math.cos(a) * rad, wy = Math.sin(a) * rad;
         const sv = this.worldToServer(wx, wy);
         const s = core.sample(sv.x, sv.y);
         if (s.water || s.road) continue;
-        const big = ringSeed(i + 180) > 0.55;
-        if (big) list.push({ type: 'tree', wx, wy, z: this.groundZAt(wx, wy),
-          scale: 1.0 + ringSeed(i + 31) * 0.5, solidRadius: 0.14, swayOffset: i, tone: 0.5 });
-        else if (ringSeed(i + 55) > 0.5) list.push({ type: 'bush', wx, wy, z: this.groundZAt(wx, wy),
-          scale: 1.2 + ringSeed(i + 71), swayOffset: i, tone: 0.5 });
+        const r = ringSeed(i + 180);
+        if (r < 0.72) list.push({ type: 'tree', wx, wy, z: this.groundZAt(wx, wy),
+          scale: 0.9 + ringSeed(i + 31) * 0.4, solidRadius: 0.14, swayOffset: i, tone: 0.5 });
+        else if (r < 0.88) list.push({ type: 'bush', wx, wy, z: this.groundZAt(wx, wy),
+          scale: 0.9 + ringSeed(i + 71) * 0.5, swayOffset: i, tone: 0.5 });
         else list.push({ type: 'glb', model: 'flowers',
-          wx, wy, z: this.groundZAt(wx, wy), scale: 1.2 + ringSeed(i + 71), swayOffset: i, preScaled: true });
+          wx, wy, z: this.groundZAt(wx, wy), scale: 1.1 + ringSeed(i + 71) * 0.6, swayOffset: i, preScaled: true });
       }
       this._persistentStaticScenery = list;
     }
@@ -2715,6 +2857,12 @@
         if (!Number.isFinite(px) || !Number.isFinite(py)) continue;
         const wpos = this.serverToWorld(px + 0.5, py + 0.5);
         if (wpos.x < minX || wpos.x > maxX || wpos.y < minY || wpos.y > maxY) continue;
+        // Su üstüne denk gelen props (göl/denizde kaya, ölü ağaç) havada
+        // yüzüyormuş gibi görünüyordu: yalnızca karaya oturanları sahneye al.
+        try {
+          const ws = this.worldCore && this.worldCore.sample(px, py);
+          if (ws && ws.water) continue;
+        } catch (_) {}
         const isGlb = pr.type === 'glb' || !!pr.model;
         const obj = {
           type: isGlb ? 'glb' : (pr.type || 'tree'),
@@ -2773,6 +2921,8 @@
     // Statik sahne listeleri: çizim sırası ve ekran koordinatları bir kez
     // hazırlanır. Böylece her karede binlerce nesne ayırıp sıralamayız.
     rebuildRenderables() {
+      // Tür/model global ölçeklerini sahneye uygula (tek geçiş, idempotent).
+      this.applyTypeScales();
       const scenery = this.scenery || [];
       for (const s of scenery) {
         if (s._bx === undefined) {
@@ -3100,7 +3250,32 @@
       return pool[0];
     }
 
+    // Köy güvenli bölgesi: oyuncu köyden ~15 saniyelik yürüyüş kadar (≈2600
+    // dünya pikseli) uzaklaşmadan yaratık doğmaz. Köylerin içi ve çevresi
+    // böylece temiz kalır.
+    townSafeRadius() { return 2600; }
+    insideTownSafeZoneAt(x, y) {
+      if (!this.persistent) return false;
+      const list = this.poiMarkers || [];
+      const R = this.townSafeRadius();
+      for (let i = 0; i < list.length; i++) {
+        const p = list[i];
+        if (!p || !p.poiId) continue;
+        if (p.kind !== 'inn' && p.kind !== 'checkpoint' && p.kind !== 'camp' && p.kind !== 'dungeon') continue;
+        if (Math.hypot(p.wx - x, p.wy - y) < R) return true;
+      }
+      return false;
+    }
+    insideTownSafeZone() {
+      const P = this.player;
+      return !!P && this.insideTownSafeZoneAt(P.x, P.y);
+    }
+
     spawnMonsters(count = 6) {
+      // Ortak dünya modunda canavarlar sunucudan gelir (applyServerMobs).
+      if (this.sharedMobs) return;
+      // Köyde/çevresinde yaratık doğmasın.
+      if (this.insideTownSafeZone()) return;
       const def = this.biomeDef;
       let eliteSpawned = false;
       const legacy = [
@@ -3130,6 +3305,8 @@
           const raw = this.clampToWorld(psx0 + Math.cos(angle) * dist, psy0 + Math.sin(angle) * dist);
           px = raw.x; py = raw.y;
         }
+        // Doğacağı nokta da köy güvenli bölgesindeyse atla.
+        if (this.insideTownSafeZoneAt(px, py)) continue;
         const isElite = !!base.elite;
         // --- Zorluk ölçeği: canavarlar oyuncu seviyesine göre de büyür ---
         // (Tek vuruşta kesilmesinler: can x2, hasar x1.6, seviye başına +%16)
@@ -3169,6 +3346,13 @@
           skills: Array.isArray(base.skills) ? base.skills : null,
           skillCds: (Array.isArray(base.skills) ? base.skills : []).map((s) => (Number(s.cd) || 6) * (0.4 + Math.random() * 0.6)),
           cast: null, aggroRange: Number(base.aggroRange) || 280, aggroTimer: 0,
+          // Savunma sınıflandırması (per-monster / per-attack; veriden override edilebilir)
+          attackDefense: base.attackDefense || null,
+          attackKind: base.attackKind || null,
+          attackTelegraph: Number(base.attackTelegraph) || 0,
+          guardPressure: base.guardPressure != null ? Number(base.guardPressure) : null,
+          boss: !!(base.boss || base.isBoss),
+          meleeWindup: null, parriedTimer: 0,
           hpGhost: hp, walkPhase: Math.random() * 6, deathTimer: 0, dead: false
         });
         if (isElite) eliteSpawned = true;
@@ -3423,14 +3607,435 @@
     }
 
     // ======================================================================
+    // SAVUNMA SİSTEMİ — PARRY · BLOCK · GUARD PRESSURE · GUARDBREAK
+    // ======================================================================
+    // Kısa hit-stop: ağır vuruşlarda birkaç karelik "donma" hissi.
+    hitstop(sec) {
+      const s = Math.max(0, Number(sec) || 0);
+      if (s <= 0 || this.lowFx) return;
+      this._hitstop = Math.max(this._hitstop || 0, s);
+    }
+
+    // F'ye basıldı: hazırlık -> parry penceresi. Basılı tutulursa bloka geçer.
+    parryPress() {
+      const P = this.player;
+      if (!P || this.downed || this._down) return;
+      const cfg = this.combatCfg.parry;
+      if (P.guardbreakTimer > 0) return;     // guardbreak: savunma kilitli
+      if (P.parryRecovery > 0) return;       // kaçırma cezası: yeni deneme yok
+      if (P.parryPhase !== 'idle') return;   // deneme sürerken yeniden basış sayılmaz
+      if (P.parryHeld) return;               // tek basış = tek deneme (hold spammı yok)
+      P.parryHeld = true;
+      P.parryPhase = 'startup';
+      P.parryTimer = Math.max(0.01, Number(cfg.startup) || 0.08);
+      P.guardVisible = Math.max(P.guardVisible || 0, this.combatCfg.guard.fadeDelay);
+      if (this.sound) this.sound.play('guard', 0.45);
+    }
+
+    // F bırakıldı: bloktan çık. Parry penceresi kendi süresini tamamlar
+    // (hızlı "tap parry" da çalışsın diye).
+    parryRelease() {
+      const P = this.player;
+      if (!P) return;
+      P.parryHeld = false;
+      if (P.parryPhase === 'block') { P.parryPhase = 'idle'; P.parryTimer = 0; }
+    }
+
+    // Parry denemesi boşa gitti: ceza. Saldırı/dash/animation bunu iptal edemez.
+    beginParryWhiff() {
+      const P = this.player;
+      if (!P) return;
+      const cfg = this.combatCfg.parry;
+      P.parryRecovery = Math.max(0, Number(cfg.whiffRecovery) || 0);
+      P.parryPhase = 'idle';
+      P.parryTimer = 0;
+      // Boşa savurma: silah ileri kaçar (ceza hissi).
+      this.swingWeapon('thrust', { angle: P.facingAngle, color: '#e57373', duration: 0.3, trail: false });
+      if (this.sound) this.sound.play('guard', 0.3);
+      this.spawnCombatIndicator('FAILED PARRY', '#e57373', { duration: 0.8 });
+      if (this.onCombatEvent) { try { this.onCombatEvent('parry_miss'); } catch (e) {} }
+    }
+
+    // Kusursuz parry: hasarı tamamen iptal eder, düşman saldırısını böler.
+    perfectParry(fromMonster, angle, atkKind, allowInterrupt) {
+      const P = this.player;
+      if (!P) return;
+      const cfg = this.combatCfg;
+      P.parryPhase = 'idle';
+      P.parryTimer = 0;
+      P.parryRecovery = Math.max(0, Number(cfg.parry.successRecovery) || 0);
+      P.parrySuccessAt = this.time;
+      P.counterUntil = this.time + (Number(cfg.parry.counterWindow) || 0.5);
+      P.attackCooldownTimer = 0;             // anında karşı atak fırsatı
+      P.guardVisible = Math.max(P.guardVisible || 0, cfg.guard.fadeDelay);
+      // Başarılı parry'den sonra tuş basılıysa normal bloka geç (yeni parry için
+      // F bırakılıp yeniden basılmalı — hold ile otomatik parry YOK).
+      P.parryPhase = P.parryHeld ? 'block' : 'idle';
+      // Guard pressure YOK — kusursuz parry baskı üretmez.
+      this.spawnCombatIndicator('PERFECT PARRY', '#4dd0e1', { duration: 1.0, big: true });
+      if (this.sound) this.sound.play('parry');
+      // Savuşturma animasyonu: silah gelen saldırı yönüne doğru savrulur.
+      const deflectAngle = Number.isFinite(angle) ? angle : P.facingAngle;
+      this.swingWeapon('slash', { angle: deflectAngle, color: '#80deea', duration: 0.26, trail: true, radius: 56, arc: 1.7 });
+      this.addTrauma(0.26);
+      this.hitstop(0.07);
+      const px = P.x, py = P.y;
+      this.aoeEffects.push({ x: px, y: py, radius: 46, duration: 0.34, timer: 0.34, color: '#4dd0e1', ring: true });
+      this.aoeEffects.push({ x: px, y: py, radius: 22, duration: 0.2, timer: 0.2, color: '#e0f7fa', ring: true });
+      for (let i = 0; i < 22; i++) {
+        const a = Math.random() * TAU, sp = 90 + Math.random() * 240;
+        this.addParticle({
+          wx: px, wy: py, wz: 18 + Math.random() * 18,
+          vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, vz: 40 + Math.random() * 90,
+          color: i % 3 ? '#4dd0e1' : '#ffffff', size: 2 + Math.random() * 2.4,
+          life: 0.32 + Math.random() * 0.3, grav: 40, additive: true
+        });
+      }
+      if (fromMonster && fromMonster.hp > 0) {
+        // Saldırıyı iptal et + kısa sersemletme (karşı atak penceresi).
+        // allowInterrupt === false ise (mermi parry) canavarın cast'i bozulmaz.
+        if (allowInterrupt !== false) {
+          fromMonster.cast = null;
+          fromMonster.meleeWindup = null;
+          fromMonster.parriedTimer = 0.45;
+        }
+        fromMonster.flashTimer = Math.max(fromMonster.flashTimer || 0, 0.2);
+        fromMonster.attackTimer = Math.max(fromMonster.attackTimer || 0, 0.45);
+      }
+      if (this.onCombatEvent) { try { this.onCombatEvent('parry'); } catch (e) {} }
+    }
+
+    // Guard Pressure ekle; 100'e ulaşırsa guardbreak.
+    addGuardPressure(amount) {
+      const P = this.player;
+      if (!P) return;
+      const cfg = this.combatCfg.guard;
+      const add = Math.max(0, Number(amount) || 0);
+      if (add <= 0 || P.guardbreakTimer > 0) return;
+      P.guard = Math.min(cfg.max, P.guard + add);
+      P.guardDecayDelay = cfg.decayDelay;
+      P.guardVisible = cfg.fadeDelay;
+      if (P.guard >= cfg.max) this.triggerGuardbreak();
+    }
+
+    triggerGuardbreak() {
+      const P = this.player;
+      if (!P) return;
+      const cfg = this.combatCfg.guard;
+      if (P.guardbreakTimer > 0) return;
+      P.guard = cfg.max;
+      P.guardbreakTimer = cfg.breakDuration;
+      P.parryPhase = 'idle';
+      P.parryTimer = 0;
+      P.parryHeld = false;
+      P.parryRecovery = 0;
+      P.isDashing = false;
+      P.dashTimer = 0;
+      P.guardVisible = cfg.fadeDelay;
+      P.attackCooldownTimer = Math.max(P.attackCooldownTimer || 0, 0.5);
+      this.spawnCombatIndicator('GUARD BREAK', '#ff8a65', { duration: 1.2, big: true });
+      if (this.sound) this.sound.play('guardbreak');
+      // Savunma kırıldı: silah aşağı savrulur (stagger hissi).
+      this.swingWeapon('slam', { angle: P.facingAngle + Math.PI, color: '#ff7043', duration: 0.5, trail: false });
+      this.addTrauma(0.55);
+      this.hitstop(0.12);
+      this.aoeEffects.push({ x: P.x, y: P.y, radius: 66, duration: 0.5, timer: 0.5, color: '#ff7043', ring: true, cracks: true });
+      this.spawnExplosionParticles(P.x, P.y, 28, '#ff7043');
+      if (this.onCombatEvent) { try { this.onCombatEvent('guardbreak'); } catch (e) {} }
+    }
+
+    // Sprint: Shift + hareket. Stamina biterse durur.
+    isSprinting() {
+      const P = this.player;
+      if (!P || this.downed || this._down) return false;
+      if (P.guardbreakTimer > 0 || (P.skillLock || 0) > 0 || P.isDashing || P.channel) return false;
+      if (P.parryPhase === 'block' || P.parryPhase === 'startup' || P.parryPhase === 'window') return false;
+      if (P.stamina <= 0.5) return false;
+      if (!(this.keys['shift'] || this.keys['shiftleft'] || this.keys['shiftright'])) return false;
+      const moving = this.keys['w'] || this.keys['s'] || this.keys['a'] || this.keys['d'] ||
+        this.keys['arrowup'] || this.keys['arrowdown'] || this.keys['arrowleft'] || this.keys['arrowright'];
+      return !!moving;
+    }
+
+    moveSpeedMult() {
+      const P = this.player;
+      let m = 1;
+      if (!P) return m;
+      if (P.guardbreakTimer > 0) m *= this.combatCfg.guard.breakSlow;
+      if (P.sprinting) m *= this.combatCfg.sprint.mult;
+      return m;
+    }
+
+    // Savunma durum makinesi + stamina/guard güncellemesi (her kare).
+    updateCombatDefense(dt) {
+      const P = this.player;
+      if (!P) return;
+      const cfg = this.combatCfg;
+
+      if (P.dodgeIframes > 0) P.dodgeIframes = Math.max(0, P.dodgeIframes - dt);
+
+      // --- Guardbreak sayacı ---
+      if (P.guardbreakTimer > 0) {
+        P.guardbreakTimer = Math.max(0, P.guardbreakTimer - dt);
+        if (P.guardbreakTimer === 0) {
+          P.guard = 0;                       // guardbreak sonrası sıfırlanır
+          P.guardDecayDelay = 0;
+          this.spawnCombatIndicator('GUARD UP', '#80deea', { duration: 0.6 });
+        }
+      }
+
+      // --- Parry ceza sayacı ---
+      if (P.parryRecovery > 0) {
+        P.parryRecovery = Math.max(0, P.parryRecovery - dt);
+      }
+
+      // --- Parry/blok fazları ---
+      if (P.guardbreakTimer > 0) {
+        if (P.parryPhase !== 'idle') { P.parryPhase = 'idle'; P.parryTimer = 0; }
+      } else if (P.parryRecovery <= 0) {
+        if (P.parryPhase === 'startup') {
+          P.parryTimer -= dt;
+          if (P.parryTimer <= 0) {
+            P.parryPhase = 'window';
+            P.parryTimer = Math.max(0.02, Number(cfg.parry.window) || 0.2);
+          }
+        } else if (P.parryPhase === 'window') {
+          P.parryTimer -= dt;
+          if (P.parryTimer <= 0) {
+            if (P.parryHeld) {
+              // Pencere bitti ama F hâlâ basılı -> normal blok
+              P.parryPhase = 'block';
+              P.parryTimer = 0;
+            } else {
+              P.parryPhase = 'idle';
+              P.parryTimer = 0;
+              this.beginParryWhiff();
+            }
+          }
+        }
+      }
+
+      // --- Guard Pressure azalması ---
+      if (P.guard > 0) {
+        if (P.guardDecayDelay > 0) P.guardDecayDelay = Math.max(0, P.guardDecayDelay - dt);
+        else P.guard = Math.max(0, P.guard - (Number(cfg.guard.decayRate) || 0) * dt);
+      }
+      if (P.guardVisible > 0) P.guardVisible = Math.max(0, P.guardVisible - dt);
+
+      // --- Stamina ---
+      const sprinting = this.isSprinting();
+      P.sprinting = sprinting;
+      if (sprinting) {
+        P.stamina = Math.max(0, P.stamina - (Number(cfg.stamina.sprintDrain) || 0) * dt);
+        P.staminaIdle = Number(cfg.stamina.regenDelay) || 0;
+      } else if (P.staminaIdle > 0) {
+        P.staminaIdle = Math.max(0, P.staminaIdle - dt);
+      } else if (P.stamina < (P.staminaMax || cfg.stamina.max)) {
+        P.stamina = Math.min(P.staminaMax || cfg.stamina.max, P.stamina + (Number(cfg.stamina.regen) || 0) * dt);
+      }
+    }
+
+    // --- Savaş göstergeleri (oyuncunun yanında, ekran ortası bildirimi DEĞİL) ---
+    spawnCombatIndicator(text, color, opts) {
+      const o = opts || {};
+      const list = this.combatIndicators || (this.combatIndicators = []);
+      const label = String(text || '');
+      // Aynı yazı üst üste binmesin (spam koruması).
+      for (let i = 0; i < list.length; i++) {
+        if (list[i].text === label && list[i].timer > list[i].duration * 0.35) return;
+      }
+      const dur = Number(o.duration) || 0.85;
+      list.push({
+        text: label, color: color || '#80deea', icon: o.icon || '',
+        duration: dur, timer: dur, big: !!o.big,
+        rise: o.rise != null ? Number(o.rise) : 34,
+        jitter: (Math.random() - 0.5) * 10, seed: Math.random() * 10
+      });
+      if (list.length > 6) list.splice(0, list.length - 6);
+    }
+
+    updateCombatIndicators(dt) {
+      const list = this.combatIndicators;
+      if (!list || !list.length) return;
+      for (let i = list.length - 1; i >= 0; i--) {
+        list[i].timer -= dt;
+        if (list[i].timer <= 0) list.splice(i, 1);
+      }
+    }
+
+    renderCombatIndicators(ctx) {
+      const list = this.combatIndicators;
+      if (!list || !list.length || !this.player) return;
+      const P = this.player;
+      const base = this.iso(P.x, P.y, P.z || 0);
+      ctx.save();
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      for (let i = 0; i < list.length; i++) {
+        const it = list[i];
+        const p = clamp(1 - it.timer / it.duration, 0, 1);
+        const fadeIn = Math.min(1, p / 0.14);
+        const fadeOut = 1 - clamp((p - 0.6) / 0.4, 0, 1);
+        const a = Math.max(0, Math.min(1, fadeIn * fadeOut));
+        if (a <= 0.02) continue;
+        const lift = 52 + easeOut(p) * it.rise;
+        const x = base.x + it.jitter * (1 - p);
+        const y = base.y - lift - i * 2;
+        const pop = it.big ? 1 + 0.22 * Math.sin(Math.min(1, p / 0.22) * Math.PI) : 1;
+        const size = (it.big ? 12.5 : 10) * pop;
+        ctx.font = `800 ${size}px Inter, system-ui, sans-serif`;
+        const tw = ctx.measureText(it.text).width;
+        // Küçük koyu zemin: okunabilirlik (izometrik perspektifte net kalsın).
+        ctx.globalAlpha = a * 0.62;
+        ctx.fillStyle = 'rgba(6,16,24,0.72)';
+        rr(ctx, x - tw / 2 - 8, y - size * 0.85, tw + 16, size * 1.7, 6);
+        ctx.fill();
+        ctx.globalAlpha = a * 0.85;
+        ctx.strokeStyle = rgba(it.color, 0.75);
+        ctx.lineWidth = 1;
+        rr(ctx, x - tw / 2 - 8, y - size * 0.85, tw + 16, size * 1.7, 6);
+        ctx.stroke();
+        // Yazı + hafif parlama
+        ctx.globalAlpha = a;
+        ctx.shadowColor = it.color;
+        ctx.shadowBlur = it.big ? 12 : 7;
+        ctx.fillStyle = it.color;
+        ctx.fillText(it.text, x, y);
+        ctx.shadowBlur = 0;
+      }
+      ctx.globalAlpha = 1;
+      ctx.restore();
+    }
+
+    // Savunma duruşu görseli: blok kalkanı / parry parlaması / guardbreak kırığı.
+    renderPlayerDefenseFx(ctx) {
+      const P = this.player;
+      if (!P || this.downed) return;
+      const phase = P.parryPhase;
+      const breaking = (P.guardbreakTimer || 0) > 0;
+      if ((!phase || phase === 'idle') && !breaking && !(P.guard > 0.5)) return;
+      const p = this.iso(P.x, P.y, 0);
+      const fa = worldAngleToScreen(P.facingAngle);
+      ctx.save();
+      ctx.lineCap = 'round';
+      if (breaking) {
+        // Guardbreak: turuncu, titreyen kırık halka.
+        const t = this.time;
+        const a = 0.35 + 0.25 * Math.sin(t * 22);
+        ctx.globalAlpha = a;
+        ctx.strokeStyle = '#ff7043';
+        ctx.lineWidth = 2.4;
+        for (let i = 0; i < 3; i++) {
+          ctx.beginPath();
+          ctx.ellipse(p.x, p.y - 10, 26 + i * 6, (26 + i * 6) * ISO_RY / ISO_RX, 0, i * 2, i * 2 + 1.9);
+          ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+      } else if (phase === 'window') {
+        // Kusursuz parry penceresi: ince, parlak cyan yay.
+        const a = 0.55 + 0.35 * Math.sin(this.time * 26);
+        ctx.globalAlpha = a;
+        drawGlow(ctx, p.x + Math.cos(fa) * 14, p.y - 16 + Math.sin(fa) * 7, 16, '#4dd0e1', 0.55);
+        ctx.strokeStyle = '#b2ebf2';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y - 16, 20, fa - 0.7, fa + 0.7);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      } else if (phase === 'startup') {
+        ctx.globalAlpha = 0.4;
+        ctx.strokeStyle = '#e0f7fa';
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y - 16, 16, fa - 0.5, fa + 0.5);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      } else if (phase === 'block' || P.guard > 0.5) {
+        // Blok: mavi yarım daire kalkan + baskı arttıkça kızaran kenar.
+        const g = clamp((P.guard || 0) / (this.combatCfg.guard.max || 100), 0, 1);
+        const col = g > 0.75 ? '#ff8a65' : '#64b5f6';
+        ctx.globalAlpha = 0.32 + g * 0.3;
+        drawGlow(ctx, p.x + Math.cos(fa) * 12, p.y - 17 + Math.sin(fa) * 6, 20, col, 0.35 + g * 0.35);
+        ctx.strokeStyle = col;
+        ctx.lineWidth = 2.4;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y - 17, 21, fa - 0.85, fa + 0.85);
+        ctx.stroke();
+        ctx.globalAlpha = 0.18 + g * 0.15;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y - 17, 15, fa - 0.7, fa + 0.7);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
+      ctx.restore();
+    }
+
+    // --- Düşman saldırı sınıflandırma (per-attack ayarlanabilir) ---
+    telegraphDurationFor(kind) {
+      const t = this.combatCfg.telegraph;
+      return Number(t[kind] != null ? t[kind] : t.normal) || 0.35;
+    }
+
+    classifyMonsterAttack(m) {
+      const ranged = m.ability === 'ranged';
+      const boss = !!(m.boss || m.isBoss);
+      const kind = m.attackKind || (boss ? 'heavy' : (ranged ? 'medium' : 'light'));
+      return {
+        kind,
+        defense: m.attackDefense || DEFENSE.PARRYABLE,
+        telegraph: Number(m.attackTelegraph) || this.telegraphDurationFor(kind),
+        guardPressure: m.guardPressure != null ? Number(m.guardPressure) : (GUARD_PRESSURE[kind] || GUARD_PRESSURE.medium),
+        ranged,
+        // Yakın dövüş erişimi: AI'nın kullandığı gerçek reach (yarıçap + oyuncu yarıçapı).
+        range: ranged ? 420 : ((m.radius || 18) + (this.player ? this.player.radius : 18) + 8),
+      };
+    }
+
+    classifyMonsterSkill(m, sk) {
+      let defense = sk.defense || '';
+      if (!defense) {
+        if (sk.parryable === false) defense = sk.blockable === false ? DEFENSE.DODGE : DEFENSE.BLOCK;
+        else if (sk.kind === 'slam' || sk.kind === 'dash') defense = DEFENSE.DODGE;
+        else defense = DEFENSE.PARRYABLE;
+      }
+      let kind = sk.attackKind || '';
+      if (!kind) {
+        const power = Number(sk.power) || 1;
+        kind = (sk.kind === 'slam' || sk.kind === 'dash') ? 'ultimate' : (power >= 1.6 ? 'skill' : 'medium');
+      }
+      return {
+        kind,
+        defense,
+        telegraph: Number(sk.windup) || Number(sk.telegraph) || this.telegraphDurationFor(sk.kind === 'slam' ? 'heavy' : 'normal'),
+        guardPressure: sk.guardPressure != null ? Number(sk.guardPressure) : (GUARD_PRESSURE[kind] || 25),
+      };
+    }
+
+    // ======================================================================
     // DASH / SALDIRI / YETENEKLER (mekanikler değişmedi)
     // ======================================================================
     triggerDash() {
-      if (this.downed) return;
-      if (this.player.isDashing || this.player.dashCooldownTimer > 0) return;
-      this.player.isDashing = true;
-      this.player.dashTimer = this.player.dashDuration;
-      this.player.dashCooldownTimer = this.player.dashCooldown;
+      if (this.downed || this._down) return;
+      const P = this.player;
+      const cfg = this.combatCfg;
+      if (P.guardbreakTimer > 0) return;                  // guardbreak: dash yok
+      if (P.parryRecovery > 0) return;                    // parry cezası iptal edilemez
+      if (P.isDashing || P.dashCooldownTimer > 0) return;
+      const cost = Number(cfg.stamina.dashCost != null ? cfg.stamina.dashCost : cfg.dash.staminaCost) || 0;
+      if (P.stamina < cost) {                             // yetersiz stamina
+        this.spawnCombatIndicator('NO STAMINA', '#90a4ae', { duration: 0.6 });
+        return;
+      }
+      P.stamina = Math.max(0, P.stamina - cost);
+      P.staminaIdle = Number(cfg.stamina.regenDelay) || 0;
+      P.dashDuration = Number(cfg.dash.duration) || 0.22;
+      P.dashCooldown = Number(cfg.dash.cooldown) || 1.05;
+      P.isDashing = true;
+      P.dashTimer = P.dashDuration;
+      P.dashCooldownTimer = P.dashCooldown;
+      P.dodgeIframes = Math.max(P.dodgeIframes || 0, Number(cfg.dash.iframes) || 0);
+      this.lastDodgeTime = this.time;
+      this.spawnCombatIndicator('DODGE', '#e0f7fa', { duration: 0.55 });
       this.sound.play('dash');
 
       // Dash yönü: o an bastığımız hareket tuşları (yürüdüğümüz yön).
@@ -3453,7 +4058,7 @@
         dy = this.mouse.worldY - this.player.y;
       }
       const len = Math.hypot(dx, dy) || 1;
-      const dashSpeed = 680;
+      const dashSpeed = Number(cfg.dash.speed) || 680;
       this.player.dashVx = (dx / len) * dashSpeed;
       this.player.dashVy = (dy / len) * dashSpeed;
 
@@ -3474,15 +4079,53 @@
       this.aoeEffects.push({ x: this.player.x, y: this.player.y, radius: 34, duration: 0.28, timer: 0.28, color: '#cfd8dc', ring: true });
     }
 
-    createGhostTrail() {
-      this.player.ghostTrails.push({
+    // Silah savurma animasyonu: TEMEL saldırı + yetenekler aynı sistemi kullanır.
+    // kind: 'swing' | 'slash' | 'slam' | 'thrust' | 'spin' | 'cast'
+    swingWeapon(kind, opts) {
+      const P = this.player;
+      if (!P) return null;
+      const o = opts || {};
+      const mode = kind || (P.style && P.style.atkMode) || 'swing';
+      let dur = Number(o.duration) || 0;
+      if (!dur) {
+        dur = mode === 'slam' ? 0.42 : (mode === 'spin' ? 0.5 : (mode === 'thrust' ? 0.26 : 0.32));
+      }
+      const angle = o.angle != null ? Number(o.angle) : P.facingAngle;
+      const dir = o.dir != null ? Number(o.dir) : (P.swingDir *= -1);
+      P.weaponSwing = {
+        kind: mode, timer: dur, duration: dur, dir,
+        angle,
+        color: o.color || (P.style && P.style.slash) || '#9fd8ff',
+      };
+      P.attackAnimTimer = Math.max(P.attackAnimTimer || 0, Math.min(0.5, dur));
+      P.facingAngle = angle;
+      if (o.lunge) {
+        P.x += Math.cos(angle) * Number(o.lunge);
+        P.y += Math.sin(angle) * Number(o.lunge);
+        if (typeof this.clampPlayerToWorld === 'function') this.clampPlayerToWorld();
+      }
+      if (o.trail) {
+        this.slashes.push({
+          x: P.x, y: P.y, angle,
+          radius: Number(o.radius) || 70,
+          arc: Number(o.arc) || 1.2,
+          duration: dur * 0.7, timer: dur * 0.7,
+          color: P.weaponSwing.color, dir
+        });
+      }
+      return P.weaponSwing;
+    }
+
+    createGhostTrail() {      this.player.ghostTrails.push({
         x: this.player.x, y: this.player.y, facingAngle: this.player.facingAngle,
         alpha: 0.75, color: this.getArchetypeColor()
       });
     }
 
     triggerPrimaryAttack() {
-      if (this.downed) return;
+      if (this.downed || this._down) return;
+      if (this.player.guardbreakTimer > 0) return;      // guardbreak: saldırı kilitli
+      if (this.player.parryRecovery > 0) return;        // parry cezası iptal edilemez
       if (this.player.attackCooldownTimer > 0) return;
 
       const stats = this.playerData.stats;
@@ -3495,6 +4138,9 @@
       const _ap = this.aimPoint();
       const aimAngle = Math.atan2(_ap.y - this.player.y, _ap.x - this.player.x);
       this.player.facingAngle = aimAngle;
+      // Silah gerçekten savrulsun (sınıfa özgü mod: swing/slash/slam/thrust/cast).
+      const styleMode = (this.player.style && this.player.style.atkMode) || 'swing';
+      this.swingWeapon(styleMode, { angle: aimAngle, color: this.player.style && this.player.style.slash, trail: false });
       this.emitAllyAction({ kind: 'attack', x: this.player.x, y: this.player.y, angle: aimAngle });
 
       const critBonusP = this.passiveCritBonus();
@@ -3570,7 +4216,9 @@
     }
 
     triggerSkill(key) {
-      if (this.downed) return;
+      if (this.downed || this._down) return;
+      if (this.player.guardbreakTimer > 0) return;      // guardbreak: yetenek kilitli
+      if (this.player.parryRecovery > 0) return;        // parry cezası iptal edilemez
       const cd = this.player.cooldowns[key];
       if (!cd) return;
 
@@ -3775,6 +4423,27 @@
       const radius = Number(sk.radius) || 80;
       const kind = sk.kind;
       const crit = Math.random() < (st.critChance || 0);
+      // --- SİLAH ANİMASYONU ---
+      // Yetenek yalnızca efekt değil, gerçek bir savuruş da üretsin.
+      // (kind 'swing' kendi vuruş döngüsünde animasyonu yönetir.)
+      const WEAPON_ANIM = {
+        arc: 'swing', nova: 'slam', aoe: 'slam', ground: 'slam', meteor: 'cast',
+        beam: 'thrust', dash: 'thrust', teleport: 'thrust', line: 'thrust', pierce: 'thrust',
+        chain: 'slash', orbit: 'spin', projectile: 'cast', fan: 'cast',
+        heal: 'cast', shield: 'cast', buff: 'cast', channel: 'spin'
+      };
+      const animKind = WEAPON_ANIM[kind];
+      if (animKind) {
+        this.swingWeapon(animKind, {
+          angle: aim,
+          color,
+          radius,
+          arc: Number(sk.arc) || 1.2,
+          // Zaten kendi izini çizen yeteneklerde ek iz çizmiyoruz.
+          trail: kind !== 'arc' && kind !== 'swing',
+          duration: animKind === 'slam' ? 0.42 : (animKind === 'spin' ? 0.5 : 0.32),
+        });
+      }
       // Görsel eklenti: mekanik çalışırken hazır efekti göster.
       this.emitSkillVisual(sk, kind, aim);
 
@@ -3829,8 +4498,10 @@
             const last = i === hits - 1;
             const swingAim = this.skillAim();
             P.facingAngle = swingAim;
-            P.swingDir *= -1;
-            P.attackAnimTimer = 0.22;
+            this.swingWeapon(last ? 'slam' : 'swing', {
+              angle: swingAim, color, radius: reach,
+              arc, trail: false, duration: last ? 0.4 : 0.26,
+            });
             // Savururken hafif öne atılım.
             P.x += Math.cos(swingAim) * (last ? 11 : 6);
             P.y += Math.sin(swingAim) * (last ? 11 : 6);
@@ -3861,10 +4532,7 @@
       if (kind === 'arc') {
         this.sound.play('slash');
         this.addTrauma(0.28);
-        // Silah savurma animasyonu: kılıç karakterle birlikte savrulsun.
-        this.player.attackAnimTimer = 0.22;
-        this.player.swingDir *= -1;
-        this.player.facingAngle = aim;
+        // Silah animasyonu yukarıda swingWeapon ile başlatıldı.
         const arc = Number(sk.arc) || 1.0;
         this.slashes.push({ x: this.player.x, y: this.player.y, angle: aim, radius: radius, arc, duration: 0.22, timer: 0.22, color, dir: this.player.swingDir });
         this.hitCone(this.player.x, this.player.y, radius, arc, aim, dmg, sk, crit);
@@ -4102,17 +4770,53 @@
     }
 
     // Oyuncuya hasar: önce kalkan yutar, sonra can gider.
-    damagePlayer(amount, angle, element, fromMonster) {
+    // opts = { defense:'parryable'|'dodge'|'block'|'none', kind:'light'|'medium'|'heavy'|'skill'|'ultimate', guardPressure:n, ignoreDefense:bool }
+    damagePlayer(amount, angle, element, fromMonster, opts) {
       // Yere düşmüşken/ölüyken hasar ve vuruş sesi olmasın (canavarlar
       // ölü bedene vurmaya devam edip ses çıkarmasın).
-      if (this.downed || this._down) return;
+      if (this.downed || this._down) return 'avoided';
+      const P = this.player;
       // TravelSkills dokunulmazlığı (blink/leap/buff invuln).
-      if (this.player && (this.player.invuln > 0 || this.player.phase > 0)) return;
+      if (P && (P.invuln > 0 || P.phase > 0)) return 'avoided';
+
+      const o = opts || {};
+      const defenseType = o.ignoreDefense ? DEFENSE.NONE : (o.defense || DEFENSE.PARRYABLE);
+      const atkKind = o.kind || 'medium';
+      const guardAmt = o.guardPressure != null
+        ? Number(o.guardPressure)
+        : (GUARD_PRESSURE[atkKind] != null ? GUARD_PRESSURE[atkKind] : GUARD_PRESSURE.medium);
+
+      // 1) Dash i-frame: tamamen kaçış (sadece dash dokunulmazlığı penceresinde).
+      if (P && P.dodgeIframes > 0) {
+        this.spawnCombatIndicator('DODGE', '#e0f7fa', { duration: 0.55 });
+        this.lastDodgeTime = this.time;
+        return 'avoided';
+      }
+
+      // 2) Kusursuz parry: yalnızca PARRYABLE saldırılar.
+      if (P && defenseType === DEFENSE.PARRYABLE && P.parryPhase === 'window' && P.guardbreakTimer <= 0) {
+        // Mermilerden gelen parry, canavarın başka bir telegraph'ını iptal etmesin.
+        this.perfectParry(fromMonster, angle, atkKind, o.noInterrupt !== true);
+        return 'avoided';
+      }
+
+      // 3) Normal blok: hasarı azaltır + Guard Pressure üretir.
+      let blocking = false;
+      if (P && P.parryPhase === 'block' && P.guardbreakTimer <= 0) {
+        if (defenseType === DEFENSE.DODGE) {
+          // Dodge-only: blok işe yaramaz, sadece baskı yer.
+          this.addGuardPressure(guardAmt);
+          this.spawnCombatIndicator('UNBLOCKABLE', '#ff8a65', { duration: 0.7 });
+        } else if (defenseType !== DEFENSE.NONE) {
+          blocking = true;
+        }
+      }
+
       // Irk / sınıf dodge pasifi (wyvernkin, gölge sınıfları...).
       const dodge = this.passiveDodgeChance();
       if (dodge > 0 && Math.random() < dodge) {
         this.spawnDamageNumber(this.player.x, this.player.y, "DODGE", "#b2ff59");
-        return;
+        return 'avoided';
       }
       const st = this.playerData.stats || (this.playerData.stats = {});
       let dmg = Math.max(1, Math.round(Number(amount) || 0));
@@ -4122,6 +4826,12 @@
       // Savunma buff'ı gelen hasarı azaltır (en fazla %75).
       const defBuff = Math.min(0.75, Math.max(0, this.buffPct("defense") + this.buffPct("resistance")));
       if (defBuff > 0) dmg = Math.max(1, Math.round(dmg * (1 - defBuff)));
+      // Blok: hafif saldırı çoğunu yutar, block-only (ağır) saldırı daha çok geçirir.
+      if (blocking) {
+        const reduce = defenseType === DEFENSE.BLOCK ? 0.35 : 0.8;
+        dmg = Math.max(1, Math.round(dmg * (1 - reduce)));
+        this.addGuardPressure(guardAmt);
+      }
       if (this.playerShield > 0 && this.playerShieldTimer > 0) {
         const absorbed = Math.min(this.playerShield, dmg);
         this.playerShield -= absorbed;
@@ -4159,6 +4869,11 @@
       } else {
         this.spawnDamageNumber(this.player.x, this.player.y, 'BLOCK', '#80deea');
       }
+      if (blocking) {
+        this.spawnCombatIndicator('BLOCK', '#64b5f6', { duration: 0.6 });
+        if (this.sound) this.sound.play('guard', 0.45);
+        this.addTrauma(0.1);
+      }
       // "Son Nefes" pasifi: ölümcül hasar bir kez 1 HP ile atlatılır.
       if ((st.currentHp || 0) <= 0 && !this._secondWindUsed &&
           this.passiveList().some((p) => p.kind === "secondWind")) {
@@ -4171,6 +4886,9 @@
       this.hurt = 0.35;
       this.sound.play('hit');
       if (this.onStatsChange) this.onStatsChange(st);
+      // Dönüş değeri: çağıran taraf (canavar AI) ek durum efektlerini uygulayıp
+      // uygulamayacağına karar verir ('hit' | 'blocked' | 'avoided').
+      return blocking ? 'blocked' : 'hit';
     }
 
     applyPlayerStatusFromMonster(status) {
@@ -4635,6 +5353,31 @@
       if (elMult !== 1) damage = damage * elMult;
       damage = Math.max(1, Math.round(damage));
       monster._passiveHit = true;
+      // ---- ORTAK DÜNYA: hasar/ölüm kararı sunucunun ----------------------
+      // Görsel geri bildirim anında verilir (oyuncu beklemez), fakat can
+      // değeri otoriter değildir ve yerel ölüm tetiklenmez.
+      if (monster.shared) {
+        const predicted = Math.max(1, (Number(monster.hp) || 1) - damage);
+        monster.hp = predicted;
+        monster.flashTimer = 0.12;
+        monster.state = 'CHASE';
+        monster.aggroTimer = Math.max(Number(monster.aggroTimer) || 0, monster.elite ? 9 : 7);
+        const kb0 = Math.max(0, Number(knockbackStrength) || 0);
+        if (kb0 > 0 && !monster.elite) {
+          const mag = Math.min(150, kb0) * 0.5;
+          monster.vx = clamp(monster.vx + Math.cos(hitAngle) * mag, -220, 220);
+          monster.vy = clamp(monster.vy + Math.sin(hitAngle) * mag, -220, 220);
+        }
+        const elShared = String(element || this.currentElement() || "physical").toLowerCase();
+        const txtShared = isCrit ? `KRİTİK! -${Math.round(damage)}` : `-${Math.round(damage)}`;
+        this.spawnDamageNumber(monster.x, monster.y, txtShared, isCrit ? '#ffd54f' : '#ffffff', isCrit);
+        this.spawnImpact(monster.x, monster.y, isCrit ? '#ffd54f' : '#fff3e0', isCrit);
+        this.spawnBloodParticles(monster.x, monster.y, hitAngle, isCrit ? 16 : 8, isCrit ? '#ffb300' : '#ef5350');
+        if (this.sound) this.sound.play(elShared === 'physical' ? 'hit_physical' : 'hit_magic');
+        if (this.onStatsChange) this.onStatsChange(this.playerData.stats);
+        this.attackIntent(monster, damage, isCrit, elShared);
+        return;
+      }
       monster.hp -= damage;
       monster.flashTimer = 0.12;
       monster.state = 'CHASE';
@@ -4668,9 +5411,10 @@
         }
       }
 
-      const weakTxt = elMult > 1.15 ? " ZAYIF!" : (elMult < 0.9 ? " DİRENÇ" : "");
+      // Vuruş yazısı sade: sadece sayı (-40). "Direnç/ZAYIF" etiketi yok
+      // (direnç bambaşka bir stat; hasar yazısında kafa karıştırıyordu).
       const elTint = elMult > 1.15 ? "#ffe082" : (elMult < 0.9 ? "#90a4ae" : null);
-      const txt = isCrit ? `KRİTİK! -${Math.round(damage)}${weakTxt}` : `-${Math.round(damage)}${weakTxt}`;
+      const txt = isCrit ? `KRİTİK! -${Math.round(damage)}` : `-${Math.round(damage)}`;
       this.spawnDamageNumber(monster.x, monster.y, txt, isCrit ? '#ffd54f' : (elTint || '#ffffff'), isCrit);
       if (elMult > 1.15) {
         this.spawnImpact(monster.x, monster.y, ELEMENT_COLOR[el] || '#ffe082', true);
@@ -4705,6 +5449,149 @@
       }
 
       if (this.onStatsChange) this.onStatsChange(this.playerData.stats);
+    }
+
+    // ======================================================================
+    // ORTAK CANAVAR DÜNYASI (sunucu otoritesi)
+    // Sunucu yalnızca durum gönderir (id/kind/x/y/hp); painter, renk, animasyon
+    // ve efektler burada, mevcut tanımlardan üretilir. Görsel kalite korunur.
+    // ======================================================================
+    sharedMonsterObj(s) {
+      const base = this.resolveMonsterDef(s && s.k) || {
+        kind: (s && s.k) || 'goblin', name: (s && s.k) || 'Goblin',
+        painter: 'goblin', color: '#56ab2f', accent: '#d9f99d', element: 'physical',
+        tags: [], speed: 130, radius: 16, aggroRange: 280, exp: 45, gold: 6, damage: 24,
+      };
+      const hp = Math.max(0, Number(s && s.h) || 0);
+      const maxHp = Math.max(1, Number(s && s.m) || hp || 1);
+      const elite = !!(s && s.e) || !!base.elite;
+      const w = this.serverToWorld(Number(s && s.x) || 0, Number(s && s.y) || 0);
+      return {
+        id: String(s.i), serverId: String(s.i), shared: true,
+        kind: base.kind || s.k, baseKind: base.kind || s.k,
+        name: elite ? `★ ${base.name || s.k}` : (base.name || s.k),
+        painter: base.painter || 'goblin',
+        color: base.color || '#56ab2f',
+        accent: base.accent || '#d9f99d',
+        element: base.element || 'physical',
+        tags: Array.isArray(base.tags) ? base.tags.slice() : [],
+        elite: elite,
+        ability: base.ability || null,
+        statusOnHit: base.status || null,
+        hp: hp, maxHp: maxHp, hpGhost: maxHp,
+        speed: Number(base.speed) || 130,
+        damage: Number(base.damage) || 24,
+        radius: Math.max(10, Math.round((Number(base.radius) || 16) * (elite ? 1.5 : 1.4))),
+        exp: Math.round(Number(base.exp) || 45),
+        gold: Math.round(Number(base.gold) || 6),
+        x: w.x, y: w.y, z: 0,
+        sx: w.x, sy: w.y,             // sunucudan gelen hedef konum
+        patrolCenterX: w.x, patrolCenterY: w.y,
+        patrolTimer: Math.random() * 3, patrolTargetX: w.x, patrolTargetY: w.y,
+        vx: 0, vy: 0, facingAngle: 0,
+        state: (s && s.s === 'CHASE') ? 'CHASE' : 'PATROL',
+        attackTimer: 0, attackCooldown: Number(base.attackCooldown) || 1.4,
+        flashTimer: 0, alertTimer: 0, statuses: {},
+        skills: Array.isArray(base.skills) ? base.skills : null,
+        skillCds: (Array.isArray(base.skills) ? base.skills : []).map((sk) => (Number(sk.cd) || 6) * (0.4 + Math.random() * 0.6)),
+        cast: null, aggroRange: Number(base.aggroRange) || 280, aggroTimer: 0,
+        attackDefense: base.attackDefense || null,
+        attackKind: base.attackKind || null,
+        attackTelegraph: Number(base.attackTelegraph) || 0,
+        guardPressure: base.guardPressure != null ? Number(base.guardPressure) : null,
+        boss: !!(base.boss || base.isBoss),
+        meleeWindup: null, parriedTimer: 0,
+        walkPhase: Math.random() * 6, deathTimer: 0, dead: false,
+      };
+    }
+
+    // Sunucu listesini yerel listeyle eşitle (ekle / güncelle / kaldır).
+    applyServerMobs(list) {
+      if (!Array.isArray(list)) return;
+      this.sharedMobs = true;
+      this._sharedMap = this._sharedMap || new Map();
+      // İlk sunucu listesi geldiğinde yerel (client-side) canavarlar düşürülür:
+      // aynı canavar iki kez görünmesin.
+      if (this.monsters.some((m) => m && !m.shared)) {
+        this.monsters = this.monsters.filter((m) => m && m.shared);
+      }
+      const seen = new Set();
+      for (const s of list) {
+        if (!s || s.i == null) continue;
+        const id = String(s.i);
+        seen.add(id);
+        let m = this._sharedMap.get(id);
+        if (!m) {
+          m = this.sharedMonsterObj(s);
+          this._sharedMap.set(id, m);
+          this.monsters.push(m);
+        }
+        const w = this.serverToWorld(Number(s.x) || 0, Number(s.y) || 0);
+        m.sx = w.x; m.sy = w.y;
+        m.maxHp = Math.max(1, Number(s.m) || m.maxHp);
+        if (Number.isFinite(Number(s.h))) m.hp = Math.max(0, Number(s.h));
+        if (s.s === 'DEAD') {
+          if (!m.dead) this.playSharedDeath(m);
+        } else {
+          m.state = s.s === 'CHASE' ? 'CHASE' : 'PATROL';
+        }
+      }
+      for (const m of this.monsters.slice()) {
+        if (!m || !m.shared) continue;
+        if (seen.has(String(m.id))) continue;
+        this.monsters = this.monsters.filter((x) => x !== m);
+        if (this._sharedMap) this._sharedMap.delete(String(m.id));
+      }
+    }
+
+    playSharedDeath(m) {
+      if (!m || m.dead) return;
+      m.hp = 0;
+      m.dead = true;
+      m.deathTimer = 0.45;
+      m.state = 'DEAD';
+      if (this.sound) this.sound.play('kill');
+      this.spawnExplosionParticles(m.x, m.y, 25, m.color);
+      for (let i = 0; i < 8; i++) {
+        this.addParticle({
+          wx: m.x, wy: m.y, wz: 20 + Math.random() * 20,
+          vx: (Math.random() - 0.5) * 40, vy: (Math.random() - 0.5) * 40, vz: 50 + Math.random() * 60,
+          color: '#b9f6ca', size: 2 + Math.random() * 2, life: 0.9, grav: -30
+        });
+      }
+    }
+
+    // Başka bir oyuncunun vuruşu: hasar sayısı/parçacık göster, HP'yi eşitle.
+    applyServerMobHit(p) {
+      if (!p) return;
+      const m = (this._sharedMap && this._sharedMap.get(String(p.i))) || null;
+      if (!m || m.dead) return;
+      if (Number.isFinite(Number(p.h))) {
+        m.hp = Math.max(0, Number(p.h));
+        m.hpGhost = Math.max(m.hp, Number(m.hpGhost) || m.hpGhost || m.hp);
+      }
+      m.flashTimer = 0.12;
+      const mine = this.localId && String(p.by) === String(this.localId);
+      if (!mine && Number(p.d) > 0) {
+        // Uzak oyuncunun vuruşu: kimin vurduğu görünsün diye sade sayı.
+        const txt = (p.c ? 'KRİTİK! -' : '-') + Math.round(Number(p.d));
+        this.spawnDamageNumber(m.x, m.y, txt, p.c ? '#ffd54f' : '#e3f2fd', !!p.c);
+        this.spawnImpact(m.x, m.y, p.c ? '#ffd54f' : '#fff3e0', !!p.c);
+        this.spawnBloodParticles(m.x, m.y, Math.random() * TAU, 6, '#ef5350');
+      }
+      if (m.hp <= 0) this.playSharedDeath(m);
+    }
+
+    // Sunucuya saldırı niyeti: hasar/ölüm kararı sunucunun.
+    attackIntent(monster, damage, isCrit, element) {
+      if (!this.onAttack || !monster) return;
+      this.onAttack({
+        id: monster.serverId || monster.id,
+        dmg: Math.max(1, Math.round(damage)),
+        crit: !!isCrit,
+        el: element || null,
+        range: 380,
+      });
     }
 
     spawnDamageNumber(wx, wy, text, color, isCrit = false) {
@@ -4916,6 +5803,12 @@
     }
 
     update(dt) {
+      // Hit-stop: ağır vuruş / guardbreak anında birkaç karelik donma.
+      if (this._hitstop > 0 && dt > 0) {
+        const used = Math.min(this._hitstop, dt);
+        this._hitstop -= used;
+        dt = Math.max(dt * 0.12, 0.0001);
+      }
       this.time += dt;
       this.updateOthers(dt);
       const P = this.player;
@@ -4950,6 +5843,10 @@
       if (P.invuln > 0) P.invuln = Math.max(0, P.invuln - dt);
       if (P.phase > 0) P.phase = Math.max(0, P.phase - dt);
       if (P.skillLock > 0) P.skillLock = Math.max(0, P.skillLock - dt);
+
+      // --- Savunma sistemi (parry/blok/guard/stamina) + göstergeler ---
+      this.updateCombatDefense(dt);
+      this.updateCombatIndicators(dt);
 
       // Can değişimini sunucuya bildir (0.25 sn'de bir, sadece değiştiyse).
       const stt = this.playerData.stats || {};
@@ -5019,12 +5916,13 @@
         const buffSpeed = 1 + this.buffPct("speed");
         // skillLock: TravelSkills atılma/zıplama sırasında oyuncu girdisini kilitler.
         const locked = (P.skillLock || 0) > 0;
-        const spd = locked ? 0 : P.baseSpeed * (P.speedMul || 1);
+        const spd = locked ? 0 : P.baseSpeed * (P.speedMul || 1) * this.moveSpeedMult();
         P.vx = isoMoveX * spd * (this.playerSlowMult || 1) * buffSpeed * (P.channel ? 0.45 : 1);
         P.vy = isoMoveY * spd * (this.playerSlowMult || 1) * buffSpeed * (P.channel ? 0.45 : 1);
       } else { P.vx = 0; P.vy = 0; }
 
       // 3. Dash
+      if (P.isDashing && P.guardbreakTimer > 0) { P.isDashing = false; P.dashTimer = 0; }
       if (P.isDashing) {
         P.x += P.dashVx * dt;
         P.y += P.dashVy * dt;
@@ -5040,8 +5938,19 @@
       if ((moveX || moveY) && !P.isDashing && !this.downed) {
         this._stepTimer = (this._stepTimer || 0) - dt;
         if (this._stepTimer <= 0) {
-          this._stepTimer = 0.4;
-          if (this.sound) this.sound.play('footstep', 0.45);
+          this._stepTimer = P.sprinting ? 0.26 : 0.4;
+          if (this.sound) this.sound.play('footstep', P.sprinting ? 0.6 : 0.45);
+          if (P.sprinting) {
+            // Koşarken arkada toz izi (sprint hissi).
+            for (let i = 0; i < 3; i++) {
+              this.addParticle({
+                wx: P.x - P.vx * 0.03, wy: P.y - P.vy * 0.03, wz: 3 + Math.random() * 5,
+                vx: (Math.random() - 0.5) * 40 - P.vx * 0.06, vy: (Math.random() - 0.5) * 40 - P.vy * 0.06,
+                vz: 10 + Math.random() * 18, color: '#a1887f', size: 1.6 + Math.random() * 2,
+                life: 0.3 + Math.random() * 0.2, grav: 30, grow: 6
+              });
+            }
+          }
         }
       } else {
         this._stepTimer = 0;
@@ -5090,10 +5999,16 @@
       if (P.attackCooldownTimer > 0) P.attackCooldownTimer -= dt;
       // Basılı tutunca otomatik temel saldırı: cooldown dolduğu an yeniden vur.
       if (this.mouse && this.mouse.isDown && !this.downed && !this._down &&
-          P.attackCooldownTimer <= 0 && !(P.skillLock > 0)) {
+          P.attackCooldownTimer <= 0 && !(P.skillLock > 0) &&
+          P.guardbreakTimer <= 0 && P.parryRecovery <= 0 && P.parryPhase === 'idle') {
         this.triggerPrimaryAttack();
       }
       if (P.attackAnimTimer > 0) P.attackAnimTimer -= dt;
+      if (P.weaponSwing) {
+        P.weaponSwing.timer -= dt;
+        if (P.weaponSwing.timer <= 0) P.weaponSwing = null;
+        else P.attackAnimTimer = Math.max(P.attackAnimTimer, 0.02);
+      }
       this.updatePlayerStatuses(dt);
       this.updateChannel(dt);
 
@@ -5166,6 +6081,11 @@
                 const tickDmg = Math.max(1, Math.round(s.dps * (s.tick || 0.5)));
                 m.hp -= tickDmg;
                 m.flashTimer = Math.max(m.flashTimer, 0.06);
+                // Ortak dünya: DOT hasarı da sunucuya niyet olarak gider.
+                if (m.shared) {
+                  if (m.hp < 1) m.hp = 1;
+                  this.attackIntent(m, tickDmg, false, s.type === 'burn' ? 'fire' : null);
+                }
                 const c = s.type === 'burn' ? '#ff7043' : (s.type === 'bleed' ? '#ff5370' : (s.type === 'shock' ? '#fff176' : '#9ccc65'));
                 this.spawnDamageNumber(m.x, m.y, `-${tickDmg}`, c);
                 if (m.hp <= 0) {
@@ -5188,7 +6108,8 @@
         let walking = false;
 
         // Oyuncu çok uzaklaştıysa canavarı yakınına taşı (dünya boş kalmasın).
-        if (distToPlayer > 1500) {
+        // Ortak dünyada konum sunucunun; bu "geri doldurma" kapalı.
+        if (!m.shared && distToPlayer > 1500) {
           const ang = Math.random() * TAU, r = 420 + Math.random() * 360;
           const np = this.clampToWorld(P.x + Math.cos(ang) * r, P.y + Math.sin(ang) * r);
           m.x = np.x;
@@ -5206,7 +6127,7 @@
         }
 
         // Oyuncu yere düştüyse canavarlar saldırmayı bırakıp devriyeye döner.
-        if (this.downed) { m.cast = null; m.aggroTimer = 0; }
+        if (this.downed) { m.cast = null; m.meleeWindup = null; m.aggroTimer = 0; }
 
         // --- Aggro: vurulunca menzil dışından da peşimize düşer, mesafe açılıp
         // biraz beklendikten sonra bırakır. ---
@@ -5215,6 +6136,7 @@
           if (m.aggroTimer <= 0) {
             m.aggroTimer = 0;
             m.cast = null;
+            m.meleeWindup = null;
             m.state = 'PATROL';
             m.patrolCenterX = m.x; m.patrolCenterY = m.y;
             m.patrolTargetX = m.x; m.patrolTargetY = m.y;
@@ -5222,6 +6144,13 @@
         }
         const aggroRange = Number(m.aggroRange) || 280;
         const chasing = !this.downed && (m.aggroTimer > 0 || distToPlayer < aggroRange);
+
+        // Parry ile bölünen saldırı: kısa sersemleme (karşı atak fırsatı).
+        if (m.parriedTimer > 0) {
+          m.parriedTimer = Math.max(0, m.parriedTimer - dt);
+          m.cast = null;
+          m.meleeWindup = null;
+        }
 
         if (m.cast) {
           // Telegraph sürüyor: canavar yerinde sabitlenir, oyuncu kaçabilir.
@@ -5231,7 +6160,20 @@
             this.executeMonsterSkill(m, m.cast);
             m.cast = null;
           }
-        } else if (chasing) {
+        } else if (m.meleeWindup) {
+          // TELEGRAPH: kırmızı uyarı sürerken hasar YOK; süre bitince vurur.
+          if (statusDisabled || this.downed) {
+            m.meleeWindup = null;   // sersemleme/ölüm saldırıyı iptal eder
+          } else {
+            const mw = m.meleeWindup;
+            mw.timer -= dt;
+            m.facingAngle = mw.angle;
+            if (mw.timer <= 0) {
+              this.resolveMonsterMelee(m, mw);
+              m.meleeWindup = null;
+            }
+          }
+        } else if (chasing && !(m.parriedTimer > 0)) {
           m.state = 'CHASE';
           const angle = Math.atan2(P.y - m.y, P.x - m.x);
           m.facingAngle = angle;
@@ -5245,8 +6187,10 @@
               const sk = m.skills[i];
               if (distToPlayer > (Number(sk.range) || 240)) continue;
               if (sk.kind === 'dash' && distToPlayer < 64) continue;
-              const windup = Number(sk.windup) || 0.7;
-              m.cast = { skill: sk, timer: windup, total: windup, x: m.x, y: m.y, tx: P.x, ty: P.y, angle };
+              // Telegraph süresi: saldırıya özel (parry/blok sınıfıyla birlikte).
+              const info = this.classifyMonsterSkill(m, sk);
+              const windup = info.telegraph;
+              m.cast = { skill: sk, timer: windup, total: windup, x: m.x, y: m.y, tx: P.x, ty: P.y, angle, info };
               m.skillCds[i] = Number(sk.cd) || 6;
               started = true;
               break;
@@ -5254,7 +6198,8 @@
           }
           if (!started) {
             if (distToPlayer > reach) {
-              if (!statusDisabled) {
+              // Ortak dünyada yürüme sunucudan gelir; yerel itki kapalı.
+              if (!statusDisabled && !m.shared) {
                 m.x += Math.cos(angle) * m.speed * statusSpeedMult * dt;
                 m.y += Math.sin(angle) * m.speed * statusSpeedMult * dt;
                 walking = true;
@@ -5262,29 +6207,16 @@
             } else if (m.attackTimer <= 0 && !statusDisabled) {
               m.attackTimer = m.attackCooldown;
               const monsterDmg = Math.max(5, m.damage - (this.playerData.stats.defense || 0) * 0.3);
-              if (m.ability === 'ranged') {
-                // Menzilli canavar: oyuncuya doğru mermi gönderir.
-                const spd = 340;
-                this.projectiles.push({
-                  type: 'monster_orb', hostile: true,
-                  x: m.x + Math.cos(angle) * (m.radius + 8), y: m.y + Math.sin(angle) * (m.radius + 8),
-                  vx: Math.cos(angle) * spd, vy: Math.sin(angle) * spd,
-                  radius: 8, life: 2.0, damage: Math.round(monsterDmg), element: m.element || 'physical', from: m,
-                  color: m.accent || m.color || '#b388ff'
-                });
-                this.sound.play('shoot');
-              } else {
-                this.damagePlayer(Math.round(monsterDmg), angle, m.element || 'physical', m);
-                // Elit yeteneği: yakın alan patlaması.
-                if (m.ability === 'nova') {
-                  this.aoeEffects.push({ x: m.x, y: m.y, radius: m.radius * 2.4, duration: 0.4, timer: 0.4, color: m.accent || '#ff8a65', ring: true });
-                  if (distToPlayer <= m.radius * 2.4 + P.radius) this.damagePlayer(Math.round(monsterDmg * 0.4), angle, m.element || 'physical', m);
-                }
-              }
-              // Canavara özel durum (biyom tablosu): dondurma, zehir, yanma...
-              if (m.statusOnHit && this.playerData.stats.currentHp > 0) {
-                this.applyPlayerStatusFromMonster(m.statusOnHit);
-              }
+              const info = this.classifyMonsterAttack(m);
+              // Hasar anında değil, TELEGRAPH süresi bitince uygulanır.
+              m.meleeWindup = {
+                timer: info.telegraph, total: info.telegraph,
+                angle, tx: P.x, ty: P.y,
+                damage: Math.round(monsterDmg),
+                defense: info.defense, kind: info.kind,
+                guardPressure: info.guardPressure,
+                ranged: info.ranged, range: info.range
+              };
             }
           }
         } else {
@@ -5298,7 +6230,7 @@
           }
           const pdx = m.patrolTargetX - m.x, pdy = m.patrolTargetY - m.y;
           const pd = Math.hypot(pdx, pdy);
-          if (pd > 10 && !statusDisabled) {
+          if (pd > 10 && !statusDisabled && !m.shared) {
             const pAngle = Math.atan2(pdy, pdx);
             m.facingAngle = pAngle;
             m.x += Math.cos(pAngle) * (m.speed * 0.45) * statusSpeedMult * dt;
@@ -5310,6 +6242,19 @@
         // Görsel çizerler (aslan, iskelet vb.) yürüme animasyonunu bu bayrakla
         // açar; canavarlar konumu doğrudan güncellediği için vx/vy hep 0 kalıyordu.
         m.moving = walking;
+        // Ortak dünya: konum sunucudan 10 Hz gelir, kareler arası yumuşatılır.
+        if (m.shared) {
+          const sdx = (Number(m.sx) || 0) - m.x;
+          const sdy = (Number(m.sy) || 0) - m.y;
+          const sd = Math.hypot(sdx, sdy);
+          if (sd > 280) { m.x = m.sx; m.y = m.sy; }
+          else if (sd > 0.4) {
+            const k = Math.min(1, dt * 14);
+            m.x += sdx * k;
+            m.y += sdy * k;
+            if (sd > 3) m.moving = true;
+          }
+        }
         if (m.attackTimer > 0) m.attackTimer -= dt;
       });
 
@@ -5338,7 +6283,8 @@
           const dp = Math.hypot(P.x - p.x, P.y - p.y);
           if (dp <= P.radius + p.radius) {
             hit = true;
-            this.damagePlayer(p.damage, Math.atan2(p.vy, p.vx), p.element || 'physical', p.from || null);
+            this.damagePlayer(p.damage, Math.atan2(p.vy, p.vx), p.element || 'physical', p.from || null,
+              { defense: p.defense || DEFENSE.PARRYABLE, kind: p.kind || 'medium', guardPressure: p.guardPressure, noInterrupt: true });
           }
         } else if (!p.cosmetic) for (const m of this.monsters) {
           if (m.hp <= 0) continue;
@@ -5542,6 +6488,9 @@
       const ctx = this.ctx;
       if (!ctx) return;
       ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+      // Sprite'lar (GLB → tuval) büyütülürken bulanıklasmasın: yüksek kaliteli
+      // yumuşatma açık kalsın (tarayıcı varsayılanı "low" olabilir).
+      try { ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high'; } catch (_) {}
       // Önceki kare yarıda kaldıysa tuval durumu kirlenmiş olabilir; sıfırla.
       ctx.globalAlpha = 1;
       ctx.globalCompositeOperation = 'source-over';
@@ -5600,17 +6549,21 @@
 
       applyZoom();
       this.renderLighting(ctx);
-      this.renderShadows(ctx);
+      try { this.renderShadows(ctx); } catch (e) {
+        if (!this._shadowWarned) { this._shadowWarned = true; console.warn('[shadow] çizim hatası:', e && e.message); }
+      }
       this.renderRangePings(ctx);
       this.renderMonsterTelegraphs(ctx);
       this.renderAoEEffects(ctx);
       this.renderOrbitAura(ctx);
       this.renderChannelFx(ctx);
       this.renderSortedEntities(ctx);
+      this.renderPlayerDefenseFx(ctx);
       this.renderProjectilesAndSlashes(ctx);
       this.renderChainFx(ctx);
       this.renderParticles(ctx);
       this.renderDamageNumbers(ctx);
+      this.renderCombatIndicators(ctx);
       if (zoomed) ctx.restore();
       this.renderAtmosphericVignette(ctx);
       this.renderWeather(ctx);
@@ -5634,7 +6587,7 @@
       if (this.persistent && this.worldCore) {
         const key = 'setra|' + this.worldConfig.seed + '|' + this.mapRadius;
         if (this._miniBase && this._miniBaseKey === key) return this._miniBase;
-        const SIZE = 256, R = Math.max(6, Number(this.mapRadius) || 14);
+        const SIZE = 96, R = Math.max(6, Number(this.mapRadius) || 14);
         const W = (R + 0.5) * this.tileSize;
         const off = document.createElement('canvas'); off.width = off.height = SIZE;
         const g = off.getContext('2d'), pal = this.worldCore.palettes;
@@ -6378,18 +7331,28 @@
       // tepelerde ağaçlar gölgesinden kopup "havada" görünüyordu.
       const tn = this.worldTuning();
       const treeK = Math.sqrt(tn.treeScale / 3) * 1.7;
+      const d3 = (typeof window !== 'undefined' && window.Setra3DTrees) || null;
       for (let i = 0; i < shadows.length; i++) {
         const s = shadows[i];
         const x = s._bx + camX, y = s._by + camY;
-        if (x < -160 || x > this.width + 160 || y < -160 || y > this.height + 160) continue;
+        if (x < -420 || x > this.width + 420 || y < -420 || y > this.height + 420) continue;
         const z = s.z || 0;
-        if (s.type === 'tree') soft(s.wx, s.wy, z, 34 * s.scale * treeK, 16 * s.scale * treeK, 0.6, 7, 3);
-        else if (s.type === 'boulder') soft(s.wx, s.wy, z, 24 * s.scale, 11 * s.scale, 0.55, 4, 2);
+        if (s.type === 'tree') {
+          // 3D sprite ise gölge, çizilen sprite'ın gerçek taban genişliğinden
+          // hesaplanır (yoksa sabit 34px gölge dev ağacın altında kalıyordu).
+          const fp = d3 && d3.footprint ? d3.footprint(s, this) : null;
+          if (fp) soft(s.wx, s.wy, z, fp.rx, fp.ry, 0.55, fp.rx * 0.1, fp.ry * 0.2);
+          else soft(s.wx, s.wy, z, 34 * s.scale * treeK, 16 * s.scale * treeK, 0.6, 7, 3);
+        } else if (s.type === 'boulder') soft(s.wx, s.wy, z, 24 * s.scale, 11 * s.scale, 0.55, 4, 2);
         else if (s.type === 'mountain') soft(s.wx, s.wy, z, 46 * s.scale, 15 * s.scale, 0.5, 9, 4);
         else if (s.type === 'shrine') soft(s.wx, s.wy, z, 40, 19, 0.6);
         else if (s.type === 'mushroom') soft(s.wx, s.wy, z, 12 * s.scale, 6 * s.scale, 0.5);
         else if (s.type === 'lantern') soft(s.wx, s.wy, z, 12, 6, 0.5);
-        else if (s.type === 'glb') soft(s.wx, s.wy, z, 22 * (s.scale || 1), 10 * (s.scale || 1), 0.42, 3, 2);
+        else if (s.type === 'glb') {
+          const fp = d3 && d3.footprint ? d3.footprint(s, this) : null;
+          if (fp) soft(s.wx, s.wy, z, fp.rx, fp.ry, 0.45, fp.rx * 0.1, fp.ry * 0.2);
+          else soft(s.wx, s.wy, z, 22 * (s.scale || 1), 10 * (s.scale || 1), 0.42, 3, 2);
+        }
       }
 
       this.monsters.forEach((m) => {
@@ -6432,8 +7395,9 @@
       for (const m of this.monsters) {
         if (m.hp > 0 && Math.hypot(m.x - this.mouse.worldX, m.y - this.mouse.worldY) < m.radius + 10) { hover = true; break; }
       }
-      ctx.strokeStyle = hover ? 'rgba(255,82,82,0.85)' : 'rgba(255,255,255,0.35)';
-      ctx.lineWidth = 1.6;
+      // Zemin hitbox işareti: çok silik (gözü yormasın, sadece hafif ipucu).
+      ctx.strokeStyle = hover ? 'rgba(255,82,82,0.30)' : 'rgba(255,255,255,0.10)';
+      ctx.lineWidth = 1.2;
       ctx.setLineDash([5, 4]);
       ctx.lineDashOffset = -this.time * 14;
       ctx.beginPath();
@@ -6536,7 +7500,10 @@
       ctx.save();
       ctx.lineCap = 'round'; ctx.lineJoin = 'round';
       for (const m of this.monsters) {
-        if (!m.cast || m.hp <= 0 || m.dead) continue;
+        if (m.hp <= 0 || m.dead) continue;
+        // Temel saldırı telegraph'ı (melee/ranged)
+        if (m.meleeWindup) { this.renderMeleeTelegraph(ctx, m); continue; }
+        if (!m.cast) continue;
         const sk = m.cast.skill || {};
         const total = Math.max(0.15, m.cast.total || 0.7);
         const prog = clamp(1 - m.cast.timer / total, 0, 1);
@@ -6604,18 +7571,133 @@
       ctx.restore();
     }
 
-    executeMonsterSkill(m, cast) {
-      const sk = (cast && cast.skill) || {};
+    // Telegraph süresi bitti: temel saldırı burada gerçekten isabet eder.
+    resolveMonsterMelee(m, mw) {
       const P = this.player;
+      if (!P || this.downed || !mw) return;
+      const dx = P.x - m.x, dy = P.y - m.y;
+      const dist = Math.hypot(dx, dy);
+      const element = m.element || 'physical';
+      const opts = { defense: mw.defense, kind: mw.kind, guardPressure: mw.guardPressure };
+      if (mw.ranged) {
+        // Menzilli: kırmızı uyarıdan SONRA mermi çıkar.
+        const spd = 360;
+        this.projectiles.push({
+          type: 'monster_orb', hostile: true,
+          x: m.x + Math.cos(mw.angle) * (m.radius + 8),
+          y: m.y + Math.sin(mw.angle) * (m.radius + 8),
+          vx: Math.cos(mw.angle) * spd, vy: Math.sin(mw.angle) * spd,
+          radius: 8, life: 2.0, damage: mw.damage, element, from: m,
+          color: m.accent || m.color || '#b388ff',
+          defense: mw.defense, kind: mw.kind, guardPressure: mw.guardPressure
+        });
+        if (this.sound) this.sound.play('shoot');
+        return;
+      }
+      // Uyarı süresinde oyuncu menzilden çıktıysa ıska (dodge).
+      if (dist > (mw.range || 56) + 8) return;
+      const res = this.damagePlayer(mw.damage, mw.angle, element, m, opts);
+      const landed = res === 'hit' || res === 'blocked';
+      // Elit nova: ana vuruş menzil dışında olsa da alan halkası görünür.
+      if (m.ability === 'nova') {
+        this.aoeEffects.push({ x: m.x, y: m.y, radius: m.radius * 2.4, duration: 0.4, timer: 0.4, color: m.accent || '#ff8a65', ring: true });
+        if (landed && dist <= m.radius * 2.4 + P.radius) {
+          this.damagePlayer(Math.round(mw.damage * 0.4), mw.angle, element, m,
+            { defense: DEFENSE.DODGE, kind: 'heavy', guardPressure: GUARD_PRESSURE.heavy });
+        }
+      }
+      // Durum efekti yalnızca gerçekten isabet/blok olduysa (parry/dodge'da değil).
+      if (landed && m.statusOnHit && this.playerData.stats.currentHp > 0) this.applyPlayerStatusFromMonster(m.statusOnHit);
+    }
+
+    // Temel (otomatik) canavar saldırısı telegraph'ı: küçük, kırmızı, sade.
+    renderMeleeTelegraph(ctx, m) {
+      const mw = m.meleeWindup;
+      if (!mw) return;
+      const total = Math.max(0.08, Number(mw.total) || 0.3);
+      const prog = clamp(1 - mw.timer / total, 0, 1);
+      const heavy = mw.kind === 'heavy' || mw.kind === 'skill' || mw.kind === 'ultimate';
+      const col = '#ff3b30';
+      const p0 = this.iso(m.x, m.y, 1);
+      ctx.save();
+      ctx.lineCap = 'round';
+      if (mw.ranged) {
+        // Menzilli: gövdede nabız atan kırmızı nokta + ince nişan çizgisi.
+        const t = this.iso(mw.tx, mw.ty, 1);
+        ctx.globalAlpha = 0.16 + prog * 0.2;
+        ctx.strokeStyle = col;
+        ctx.lineWidth = 1.2;
+        ctx.setLineDash([4, 9]);
+        ctx.lineDashOffset = -this.time * 26;
+        ctx.beginPath(); ctx.moveTo(p0.x, p0.y - 12); ctx.lineTo(t.x, t.y); ctx.stroke();
+        ctx.setLineDash([]);
+        drawGlow(ctx, p0.x, p0.y - 16, 7 + prog * 7, col, 0.28 + prog * 0.42);
+      } else {
+        // Yakın dövüş: canavarın önünde ince kırmızı yelpaze (hitbox ile uyumlu).
+        const range = Math.max(34, (Number(mw.range) || 56) + 14);
+        const half = heavy ? 0.62 : 0.5;
+        ctx.beginPath();
+        ctx.moveTo(p0.x, p0.y);
+        for (let i = 0; i <= 12; i++) {
+          const a = mw.angle - half + (i / 12) * half * 2;
+          const p = this.iso(m.x + Math.cos(a) * range, m.y + Math.sin(a) * range, 0);
+          ctx.lineTo(p.x, p.y);
+        }
+        ctx.closePath();
+        ctx.globalAlpha = (heavy ? 0.16 : 0.10) + prog * (heavy ? 0.26 : 0.18);
+        ctx.fillStyle = col;
+        ctx.fill();
+        ctx.globalAlpha = (heavy ? 0.45 : 0.3) + prog * 0.4;
+        ctx.strokeStyle = '#ff8a80';
+        ctx.lineWidth = heavy ? 2.2 : 1.3;
+        ctx.stroke();
+        // Silah / gövde üzerinde kısa kırmızı parlama.
+        const hx = p0.x + Math.cos(mw.angle) * 13;
+        const hy = p0.y + Math.sin(mw.angle) * 7 - 15;
+        drawGlow(ctx, hx, hy, (heavy ? 11 : 7) + prog * 5, col, 0.22 + prog * (heavy ? 0.5 : 0.36));
+        if (heavy) {
+          ctx.globalAlpha = 0.22 + prog * 0.4;
+          ctx.strokeStyle = col;
+          ctx.lineWidth = 1.8;
+          const rr2 = (m.radius || 18) * 1.4;
+          ctx.beginPath(); ctx.ellipse(p0.x, p0.y, rr2 * ISO_RX, rr2 * ISO_RY, 0, 0, TAU); ctx.stroke();
+        }
+        // Alan patlaması olan canavarlar (elite nova): zemin uyarı dairesi.
+        if (m.ability === 'nova') {
+          const nr = (m.radius || 18) * 2.4;
+          ctx.globalAlpha = 0.10 + prog * 0.16;
+          ctx.fillStyle = col;
+          ctx.beginPath(); ctx.ellipse(p0.x, p0.y, nr * ISO_RX, nr * ISO_RY, 0, 0, TAU); ctx.fill();
+          ctx.globalAlpha = 0.28 + prog * 0.32;
+          ctx.strokeStyle = '#ff8a80';
+          ctx.lineWidth = 1.6;
+          ctx.setLineDash([6, 7]);
+          ctx.lineDashOffset = -this.time * 30;
+          ctx.beginPath(); ctx.ellipse(p0.x, p0.y, nr * ISO_RX, nr * ISO_RY, 0, 0, TAU); ctx.stroke();
+          ctx.setLineDash([]);
+        }
+      }
+      ctx.globalAlpha = 1;
+      ctx.restore();
+    }
+
+    executeMonsterSkill(m, cast) {
+      const c = cast || {};
+      const sk = c.skill || {};
+      const P = this.player;
+      const info = c.info || this.classifyMonsterSkill(m, sk);
       const power = Number(sk.power) || 1;
       const dmg = Math.max(3, Math.round((m.damage - (this.playerData.stats.defense || 0) * 0.3) * power));
       const color = m.accent || m.color || '#ff7043';
-      const ang = Number.isFinite(cast.angle) ? cast.angle : Math.atan2(cast.ty - m.y, cast.tx - m.x);
+      const tx = Number.isFinite(c.tx) ? c.tx : m.x;
+      const ty = Number.isFinite(c.ty) ? c.ty : m.y;
+      const ang = Number.isFinite(c.angle) ? c.angle : Math.atan2(ty - m.y, tx - m.x);
+      const dmgOpts = { defense: info.defense, kind: info.kind, guardPressure: info.guardPressure };
       let landed = false;
       if (sk.kind === 'dash') {
         this.sound.play('dash');
         this.aoeEffects.push({ x: m.x, y: m.y, radius: m.radius * 1.5, duration: 0.32, timer: 0.32, color, ring: true });
-        const want = Math.min(Number(sk.dist) || 150, Math.hypot(cast.tx - m.x, cast.ty - m.y) + 40);
+        const want = Math.min(Number(sk.dist) || 150, Math.hypot(tx - m.x, ty - m.y) + 40);
         const np = this.clampToWorld(m.x + Math.cos(ang) * want, m.y + Math.sin(ang) * want);
         for (let i = 0; i < 7; i++) {
           const f = i / 7;
@@ -6640,13 +7722,16 @@
           this.projectiles.push({
             type: 'monster_orb', hostile: true, x: m.x + Math.cos(a) * (m.radius + 8), y: m.y + Math.sin(a) * (m.radius + 8),
             vx: Math.cos(a) * 380, vy: Math.sin(a) * 380,
-            radius: 8, life: 2.2, damage: dmg, element: m.element || 'physical', from: m, color
+            radius: 8, life: 2.2, damage: dmg, element: m.element || 'physical', from: m, color,
+            defense: info.defense, kind: info.kind, guardPressure: info.guardPressure
           });
         }
       }
       if (landed) {
-        this.damagePlayer(dmg, ang, m.element || 'physical', m);
-        if (sk.status && this.playerData.stats.currentHp > 0) this.applyPlayerStatusFromMonster(sk.status);
+        const res = this.damagePlayer(dmg, ang, m.element || 'physical', m, dmgOpts);
+        if (sk.status && res !== 'avoided' && this.playerData.stats.currentHp > 0) {
+          this.applyPlayerStatusFromMonster(sk.status);
+        }
       }
     }
 
@@ -6962,7 +8047,12 @@
 
       for (let i = 0; i < list.length; i++) {
         const item = list[i];
-        if (item.type === 'scenery') this.drawSceneryItem(ctx, item.data);
+        if (item.type === 'scenery') {
+          // Tek bir nesne hata verirse kare (oyuncu, canavar, HUD) düşmesin.
+          try { this.drawSceneryItem(ctx, item.data); } catch (e) {
+            if (!this._sceneryWarned) { this._sceneryWarned = true; console.warn('[scenery] çizim hatası:', e && e.message); }
+          }
+        }
         else if (item.type === 'monster') this.drawMonster(ctx, item.data);
         else if (item.type === 'other') this.drawOtherPlayer(ctx, item.data);
         else if (item.type === 'player') this.drawPlayer(ctx, item.data);
@@ -7490,6 +8580,25 @@
       const lean = p.isDashing ? clamp(svx / 680, -1, 1) * 0.28 : clamp(svx / 420, -1, 1) * 0.08;
       const flutter = Math.sin(t * 9) * (moving ? 3 : 1);
       const capeSX = clamp(-svx * 0.05, -9, 9) + flutter * 0.4;
+      // Savurma sırasında gövde öne atılsın + hafifçe dönsün (silah animasyonuyla uyumlu).
+      let lunge = 0, swingLean = 0;
+      const wsp = p.weaponSwing;
+      if (wsp && wsp.timer > 0 && !downed) {
+        const u = clamp(1 - wsp.timer / Math.max(0.01, wsp.duration || 0.3), 0, 1);
+        const push = u < 0.22 ? -(u / 0.22) * 0.35
+          : (u < 0.56 ? (u - 0.22) / 0.34 : 1 - ((u - 0.56) / 0.44) * 0.85);
+        lunge = push * (wsp.kind === 'slam' ? 4 : (wsp.kind === 'spin' ? 2 : 7));
+        swingLean = wsp.kind === 'spin' ? 0 : push * 0.13 * (wsp.dir || 1);
+      }
+      // Savunma duruşu: gövde hafifçe çöker, silah tarafına döner.
+      const gPhase = p.parryPhase;
+      let stanceDrop = 0, stanceLean = 0, stanceShift = 0;
+      if (!downed && gPhase && gPhase !== 'idle') {
+        const gw = gPhase === 'window' ? 1 : (gPhase === 'block' ? 0.9 : 0.55);
+        stanceDrop = 2.6 * gw;
+        stanceLean = -0.055 * gw * (fx >= 0 ? 1 : -1);
+        stanceShift = -1.8 * gw;   // nişan yönünden hafifçe geriye yüklen
+      }
       const env = { fx, fy, front, capeSX, t };
       const handCol = S.skin || '#d7a06a';
       const armCol = S.body === 'bare' ? S.skin : o.cloth;
@@ -7505,8 +8614,8 @@
         ctx.rotate(-1.2);
         ctx.scale(S.scale, S.scale);
       } else {
-        ctx.translate(0, bob);
-        ctx.rotate(lean);
+        ctx.translate(fx * (lunge + stanceShift), bob + fy * (lunge + stanceShift) * 0.55 + stanceDrop);
+        ctx.rotate(lean + swingLean + stanceLean);
         ctx.scale(S.scale, S.scale);
       }
 
@@ -7649,14 +8758,27 @@
       // Omuzluklar
       drawShoulders(ctx, S, o);
 
-      // Kollar (silah eline uzanır)
-      const hx = fx * 6, hy = -17 + fy * 3;
+      // Kollar (silah eline uzanır) — savunma duruşunda el göğüs önüne çekilir.
+      const gPhaseNow = p.parryPhase;
+      const guardPose = !downed && !!(gPhaseNow && gPhaseNow !== 'idle');
+      const sideG = fx >= 0 ? 1 : -1;
+      const hx = guardPose ? (fx * 1.2 + sideG * 4.5) : fx * 6;
+      const hy = guardPose ? -21 : -17 + fy * 3;
       ctx.lineCap = 'round';
       ctx.strokeStyle = armCol; ctx.lineWidth = 4;
       ctx.beginPath(); ctx.moveTo(fx >= 0 ? -7 : 7, -23); ctx.lineTo(fx >= 0 ? -9 : 9, -15 + Math.sin(ph) * (moving ? 2 : 0)); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(fx >= 0 ? 7 : -7, -23); ctx.lineTo(hx, hy); ctx.stroke();
       ctx.fillStyle = handCol;
       ctx.beginPath(); ctx.arc(hx, hy, 2.6, 0, TAU); ctx.fill();
+      // Guard: diğer el silahın gövdesini destekler (iki elle tutuş hissi).
+      if (guardPose) {
+        const ga = -Math.PI / 2 + 0.62 * sideG;
+        const sxh = hx + Math.cos(ga) * 13, syh = hy + Math.sin(ga) * 13;
+        ctx.strokeStyle = armCol; ctx.lineWidth = 3.4;
+        ctx.beginPath(); ctx.moveTo(fx >= 0 ? 7 : -7, -23); ctx.lineTo(sxh, syh); ctx.stroke();
+        ctx.fillStyle = handCol;
+        ctx.beginPath(); ctx.arc(sxh, syh, 2.3, 0, TAU); ctx.fill();
+      }
 
       // Yan el kalkanı (önde)
       if (front && S.offhand) drawShield(ctx, S, o, env);
@@ -7764,26 +8886,106 @@
     }
 
     // Fare yönüne dönen silah (ekran uzayında doğru açı). Saldırı animasyonu silah türüne göre:
-    // swing (geniş savurma) · slash (hızlı çapraz) · slam (yukarıdan vurma) · thrust (saplama) · shoot/cast (geri tepme)
+    // swing (geniş savurma) · slash (hızlı çapraz) · slam (yukarıdan vurma) · thrust (saplama)
+    // · spin (tam tur) · cast (kaldırıp bırakma). Tümü anticipation → strike → recovery eğrisi kullanır.
     drawWeapon(ctx, p, S, fa) {
       const o = S.pal;
       const fx = Math.cos(fa), fy = Math.sin(fa);
       const t = this.time;
-      let ang = fa;
-      const atk = p.attackAnimTimer > 0 ? 1 - p.attackAnimTimer / 0.22 : -1;
-      const mode = S.atkMode;
-      if (atk >= 0) {
-        if (mode === 'swing') ang += (easeOut(atk) - 0.5) * 2.4 * p.swingDir;
-        else if (mode === 'slash') ang += (easeOut(atk) - 0.5) * 1.7 * p.swingDir;
-        else if (mode === 'slam') ang += (easeOut(atk) - 0.8) * 2.4;
+      const sw = p.weaponSwing;
+      let mode = S.atkMode;
+      let u = -1;
+      if (sw && sw.timer > 0) {
+        mode = sw.kind || mode;
+        u = clamp(1 - sw.timer / Math.max(0.01, sw.duration || 0.3), 0, 1);
+      } else if (p.attackAnimTimer > 0) {
+        u = clamp(1 - p.attackAnimTimer / 0.22, 0, 1);
       }
-      const recoil = atk >= 0 ? (1 - atk) * 3 : 0;
+      const dir = (sw && sw.dir) || p.swingDir || 1;
+      // Savurma eğrisi: geri çekilme → hızlı darbe → takip.
+      const curve = (v) => {
+        if (v < 0.22) return -0.34 * easeOut(v / 0.22);
+        if (v < 0.56) return -0.34 + 1.34 * easeOut((v - 0.22) / 0.34);
+        return 1 + Math.sin(((v - 0.56) / 0.44) * Math.PI) * 0.1;
+      };
+      const angleFor = (v) => {
+        if (u < 0) return fa;
+        const c = curve(clamp(v, 0, 1));
+        if (mode === 'spin') return fa + v * TAU * dir - 0.6 * dir;
+        if (mode === 'slam') return fa + (c - 0.6) * 2.0;
+        if (mode === 'thrust') return fa + (c - 0.35) * 0.5 * dir;
+        if (mode === 'cast') return fa - 0.5 * easeOut(v) * dir;
+        return fa + c * (mode === 'swing' ? 2.05 : 1.5) * dir;
+      };
+      const recoil = u >= 0 ? (1 - u) * 3 : 0;
 
+      // --- SAVUNMA DURUŞU (parry / blok) ---
+      // F basılınca silah göğüs önüne çapraz çekilir: kılıç/hançer/balta/asa/fist
+      // hepsi aynı "guard" pozuna girer. Savurma sürerken bu poz uygulanmaz.
+      const phase = p.parryPhase;
+      if (p === this.player && u < 0 && !this.downed &&
+          (phase === 'startup' || phase === 'window' || phase === 'block')) {
+        const side = fx >= 0 ? 1 : -1;
+        const pcfg = (this.combatCfg && this.combatCfg.parry) || {};
+        let gs = 1;
+        if (phase === 'startup') {
+          const dur = Math.max(0.01, Number(pcfg.startup) || 0.08);
+          const k = clamp(1 - (Number(p.parryTimer) || 0) / dur, 0, 1);
+          gs = 0.3 + 0.7 * easeOut(k);          // hızlı ama yumuşak yükselme
+        } else if (phase === 'window') {
+          gs = 1.03 + Math.sin(t * 38) * 0.014;  // parry penceresi: hafif gerginlik
+        } else {
+          gs = 0.97 + Math.sin(t * 6) * 0.012;   // blok: sakin duruş
+        }
+        // Silah ekran uzayında yukarı (blade up) ve gövdeye doğru çapraz tutulur.
+        const norm = (a) => { while (a > Math.PI) a -= TAU; while (a < -Math.PI) a += TAU; return a; };
+        const guardAng = -Math.PI / 2 + 0.62 * side;
+        const dAng = norm(guardAng - fa);
+        const px0 = fx * 6, py0 = -17 + fy * 3;
+        const px1 = fx * 1.2 + side * 4.5, py1 = -21;
+        ctx.save();
+        ctx.translate(px0 + (px1 - px0) * gs, py0 + (py1 - py0) * gs);
+        ctx.rotate(fa + dAng * gs);
+        drawWeaponKind(ctx, S, o, t, -1, 0);
+        // Parry penceresinde bıçak kenarında cyan parlama (okunabilirlik).
+        if (phase === 'window') {
+          ctx.save();
+          ctx.globalCompositeOperation = 'lighter';
+          const pulse = 0.28 + 0.2 * Math.sin(t * 30);
+          drawGlow(ctx, 26, 0, 20, '#80deea', pulse);
+          drawGlow(ctx, 12, 0, 12, '#ffffff', pulse * 0.5);
+          ctx.restore();
+        }
+        ctx.restore();
+        return;
+      }
+
+      // Hareket izi: darbenin en hızlı anında silahın önceki açıları (motion blur).
+      if (u >= 0.16 && u <= 0.68) {
+        const trailCol = (sw && sw.color) || S.slash || '#9fd8ff';
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        for (let i = 1; i <= 4; i++) {
+          const v = Math.max(0, u - i * 0.05);
+          const a = angleFor(v);
+          ctx.save();
+          ctx.globalAlpha = 0.13 * (1 - i / 5.5);
+          ctx.translate(Math.cos(a) * 6, -17 + Math.sin(a) * 3);
+          ctx.rotate(a);
+          drawWeaponKind(ctx, S, o, t, v, 0, trailCol);
+          ctx.restore();
+        }
+        ctx.globalAlpha = 1;
+        ctx.restore();
+      }
+
+      const push = (u >= 0 && mode === 'thrust') ? curve(u) * 9 : 0;
+      const ang = angleFor(u >= 0 ? u : 0);
       ctx.save();
-      ctx.translate(fx * 6, -17 + fy * 3);
+      ctx.translate(fx * (6 + push), -17 + fy * (3 + push * 0.6));
       ctx.rotate(ang);
-      if (mode === 'slam' && atk >= 0) ctx.translate(Math.sin(atk * Math.PI) * 5, 0);
-      drawWeaponKind(ctx, S, o, t, atk, recoil);
+      if (mode === 'slam' && u >= 0) ctx.translate(Math.sin(u * Math.PI) * 5, 0);
+      drawWeaponKind(ctx, S, o, t, u, recoil);
       ctx.restore();
     }
 
@@ -9019,8 +10221,13 @@
       try {
         const dt = Math.min(raw, 0.1);
         this.lastTime = timestamp;
-        this.update(dt);
-        this.render();
+        // Arayüz menüsü açıkken (seyahat taşı / köy menüsü) dünya donar:
+        // canavarlar ve oyuncu hareket etmez ama kare yine çizilir.
+        if (this.uiPaused) this.render();
+        else {
+          this.update(dt);
+          this.render();
+        }
         this.trackPerf(raw);
       } catch (err) {
         // Tek karelik bir hata döngüyü durdurmasın (ekran siyah kalmasın).
@@ -9048,6 +10255,11 @@
     // ======================================================================
     setWorldBounds(map) {
       if (!map || typeof map !== 'object') return;
+      // Harita TÜRÜ değişince (kıta ↔ rastgele sefer) kamera modu da değişir:
+      // yakınlığı yeni modun varsayılanına oturt. Aksi halde kıtadan çıkıp
+      // sefere giren oyuncu, kıtanın yakın kamerasını (her şey dev görünür)
+      // seferde de taşıyordu.
+      const wasPersistent = !!this.persistent;
       // --- Kalıcı kıta: SetraWorldCore ile gerçek deterministik dünya ---
       // Tüm harita sabit bir görsel genişliğe ölçeklenir; kareler sunucu
       // koordinatından örneklenir (biyom, su, yol, köprü). Detay/cila Kimi'ye.
@@ -9087,10 +10299,16 @@
           Math.max(Math.abs(this.persistentBounds.minY), this.persistentBounds.maxY)
         );
         this.mapRadius = Math.max(20, Math.ceil(corner / this.tileSize) + 2);
-        this.interactRadius = Math.max(60, Math.min(170, this.worldScale * 12));
+        // Etkileşim yarıçapı: 3D yapıların tabanı büyük olduğu için oyuncu
+        // binanın içine girmek zorunda kalmamalı (hitbox yüzünden E açılmıyordu).
+        this.interactRadius = Math.max(95, Math.min(190, this.worldScale * 14));
+        // Kıtada 3D dekor tam boyutunda; sefer ölçeği burada sıfırlanır.
+        // (Kıta ağaçları istenen 2x boyut: 0.8 → 1.6)
+        this.decorScale = 1.6;
         this._lastWalkPos = null;
         this.setBiome(map.type || 'verdant', true);
         this.generateMap();
+        if (!wasPersistent) this.resetZoomForMode();
         this.snapCamera();
         return;
       }
@@ -9098,6 +10316,8 @@
       this.persistent = false;
       this.persistentTilesReady = false;
       this.worldCore = null;
+      this.worldConfig = null;
+      if (typeof window !== 'undefined') window.SETRA_WORLD_TUNING = null;
       this.persistentBounds = null;
       this._persWalk = null;
       this._persWindow = null;
@@ -9124,9 +10344,12 @@
       this.worldScale = ((R - 0.5) * this.tileSize) / maxDist;
       if (!Number.isFinite(this.worldScale) || this.worldScale <= 0) this.worldScale = this.tileSize;
       // Etkileşim yarıçapı: POI'lerin görsel boyutu büyük olduğu için oyuncu
-  // nesnenin içine girmek zorunda kalmamalı. Sunucu toleransı (16 karo) ile
-  // uyumlu olacak şekilde dünya pikseli cinsinden ~100px civarı tutulur.
-  this.interactRadius = Math.max(60, Math.min(150, this.worldScale * 12));
+      // nesnenin içine girmek zorunda kalmamalı. Sunucu toleransı (16 karo) ile
+      // uyumlu olacak şekilde dünya pikseli cinsinden ~100px civarı tutulur.
+      this.interactRadius = Math.max(60, Math.min(150, this.worldScale * 12));
+      // Rastgele sefer haritaları küçük: 3D dekoru kıtadaki boyutun ~%60'ında
+      // çiz, yoksa ağaçlar/kayalar ekranı doldurup "her şey dev" görünüyordu.
+      this.decorScale = 0.6;
       // Biyom (harita türü) canavar tablosunu ve ambiyansını belirler.
       const newExpedition = map.id && map.id !== this._mapId;
       this._mapId = map.id || this._mapId;
@@ -9145,6 +10368,7 @@
         this._castElement = null;
       }
       this.setBiome(map.type || 'verdant', newExpedition);
+      if (wasPersistent) this.resetZoomForMode();
       this.snapCamera();
     }
 
@@ -9152,13 +10376,13 @@
       const tile = this.worldScale || this.tileSize;
       const sp = this.serverSpawn;
       const ss = this.worldTuning().structureScale;
-      const keep = (this.scenery || []).filter((s) => s.type !== 'poi' && s.fallbackType !== 'poi');
+      const keep = (this.scenery || []).filter((s) => s.type !== 'poi' && s.fallbackType !== 'poi' && !s.poiStone);
       this.poiMarkers = [];
       for (const p of pois || []) {
         if (p.consumed) continue;
         const wx = (p.x + 0.5 - sp.x) * tile;
         const wy = (p.y + 0.5 - sp.y) * tile;
-        const poiBase = p.kind === 'chest' ? 1.1 : p.kind === 'camp' ? 1.15 : 1.55;
+        const poiBase = p.kind === 'chest' ? 1.1 : p.kind === 'camp' ? 1.15 : 1.15;
         const poiMul = p.kind === 'chest' || p.kind === 'camp' ? 1 : ss;
         this.poiMarkers.push({
           type: this.persistent && p.model ? 'glb' : 'poi', fallbackType: 'poi', model: p.model || null,
@@ -9166,9 +10390,22 @@
           wx, wy, z: this.groundZAt(wx, wy),
           scale: this.persistent && p.model ? poiBase * poiMul : 1,
           preScaled: true,
+          tint: p.tint || null,
           solidRadius: this.persistent && p.model && p.kind !== 'chest' && p.kind !== 'camp' && p.kind !== 'inn' ? 0.55 : 0,
           interactable: true, label: p.name,
         });
+        // Köy merkezine (çeşme/kamp ateşi değil) seyahat taşı dikilitaşı:
+        // Her köyün/checkpoint'in ortasında bir obelisk dursun — E ile o köyün
+        // menüsü (dinlenme/kayıt) açılır. POI zaten obelisk ise tekrar eklenmez.
+        if (this.persistent && (p.checkpoint || p.kind === 'inn' || p.kind === 'checkpoint') && p.model !== 'obelisk') {
+          const ox = wx + tile * 1.1, oy = wy + tile * 1.1;
+          this.poiMarkers.push({
+            type: 'glb', model: 'obelisk', kind: 'checkpoint', poiId: p.id, poiStone: true,
+            village: p.name, name: p.name + ' Taşı', wx: ox, wy: oy, z: this.groundZAt(ox, oy),
+            scale: 2.6, preScaled: true, solidRadius: 0.3,
+            interactable: true, label: 'Seyahat Taşı',
+          });
+        }
       }
       this.scenery = keep.concat(this.poiMarkers);
       this.solids = this.scenery.filter((s) => s.solidRadius > 0);
@@ -9230,6 +10467,26 @@
       stats.attackSpeed = Number(me.attackSpeed) || 0;
       stats.magicPower = me.magicPower != null ? Number(me.magicPower) || 0 : (stats.magicPower || 0);
       stats.healPower = me.healPower != null ? Number(me.healPower) || 0 : (stats.healPower || 0);
+
+      // ---- Seyahat içi seviye atlama ----
+      // Sunucu addXp ile yeni seviyeyi gönderir. Artış varsa: max canın %20'si
+      // dolar (her atlanan seviye için) ve statlar sunucu değerleriyle hemen
+      // tazelenir (maxHp/attack yukarıda uygulandı; HUD 200ms'de yeniden çizer).
+      const newLevel = Number(me.level);
+      if (newLevel > 0) {
+        const prevLevel = Number(this.playerData.level) || 0;
+        if (prevLevel > 0 && newLevel > prevLevel) {
+          const gained = newLevel - prevLevel;
+          const maxHp = Math.max(1, stats.maxHp || 1);
+          const healAmt = Math.round(maxHp * 0.20 * gained);
+          stats.currentHp = Math.min(maxHp, (stats.currentHp || 0) + healAmt);
+          this._hpFromServer = true;
+          // _lastHpSent'i GÜNCELLEME: döngü farkı görüp yeni canı sunucuya yollar.
+          if (typeof this.onStatsChange === 'function') { try { this.onStatsChange(); } catch (_) {} }
+          if (typeof this.onLevelUp === 'function') { try { this.onLevelUp(newLevel, healAmt); } catch (_) {} }
+        }
+        this.playerData.level = newLevel;
+      }
       this.player.baseSpeed = stats.speed || 200;
       this.refreshAttackCooldown();
     }

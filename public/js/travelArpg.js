@@ -10,6 +10,7 @@
     stats: null, statMapId: null,
     allyFxEnabled: true,
     miniCanvas: null, bigMapCanvas: null, mapModal: null,
+    villageOpen: false,
   };
   // Oyuncu tercihi: diğer oyuncuların yetenek efektlerini çizme (yalnızca yerel).
   try { S.allyFxEnabled = localStorage.getItem("setra_travel_allyfx") !== "0"; } catch (e) {}
@@ -291,6 +292,32 @@
         transform-origin: left center; transition: transform .16s linear; }
       .tv-vital__num { font: 700 10px/1 "Inter", system-ui, sans-serif; color: #ffd9c8;
         letter-spacing: .04em; text-align: right; font-variant-numeric: tabular-nums; }
+      /* --- Savunma dayanıklılığı (Guard Pressure) — can barının hemen üstünde --- */
+      .tv-vital__guard { position: relative; height: 6px; border-radius: 4px; overflow: hidden;
+        background: rgba(0,0,0,0.62); box-shadow: inset 0 0 0 1px rgba(120,200,255,0.16);
+        opacity: 0; transform: translateY(-2px); transition: opacity .22s ease, transform .22s ease; }
+      .tv-vital.is-guard .tv-vital__guard { opacity: 1; transform: none; }
+      .tv-vital__guardfill { position: absolute; inset: 0;
+        background: linear-gradient(90deg, #1d5f8f, #3fa9f5 55%, #8fe3ff);
+        box-shadow: 0 0 10px rgba(80,180,255,0.55) inset;
+        transform-origin: left center; transform: scaleX(0); transition: transform .12s linear, background .2s linear; }
+      /* Baskı arttıkça kızaran uyarı tonu */
+      .tv-vital.is-guard-hot .tv-vital__guardfill {
+        background: linear-gradient(90deg, #b33a2b, #ff7043 60%, #ffd166);
+        box-shadow: 0 0 12px rgba(255,110,60,0.7) inset;
+        animation: tvGuardPulse .55s ease-in-out infinite alternate; }
+      @keyframes tvGuardPulse { from { filter: brightness(1); } to { filter: brightness(1.35); } }
+      .tv-vital.is-guard-full .tv-vital__guardfill { animation: tvGuardFull .28s steps(2,end) infinite; }
+      @keyframes tvGuardFull { from { opacity: 1; } to { opacity: .45; } }
+      /* --- Stamina — can barının hemen altında --- */
+      .tv-vital__stam { position: relative; height: 6px; border-radius: 4px; overflow: hidden;
+        background: rgba(0,0,0,0.6); box-shadow: inset 0 0 0 1px rgba(160,220,160,0.14);
+        opacity: 0; transform: translateY(2px); transition: opacity .3s ease, transform .3s ease; }
+      .tv-vital.is-stam .tv-vital__stam { opacity: 1; transform: none; }
+      .tv-vital__stamfill { position: absolute; inset: 0;
+        background: linear-gradient(90deg, #2f6b45, #66bb6a 55%, #b9f6ca);
+        transform-origin: left center; transform: scaleX(1); transition: transform .12s linear; }
+      .tv-vital.is-stam-low .tv-vital__stamfill { background: linear-gradient(90deg, #6d4c41, #c0ca33 60%, #e6ee9c); }
       .tv-sb.has-ic { background-size: cover; background-position: center; background-repeat: no-repeat; }
       .tv-sb.has-ic .tv-sb__ic { display: none; }
       /* Etkileşim ipucu skill bar'ın üstünde kalsın */
@@ -511,6 +538,56 @@
       .tv-report-lbl .ic { font-size: 14px; filter: drop-shadow(0 0 8px rgba(232,196,130,0.3)); }
       .tv-report-val { font: 700 14px Inter, system-ui, sans-serif; color: #ffe6b8; letter-spacing: 0.4px; }
       .tv-report-actions { display: flex; justify-content: center; }
+
+      /* --- Seyahat tasi / koy menüsü (E ile acilir) --- */
+      .tv-village { position: absolute; inset: 0; z-index: 40; display: flex; align-items: center; justify-content: center;
+        padding: 20px; background: radial-gradient(80% 80% at 50% 40%, rgba(4, 3, 2, 0.55), rgba(3, 2, 2, 0.86));
+        -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+      .tv-village.hidden { display: none; }
+      .tv-village__panel { position: relative; overflow: hidden; width: min(420px, 100%);
+        display: flex; flex-direction: column; align-items: center; text-align: center; gap: 9px;
+        padding: 26px 26px 22px; border-radius: 4px; border: 1px solid rgba(214, 168, 96, 0.5);
+        background:
+          radial-gradient(130% 80% at 50% -10%, rgba(126, 78, 32, 0.22), transparent 62%),
+          linear-gradient(180deg, rgba(30, 21, 14, 0.98), rgba(10, 7, 5, 0.99));
+        box-shadow: 0 34px 80px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 226, 170, 0.08);
+        outline: 1px solid rgba(200, 152, 88, 0.12); outline-offset: -8px; color: #e6d8c1;
+        animation: tv-village-in 0.22s ease both; }
+      @keyframes tv-village-in { from { opacity: 0; transform: translateY(10px) scale(0.985); } to { opacity: 1; transform: none; } }
+      .tv-village__glow { position: absolute; top: -55%; left: 50%; width: 120%; height: 90%; transform: translateX(-50%);
+        pointer-events: none; background: radial-gradient(50% 50% at 50% 50%, rgba(232, 176, 88, 0.22), transparent 70%); }
+      .tv-village__eyebrow { position: relative; margin: 0; font: 500 9.5px/1 "Cinzel", Georgia, serif;
+        letter-spacing: 0.42em; text-transform: uppercase; color: rgba(224, 190, 138, 0.72); }
+      .tv-village__title { position: relative; margin: 2px 0 0; font: 700 26px/1.1 "Cinzel", Georgia, serif;
+        letter-spacing: 0.05em; color: #f3e2c0;
+        background: linear-gradient(172deg, #fff7e4 0%, #eed9a8 38%, #cf9f55 66%, #f4e3bb 100%);
+        -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
+        filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 22px rgba(220, 140, 58, 0.2)); }
+      .tv-village__rule { position: relative; display: flex; align-items: center; gap: 10px; width: min(220px, 80%);
+        color: rgba(226, 180, 104, 0.8); }
+      .tv-village__rule span { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(226, 180, 104, 0.6), transparent); }
+      .tv-village__rule b { font-size: 9px; font-weight: 400; opacity: 0.9; }
+      .tv-village__sub { position: relative; margin: 2px 0 2px; max-width: 34ch; font-size: 12.5px; line-height: 1.6;
+        font-style: italic; color: rgba(210, 194, 168, 0.72); }
+      .tv-village__stats { position: relative; display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
+        gap: 8px; width: 100%; margin: 2px 0 8px; padding: 8px 10px; border-radius: 3px;
+        border: 1px solid rgba(200, 152, 88, 0.22); background: rgba(0, 0, 0, 0.3);
+        font: 600 11px/1 "Inter", system-ui, sans-serif; letter-spacing: 0.06em; color: #b7a98f; }
+      .tv-village__stats b { color: #ffe6b8; font-weight: 700; letter-spacing: 0.02em; }
+      .tv-village__stats .sep { opacity: 0.45; }
+      .tv-village__actions { position: relative; display: flex; flex-direction: column; gap: 8px; width: 100%; }
+      .tv-village__btn { width: 100%; padding: 12px 16px; border-radius: 3px; cursor: pointer;
+        font: 700 11.5px/1 "Cinzel", Georgia, serif; letter-spacing: 0.16em; text-transform: uppercase;
+        border: 1px solid rgba(214, 168, 96, 0.5); transition: border-color .18s ease, background .18s ease, box-shadow .18s ease, transform .18s ease; }
+      .tv-village__btn--stone { color: #241708; border-color: rgba(240, 198, 124, 0.85);
+        background: linear-gradient(180deg, rgba(214, 158, 78, 0.97), rgba(146, 96, 40, 0.97));
+        text-shadow: 0 1px 0 rgba(255, 235, 200, 0.35);
+        box-shadow: inset 0 1px 0 rgba(255, 240, 208, 0.18), 0 10px 24px rgba(0, 0, 0, 0.4); }
+      .tv-village__btn--stone:hover { border-color: #f6d696; box-shadow: inset 0 1px 0 rgba(255, 240, 208, 0.22), 0 0 26px rgba(206, 142, 56, 0.24), 0 14px 30px rgba(0, 0, 0, 0.5); transform: translateY(-1px); }
+      .tv-village__btn--ghost { color: rgba(236, 222, 198, 0.9); background: rgba(255, 255, 255, 0.04); }
+      .tv-village__btn--ghost:hover { background: rgba(60, 42, 18, 0.7); border-color: rgba(232, 190, 118, 0.7); }
+      .tv-village__btn:active { transform: translateY(1px); }
+      @media (max-width: 520px) { .tv-village__panel { padding: 20px 18px 18px; } .tv-village__title { font-size: 21px; } }
     `;
     document.head.appendChild(st);
   }
@@ -562,6 +639,20 @@
         <div class="tv-skillbar" id="tv-skillbar"></div>
         <div class="tv-prompt hidden" id="tv-prompt"></div>
         <div class="tv-toast hidden" id="tv-toast"></div>
+        <div class="tv-village hidden" id="tv-village">
+          <div class="tv-village__panel" role="dialog" aria-modal="true" aria-labelledby="tv-village-title">
+            <span class="tv-village__glow" aria-hidden="true"></span>
+            <p class="tv-village__eyebrow">Travel Stone</p>
+            <h3 class="tv-village__title" id="tv-village-title">Setra Village</h3>
+            <div class="tv-village__rule" aria-hidden="true"><span></span><b>✦</b><span></span></div>
+            <p class="tv-village__sub" id="tv-village-sub">Your journey is written down. HP and Mana restored.</p>
+            <div class="tv-village__stats" id="tv-village-stats"></div>
+            <div class="tv-village__actions">
+              <button type="button" class="tv-village__btn tv-village__btn--stone" id="tv-village-return">Return to town</button>
+              <button type="button" class="tv-village__btn tv-village__btn--ghost" id="tv-village-continue">Continue exploring</button>
+            </div>
+          </div>
+        </div>
         <div class="tv-skill-tip" id="tv-skill-tip"></div>
         <div class="tv-mobile" id="tv-mobile">
           <div class="tv-stick" id="tv-stick"><div class="tv-knob" id="tv-knob"></div></div>
@@ -571,6 +662,8 @@
             <button type="button" class="tv-mbtn" data-skill="r">R</button>
             <button type="button" class="tv-mbtn tv-mbtn--atk" data-act="attack">ATK</button>
             <button type="button" class="tv-mbtn" data-act="dash">DASH</button>
+            <button type="button" class="tv-mbtn" data-act="parry">PARRY</button>
+            <button type="button" class="tv-mbtn" data-act="sprint">RUN</button>
           </div>
         </div>
       </div>`;
@@ -588,6 +681,16 @@
       if (S.engine && S.engine._interactTarget) handleInteract(S.engine._interactTarget);
     });
     bindMobile();
+    // Seyahat taşı / köy menüsü düğmeleri.
+    const vReturn = root.querySelector("#tv-village-return");
+    if (vReturn) vReturn.addEventListener("click", () => {
+      if (typeof socket !== "undefined") socket.emit("travel:leave");
+      toast("Returning to town...");
+    });
+    const vContinue = root.querySelector("#tv-village-continue");
+    if (vContinue) vContinue.addEventListener("click", closeVillageMenu);
+    const vEl = root.querySelector("#tv-village");
+    if (vEl) vEl.addEventListener("click", (ev) => { if (ev.target === vEl) closeVillageMenu(); });
     const zi = root.querySelector("#tv-zoom-in");
     const zo = root.querySelector("#tv-zoom-out");
     const fs = root.querySelector("#tv-full");
@@ -664,6 +767,14 @@
         const key = b.getAttribute("data-sb");
         if (key === "auto") { e.preventDefault(); attackNearest(); }
         else if (key === "dash") { e.preventDefault(); S.engine.triggerDash(); }
+        else if (key === "parry") {
+          e.preventDefault();
+          if (typeof S.engine.parryPress !== "function") return;
+          S.engine.parryPress();
+          setTimeout(() => {
+            if (S.engine && typeof S.engine.parryRelease === "function") S.engine.parryRelease();
+          }, 340);
+        }
       });
     }
     if (S.map) boot();
@@ -713,6 +824,11 @@
       document.addEventListener("keydown", (ev) => {
         if (ev.key === "Escape" && S.mapModal && S.mapModal.classList.contains("is-open")) {
           closeBigMap();
+          ev.stopPropagation();
+          return;
+        }
+        if (ev.key === "Escape" && S.villageOpen) {
+          closeVillageMenu();
           ev.stopPropagation();
         }
       }, true);
@@ -793,7 +909,19 @@
         if (typeof socket !== "undefined") socket.emit("travel:fx", fx);
       },
       // Görsel eklenti canavar `kind`ını değiştirir; ödül için orijinali yolla.
-      onKill: (m) => { if (S.active && typeof socket !== "undefined") socket.emit("travel:kill", { kind: m && (m.baseKind || m.kind), exp: m && m.exp }); },
+      // ORTAK DÜNYADA bu yol kapalıdır: ölüm/ödül sunucu otoritesindedir.
+      onKill: (m) => {
+        if (!S.active || typeof socket === "undefined") return;
+        if (S.engine && S.engine.sharedMobs) return;
+        socket.emit("travel:kill", { kind: m && (m.baseKind || m.kind), exp: m && m.exp });
+      },
+      // Ortak canavar saldırı niyeti (hasar/ölüm kararı sunucunun).
+      onAttack: (intent) => {
+        if (!S.active || typeof socket === "undefined" || !intent) return;
+        socket.emit("travel:atk", intent);
+      },
+      sharedMobs: !!map.shared,
+      localId: myId(),
       onHpChange: (hp) => { if (typeof socket !== "undefined" && S.engine && S.engine._hpFromServer) socket.emit("travel:hp", { hp }); },
       onDown: () => {
         // Sunucuya bildir; sunucu "downed" (yere düşme) ya da "fallen" (ölüm) onaylar.
@@ -801,6 +929,7 @@
         if (typeof socket !== "undefined") socket.emit("travel:down");
       },
       onRevive: (id) => { if (id && typeof socket !== "undefined") socket.emit("travel:revive", { targetId: id }); },
+      onLevelUp: handleLevelUp,
     });
     // ARPG içeriği (sınıf yetenekleri + biyom canavar tabloları) motora geçirilir.
     try {
@@ -853,6 +982,8 @@
       S.others = {};
     }
     S.map = map;
+    // Ortak canavar dünyası bayrağı sunucudan gelir (2+ oyunculu sefer).
+    if (S.engine) S.engine.sharedMobs = !!map.shared;
     // Yeni sefer: sefer raporu sayaçlarını sıfırla.
     if (map.id && map.id !== S.statMapId) resetStats(map.id);
     else if (!S.stats) resetStats(map.id || null);
@@ -862,6 +993,8 @@
   function applyRoom(room) {
     if (!S.engine || !room) return;
     S.room = room;
+    // Ortak canavar vuruşlarında "benim vuruşum" ayrımı için yerel oyuncu id'si.
+    S.engine.localId = myId() || S.engine.localId || null;
     // İstatistikleri sefer kaydından BAĞIMSIZ uygula: `travel:map` bazen
     // oda durumundan önce gelir; eski kod bu yüzden motoru varsayılan 100
     // max HP ile bırakıp travel:hp ile gerçek canı kalıcı olarak düşürebiliyordu.
@@ -924,6 +1057,8 @@
     // Önce tam ekrandan çık: aksi halde tarayıcı tam ekranda kalır ve oyuncu
     // menüye/kasabaya dönmüş olsa bile ekranda eski görüntü donar.
     exitFullscreenIfAny();
+    S.villageOpen = false;
+    if (S.engine) S.engine.uiPaused = false;
     S.active = false;
     try { if (window.SetraBgFx) window.SetraBgFx.resume(); } catch (e) {}
     hideSkillTip();
@@ -942,12 +1077,80 @@
     if (S.engine) S.engine.setServerPlayer({ x, y }, true);
   }
 
+  // --- Seyahat taşı / köy menüsü -----------------------------------------
+  function refreshVillageStats() {
+    const box = S.root && S.root.querySelector("#tv-village-stats");
+    if (!box) return;
+    const st = (S.engine && S.engine.playerData && S.engine.playerData.stats) || {};
+    const num = (v) => Math.max(0, Math.round(Number(v) || 0));
+    const hp = num(st.currentHp), maxHp = num(st.maxHp);
+    const mana = num(st.currentMana), maxMana = num(st.maxMana);
+    box.innerHTML = `<span>HP <b>${hp}</b> / ${maxHp}</span><span class="sep">&middot;</span><span>Mana <b>${mana}</b> / ${maxMana}</span>`;
+  }
+  // Sunucu taşta can/mana yenilediğinde motoru ve menüyü güncelle.
+  function applyRestored(p) {
+    if (!p) return;
+    if (S.engine) {
+      if (Number.isFinite(Number(p.hp)) && typeof S.engine.setHp === "function") S.engine.setHp(Number(p.hp));
+      const st = S.engine.playerData.stats || (S.engine.playerData.stats = {});
+      if (Number.isFinite(Number(p.maxHp)) && p.maxHp > 0) st.maxHp = Number(p.maxHp);
+      if (Number.isFinite(Number(p.mana))) st.currentMana = Math.max(0, Number(p.mana));
+      if (Number.isFinite(Number(p.maxMana)) && p.maxMana >= 0) st.maxMana = Number(p.maxMana);
+    }
+    refreshVillageStats();
+  }
+
+  // E ile taşa dokununca sefer kaydedilir ve o köyün menüsü açılır:
+  // "Return to town" seferi tamamlayıp kasaba ekranına döner.
+  function openVillageMenu(title, subtitle) {
+    if (!S.root) return;
+    const el = S.root.querySelector("#tv-village");
+    if (!el) return;
+    const t = el.querySelector("#tv-village-title");
+    const s = el.querySelector("#tv-village-sub");
+    if (t) t.textContent = title || "Travel Stone";
+    if (s) s.textContent = subtitle || "Your journey is written down.";
+    refreshVillageStats();
+    el.classList.remove("hidden");
+    const prompt = S.root.querySelector("#tv-prompt");
+    if (prompt) prompt.classList.add("hidden");
+    hideSkillTip();
+    S.villageOpen = true;
+    if (S.engine) {
+      S.engine.uiPaused = true;
+      for (const k in S.engine.keys) S.engine.keys[k] = false;
+    }
+  }
+  function closeVillageMenu() {
+    if (!S.root) return;
+    const el = S.root.querySelector("#tv-village");
+    if (el) el.classList.add("hidden");
+    S.villageOpen = false;
+    if (S.engine) {
+      S.engine.uiPaused = false;
+      S.engine.lastTime = performance.now();
+    }
+  }
+
   function handleInteract(obj) {
     if (!obj) return;
-    if (obj.type === "poi" && obj.poiId && typeof socket !== "undefined") {
+    if (S.villageOpen) return;
+    // Herhangi bir etkileşilebilir nesne (POI ya da köy seyahat taşı/obelisk)
+    // bir `poiId` taşıyorsa sunucu o POI'nin menüsünü açar (dinlenme/kayıt).
+    if (obj.poiId && typeof socket !== "undefined") {
       if (S.engine && typeof S.engine.spawnInteractPulse === "function" && Number.isFinite(obj.wx)) {
         const col = obj.kind === "chest" ? "#ffd166" : obj.kind === "inn" ? "#8fd6a0" : obj.kind === "ruin" ? "#b7a6e0" : "#8ec5ff";
         S.engine.spawnInteractPulse(obj.wx, obj.wy, col);
+      }
+      // Köy seyahat taşı / han: sefer kaydedilir ve o köyün menüsü açılır.
+      // (Rastgele seferlerdeki hanlar eski "dinlen" davranışını korur.)
+      const villageStone = !!obj.poiStone ||
+        ((obj.kind === "inn" || obj.kind === "checkpoint") && !!(S.map && S.map.persistent));
+      if (villageStone) {
+        socket.emit("travel:interact", { poiId: obj.poiId });
+        const village = obj.village || String(obj.name || "").replace(/\s*Ta[şs][ıi]$/i, "").trim();
+        openVillageMenu(village || "Travel Stone", "Your journey is written down. HP and Mana restored at the stone.");
+        return;
       }
       const dungeon = obj.kind === "dungeon" || obj.kind === "den";
       // İlk E parti kurar; ikinci E (parti hazırsa) zindana girer.
@@ -961,19 +1164,21 @@
       return;
     }
     if (obj.type === "shrine") {
-      // Seyahat taşı: seferi bitirip şehre döner (Back to Town ile aynı).
-      // Taş artık varış noktasının yanında olduğu için konum kontrolü geçer.
-      if (window.SetraTravel && typeof window.SetraTravel.canReturnToTown === "function" && !window.SetraTravel.canReturnToTown()) {
-        toast("Return from the stone where you arrived.");
-        return;
-      }
-      if (typeof socket !== "undefined") socket.emit("travel:leave");
-      toast("Returning to town...");
+      // Varış taşı: E ile menü açılır; sefer buradan tamamlanıp kasabaya dönülür.
+      openVillageMenu("Travel Stone", "The stone hums beneath your palm. Your expedition can end here.");
     }
   }
 
-  function toast(msg) {
-    if (!S.root) return;
+  // Seyahat içinde seviye atlayınca: kutlama bildirimi + can artışı sayısı.
+  function handleLevelUp(level, healAmt) {
+    const eng = S.engine;
+    if (eng && eng.player && typeof eng.spawnDamageNumber === "function" && healAmt > 0) {
+      eng.spawnDamageNumber(eng.player.x, eng.player.y - 28, `+${healAmt} HP`, "#7dffa0");
+    }
+    toast(`Seviye atladın! Lv ${level} \u2014 canın %20 doldu`);
+  }
+
+  function toast(msg) {    if (!S.root) return;
     const el = S.root.querySelector("#tv-toast");
     if (!el) return;
     el.textContent = msg;
@@ -1090,12 +1295,33 @@
       bumpStat("xp", p.xp);
       bumpStat("gold", p.gold);
       const eng = S.engine;
+      if (eng && p.goldTotal != null && eng.playerData && eng.playerData.stats) {
+        // Ortak dünyada altının tek kaynağı sunucudur; HUD'u gerçek toplamla eşitle.
+        eng.playerData.stats.gold = Number(p.goldTotal) || eng.playerData.stats.gold;
+      }
       if (eng && eng.player && typeof eng.spawnDamageNumber === "function") {
         const P = eng.player;
         const off = (Math.random() - 0.5) * 26;
         eng.spawnDamageNumber(P.x + off, P.y - 10, `+${p.xp} XP`, "#8fe4ff");
         eng.spawnDamageNumber(P.x - off, P.y + 6, `+${p.gold}g`, "#ffd166");
       }
+    });
+    // --- Ortak canavar dünyası olayları (sunucu otoritesi) ---
+    socket.on("travel:mobs", (p) => {
+      const eng = S.engine;
+      if (!eng || !p || !Array.isArray(p.list)) return;
+      eng.applyServerMobs(p.list);
+    });
+    socket.on("travel:mobHit", (p) => {
+      const eng = S.engine;
+      if (!eng) return;
+      eng.applyServerMobHit(p);
+    });
+    socket.on("travel:mobDead", (p) => {
+      const eng = S.engine;
+      if (!eng || !p) return;
+      const m = (eng._sharedMap && eng._sharedMap.get(String(p.i))) || null;
+      if (m && !m.dead) eng.playSharedDeath(m);
     });
     socket.on("travel:reward", (p) => {
       if (!p) return;
@@ -1245,6 +1471,7 @@
       });
     });
     out.push({ key: "dash", kind: "dash", label: "SPC", rune: "\u27A4", color: "#3c6f8c", name: "Dash" });
+    out.push({ key: "parry", kind: "parry", label: "F", rune: "\u29D6", color: "#2f7086", name: "Parry / Block" });
     return out;
   }
 
@@ -1270,6 +1497,29 @@
       }
       hearts.innerHTML = html;
     }
+
+    // --- Savunma (Guard Pressure) + Stamina çubukları ---
+    const P = eng.player || {};
+    const cfg = eng.combatCfg || {};
+    const vitalEl = bar.querySelector(".tv-vital");
+    const gMax = Math.max(1, Number(cfg.guard && cfg.guard.max) || 100);
+    const guard = Math.max(0, Math.min(gMax, Number(P.guard) || 0));
+    const guardFill = bar.querySelector(".tv-vital__guardfill");
+    if (guardFill) guardFill.style.transform = `scaleX(${guard / gMax})`;
+    const guardUp = guard > 0.5 || P.parryPhase === "block" ||
+      (Number(P.guardbreakTimer) || 0) > 0 || (Number(P.guardVisible) || 0) > 0;
+    if (vitalEl) {
+      vitalEl.classList.toggle("is-guard", !!guardUp);
+      vitalEl.classList.toggle("is-guard-hot", guard >= gMax * 0.72);
+      vitalEl.classList.toggle("is-guard-full", guard >= gMax - 0.5);
+      const sMax = Math.max(1, Number(cfg.stamina && cfg.stamina.max) || 100);
+      const stam = Math.max(0, Math.min(sMax, P.stamina != null ? Number(P.stamina) : sMax));
+      const stamFill = bar.querySelector(".tv-vital__stamfill");
+      if (stamFill) stamFill.style.transform = `scaleX(${stam / sMax})`;
+      const showStam = stam < sMax - 0.5 || !!P.sprinting || (Number(P.staminaIdle) || 0) > 0;
+      vitalEl.classList.toggle("is-stam", showStam);
+      vitalEl.classList.toggle("is-stam-low", stam <= sMax * 0.25 || !!(P.sprinting && stam < sMax * 0.15));
+    }
   }
 
   function renderStatPanel() {
@@ -1278,8 +1528,10 @@
     const st = (S.engine.playerData && S.engine.playerData.stats) || {};
     const buffs = S.engine.playerBuffs || [];
     const row = (ic, lbl, val, buff) => `<div class="tv-strow${buff ? " is-buff" : ""}"><span class="ic">${ic}</span><span class="lb">${lbl}</span><span class="vl">${val}</span></div>`;
+    const aps = typeof S.engine.computeAttackPerSecond === "function" ? Number(S.engine.computeAttackPerSecond()) : 0;
     const parts = [
       row("\u2694", "ATK", Math.round(Number(st.attack) || 0)),
+      row("\u26A1", "ATK SPD", `${aps > 0 ? aps.toFixed(2) : "\u2014"}/s`),
       row("\u2726", "MGC", Math.round(Number(st.magicPower) || 0)),
       row("\u2764", "HEAL", Math.round(Number(st.healPower) || 0)),
       row("\u25C6", "CRIT", `${Math.round((Number(st.critChance) || 0) * 100)}%`),
@@ -1303,10 +1555,12 @@
     const sig = slots.map((s) => `${s.key}:${s.name}:${s.color}:${s.off ? 1 : 0}:${s.icon || ""}`).join("|");
     if (sig !== S.skillSig) {
       S.skillSig = sig;
-      const vitals = `<div class="tv-vital" title="Health">
+      const vitals = `<div class="tv-vital" title="Health / Guard / Stamina">
           <div class="tv-vital__hearts"></div>
+          <div class="tv-vital__guard" title="Guard Pressure"><span class="tv-vital__guardfill"></span></div>
           <div class="tv-vital__bar"><span class="tv-vital__fill"></span></div>
           <div class="tv-vital__num">&mdash;</div>
+          <div class="tv-vital__stam" title="Stamina"><span class="tv-vital__stamfill"></span></div>
         </div>`;
       S.tipSkills = {};
       for (const s of slots) { if (s.sk) S.tipSkills[s.key] = s.sk; }
@@ -1341,12 +1595,16 @@
     const dMax = Number(P.dashCooldown) || 0.85;
     const dLeft = Math.max(0, Number(P.dashCooldownTimer) || 0);
     paint("dash", dLeft / dMax, dLeft);
+    // Parry kaçırma cezası: F kutusunda geri sayım.
+    const pCfg = (S.engine.combatCfg && S.engine.combatCfg.parry) || {};
+    const pMax = Math.max(0.05, Number(pCfg.whiffRecovery) || 0.75);
+    paint("parry", Math.max(0, Number(P.parryRecovery) || 0) / pMax, Math.max(0, Number(P.parryRecovery) || 0));
     renderSkillVitals(bar);
   }
 
   function startHud() {
     stopHud();
-    S.hudTimer = setInterval(renderHud, 200);
+    S.hudTimer = setInterval(renderHud, 120);
     renderHud();
   }
   function stopHud() {
@@ -1358,16 +1616,22 @@
     const prompt = S.root.querySelector("#tv-prompt");
     if (prompt) {
       const target = S.engine._interactTarget;
-      if (target) {
+      if (target && !S.villageOpen) {
         let verb = "Inspect";
         let label = "";
-        if (target.type === "poi") {
-          label = target.name || target.kind || "";
-          if (target.kind === "dungeon" || target.kind === "den") {
-            verb = S.pendingDungeon === target.poiId ? "Enter" : "Form party at";
-          } else if (target.kind === "chest") verb = "Open";
-          else if (target.kind === "inn") verb = "Rest at";
-          else if (target.kind === "ruin") verb = "Search";
+        if (target.poiId) {
+          if (target.poiStone) {
+            // Köy seyahat taşı: E ile köy menüsü açılır.
+            verb = "Use";
+            label = "Travel Stone";
+          } else {
+            label = target.name || target.kind || "";
+            if (target.kind === "dungeon" || target.kind === "den") {
+              verb = S.pendingDungeon === target.poiId ? "Enter" : "Form party at";
+            } else if (target.kind === "chest") verb = "Open";
+            else if (target.kind === "inn" || target.kind === "checkpoint") verb = "Rest at";
+            else if (target.kind === "ruin") verb = "Search";
+          }
         } else if (target.type === "shrine") {
           verb = "Use";
           label = "Travel Stone";
@@ -1382,9 +1646,10 @@
       }
     }
     if (S.root) {
+      const pb = S.engine.player || {};
       S.root.querySelectorAll("[data-skill]").forEach((b) => {
         const k = b.getAttribute("data-skill");
-        const cdv = S.engine.player.cooldowns && S.engine.player.cooldowns[k];
+        const cdv = (pb.cooldowns || {})[k];
         b.classList.toggle("is-cooling", !!(cdv && cdv.current > 0));
       });
     }
@@ -1436,6 +1701,19 @@
       stick.addEventListener("touchend", end);
       stick.addEventListener("touchcancel", end);
     }
+    // Emniyet ağı: sekme/pencere odağı kaybolursa basılı mobil girdiler (RUN/PARRY) takılı kalmasın.
+    S.mobileReleases = [];
+    if (!S.mobileReleaseBound) {
+      S.mobileReleaseBound = true;
+      const flushMobile = () => {
+        for (const fn of S.mobileReleases || []) {
+          try { fn(); } catch (_err) { /* temizlik hatası HUD'u bozmasın */ }
+        }
+      };
+      window.addEventListener("blur", flushMobile);
+      window.addEventListener("pagehide", flushMobile);
+      document.addEventListener("visibilitychange", () => { if (document.hidden) flushMobile(); });
+    }
     const skillBtn = (b) => {
       // pointerdown: mobilde 300ms tık gecikmesi/basma kaybı olmadan anında tepki.
       b.addEventListener("pointerdown", (e) => {
@@ -1448,18 +1726,48 @@
           S.engine.triggerSkill(b.getAttribute("data-skill"));
         } else if (b.getAttribute("data-act") === "dash") S.engine.triggerDash();
         else if (b.getAttribute("data-act") === "attack") attackNearest();
+        else if (b.getAttribute("data-act") === "parry" && typeof S.engine.parryPress === "function") S.engine.parryPress();
       }, { passive: false });
-      if (b.getAttribute("data-skill") === "e") {
-        b.addEventListener("pointerdown", (e) => {
-          e.preventDefault();
-          if (!S.engine) return;
-          S.engine.keys["e"] = true;
-          S.engine.triggerSkill("e");
-        });
-        const release = () => { if (S.engine) S.engine.keys["e"] = false; };
+      if (b.getAttribute("data-act") === "parry") {
+        // Parmağı kaldırma / kaydırıp çıkma / iptal / odak kaybı: parryHeld takılmasın.
+        const release = () => { if (S.engine && typeof S.engine.parryRelease === "function") S.engine.parryRelease(); };
         b.addEventListener("pointerup", release);
         b.addEventListener("pointerleave", release);
         b.addEventListener("pointercancel", release);
+        b.addEventListener("lostpointercapture", release);
+        S.mobileReleases.push(release);
+      }
+      if (b.getAttribute("data-act") === "sprint") {
+        const setShift = (on) => {
+          if (!S.engine) return;
+          if (!S.engine.keys) S.engine.keys = {};
+          S.engine.keys["shift"] = !!on;
+        };
+        const off = () => setShift(false);
+        b.addEventListener("pointerdown", (e) => { e.preventDefault(); e.stopPropagation(); setShift(true); }, { passive: false });
+        b.addEventListener("pointerup", off);
+        b.addEventListener("pointerleave", off);
+        b.addEventListener("pointercancel", off);
+        b.addEventListener("lostpointercapture", off);
+        S.mobileReleases.push(off);
+      }
+      if (b.getAttribute("data-skill") === "e") {
+        const eKey = (on) => {
+          if (!S.engine) return;
+          if (!S.engine.keys) S.engine.keys = {};
+          S.engine.keys["e"] = !!on;
+        };
+        b.addEventListener("pointerdown", (e) => {
+          e.preventDefault();
+          if (!S.engine) return;
+          eKey(true);
+          S.engine.triggerSkill("e");
+        });
+        const release = () => eKey(false);
+        b.addEventListener("pointerup", release);
+        b.addEventListener("pointerleave", release);
+        b.addEventListener("pointercancel", release);
+        S.mobileReleases.push(release);
       }
     };
     S.root.querySelectorAll(".tv-mbtn").forEach(skillBtn);
@@ -1844,6 +2152,9 @@
     clearParty() { S.pendingDungeon = null; },
     // Sunucudan gelen can değerini uygular (kalp kaybı sonrası).
     setHp(hp) { if (S.engine) S.engine.setHp(hp); },
+    // Taşta dinlenince sunucu can/manayı yeniler: motor + köy menüsünü tazele.
+    applyRestored(p) { try { applyRestored(p); } catch (e) {} },
+    closeVillageMenu() { try { closeVillageMenu(); } catch (e) {} },
     // Tüketilebilir kullanıldığında (iksir/azık) canı motora uygular.
     onItemUsed(p) { try { onItemUsed(p); } catch (e) {} },
   };

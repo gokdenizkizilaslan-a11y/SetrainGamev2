@@ -18,7 +18,6 @@ Akış: `newassets/x.glb` → `trees3d.js` bake → `Setra3DTrees.sprites` →
 | `server.js` | `app.use("/newassets", express.static(...))` → GLB'ler tarayıcıya açık |
 
 ## Yeni model ekleme (3 adım)
-
 1. `.glb` dosyasını `newassets/` içine at.
 2. `public/js/trees3d.js` içindeki `DECOR` tablosuna ekle (mevcut `tree` bloğunu kopyala):
 
@@ -41,6 +40,38 @@ if (window.Setra3DTrees && window.Setra3DTrees.drawScenery(ctx, s, x, y, this)) 
 
 Başka hiçbir yere dokunmak gerekmez: model id → biyom seçimi, rastgele dönüş,
 taban hizası, ölçek ve fallback otomatik.
+
+## Cephe (kapı) yönü — zorunlu sözleşme
+
+Modellerin **kapısı local `+Z`** yönünde export edilir (`0°`). Oyun her modeli
+16 açıdan pişirir (22.5° adım); hangi görünümün çizileceğini `rot` seçer:
+
+```
+az (kamera)  = rot + 45°
+görünen yön  = cephe - rot            [atan2(dx, dz) ölçüsü]
+rot          = cephe - atan2(dx, dz)  [kapı hedefe baksın]
+```
+
+- `build_villages.js` evleri bu varsayımla plazaya döndürür.
+- Model farklı export edildiyse **iki yere aynı değeri** yaz:
+  `trees3d.js` → `FRONT_DEG = { hut: 180 }` (derece) ve
+  `build_villages.js` → `FACING = { hut: Math.PI }` (radyan).
+  `+Z = 0 | +X = 90 | -Z = 180 | -X = 270`
+- Teşhis: konsolda `Setra3DTrees.contactSheet("hut")` → 16 görünüm + `rot`
+  değerleri açılır. Kapının göründüğü karede `cephe = -rot`.
+- Hazır yardımcılar: `Setra3DTrees.rotToFace(model, x, y, hedefX, hedefY)`,
+  `Setra3DTrees.faceDir(model, rot)`, `Setra3DTrees.frontTable`.
+
+## Ölçü alma (tahmin yerine)
+
+```powershell
+node scripts/glb_info.js newassets/hut.glb      # veya klasör: node scripts/glb_info.js newassets
+```
+
+Çıktı: gerçek yükseklik, taban genişliği/derinliği, taban `y` (0 olmalı) ve
+**önerilen `heights` + iki `solidRadius`** (ev/yapı ve prop için).
+Birimler: `heights` dünya pikseli, `solidRadius` karo (1 karo = 64 px →
+çarpışma yarıçapı `solidRadius × 64`).
 
 ## Aç / kapa (geri dönüş)
 
